@@ -172,10 +172,10 @@ class SpecialCreateWiki extends SpecialPage {
 		global $IP;
 
 		$dbline = "$DBname|$sitename|$language|\n";
-		file_put_contents( "$IP/all.dblist", $dbline, FILE_APPEND | LOCK_EX );
+		file_put_contents( "/srv/mediawiki/dblist/all.dblist", $dbline, FILE_APPEND | LOCK_EX );
 
 		if ( $private !== 0 ) {
-			file_put_contents( "$IP/private.dblist", "$DBname\n", FILE_APPEND | LOCK_EX );
+			file_put_contents( "/srv/mediawiki/dblist/private.dblist", "$DBname\n", FILE_APPEND | LOCK_EX );
 		}
 
 		return true;
