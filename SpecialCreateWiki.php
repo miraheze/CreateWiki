@@ -182,7 +182,14 @@ class SpecialCreateWiki extends SpecialPage {
 	}
 
 	function createMainPage( $lang ) {
-		$title = Title::newFromText( wfMessage( 'mainpage' )->inLanguage( $lang )->plain() );
+		// Don't use Meta's mainpage message!
+		if ( $lang !== 'en' ) {
+			$page = wfMessage( 'mainpage' )->inLanguage( $lang )->plain();
+		} else {
+			$page = 'Main_Page';
+		}
+		
+		$title = Title::newFromText( $page );
 		$article = WikiPage::factory( $title );
 
 		$article->doEditContent( new WikitextContent(
