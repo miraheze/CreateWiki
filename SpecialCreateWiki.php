@@ -102,7 +102,7 @@ class SpecialCreateWiki extends SpecialPage {
 			return false;
 		}
 
-		$shpromoteaccount = exec( "/usr/bin/php $IP/maintenance/createAndPromote.php ". wfEscapeShellArg( $founder ) . ' --bureaucrat --sysop --force --wiki ' . wfEscapeShellArg( $DBname ) );
+		$shpromoteaccount = exec( "/usr/bin/php $IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founder ) . ' --bureaucrat --sysop --force --wiki ' . wfEscapeShellArg( $DBname ) );
 		if ( !strpos( $shpromoteaccount, 'done.' ) ) {
 			wfDebugLog( 'CreateWiki', 'Failed to promote local account for founder. - error: ' . $shpromoteaccount );
 
