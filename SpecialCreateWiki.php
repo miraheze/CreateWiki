@@ -94,11 +94,19 @@ class SpecialCreateWiki extends SpecialPage {
 
 		$this->writeToDBlist( $DBname, $sitename, $language, $private );
 
-		$shx = exec( "/usr/bin/php $IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founder ) . ' --wiki ' . wfEscapeShellArg( $DBname ) );
-		if ( !strpos( $shx, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shx );
+		$shcreateaccount = exec( "/usr/bin/php $IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founder ) . ' --wiki ' . wfEscapeShellArg( $DBname ) );
+		if ( !strpos( $shcreateaccount, 'created' ) ) {
+			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
 
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotcreated' )->escaped() . '</div>' );
+			return false;
+		}
+
+		$shpromoteaccount = exec( "/usr/bin/php $IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founder ) . ' --bureaucrat --sysop --force --wiki ' . wfEscapeShellArg( $DBname ) );
+		if ( !strpos( $shpromoteaccount, 'Promoting' ) ) {
+			wfDebugLog( 'CreateWiki', 'Failed to promote local account for founder. - error: ' . $shpromoteaccount );
+
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotpromoted' )->escaped() . '</div>' );
 			return false;
 		}
 
