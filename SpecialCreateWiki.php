@@ -94,8 +94,10 @@ class SpecialCreateWiki extends SpecialPage {
 		}
 
 		$this->writeToDBlist( $DBname, $sitename, $language, $private );
+		$this->createMainPage( $language );
 
 		$shcreateaccount = exec( "/usr/bin/php $IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founder ) . ' --wiki ' . wfEscapeShellArg( $DBname ) );
+
 		if ( !strpos( $shcreateaccount, 'created' ) ) {
 			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
 
@@ -104,20 +106,13 @@ class SpecialCreateWiki extends SpecialPage {
 		}
 
 		$shpromoteaccount = exec( "/usr/bin/php $IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founder ) . ' --bureaucrat --sysop --force --wiki ' . wfEscapeShellArg( $DBname ) );
+
 		if ( !strpos( $shpromoteaccount, 'done.' ) ) {
 			wfDebugLog( 'CreateWiki', 'Failed to promote local account for founder. - error: ' . $shpromoteaccount );
 
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotpromoted' )->escaped() . '</div>' );
 			return false;
 		}
-
-		$this->createMainPage( $language );
-
-		// Grant founder sysop and bureaucrat rights
-		$founderUser = UserRightsProxy::newFromName( $DBname, User::newFromName( $founder )->getName() );
-		$newGroups = array( 'sysop', 'bureaucrat' );
-		array_map( array( $founderUser, 'addGroup' ), $newGroups );
-
 
 		$out->addHTML( '<div class="successbox">' . $this->msg( 'createwiki-success' )->escaped() . '</div>' );
 		return true;
