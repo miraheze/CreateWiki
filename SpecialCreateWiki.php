@@ -99,7 +99,7 @@ class SpecialCreateWiki extends SpecialPage {
 		$shcreateaccount = exec( "/usr/bin/php $IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founder ) . ' --wiki ' . wfEscapeShellArg( $DBname ) );
 
 		if ( !strpos( $shcreateaccount, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
+			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . var_dump( $shcreateaccount ) );
 
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotcreated' )->escaped() . '</div>' );
 			return false;
@@ -108,7 +108,7 @@ class SpecialCreateWiki extends SpecialPage {
 		$shpromoteaccount = exec( "/usr/bin/php $IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founder ) . ' --bureaucrat --sysop --force --wiki ' . wfEscapeShellArg( $DBname ) );
 
 		if ( !strpos( $shpromoteaccount, 'done.' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to promote local account for founder. - error: ' . $shpromoteaccount );
+			wfDebugLog( 'CreateWiki', 'Failed to promote local account for founder. - error: ' . var_dump( $shpromoteaccount ) );
 
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotpromoted' )->escaped() . '</div>' );
 			return false;
@@ -165,7 +165,7 @@ class SpecialCreateWiki extends SpecialPage {
 		}
 
 		if ( strtolower( $DBname ) !== $DBname ) {
-			$out->addHTML( '<div class="errorbox">' . $this->msg(  'createwiki-error-notlowercase' )->escaped() . '</div>' );
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-notlowercase' )->escaped() . '</div>' );
 			return false;
 		}
 
