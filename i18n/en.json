@@ -25,7 +25,7 @@
 	"createwiki-success": "The wiki was successfully created.",
 	"log-description-farmer": "This log tracks wiki requests, wiki creations and everything related to it.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
-	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in $7",
+	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in [[Special:RequestWikiQueue/$7|$7]]",
 	"log-name-farmer": "Farmer log",
 	"requestwiki": "Request a wiki",
 	"requestwiki-customdomain": "While we allow custom domains for wikis, we need you to do the following before we can give a wiki a custom domain:\n\n* If you can to change the DNS name servers:\n# Change the name servers to \"ns1.miraheze.org\" and \"ns2.miraheze.org\" (contact your domain registrar if you don't know how to do this);\n# Fill in the custom domain (e.g. wiki.yourdomain.org) in the \"custom domain\" field, make the \"subdomain\" field empty, and put in the comments field that you have changed your name servers.\n\n* If you can't change the DNS name servers:\n# Add a CNAME on the subdomain you want (e.g. \"wiki.\"), and point it to \"mw-lb.miraheze.org\";\n# Fill in your custom domain in the \"custom domain\" field (and leave the \"subdomain\" field empty), and put in the comments field that you have done this.",
