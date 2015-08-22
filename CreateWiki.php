@@ -12,6 +12,7 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 $wgAutoloadClasses['CreateWikiHooks'] = __DIR__ . '/CreateWiki.hooks.php';
+$wgAutoloadClasses['CreateWikiLogFormatter'] = __DIR__ . '/CreateWikiLogFormatter.php';
 $wgAutoloadClasses['RequestWikiQueuePager'] = __DIR__ . '/RequestWikiQueuePager.php';
 $wgAutoloadClasses['SpecialCreateWiki'] = __DIR__ . '/SpecialCreateWiki.php';
 $wgAutoloadClasses['SpecialRequestWiki'] = __DIR__ . '/SpecialRequestWiki.php';
@@ -25,7 +26,8 @@ $wgHooks['LoadExtensionSchemaUpdates'][] = 'CreateWikiHooks::fnCreateWikiSchemaU
 
 $wgAvailableRights[] = 'createwiki';
 $wgLogTypes[] = 'farmer';
-$wgLogActionsHandlers['farmer/*'] = 'LogFormatter';
+$wgLogActionsHandlers['farmer/createwiki'] = 'LogFormatter';
+$wgLogActionsHandlers['farmer/requestwiki'] = 'CreateWikiLogFormatter';
 
 $wgCreateWikiSQLfiles = array(
 	"$IP/maintenance/tables.sql",
