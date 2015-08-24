@@ -99,7 +99,7 @@ class SpecialCreateWiki extends SpecialPage {
 		$shcreateaccount = exec( "/usr/bin/php $IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founder ) . ' --wiki ' . wfEscapeShellArg( $DBname ) );
 
 		if ( !strpos( $shcreateaccount, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . var_dump( $shcreateaccount ) );
+			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
 
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotcreated' )->escaped() . '</div>' );
 			return false;
