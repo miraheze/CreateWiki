@@ -14,7 +14,6 @@
 	"createwiki-error-notlowercase": "The database name may not contain uppercase letters.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
 	"createwiki-error-usernotcreated": "The founder user was not created on the wiki.",
-	"createwiki-error-usernotpromoted": "The founder user was not promoted on the wiki.",
 	"createwiki-label-dbname": "Database name:",
 	"createwiki-label-founder": "Founder:",
 	"createwiki-label-language": "Language:",
