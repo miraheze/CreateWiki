@@ -99,20 +99,13 @@ class SpecialCreateWiki extends SpecialPage {
 		$shcreateaccount = exec( "/usr/bin/php $IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founder ) . ' --wiki ' . wfEscapeShellArg( $DBname ) );
 
 		if ( !strpos( $shcreateaccount, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . var_dump( $shcreateaccount ) );
+			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
 
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotcreated' )->escaped() . '</div>' );
 			return false;
 		}
 
 		$shpromoteaccount = exec( "/usr/bin/php $IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founder ) . ' --bureaucrat --sysop --force --wiki ' . wfEscapeShellArg( $DBname ) );
-
-		if ( !strpos( $shpromoteaccount, 'done.' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to promote local account for founder. - error: ' . var_dump( $shpromoteaccount ) );
-
-			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-usernotpromoted' )->escaped() . '</div>' );
-			return false;
-		}
 
 		$out->addHTML( '<div class="successbox">' . $this->msg( 'createwiki-success' )->escaped() . '</div>' );
 		return true;
