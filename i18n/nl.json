@@ -28,7 +28,6 @@
 	"logentry-farmer-requestwiki": "$1 heeft de wiki \"$4\" (taal: $5; privé: $6) aangevraagd in $7",
 	"log-name-farmer": "Farmer log",
 	"requestwiki": "Vraag een wiki aan",
-	"requestwiki-customdomain": "Voordat we een eigen domeinnaam aan een wiki kunnen toekennen, moet je eerst dit doornemen:\n\n* Als je in staat bent om de DNS-nameservers te veranderen:\n# Verander de nameservers naar \"ns1.miraheze.org\" en \"ns2.miraheze.org\" (neem contact op met je ISP als je niet weet hoe dit gedaan moet worden);\n# Geef je eigen domeinnaam op (bijv. wiki.yourdomain.org) in het daarvoor bestemde vakje, zorg ervoor dat het \"subdomein\"-vakje leeg is, en zeg erbij dat je de nameservers hebt veranderd.\n\n* Als je niet in staat bent om de DNS-nameservers te veranderen:\n# Voeg een CNAME toe voor je domeinnaam (e.g. \"wiki.\"), en laat het verwijzen naar \"mw-lb.miraheze.org\";\n# Geef je eigen domeinnaam op (bijv. wiki.yourdomain.org) in het daarvoor bestemde vakje, zorg ervoor dat het \"subdomein\"-vakje leeg is, en zeg erbij dat je de CNAME hebt toegevoegd.",
 	"requestwiki-done": "Je aanvraag is succesvol ingediend.",
 	"requestwiki-error-csrf": "<strong>Sorry, the request could not be submitted due to a loss of session data.</strong>\nPlease submit the form again. If that doesn't work, please [[Special:Userlogout|log out]] and log back in.", 
 	"requestwiki-error-nodomain": "Je moet een subdomein of eigen domeinnaam opgeven.",

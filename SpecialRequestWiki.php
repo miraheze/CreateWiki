@@ -22,13 +22,8 @@ class SpecialRequestWiki extends SpecialPage {
 			throw new UserBlockedError( $this->getUser()->getBlock() );
 		}
 
-		if ( $par && $par = 'CustomDomain' ) {
-			$this->showCustomDomainInfo();
-			return false;
-		}
-
 		if ( !$request->wasPosted() ) {
-			$customdomainurl = SpecialPage::getTitleFor( 'RequestWiki/CustomDomain' )->getFullUrl();
+			$customdomainurl = Title::newFromText( 'Custom_domains' )->getFullURL();
 			$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
 		}
 
@@ -154,10 +149,5 @@ class SpecialRequestWiki extends SpecialPage {
                 $farmerLogEntry->publish( $farmerLogID );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
-	}
-
-	function showCustomDomainInfo() {
-		$this->getOutput()->addWikiText( $this->msg( 'requestwiki-customdomain' )->parse() );
-		return true;
 	}
 }
