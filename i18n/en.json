@@ -10,7 +10,7 @@
         "requestwiki-error-csrf": "<strong>Sorry, the wiki could not be created due to a loss of session data.</strong>\nPlease submit the form again. If that doesn't work, please [[Special:Userlogout|log out]] and log back in.",
 	"createwiki-error-dbexists": "A wiki with that database name already exists.",
 	"createwiki-error-foundernonexistent": "The founder doesn't exist on Miraheze Meta.",
-	"createwiki-error-notalnum": "The database name may not non-alphanumeric characters.",
+	"createwiki-error-notalnum": "The database name may not contain non-alphanumeric characters.",
 	"createwiki-error-notlowercase": "The database name may not contain uppercase letters.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
 	"createwiki-error-usernotcreated": "The founder user was not created on the wiki.",
