@@ -4,6 +4,7 @@
 			"Southparkfan"
 		]
 	},
+	"action-createwiki": "create wikis",
 	"createwiki": "Create a wiki",
 	"createwiki-defaultmainpage": "__NOTOC__\n== Welcome at {{SITENAME}}! ==\nThis Main Page was automatically created by a wiki creator (a volunteer who created this wiki per a request), and it seems it isn't replaced yet.\n\n=== For the founder(s) of this wiki ===\nHello, and welcome at your new wiki! Thank you for choosing Miraheze for the hosting of your wiki, and we hope you will enjoy our hosting.\n\nYou can immediately start working on your wiki, whenever you want.\n\nNeed help? No problem! We will help you with your wiki as needed. To make a start we have added a few links about working with MediaWiki:\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Help:Contents MediaWiki guide (e.g. navigation, editing, deleting pages, blocking users)]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ Miraheze FAQ]</span>\n\n==== But Miraheze, I still don't understand X! ====\nWell, that's no problem. Even if something isn't explained in the documentation/FAQ, we still are happy to help you. You can find us here:\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center On our own Miraheze wiki]</span>\n* On IRC in #miraheze on irc.freenode.net ([irc://irc.freenode.net/#miraheze direct link]; [http://webchat.freenode.net?channels=%23miraheze webchat])\n\n=== For a visitor of this wiki ===\nHello, the default Main Page of this wiki (this is the default Main Page) has not been replaced yet by the founder(s) of this wiki. The founder(s) might still be working on a Main Page, so please check this page again later!",
 	"createwiki-desc": "An extension useful for creating wikis in a wiki farm.",
@@ -17,10 +18,11 @@
 	"createwiki-label-dbname": "Database name:",
 	"createwiki-label-founder": "Founder:",
 	"createwiki-label-language": "Language:",
-	"createwiki-label-private": "Private:",
+	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Reason:",
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-submit": "Submit",
+	"createwiki-legend": "Create a wiki",
 	"createwiki-success": "The wiki was successfully created.",
 	"log-description-farmer": "This log tracks wiki requests, wiki creations and everything related to it.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
