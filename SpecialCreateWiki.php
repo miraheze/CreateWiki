@@ -203,7 +203,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	public function createMainPage( $language ) {
 		// Don't use Meta's mainpage message!
 		if ( $language !== 'en' ) {
-			$page = wfMessage( 'mainpage' )->inLanguage( $lang )->plain();
+			$page = wfMessage( 'mainpage' )->inLanguage( $language )->plain();
 		} else {
 			$page = 'Main_Page';
 		}
