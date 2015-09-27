@@ -23,7 +23,7 @@ class SpecialRequestWiki extends SpecialPage {
 		}
 
 		if ( !$request->wasPosted() ) {
-			$customdomainurl = Title::newFromText( 'Custom_domains' )->getFullURL();
+			$customdomainurl = Title::newFromText( 'Special:MyLanguage/Custom_domains' )->getFullURL();
 			$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
 		}
 
