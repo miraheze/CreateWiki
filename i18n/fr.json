@@ -49,7 +49,6 @@
 	"requestwikiqueue-pager-status-inreview": "en attente",
 	"requestwikiqueue-request-header-changestatus": "Changer le status",
 	"requestwikiqueue-request-header-foundercomment": "Commententaire donné par le fondateur",
-	"requestwikiqueue-request-header-wikicreatorcomment": "Comment donné par un createur de wiki",
 	"requestwikiqueue-request-label-comment": "Commentaire:",
 	"requestwikiqueue-request-label-language": "Langue",
 	"requestwikiqueue-request-label-private": "Privée",

@@ -79,6 +79,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'cw_sitename',
 				'cw_status',
 				'cw_status_comment',
+				'cw_status_comment_user',
 				'cw_timestamp',
 				'cw_url',
 				'cw_user'
@@ -125,6 +126,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$columnamount = 6;
 		}
 
+		// Used in 'wikicreatorcomment'
+		if ( $res->cw_status_comment_user ) {
+			$wikicreatorobj = User::newFromId( $res->cw_status_comment_user );
+			$wikicreator = Linker::userLink( $wikicreatorobj->getId(), $wikicreatorobj->getName() );
+		} else {
+			$wikicreator = 'a wiki creator';
+		}
+
 		$localpage = $this->getPageTitle()->getLocalUrl() . "/$par";
 		$form = Xml::openElement( 'form', array( 'action' => $localpage, 'method' => 'post' ) );
 		$form .= '<fieldset><legend>' . $this->msg( 'requestwikiqueue-view' )->escaped() . '</legend>';
@@ -149,7 +158,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '</tr>';
 		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-foundercomment' )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_comment ) . '</td></tr>';
-		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->escaped() . '</th></tr>';
+		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->rawParams( $wikicreator )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_status_comment ? $res->cw_status_comment : 'No comments.' ) . '</td></tr>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-status' )->escaped() . '</th></tr>';
