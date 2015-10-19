@@ -219,4 +219,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		return true;
 	}
+	
+	public function getDisplayFormat() {
+		// Let's maintain compatibility with REL1_25
+		if ( class_exists( 'OOUIHTMLForm' ) ) {
+			return 'ooui';
+		} else {
+			return 'table';
+		}
+        }
+
 }
