@@ -194,6 +194,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function addWikiToDatabase( $DBname, $siteName, $language, $private ) {
+		$dbw = wfGetDB( DB_MASTER );
 		if ( $private ) {
 			$private = 1;
 		} else {
