@@ -99,6 +99,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$dbw->query( 'SET storage_engine=InnoDB;' );
 		$dbw->query( 'CREATE DATABASE ' . $dbw->addIdentifierQuotes( $DBname ) . ';' );
+
+		$this->addWikiToDatabase( $DBname, $siteName, $language, $private );
+		// Let's ensure our wiki is in the DBlist on the server
+		// we run the maintenance scripts on.
+		exec( "/usr/bin/php " . __DIR__ . "/DBListGenerator.php --wiki metawiki" );
+
 		$dbw->selectDB( $DBname );
 
 		foreach ( $wgCreateWikiSQLfiles as $sqlfile ) {
@@ -187,15 +193,24 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function writeToDBlist( $DBname, $siteName, $language, $private ) {
-		global $IP;
-
-		$dbline = "$DBname|$siteName|$language|\n";
-		file_put_contents( "/srv/mediawiki/dblist/all.dblist", $dbline, FILE_APPEND | LOCK_EX );
-
+	public function addWikiToDatabase( $DBname, $siteName, $language, $private ) {
 		if ( $private ) {
-			file_put_contents( "/srv/mediawiki/dblist/private.dblist", "$DBname\n", FILE_APPEND | LOCK_EX );
+			$private = 1;
+		} else {
+			$private = 0;
 		}
+
+		$dbw->insert(
+			'cw_wikis',
+			array(
+				'wiki_dbname' => $DBname,
+				'wiki_sitename' => $siteName,
+				'wiki_language' => $language,
+				'wiki_private' => $private,
+				'wiki_closed' => 0,
+			),
+			__METHOD__
+		);
 
 		return true;
 	}
