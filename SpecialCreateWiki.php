@@ -103,7 +103,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$this->addWikiToDatabase( $DBname, $siteName, $language, $private );
 		// Let's ensure our wiki is in the DBlist on the server
 		// we run the maintenance scripts on.
-		exec( "/usr/bin/php " . __DIR__ . "/DBListGenerator.php --wiki metawiki" );
+		exec( "/usr/bin/php /srv/mediawiki/w/extensions/CreateWiki/DBListGenerator.php --wiki metawiki" );
 
 		$dbw->selectDB( $DBname );
 
@@ -111,7 +111,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
-		$this->writeToDBlist( $DBname, $siteName, $language, $private );
 		$this->createMainPage( $language );
 
 		$shcreateaccount = exec( "/usr/bin/php " .
