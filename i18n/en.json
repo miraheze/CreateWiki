@@ -34,7 +34,7 @@
 	"requestwiki-error-nodomain": "You must specify either a subdomain or custom domain.",
 	"requestwiki-error-notallfilledin": "You have to fill in at least the wiki name and language fields.",
 	"requestwiki-error-twodomains": "You specified both a subdomain and custom domain: you can only choose between one of them.",
-	"requestwiki-header": "You are going to request a new wiki at Miraheze, great! We need you to fill in this form, before we can review your request.\n\nIf you want a custom domain for your wiki (i.e. not a standard .miraheze.org subdomain), please read <span class=\"plainlinks\">[$1 this]</span> first. Also, please note that this your request will be reviewed by a human for preventing spam.",
+	"requestwiki-header": "You are going to request a new wiki at Miraheze, great! We need you to fill in this form, before we can review your request./n Please note that this your request will be reviewed by a human for preventing spam.\n\nIf you want a custom domain for your wiki (i.e. not a standard .miraheze.org subdomain), please read <span class=\"plainlinks\">[$1 this]</span> first. ",
 	"requestwiki-label-comments": "Comments (e.g. what is your wiki about?):",
 	"requestwiki-label-customdomain": "Custom domain:",
 	"requestwiki-label-language": "Language:",
