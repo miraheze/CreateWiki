@@ -30,7 +30,7 @@
 	"requestwiki-error-nodomain": "Vous devez avoir un domain ou un soudomain",
 	"requestwiki-error-notallfilledin": "Vous devez dire votre nom de wiki et langue",
 	"requestwiki-error-twodomains": "Vous avez specifié domain custom et soudomain, vous pouvez choisir juste un!",
-	"requestwiki-header": "Vous allez demander un wiki Miraheze, génial! Merci de completer ce formuler qui va etre soumi a Miraheze.\nVotre demande va être verifié par un volontaire, vous pouvez la suivre sur le lien que vous avez eu apres soummetre.\n\nSi vous voulez demain custom (i.e. not a standard .miraheze.org subdomain), merci de lire <span class=\"plainlinks\">[$1 this]</span> first. Quand vous soummetez votre demande vous acceptez automatiquement notre [[Dormancy policy]].",
+	"requestwiki-header": "Vous allez demander un wiki Miraheze, génial! Merci de completer ce formuler qui va etre soumi a Miraheze.\nVotre demande va être verifié par un volontaire, vous pouvez la suivre sur le lien que vous avez eu apres soummetre.\n\nSi vous voulez demain custom (i.e. not a standard .miraheze.org subdomain), merci de lire <span class=\"plainlinks\">[$1 this]</span> first.\n\nQuand vous soummetez votre demande vous acceptez automatiquement notre [[Dormancy policy]].",
 	"requestwiki-label-comments": "Commentaire (e.g. de quoi il s'agit sur votre wiki?):",
 	"requestwiki-label-customdomain": "Domain custom:",
 	"requestwiki-label-language": "Langue:",
