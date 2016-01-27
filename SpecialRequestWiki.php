@@ -151,3 +151,11 @@ class SpecialRequestWiki extends SpecialPage {
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
 	}
 }
+
+function has_hyphens($string)
+{
+    return preg_match('/[\-]/', $string);
+}
+
+if(has_hyphens('wiki-name'))
+    throw new Exception('Please choose a subdomain with no hyphens!');
