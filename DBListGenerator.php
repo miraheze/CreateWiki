@@ -31,18 +31,17 @@ foreach ( $res as $row ) {
 	$private = $row->wiki_private;
 	$closed = $row->wiki_closed;
 	
-	$entry = array(
-		$DBname => array(
-			'settings' => array(
-				'sitename' => $siteName,
-				'language' => $language,
-			),
-			'private' => ( $row->wiki_private == 1 ) ? true : false,
-			'closed' => ( $row->wiki_closed == 1 ) ? true : false,
-		),
-	);
+	$allWikis[] = "$DBname|$siteName|$language|";
 	
-	$allWikis[] = $entry;
+	if ( $private === "1" ) {
+		$privateWikis[] = $DBname;
+	}
+	
+	if ( $closed === "1" ) {
+		$closedWikis[] = $DBname;
+	}
 }
 
-file_put_contents( "$DBlistPath/all.dblist", json_encode( $allWikis, JSON_UNESCAPED_UNICODE ), LOCK_EX );
+file_put_contents( "$DBlistPath/all.dblist", implode( "\n", $allWikis ), LOCK_EX );
+file_put_contents( "$DBlistPath/private.dblist", implode( "\n", $privateWikis ), LOCK_EX );
+file_put_contents( "$DBlistPath/closed.dblist", implode( "\n", $closedWikis ), LOCK_EX );
