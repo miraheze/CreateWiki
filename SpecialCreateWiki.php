@@ -101,6 +101,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$dbw->query( 'CREATE DATABASE ' . $dbw->addIdentifierQuotes( $DBname ) . ';' );
 
 		$this->addWikiToDatabase( $DBname, $siteName, $language, $private );
+
 		// Let's ensure our wiki is in the DBlist on the server
 		// we run the maintenance scripts on.
 		exec( "/usr/bin/php /srv/mediawiki/w/extensions/CreateWiki/DBListGenerator.php --wiki metawiki" );
@@ -194,6 +195,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	public function addWikiToDatabase( $DBname, $siteName, $language, $private ) {
 		$dbw = wfGetDB( DB_MASTER );
+
 		if ( $private ) {
 			$private = 1;
 		} else {
@@ -226,10 +228,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$title = Title::newFromText( $page );
 		$article = WikiPage::factory( $title );
 
-		$article->doEditContent( new WikitextContent(
-			wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain() ), // Text
+		$article->doEditContent( 
+			new WikitextContent(
+				wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain() 
+			), // Text
 			'Create main page', // Edit summary
-			EDIT_NEW
+			EDIT_NEW, // Flags
+			false, // I have no idea what this is
+			User::newFromName( 'MediaWiki default' ) // We don't want to have incorrect user_id - user_name entries
 		);
 
 		return true;
@@ -238,5 +244,4 @@ class SpecialCreateWiki extends FormSpecialPage {
 	public function getDisplayFormat() {
 		return 'ooui';
         }
-
 }
