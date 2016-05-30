@@ -109,7 +109,7 @@ class SpecialRequestWiki extends SpecialPage {
 
 		// Make the subdomain a dbname
 		if ( $subdomain ) {
-			if ( !ctype_alnum( $subdomain ) {
+			if ( !ctype_alnum( $subdomain ) ) {
 				return wfMessage( 'createwiki-error-notalnum' )->escaped();
 			} else {
 				$url = strtolower( $subdomain ) . '.miraheze.org';
