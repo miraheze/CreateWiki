@@ -40,7 +40,7 @@
 	"requestwiki-label-private": "Private wiki (not readable by everyone):",
 	"requestwiki-label-sitename": "Wiki name:",
 	"requestwiki-label-siteurl": "Subdomain:",
-	"requestwiki-notloggedin": "Sorry, you need to <span class=\"plainlinks\">[$1 login]</span> before you can request a wiki.",
+	"requestwiki-notloggedin": "Sorry, you need to <span class=\"plainlinks\">[$1 log in]</span> before you can request a wiki.",
 	"requestwiki-submit": "Submit",
 	"requestwiki-success": "Your wiki request ($1) was successfully submitted. Your request will be reviewed by a volunteer as soon as possible.",
 	"requestwikiqueue": "Wiki requests queue",
