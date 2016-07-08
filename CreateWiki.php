@@ -15,19 +15,22 @@ $wgAutoloadClasses['CreateWikiHooks'] = __DIR__ . '/CreateWiki.hooks.php';
 $wgAutoloadClasses['CreateWikiLogFormatter'] = __DIR__ . '/CreateWikiLogFormatter.php';
 $wgAutoloadClasses['RequestWikiQueuePager'] = __DIR__ . '/RequestWikiQueuePager.php';
 $wgAutoloadClasses['SpecialCreateWiki'] = __DIR__ . '/SpecialCreateWiki.php';
+$wgAutoloadClasses['SpecialManageWiki'] = __DIR__ . '/SpecialManageWiki.php';
 $wgAutoloadClasses['SpecialRequestWiki'] = __DIR__ . '/SpecialRequestWiki.php';
 $wgAutoloadClasses['SpecialRequestWikiQueue'] = __DIR__ . '/SpecialRequestWikiQueue.php';
 $wgMessagesDirs['CreateWiki'] = __DIR__ . '/i18n';
 $wgSpecialPages['CreateWiki'] = 'SpecialCreateWiki';
+$wgSpecialPages['ManageWiki'] = 'SpecialManageWiki';
 $wgSpecialPages['RequestWiki'] = 'SpecialRequestWiki';
 $wgSpecialPages['RequestWikiQueue'] = 'SpecialRequestWikiQueue';
 
 $wgHooks['LoadExtensionSchemaUpdates'][] = 'CreateWikiHooks::fnCreateWikiSchemaUpdates';
 
-$wgAvailableRights[] = 'createwiki';
+$wgAvailableRights[] = array( 'createwiki', 'managewiki' );
 $wgLogTypes[] = 'farmer';
 $wgLogActionsHandlers['farmer/createwiki'] = 'LogFormatter';
 $wgLogActionsHandlers['farmer/requestwiki'] = 'CreateWikiLogFormatter';
+$wgLogActionsHandlers['farmer/managewiki'] = 'LogFormatter';
 
 $wgCreateWikiSQLfiles = array(
 	"$IP/maintenance/tables.sql",
