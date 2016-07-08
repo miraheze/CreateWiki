@@ -119,7 +119,7 @@ class SpecialManageWiki extends SpecialPage {
 
 	function onSubmitInput( array $params ) {
 		if ( !$this->getUser()->isAllowed( 'managewiki' ) ) {
-			throw new MWException( "User ({$this->getUser()->getName()} without managewiki right tried to change wiki settings!" );
+			throw new MWException( "User '{$this->getUser()->getName()}' without managewiki right tried to change wiki settings!" );
 		}
 
 		$dbw = wfGetDB( DB_MASTER );
