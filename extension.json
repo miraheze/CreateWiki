@@ -1,0 +1,50 @@
+{
+        "name": "CreateWiki",
+        "author": "Southparkfan",
+        "url": "//github.com/Miraheze/CreateWiki",
+        "descriptionmsg": "createwiki-desc",
+        "type": "specialpage",
+        "AvailableRights": [
+                [
+                        "createwiki",
+                        "managewiki"
+                ]
+        ],
+        "SpecialPages": {
+                "CreateWiki": "SpecialCreateWiki",
+                "ManageWiki": "SpecialManageWiki",
+                "RequestWiki": "SpecialRequestWiki",
+                "RequestWikiQueue": "SpecialRequestWikiQueue"
+        },
+        "LogTypes": [
+                "farmer"
+        ],
+        "LogActionsHandlers": {
+                "farmer/createwiki": "LogFormatter",
+                "farmer/requestwiki": "CreateWikiLogFormatter",
+                "farmer/managewiki": "LogFormatter"
+        },
+        "MessagesDirs": {
+                "CreateWiki": [
+                        "i18n"
+                ]
+        },
+        "AutoloadClasses": {
+                "CreateWikiHooks": "CreateWiki.hooks.php",
+                "CreateWikiLogFormatter": "CreateWikiLogFormatter.php",
+                "RequestWikiQueuePager": "RequestWikiQueuePager.php",
+                "SpecialCreateWiki": "SpecialCreateWiki.php",
+                "SpecialManageWiki": "SpecialManageWiki.php",
+                "SpecialRequestWiki": "SpecialRequestWiki.php",
+                "SpecialRequestWikiQueue": "SpecialRequestWikiQueue.php"
+        },
+        "Hooks": {
+                "LoadExtensionSchemaUpdates": [
+                        "CreateWikiHooks::fnCreateWikiSchemaUpdates"
+                ]
+        },
+        "config": {
+                "CreateWikiSQLfiles": false
+        },
+        "manifest_version": 1
+}
