@@ -101,6 +101,13 @@ class SpecialManageWiki extends SpecialPage {
 				'name' => 'cwClosed',
 				'default' => ( $wiki->wiki_closed == 1 ) ? 1 : 0,
 			),
+			'private' => array(
+				'type' => 'check',
+				'label-message' => 'managewiki-label-private',
+				'name' => 'cwPrivate',
+				'disabled' => ( !$this->getUser()->isAllowed( 'managewiki-restricted' ) ),
+				'default' => ( $wiki->wiki_private == 1 ) ? 1 : 0,
+			),
 			'reason' => array(
 				'label-message' => 'managewiki-label-reason',
 				'type' => 'text',
@@ -128,6 +135,7 @@ class SpecialManageWiki extends SpecialPage {
 				'wiki_sitename' => $params['sitename'],
 				'wiki_language' => $params['language'],
 				'wiki_closed' => ( $params['closed'] == true ) ? 1 : 0,
+				'wiki_private' => ( $params['private'] == true ) ? 1 : 0,
 			),
 			array(
 				'wiki_dbname' => $params['dbname'],
