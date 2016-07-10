@@ -129,14 +129,19 @@ class SpecialManageWiki extends SpecialPage {
 			throw new MWException( "User '{$this->getUser()->getName()}' without managewiki right tried to change wiki settings!" );
 		}
 
+		$values = array(
+			'wiki_sitename' => $params['sitename'],
+			'wiki_language' => $params['language'],
+			'wiki_closed' => ( $params['closed'] == true ) ? 1 : 0,
+		),
+
+		if ( $this->getUser()->isAllowed( 'managewiki-restricted' ) ) {
+			$values['wiki_private'] = ( $params['private'] == true ) ? 1 : 0;
+		}
+
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->update( 'cw_wikis',
-			array(
-				'wiki_sitename' => $params['sitename'],
-				'wiki_language' => $params['language'],
-				'wiki_closed' => ( $params['closed'] == true ) ? 1 : 0,
-				'wiki_private' => ( $params['private'] == true ) ? 1 : 0,
-			),
+			$values,
 			array(
 				'wiki_dbname' => $params['dbname'],
 			),
