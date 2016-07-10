@@ -133,7 +133,7 @@ class SpecialManageWiki extends SpecialPage {
 			'wiki_sitename' => $params['sitename'],
 			'wiki_language' => $params['language'],
 			'wiki_closed' => ( $params['closed'] == true ) ? 1 : 0,
-		),
+		);
 
 		if ( $this->getUser()->isAllowed( 'managewiki-restricted' ) ) {
 			$values['wiki_private'] = ( $params['private'] == true ) ? 1 : 0;
