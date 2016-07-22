@@ -205,6 +205,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			__METHOD__
 		);
 
+		header("refresh: 1;");
 		return true;
 	}
 }
