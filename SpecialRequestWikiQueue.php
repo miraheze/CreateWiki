@@ -205,7 +205,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			__METHOD__
 		);
 
-		header("refresh: 1;");
+		$this->getRequest()->response()->header( 'Refresh: 1;' );
 		return true;
 	}
 }
