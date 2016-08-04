@@ -1,0 +1,24 @@
+{
+	"@metadata": {
+		"authors": [
+			"Wynter"
+		]
+	},
+	"action-createwiki": "crear una wiki",
+	"createwiki": "Crear una wiki",
+	"createwiki-desc": "Crear una nueva wiki en una granja de wiki",
+	"createwiki-label-comment": "Comentario",
+	"createwiki-label-create": "Crear",
+	"createwiki-label-dbname": "Nombre del base de datos",
+	"createwiki-label-founder": "Fundador",
+	"createwiki-label-dbnamecontainsuppercase": "El nombre del base de datos no puede contener una o más letras mayúsculas.",
+	"createwiki-error-dbexists": "El base de datos ya existe.",
+	"createwiki-error-nonexistentfounder": "El fundador no existe en Orain Meta.",
+	"createwiki-error-notsuffixed": "El nombre del base de datos debe terminarse con un sufijo configurado.",
+	"createwiki-error-notalnum": "El nombre del base de datos debe ser alfanumérico.",
+	"createwiki-error-usernotcreated": "Hubo un error mientras que la creación del usuario del fundador.",
+	"createwiki-success": "$1 se ha creado exitosamente.",
+	"log-description-farmer": "Este es un registro de los cambios hechos a la granja de wiki.",
+	"log-name-farmer": "Registro de la granja de wiki",
+	"logentry-farmer-create": "$1 creó la wiki \"$4\"",
+}
