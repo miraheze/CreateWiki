@@ -13,7 +13,7 @@
 	"createwiki-error-notalnum": "Numele de data de bază nu poate conține numere non-alphanumerice.",
 	"createwiki-error-notlowercase": "Numele de dată de bază nu poate conține majuscule.",
 	"createwiki-error-notsuffixed": " Data de bază nu are un suffix valid (e.x. 'wiki') ",
-	"createwiki-error-usernotcreated": "The founder user was not created on the wiki. Fondatorul nu a fost creat pe wiki.",
+	"createwiki-error-usernotcreated": "Fondatorul nu a fost creat pe wiki.",
 	"createwiki-label-dbname": "Nume dată de bază:",
 	"createwiki-label-founder": "Fondator:",
 	"createwiki-label-language": "Limbă:",
