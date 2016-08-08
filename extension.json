@@ -5,11 +5,9 @@
         "descriptionmsg": "createwiki-desc",
         "type": "specialpage",
         "AvailableRights": [
-                [
-                        "createwiki",
-                        "managewiki",
-                        "managewiki-restricted"
-                ]
+                "createwiki",
+                "managewiki",
+                "managewiki-restricted"
         ],
         "SpecialPages": {
                 "CreateWiki": "SpecialCreateWiki",
