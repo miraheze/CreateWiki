@@ -30,16 +30,29 @@ foreach ( $res as $row ) {
 	$language = $row->wiki_language;
 	$private = $row->wiki_private;
 	$closed = $row->wiki_closed;
-	
+
 	$allWikis[] = "$DBname|$siteName|$language|";
-	
+
+	$cdb = \Cdb\Writer::open( '/srv/mediawiki/cdb-config/' . $DBname . '.cdb' );
+
+	$cdb->set( 'sitename', $siteName );
+	$cdb->set( 'language', $language );
+
 	if ( $private === "1" ) {
 		$privateWikis[] = $DBname;
+		$cdb->set( 'private', 1 );
+	} else {
+		$cdb->set( 'private', 0 );
 	}
 	
 	if ( $closed === "1" ) {
 		$closedWikis[] = $DBname;
+		$cdb->set( 'closed', 1 );
+	} else {
+		$cdb->set( 'closed', 0 );
 	}
+
+	$cdb->close();
 }
 
 file_put_contents( "$DBlistPath/all.dblist", implode( "\n", $allWikis ), LOCK_EX );
