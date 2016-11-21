@@ -5,13 +5,10 @@
         "descriptionmsg": "createwiki-desc",
         "type": "specialpage",
         "AvailableRights": [
-                "createwiki",
-                "managewiki",
-                "managewiki-restricted"
+                "createwiki"
         ],
         "SpecialPages": {
                 "CreateWiki": "SpecialCreateWiki",
-                "ManageWiki": "SpecialManageWiki",
                 "RequestWiki": "SpecialRequestWiki",
                 "RequestWikiQueue": "SpecialRequestWikiQueue"
         },
@@ -20,8 +17,7 @@
         ],
         "LogActionsHandlers": {
                 "farmer/createwiki": "LogFormatter",
-                "farmer/requestwiki": "CreateWikiLogFormatter",
-                "farmer/managewiki": "LogFormatter"
+                "farmer/requestwiki": "CreateWikiLogFormatter"
         },
         "MessagesDirs": {
                 "CreateWiki": [
@@ -33,7 +29,6 @@
                 "CreateWikiLogFormatter": "CreateWikiLogFormatter.php",
                 "RequestWikiQueuePager": "RequestWikiQueuePager.php",
                 "SpecialCreateWiki": "SpecialCreateWiki.php",
-                "SpecialManageWiki": "SpecialManageWiki.php",
                 "SpecialRequestWiki": "SpecialRequestWiki.php",
                 "SpecialRequestWikiQueue": "SpecialRequestWikiQueue.php"
         },
