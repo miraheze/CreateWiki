@@ -27,7 +27,6 @@
         "AutoloadClasses": {
                 "CreateWikiHooks": "CreateWiki.hooks.php",
                 "CreateWikiLogFormatter": "CreateWikiLogFormatter.php",
-                "RemoteWiki": "RemoteWiki.php",
                 "RequestWikiQueuePager": "RequestWikiQueuePager.php",
                 "SpecialCreateWiki": "SpecialCreateWiki.php",
                 "SpecialRequestWiki": "SpecialRequestWiki.php",
