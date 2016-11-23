@@ -40,5 +40,6 @@
         "config": {
                 "CreateWikiSQLfiles": false
         },
+        "callback": "CreateWikiHooks::onRegistration",
         "manifest_version": 1
 }
