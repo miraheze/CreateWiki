@@ -49,7 +49,7 @@
 	"requestwikiqueue-pager-status-declined": "geweigerd",
 	"requestwikiqueue-pager-status-inreview": "in behandeling",
 	"requestwikiqueue-request-header-changestatus": "Verander de status van deze wikiaanvraag",
-	"requestwikiqueue-request-header-foundercomment": "Opmerkingen door de oprichter",
+	"requestwikiqueue-request-header-requestercomment": "Opmerkingen door de requester",
 	"requestwikiqueue-request-label-comment": "Opmerking:",
 	"requestwikiqueue-request-label-language": "Taal",
 	"requestwikiqueue-request-label-private": "Privé",
