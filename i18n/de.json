@@ -10,7 +10,7 @@
 	"createwiki-desc": "Extension zur einfachen Erstellung einer Wiki.",
         "requestwiki-error-csrf": "<strong>Sorry, diese Wiki konnte nicht erstellt werden wegen misteriösem Datenverlust.</strong>\nBitte sende Sie das Formular erneut. Sollte das nicht funktionieren, [[Special:Userlogout|Loggen Sie sich aus]] und dann wieder ein.",
 	"createwiki-error-dbexists": "Eine Wiki mit dem Database-namen besteht schon.",
-	"createwiki-error-requesternonexistent": "Der Gründer ist nicht bei Miraheze registriert.",
+	"createwiki-error-requesternonexistent": "Der Requester ist nicht bei Miraheze registriert.",
 	"createwiki-error-notalnum": "Der Database-Name darf keine nicht-alphanumerischen zeichen enthalten.",
 	"createwiki-error-notlowercase": "Der Database-Name darf keine Grossbuchstaben enthalten.",
 	"createwiki-error-notsuffixed": "Der Database-Name endet nich in einem validen suffix (e.g. 'wiki').",
