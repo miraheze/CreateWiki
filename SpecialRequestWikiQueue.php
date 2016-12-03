@@ -29,7 +29,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$month = $request->getIntOrNull( 'month' );
 		$search = $request->getVal( 'rwqSearch' );
 
-		if ( $type === 'founder' ) {
+		if ( $type === 'requester' ) {
 			$user = User::newFromName( $search );
 			if ( !$user || !$user->getID() ) {
 				$out->addWikiMsg( 'requestwikiqueue-usernotfound' );
@@ -42,7 +42,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$searchConds = array( 'cw_status' => $search );
 		}
 
-		$selecttypeform = "<select name=\"rwqSearchtype\"><option value=\"founder\">founder</option><option value=\"sitename\">sitename</option><option value=\"status\">status</option></select>";
+		$selecttypeform = "<select name=\"rwqSearchtype\"><option value=\"requester\">requester</option><option value=\"sitename\">sitename</option><option value=\"status\">status</option></select>";
 
 		$form = Xml::openElement( 'form', array( 'action' => $localpage, 'method' => 'get' ) );
                 $form .= '<fieldset><legend>' . $this->msg( 'requestwikiqueue-searchrequest' )->escaped() . '</legend>';
@@ -141,7 +141,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . DateTime::createFromFormat( 'YmdHis', $res->cw_timestamp )->format( 'l, j F Y H:i' ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'founder', 'url', 'language', 'private', 'status' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'language', 'private', 'status' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
