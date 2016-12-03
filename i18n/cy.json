@@ -9,7 +9,7 @@
 	"createwiki-desc": "Mae estyniad defnyddiol ar gyfer creu wikis mewn fferm wiki.",
         "requestwiki-error-csrf": "<strong> Mae'n ddrwg gennym, ni allai'r wici yn cael ei greu o ganlyniad i golli data sesiwn. </strong>\nRhowch gyflwyno'r ffurflen eto. Os nad yw hynny'n gweithio, os gwelwch yn dda [[Special:Userlogout|allgofnodi]] a logio yn ôl yn.",
 	"createwiki-error-dbexists": "Mae wiki gyda'r enw cronfa ddata eisoes yn bodoli.",
-	"createwiki-error-requesternonexistent": "Nid yw'r sylfaenydd yn bodoli ar Miraheze Meta.",
+	"createwiki-error-requesternonexistent": "Nid yw'r requester yn bodoli ar Miraheze Meta.",
 	"createwiki-error-notalnum": "Ni all yr enw cronfa ddata cymeriadau nad ydynt yn alffaniwmerig.",
 	"createwiki-error-notlowercase": "Ni chaiff y gronfa ddata enw gynnwys llythrennau priflythyren.",
 	"createwiki-error-notsuffixed": "Nid yw'r enw cronfa ddata yn dod i ben mewn ôl-ddodiad dilys (ee 'wiki').",
