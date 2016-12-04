@@ -51,7 +51,7 @@
 	"requestwikiqueue-pager-status-declined": "declined",
 	"requestwikiqueue-pager-status-inreview": "in review",
 	"requestwikiqueue-request-header-changestatus": "Change the status of this wiki request",
-	"requestwikiqueue-request-header-foundercomment": "Comment given by the wiki founder",
+	"requestwikiqueue-request-header-requestercomment": "Comment given by the wiki requester",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Comment given by $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Comment given by $1 at $2",
 	"requestwikiqueue-request-label-comment": "Comment:",
