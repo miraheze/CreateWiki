@@ -158,7 +158,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$form .= '<td>' . Linker::link( Title::newFromText( 'Special:CreateWiki' ), 'Create wiki', array(), $createwikiparams ) . '</td>';
 		}
 		$form .= '</tr>';
-		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-foundercomment' )->escaped() . '</th></tr>';
+		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-requestercomment' )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_comment ) . '</td></tr>';
 		if ( is_numeric( $res->cw_status_comment_timestamp ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( DateTime::createFromFormat( 'YmdHis', $res->cw_status_comment_timestamp )->format( 'l, j F Y H:i' ) )->escaped() . '</th></tr>';
