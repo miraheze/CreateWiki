@@ -21,14 +21,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		);
 
-		$formDescriptor['founder'] = array(
-			'label-message' => 'createwiki-label-founder',
+		$formDescriptor['requester'] = array(
+			'label-message' => 'createwiki-label-requester',
 			'type' => 'text',
-			'default' => $request->getVal( 'cwFounder' ),
+			'default' => $request->getVal( 'cwRequester' ),
 			'size' => 20,
 			'required' => true,
-			'validation-callback' => array( __CLASS__, 'validateFounder' ),
-			'name' => 'cwFounder',
+			'validation-callback' => array( __CLASS__, 'validateRequester' ),
+			'name' => 'cwRequester',
 		);
 
 		$formDescriptor['sitename'] = array(
@@ -77,7 +77,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		global $IP, $wgCreateWikiSQLfiles;
 		
 		$DBname = $formData['dbname'];
-		$founderName = $formData['founder'];
+		$requesterName = $formData['requester'];
 		$siteName = $formData['sitename'];
 		$language = $formData['language'];
 		$private = $formData['private'];
@@ -115,15 +115,15 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$this->createMainPage( $language );
 
 		$shcreateaccount = exec( "/usr/bin/php " .
-			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founderName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
+			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $requesterName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
 
 		if ( !strpos( $shcreateaccount, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
+			wfDebugLog( 'CreateWiki', 'Failed to create local account for requester. - error: ' . $shcreateaccount );
 			return wfMessage( 'createwiki-error-usernotcreated' )->escaped();
 		}
 
 		$shpromoteaccount = exec( "/usr/bin/php " .
-			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founderName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
+			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 		
@@ -173,21 +173,21 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function validateFounder( $founderName, $allData ) {
+	public function validateRequester( $requesterName, $allData ) {
 		# HTMLForm's validation-callback somehow gets called, even
                 # while the form was not submitted yet. This should prevent
                 # the validation from failing because the submitted value is
                 # NULL, but it is a hack, and instead the validation just
                 # shouldn't be called unless the form actually has been
                 # submitted..
-		if ( is_null( $founderName ) ) {
+		if ( is_null( $requesterName ) ) {
 			return true;
 		}
 		
-		$user = User::newFromName( $founderName );
+		$user = User::newFromName( $requesterName );
 
 		if ( !$user->getId() ) {
-			return wfMessage( 'createwiki-error-foundernonexistent' )->escaped();
+			return wfMessage( 'createwiki-error-requesternonexistent' )->escaped();
 		}
 
 		return true;
