@@ -14,7 +14,7 @@
 	"createwiki-error-notalnum": "데이터베이스 이름이 알파벳과 숫자가 아닌 코드를 포함합니다.",
 	"createwiki-error-notlowercase": "데이터베이스 이름은 대문자를 포함할 수 없습니다.",
 	"createwiki-error-notsuffixed": "데이터베이스 이름이 유효한 접미사 (e.g. 'wiki')를 포함하지 않습니다.",
-	"createwiki-error-usernotcreated": "생성자 계정이 생성되지 않았습니다.",
+	"createwiki-error-usernotcreated": "Requester 계정이 생성되지 않았습니다.",
 	"createwiki-label-dbname": "데이터베이스 이름:",
 	"createwiki-label-Requester": "requester:",
 	"createwiki-label-language": "언어:",
