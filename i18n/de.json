@@ -50,7 +50,7 @@
 	"requestwikiqueue-pager-status-declined": "Abgelehnt",
 	"requestwikiqueue-pager-status-inreview": "in Bearbeitung",
 	"requestwikiqueue-request-header-changestatus": "Änderung des Antrages",
-	"requestwikiqueue-request-header-foundercomment": "Kommentar des Wiki-Gründers:",
+	"requestwikiqueue-request-header-requestercomment": "Kommentar des Wiki-requester:",
 	"requestwikiqueue-request-header-wikicreazurcomment": "Kommentar von $1",
 	"requestwikiqueue-request-header-wikicreazurcomment-withtimestamp": "Kommentar von $1 auf $2",
 	"requestwikiqueue-request-label-comment": "Kommentar",
