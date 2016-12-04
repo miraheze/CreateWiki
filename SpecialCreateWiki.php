@@ -115,15 +115,15 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$this->createMainPage( $language );
 
 		$shcreateaccount = exec( "/usr/bin/php " .
-			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $founderName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
+			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $requesterName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
 
 		if ( !strpos( $shcreateaccount, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for founder. - error: ' . $shcreateaccount );
+			wfDebugLog( 'CreateWiki', 'Failed to create local account for requester. - error: ' . $shcreateaccount );
 			return wfMessage( 'createwiki-error-usernotcreated' )->escaped();
 		}
 
 		$shpromoteaccount = exec( "/usr/bin/php " .
-			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $founderName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
+			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 		
@@ -173,7 +173,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function validateRequester( $frequesterName, $allData ) {
+	public function validateRequester( $requesterName, $allData ) {
 		# HTMLForm's validation-callback somehow gets called, even
                 # while the form was not submitted yet. This should prevent
                 # the validation from failing because the submitted value is
