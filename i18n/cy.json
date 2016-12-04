@@ -13,7 +13,7 @@
 	"createwiki-error-notalnum": "Ni all yr enw cronfa ddata cymeriadau nad ydynt yn alffaniwmerig.",
 	"createwiki-error-notlowercase": "Ni chaiff y gronfa ddata enw gynnwys llythrennau priflythyren.",
 	"createwiki-error-notsuffixed": "Nid yw'r enw cronfa ddata yn dod i ben mewn ôl-ddodiad dilys (ee 'wiki').",
-	"createwiki-error-usernotcreated": "Nid oedd y defnyddiwr sylfaenydd ei greu ar y wici.",
+	"createwiki-error-usernotcreated": "Nid oedd y defnyddiwr requester ei greu ar y wici.",
 	"createwiki-label-dbname": "Enw'r Cronfa Ddata:",
 	"createwiki-label-requester": "Requester:",
 	"createwiki-label-language": "Iaith:",
