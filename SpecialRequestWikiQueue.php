@@ -108,7 +108,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$user = User::newFromId( $res->cw_user );
 
 		$createwikiparams = array(
-			'cwFounder' => $user->getName(),
+			'cwRequester' => $user->getName(),
 			'cwLanguage' => $res->cw_language,
 			'cwSitename' => $res->cw_sitename
 		);
