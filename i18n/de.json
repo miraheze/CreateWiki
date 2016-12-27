@@ -42,7 +42,7 @@
 	"requestwiki-label-siteurl": "Subdomain:",
 	"requestwiki-notloggedin": "Bitte loggen Sie sich ein <span class=\"plainlinks\">[$1 log in]</span> um eine Wiki zu beantragen.",
 	"requestwiki-submit": "Abschicken",
-	"requestwiki-success": "Ihr Wiki-Antrag für ($1) wurde erfolgreich gesendet und wird alsbald bearbeitet.",
+	"requestwiki-success": "Ihr Wiki-Antrag für ($1) wurde erfolgreich gesendet und wird von einem Wiki-Ersteller überprüft.",
 	"requestwikiqueue": "Wiki Warteliste",
 	"requestwikiqueue-logpagerentry": "$1 hat $2 in Antrag $3 beauftragt (status: $4)",
 	"requestwikiqueue-norequests": "Kein Eintrag gefunden.",
