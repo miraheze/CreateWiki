@@ -48,12 +48,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
                 $form .= '<fieldset><legend>' . $this->msg( 'requestwikiqueue-searchrequest' )->escaped() . '</legend>';
                 $form .= Xml::openElement( 'table' );
 		# TODO: Should be escaped against HTML, but should NOT escape $selecttypeform
-		$form .= '<tr><td>Find wiki requests where the ' . $selecttypeform . ' is ';
-		$form .= Xml::input( 'rwqSearch', 40, '' ) . '</td></tr>';
-		$form .= '<tr><td>' . Xml::dateMenu( $year, $month ) . '</td>';
-		$form .= '<td>' . Xml::submitButton( $this->msg( 'requestwikiqueue-searchbutton' )->escaped() ) . '</td></tr>';
+		$form .= '&lt;tr&gt;&lt;td&gt;Find wiki requests where the ' . $selecttypeform . ' is ';
+		$form .= Xml::input( 'rwqSearch', 40, '' ) . '&lt;/td&gt;&lt;/tr&gt;';
+		$form .= '&lt;tr&gt;&lt;td&gt;' . Xml::dateMenu( $year, $month ) . '&lt;/td&gt;';
+		$form .= '&lt;td&gt;' . Xml::submitButton( $this-&gt;msg( 'requestwikiqueue-searchbutton' )-&gt;escaped() ) . '&lt;/td&gt;&lt;/tr&gt;';
                 $form .= Xml::closeElement( 'table' );
-                $form .= '</fieldset>';
+                $form .= '&lt;/fieldset&gt;';
 		$form .= Xml::closeElement( 'form' );
 
 		$out->addHTML( $form );
