@@ -74,7 +74,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiSQLfiles;
+		global $IP, $wgCreateWikiSQLfiles, $wgDBname;
 		
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
@@ -82,8 +82,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$language = $formData['language'];
 		$private = $formData['private'];
 		$reason = $formData['reason'];
-
-		$dbw = wfGetDB( DB_MASTER );
 
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'createwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
@@ -97,6 +95,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
+		$dbw = wfGetDB( DB_MASTER );
 		$dbw->query( 'SET storage_engine=InnoDB;' );
 		$dbw->query( 'CREATE DATABASE ' . $dbw->addIdentifierQuotes( $DBname ) . ';' );
 
@@ -113,6 +112,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 		}
 
 		$this->createMainPage( $language );
+
+		$dbw->selectDB( $wgDBname ); // revert back to main wiki
 
 		$shcreateaccount = exec( "/usr/bin/php " .
 			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $requesterName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
