@@ -111,7 +111,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
+		/*
+		This is causing issues with recentchanges entries: https://phabricator.miraheze.org/T1104
+		Disabled pending a permanent solution. -- Southparkfan 2017/03/04
 		$this->createMainPage( $language );
+		*/
 
 		$dbw->selectDB( $wgDBname ); // revert back to main wiki
 
