@@ -38,6 +38,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			}
 		} elseif ( $type === 'sitename' ) {
 			$searchConds = array( 'cw_sitename' => $search );
+		} elseif ( $type === 'dbname' ) {
+			$searchConds = array( 'cw_dbname' => $search );
 		} elseif ( $type === 'status' ) {
 			$searchConds = array( 'cw_status' => $search );
 		}
