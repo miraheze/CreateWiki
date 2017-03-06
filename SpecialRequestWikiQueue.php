@@ -44,7 +44,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$searchConds = array( 'cw_status' => $search );
 		}
 
-		$selecttypeform = "<select name=\"rwqSearchtype\"><option value=\"requester\">requester</option><option value=\"sitename\">sitename</option><option value=\"status\">status</option></select>";
+		$selecttypeform = "<select name=\"rwqSearchtype\"><option value=\"requester\">requester</option><option value=\"sitename\">sitename</option><option value=\"status\">status</option><option value=\"dbname\">dbname</option></select>";
 
 		$form = Xml::openElement( 'form', array( 'action' => $localpage, 'method' => 'get' ) );
                 $form .= '<fieldset><legend>' . $this->msg( 'requestwikiqueue-searchrequest' )->escaped() . '</legend>';
