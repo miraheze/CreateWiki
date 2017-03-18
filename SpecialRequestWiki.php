@@ -155,4 +155,8 @@ class SpecialRequestWiki extends SpecialPage {
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
 	}
+	
+	protected function getGroupName() {
+		return 'wikimanage';
+	}
 }
