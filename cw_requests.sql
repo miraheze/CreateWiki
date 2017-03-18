@@ -1,6 +1,6 @@
 CREATE TABLE /*_*/cw_requests (
   cw_id INT NULL AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  cw_comment TEXT DEFAULT NULL,
+  cw_comment VARCHAR(512) DEFAULT NULL,
   cw_dbname VARCHAR(64) DEFAULT NULL,
   cw_ip VARCHAR(64) NOT NULL,
   cw_language VARCHAR(12) NOT NULL,
