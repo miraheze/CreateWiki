@@ -245,4 +245,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 	public function getDisplayFormat() {
 		return 'ooui';
         }
+	
+	protected function getGroupName() {
+		return 'wikimanage';
+	}
 }
