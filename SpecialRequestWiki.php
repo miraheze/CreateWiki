@@ -107,6 +107,11 @@ class SpecialRequestWiki extends SpecialPage {
 			return false;
 		}
 
+		if ( !$this->isValidComment( $comment ) ) {
+                        $out->addWikiMsg( 'requestwiki-error-invalidcomment' );
+                        return false;
+                }
+		
 		// Make the subdomain a dbname
 		if ( $subdomain ) {
 			if ( !ctype_alnum( $subdomain ) ) {
@@ -155,6 +160,28 @@ class SpecialRequestWiki extends SpecialPage {
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
 	}
+	
+	public function isValidComment( $comment ) {
+		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
+		$wikiPageContent = WikiPage::factory( $title )->getContent( Revision::RAW );
+		$content = ContentHandler::getContentText( $wikiPageContent );
+
+		$regexes = explode( PHP_EOL, $content );
+		unset( $regexes[0] );
+
+		foreach ( $regexes as $regex ) {
+			preg_match( "/" . $regex . "/i", $comment, $output );
+
+			var_dump( $output );
+
+			if ( is_array( $output ) && count( $output ) >= 1 ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	
 	protected function getGroupName() {
 		return 'wikimanage';
