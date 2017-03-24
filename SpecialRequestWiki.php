@@ -172,8 +172,6 @@ class SpecialRequestWiki extends SpecialPage {
 		foreach ( $regexes as $regex ) {
 			preg_match( "/" . $regex . "/i", $comment, $output );
 
-			var_dump( $output );
-
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
 				return false;
 			}
