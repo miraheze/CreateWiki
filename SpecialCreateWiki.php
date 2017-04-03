@@ -257,8 +257,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 		global $wgPasswordSender;
 
 		$from = new MailAddress( $wgPasswordSender, 'Miraheze' );
-		$subject = wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text() );
-		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() );
+		$subject = wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text();
+		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 
 		return UserMailer::send( $notifyEmail, $from, $subject, $body );
 	}
