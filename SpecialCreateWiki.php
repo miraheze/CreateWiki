@@ -47,7 +47,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		foreach ( $languages as $code => $name ) {
 			$options["$code - $name"] = $code;
 		}
-		
+
 		$formDescriptor['language'] = array(
 			'type' => 'select',
 			'options' => $options,
@@ -75,7 +75,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	public function onSubmit( array $formData ) {
 		global $IP, $wgCreateWikiSQLfiles, $wgDBname;
-		
+
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
 		$siteName = $formData['sitename'];
@@ -126,8 +126,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
 
+		$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
+		$this->sendCreationEmail( $notifyEmail, $siteName );
+
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
-		
+
 		return true;
 	}
 
@@ -184,7 +187,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		if ( is_null( $requesterName ) ) {
 			return true;
 		}
-		
+
 		$user = User::newFromName( $requesterName );
 
 		if ( !$user->getId() ) {
@@ -241,12 +244,22 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		return true;
 	}
-	
+
 	public function getDisplayFormat() {
 		return 'ooui';
         }
-	
+
 	protected function getGroupName() {
 		return 'wikimanage';
+	}
+
+	protected function sendCreationEmail( $notifyEmail, $siteName ) {
+		global $wgPasswordSender;
+
+		$from = new MailAddress( $wgPasswordSender, 'Miraheze' );
+		$subject = wfMessage( 'createwiki-email-subject' )->inContentLanguage()->text(), $siteName );
+		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() );
+
+		return UserMailer::send( $notifyEmail, $from, $subject, $body );
 	}
 }
