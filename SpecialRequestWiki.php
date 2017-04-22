@@ -185,3 +185,11 @@ class SpecialRequestWiki extends SpecialPage {
 		return 'wikimanage';
 	}
 }
+
+function has_hyphens($string)
+{
+    return preg_match('/[\-]/', $string);
+}
+
+if(has_hyphens('-'))
+    throw new Exception('Please choose a subdomain with no hyphens!');
