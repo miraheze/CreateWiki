@@ -86,22 +86,15 @@ class SpecialRequestWiki extends SpecialPage {
 		
 		// Limit number of requests that can be made
 		$session = $this->getRequest()->getSession()
-		if ($session->get('last_submit', null) == null) {
-			$session->set('last_submit', time());
-		} elseif (time()-$session->get('last_submit', null) < 3600) {
+		if ($session->get('createwiki_last_submit', null) == null) {
+			$session->set('createwiki_last_submit', time());
+		} elseif (time()-$session->get('createwiki_last_submit', null) < 3600) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->escaped() . '</div>' );
 			return false;
 		} else {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-notime' )->escaped() . '</div>' );
 			return false;
 		}
-		//if (!isset($_SESSION['last_submit'])) {
-		//	$_SESSION['last_submit'] = time();
-		//} elseif (time()-$_SESSION['last_submit'] < 120) {
-		//	//die('You have already submitted a wiki request. Please be patient and a wiki creator should create it shortly.');
-		//	$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->escaped() . '</div>' );
-		//	return false;
-		//}
 
 		$subdomain = $request->getVal( 'subdomain' );
 		$sitename = $request->getVal( 'sitename' );
