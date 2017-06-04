@@ -63,6 +63,7 @@ class SpecialRequestWiki extends SpecialPage {
 		$this->getOutput()->addHTML( $form );
 	}
 
+	
 	function handleRequestWikiFormInput() {
 		global $wgRequest;
 
@@ -80,6 +81,18 @@ class SpecialRequestWiki extends SpecialPage {
 
 		if ( $this->errors ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-notallfilledin' )->escaped() . '</div>' );
+			return false;
+		}
+		
+		// Limit number of requests that can be made
+		$session = $this->getRequest()->getSession()
+		if ($session->get('createwiki_last_submit', null) == null) {
+			$session->set('createwiki_last_submit', time());
+		} elseif (time()-$session->get('createwiki_last_submit', null) < 3600) {
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->escaped() . '</div>' );
+			return false;
+		} else {
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-notime' )->escaped() . '</div>' );
 			return false;
 		}
 
