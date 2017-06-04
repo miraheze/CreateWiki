@@ -85,7 +85,7 @@ class SpecialRequestWiki extends SpecialPage {
 		}
 		
 		// Limit number of requests that can be made
-		$session = $this->getRequest()->getSession()
+		$session = $this->getRequest()->getSession();
 		if ($session->get('createwiki_last_submit', null) == null) {
 			$session->set('createwiki_last_submit', time());
 		} elseif (time()-$session->get('createwiki_last_submit', null) < 3600) {
