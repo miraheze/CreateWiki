@@ -29,15 +29,18 @@ foreach ( $res as $row ) {
 	$siteName = $row->wiki_sitename;
 	$language = $row->wiki_language;
 	$logo = $row->wiki_logo;
+	$favicon = $row->wiki_favicon;
 	$private = $row->wiki_private;
 	$closed = $row->wiki_closed;
 
-	$allWikis[] = "$DBname|$siteName|$language|$logo|";
+	$allWikis[] = "$DBname|$siteName|$language|$logo|$favicon|";
 
 	$cdb = \Cdb\Writer::open( '/srv/mediawiki/cdb-config/' . $DBname . '.cdb' );
 
 	$cdb->set( 'sitename', $siteName );
 	$cdb->set( 'language', $language );
+	$cdb->set( 'logo', $logo );
+	$cdb->set( 'favicon', $favicon );
 
 	if ( $private === "1" ) {
 		$privateWikis[] = $DBname;
