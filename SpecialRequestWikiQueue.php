@@ -171,7 +171,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-status' )->escaped() . '</th></tr>';
 			$form .= '<tr><td colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-label-comment' )->escaped() . ' ' . Xml::input( 'rwqStatusComment', 45, '', array( 'required' => '' ) ) . ' ';
-			$form .= $this->msg( 'requestwikiqueue-request-label-status-colon' )->escaped() . ' ' . Xml::radioLabel( 'In Review', 'rwqStatus', 'inreview', '', true ) . Xml::radioLabel( 'Approved', 'rwqStatus', 'approved', '', false ) . Xml::radioLabel( 'Declined', 'rwqStatus', 'declined', '', false ) . ' ';
+			$form .= $this->msg( 'requestwikiqueue-request-label-status-colon' )->escaped() . ' ' . Xml::radioLabel( $this->msg( 'requestwikiqueue-request-label-inreview' )->escaped(), 'rwqStatus', 'inreview', '', true ) . Xml::radioLabel( $this->msg( 'requestwikiqueue-request-label-approved' )->escaped(), 'rwqStatus', 'approved', '', false ) . Xml::radioLabel( $this->msg( 'requestwikiqueue-request-label-declined' )->escaped(), 'rwqStatus', 'declined', '', false ) . ' ';
 			$form .= Xml::submitButton( 'Submit' ) . '</td></tr>';
 
 		}
@@ -211,7 +211,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		return true;
 	}
-	
+
 	protected function getGroupName() {
 		return 'wikimanage';
 	}
