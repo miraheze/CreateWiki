@@ -129,6 +129,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 		$this->sendCreationEmail( $notifyEmail, $siteName );
 
+		$this->notifyRequester( $requesterName, $siteName, $language );
+
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
 		return true;
@@ -261,5 +263,26 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 
 		return UserMailer::send( $notifyEmail, $from, $subject, $body );
+	}
+	
+	public function notifyReqester( $requester, $siteName, $lang ) {
+		$title = Title::newFromText( 'User talk:' . $requester );
+		$article = WikiPage::factory( $title );
+		$site = substr($siteName, 0, strlen($siteName) - 4);
+		
+		$text = '';
+		if( $article->exists() ) {
+			$text = $article->getContent()->getNativeData() . '\n\n';
+		}
+		
+		$wikitext = new WikitextContent( $text . wfMessage( 'createwiki-notify', $site )->inLanguage( $lang )->plain() );
+		$status = $article->doEditContent(
+			$wikitext,
+			'Notifying user of creation of ' . $siteName,
+			0, // Should not need to set flags
+			null,
+			$this->getUser()
+		);
+		return $status->isGood();
 	}
 }
