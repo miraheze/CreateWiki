@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Southparkfan"
+			"Southparkfan",
+			"The-Voidwalker"
 		]
 	},
 	"action-createwiki": "create wikis",
@@ -16,15 +17,18 @@
 	"createwiki-error-notlowercase": "The database name may not contain uppercase letters.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
 	"createwiki-error-usernotcreated": "The requester user was not created on the wiki.",
+	"createwiki-label-custom": "Mark this wiki as needing a custom domain (for notification purposes)",
 	"createwiki-label-dbname": "Database name:",
-	"createwiki-label-requester": "Requester:",
 	"createwiki-label-language": "Language:",
+	"createwiki-label-notify": "Select this option to automatically leave a message on the talkpage of the requester",
 	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Reason:",
+	"createwiki-label-requester": "Requester:",
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-submit": "Submit",
 	"createwiki-legend": "Create a wiki",
 	"createwiki-notify": "'''Hello''', I would like to tell you that I have created your wiki. You can now access it at https://$1.miraheze.org. You should automatically have been granted administrator and bureaucrat rights, if that's not the case then please leave a notice on [[Stewards' noticeboard]] so we can fix it immediately. Do not hesitate to [[Stewards' noticeboard|ask questions]] if your question was not answered in our [[FAQ]]. Also, if you want a extension, gadget, or anything else, please ask us [[Request features|here]]. Thank you for choosing Miraheze, and we wish you good luck with your wiki! ~~~~",
+	"createwiki-notify": "'''Hello''', I would like to tell you that I have created your wiki. You can now access it at https://$1.miraheze.org until your custom domain is set up. You should automatically have been granted administrator and bureaucrat rights, if that's not the case then please leave a notice on [[Stewards' noticeboard]] so we can fix it immediately. Do not hesitate to [[Stewards' noticeboard|ask questions]] if your question was not answered in our [[FAQ]]. Also, if you want a extension, gadget, or anything else, please ask us [[Request features|here]]. Thank you for choosing Miraheze, and we wish you good luck with your wiki!\n\nPlease see the [[custom domains]] page for instructions regarding the setup of your custom domain. ~~~~",
 	"createwiki-success": "The wiki was successfully created.",
 	"log-description-farmer": "This log tracks wiki requests, wiki creations and everything related to it.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
