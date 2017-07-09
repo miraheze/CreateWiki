@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"AlvaroMolina"
+			"AlvaroMolina",
+			"The-Voidwalker"
 		]
 	},
 	"action-createwiki": "Crear wiki",
