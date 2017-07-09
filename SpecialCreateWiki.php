@@ -23,7 +23,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$formDescriptor['custom'] = array(
 			'label-message' => 'createwiki-label-custom',
 			'type' => 'check',
-			'default' => $request->getVal( 'cwDBname' ) ? 0 : 1,
+			'default' => $request->getVal( 'cwDBname' ) ? false : true,
 		);
 
 		$formDescriptor['requester'] = array(
@@ -78,7 +78,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$formDescriptor['notify'] = array(
 			'label-message' => 'createwiki-lable-notify',
 			'type' => 'check',
-			'default' => 1,
+			'default' => true,
 		);
 
 		return $formDescriptor;
