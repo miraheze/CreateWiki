@@ -76,7 +76,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		);
 
 		$formDescriptor['notify'] = array(
-			'label-message' => 'createwiki-lable-notify',
+			'label-message' => 'createwiki-label-notify',
 			'type' => 'check',
 			'default' => true,
 		);
