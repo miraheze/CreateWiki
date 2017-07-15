@@ -1,8 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
-			"AlvaroMolina",
-			"The-Voidwalker"
+			"AlvaroMolina"
 		]
 	},
 	"action-createwiki": "Crear wiki",
@@ -18,18 +17,14 @@
 	"createwiki-error-notlowercase": "El nombre de la base de datos no puede contener letras mayúsculas.",
 	"createwiki-error-notsuffixed": "El nombre de la base de datos no termina en un sufijo válido (por ejemplo, 'wiki').",
 	"createwiki-error-usernotcreated": "El usuario solicitante no fue creado en el wiki.",
-	"createwiki-label-custom": "Marcar este wiki como necesitando un dominio personalizado (para fines de notificación)",
 	"createwiki-label-dbname": "Nombre de la base de datos:",
 	"createwiki-label-requester": "Solicitante:",
 	"createwiki-label-language": "Idioma:",
-	"createwiki-label-notify": "Seleccione esta opción para dejar automáticamente un mensaje en la página de conversación del solicitante",
 	"createwiki-label-private": "Marcar esta wiki como privada",
 	"createwiki-label-reason": "Razón:",
 	"createwiki-label-sitename": "Nombre del sitio:",
 	"createwiki-label-submit": "Enviar",
 	"createwiki-legend": "Crear una wiki",
-	"createwiki-notify": "'''Hola''', me gustaría informarle que he creado su wiki. Ahora puede acceder a ella desde https://$1.miraheze.org. Se le debieron conceder automáticamente los permisos de administrador y burócrata en su wiki, si ese no es el caso, por favor deje un aviso sobre esta situación en el [[Stewards' noticeboard|tablón de anuncios de los stewards]] para que podamos arreglarlo inmediatamente. No dude en [[Stewards' noticeboard|preguntarnos tus dudas]] si tu pregunta no fue respondida desde la página de [[FAQ|preguntas frecuentes]]. Además, si desea una extensión, gadget o cualquier otra cosa, por favor, solicitelos [[Request features|aquí]] ¡Gracias por elegir Miraheze, y le deseamos buena suerte con su wiki! ~~~~",
-	"createwiki-notify-custom": "'''Hola''', me gustaría informarle que he creado su wiki. Ahora puede acceder a ella desde https://$1.miraheze.org hasta que su dominio personalizado esté configurado. Se le debieron conceder automáticamente los permisos de administrador y burócrata en su wiki, si ese no es el caso, por favor deje un aviso sobre esta situación en el [[Stewards' noticeboard|tablón de anuncios de los stewards]] para que podamos arreglarlo inmediatamente. No dude en [[Stewards' noticeboard|preguntarnos tus dudas]] si tu pregunta no fue respondida desde la página de [[FAQ|preguntas frecuentes]]. Además, si desea una extensión, gadget o cualquier otra cosa, por favor, solicitelos [[Request features|aquí]] ¡Gracias por elegir Miraheze, y le deseamos buena suerte con su wiki!\n\nPor favor, consulte la página [[Custom domains/es|dominios personalizados]] para obtener instrucciones sobre la configuración de su dominio personalizado. ~~~~",
 	"createwiki-success": "La wiki ha sido creada exitosamente",
 	"log-description-farmer": "Este registro muestra las solicitudes de wikis, creaciones de wikis y todo lo relacionado con ellas.",
 	"logentry-farmer-createwiki": "$1 creó la wiki \"$4\"",
