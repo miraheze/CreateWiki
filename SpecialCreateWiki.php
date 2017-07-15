@@ -18,7 +18,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'required' => true,
 			'validation-callback' => array( __CLASS__, 'validateDBname' ),
 			'name' => 'cwDBname',
-
+		);
+		
+		$formDescriptor['custom'] = array(
+			'label-message' => 'createwiki-label-custom',
+			'type' => 'check',
+			'default' => $request->getVal( 'cwDBname' ) ? false : true,
 		);
 
 		$formDescriptor['requester'] = array(
@@ -70,6 +75,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'required' => true,
 		);
 
+		$formDescriptor['notify'] = array(
+			'label-message' => 'createwiki-lable-notify',
+			'type' => 'check',
+			'default' => true,
+		);
+
 		return $formDescriptor;
 	}
 
@@ -77,11 +88,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 		global $IP, $wgCreateWikiSQLfiles, $wgDBname;
 
 		$DBname = $formData['dbname'];
+		$custom = $formData['custom'];
 		$requesterName = $formData['requester'];
 		$siteName = $formData['sitename'];
 		$language = $formData['language'];
 		$private = $formData['private'];
 		$reason = $formData['reason'];
+		$notify = $formData['notify'];
 
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'createwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
@@ -128,6 +141,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 		$this->sendCreationEmail( $notifyEmail, $siteName );
+
+		if( $notify ) {
+			$this->notifyRequester( $requesterName, $siteName, $language, $custom );
+		}
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
@@ -261,5 +278,27 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 
 		return UserMailer::send( $notifyEmail, $from, $subject, $body );
+	}
+	
+	public function notifyReqester( $requester, $siteName, $lang, $custom ) {
+		$title = Title::newFromText( 'User talk:' . $requester );
+		$article = WikiPage::factory( $title );
+		$site = substr($siteName, 0, strlen($siteName) - 4);
+		
+		$text = '';
+		if( $article->exists() ) {
+			$text = $article->getContent()->getNativeData() . '\n\n';
+		}
+		
+		$message = $custom ? 'createwiki-notify-custom' : 'createwiki-notify';
+		$wikitext = new WikitextContent( $text . wfMessage( $message, $site )->inLanguage( $lang )->plain() );
+		$status = $article->doEditContent(
+			$wikitext,
+			'Notifying user of creation of ' . $siteName,
+			0, // Should not need to set flags
+			null,
+			$this->getUser()
+		);
+		return $status->isGood();
 	}
 }
