@@ -69,6 +69,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	function lookupRequest( $par ) {
+		global $wgOut;
+
 		$dbr = wfGetDB( DB_SLAVE );
 
 		$res = $dbr->selectRow( 'cw_requests',
@@ -167,7 +169,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		} else {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->rawParams( $wikicreator )->escaped() . '</th></tr>';
 		}
-		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_status_comment ? $res->cw_status_comment : 'No comments.' ) . '</td></tr>';
+		$form .= '<tr><td colspan="' . $columnamount . '">' .  $wgOut->parse( htmlspecialchars( $res->cw_status_comment ? $res->cw_status_comment : 'No comments.' ) ) . '</td></tr>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-status' )->escaped() . '</th></tr>';
 			$form .= '<tr><td colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-label-comment' )->escaped() . ' ' . Xml::input( 'rwqStatusComment', 45, '', array( 'required' => '' ) ) . ' ';
