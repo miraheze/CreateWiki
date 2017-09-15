@@ -89,8 +89,6 @@ class SpecialRequestWiki extends SpecialPage {
 			return false;
 		}
 
-		$wgUser->pingLimiter( 'requestwiki', 1 );
-
 		$subdomain = $request->getVal( 'subdomain' );
 		$sitename = $request->getVal( 'sitename' );
 		$language = $request->getVal( 'language' );
@@ -166,9 +164,11 @@ class SpecialRequestWiki extends SpecialPage {
                 $farmerLogID = $farmerLogEntry->insert();
                 $farmerLogEntry->publish( $farmerLogID );
 
+		$wgUser->pingLimiter( 'requestwiki', 1 );
+
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
 	}
-	
+
 	public function isValidComment( $comment ) {
 		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
 		$wikiPageContent = WikiPage::factory( $title )->getContent( Revision::RAW );
