@@ -27,7 +27,6 @@
 	"createwiki-success": "The wiki was successfully created.",
 	"log-description-farmer": "This log tracks changes to wiki settings.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
-	"logentry-farmer-managewiki": "$1 changed the settings for \"$4\"",
 	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in $7",
 	"log-name-farmer": "Farmer log",
 	"requestwiki": "Request a wiki",
