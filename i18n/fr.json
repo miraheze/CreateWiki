@@ -5,7 +5,8 @@
 			"Gomoko",
 			"KATRINE1992",
 			"Wladek92",
-			"Ltrlg"
+			"Ltrlg",
+			"Jul545454"
 		]
 	},
 	"action-createwiki": "créer des wikis",
@@ -58,7 +59,7 @@
 	"requestwikiqueue-pager-status-declined": "refusé",
 	"requestwikiqueue-pager-status-inreview": "en attente",
 	"requestwikiqueue-request-header-changestatus": "Changer le statut de cette requête wiki",
-	"requestwikiqueue-request-header-requestercomment": "Commententaire donné par le demandeur wiki",
+	"requestwikiqueue-request-header-requestercomment": "Commentaire donné par le demandeur du wiki",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Commentaire donné par $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Commentaire laissé par $1 à $2",
 	"requestwikiqueue-request-label-approved": "Approuvé",
