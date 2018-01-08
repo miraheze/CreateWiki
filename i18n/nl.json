@@ -1,12 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
-			"Southparkfan"
+			"Southparkfan",
+			"Mainframe98"
 		]
 	},
+	"action-createwiki": "wiki's aan te maken",
 	"createwiki": "Maak een wiki aan",
 	"createwiki-defaultmainpage": "__NOTOC__\n== Welkom op {{SITENAME}}! ==\nDeze hoofdpagina is automatisch aangemaakt door de vrijwilliger die de aanvraag voor deze wiki heeft goedgekeurd, en het lijkt erop dat de hoofdpagina nog niet is vervangen.\n\n=== Voor de bureaucraat(s) van deze wiki ===\nHallo, en welkom op je nieuwe wiki! Dankjewel voor het kiezen van Miraheze, en we hopen dat je het naar je zin bij ons hebt.\n\nJe kan al gelijk beginnen met het werken aan je wiki.\n\nHulp nodig? Geen probleem! We hebben een paar pagina's op een rij gezet waar je kan lezen hoe je met MediaWiki aan de slag kan gaan:\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Help:Contents/nl MediaWiki-handleiding]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ Veelgestelde vragen over Miraheze]</span>\n\n==== Maar, ik begrijp X nog steeds niet! ====\nGeen probleem, we helpen je graag. Je kan contact met ons opnemen:\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center Op onze eigen Mirahezewiki]</span>\n* Op IRC in #miraheze op irc.freenode.net ([irc://irc.freenode.net/#miraheze IRC-client link]; [http://webchat.freenode.net?channels=%23miraheze webchat])\n\n=== Voor een bezoeker van deze wiki ===\nHallo, the standaardhoofdpagina van deze wiki is nog niet vervangen door de bureaucraat(s). De bureaucraat(s) is misschien nog druk bezig met het maken van een hoofdpagina, dus kom later terug!",
 	"createwiki-desc": "Een uitbreiding voor het aanmaken van wiki's in een wiki farm.",
+	"createwiki-email-subject": "Uw nieuwe Miraheze wiki: $1",
 	"createwiki-error-dbexists": "Een wiki met de opgegeven databasenaam bestaat al.",
 	"createwiki-error-requesternonexistent": "De requester bestaat niet op Miraheze Meta.",
 	"createwiki-error-notalnum": "The database name may not non-alphanumeric characters.",
