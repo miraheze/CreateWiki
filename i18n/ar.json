@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"محمد أحمد عبد الفتاح"
+		]
+	},
+	"createwiki": "أنشئ ويكي",
+	"createwiki-label-dbname": "اسم قاعدة البيانات:",
+	"createwiki-label-language": "اللغة:",
+	"createwiki-label-reason": "السبب:",
+	"createwiki-label-sitename": "اسم الموقع:",
+	"createwiki-success": "أنشأت الويكي بنجاح.",
+	"requestwiki-label-customdomain": "نطاق مخصص:",
+	"requestwiki-label-language": "اللغة:",
+	"requestwiki-label-sitename": "اسم الويكي:",
+	"requestwikiqueue-request-header-changestatus": "غير حالة طلب الويكي هذا",
+	"requestwikiqueue-request-label-approved": "مقبول",
+	"requestwikiqueue-request-label-comment": "التعليق:",
+	"requestwikiqueue-request-label-declined": "مرفوض",
+	"requestwikiqueue-request-label-inreview": "قيد المراجعة",
+	"requestwikiqueue-request-label-language": "اللغة",
+	"requestwikiqueue-request-label-private": "خاص",
+	"requestwikiqueue-request-label-sitename": "اسم الموقع",
+	"requestwikiqueue-request-label-status": "الحالة",
+	"requestwikiqueue-request-label-status-colon": "الحالة:",
+	"requestwikiqueue-searchbutton": "بحث",
+	"requestwikiqueue-searchrequest": "ابحث في طلبات الويكي"
+}
