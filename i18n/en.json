@@ -25,7 +25,7 @@
 	"createwiki-label-submit": "Submit",
 	"createwiki-legend": "Create a wiki",
 	"createwiki-success": "The wiki was successfully created.",
-	"log-description-farmer": "This log tracks changes tothe wiki's settings.",
+	"log-description-farmer": "This log tracks changes to the wiki's settings.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
 	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in $7",
 	"log-name-farmer": "Farmer log",
