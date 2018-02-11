@@ -122,6 +122,7 @@ class SpecialRequestWiki extends SpecialPage {
 		if ( $subdomain ) {
 			if ( !ctype_alnum( $subdomain ) ) {
 				$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
+				wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 				return false;
 			} else {
 				$url = strtolower( $subdomain ) . '.miraheze.org';
