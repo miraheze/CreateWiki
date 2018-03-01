@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Amanojaku",
-			"Liuxinyu970226"
+			"Liuxinyu970226",
+			"Laundry Machine"
 		]
 	},
 	"action-createwiki": "建立 Wiki",
@@ -32,8 +33,11 @@
 	"log-name-farmer": "農場日誌",
 	"requestwiki": "申請新 Wiki",
 	"requestwiki-error-csrf": "<strong>抱歉，由於會話資料丟失，您的請求未能發送到伺服器。</strong>\n請您重新提交表格。如果仍然遇到問題，請嘗試[[Special:Userlogout|登出]]然後重新登入。",
+	"requestwiki-error-invalidcomment": "您的wiki申請包含無效字符。請重新嘗試申請，如果問題仍然存在，[[Help center|請聯繫我們]]。",
 	"requestwiki-error-nodomain": "您必須指定子域名或者給出自訂域名。",
 	"requestwiki-error-notallfilledin": "您必須至少給出 Wiki 名稱和語言。",
+	"requestwiki-error-notime": "在處理您的申請時發生問題。請重新提交您的申請。",
+	"requestwiki-error-patient": "您已經申請了一個wiki。請耐心等候，我們的wiki建立員會盡速為您建立。如果您希望申請另一個wiki，也請您稍等，稍後您就能再度提出升級。",
 	"requestwiki-error-twodomains": "您同時給出了子域名和自訂域名：在這兩者中您只能選擇其中一個。",
 	"requestwiki-header": "歡迎！您將在 Miraheze 申請一个新 Wiki。我們在處理您的請求之前，需要由您來完成下面的申請表格。\n您的申請將由我們的志願者審核。當您提交請求之後，您可以透過系統給出的連結跟蹤請求進度。\n\n如果您想使用自訂域名（即並非以「.miraheze.org」結尾的域名），請先閱讀<span class=\"plainlinks\">[$1 此頁面]</span>。\n\n您申請新 Wiki，意味著您已經自動同意我們的[[Dormancy Policy|休眠政策]]。",
 	"requestwiki-label-comments": "評論（例如您想利用這個 Wiki 做什麼事情）：",
