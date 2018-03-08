@@ -63,8 +63,9 @@ class SpecialRequestWiki extends SpecialPage {
 		$this->getOutput()->addHTML( $form );
 	}
 
+	
 	function handleRequestWikiFormInput() {
-		global $wgRequest;
+		global $wgRequest, $wgUser;
 
 		$request = $this->getRequest();
 		$out = $this->getOutput();
@@ -80,6 +81,11 @@ class SpecialRequestWiki extends SpecialPage {
 
 		if ( $this->errors ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-notallfilledin' )->escaped() . '</div>' );
+			return false;
+		}
+
+		if ( $wgUser->pingLimiter( 'requestwiki', 0 ) ) {
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->escaped() . '</div>' );
 			return false;
 		}
 
@@ -107,10 +113,16 @@ class SpecialRequestWiki extends SpecialPage {
 			return false;
 		}
 
+		if ( !$this->isValidComment( $comment ) ) {
+                        $out->addWikiMsg( 'requestwiki-error-invalidcomment' );
+                        return false;
+                }
+		
 		// Make the subdomain a dbname
 		if ( $subdomain ) {
 			if ( !ctype_alnum( $subdomain ) ) {
 				$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
+				wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 				return false;
 			} else {
 				$url = strtolower( $subdomain ) . '.miraheze.org';
@@ -153,6 +165,32 @@ class SpecialRequestWiki extends SpecialPage {
                 $farmerLogID = $farmerLogEntry->insert();
                 $farmerLogEntry->publish( $farmerLogID );
 
+		$wgUser->pingLimiter( 'requestwiki', 1 );
+
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
+	}
+
+	public function isValidComment( $comment ) {
+		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
+		$wikiPageContent = WikiPage::factory( $title )->getContent( Revision::RAW );
+		$content = ContentHandler::getContentText( $wikiPageContent );
+
+		$regexes = explode( PHP_EOL, $content );
+		unset( $regexes[0] );
+
+		foreach ( $regexes as $regex ) {
+			preg_match( "/" . $regex . "/i", $comment, $output );
+
+			if ( is_array( $output ) && count( $output ) >= 1 ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	
+	protected function getGroupName() {
+		return 'wikimanage';
 	}
 }

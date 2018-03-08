@@ -1,0 +1,32 @@
+{
+	"@metadata": {
+		"authors": [
+			"Robby"
+		]
+	},
+	"createwiki-email-subject": "Är nei Miraheze-Wiki: $1",
+	"createwiki-label-dbname": "Numm vun der Datebank:",
+	"createwiki-label-language": "Sprooch:",
+	"createwiki-label-private": "Dës Wiki als privat markéieren",
+	"createwiki-label-reason": "Grond:",
+	"createwiki-label-sitename": "Numm vum Site:",
+	"createwiki-success": "D'Wiki gouf ugeluecht.",
+	"requestwiki": "Eng Wiki ufroen",
+	"requestwiki-label-language": "Sprooch:",
+	"requestwiki-label-sitename": "Numm vun der Wiki:",
+	"requestwiki-submit": "Schécken",
+	"requestwikiqueue-norequests": "Näischt fonnt.",
+	"requestwikiqueue-request-header-wikicreatorcomment": "Bemierkung vum $1",
+	"requestwikiqueue-request-label-comment": "Bemierkung:",
+	"requestwikiqueue-request-label-language": "Sprooch",
+	"requestwikiqueue-request-label-private": "Privat",
+	"requestwikiqueue-request-label-status": "Status",
+	"requestwikiqueue-request-label-status-colon": "Status:",
+	"requestwikiqueue-request-label-toolbox": "Geschirkëscht",
+	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-requestnotfound": "D'Ufro gouf net fonnt.",
+	"requestwikiqueue-searchbutton": "Sichen",
+	"requestwikiqueue-searchrequest": "An de Wiki-Ufroe sichen",
+	"requestwikiqueue-usernotfound": "De Benotzer gouf net fonnt.",
+	"requestwikiqueue-view": "Wiki-Ufro weisen"
+}

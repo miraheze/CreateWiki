@@ -1,0 +1,34 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chrumps"
+		]
+	},
+	"createwiki": "Utwórz wiki",
+	"createwiki-error-notalnum": "Nazwa bazy danych nie może zawierać znaków niealfanumerycznych.",
+	"createwiki-error-notlowercase": "Nazwa bazy danych może nie zawierać wielkich liter.",
+	"createwiki-error-notsuffixed": "Nazwa bazy danych nie kończy się poprawnym sufiksem (np. 'wiki').",
+	"createwiki-label-dbname": "Nazwa bazy danych:",
+	"createwiki-label-language": "Język:",
+	"createwiki-label-private": "Oznacz tę wiki jako prywatną",
+	"createwiki-label-reason": "Powód:",
+	"createwiki-label-submit": "Wyślij",
+	"createwiki-legend": "Utwórz wiki",
+	"createwiki-success": "Wiki została pomyślnie utworzona.",
+	"requestwiki-label-comments": "Komentarze (np. o czym jest twoja wiki?):",
+	"requestwiki-label-language": "Język:",
+	"requestwiki-label-sitename": "Nazwa wiki:",
+	"requestwiki-label-siteurl": "Poddomena:",
+	"requestwiki-submit": "Wyślij",
+	"requestwikiqueue-norequests": "Nie znaleziono wyników.",
+	"requestwikiqueue-pager-status-approved": "zaakceptowano",
+	"requestwikiqueue-pager-status-declined": "odrzucono",
+	"requestwikiqueue-pager-status-inreview": "w przeglądzie",
+	"requestwikiqueue-request-label-comment": "Komentarz:",
+	"requestwikiqueue-request-label-language": "Język",
+	"requestwikiqueue-request-label-status": "Status",
+	"requestwikiqueue-request-label-status-colon": "Status:",
+	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-toolbox-createwiki": "Utwórz wiki",
+	"requestwikiqueue-usernotfound": "Użytkownik nie został znaleziony."
+}

@@ -7,6 +7,11 @@
         "AvailableRights": [
                 "createwiki"
         ],
+        "GroupPermissions": {
+		"wikicreator": {
+			"createwiki": true
+		}
+	},
         "SpecialPages": {
                 "CreateWiki": "SpecialCreateWiki",
                 "RequestWiki": "SpecialRequestWiki",

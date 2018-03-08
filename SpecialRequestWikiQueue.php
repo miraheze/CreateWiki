@@ -29,7 +29,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$month = $request->getIntOrNull( 'month' );
 		$search = $request->getVal( 'rwqSearch' );
 
-		if ( $type === 'founder' ) {
+		if ( $type === 'requester' ) {
 			$user = User::newFromName( $search );
 			if ( !$user || !$user->getID() ) {
 				$out->addWikiMsg( 'requestwikiqueue-usernotfound' );
@@ -38,11 +38,13 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			}
 		} elseif ( $type === 'sitename' ) {
 			$searchConds = array( 'cw_sitename' => $search );
+		} elseif ( $type === 'dbname' ) {
+			$searchConds = array( 'cw_dbname' => $search );
 		} elseif ( $type === 'status' ) {
 			$searchConds = array( 'cw_status' => $search );
 		}
 
-		$selecttypeform = "<select name=\"rwqSearchtype\"><option value=\"founder\">founder</option><option value=\"sitename\">sitename</option><option value=\"status\">status</option></select>";
+		$selecttypeform = "<select name=\"rwqSearchtype\"><option value=\"requester\">requester</option><option value=\"sitename\">sitename</option><option value=\"status\">status</option><option value=\"dbname\">dbname</option></select>";
 
 		$form = Xml::openElement( 'form', array( 'action' => $localpage, 'method' => 'get' ) );
                 $form .= '<fieldset><legend>' . $this->msg( 'requestwikiqueue-searchrequest' )->escaped() . '</legend>';
@@ -67,6 +69,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	function lookupRequest( $par ) {
+		global $wgOut;
+
 		$dbr = wfGetDB( DB_SLAVE );
 
 		$res = $dbr->selectRow( 'cw_requests',
@@ -108,7 +112,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$user = User::newFromId( $res->cw_user );
 
 		$createwikiparams = array(
-			'cwFounder' => $user->getName(),
+			'cwRequester' => $user->getName(),
 			'cwLanguage' => $res->cw_language,
 			'cwSitename' => $res->cw_sitename
 		);
@@ -141,7 +145,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . DateTime::createFromFormat( 'YmdHis', $res->cw_timestamp )->format( 'l, j F Y H:i' ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'founder', 'url', 'language', 'private', 'status' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'language', 'private', 'status' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
@@ -158,18 +162,18 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$form .= '<td>' . Linker::link( Title::newFromText( 'Special:CreateWiki' ), 'Create wiki', array(), $createwikiparams ) . '</td>';
 		}
 		$form .= '</tr>';
-		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-foundercomment' )->escaped() . '</th></tr>';
+		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-requestercomment' )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_comment ) . '</td></tr>';
 		if ( is_numeric( $res->cw_status_comment_timestamp ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( DateTime::createFromFormat( 'YmdHis', $res->cw_status_comment_timestamp )->format( 'l, j F Y H:i' ) )->escaped() . '</th></tr>';
 		} else {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->rawParams( $wikicreator )->escaped() . '</th></tr>';
 		}
-		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_status_comment ? $res->cw_status_comment : 'No comments.' ) . '</td></tr>';
+		$form .= '<tr><td colspan="' . $columnamount . '">' .  $wgOut->parse( htmlspecialchars( $res->cw_status_comment ? $res->cw_status_comment : 'No comments.' ) ) . '</td></tr>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-status' )->escaped() . '</th></tr>';
 			$form .= '<tr><td colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-label-comment' )->escaped() . ' ' . Xml::input( 'rwqStatusComment', 45, '', array( 'required' => '' ) ) . ' ';
-			$form .= $this->msg( 'requestwikiqueue-request-label-status-colon' )->escaped() . ' ' . Xml::radioLabel( 'In Review', 'rwqStatus', 'inreview', '', true ) . Xml::radioLabel( 'Approved', 'rwqStatus', 'approved', '', false ) . Xml::radioLabel( 'Declined', 'rwqStatus', 'declined', '', false ) . ' ';
+			$form .= $this->msg( 'requestwikiqueue-request-label-status-colon' )->escaped() . ' ' . Xml::radioLabel( $this->msg( 'requestwikiqueue-request-label-inreview' )->escaped(), 'rwqStatus', 'inreview', '', true ) . Xml::radioLabel( $this->msg( 'requestwikiqueue-request-label-approved' )->escaped(), 'rwqStatus', 'approved', '', false ) . Xml::radioLabel( $this->msg( 'requestwikiqueue-request-label-declined' )->escaped(), 'rwqStatus', 'declined', '', false ) . ' ';
 			$form .= Xml::submitButton( 'Submit' ) . '</td></tr>';
 
 		}
@@ -208,5 +212,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getRequest()->response()->header( 'Refresh: 1;' );
 
 		return true;
+	}
+
+	protected function getGroupName() {
+		return 'wikimanage';
 	}
 }
