@@ -214,6 +214,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'wiki_language' => $language,
 				'wiki_private' => $private,
 				'wiki_closed' => 0,
+				'wiki_inactive' => 0,
 			),
 			__METHOD__
 		);
