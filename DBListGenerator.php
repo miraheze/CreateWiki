@@ -23,6 +23,7 @@ $DBlistPath = '/srv/mediawiki/dblist';
 $allWikis = array();
 $privateWikis = array();
 $closedWikis = array();
+$inactiveWikis = array();
 
 foreach ( $res as $row ) {
 	$DBname = $row->wiki_dbname;
@@ -30,6 +31,7 @@ foreach ( $res as $row ) {
 	$language = $row->wiki_language;
 	$private = $row->wiki_private;
 	$closed = $row->wiki_closed;
+	$inactive = $row->wiki_inactive;
 
 	$allWikis[] = "$DBname|$siteName|$language|";
 
@@ -52,9 +54,17 @@ foreach ( $res as $row ) {
 		$cdb->set( 'closed', 0 );
 	}
 
+	if ( $inactive === "1" ) {
+		$inactiveWikis[] = $DBname;
+		$cdb->set( 'inactive', 1 );
+	} else {
+		$cdb->set( 'inactive', 0 );
+	}
+
 	$cdb->close();
 }
 
 file_put_contents( "$DBlistPath/all.dblist", implode( "\n", $allWikis ), LOCK_EX );
 file_put_contents( "$DBlistPath/private.dblist", implode( "\n", $privateWikis ), LOCK_EX );
 file_put_contents( "$DBlistPath/closed.dblist", implode( "\n", $closedWikis ), LOCK_EX );
+file_put_contents( "$DBlistPath/inactive.dblist", implode( "\n", $inactiveWikis ), LOCK_EX );
