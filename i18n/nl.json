@@ -28,7 +28,7 @@
 	"logentry-farmer-requestwiki": "$1 heeft de wiki \"$4\" (taal: $5; privé: $6) aangevraagd in $7",
 	"log-name-farmer": "Farmer log",
 	"requestwiki": "Vraag een wiki aan",
-	"requestwiki-error-csrf": "<strong>Sorry, the request could not be submitted due to a loss of session data.</strong>\nPlease submit the form again. If that doesn't work, please [[Special:Userlogout|log out]] and log back in.",
+	"requestwiki-error-csrf": "<strong>Sorry, het verzoek kon niet worden verstuurd omdat de sessie verloren is gegaan.</strong>\nVerstuur het formulier opnieuw. Mocht dit niet werken, [[Special:Userlogout|meldt u dan af]] en meldt u daarna weer aan.",
 	"requestwiki-error-nodomain": "Je moet een subdomein of eigen domeinnaam opgeven.",
 	"requestwiki-error-notallfilledin": "Je moet op zijn minst een wikinaam, taal en een subdomein of domeinnaam opgeven.",
 	"requestwiki-error-twodomains": "Je kan geen eigen domeinnaam en subdomein tegelijkertijd opgeven.",
