@@ -6,5 +6,6 @@ CREATE TABLE /*_*/cw_wikis (
   `wiki_closed` SMALLINT NOT NULL,
   `wiki_settings` MEDIUMTEXT NULL,
   `wiki_dbcluster` VARCHAR(5) DEFAULT 'c1'
+  `wiki_category` VARCHAR(64) NOT NULL,
 ) /*$wgDBTableOptions*/;
 

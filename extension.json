@@ -43,7 +43,9 @@
                 ]
         },
         "config": {
-                "CreateWikiSQLfiles": false
+		"CreateWikiSQLfiles": false,
+		"CreateWikiUseCategories": false,
+		"CreateWikiCategories": false
         },
         "callback": "CreateWikiHooks::onRegistration",
         "manifest_version": 1

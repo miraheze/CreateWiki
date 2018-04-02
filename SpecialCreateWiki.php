@@ -62,6 +62,16 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'name' => 'cwPrivate',
 		);
 
+
+		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
+			$formDescriptor['category'] = array(
+				'type' => 'select',
+				'label-message' => 'createwiki-label-category',
+				'options' => $wgCreateWikiCategories,
+				'name' => 'cwCategory',
+			);
+		}
+
 		$formDescriptor['reason'] = array(
 			'label-message' => 'createwiki-label-reason',
 			'type' => 'text',
@@ -83,6 +93,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$private = $formData['private'];
 		$reason = $formData['reason'];
 
+		if ( $wgCreateWikiUseCategories ) {
+			$category = $formData['category'];
+		} else {
+			$category = 'uncategorised';
+		}
+
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'createwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
 		$farmerLogEntry->setTarget( $this->getTitle() );
@@ -99,7 +115,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$dbw->query( 'SET storage_engine=InnoDB;' );
 		$dbw->query( 'CREATE DATABASE ' . $dbw->addIdentifierQuotes( $DBname ) . ';' );
 
-		$this->addWikiToDatabase( $DBname, $siteName, $language, $private );
+		$this->addWikiToDatabase( $DBname, $siteName, $language, $private, $category );
 
 		// Let's ensure our wiki is in the DBlist on the server
 		// we run the maintenance scripts on.
@@ -197,7 +213,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function addWikiToDatabase( $DBname, $siteName, $language, $private ) {
+	public function addWikiToDatabase( $DBname, $siteName, $language, $private, $category ) {
 		$dbw = wfGetDB( DB_MASTER );
 
 		if ( $private ) {
@@ -215,6 +231,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'wiki_private' => $private,
 				'wiki_closed' => 0,
 				'wiki_inactive' => 0,
+				'wiki_category' => $category,
 			),
 			__METHOD__
 		);
