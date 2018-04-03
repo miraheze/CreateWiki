@@ -46,7 +46,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 
 	function showEditForm( $id ) {
-		global $wgUser;
+		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories;
 
 		// Let everyone view the edit form, disable for those who shouldn't edit
 		$disabled = true;
@@ -137,14 +137,16 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			),
 		);
 
-		$formDescriptor['category'] = array(
-			'type' => 'select',
-			'label-message' => 'createwiki-label-category',
-			'options' => $wgCreateWikiCategories,
-			'disabled' => $disabled,
-			'default' => $res->cw_category,
-			'name' => 'rweCategory',
-		);
+		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
+			$formDescriptor['category'] = array(
+				'type' => 'select',
+				'label-message' => 'createwiki-label-category',
+				'options' => $wgCreateWikiCategories,
+				'disabled' => $disabled,
+				'default' => $res->cw_category,
+				'name' => 'rweCategory',
+			);
+		}
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
 		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->prepareForm()->show();
