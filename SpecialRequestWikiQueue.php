@@ -147,7 +147,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . DateTime::createFromFormat( 'YmdHis', $res->cw_timestamp )->format( 'l, j F Y H:i' ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'private', 'status' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'category', 'private', 'status', ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
@@ -159,6 +159,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<td>' . htmlspecialchars( $res->cw_url ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_custom ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_language ) . '</td>';
+		$form .= '<td>' . htmlspecialchars( $res->cw_category ) . '</td>';
 		$form .= '<td>' . $private . '</td>';
 		$form .= '<td>' . $status . '</td>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
