@@ -42,6 +42,7 @@
 	"requestwiki-label-comments": "Comments (e.g. what is your wiki about?):",
 	"requestwiki-label-customdomain": "Custom domain:",
 	"requestwiki-label-language": "Language:",
+	"requestwiki-label-category": "Category:",
 	"requestwiki-label-private": "Private wiki (not readable by everyone):",
 	"requestwiki-label-sitename": "Wiki name:",
 	"requestwiki-label-siteurl": "Subdomain:",
