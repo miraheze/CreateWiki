@@ -29,7 +29,7 @@
 	"log-description-farmer": "This log tracks changes to wiki settings.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
 	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in $7",
-	"logentry-farmer-requestwikiedit": "$1 edited the wiki request \#$4",
+	"logentry-farmer-requestwikiedit": "$1 edited the wiki request #$4",
 	"log-name-farmer": "Farmer log",
 	"requestwiki": "Request a wiki",
 	"requestwikiedit": "Edit a wiki request",
