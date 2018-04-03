@@ -5,6 +5,8 @@ class SpecialCreateWiki extends FormSpecialPage {
         }
 
 	protected function getFormFields() {
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories;
+
 		$par = $this->par;
 		$request = $this->getRequest();
 
@@ -84,7 +86,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiSQLfiles, $wgDBname;
+		global $IP, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories;
 
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
