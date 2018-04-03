@@ -71,6 +71,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-category',
 				'options' => $wgCreateWikiCategories,
 				'name' => 'cwCategory',
+				'default' => 'uncategorised',
 			);
 		}
 
