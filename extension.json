@@ -1,6 +1,6 @@
 {
         "name": "CreateWiki",
-        "author": "Southparkfan",
+        "author": [ "Southparkfan", "John Lewis" ],
         "url": "//github.com/Miraheze/CreateWiki",
         "descriptionmsg": "createwiki-desc",
         "type": "specialpage",
@@ -15,6 +15,7 @@
         "SpecialPages": {
                 "CreateWiki": "SpecialCreateWiki",
                 "RequestWiki": "SpecialRequestWiki",
+		"RequestWikiEdit": "SpecialRequestWikiEdit",
                 "RequestWikiQueue": "SpecialRequestWikiQueue"
         },
         "LogTypes": [
@@ -22,6 +23,7 @@
         ],
         "LogActionsHandlers": {
                 "farmer/createwiki": "LogFormatter",
+		"farmer/requestwikiedit": "LogFormatter",
                 "farmer/requestwiki": "CreateWikiLogFormatter"
         },
         "MessagesDirs": {
@@ -35,6 +37,7 @@
                 "RequestWikiQueuePager": "RequestWikiQueuePager.php",
                 "SpecialCreateWiki": "SpecialCreateWiki.php",
                 "SpecialRequestWiki": "SpecialRequestWiki.php",
+		"SpecialRequestWikiEdit": "SpecialRequestWikiEdit.php",
                 "SpecialRequestWikiQueue": "SpecialRequestWikiQueue.php"
         },
         "Hooks": {
