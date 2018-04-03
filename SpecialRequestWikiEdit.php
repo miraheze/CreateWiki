@@ -130,7 +130,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			),
 			'reason' => array(
 				'type' => 'text',
-				'label-message' => 'requestwiki-label-reason',
+				'label-message' => 'createwiki-label-reason',
 				'disabled' => $disabled,
 				'default' => $res->cw_comment,
 				'name' => 'rweReason',
