@@ -12,5 +12,6 @@ CREATE TABLE /*_*/cw_requests (
   cw_status_comment_user SMALLINT DEFAULT NULL,
   cw_timestamp varchar(32) NOT NULL,
   cw_url VARCHAR(96) NOT NULL,
-  cw_user SMALLINT NOT NULL
+  cw_user SMALLINT NOT NULL,
+  cw_custom VARCHAR((96) NOT NULL
 ) /*$wgDBTableOptions*/;
