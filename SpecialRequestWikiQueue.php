@@ -87,7 +87,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'cw_status_comment_timestamp',
 				'cw_timestamp',
 				'cw_url',
-				'cw_user'
+				'cw_custom',
+				'cw_category'
 			),
 			array(
 				'cw_id' => $par
@@ -114,7 +115,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$createwikiparams = array(
 			'cwRequester' => $user->getName(),
 			'cwLanguage' => $res->cw_language,
-			'cwSitename' => $res->cw_sitename
+			'cwSitename' => $res->cw_sitename,
+			'cwCategory' => $res->cw_category
 		);
 
 		if ( $res->cw_private != 0 ) {
@@ -126,9 +128,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
-			$columnamount = 7;
+			$columnamount = 8;
 		} else {
-			$columnamount = 6;
+			$columnamount = 7;
 		}
 
 		// Used in 'wikicreatorcomment'
@@ -145,7 +147,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . DateTime::createFromFormat( 'YmdHis', $res->cw_timestamp )->format( 'l, j F Y H:i' ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'requester', 'url', 'language', 'private', 'status' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'private', 'status' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
@@ -155,6 +157,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<tr><td>' . htmlspecialchars( $res->cw_sitename ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $user->getName() ) . Linker::userToolLinks( $res->cw_user, $user->getName() ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_url ) . '</td>';
+		$form .= '<td>' . htmlspecialchars( $res->cw_custom ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_language ) . '</td>';
 		$form .= '<td>' . $private . '</td>';
 		$form .= '<td>' . $status . '</td>';

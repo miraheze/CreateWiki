@@ -2,7 +2,7 @@
 
 class SpecialRequestWiki extends FormSpecialPage {
 	function __construct() {
-		parent::__construct( 'RequestWiki', 'requestwiki' );
+		parent::__construct( 'RequestWiki' );
 	}
 
 	protected function getFormFields() {
@@ -85,11 +85,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$private = is_null( $formData['private'] ) ? O : 1;
 		$url = $formData['subdomain'] . ".miraheze.org";
 
+		$request = $this->getRequest();
+
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->insert( 'cw_requests',
 			array(
 				'cw_comment' => $formData['reason'],
 				'cw_dbname' => $dbname,
+				'cw_sitename' => $formData['sitename'],
 				'cw_ip' => $request->getIP(),
 				'cw_language' => $formData['language'],
 				'cw_private' => $private,
@@ -98,9 +101,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'cw_url' => $url,
 				'cw_custom' => $formData['customdomain'],
 				'cw_user' => $this->getUser()->getId(),
+				'cw_category' => $formData['category'],
 			),
 			__METHOD__
 		);
+
+		$idlink = Linker::link( Title::newFromText( 'Special:RequestWikiQueue/' . $dbw->insertId() ), "#{$dbw->insertId()}" );
 
 		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
@@ -118,6 +124,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogEntry->publish( $farmerLogID );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
+
+		return true;
 	}
 
 
@@ -138,7 +146,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		if ( $reason == '' ) {
-			return wfMsgExt( 'htmlform-required', 'parseinline' );
+			return wfMessage( 'htmlform-required', 'parseinline' );
 		}
 
 		return true;
@@ -155,5 +163,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	protected function getGroupName() {
 		return 'wikimanage';
+	}
+
+	public function getDisplayFormat() {
+		return 'ooui';
 	}
 }

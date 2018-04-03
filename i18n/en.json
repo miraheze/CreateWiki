@@ -60,6 +60,7 @@
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Comment given by $1 at $2",
 	"requestwikiqueue-request-label-approved": "Approved",
 	"requestwikiqueue-request-label-comment": "Comment:",
+	"requestwikiqueue-request-label-custom": "Custom Domain",
 	"requestwikiqueue-request-label-declined": "Declined",
 	"requestwikiqueue-request-label-inreview": "In Review",
 	"requestwikiqueue-request-label-language": "Language",

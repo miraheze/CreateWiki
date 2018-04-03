@@ -13,5 +13,6 @@ CREATE TABLE /*_*/cw_requests (
   cw_timestamp varchar(32) NOT NULL,
   cw_url VARCHAR(96) NOT NULL,
   cw_user SMALLINT NOT NULL,
-  cw_custom VARCHAR((96) NOT NULL
+  cw_custom VARCHAR(96) NOT NULL,
+  cw_category VARCHAR(64) NOT NULL
 ) /*$wgDBTableOptions*/;
