@@ -2,7 +2,7 @@
 
 class SpecialRequestWiki extends FormSpecialPage {
 	function __construct() {
-		parent::__construct( 'RequestWiki' );
+		parent::__construct( 'RequestWiki', 'requestwiki' );
 	}
 
 	protected function getFormFields() {

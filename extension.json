@@ -5,7 +5,8 @@
         "descriptionmsg": "createwiki-desc",
         "type": "specialpage",
         "AvailableRights": [
-                "createwiki"
+                "createwiki",
+		"requestwiki"
         ],
         "GroupPermissions": {
 		"wikicreator": {
