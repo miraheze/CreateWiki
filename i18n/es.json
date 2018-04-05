@@ -6,6 +6,7 @@
 		]
 	},
 	"action-createwiki": "crear wikis",
+	"action-requestwiki": "solicitar wikis",
 	"createwiki": "Crear un wiki",
 	"createwiki-defaultmainpage": "__NOTOC__\n== ¡Bienvenido/a a {{SITENAME}}! ==\nEsta Página Principal fue creada automáticamente por un creador de wikis (un voluntario que creó este wiki debido a una solicitud), y parece que aún no ha sido reemplazada.\n\n=== Para el burócrata de esta wiki ===\n¡Hola, y bienvenido/a a tu nuevo wiki! Gracias por elegir Miraheze para el hospedaje de su wiki, y esperamos que disfrute de nuestro hosting.\n\nUsted puede comenzar inmediatamente a trabajar en su wiki, cuando lo desee.\n\n¿Necesita ayuda? ¡No hay problema! Te ayudaremos con tu wiki según sea necesario. Para comenzar, hemos añadido algunos enlaces sobre cómo trabajar con MediaWiki:\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Help:Contents Guía de MediaWiki (ej: navegación, edición, borrando páginas, bloqueando usuarios)]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ FAQ de Miraheze]</span>\n*<span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Request_features Solicitar extensiones, cambios de logo/favicon y otras características para su wiki]</span>\n\n==== Pero Miraheze, ¡todavía no entiendo X! ====\nBueno, eso no es problema. Incluso si algo no se explica en la documentación o FAQ, todavía estaremos encantados de ayudarle. Puedes encontrarnos aquí:\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center En nuestro propio wiki de Miraheze]</span>\n* En el IRC #miraheze en irc.freenode.net ([irc://irc.freenode.net/#miraheze enlace directo]; [http://webchat.freenode.net?channels=%23miraheze webchat])\n\n=== Para un visitante de este wiki ===\nHola, la página principal de este wiki (esta es la página principal por defecto) no ha sido reemplazada aún por los burócratas de este wiki. El burócrata podría todavía estar trabajando en una página principal, ¡así que por favor revise esta página de nuevo más tarde!",
 	"createwiki-desc": "Una extensión para crear fácilmente nuevos wikis en una granja wiki.",
@@ -17,6 +18,7 @@
 	"createwiki-error-notlowercase": "El nombre de la base de datos no puede contener letras mayúsculas.",
 	"createwiki-error-notsuffixed": "El nombre de la base de datos no termina en un sufijo válido (por ejemplo, 'wiki').",
 	"createwiki-error-usernotcreated": "El usuario solicitante no fue creado en el wiki.",
+	"createwiki-label-category": "Categoría:",
 	"createwiki-label-dbname": "Nombre de la base de datos:",
 	"createwiki-label-requester": "Solicitante:",
 	"createwiki-label-language": "Idioma:",

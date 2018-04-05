@@ -1,22 +1,28 @@
 {
 	"@metadata": {
 		"authors": [
-			"Chrumps"
+			"Chrumps",
+			"Railfail536"
 		]
 	},
+	"action-createwiki": "utwórz wiki",
 	"createwiki": "Utwórz wiki",
 	"createwiki-error-notalnum": "Nazwa bazy danych nie może zawierać znaków niealfanumerycznych.",
 	"createwiki-error-notlowercase": "Nazwa bazy danych może nie zawierać wielkich liter.",
 	"createwiki-error-notsuffixed": "Nazwa bazy danych nie kończy się poprawnym sufiksem (np. 'wiki').",
+	"createwiki-label-category": "Kategoria:",
 	"createwiki-label-dbname": "Nazwa bazy danych:",
 	"createwiki-label-language": "Język:",
 	"createwiki-label-private": "Oznacz tę wiki jako prywatną",
 	"createwiki-label-reason": "Powód:",
+	"createwiki-label-sitename": "Nazwa strony:",
 	"createwiki-label-submit": "Wyślij",
 	"createwiki-legend": "Utwórz wiki",
 	"createwiki-success": "Wiki została pomyślnie utworzona.",
 	"requestwiki-label-comments": "Komentarze (np. o czym jest twoja wiki?):",
+	"requestwiki-label-customdomain": "Niestandardowa domena:",
 	"requestwiki-label-language": "Język:",
+	"requestwiki-label-private": "Prywatna wiki (nie jest widoczna dla wszystkich):",
 	"requestwiki-label-sitename": "Nazwa wiki:",
 	"requestwiki-label-siteurl": "Poddomena:",
 	"requestwiki-submit": "Wyślij",
@@ -24,11 +30,16 @@
 	"requestwikiqueue-pager-status-approved": "zaakceptowano",
 	"requestwikiqueue-pager-status-declined": "odrzucono",
 	"requestwikiqueue-pager-status-inreview": "w przeglądzie",
+	"requestwikiqueue-request-label-approved": "Zaakceptowano",
 	"requestwikiqueue-request-label-comment": "Komentarz:",
+	"requestwikiqueue-request-label-declined": "Odrzucono",
 	"requestwikiqueue-request-label-language": "Język",
+	"requestwikiqueue-request-label-private": "Prywatna",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-status-colon": "Status:",
+	"requestwikiqueue-request-label-toolbox": "Przybornik",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-toolbox-createwiki": "Utwórz wiki",
+	"requestwikiqueue-searchbutton": "Szukaj",
 	"requestwikiqueue-usernotfound": "Użytkownik nie został znaleziony."
 }

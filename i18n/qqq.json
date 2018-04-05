@@ -3,7 +3,8 @@
 		"authors": [
 			"Reception123",
 			"Liuxinyu970226",
-			"Revi"
+			"Revi",
+			"Robby"
 		]
 	},
 	"action-createwiki": "{{doc-action|create wikis}}",
@@ -18,7 +19,7 @@
 	"createwiki-error-notlowercase": "Used as error message when the database name entered contains uppercase letters.",
 	"createwiki-error-notsuffixed": "Used as error message when the database name enter does not contain the 'wiki' suffix.",
 	"createwiki-error-usernotcreated": "Used as error message when the user who requested the wiki was not created on the wiki.",
-	"createwiki-label-category": "Used as a label for category.\n{{Identtical|Category}}",
+	"createwiki-label-category": "Used as a label for category.\n{{Identical|Category}}",
 	"createwiki-label-dbname": "Used as a label for dbname.\n{{Identical|Database name}}",
 	"createwiki-label-requester": "Used as a label for 'requester'.\n{{Identical|Requester}}",
 	"createwiki-label-language": "Used as a label for 'language'.\n{{Identical|Language}}",

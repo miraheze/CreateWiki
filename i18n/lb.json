@@ -5,6 +5,7 @@
 		]
 	},
 	"createwiki-email-subject": "Är nei Miraheze-Wiki: $1",
+	"createwiki-label-category": "Kategorie:",
 	"createwiki-label-dbname": "Numm vun der Datebank:",
 	"createwiki-label-language": "Sprooch:",
 	"createwiki-label-private": "Dës Wiki als privat markéieren",
