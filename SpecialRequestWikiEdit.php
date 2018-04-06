@@ -36,7 +36,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		global $wgRequest;
 
 		if ( $params['requestid'] !== '' ) {
-			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullUrl() . '/' . $params['dbname'] );
+			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullUrl() . '/' . $params['requestid'] );
 		} else {
 			return 'Invalid url.';
 		}
