@@ -186,7 +186,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success' )->escaped() . '</div>' );
+		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success', $params['requestid'] )->escaped() . '</div>' );
 
 		return true;
 	}
