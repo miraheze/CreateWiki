@@ -3,10 +3,12 @@
 		"authors": [
 			"Amanojaku",
 			"Liuxinyu970226",
-			"Laundry Machine"
+			"Laundry Machine",
+			"Kly"
 		]
 	},
 	"action-createwiki": "建立 Wiki",
+	"action-requestwiki": "請求的 wiki",
 	"createwiki": "建立新 Wiki",
 	"createwiki-defaultmainpage": "__NOTOC__\n== 歡迎來到 {{SITENAME}}！ ==\n該首頁由接受請求的志願者——Wiki 建立者自動建立，而且內容似乎尚未變更。\n\n=== 如果您是本站的行政員 ===\n您好，歡迎來到您的新 Wiki！感謝您選擇 Miraheze 作為您的 Wiki 平臺，我們真誠地希望您能夠享受我們的服務。\n\n只要您願意，您隨時可以開始在本維基上面進行工作。\n\n需要幫助？沒問題！如有需要，我們當然樂於效勞。作為開始，下面是幾個關於在 MediaWiki 上面進行工作的連結：\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Help:Contents MediaWiki 手冊（例如瀏覽、編輯、刪除頁面、封鎖使用者等）]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ Miraheze 常見問題]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Request_features 請求在自己的 Wiki 上面加入擴充套件、修改 Logo/favicon 或引入其他功能]</span>\n\n==== 但是……有些問題我仍然不懂！ ====\n那也沒關係，即使文件或 FAQ 上面沒寫，我們也願意提供幫助。您可以透過以下途徑聯繫我們：\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center Miraheze Wiki 幫助中心]</span>\n* IRC 頻道 #miraheze（伺服器為 irc.freenode.net。[irc://irc.freenode.net/#miraheze 直接連接]、[http://webchat.freenode.net?channels=%23miraheze 網頁聊天室]）\n\n=== 如果您是遊客 ===\n您好，本頁是系統的預設頁面，目前尚未被本站的行政員修改。他們可能正在製作首頁，所以請您稍後再來。",
 	"createwiki-desc": "可以在 Wiki 農場上面輕鬆建立新 Wiki 的擴充套件。",
@@ -18,6 +20,7 @@
 	"createwiki-error-notlowercase": "資料庫名稱不能包含大寫字母。",
 	"createwiki-error-notsuffixed": "資料庫名稱未能以合法的字尾結束（例如應當以「wiki」結尾）。",
 	"createwiki-error-usernotcreated": "申請者帳號尚未建立。",
+	"createwiki-label-category": "分類：",
 	"createwiki-label-dbname": "資料庫名稱：",
 	"createwiki-label-requester": "申請者：",
 	"createwiki-label-language": "語言：",
@@ -30,8 +33,12 @@
 	"log-description-farmer": "本日誌展示了 Wiki 申請、建立以及一切與其相關的記錄。",
 	"logentry-farmer-createwiki": "$1 建立了名為「$4」的 Wiki",
 	"logentry-farmer-requestwiki": "$1 在 $7 中申請了名為「$4」的 Wiki（語言：$5；是否私人：$6）",
+	"logentry-farmer-requestwikiedit": "$1 編輯了 wiki 請求 #$4",
 	"log-name-farmer": "農場日誌",
 	"requestwiki": "申請新 Wiki",
+	"requestwikiedit": "編輯 wiki 請求",
+	"requestwiki-edit-id": "Wiki 請求 ID",
+	"requestwiki-edit-success": "成功更改已提交的請求 $1。",
 	"requestwiki-error-csrf": "<strong>抱歉，由於會話資料丟失，您的請求未能發送到伺服器。</strong>\n請您重新提交表格。如果仍然遇到問題，請嘗試[[Special:Userlogout|登出]]然後重新登入。",
 	"requestwiki-error-invalidcomment": "您的wiki申請包含無效字符。請重新嘗試申請，如果問題仍然存在，[[Help center|請聯繫我們]]。",
 	"requestwiki-error-nodomain": "您必須指定子域名或者給出自訂域名。",
@@ -61,6 +68,7 @@
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "由 $1 於 $2 作出的評論",
 	"requestwikiqueue-request-label-approved": "已批准",
 	"requestwikiqueue-request-label-comment": "評論：",
+	"requestwikiqueue-request-label-custom": "自定義網域",
 	"requestwikiqueue-request-label-declined": "已拒絕",
 	"requestwikiqueue-request-label-inreview": "正在審核",
 	"requestwikiqueue-request-label-language": "語言",
