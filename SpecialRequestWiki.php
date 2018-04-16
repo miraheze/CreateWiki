@@ -82,7 +82,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	public function onSubmit( array $formData ) {
 		$dbname = $formData['subdomain'] . 'wiki';
-		$params['private'] = $request->getVal ('private'); if (is_null ($params['private']) { $params['private'] = false; }));
 		$url = $formData['subdomain'] . ".miraheze.org";
 
 		$request = $this->getRequest();
