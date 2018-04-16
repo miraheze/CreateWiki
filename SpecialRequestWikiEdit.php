@@ -122,10 +122,10 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'name' => 'rweLanguage',
 			),
 			'private' => array(
-				'type' => 'text',
+				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
 				'disabled' => $disabled,
-				'default' => $res->cw_private,
+				'default' => $res->cw_private == 1,
 				'name' => 'rwePrivate',
 			),
 			'reason' => array(
@@ -163,7 +163,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'cw_url' => $fullurl,
 			'cw_custom' => $params['customdomain'],
 			'cw_category' => $params['category'],
-			'cw_private' => ( $params['private'] == true ) ? 1 : 0,
+			'cw_private' => $params['private'] ? 1 : 0,
 		);
 
 		$dbw = wfGetDB( DB_MASTER );
