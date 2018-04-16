@@ -82,14 +82,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	public function onSubmit( array $formData ) {
 		$dbname = $formData['subdomain'] . 'wiki';
+		$private = ( $formData['private'] == true ) ? 1 : 0,
 		$url = $formData['subdomain'] . ".miraheze.org";
 
 		$request = $this->getRequest();
-		
-		$params['private'] = $request->getVal ('private');
-		if ( is_null ( $params['private'] ) ) {
-			$params['private'] = false;
-		}
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->insert( 'cw_requests',
@@ -99,7 +95,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'cw_sitename' => $formData['sitename'],
 				'cw_ip' => $request->getIP(),
 				'cw_language' => $formData['language'],
-				'cw_private' => $params['private'],
+				'cw_private' => $private,
 				'cw_status' => 'inreview',
 				'cw_timestamp' => $dbw->timestamp(),
 				'cw_url' => $url,
@@ -120,7 +116,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			array(
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
-				'6::private' => $params['private'],
+				'6::private' => $private,
 				'7::id' => "#{$dbw->insertId()}",
 			)
 		);
