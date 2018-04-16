@@ -78,7 +78,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			__METHOD__
 		);
 
-		if ( $wgUser->getId() === $res->cw_user || $wgUser->isAllowed( 'createwiki' ) ) {
+		if ( $wgUser->getId() == $res->cw_user || $wgUser->isAllowed( 'createwiki' ) ) {
 			$disabled = false;
 		}
 
