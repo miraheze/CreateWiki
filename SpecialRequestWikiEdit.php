@@ -154,12 +154,14 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	function onSubmitInput( array $params ) {
+		$dbname = $params['subdomain'] . "wiki";
 		$fullurl = $params['subdomain'] . ".miraheze.org";
 
 		$values = array(
 			'cw_comment' => $params['reason'],
 			'cw_language' => $params['language'],
 			'cw_sitename' => $params['sitename'],
+			'cw_dbname' => $dbname,
 			'cw_url' => $fullurl,
 			'cw_custom' => $params['customdomain'],
 			'cw_category' => $params['category'],
