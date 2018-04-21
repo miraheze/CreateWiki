@@ -106,9 +106,20 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$dbname = $formData['subdomain'] . 'wiki';
 		$private = $formData['private'] ? 1 : 0;
-		$url = $formData['subdomain'] . ".miraheze.org";
+		$subdomain = $formData['subdomain'];
+		
+		$out = $this->getOutput();
+
+		// Make the subdomain a dbname
+		if ( !ctype_alnum( $subdomain ) ) {
+			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
+			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
+			return false;
+		} else {
+			$url = strtolower( $subdomain ) . '.miraheze.org';
+			$dbname = strtolower( $subdomain ) . 'wiki';
+		}
 
 		$request = $this->getRequest();
 
@@ -148,7 +159,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$this->getOutput()->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
+		$out->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
 
 		return true;
 	}
