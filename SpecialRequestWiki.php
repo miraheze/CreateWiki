@@ -5,6 +5,41 @@ class SpecialRequestWiki extends FormSpecialPage {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 	}
 
+        public function execute( $par ) {
+                $request = $this->getRequest();
+                $out = $this->getOutput();
+                $this->setParameter( $par );
+                $this->setHeaders();
+
+                if ( !$this->getUser()->isLoggedIn() ) {
+                        $loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( array( 'returnto' => $this->getPageTitle()->getPrefixedText() ) );
+                        $out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
+                        return false;
+                }
+
+                $this->checkExecutePermissions( $this->getUser() );
+
+                if ( !$request->wasPosted() ) {
+                        $customdomainurl = Title::newFromText( 'Special:MyLanguage/Custom_domains' )->getFullURL();
+                        $out->addWikiMsg( 'requestwiki-header', $customdomainurl );
+                }
+
+                /*if ( !$request->wasPosted() || ( $request->wasPosted() && $this->errors ) ) {
+                        $form = $this->getForm();
+                        if ( $form->show() ) {
+                            $this->onSuccess();
+                        }
+                }*/
+
+                /*if ( $request->wasPosted() ) {
+                        $this->handleRequestWikiFormInput();
+                }*/
+                $form = $this->getForm();
+                if ( $form->show() ) {
+                        $this->onSuccess();
+                }
+        }
+
 	protected function getFormFields() {
 		global $wgCreateWikiUseCategories, $wgCreateWikiCategories;
 
