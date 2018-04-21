@@ -188,15 +188,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function isValidSubdomain( $subdomain, $allData ) {
-		if ( !ctype_alnum( $subdomain ) ) {
-			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
-			return wfMessage( 'createwiki-error-notalnum' );
-		}
-
-		return true;
-	}
-
 	protected function getGroupName() {
 		return 'wikimanage';
 	}
