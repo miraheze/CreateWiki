@@ -24,16 +24,6 @@ class SpecialRequestWiki extends FormSpecialPage {
                         $out->addWikiMsg( 'requestwiki-header', $customdomainurl );
                 }
 
-                /*if ( !$request->wasPosted() || ( $request->wasPosted() && $this->errors ) ) {
-                        $form = $this->getForm();
-                        if ( $form->show() ) {
-                            $this->onSuccess();
-                        }
-                }*/
-
-                /*if ( $request->wasPosted() ) {
-                        $this->handleRequestWikiFormInput();
-                }*/
                 $form = $this->getForm();
                 if ( $form->show() ) {
                         $this->onSuccess();
