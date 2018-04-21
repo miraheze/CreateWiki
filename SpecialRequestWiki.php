@@ -47,7 +47,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor['customdomain-info'] = array(
 			'type' => 'info',
 			'label' => '',
-			'default' => 'You must provide a subdomain above. If you want a custom domain for you wiki, please provide it below.' //must be default? can't we wf?
+			'label-message' => 'requestwiki-label-customdomain-info',
 		);
 
 		$formDescriptor['customdomain'] = array(
