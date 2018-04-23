@@ -5,6 +5,7 @@
 		]
 	},
 	"action-createwiki": "δημιουργία βίκι",
+	"action-requestwiki": "αίτηση βίκι",
 	"createwiki": "Δημιουργήστε ένα βίκι",
 	"createwiki-desc": "Μια επέκταση για την εύκολη δημιουργία νέων βίκι σε μια φάρμα βίκι.",
 	"createwiki-email-subject": "Το νέο βίκι Miraheze σας: $1",

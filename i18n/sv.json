@@ -42,7 +42,6 @@
 	"requestwiki-error-notallfilledin": "Du måste åtminstone fylla i wikins namn och språkfälten.",
 	"requestwiki-error-notime": "Ett problem uppstod när din begäran behandlades. Skicka in din begäran igen",
 	"requestwiki-error-patient": "Du har redan begärt en wiki. Var tålmodig så bör en av våra wikiskapare skapa den snart. Om du behöver begära en till wiki, vänta så kommer du kunna begära en senare.",
-	"requestwiki-error-twodomains": "Du angav både en underdomän och en anpassad domän: Du kan bara välja mellan en av dem.",
 	"requestwiki-header": "Du håller på att begära en ny wiki på Miraheze, toppen! Vi vill att du fyller i detta formulär, innan vi kan granska din begäran.\nDin wikibegäran kommer att granskas av en volontär och den kan spåras på sidan som kommer att ges när din begäran skickas.\n\nOm du vill ha en anpassad domän för din wiki (d.v.s. inte underdomänen .miraheze.org som användas som standard), var god läs <span class=\"plainlinks\">[$1 detta]</span> först.\n\nNär du begäran en wiki samtycker du automatiskt till vår [[Dormancy Policy|inaktivitetspolicy]].",
 	"requestwiki-label-comments": "Kommentarer (t.ex. vad handlar din wiki om?):",
 	"requestwiki-label-customdomain": "Anpassad domän:",

@@ -28,7 +28,6 @@
 	"requestwiki-error-csrf": "<strong> Mae'n ddrwg gennym, ni allai'r wici yn cael ei greu o ganlyniad i golli data sesiwn. </strong>\nRhowch gyflwyno'r ffurflen eto.  Os nad yw hynny'n gweithio, os gwelwch yn dda [[Special:Userlogout|allgofnodi]] a logio yn ôl yn.",
 	"requestwiki-error-nodomain": "Rhaid i chi benodi naill ai is-barth neu barth arferiad.",
 	"requestwiki-error-notallfilledin": "Mae'n rhaid i chi lenwi o leiaf enw a iaith wiki caeau.",
-	"requestwiki-error-twodomains": "Rydych bennir yn is-barth a arferiad parth: gallwch ddewis rhwng un ohonynt.",
 	"requestwiki-header": "Rydych yn mynd i ofyn am wiki newydd yn Miraheze, gwych! Mae angen i chi lenwi'r ffurflen hon, cyn y gallwn adolygu eich cais.\n\nOs ydych am parth arfer ar gyfer eich wiki (hy nid yn is-barth .miraheze.org safonol), darllenwch <span class=\"plainlinks\">[$1 Mae'r]</span> gyntaf.",
 	"requestwiki-label-comments": "Sylwadau (ee beth yw eich wiki yn sôn?):",
 	"requestwiki-label-customdomain": "Parth arfer:",

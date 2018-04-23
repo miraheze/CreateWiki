@@ -31,7 +31,6 @@
 	"requestwiki-error-csrf": "<strong>Sorry, het verzoek kon niet worden verstuurd omdat de sessie verloren is gegaan.</strong>\nVerstuur het formulier opnieuw. Mocht dit niet werken, [[Special:Userlogout|meldt u dan af]] en meldt u daarna weer aan.",
 	"requestwiki-error-nodomain": "Je moet een subdomein of eigen domeinnaam opgeven.",
 	"requestwiki-error-notallfilledin": "Je moet op zijn minst een wikinaam, taal en een subdomein of domeinnaam opgeven.",
-	"requestwiki-error-twodomains": "Je kan geen eigen domeinnaam en subdomein tegelijkertijd opgeven.",
 	"requestwiki-header": "Welkom bij Miraheze! Voordat we je wikiaanvraag kunnen beoordelen, moet je eerst dit formulier invullen.\n\nAls je een eigen domeinnaam (dus geen .miraheze.org subdomein) wilt gebruiken, raden we je aan om eerst <span class=\"plainlinks\">[$1 dit]</span> door te lezen.\n\nDoor het aanvragen van een wiki bij Miraheze ga je automatisch akkoord met ons [[Special:MyLanguage/Dormancy_Policy|inactiviteitsbeleid]].",
 	"requestwiki-label-comments": "Opmerkingen (bijv. - waar gaat je wiki over?):",
 	"requestwiki-label-customdomain": "Eigen domeinnaam:",

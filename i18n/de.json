@@ -43,7 +43,6 @@
 	"requestwiki-error-notallfilledin": "Sie müssen WENIGSTENS einen Wiki-namen und die Sprache selektieren.",
 	"requestwiki-error-notime": "Mit deiner Anfrage gibt es ein Problem. Bitte schicke sie erneut ab.",
 	"requestwiki-error-patient": "Du hast bereits ein Wiki beantragt. Bitte habe Geduld und einer unserer Wikiersteller sollte es bald erstellen. Falls du ein weiteres Wiki beantragen musst, warte bitte, bis du später eines beantragen kannst.",
-	"requestwiki-error-twodomains": "Sie spezifizierten beides, eine subdomain und eine custom domain: Sie können nur eine auswählen.",
 	"requestwiki-header": "Sie sind dabei, eine neue Wiki auf Miraheze zu beantragen, prima! Bitte füllen Sie dieses Formular aus.\nIhr Antrag wird von einem Volontär begutachtet und kann auf der Seite, welche beim abschicken dieses Formulares angegeben wird, nachvollzogen werden.\n\nFall Sie eine eigene Domain wünschen (keine standard wiki.miraheze.org subdomain), lesen Sie bitte zuerst <span class=\"plainlinks\">[$1 hier]</span> .\n\nWenn Sie eine Wiki beantragen, stimmen Sie automatisch unserer [[Dormancy Policy]] zu.",
 	"requestwiki-label-comments": "Comments (e.g. what is your wiki about?):",
 	"requestwiki-label-customdomain": "Benutzerdefinierte Domain:",

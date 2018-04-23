@@ -40,7 +40,6 @@
 	"requestwiki-error-notallfilledin": "Error message if not all fields have been filled in.",
 	"requestwiki-error-notime": "Error message if the request could not be processed.",
 	"requestwiki-error-patient": "Multiple wiki requests in the same hour error message.\n\nWiki creator is a users with a userright.",
-	"requestwiki-error-twodomains": "Erorr message if the user has chosen both a custom domain and a subdomain.",
 	"requestwiki-header": "{{doc-important|Do not translate \"Miraheze\"}}\n\nHeader which explains the process of requesting wikis.",
 	"requestwiki-label-comments": "Used as a label for 'comments'",
 	"requestwiki-label-customdomain": "Used as a label for 'custom domain'",

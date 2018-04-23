@@ -39,7 +39,6 @@
 	"requestwiki-error-notallfilledin": "Tienes que rellenar al menos los campos del nombre de la wiki e idioma.",
 	"requestwiki-error-notime": "Se produjo un problema al procesar la solicitud. Realiza tu solicitud de nuevo",
 	"requestwiki-error-patient": "Ya has solicitado un wiki. Sé paciente mientras uno de nuestros colaboradores la crea por ti. Si necesitas solicitar otro wiki, espera: podrás realizar la solicitud más adelante.",
-	"requestwiki-error-twodomains": "Has especificado un subdominio y un dominio personalizado: solo puedes elegir entre uno de ellos.",
 	"requestwiki-header": "Vas a solicitar un nuevo wiki en Miraheze, ¡genial! Necesitamos que rellenes este formulario antes de que podamos revisar tu solicitud.\nSu solicitud será revisada por un voluntario, y puede ser rastreada en la página que se le dará al enviar su solicitud.\n\nSi desea un dominio personalizado para su wiki (es decir, no un subdominio estándar .miraheze.org), lea <span class=\"plainlinks\">[$1 esto]</span> primero.\n\nCuando solicitas una wiki, automáticamente aceptas nuestra [[Dormancy Policy|Política de Inactividad]].",
 	"requestwiki-label-comments": "Comentarios (ej: ¿de qué trata tu wiki?):",
 	"requestwiki-label-customdomain": "Dominio personalizado:",

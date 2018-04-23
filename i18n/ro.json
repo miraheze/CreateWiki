@@ -28,7 +28,6 @@
 	"requestwiki-error-csrf": "<strong>Cererea nu a putut fi trimisă, va rugăm să incercați din nou.</strong>\nVă rugăm sa trimițeti formularul din nou. Dacă tot nu merge deconectați-vă si conectați-va din nou.",
 	"requestwiki-error-nodomain": "Trebuie să specificați un domain sau sudbomain.",
 	"requestwiki-error-notallfilledin": "Trebuie sa specificați un nume de wiki și o limbă.",
-	"requestwiki-error-twodomains": "Ați specificat și un domain si subdomain, trebuie să alegeți unul.",
 	"requestwiki-header": "O să cereți un wiki pe Miraheze, excellent! Vă rugăm să completați formualrul următor.\n\nDacă vreti un domeniu separat citiți <span class=\"plainlinks\">[$1 acesta]</span> întâi.",
 	"requestwiki-label-comments": "Comentarii (despre ce e wikiul?):",
 	"requestwiki-label-customdomain": "Domeniu personalizat:",
