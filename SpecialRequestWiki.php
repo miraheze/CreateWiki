@@ -147,7 +147,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
 		$farmerLogEntry->setTarget( $this->getTitle() );
-		$farmerLogEntry->setComment( $comment );
+		$farmerLogEntry->setComment( $reason );
 		$farmerLogEntry->setParameters(
 			array(
 				'4::sitename' => $formData['sitename'],
@@ -174,7 +174,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		unset( $regexes[0] );
 
 		foreach ( $regexes as $regex ) {
-			preg_match( "/" . $regex . "/i", $comment, $output );
+			preg_match( "/" . $regex . "/i", $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
 				return wfMessage( 'requestwiki-error-invalidcomment' );
