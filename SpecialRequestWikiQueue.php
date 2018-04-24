@@ -161,7 +161,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<td>' . htmlspecialchars( $res->cw_language ) . '</td>';
 		$form .= '<td>' . $private . '</td>';
 		$form .= '<td>' . $status . '</td>';
-		$form .= '<td>' . Linker::link( 'Special:RequestWikiEdit' + '/' + $par, $this->msg( 'requestwikiqueue-request-label-edit-wiki' )->escaped()  ) . '</td>';
+		$form .= '<td>' . Linker::linkKnown( SpecialPage::getTitleFor( 'RequestWikiEdit', $par ), $this->msg( 'requestwikiqueue-request-label-edit-wiki' )->escaped() ) . '</td>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
 			$form .= '<td>' . Linker::link( Title::newFromText( 'Special:CreateWiki' ), $this->msg( 'requestwikiqueue-request-label-create-wiki' )->escaped(), array(), $createwikiparams ) . '</td>';
 		}
