@@ -12,6 +12,9 @@
 		"wikicreator": {
 			"createwiki": true
 		}
+		"user": {
+			"requestwiki": true
+		}
 	},
         "SpecialPages": {
                 "CreateWiki": "SpecialCreateWiki",
