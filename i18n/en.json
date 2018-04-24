@@ -68,6 +68,7 @@
 	"requestwikiqueue-request-label-create-wiki": "Create wiki",
 	"requestwikiqueue-request-label-custom": "Custom Domain",
 	"requestwikiqueue-request-label-declined": "Declined",
+	"requestwikiqueue-request-label-edit": "Edit",
 	"requestwikiqueue-request-label-edit-wiki": "Edit wiki request",
 	"requestwikiqueue-request-label-inreview": "In Review",
 	"requestwikiqueue-request-label-language": "Language",
