@@ -128,9 +128,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
-			$columnamount = 8;
+			$columnamount = 9;
 		} else {
-			$columnamount = 7;
+			$columnamount = 8;
 		}
 
 		// Used in 'wikicreatorcomment'
@@ -147,7 +147,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . DateTime::createFromFormat( 'YmdHis', $res->cw_timestamp )->format( 'l, j F Y H:i' ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'private', 'status' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'private', 'status', 'edit' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
@@ -161,8 +161,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<td>' . htmlspecialchars( $res->cw_language ) . '</td>';
 		$form .= '<td>' . $private . '</td>';
 		$form .= '<td>' . $status . '</td>';
+		$form .= '<td>' . Linker::link( 'Special:RequestWikiEdit' + '/' + $par, $this->msg( 'requestwikiqueue-request-label-edit-wiki' )->escaped()  ) . '</td>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
-			$form .= '<td>' . Linker::link( Title::newFromText( 'Special:CreateWiki' ), 'Create wiki', array(), $createwikiparams ) . '</td>';
+			$form .= '<td>' . Linker::link( Title::newFromText( 'Special:CreateWiki' ), $this->msg( 'requestwikiqueue-request-label-create-wiki' )->escaped(), array(), $createwikiparams ) . '</td>';
 		}
 		$form .= '</tr>';
 		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-requestercomment' )->escaped() . '</th></tr>';
