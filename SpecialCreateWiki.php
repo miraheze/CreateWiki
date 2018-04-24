@@ -43,7 +43,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		// Building a language selector (attribution:
 		// includes/specials/SpecialPageLanguage.php L68)
-		$languages = Language::fetchLanguageNames( null, 'mwfile' );
+		$languages = Language::fetchLanguageNames( null, 'wmfile' );
 		ksort( $languages );
 		$options = array();
 		foreach ( $languages as $code => $name ) {
