@@ -53,7 +53,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 		$out = $this->getOutput();
 
-		$languages = Language::fetchLanguageNames( null, 'mwfile' );
+		$languages = Language::fetchLanguageNames( null, 'wmfile' );
 		ksort( $languages );
 		$options = array();
 		foreach ( $languages as $code => $name ) {
