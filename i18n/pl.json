@@ -24,7 +24,7 @@
 	"requestwiki-label-language": "Język:",
 	"requestwiki-label-private": "Prywatna wiki (nie jest widoczna dla wszystkich):",
 	"requestwiki-label-sitename": "Nazwa wiki:",
-	"requestwiki-label-siteurl": "Poddomena:",
+	"requestwiki-label-siteurl": "Poddomena: (poddomena.miraheze.org)",
 	"requestwiki-submit": "Wyślij",
 	"requestwikiqueue-norequests": "Nie znaleziono wyników.",
 	"requestwikiqueue-pager-status-approved": "zaakceptowano",

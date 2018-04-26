@@ -45,6 +45,7 @@
 	"requestwiki-header": "좋아요, Miraheze에 새 위키를 요청하려고 하는군요! 이 양식을 채워야 저희가 요청을 검토할 수 있습니다.\n위키 요청은 자원봉사자에 의해 검토될 것이며 요청을 제출할 때 제공되는 문서에서 추적이 가능합니다.\n\n위키에 사용자 지정 도메인을 원하신다면(예: 표준 .miraheze.org 서브도메인이 아닌 도메인), 먼저 <span class=\"plainlinks\">[$1 여기]를 읽어 주세요</span>.\n\n위키를 요청할 때 당신은 저희 [[Dormancy Policy|비활동 정책]]에 자동으로 동의하게 됩니다.",
 	"requestwiki-label-comments": "코멘트 (예: 무엇에 관한 위키입니까?):",
 	"requestwiki-label-customdomain": "사용자 지정 도메인:",
+	"requestwiki-label-customdomain-info": "상단에 하위 도메인을 지정해야 합니다. 위키의 사용자 지정 도메인을 원하시면 하단에서 지정해 주십시오.",
 	"requestwiki-label-language": "언어:",
 	"requestwiki-label-private": "비공개 위키 (공개적으로 읽을 수 없음):",
 	"requestwiki-label-sitename": "위키 이름:",

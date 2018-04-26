@@ -19,6 +19,8 @@
 	"requestwikiqueue-norequests": "Näischt fonnt.",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Bemierkung vum $1",
 	"requestwikiqueue-request-label-comment": "Bemierkung:",
+	"requestwikiqueue-request-label-create-wiki": "Wiki uleeën",
+	"requestwikiqueue-request-label-edit": "Änneren",
 	"requestwikiqueue-request-label-language": "Sprooch",
 	"requestwikiqueue-request-label-private": "Privat",
 	"requestwikiqueue-request-label-status": "Status",

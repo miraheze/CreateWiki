@@ -63,6 +63,7 @@
 	"requestwikiqueue-request-label-approved": "Used as a label for 'approved'\n{{Identical|Approved}}",
 	"requestwikiqueue-request-label-comment": "Used as a label for 'comment'\n{{Identical|Comment}}",
 	"requestwikiqueue-request-label-declined": "Used as a label for 'declined'\n{{Identical|Declined}}",
+	"requestwikiqueue-request-label-edit": "{{Identical|Edit}}",
 	"requestwikiqueue-request-label-inreview": "Used as a label for 'in review'",
 	"requestwikiqueue-request-label-language": "Used as a label for 'language'\n{{Identical|Language}}",
 	"requestwikiqueue-request-label-private": "Used as a label for 'private'\n{{Identical|Private}}",
