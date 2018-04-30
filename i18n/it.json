@@ -1,0 +1,32 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16",
+			"S4b1nuz E.656",
+			"Sarah Bernabei"
+		]
+	},
+	"action-createwiki": "crea wiki",
+	"createwiki": "Crea un wiki",
+	"createwiki-label-category": "Categoria:",
+	"createwiki-label-dbname": "Nome del database:",
+	"createwiki-label-submit": "Invia",
+	"requestwiki-label-customdomain-info": "Devi fornire un subdominio sopra. Se vuoi un dominio personalizzato per il tuo wiki, per favore inseriscilo sotto.",
+	"requestwiki-label-language": "Lingua:",
+	"requestwiki-label-sitename": "Nome wiki:",
+	"requestwiki-label-siteurl": "Subdominio: (subdomain.miraheze.org)",
+	"requestwikiqueue-request-header-wikicreatorcomment": "Commento dato da $1",
+	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Commento dato da $1 il $2",
+	"requestwikiqueue-request-label-approved": "Approvato",
+	"requestwikiqueue-request-label-comment": "Commento:",
+	"requestwikiqueue-request-label-create-wiki": "Crea Wiki",
+	"requestwikiqueue-request-label-declined": "Rifiutato",
+	"requestwikiqueue-request-label-edit": "Modifica",
+	"requestwikiqueue-request-label-edit-wiki": "Richiesta di modifica Wiki",
+	"requestwikiqueue-request-label-language": "Lingua",
+	"requestwikiqueue-request-label-private": "Privato",
+	"requestwikiqueue-request-label-status": "Stato",
+	"requestwikiqueue-request-label-status-colon": "Stato:",
+	"requestwikiqueue-searchbutton": "Cerca",
+	"requestwikiqueue-usernotfound": "L'utente non è stato trovato."
+}
