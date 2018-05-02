@@ -169,7 +169,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-requestercomment' )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_comment ) . '</td></tr>';
 		if ( is_numeric( $res->cw_status_comment_timestamp ) ) {
-			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( $this->getLanguage()->timeanddate( wfTimestampp( MW_TS, $res->cw_status_comment_timestamp ), true ) )->escaped() . '</th></tr>';
+			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( $this->getLanguage()->timeanddate( wfTimestamp( MW_TS, $res->cw_status_comment_timestamp ), true ) )->escaped() . '</th></tr>';
 		} else {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->rawParams( $wikicreator )->escaped() . '</th></tr>';
 		}
