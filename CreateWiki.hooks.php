@@ -5,6 +5,8 @@ class CreateWikiHooks {
 			__DIR__ . '/cw_requests.sql' );
 		$updater->addExtensionTable( 'cw_wikis',
 			__DIR__ . '/cw_wikis.sql' );
+		$updater->addExtensionTable( 'cw_comments',
+			__DIR__ . '/cw_comments.sql' );
 
 		return true;
 	}
