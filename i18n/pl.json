@@ -12,6 +12,7 @@
 	"createwiki-error-notsuffixed": "Nazwa bazy danych nie kończy się poprawnym sufiksem (np. 'wiki').",
 	"createwiki-label-category": "Kategoria:",
 	"createwiki-label-dbname": "Nazwa bazy danych:",
+	"createwiki-label-requester": "Wnioskodawca:",
 	"createwiki-label-language": "Język:",
 	"createwiki-label-private": "Oznacz tę wiki jako prywatną",
 	"createwiki-label-reason": "Powód:",
