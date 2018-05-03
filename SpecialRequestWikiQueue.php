@@ -145,7 +145,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form = Xml::openElement( 'form', array( 'action' => $localpage, 'method' => 'post' ) );
 		$form .= '<fieldset><legend>' . $this->msg( 'requestwikiqueue-view' )->escaped() . '</legend>';
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
-		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . $this->getLanguage()->timeanddate( WfTimestamp( MW_TS, $res->cw_timestamp ), true ) . '</th></tr>';
+		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . $this->getLanguage()->timeanddate( $res->cw_timestamp, true ) . '</th></tr>';
 		$form .= '<tr>';
 		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'private', 'status', 'edit' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
@@ -169,7 +169,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-requestercomment' )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_comment ) . '</td></tr>';
 		if ( is_numeric( $res->cw_status_comment_timestamp ) ) {
-			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( $this->getLanguage()->timeanddate( WfTimestampp( MW_TS, $res->cw_status_comment_timestamp ), true ) )->format( 'l, j F Y H:i' ) )->escaped() . '</th></tr>';
+			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( $this->getLanguage()->timeanddate( $res->cw_status_comment_timestamp, true ) )->escaped() . '</th></tr>';
 		} else {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->rawParams( $wikicreator )->escaped() . '</th></tr>';
 		}
