@@ -82,13 +82,24 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'cw_private',
 				'cw_sitename',
 				'cw_status',
-				'cw_status_comment',
-				'cw_status_comment_user',
-				'cw_status_comment_timestamp',
 				'cw_timestamp',
 				'cw_url',
 				'cw_custom',
 				'cw_category'
+			),
+			array(
+				'cw_id' => $par
+			),
+			__METHOD__,
+			array()
+		);
+
+		$comment = $dbr->select( 'cw_comments',
+			array(
+				'cw_id',
+				'cw_comment',
+				'cw_comment_timestamp',
+				'cw_comment_user'
 			),
 			array(
 				'cw_id' => $par
@@ -134,8 +145,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		// Used in 'wikicreatorcomment'
-		if ( $res->cw_status_comment_user ) {
-			$wikicreatorobj = User::newFromId( $res->cw_status_comment_user );
+		if ( $comment->cw_comment_user ) {
+			$wikicreatorobj = User::newFromId( $comment->cw_comment_user );
 			$wikicreator = Linker::userLink( $wikicreatorobj->getId(), $wikicreatorobj->getName() );
 		} else {
 			$wikicreator = 'a wiki creator';
@@ -168,12 +179,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '</tr>';
 		$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-requestercomment' )->escaped() . '</th></tr>';
 		$form .= '<tr><td colspan="' . $columnamount . '">' . htmlspecialchars( $res->cw_comment ) . '</td></tr>';
-		if ( is_numeric( $res->cw_status_comment_timestamp ) ) {
-			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( $this->getLanguage()->timeanddate( $res->cw_status_comment_timestamp, true ) )->escaped() . '</th></tr>';
+		if ( is_numeric( $comment->cw_comment_timestamp ) ) {
+			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $wikicreator )->params( $this->getLanguage()->timeanddate( $comment->cw_comment_timestamp, true ) )->escaped() . '</th></tr>';
 		} else {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-header-wikicreatorcomment' )->rawParams( $wikicreator )->escaped() . '</th></tr>';
 		}
-		$form .= '<tr><td colspan="' . $columnamount . '">' .  $wgOut->parse( htmlspecialchars( $res->cw_status_comment ? $res->cw_status_comment : 'No comments.' ) ) . '</td></tr>';
+		$form .= '<tr><td colspan="' . $columnamount . '">' .  $wgOut->parse( htmlspecialchars( $comment->cw_comment ? $comment->cw_comment : 'No comments.' ) ) . '</td></tr>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
 			$form .= '<tr><th colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-status' )->escaped() . '</th></tr>';
 			$form .= '<tr><td colspan="' . $columnamount . '">' . $this->msg( 'requestwikiqueue-request-label-comment' )->escaped() . ' ' . Xml::input( 'rwqStatusComment', 45, '', array( 'required' => '' ) ) . ' ';
@@ -201,14 +212,22 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		$dbw = wfGetDB( DB_MASTER );
-		$dbw->update( 'cw_requests',
+		$dbw->update( 'cw_requestes',
 			array(
 				'cw_status' => $request->getVal( 'rwqStatus' ),
-				'cw_status_comment' => $request->getVal( 'rwqStatusComment' ),
-				'cw_status_comment_timestamp' => $dbw->timestamp(),
-				'cw_status_comment_user' => $user->getId()
-			), array(
+			),
+			array(
 				'cw_id' => $id
+			),
+			__METHOD__
+		);
+
+		$dbw->insert( 'cw_comments',
+			array(
+				'cw_id' => $id,
+				'cw_comment' => $request->getValue( 'rwqStatusComment' ),
+				'cw_comment_timestamp' => $dbw->timestamp(),
+				'cw_comment_user' => $user->getId()
 			),
 			__METHOD__
 		);
