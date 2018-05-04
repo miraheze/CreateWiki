@@ -212,7 +212,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		$dbw = wfGetDB( DB_MASTER );
-		$dbw->update( 'cw_requests',
+		$dbw->update( 'cw_requestes',
 			array(
 				'cw_status' => $request->getVal( 'rwqStatus' ),
 			),
