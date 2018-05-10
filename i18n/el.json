@@ -25,6 +25,7 @@
 	"requestwiki": "Ζητήστε ένα βίκι",
 	"requestwikiedit": "Επεξεργαστείτε ένα αίτημα βίκι",
 	"requestwiki-label-comments": "Σχόλια (π.χ. σχετικά με τι είναι το βίκι σας;):",
+	"requestwiki-label-customdomain": "Εξατομικευμένος τομέας:",
 	"requestwiki-label-language": "Γλώσσα:",
 	"requestwiki-label-private": "Ιδιωτικό βίκι (μη αναγνώσιμο από τον καθένα):",
 	"requestwiki-label-sitename": "Όνομα βίκι:",
