@@ -32,8 +32,9 @@ foreach ( $res as $row ) {
 	$private = $row->wiki_private;
 	$closed = $row->wiki_closed;
 	$inactive = $row->wiki_inactive;
+	$extensions = $row->wiki_extensions;
 
-	$allWikis[] = "$DBname|$siteName|$language|";
+	$allWikis[] = "$DBname|$siteName|$language|$extensions";
 
 	$cdb = \Cdb\Writer::open( '/srv/mediawiki/cdb-config/' . $DBname . '.cdb' );
 
