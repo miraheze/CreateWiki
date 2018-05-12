@@ -133,7 +133,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$columnamount = 8;
 		}
 
-		$comments = $dbr->select( 'cw_comments', array( 'cw_id', 'cw_comment', 'cw_comment_user', 'cw_comment_timestamp' ), array( 'cw_id' => $par ), __METHOD__, array( 'ORDER BY' => 'cw_timestamp DESC' ) );
+		$comments = $dbr->select( 'cw_comments', array( 'cw_id', 'cw_comment', 'cw_comment_user', 'cw_comment_timestamp' ), array( 'cw_id' => $par ), __METHOD__, array( 'ORDER BY' => 'cw_comment_timestamp DESC' ) );
 
 		$localpage = $this->getPageTitle()->getLocalUrl() . "/$par";
 		$form = Xml::openElement( 'form', array( 'action' => $localpage, 'method' => 'post' ) );
