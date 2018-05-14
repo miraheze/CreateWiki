@@ -20,6 +20,11 @@
 	"createwiki-label-submit": "Wyślij",
 	"createwiki-legend": "Utwórz wiki",
 	"createwiki-success": "Wiki została pomyślnie utworzona.",
+	"logentry-farmer-createwiki": "$1 stworzył wiki „$4”",
+	"logentry-farmer-requestwikiedit": "$1 edytował prośbę o wiki #$4",
+	"requestwiki": "Poproś o wiki",
+	"requestwikiedit": "Edytuj prośbę o wiki",
+	"requestwiki-edit-id": "ID prośby o wiki",
 	"requestwiki-label-comments": "Komentarze (np. o czym jest twoja wiki?):",
 	"requestwiki-label-customdomain": "Niestandardowa domena:",
 	"requestwiki-label-language": "Język:",
@@ -34,6 +39,7 @@
 	"requestwikiqueue-request-label-approved": "Zaakceptowano",
 	"requestwikiqueue-request-label-comment": "Komentarz:",
 	"requestwikiqueue-request-label-create-wiki": "Utwórz wiki",
+	"requestwikiqueue-request-label-custom": "Niestandardowa domena",
 	"requestwikiqueue-request-label-declined": "Odrzucono",
 	"requestwikiqueue-request-label-edit": "Edytuj",
 	"requestwikiqueue-request-label-language": "Język",
@@ -42,7 +48,11 @@
 	"requestwikiqueue-request-label-status-colon": "Status:",
 	"requestwikiqueue-request-label-toolbox": "Przybornik",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-status": "Zmień status tej prośby o wiki",
 	"requestwikiqueue-request-toolbox-createwiki": "Utwórz wiki",
+	"requestwikiqueue-requestnotfound": "Prośba nie została znaleziona.",
 	"requestwikiqueue-searchbutton": "Szukaj",
-	"requestwikiqueue-usernotfound": "Użytkownik nie został znaleziony."
+	"requestwikiqueue-searchrequest": "Szukaj próśb o wiki",
+	"requestwikiqueue-usernotfound": "Użytkownik nie został znaleziony.",
+	"requestwikiqueue-view": "Zobacz prośbę o wiki"
 }
