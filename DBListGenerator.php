@@ -33,8 +33,9 @@ foreach ( $res as $row ) {
 	$closed = $row->wiki_closed;
 	$inactive = $row->wiki_inactive;
 	$extensions = $row->wiki_extensions;
+	$settings = $row->wiki_settings
 
-	$allWikis[] = "$DBname|$siteName|$language|$extensions";
+	$allWikis[] = "$DBname|$siteName|$language|$extensions|$settings|";
 
 	$cdb = \Cdb\Writer::open( '/srv/mediawiki/cdb-config/' . $DBname . '.cdb' );
 
@@ -47,7 +48,7 @@ foreach ( $res as $row ) {
 	} else {
 		$cdb->set( 'private', 0 );
 	}
-	
+
 	if ( $closed === "1" ) {
 		$closedWikis[] = $DBname;
 		$cdb->set( 'closed', 1 );
