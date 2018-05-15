@@ -33,7 +33,7 @@ foreach ( $res as $row ) {
 	$closed = $row->wiki_closed;
 	$inactive = $row->wiki_inactive;
 	$extensions = $row->wiki_extensions;
-	$settings = $row->wiki_settings
+	$settings = $row->wiki_settings;
 
 	$allWikis[] = "$DBname|$siteName|$language|$extensions|$settings|";
 
