@@ -149,7 +149,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		}
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
-		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->prepareForm()->show();
+		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->suppressDefaultSubmit( $disabled )->prepareForm()->show();
 
 	}
 
