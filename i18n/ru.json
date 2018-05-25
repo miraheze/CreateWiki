@@ -67,6 +67,7 @@
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Комментарий учитывая по $1 в $2",
 	"requestwikiqueue-request-label-approved": "утвержден",
 	"requestwikiqueue-request-label-comment": "Комментарий:",
+	"requestwikiqueue-request-label-create-wiki": "Создать вики",
 	"requestwikiqueue-request-label-custom": "Пользовательский домен",
 	"requestwikiqueue-request-label-declined": "отказался",
 	"requestwikiqueue-request-label-inreview": "в комментарий",
