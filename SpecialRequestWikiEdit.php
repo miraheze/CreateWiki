@@ -10,10 +10,10 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$this->setHeaders();
 
 		if ( !$this->getUser()->isLoggedIn() ) {
-            $loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( array( 'returnto' => $this->getPageTitle()->getPrefixedText() ) );
-            $out->addWikiMsg( 'requestwiki-edit-notloggedin', $loginurl );
-            return false;
-        }
+			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( array( 'returnto' => $this->getPageTitle()->getPrefixedText() ) );
+			$out->addWikiMsg( 'requestwiki-edit-notloggedin', $loginurl );
+			return false;
+		}
 
 		if ( !is_null( $par ) && $par !== '' ) {
 			$this->showEditForm( $par );
