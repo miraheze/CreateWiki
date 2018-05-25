@@ -36,6 +36,8 @@
 	"requestwikiedit": "Edit a wiki request",
 	"requestwiki-edit-id": "Wiki Request ID",
 	"requestwiki-edit-success": "Changes to request $1 submitted successfully.",
+	"requestwiki-edit-notloggedin": "Sorry, you need to <span class =\"plainlinks\">[$1 log in]</span> before you can edit a wiki request.",
+	"requestwiki-edit-user": "You do not have sufficient rights to edit this wiki request. Please be aware that you can only edit requests you have made with your current account.",
 	"requestwiki-error-csrf": "<strong>Sorry, the request could not be submitted due to a loss of session data.</strong>\nPlease submit the form again. If that doesn't work, please [[Special:Userlogout|log out]] and log back in.",
 	"requestwiki-error-invalidcomment": "Your wiki request contains an invalid character. Please try requesting again, and if the problem persists [[Help center|please contact us]]",
 	"requestwiki-error-nodomain": "You must specify either a subdomain or custom domain.",

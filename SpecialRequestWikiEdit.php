@@ -9,6 +9,12 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$out = $this->getOutput();
 		$this->setHeaders();
 
+		if ( !$this->getUser()->isLoggedIn() ) {
+			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( array( 'returnto' => $this->getPageTitle()->getPrefixedText() ) );
+			$out->addWikiMsg( 'requestwiki-edit-notloggedin', $loginurl );
+			return false;
+		}
+
 		if ( !is_null( $par ) && $par !== '' ) {
 			$this->showEditForm( $par );
 		} else {
@@ -48,9 +54,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	function showEditForm( $id ) {
 		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories;
 
-		// Let everyone view the edit form, disable for those who shouldn't edit
-		$disabled = true;
-
 		$out = $this->getOutput();
 
 		$languages = Language::fetchLanguageNames( null, 'wmfile' );
@@ -78,8 +81,9 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			__METHOD__
 		);
 
-		if ( $wgUser->getId() == $res->cw_user || $wgUser->isAllowed( 'createwiki' ) ) {
-			$disabled = false;
+		if ( $wgUser->getId() != $res->cw_user && !$wgUser->isAllowed( 'createwiki' ) ) {
+			$out->addWikiMessage( 'requestwiki-edit-user' );
+			return;
 		}
 
 		$subdomain = substr( $res->cw_url, 0, -13 );
@@ -95,21 +99,18 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'subdomain' => array(
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-siteurl',
-				'disabled' => $disabled,
 				'default' => $subdomain,
 				'name' => 'rweSubdomain',
 			),
 			'customdomain' => array(
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-customdomain',
-				'disabled' => $disabled,
 				'default' => $res->cw_custom,
 				'name' => 'rweCustomdomain',
 			),
 			'sitename' => array(
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
-				'disabled' => $disabled,
 				'default' => $res->cw_sitename,
 				'name' => 'rweSitename',
 			),
@@ -117,21 +118,18 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-language',
 				'options' => $options,
-				'disabled' => $disabled,
 				'default' => $res->cw_language,
 				'name' => 'rweLanguage',
 			),
 			'private' => array(
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
-				'disabled' => $disabled,
 				'default' => $res->cw_private == 1,
 				'name' => 'rwePrivate',
 			),
 			'reason' => array(
 				'type' => 'text',
 				'label-message' => 'createwiki-label-reason',
-				'disabled' => $disabled,
 				'default' => $res->cw_comment,
 				'name' => 'rweReason',
 			),
@@ -142,14 +140,13 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'options' => $wgCreateWikiCategories,
-				'disabled' => $disabled,
 				'default' => $res->cw_category,
 				'name' => 'rweCategory',
 			);
 		}
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
-		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->suppressDefaultSubmit( $disabled )->prepareForm()->show();
+		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->prepareForm()->show();
 
 	}
 
