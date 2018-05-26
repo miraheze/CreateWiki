@@ -82,7 +82,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		);
 
 		if ( $wgUser->getId() != $res->cw_user && !$wgUser->isAllowed( 'createwiki' ) ) {
-			$out->addWikiMessage( 'requestwiki-edit-user' );
+			$out->addWikiMsg( 'requestwiki-edit-user' );
 			return;
 		}
 
