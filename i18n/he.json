@@ -36,6 +36,8 @@
 	"requestwikiedit": "עריכת בקשה של אתר ויקי",
 	"requestwiki-edit-id": "המזהה של בקשת אתר הוויקי",
 	"requestwiki-edit-success": "השינויים בבקשה $1 נשלחו בהצלחה.",
+	"requestwiki-edit-notloggedin": "מצטערים, יש <span class =\"plainlinks\">[$1 להיכנס לחשבון]</span> כדי לערוך בקשה של אתר ויקי.",
+	"requestwiki-edit-user": "אין לך את ההרשאות הנדרשות לעריכת בקשת אתר הוויקי הזו. באפשרותך לערוך רק בקשות ששלחת עם החשבון הנוכחי שלך.",
 	"requestwiki-error-csrf": "<strong>מצטערים, לא ניתן היה לשלוח את הבקשה עקב אובדן נתוני הכניסה.</strong>\nנא לשלוח את הטופס שוב. אם זה לא עובד, נא [[Special:Userlogout|לצאת מהחשבון]] ולהיכנס מחדש.",
 	"requestwiki-error-invalidcomment": "בקשת אתר הוויקי שלך מכילה תו בלתי־תקין. נא לנסות לשלוח את הבקשה שוב. אם בעיה זו חוזרת על עצמה, אפשר [[Help center|ליצור איתנו קשר]]",
 	"requestwiki-error-nodomain": "יש לציין תת־תחום או תחום מותאם אישית.",

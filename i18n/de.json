@@ -37,6 +37,8 @@
 	"requestwikiedit": "Eine Wikianfrage bearbeiten",
 	"requestwiki-edit-id": "Wikianfrage-Kennung",
 	"requestwiki-edit-success": "Änderungen für die Anfrage von $1 erfolgreich übermittelt.",
+	"requestwiki-edit-notloggedin": "Du musst dich leider <span class =\"plainlinks\">[$1 anmelden]</span>, bevor du eine Wikianfrage bearbeiten kannst.",
+	"requestwiki-edit-user": "Du hast keine ausreichenden Berechtigungen, um diese Wikianfrage zu bearbeiten. Beachte bitte, dass du nur Anfragen bearbeiten kannst, die du mit deinem aktuellen Benutzerkonto gestellt hast.",
 	"requestwiki-error-csrf": "<strong>Sorry, diese Wiki konnte nicht erstellt werden wegen misteriösem Datenverlust.</strong>\nBitte sende Sie das Formular erneut. Sollte das nicht funktionieren, [[Special:Userlogout|Loggen Sie sich aus]] und dann wieder ein.",
 	"requestwiki-error-invalidcomment": "Deine Wikianfrage enthält ein ungültiges Zeichen. Bitte erneut versuchen und falls das Problem weiterhin bestehen bleibt, [[Help center|kontaktiere uns bitte]].",
 	"requestwiki-error-nodomain": "Sie müssen entweder eine Sub-Domain oder Custom-Domain angeben.",
