@@ -29,6 +29,7 @@
 	"requestwiki": "Poproś o wiki",
 	"requestwikiedit": "Edytuj prośbę o wiki",
 	"requestwiki-edit-id": "ID prośby o wiki",
+	"requestwiki-edit-notloggedin": "Przepraszamy, najpierw musisz się <span class =\"plainlinks\">[$1 zalogować]</span>, aby móc edytować prośbę o wiki.",
 	"requestwiki-label-comments": "Komentarze (np. o czym jest twoja wiki?):",
 	"requestwiki-label-customdomain": "Niestandardowa domena:",
 	"requestwiki-label-language": "Język:",

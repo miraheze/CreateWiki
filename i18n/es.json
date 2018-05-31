@@ -34,7 +34,7 @@
 	"logentry-farmer-requestwiki": "$1 solicitó el wiki «$4» (idioma: $5; privado: $6) en $7",
 	"log-name-farmer": "Registro de administración de wikis",
 	"requestwiki": "Solicitar un wiki",
-	"requestwiki-edit-notloggedin": "Pardon, es necesario que <span class =\"plainlinks\">[$1 ingresar]</span> antes de poder editar una recuesta wiki.",
+	"requestwiki-edit-notloggedin": "Es necesario <span class =\"plainlinks\">[$1 acceder]</span> antes de modificar una solicitud de wiki.",
 	"requestwiki-edit-user": "No cuentas con los privilegios suficientes para editar esta solicitud de wiki. Únicamente puedes editar las solicitudes que hayas hecho con tu cuenta actual.",
 	"requestwiki-error-csrf": "<strong>No se pudo enviar la solicitud debido a una pérdida de los datos de la sesión.</strong>\nEnvía el formulario otra vez. Si ello no funciona, [[Special:Userlogout|finaliza tu sesión]] y accede de nuevo.",
 	"requestwiki-error-invalidcomment": "La solicitud contiene un carácter no válido. Prueba a realizar la solicitud de nuevo; si el problema persiste, [[Help center|ponte en contacto con nosotros]]",
