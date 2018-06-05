@@ -158,10 +158,10 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	function onSubmitInput( array $params ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
+		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain;
 
-		$dbname = $params['subdomain'] . "wiki";
-		$fullurl = $params['subdomain'] . ".miraheze.org";
+		$dbname = $params['subdomain'] . 'wiki';
+		$fullurl = $params['subdomain'] . '.' . $wgCreateWikiSubdomain;
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$private = $params['private'] ? 1 : O;

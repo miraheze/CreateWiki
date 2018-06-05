@@ -61,6 +61,8 @@
 		"CreateWikiEmailNotifications": false,
 		"@wgCreateWikiSQLfiles": "Array. All SQLs to be loaded into every wiki by default.",
 		"CreateWikiSQLfiles": false,
+		"@wgCreateWikiSubdomain": "String. The master part of subdomains, e.g. wiki.miraheze.org, miraheze.org is the master part.",
+		"CreateWikiSubdomain": false,
 		"@wgCreateWikiUseCategories": "Boolean. Whether to use categories to categorise wikis.",
 		"CreateWikiUseCategories": false,
 		"@wgCreateWikiUseClosedWikis": "Boolean. Whether to implement front end logic for closing wikis.",
