@@ -1,7 +1,7 @@
 <?php
 class SpecialRequestWikiQueue extends SpecialPage {
 	function __construct() {
-		parent::__construct( 'RequestWikiQueue' );
+		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 	}
 
 	function execute( $par ) {

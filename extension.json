@@ -8,14 +8,6 @@
 		"createwiki",
 		"requestwiki"
 	],
-	"GroupPermissions": {
-		"wikicreator": {
-			"createwiki": true
-		},
-		"user": {
-			"requestwiki": true
-		}
-	},
 	"SpecialPages": {
 		"CreateWiki": "SpecialCreateWiki",
 		"RequestWiki": "SpecialRequestWiki",
@@ -71,7 +63,7 @@
 		"CreateWikiUseClosedWikis": false,
 		"@wgCreateWikiUseCustomDomains": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
 		"CreateWikiUseCustomDomains": false,
-		"@wgCreateWikiUseInactiveWikis": "Boolean. Whether to implement front end logic for inactive wikis."
+		"@wgCreateWikiUseInactiveWikis": "Boolean. Whether to implement front end logic for inactive wikis.",
 		"CreateWikiUseInactiveWikis": false,
 		"@wgCreateWikiUsePrivateWikis": "Boolean. Whether to implement front end logic for marking wikis as private.",
 		"CreateWikiUsePrivateWikis": false

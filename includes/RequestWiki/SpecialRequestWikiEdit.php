@@ -2,7 +2,7 @@
 
 class SpecialRequestWikiEdit extends SpecialPage {
 	function __construct() {
-		parent::__construct( 'RequestWikiEdit' );
+		parent::__construct( 'RequestWikiEdit', 'requestwiki' );
 	}
 
 	function execute( $par ) {
