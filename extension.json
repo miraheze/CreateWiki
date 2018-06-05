@@ -36,13 +36,13 @@
                 ]
         },
         "AutoloadClasses": {
-                "CreateWikiHooks": "CreateWiki.hooks.php",
-                "CreateWikiLogFormatter": "CreateWikiLogFormatter.php",
-                "RequestWikiQueuePager": "RequestWikiQueuePager.php",
-                "SpecialCreateWiki": "SpecialCreateWiki.php",
-                "SpecialRequestWiki": "SpecialRequestWiki.php",
-		"SpecialRequestWikiEdit": "SpecialRequestWikiEdit.php",
-                "SpecialRequestWikiQueue": "SpecialRequestWikiQueue.php"
+                "CreateWikiHooks": "includes/CreateWikiHooks.php",
+                "CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
+                "RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
+                "SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
+                "SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
+		"SpecialRequestWikiEdit": "includes/RequestWiki/SpecialRequestWikiEdit.php",
+                "SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php"
         },
         "Hooks": {
                 "LoadExtensionSchemaUpdates": [
