@@ -31,7 +31,7 @@ class SpecialRequestWiki extends FormSpecialPage {
         }
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories;
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
 
 		$request = $this->getRequest();
 
@@ -88,11 +88,13 @@ class SpecialRequestWiki extends FormSpecialPage {
 			);
 		}
 
-		$formDescriptor['private'] = array(
-			'type' => 'check',
-			'label-message' => 'requestwiki-label-private',
-			'name' => 'rwPrivate',
-		);
+		if ( $wgCreateWikiUsePrivateWikis ) {
+			$formDescriptor['private'] = array(
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-private',
+				'name' => 'rwPrivate',
+			);
+		}
 
 		$formDescriptor['reason'] = array(
 			'type' => 'text',
@@ -106,9 +108,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$private = $formData['private'] ? 1 : 0;
+		global $wgCreateWikiUsePrivateWikis;
+
 		$subdomain = $formData['subdomain'];
-		
+
+		if ( $wgCreateWikiUsePrivateWikis ) {
+			$private = $formData['private'] ? 1 : 0;
+		} else {
+			$private = 0;
+		}
+
 		$out = $this->getOutput();
 
 		// Make the subdomain a dbname
@@ -123,22 +132,25 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$request = $this->getRequest();
 
+		$values = array(
+			'cw_comment' => $formData['reason'],
+			'cw_dbname' => $dbname,
+			'cw_sitename' => $formData['sitename'],
+			'cw_ip' => $request->getIP(),
+			'cw_language' => $formData['language'],
+			'cw_private' => $private,
+			'cw_status' => 'inreview',
+			'cw_timestamp' => $dbw->timestamp(),
+			'cw_url' => $url,
+			'cw_custom' => $formData['customdomain'],
+			'cw_user' => $this->getUser()->getId(),
+			'cw_category' => $formData['category'],
+		);
+
+
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->insert( 'cw_requests',
-			array(
-				'cw_comment' => $formData['reason'],
-				'cw_dbname' => $dbname,
-				'cw_sitename' => $formData['sitename'],
-				'cw_ip' => $request->getIP(),
-				'cw_language' => $formData['language'],
-				'cw_private' => $private,
-				'cw_status' => 'inreview',
-				'cw_timestamp' => $dbw->timestamp(),
-				'cw_url' => $url,
-				'cw_custom' => $formData['customdomain'],
-				'cw_user' => $this->getUser()->getId(),
-				'cw_category' => $formData['category'],
-			),
+			$values,
 			__METHOD__
 		);
 

@@ -52,7 +52,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 
 	function showEditForm( $id ) {
-		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories;
+		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
 
 		$out = $this->getOutput();
 
@@ -121,12 +121,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'default' => $res->cw_language,
 				'name' => 'rweLanguage',
 			),
-			'private' => array(
-				'type' => 'check',
-				'label-message' => 'requestwiki-label-private',
-				'default' => $res->cw_private == 1,
-				'name' => 'rwePrivate',
-			),
 			'reason' => array(
 				'type' => 'text',
 				'label-message' => 'createwiki-label-reason',
@@ -134,6 +128,15 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'name' => 'rweReason',
 			),
 		);
+
+		if ( $wgCreateWikiUsePrivateWikis ) {
+			$formDescriptor['private'] = array(
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-private',
+				'default' => $res->cw_private == 1,
+				'name' => 'rwePrivate',
+			);
+		}
 
 		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
 			$formDescriptor['category'] = array(
@@ -151,8 +154,16 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	function onSubmitInput( array $params ) {
+		global $wgCreateWikiUsePrivateWikis;
+
 		$dbname = $params['subdomain'] . "wiki";
 		$fullurl = $params['subdomain'] . ".miraheze.org";
+
+		if ( $wgCreateWikiUsePrivateWikis ) {
+			$private = $params['private'] ? 1 : O;
+		} else {
+			$private = 0;
+		}
 
 		$values = array(
 			'cw_comment' => $params['reason'],
@@ -162,7 +173,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'cw_url' => $fullurl,
 			'cw_custom' => $params['customdomain'],
 			'cw_category' => $params['category'],
-			'cw_private' => $params['private'] ? 1 : 0,
+			'cw_private' => $private,
 		);
 
 		$dbw = wfGetDB( DB_MASTER );

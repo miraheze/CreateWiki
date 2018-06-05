@@ -69,7 +69,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	function lookupRequest( $par ) {
-		global $wgOut;
+		global $wgOut, $wgCreateWikiUsePrivateWikis;
 
 		$dbr = wfGetDB( DB_SLAVE );
 
@@ -102,8 +102,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			return false;
 		}
 
-		$private = $res->cw_private == 0 ? 'No' : 'Yes';
-
 		if ( $res->cw_status === 'inreview' ) {
 			$status = 'In review';
 		} else {
@@ -119,7 +117,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			'cwCategory' => $res->cw_category
 		);
 
-		if ( $res->cw_private != 0 ) {
+		if ( $res->cw_private != 0 && $wgCreateWikiUsePrivateWikis ) {
 			$createwikiparams['cwPrivate'] = 1;
 		}
 
@@ -128,9 +126,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
-			$columnamount = 9;
-		} else {
 			$columnamount = 8;
+		} else {
+			$columnamount = 7;
 		}
 
 		$comments = $dbr->select( 'cw_comments', array( 'cw_id', 'cw_comment', 'cw_comment_user', 'cw_comment_timestamp' ), array( 'cw_id' => $par ), __METHOD__, array( 'ORDER BY' => 'cw_comment_timestamp DESC' ) );
@@ -141,7 +139,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . $this->getLanguage()->timeanddate( $res->cw_timestamp, true ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'private', 'status', 'edit' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'status', 'edit' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
@@ -153,7 +151,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '<td>' . htmlspecialchars( $res->cw_url ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_custom ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_language ) . '</td>';
-		$form .= '<td>' . $private . '</td>';
 		$form .= '<td>' . $status . '</td>';
 		$form .= '<td>' . Linker::linkKnown( SpecialPage::getTitleFor( 'RequestWikiEdit', $par ), $this->msg( 'requestwikiqueue-request-label-edit-wiki' )->escaped() ) . '</td>';
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {

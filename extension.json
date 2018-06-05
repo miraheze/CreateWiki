@@ -51,9 +51,11 @@
 		]
 	},
 	"config": {
-		"CreateWikiDatabase": "metawiki",
+		"CreateWikiDatabase": false,
 		"CreateWikiSQLfiles": false,
 		"CreateWikiUseCategories": false,
+		"CreateWikiUseClosedWikis": false,
+		"CreateWikiUsePrivateWikis": false,
 		"CreateWikiCategories": false
 	},
 	"callback": "CreateWikiHooks::onRegistration",

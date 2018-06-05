@@ -5,7 +5,7 @@ class SpecialCreateWiki extends FormSpecialPage {
         }
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories;
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
 
 		$par = $this->par;
 		$request = $this->getRequest();
@@ -58,11 +58,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'name' => 'cwLanguage',
 		);
 
-		$formDescriptor['private'] = array(
-			'type' => 'check',
-			'label-message' => 'createwiki-label-private',
-			'name' => 'cwPrivate',
-		);
+		if ( $wgCreateWikiUsePrivateWikis ) {
+			$formDescriptor['private'] = array(
+				'type' => 'check',
+				'label-message' => 'createwiki-label-private',
+				'name' => 'cwPrivate',
+			);
+		}
 
 
 		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
@@ -87,14 +89,19 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories;
+		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis;
 
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
 		$siteName = $formData['sitename'];
 		$language = $formData['language'];
-		$private = $formData['private'];
 		$reason = $formData['reason'];
+
+		if ( $wgCreateWikiUsePrivateWikis ) {
+			$private = $formData['private'];
+		} else {
+			$private = 0;
+		}
 
 		if ( $wgCreateWikiUseCategories ) {
 			$category = $formData['category'];
