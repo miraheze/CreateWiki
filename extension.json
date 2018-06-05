@@ -1,14 +1,14 @@
 {
-        "name": "CreateWiki",
-        "author": [ "Southparkfan", "John Lewis" ],
-        "url": "//github.com/Miraheze/CreateWiki",
-        "descriptionmsg": "createwiki-desc",
-        "type": "specialpage",
-        "AvailableRights": [
-                "createwiki",
+	"name": "CreateWiki",
+	"author": [ "Southparkfan", "John Lewis" ],
+	"url": "//github.com/Miraheze/CreateWiki",
+	"descriptionmsg": "createwiki-desc",
+	"type": "specialpage",
+	"AvailableRights": [
+		"createwiki",
 		"requestwiki"
-        ],
-        "GroupPermissions": {
+	],
+	"GroupPermissions": {
 		"wikicreator": {
 			"createwiki": true
 		},
@@ -16,45 +16,45 @@
 			"requestwiki": true
 		}
 	},
-        "SpecialPages": {
-                "CreateWiki": "SpecialCreateWiki",
-                "RequestWiki": "SpecialRequestWiki",
+	"SpecialPages": {
+		"CreateWiki": "SpecialCreateWiki",
+		"RequestWiki": "SpecialRequestWiki",
 		"RequestWikiEdit": "SpecialRequestWikiEdit",
-                "RequestWikiQueue": "SpecialRequestWikiQueue"
-        },
-        "LogTypes": [
-                "farmer"
-        ],
-        "LogActionsHandlers": {
-                "farmer/createwiki": "LogFormatter",
+		"RequestWikiQueue": "SpecialRequestWikiQueue"
+	},
+	"LogTypes": [
+		"farmer"
+	],
+	"LogActionsHandlers": {
+		"farmer/createwiki": "LogFormatter",
 		"farmer/requestwikiedit": "LogFormatter",
-                "farmer/requestwiki": "CreateWikiLogFormatter"
-        },
-        "MessagesDirs": {
-                "CreateWiki": [
-                        "i18n"
-                ]
-        },
-        "AutoloadClasses": {
-                "CreateWikiHooks": "includes/CreateWikiHooks.php",
-                "CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
-		"RemoteWiki": "RemoteWiki.php",
-                "RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
-                "SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
-                "SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
+		"farmer/requestwiki": "CreateWikiLogFormatter"
+	},
+	"MessagesDirs": {
+		"CreateWiki": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"CreateWikiHooks": "includes/CreateWikiHooks.php",
+		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
+		"RemoteWiki": "includes/RemoteWiki.php",
+		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
+		"SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
+		"SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
 		"SpecialRequestWikiEdit": "includes/RequestWiki/SpecialRequestWikiEdit.php",
-                "SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php"
-        },
-        "Hooks": {
-                "LoadExtensionSchemaUpdates": [
-                        "CreateWikiHooks::fnCreateWikiSchemaUpdates"
-                ]
-        },
-        "config": {
+		"SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php"
+	},
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": [
+			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
+		]
+	},
+	"config": {
 		"CreateWikiSQLfiles": false,
 		"CreateWikiUseCategories": false,
 		"CreateWikiCategories": false
-        },
-        "callback": "CreateWikiHooks::onRegistration",
-        "manifest_version": 1
+	},
+	"callback": "CreateWikiHooks::onRegistration",
+	"manifest_version": 1
 }
