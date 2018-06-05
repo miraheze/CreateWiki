@@ -12,7 +12,11 @@ class CreateWikiHooks {
 	}
 
 	public static function onRegistration() {
-		global $wgLogTypes;
+		global $wgLogTypes, $wgCreateWikiDatabase;
+		
+		if ( !isset( $wgCreateWikiDatabase ) ) {
+			$wgCreateWikiDatabase = 'metawiki';
+		}
 
 		if ( !in_array( 'farmer', $wgLogTypes ) ) {
 			$wgLogTypes[] = 'farmer';
