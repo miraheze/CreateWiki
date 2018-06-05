@@ -51,12 +51,14 @@
 		]
 	},
 	"config": {
+		"CreateWikiCategories": false,
+		"CreateWikiCustomDomainPage": false,
 		"CreateWikiDatabase": false,
 		"CreateWikiSQLfiles": false,
 		"CreateWikiUseCategories": false,
 		"CreateWikiUseClosedWikis": false,
-		"CreateWikiUsePrivateWikis": false,
-		"CreateWikiCategories": false
+		"CreateWikiUseCustomDomains": false,
+		"CreateWikiUsePrivateWikis": false
 	},
 	"callback": "CreateWikiHooks::onRegistration",
 	"manifest_version": 1

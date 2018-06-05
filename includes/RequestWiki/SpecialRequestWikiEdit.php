@@ -52,7 +52,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 
 	function showEditForm( $id ) {
-		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
+		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
 
 		$out = $this->getOutput();
 
@@ -102,12 +102,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'default' => $subdomain,
 				'name' => 'rweSubdomain',
 			),
-			'customdomain' => array(
-				'type' => 'text',
-				'label-message' => 'requestwiki-label-customdomain',
-				'default' => $res->cw_custom,
-				'name' => 'rweCustomdomain',
-			),
 			'sitename' => array(
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
@@ -121,13 +115,16 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'default' => $res->cw_language,
 				'name' => 'rweLanguage',
 			),
-			'reason' => array(
-				'type' => 'text',
-				'label-message' => 'createwiki-label-reason',
-				'default' => $res->cw_comment,
-				'name' => 'rweReason',
-			),
 		);
+
+		if ( $wgCreateWikiUseCustomDomains ) {
+			$formDescriptor['customdomain'] = array(
+				'type' => 'text',
+				'label-message' => 'requestwiki-label-customdomain',
+				'default' => $res->cw_custom,
+				'name' => 'rweCustomdomain',
+			);
+		}
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$formDescriptor['private'] = array(
@@ -148,13 +145,20 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			);
 		}
 
+		$formDescriptor['reason'] = array(
+			'type' => 'text',
+			'label-message' => 'createwiki-label-reason',
+			'default' => $res->cw_comment,
+			'name' => 'rweReason',
+		);
+
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
 		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->prepareForm()->show();
 
 	}
 
 	function onSubmitInput( array $params ) {
-		global $wgCreateWikiUsePrivateWikis;
+		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
 
 		$dbname = $params['subdomain'] . "wiki";
 		$fullurl = $params['subdomain'] . ".miraheze.org";
@@ -165,13 +169,19 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			$private = 0;
 		}
 
+		if ( $wgCreateWikiUseCustomDomains ) {
+			$customdomain = $params['customdomain'];
+		} else {
+			$customdomain = "";
+		}
+
 		$values = array(
 			'cw_comment' => $params['reason'],
 			'cw_language' => $params['language'],
 			'cw_sitename' => $params['sitename'],
 			'cw_dbname' => $dbname,
 			'cw_url' => $fullurl,
-			'cw_custom' => $params['customdomain'],
+			'cw_custom' => $customdomain,
 			'cw_category' => $params['category'],
 			'cw_private' => $private,
 		);

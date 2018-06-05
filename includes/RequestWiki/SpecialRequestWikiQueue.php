@@ -126,9 +126,15 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
-			$columnamount = 8;
-		} else {
 			$columnamount = 7;
+		} else {
+			$columnamount = 6;
+		}
+
+		if ( $res->cw_custom ) {
+			$rwdomain = $res->cw_custom;
+		} else {
+			$rwdomain = $res->cw_url;
 		}
 
 		$comments = $dbr->select( 'cw_comments', array( 'cw_id', 'cw_comment', 'cw_comment_user', 'cw_comment_timestamp' ), array( 'cw_id' => $par ), __METHOD__, array( 'ORDER BY' => 'cw_comment_timestamp DESC' ) );
@@ -139,7 +145,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= Xml::openElement( 'table', array( 'class' => 'wikitable' ) );
 		$form .= '<tr><th colspan="' . $columnamount . '">Wiki request #' . $par. ' by ' . Linker::userLink( $res->cw_user, User::newFromId( $res->cw_user )->getName() ) . ' at ' . $this->getLanguage()->timeanddate( $res->cw_timestamp, true ) . '</th></tr>';
 		$form .= '<tr>';
-		foreach ( array( 'sitename', 'requester', 'url', 'custom', 'language', 'status', 'edit' ) as $label ) {
+		foreach ( array( 'sitename', 'requester', 'url', 'language', 'status', 'edit' ) as $label ) {
 			$form .= '<th>' . $this->msg( 'requestwikiqueue-request-label-' . $label )->escaped() . '</th>';
 		}
 		if ( $this->getUser()->isAllowed( 'createwiki' ) ) {
@@ -148,8 +154,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$form .= '</tr>';
 		$form .= '<tr><td>' . htmlspecialchars( $res->cw_sitename ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $user->getName() ) . Linker::userToolLinks( $res->cw_user, $user->getName() ) . '</td>';
-		$form .= '<td>' . htmlspecialchars( $res->cw_url ) . '</td>';
-		$form .= '<td>' . htmlspecialchars( $res->cw_custom ) . '</td>';
+		$form .= '<td>' . htmlspecialchars( $rwdomain ) . '</td>';
 		$form .= '<td>' . htmlspecialchars( $res->cw_language ) . '</td>';
 		$form .= '<td>' . $status . '</td>';
 		$form .= '<td>' . Linker::linkKnown( SpecialPage::getTitleFor( 'RequestWikiEdit', $par ), $this->msg( 'requestwikiqueue-request-label-edit-wiki' )->escaped() ) . '</td>';
