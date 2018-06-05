@@ -39,6 +39,8 @@
 	"requestwikiedit": "編輯 wiki 請求",
 	"requestwiki-edit-id": "Wiki 請求 ID",
 	"requestwiki-edit-success": "成功更改已提交的請求 $1。",
+	"requestwiki-edit-notloggedin": "很抱歉，在編輯您的 wiki 請求前需要先<span class =\"plainlinks\">[$1 登入]</span>。",
+	"requestwiki-edit-user": "您沒有足夠的權限來編輯此 wiki 請求。請注意您僅能編輯由您目前帳號所做出的請求。",
 	"requestwiki-error-csrf": "<strong>抱歉，由於會話資料丟失，您的請求未能發送到伺服器。</strong>\n請您重新提交表格。如果仍然遇到問題，請嘗試[[Special:Userlogout|登出]]然後重新登入。",
 	"requestwiki-error-invalidcomment": "您的wiki申請包含無效字符。請重新嘗試申請，如果問題仍然存在，[[Help center|請聯繫我們]]。",
 	"requestwiki-error-nodomain": "您必須指定子域名或者給出自訂域名。",

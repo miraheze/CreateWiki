@@ -42,6 +42,8 @@
 	"requestwikiedit": "Modifier une requête wiki",
 	"requestwiki-edit-id": "ID de la requête wiki",
 	"requestwiki-edit-success": "Les modifications relatives à la requête $1 on été transmis avec succès.",
+	"requestwiki-edit-notloggedin": "Désolé, vous devez vous <span class =\"plainlinks\">[$1 connecter]</span> avant de pouvoir modifier une demande de wiki.",
+	"requestwiki-edit-user": "Vous n'avez pas assez de droits pour modifier cette demande de wiki. Notez bien que vous ne pouvez que modifier les demandes que vous avez faites qu'avec votre compte usuel.",
 	"requestwiki-error-csrf": "<strong>Désolé, cette demande n'a pas pu être enregistrée à cause d'une perte de données en ligne</strong>.\nMerci de re-soumettre le formulaire. Si cela ne fonctionne toujours pas, veuillez [[Special:Userlogout|vous déconnecter]] et de vous reconnecter à nouveau.",
 	"requestwiki-error-invalidcomment": "Votre requête wiki contient un caractère non valide. Veuillez la reformuler et, si le problème persiste, [[Help center|nous contacter]]",
 	"requestwiki-error-nodomain": "Vous devez spécifier soit un sous-domaine, soit un domaine utilisateur.",

@@ -1,0 +1,32 @@
+{
+	"@metadata": {
+		"authors": [
+			"Nike",
+			"Pyscowicz"
+		]
+	},
+	"action-requestwiki": "pyytää wikejä",
+	"createwiki": "Luo wiki",
+	"createwiki-label-category": "Luokka:",
+	"createwiki-label-dbname": "Tietokannan nimi:",
+	"createwiki-label-language": "Kieli:",
+	"createwiki-label-private": "Merkitse tämä wiki yksityiseksi",
+	"createwiki-label-reason": "Syy:",
+	"createwiki-label-sitename": "Sivunimi:",
+	"createwiki-label-submit": "Lähetä",
+	"createwiki-legend": "Luo wiki",
+	"createwiki-success": "Wiki luotiin onnistuneesti.",
+	"logentry-farmer-createwiki": "$1 loi wikin \"$4\"",
+	"requestwiki-edit-id": "Wikipyynnön ID",
+	"requestwiki-label-language": "Kieli:",
+	"requestwiki-label-sitename": "Wikin nimi:",
+	"requestwiki-label-siteurl": "Alidomain: (subdomain.miraheze.org)",
+	"requestwikiqueue-request-label-language": "Kieli",
+	"requestwikiqueue-request-label-private": "Yksityinen",
+	"requestwikiqueue-request-label-requester": "Pyytäjä",
+	"requestwikiqueue-request-label-sitename": "Sivunimi",
+	"requestwikiqueue-request-label-status": "Tila",
+	"requestwikiqueue-request-label-status-colon": "Tila:",
+	"requestwikiqueue-request-toolbox-createwiki": "Luo wiki",
+	"requestwikiqueue-searchbutton": "Hae"
+}

@@ -3,7 +3,8 @@
 		"authors": [
 			"EdwardGeneralov",
 			"Mouse21",
-			"Happy13241"
+			"Happy13241",
+			"Okras"
 		]
 	},
 	"action-createwiki": "создать вики",
@@ -50,7 +51,7 @@
 	"requestwiki-label-language": "Язык:",
 	"requestwiki-label-private": "Скрытый вики (не доступен для чтения всем):",
 	"requestwiki-label-sitename": "Название вики:",
-	"requestwiki-label-siteurl": "Субдомен:",
+	"requestwiki-label-siteurl": "Поддомен: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "К сожалению, вам нужно <span class=\"plainlinks\">[$1 войти]</span> прежде чем вы можете запросить вики.",
 	"requestwiki-submit": "Отправить",
 	"requestwiki-success": "Ваш запрос вики ($1) был успешно отправлен. Ваш запрос будет рассмотрен волонтера как можно скорее.",
@@ -66,6 +67,7 @@
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Комментарий учитывая по $1 в $2",
 	"requestwikiqueue-request-label-approved": "утвержден",
 	"requestwikiqueue-request-label-comment": "Комментарий:",
+	"requestwikiqueue-request-label-create-wiki": "Создать вики",
 	"requestwikiqueue-request-label-custom": "Пользовательский домен",
 	"requestwikiqueue-request-label-declined": "отказался",
 	"requestwikiqueue-request-label-inreview": "в комментарий",
