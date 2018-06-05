@@ -51,14 +51,23 @@
 		]
 	},
 	"config": {
+		"@wgCreateWikiCategories": "Array. An array of categories used for wiki categorisaion.",
 		"CreateWikiCategories": false,
+		"@wgCreateWikiCustomDomainPage": "String. Page name to link to for more information on custom domains.",
 		"CreateWikiCustomDomainPage": false,
+		"@wgCreateWikiDatabase": "String. Database name of where cw_wikis is stored.",
 		"CreateWikiDatabase": false,
+		"@wgCreateWikiEmailNotifications": "Boolean. Whether to send emails for new wiki creations.",
 		"CreateWikiEmailNotifications": false,
+		"@wgCreateWikiSQLfiles": "Array. All SQLs to be loaded into every wiki by default.",
 		"CreateWikiSQLfiles": false,
+		"@wgCreateWikiUseCategories": "Boolean. Whether to use categories to categorise wikis.",
 		"CreateWikiUseCategories": false,
+		"@wgCreateWikiUseClosedWikis": "Boolean. Whether to implement front end logic for closing wikis.",
 		"CreateWikiUseClosedWikis": false,
+		"@wgCreateWikiUseCustomDomains": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
 		"CreateWikiUseCustomDomains": false,
+		"@wgCreateWikiUsePrivateWikis": "Boolean. Whether to implement front end logic for marking wikis as private.",
 		"CreateWikiUsePrivateWikis": false
 	},
 	"callback": "CreateWikiHooks::onRegistration",
