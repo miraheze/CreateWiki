@@ -22,16 +22,18 @@ class RemoteWiki {
 	protected static function newFromConds(
 		$conds
 	) {
-		$row = wfGetDB( DB_MASTER, [], 'metawiki' )->selectRow( 'cw_wikis', self::selectFields(), $conds, __METHOD__ );
+		global $wgCreateWikiDatabase;
+
+		$row = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase )->selectRow( 'cw_wikis', self::selectFields(), $conds, __METHOD__ );
 
 		if ( $row !== false ) {
-			return new self( 
-				$row->wiki_dbname, 
-				$row->wiki_sitename, 
-				$row->wiki_language, 
-				$row->wiki_private, 
-				$row->wiki_closed, 
-				$row->wiki_closed_timestamp, 
+			return new self(
+				$row->wiki_dbname,
+				$row->wiki_sitename,
+				$row->wiki_language,
+				$row->wiki_private,
+				$row->wiki_closed,
+				$row->wiki_closed_timestamp,
 				$row->wiki_inactive,
 				$row->wiki_inactive_timestamp,
 				$row->wiki_settings,
@@ -44,7 +46,8 @@ class RemoteWiki {
 	}
 
 	private function determineCreationDate() {
-		$res = wfGetDB( DB_MASTER, [], 'metawiki' )->selectField(
+		global $wgCreateWikiDatabase;
+		$res = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase )->selectField(
 			'logging',
 			'log_timestamp',
 			[

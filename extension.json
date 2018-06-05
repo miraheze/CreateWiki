@@ -51,6 +51,7 @@
 		]
 	},
 	"config": {
+		"CreateWikiDatabase": "metawiki",
 		"CreateWikiSQLfiles": false,
 		"CreateWikiUseCategories": false,
 		"CreateWikiCategories": false
