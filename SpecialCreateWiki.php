@@ -87,7 +87,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories;
+		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories;
 
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
@@ -122,7 +122,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		// Let's ensure our wiki is in the DBlist on the server
 		// we run the maintenance scripts on.
-		exec( "/usr/bin/php /srv/mediawiki/w/extensions/CreateWiki/DBListGenerator.php --wiki metawiki" );
+		exec( "/usr/bin/php /srv/mediawiki/w/extensions/CreateWiki/DBListGenerator.php --wiki " . $wgCreateWikiDatabase );
 
 		$dbw->selectDB( $DBname );
 

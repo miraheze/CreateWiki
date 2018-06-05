@@ -1,8 +1,8 @@
 <?php
 require_once '/srv/mediawiki/w/maintenance/commandLine.inc';
 
-if ( $wgDBname !== 'metawiki' ) {
-	throw new MWException( 'The DBname used for this script must be metawiki.' );
+if ( $wgDBname !== $wgCreateWikiDatabase ) {
+	throw new MWException( 'The DBname used for this script must be ' . $wgCreateWikiDatabase );
 }
 
 $dbw = wfGetDB( DB_MASTER );
