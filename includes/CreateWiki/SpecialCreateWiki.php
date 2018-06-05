@@ -89,7 +89,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis;
+		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiEmailNotifications;
 
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
@@ -152,7 +152,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
 
-		if( $this->getUser()->getName() != $requesterName ) {
+		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
 			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 			$this->sendCreationEmail( $notifyEmail, $siteName );
 		}
@@ -284,9 +284,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	protected function sendCreationEmail( $notifyEmail, $siteName ) {
-		global $wgPasswordSender;
+		global $wgPasswordSender, $wgSitename;
 
-		$from = new MailAddress( $wgPasswordSender, 'Miraheze' );
+		$from = new MailAddress( $wgPasswordSender, 'CreateWiki on ' . $wgSitename );
 		$subject = wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text();
 		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 

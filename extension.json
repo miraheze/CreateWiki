@@ -54,6 +54,7 @@
 		"CreateWikiCategories": false,
 		"CreateWikiCustomDomainPage": false,
 		"CreateWikiDatabase": false,
+		"CreateWikiEmailNotifications": false,
 		"CreateWikiSQLfiles": false,
 		"CreateWikiUseCategories": false,
 		"CreateWikiUseClosedWikis": false,
