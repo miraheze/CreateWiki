@@ -1,10 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../../maintenance/commandLine.inc';
-
-if ( $wgDBname !== $wgCreateWikiDatabase ) {
-	throw new MWException( 'The DBname used for this script must be ' . $wgCreateWikiDatabase );
-}
+require_once __DIR__ . '/../../../maintenance/Maintenance.php';
 
 class CreateWikiDBListGenerator extends Maintenance {
 	public function __construct() {
