@@ -141,6 +141,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$request = $this->getRequest();
+		
+		$dbw = wfGetDB( DB_MASTER );
 
 		$values = array(
 			'cw_comment' => $formData['reason'],
@@ -157,8 +159,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'cw_category' => $formData['category'],
 		);
 
-
-		$dbw = wfGetDB( DB_MASTER );
 		$dbw->insert( 'cw_requests',
 			$values,
 			__METHOD__
