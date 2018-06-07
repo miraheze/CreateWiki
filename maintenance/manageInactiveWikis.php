@@ -154,6 +154,7 @@ class FindInactiveWikis extends Maintenance {
 	public function emailBureaucrats( $wiki ) {
 		global $wgPasswordSender, $wgSitename;
 		$dbr = wfGetDB( DB_MASTER );
+		$dbr->selectDB( $wiki );
 		$bureaucrats = $dbr->select(
 			array( 'user', 'user_groups' ),
 			array( 'user_email', 'user_name' ),
