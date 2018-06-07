@@ -11,7 +11,6 @@
 	"createwiki": "{{doc-action|Create a wiki}}",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
-	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "{{doc-important|Do not translate \"Miraheze\"}}\n\nEmail subject (if wiki requester has a registered email).",
 	"createwiki-email-body": "{{doc-important|Do not translate \"Miraheze\"}}\n\nEmail body (if wiki requester has a registered email).",
 	"createwiki-error-dbexists": "Used as error message when the database being created already exists.",
