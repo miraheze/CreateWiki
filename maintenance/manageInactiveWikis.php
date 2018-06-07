@@ -168,7 +168,7 @@ class FindInactiveWikis extends Maintenance {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
 		}
 
-		$from = wfMessage('createwiki-close-email-sender' )->inContentLanguage()->text();
+		$from = new MailAddress( $wgPasswordSender, 'CreateWiki on ' . $wgSitename );
 		$subject = wfMessage( 'miraheze-close-email-subject', $wiki )->inContentLanguage()->text();
 		$body = wfMessage('miraheze-close-email-body' )->inContentLanguage()->text();
 		return UserMailer::send( $emails, $from, $subject, $body );
