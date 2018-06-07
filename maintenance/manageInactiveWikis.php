@@ -33,7 +33,7 @@ class FindInactiveWikis extends Maintenance {
 	}
 
 	public function execute() {
-		global $wgFindInactiveWikisWhitelist, $wgCreateWikiDatabase;
+		global $wgCreateWikiInactiveWikisWhitelist, $wgCreateWikiDatabase;
 		$dbr = wfGetDB( DB_SLAVE );
 		$dbr->selectDB( $wgCreateWikiDatabase ); // force this
 
