@@ -46,14 +46,14 @@ class FindInactiveWikis extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$dbname = $row->wiki_dbname;
-	
+
 			if ( in_array( $dbname, $wgCreateWikiInactiveWikisWhitelist ) ) {
 				continue; // Wiki is in whitelist, do not check.
 			}
-	
+
 			// Apparently I need to force this here too, so I'll do that.
 			$dbr->selectDB( $wgCreateWikiDatabase );
-	
+
 			$res = $dbr->selectRow(
 				'logging',
 				'log_timestamp',
@@ -66,12 +66,12 @@ class FindInactiveWikis extends Maintenance {
 					'ORDER BY' => 'log_timestamp DESC'
 				)
 			);
-	
+
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
 				$this->output( "ERROR: couldn't determine when {$dbname} was created!\n" );
 				continue;
 			}
-	
+
 			if ( $res && $res->log_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				$this->checkLastActivity( $dbname );
 			}
@@ -130,23 +130,23 @@ class FindInactiveWikis extends Maintenance {
 	}
 
 	public function closeWiki( $wiki ) {
-    global $wgCreateWikiDatabase;
+		global $wgCreateWikiDatabase;
 
 		$dbw = wfGetDB( DB_SLAVE );
 		$dbw->selectDB( $wgCreateWikiDatabase ); // force this
 
-		$dbw->query( 'UPDATE cw_wikis SET wiki_closed=1,wiki_inactive=0 WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
+		$dbw->query( 'UPDATE cw_wikis SET wiki_closed=1,wiki_closed_timestamp=' . $dbw->timestamp() . ',wiki_inactive=0,wiki_inactive_timestamp=NULL WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
 
 		return true;
 	}
 
 	public function warnWiki( $wiki ) {
-    global $wgCreateWikiDatabase;
+		global $wgCreateWikiDatabase;
 
 		$dbw = wfGetDB( DB_SLAVE );
 		$dbw->selectDB( $wgCreateWikiDatabase );
 
-		$dbw->query( 'UPDATE cw_wikis SET wiki_inactive=1 WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
+		$dbw->query( 'UPDATE cw_wikis SET wiki_inactive=1, wiki_inactive_timestamp=' . $dbw->timestamp() . ' WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
 
 		return true;
 	}
