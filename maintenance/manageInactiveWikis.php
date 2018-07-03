@@ -19,7 +19,7 @@
 * @ingroup Maintenance
 * @author Southparkfan
 * @author John Lewis
-* @version 1.2
+* @version 1.3
 */
 
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
@@ -99,7 +99,11 @@ class FindInactiveWikis extends Maintenance {
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( isset( $res->rc_timestamp ) && $res->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
-			return true;
+			if ( $this->hasOption( 'warn' ) ) {
+				$this->unWarnWiki( $wiki );
+			} else {
+				return true;
+			}
 		}
 
 		if ( isset( $res->rc_timestamp ) && $res->rc_timestamp < date( "YmdHis", strtotime( "-60 days" ) ) ) {
@@ -146,7 +150,18 @@ class FindInactiveWikis extends Maintenance {
 		$dbw = wfGetDB( DB_SLAVE );
 		$dbw->selectDB( $wgCreateWikiDatabase );
 
-		$dbw->query( 'UPDATE cw_wikis SET wiki_inactive=1, wiki_inactive_timestamp=' . $dbw->timestamp() . ' WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
+		$dbw->query( 'UPDATE cw_wikis SET wiki_inactive=1,wiki_inactive_timestamp=' . $dbw->timestamp() . ' WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
+
+		return true;
+	}
+
+	public function unWarnWiki( $wiki ) {
+		global $wgCreateWikiDatabase;
+
+		$dbw = wfGetDB( DB_SLAVE );
+		$dbw->selectDB( $wgCreateWikiDatabase );
+
+		$dbw->query( 'UPDATE cw_wikis SET wiki_inactive=0,wiki_inactive_timestamp=NULL WHERE wiki_dbname=' . $dbw->addQuotes( $wiki ) . ';' );
 
 		return true;
 	}
