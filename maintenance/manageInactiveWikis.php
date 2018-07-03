@@ -101,9 +101,9 @@ class FindInactiveWikis extends Maintenance {
 		if ( isset( $res->rc_timestamp ) && $res->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
 			if ( $this->hasOption( 'warn' ) ) {
 				$this->unWarnWiki( $wiki );
-			} else {
-				return true;
 			}
+
+			return true;
 		}
 
 		if ( isset( $res->rc_timestamp ) && $res->rc_timestamp < date( "YmdHis", strtotime( "-60 days" ) ) ) {
