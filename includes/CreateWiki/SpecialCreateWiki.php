@@ -164,8 +164,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 				"$IP/extensions/MirahezeMagic/maintenance/setZoneAccess.php --wiki " . wfEscapeShellArg( $DBname ) );
 
 			if ( strpos( $create_image_container, 'Swift container failed to be created for' ) ) {
-				wfDebugLog( 'CreateWiki', 'Fail to create container for wiki ' +  wfEscapeShellArg( $DBname ) );
-				return wfMessage( 'createwiki-error-swiftcontainernot' )->escaped();
+				wfDebugLog( 'CreateWiki', 'Fail to create container for wiki ' .  wfEscapeShellArg( $DBname ) );
+				return wfMessage( 'createwiki-error-swiftcontainernot', wfEscapeShellArg( $DBname ) )->inContentLanguage()->text();
 			}
 		}
 
