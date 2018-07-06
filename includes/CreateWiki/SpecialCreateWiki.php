@@ -151,7 +151,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
-			
+
 		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
 			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 			$this->sendCreationEmail( $notifyEmail, $siteName );
