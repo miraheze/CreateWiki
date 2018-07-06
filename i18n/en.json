@@ -17,6 +17,7 @@
 	"createwiki-error-notalnum": "The database name may not contain non-alphanumeric characters.",
 	"createwiki-error-notlowercase": "The database name may not contain uppercase letters.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
+	"createwiki-error-swiftcontainernot": "Failed to create swift container for wiki $1",
 	"createwiki-error-usernotcreated": "The requester user was not created on the wiki.",
 	"createwiki-label-category": "Category:",
 	"createwiki-label-dbname": "Database name:",
