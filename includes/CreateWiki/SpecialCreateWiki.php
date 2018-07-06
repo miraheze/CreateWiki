@@ -151,17 +151,22 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
+			
+		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
+			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
+			$this->sendCreationEmail( $notifyEmail, $siteName );
+		}
 
 		# creates swift container, if for some reason this dosen't create it, to do it manually do:
 		# . /root/swiftExport && swift post <wiki>-mw && swift post -r ".r:*" <wiki>-mw
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'MirahezeMagic' ) ) {
 			$create_image_container = exec( "/usr/bin/php " .
 				"$IP/extensions/MirahezeMagic/maintenance/setZoneAccess.php --wiki " . wfEscapeShellArg( $DBname ) );
-		}
-			
-		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
-			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
-			$this->sendCreationEmail( $notifyEmail, $siteName );
+
+			if ( strpos( $create_image_container, 'Swift container failed to be created for' ) ) {
+				wfDebugLog( 'CreateWiki', 'Fail to create container for wiki ' +  wfEscapeShellArg( $DBname ) );
+				return wfMessage( 'createwiki-error-swiftcontainernot' )->escaped();
+			}
 		}
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
