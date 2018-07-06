@@ -152,6 +152,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
 
+		# creates swift container, if for some reason this dosen't create it, to do it manually do:
+		# . /root/swiftExport && swift post <wiki>-mw && swift post -r ".r:*" <wiki>-mw
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'MirahezeMagic' ) ) {
+			$create_image_container = exec( "/usr/bin/php " .
+				"$IP/extensions/MirahezeMagic/maintenance/setZoneAccess.php --wiki " . wfEscapeShellArg( $DBname ) );
+		}
+			
 		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
 			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 			$this->sendCreationEmail( $notifyEmail, $siteName );
