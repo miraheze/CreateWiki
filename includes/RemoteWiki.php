@@ -136,6 +136,10 @@ class RemoteWiki {
 	public function getSettingsValue( $setting ) {
 		$settingsarray = $this->getSettings();
 
-		return $settingsarray[$setting];
+		if ( isset( $settingsarray[$setting] ) ) {
+			return $settingsarray[$setting];
+		}
+		
+		return null;
 	}
 }
