@@ -164,7 +164,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$fullurl = $params['subdomain'] . '.' . $wgCreateWikiSubdomain;
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
-			$private = $params['private'] ? 1 : O;
+			$private = $params['private'] ? 1 : 0;
 		} else {
 			$private = 0;
 		}
