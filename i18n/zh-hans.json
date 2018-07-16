@@ -18,6 +18,7 @@
 	"createwiki-error-notalnum": "数据库名称不能包含字母和数字以外的字符。",
 	"createwiki-error-notlowercase": "数据库名称不能包含大写字母。",
 	"createwiki-error-notsuffixed": "数据库名称未能以合法的后缀结尾（例如应以“wiki”结尾）。",
+	"createwiki-error-swiftcontainernot": "无法创建用于$1的快速容器",
 	"createwiki-error-usernotcreated": "申请者账号尚未建立。",
 	"createwiki-label-category": "分类：",
 	"createwiki-label-dbname": "数据库名称：",

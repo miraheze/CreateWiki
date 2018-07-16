@@ -17,6 +17,7 @@
 	"createwiki-error-notalnum": "Називот на базата не може да содржи само азбучнобројчени знаци.",
 	"createwiki-error-notlowercase": "Називот на базата може да содржи само мали букви.",
 	"createwiki-error-notsuffixed": "Називот на базата не завршува со важечка нставка (на пр. „wiki“).",
+	"createwiki-error-swiftcontainernot": "Не можев да создадам брз содржател за викито $1",
 	"createwiki-error-usernotcreated": "Корисникот на барањето не е создаден на викито.",
 	"createwiki-label-category": "Категорија:",
 	"createwiki-label-dbname": "Назив на базата:",

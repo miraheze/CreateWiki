@@ -5,7 +5,8 @@
 			"Mouse21",
 			"Happy13241",
 			"Okras",
-			"OlegCinema"
+			"OlegCinema",
+			"Movses"
 		]
 	},
 	"action-createwiki": "создать вики",
@@ -20,6 +21,7 @@
 	"createwiki-error-notalnum": "Имя базы данных не может содержать не алфавитно-цифровые символы.",
 	"createwiki-error-notlowercase": "Имя базы данных не может содержать заглавные буквы.",
 	"createwiki-error-notsuffixed": "Имя базы данных не заканчивается в допустимом суффикс (например 'вики').",
+	"createwiki-error-swiftcontainernot": "Не удалось создать swift-контейнер для вики $1",
 	"createwiki-error-usernotcreated": "Пользователь запроса не был создан на вики.",
 	"createwiki-label-category": "Категория:",
 	"createwiki-label-dbname": "Имя базы данных:",

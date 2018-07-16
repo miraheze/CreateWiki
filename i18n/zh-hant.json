@@ -20,6 +20,7 @@
 	"createwiki-error-notalnum": "資料庫名稱不能包含字母和數字以外的字元。",
 	"createwiki-error-notlowercase": "資料庫名稱不能包含大寫字母。",
 	"createwiki-error-notsuffixed": "資料庫名稱未能以合法的字尾結束（例如應當以「wiki」結尾）。",
+	"createwiki-error-swiftcontainernot": "建立用於 wiki $1 的即時容器失敗",
 	"createwiki-error-usernotcreated": "申請者帳號尚未建立。",
 	"createwiki-label-category": "分類：",
 	"createwiki-label-dbname": "資料庫名稱：",

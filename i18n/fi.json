@@ -7,6 +7,7 @@
 	},
 	"action-requestwiki": "pyytää wikejä",
 	"createwiki": "Luo wiki",
+	"createwiki-error-swiftcontainernot": "Swift-säilön luominen wikille $1 epäonnistui",
 	"createwiki-label-category": "Luokka:",
 	"createwiki-label-dbname": "Tietokannan nimi:",
 	"createwiki-label-language": "Kieli:",

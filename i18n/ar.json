@@ -17,6 +17,7 @@
 	"createwiki-error-notalnum": "قد لا يحتوي اسم قاعدة البيانات على أحرف غير أبجدية رقمية.",
 	"createwiki-error-notlowercase": "قد لا يحتوي اسم قاعدة البيانات على أحرف كبيرة.",
 	"createwiki-error-notsuffixed": "لا ينتهي اسم قاعدة البيانات بلاحقة صالحة (على سبيل المثال 'ويكي').",
+	"createwiki-error-swiftcontainernot": "فشل إنشاء حاوية سريعة للويكي $1",
 	"createwiki-error-usernotcreated": "لم يتم إنشاء المستخدم الطالب على الويكي.",
 	"createwiki-label-category": "التصنيف:",
 	"createwiki-label-dbname": "اسم قاعدة البيانات:",

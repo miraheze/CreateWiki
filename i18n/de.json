@@ -18,6 +18,7 @@
 	"createwiki-error-notalnum": "Der Database-Name darf keine nicht-alphanumerischen zeichen enthalten.",
 	"createwiki-error-notlowercase": "Der Database-Name darf keine Grossbuchstaben enthalten.",
 	"createwiki-error-notsuffixed": "Der Database-Name endet nich in einem validen suffix (e.g. 'wiki').",
+	"createwiki-error-swiftcontainernot": "Es konnte kein Schnellcontainer für das Wiki $1 erstellt werden",
 	"createwiki-error-usernotcreated": "Der anfrager ist nicht erstellt auf dieser Wiki-Farm.",
 	"createwiki-label-category": "Kategorie:",
 	"createwiki-label-dbname": "Database Name:",

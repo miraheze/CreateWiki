@@ -17,6 +17,7 @@
 	"createwiki-error-notalnum": "שם בסיס הנתונים לא יכול להכיל תווים שאינם אותיות או מספרים.",
 	"createwiki-error-notlowercase": "שם בסיס הנתונים לא יכול להכיל אותיות רישיות.",
 	"createwiki-error-notsuffixed": "לשם של בסיס הנתונים אין סיומת תקינה (למשל 'wiki').",
+	"createwiki-error-swiftcontainernot": "לא ניתן היה ליצור מכל עבור אתר הוויקי $1",
 	"createwiki-error-usernotcreated": "המשתמש המבקש לא נוצר באתר הוויקי.",
 	"createwiki-label-category": "קטגוריה:",
 	"createwiki-label-dbname": "שם בסיס הנתונים:",

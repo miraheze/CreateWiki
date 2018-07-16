@@ -23,6 +23,7 @@
 	"createwiki-error-notalnum": "Le nom de base de données doit contenir uniquement des caractères alpha-numériques.",
 	"createwiki-error-notlowercase": "Le nom de base de données ne peut pas contenir des majuscules.",
 	"createwiki-error-notsuffixed": "Le nom de base de données n'est pas terminé par un suffixe valide (par exemple 'wiki').",
+	"createwiki-error-swiftcontainernot": "Échec de la création d’un conteneur rapide pour le wiki $1",
 	"createwiki-error-usernotcreated": "Le demandeur n'a pas été créé.",
 	"createwiki-label-category": "Catégorie :",
 	"createwiki-label-dbname": "Nom de base de données:",

@@ -18,6 +18,7 @@
 	"createwiki-error-notalnum": "O nome da base de dados não pode conter caracteres que não sejam alfanuméricos.",
 	"createwiki-error-notlowercase": "O nome da base de dados não pode conter letras maiúsculas.",
 	"createwiki-error-notsuffixed": "O nome da base de dados não termina com um sufixo válido (p. ex. 'wiki').",
+	"createwiki-error-swiftcontainernot": "Não foi possível criar o recipiente swift da wiki $1",
 	"createwiki-error-usernotcreated": "O utilizador do autor do pedido não foi criado nesta wiki.",
 	"createwiki-label-category": "Categoria:",
 	"createwiki-label-dbname": "Nome da base de dados:",
