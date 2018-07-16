@@ -137,8 +137,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
-		Hooks::run( 'CreateWikiCreation' );
-
 		$this->createMainPage( $language );
 
 		$dbw->selectDB( $wgDBname ); // revert back to main wiki
@@ -159,17 +157,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$this->sendCreationEmail( $notifyEmail, $siteName );
 		}
 
-		# creates swift container, if for some reason this dosen't create it, to do it manually do:
-		# . /root/swiftExport && swift post <wiki>-mw && swift post -r ".r:*" <wiki>-mw
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'MirahezeMagic' ) ) {
-			$create_image_container = exec( "/usr/bin/php " .
-				"$IP/extensions/MirahezeMagic/maintenance/setZoneAccess.php --wiki " . wfEscapeShellArg( $DBname ) );
-
-			if ( strpos( $create_image_container, 'Swift container failed to be created for' ) ) {
-				wfDebugLog( 'CreateWiki', 'Fail to create container for wiki ' .  wfEscapeShellArg( $DBname ) );
-				return wfMessage( 'createwiki-error-swiftcontainernot', wfEscapeShellArg( $DBname ) )->inContentLanguage()->text();
-			}
-		}
+		Hooks::run( 'CreateWikiCreation', [ $DBname ] );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
