@@ -2,9 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Nike",
-			"Pyscowicz"
+			"Pyscowicz",
+			"01miki10"
 		]
 	},
+	"action-createwiki": "luoda wikejä",
 	"action-requestwiki": "pyytää wikejä",
 	"createwiki": "Luo wiki",
 	"createwiki-error-swiftcontainernot": "Swift-säilön luominen wikille $1 epäonnistui",

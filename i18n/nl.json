@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Southparkfan",
-			"Mainframe98"
+			"Mainframe98",
+			"SPQRobin"
 		]
 	},
 	"action-createwiki": "wiki's aan te maken",
@@ -16,6 +17,7 @@
 	"createwiki-error-notlowercase": "De databasenaam mag alleen uit kleine letters bestaan.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
 	"createwiki-error-usernotcreated": "Het account van de requester was niet aangemaakt.",
+	"createwiki-label-category": "Categorie:",
 	"createwiki-label-dbname": "Databasenaam:",
 	"createwiki-label-requester": "Requester:",
 	"createwiki-label-language": "Taal:",
