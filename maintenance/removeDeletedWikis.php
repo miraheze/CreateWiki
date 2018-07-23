@@ -41,6 +41,8 @@ class RemoveDeletedWikis extends Maintenance {
 			$this->doDeletes( $cadbw, 'localnames', 'ln_wiki', $wiki );
 			$this->doDeletes( $cadbw, 'localuser', 'lu_wiki', $wiki );
 			// @todo: Delete from wikisets
+
+			Hooks::run( 'CreateWikiDeletion', [ $wiki ] );
 		}
 		$this->output( "Done.\n" );
 	}
