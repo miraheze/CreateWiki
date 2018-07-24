@@ -46,6 +46,8 @@ class FindInactiveWikis extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$dbname = $row->wiki_dbname;
+			$inactive = $row->wiki_inactive;
+			$closed = $row->wiki_closed;
 
 			if ( in_array( $dbname, $wgCreateWikiInactiveWikisWhitelist ) ) {
 				continue; // Wiki is in whitelist, do not check.
@@ -73,12 +75,12 @@ class FindInactiveWikis extends Maintenance {
 			}
 
 			if ( $res && $res->log_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
-				$this->checkLastActivity( $dbname );
+				$this->checkLastActivity( $dbname, $inactive, $closed );
 			}
 		}
 	}
 
-	public function checkLastActivity( $wiki ) {
+	public function checkLastActivity( $wiki, $inactive, $closed ) {
 		$dbr = wfGetDB( DB_SLAVE );
 		$dbr->selectDB( $wiki );
 
@@ -99,7 +101,7 @@ class FindInactiveWikis extends Maintenance {
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( isset( $res->rc_timestamp ) && $res->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
-			if ( $this->hasOption( 'warn' ) ) {
+			if ( $this->hasOption( 'warn' ) && $inactive ) {
 				$this->unWarnWiki( $wiki );
 			}
 
@@ -107,7 +109,7 @@ class FindInactiveWikis extends Maintenance {
 		}
 
 		if ( isset( $res->rc_timestamp ) && $res->rc_timestamp < date( "YmdHis", strtotime( "-60 days" ) ) ) {
-			if ( $this->hasOption( 'close' ) ) {
+			if ( $this->hasOption( 'close' ) && $inactive ) {
 				$this->closeWiki( $wiki );
 				$this->emailBureaucrats( $wiki );
 				$this->output( "Wiki {$wiki} was eligible for closing and it was.\n" );
@@ -115,14 +117,14 @@ class FindInactiveWikis extends Maintenance {
 				$this->output( "It looks like {$wiki} should be closed. Timestamp of last recent changes entry: {$res->rc_timestamp}\n" );
 			}
 		} elseif ( isset( $res->rc_timestamp ) && $res->rc_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
-			if ( $this->hasOption( 'warn' ) ) {
+			if ( $this->hasOption( 'warn' ) && !$closed ) {
 				$this->warnWiki( $wiki );
 				$this->output( "Wiki {$wiki} was eligible for a warning notice and one was given.\n" );
 			} else {
 				$this->output( "It looks like {$wiki} should get a warning notice. Timestamp of last recent changes entry: {$res->rc_timestamp}\n" );
 			}
 		} else {
-			if ( $this->hasOption( 'warn' ) ) {
+			if ( $this->hasOption( 'warn' ) && ( !$inactive || !$closed ) ) {
 				$this->warnWiki( $wiki );
 				$this->output( "No recent changes entries have been found for {$wiki}. Therefore marking as inactive.\n" );
 			} else {
