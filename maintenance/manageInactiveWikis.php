@@ -39,7 +39,7 @@ class FindInactiveWikis extends Maintenance {
 
 		$res = $dbr->select(
 			'cw_wikis',
-			'wiki_dbname',
+			array( 'wiki_dbname', 'wiki_inactive', 'wiki_closed' ),
 			array(),
 			__METHOD__
 		);
