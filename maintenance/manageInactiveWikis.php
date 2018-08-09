@@ -124,7 +124,7 @@ class FindInactiveWikis extends Maintenance {
 				$this->output( "It looks like {$wiki} should get a warning notice. Timestamp of last recent changes entry: {$res->rc_timestamp}\n" );
 			}
 		} else {
-			if ( $this->hasOption( 'warn' ) && ( !$inactive || !$closed ) ) {
+			if ( $this->hasOption( 'warn' ) && !closed ) {
 				$this->warnWiki( $wiki );
 				$this->output( "No recent changes entries have been found for {$wiki}. Therefore marking as inactive.\n" );
 			} else {
