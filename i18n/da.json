@@ -1,0 +1,29 @@
+{
+	"@metadata": {
+		"authors": [
+			"Saederup92"
+		]
+	},
+	"createwiki": "Opret en wiki",
+	"createwiki-label-category": "Kategori:",
+	"createwiki-label-dbname": "Databasenavn:",
+	"createwiki-label-language": "Sprog:",
+	"createwiki-label-private": "Marker denne wiki som privat",
+	"createwiki-label-reason": "Begrundelse:",
+	"createwiki-label-sitename": "Sidenavn:",
+	"createwiki-label-submit": "Indsend",
+	"createwiki-legend": "Opret en wiki",
+	"requestwiki-label-language": "Sprog:",
+	"requestwiki-submit": "Indsend",
+	"requestwikiqueue-norequests": "Der blev ikke fundet noget resultat.",
+	"requestwikiqueue-request-label-comment": "Kommentar:",
+	"requestwikiqueue-request-label-declined": "Afvist",
+	"requestwikiqueue-request-label-edit": "Rediger",
+	"requestwikiqueue-request-label-language": "Sprog",
+	"requestwikiqueue-request-label-private": "Privat",
+	"requestwikiqueue-request-label-status": "Status",
+	"requestwikiqueue-request-label-status-colon": "Status:",
+	"requestwikiqueue-request-label-toolbox": "Værktøjskasse",
+	"requestwikiqueue-searchbutton": "Søg",
+	"requestwikiqueue-usernotfound": "Brugeren blev ikke fundet."
+}
