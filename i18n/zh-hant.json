@@ -4,7 +4,8 @@
 			"Amanojaku",
 			"Liuxinyu970226",
 			"Laundry Machine",
-			"Kly"
+			"Kly",
+			"LNDDYL"
 		]
 	},
 	"action-createwiki": "建立 Wiki",
@@ -73,7 +74,7 @@
 	"requestwikiqueue-request-label-approved": "已批准",
 	"requestwikiqueue-request-label-comment": "評論：",
 	"requestwikiqueue-request-label-create-wiki": "建立 wiki",
-	"requestwikiqueue-request-label-custom": "自定義網域",
+	"requestwikiqueue-request-label-custom": "自訂網域",
 	"requestwikiqueue-request-label-declined": "已拒絕",
 	"requestwikiqueue-request-label-edit": "編輯",
 	"requestwikiqueue-request-label-edit-wiki": "編輯 wiki 請求",
