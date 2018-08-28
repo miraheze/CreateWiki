@@ -156,8 +156,6 @@ class ManageInactiveWikis extends Maintenance {
 		$dbw->update(
 			'cw_wikis',
 			[
-				'wiki_closed' => '0',
-				'wiki_closed_timestamp' => 'NULL', // Consistency
 				'wiki_inactive' => '1',
 				'wiki_inactive_timestamp' => $dbw->timestamp(),
 			],
