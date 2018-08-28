@@ -25,6 +25,9 @@
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
 class ManageInactiveWikis extends Maintenance {
+	// Database object holding $wgCreateWikiDatabase DB_MASTER connection
+	public $createWikiDbw;
+
 	public function __construct() {
 		parent::__construct();
 		$this->addOption( 'warn', 'Actually warn wikis which are considered inactive but not closable yet', false, false );
@@ -35,9 +38,9 @@ class ManageInactiveWikis extends Maintenance {
 	public function execute() {
 		global $wgCreateWikiInactiveWikisWhitelist, $wgCreateWikiDatabase;
 
-		$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
+		$this->createWikiDbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
-		$res = $dbr->select(
+		$res = $this->createWikiDbw->select(
 			'cw_wikis',
 			'wiki_dbname',
 			[],
@@ -74,6 +77,8 @@ class ManageInactiveWikis extends Maintenance {
 				'ORDER BY' => 'rc_timestamp DESC',
 			]
 		);
+
+		$dbr->close(); // minimize simultaneous connections
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
@@ -132,11 +137,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function closeWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
-
-		$dbw->update(
+		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
 				'wiki_closed' => '1',
@@ -154,11 +155,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function warnWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
-
-		$dbw->update(
+		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
 				'wiki_inactive' => '1',
@@ -174,11 +171,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function unWarnWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
-
-		$dbw->update(
+		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
 				'wiki_closed' => '0',
@@ -213,6 +206,8 @@ class ManageInactiveWikis extends Maintenance {
 				]
 			]
 		);
+
+		$dbr->close(); // minimize simultaneous connections
 
 		foreach ( $bureaucrats as $users ) {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
