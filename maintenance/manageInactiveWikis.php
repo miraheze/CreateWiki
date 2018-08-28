@@ -104,8 +104,13 @@ class ManageInactiveWikis extends Maintenance {
 					$this->output( "{$wiki} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
 			} else {
-				// Fallback?
-				$this->output( "{$wiki} does not seem to contain recentchanges entries, and has not been closed yet. Please check!\n" );
+				// No RC entries, but wiki is already 45+ days old
+				if ( $this->hasOption( 'warn' ) ) {
+					$this->warnWiki( $wiki );
+					$this->output( "{$wiki} does not seem to contain recentchanges entries, therefore marking as inactive.\n" );
+				} else {
+					$this->output( "{$wiki} does not seem to contain recentchanges entries, and should be warned.\n" );
+				}
 			}
 		} else {
 			// Wiki already has been closed
