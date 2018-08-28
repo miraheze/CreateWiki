@@ -39,15 +39,13 @@ class ManageInactiveWikis extends Maintenance {
 
 		$res = $dbr->select(
 			'cw_wikis',
-			array( 'wiki_dbname', 'wiki_inactive', 'wiki_closed' ),
-			array(),
+			'wiki_dbname',
+			[],
 			__METHOD__
 		);
 
 		foreach ( $res as $row ) {
 			$dbname = $row->wiki_dbname;
-			$inactive = $row->wiki_inactive;
-			$closed = $row->wiki_closed;
 
 			if ( in_array( $dbname, $wgCreateWikiInactiveWikisWhitelist ) ) {
 				continue; // Wiki is in whitelist, do not check.
@@ -64,10 +62,12 @@ class ManageInactiveWikis extends Maintenance {
 	public function checkLastActivity( $wikiObj ) {
 		$wiki = $wikiObj->getDBname();
 
-		$lastChange = $dbr->selectRow(
+		$lastEntry = $dbr->selectRow(
 			'recentchanges',
 			'rc_timestamp',
-			[],
+			[
+				"rc_log_action != 'renameuser'"
+			],
 			__METHOD__,
 			[
 				'ORDER BY' => 'rc_timestamp DESC',
@@ -76,8 +76,8 @@ class ManageInactiveWikis extends Maintenance {
 		);
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
-		if ( isset( $lastChange ) && $lastChange > date( "YmdHis", strtotime( "-45 days" ) ) ) {
-			if ( $this->hasOption( 'warn' ) && $inactive ) {
+		if ( isset( $lastEntry ) && $lastEntry > date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			if ( $this->hasOption( 'warn' ) && $wikiObj->isInactive() ) {
 				$this->unWarnWiki( $wiki );
 			}
 
@@ -86,22 +86,22 @@ class ManageInactiveWikis extends Maintenance {
 
 		if ( !$wikiObj->isClosed() ) {
 			// Wiki is NOT closed yet
-			if ( isset( $lastChange ) && $lastChange < date( "YmdHis", strtotime( "-60 days" ) ) ) {
+			if ( isset( $lastEntry ) && $lastEntry < date( "YmdHis", strtotime( "-60 days" ) ) ) {
 				// Last RC entry older than 60 days
 				if ( $this->hasOption( 'close' ) ) {
 					$this->closeWiki( $wiki );
 					$this->emailBureaucrats( $wiki );
 					$this->output( "{$wiki} was eligible for closing and has been closed now.\n" );
 				} else {
-					$this->output( "{$wiki} should be closed. Timestamp of last recent changes entry: {$lastChange}\n" );
+					$this->output( "{$wiki} should be closed. Timestamp of last recent changes entry: {$lastEntry}\n" );
 				}
-			} elseif ( isset( $lastChange ) && $lastChange < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			} elseif ( isset( $lastEntry ) && $lastEntry < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				// Last RC entry older than 45 days but newer than 60 days
 				if ( $this->hasOption( 'warn' ) ) {
 					$this->warnWiki( $wiki );
 					$this->output( "{$wiki} was eligible for a warning notice and one was given.\n" );
 				} else {
-					$this->output( "{$wiki} should get a warning notice. Timestamp of last recent changes entry: {$lastChange}\n" );
+					$this->output( "{$wiki} should get a warning notice. Timestamp of last recent changes entry: {$lastEntry}\n" );
 				}
 			} else {
 				// Fallback?
