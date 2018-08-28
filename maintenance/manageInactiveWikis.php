@@ -110,11 +110,25 @@ class ManageInactiveWikis extends Maintenance {
 				}
 			} else {
 				// No RC entries, but wiki is already 45+ days old
-				if ( $this->hasOption( 'warn' ) ) {
-					$this->warnWiki( $wiki );
-					$this->output( "{$wiki} does not seem to contain recentchanges entries, therefore marking as inactive.\n" );
+				if ( !$wikiObj->isInactive() ) {
+					// Wiki not marked inactive yet, warning should be given
+					if ( $this->hasOption( 'warn' ) ) {
+						$this->warnWiki( $wiki );
+						$this->output( "{$wiki} does not seem to contain recentchanges entries, therefore warning.\n" );
+					} else {
+						$this->output( "{$wiki} does not seem to contain recentchanges entries, eligible for warning.\n" );
+					}
+			    	} elseif ( $wikiObj->inactiveDate() && $wikiObj->inactiveDate() < date( "YmdHis", strtotime( "-15 days" ) ) ) {
+					// Wiki already warned 15+ days ago, eligible for closure
+					if ( $this->hasOption( 'close' ) ) {
+						$this->closeWiki( $wiki );
+						$this->output( "{$wiki} does not seem to contain recentchanges entries after 15+ days warning, therefore closing.\n" );
+					} else {
+						$this->output( "{$wiki} does not seem to contain recentchanges entries after 15+ days warning, eligible for closure.\n" );
+					}
 				} else {
-					$this->output( "{$wiki} does not seem to contain recentchanges entries, and should be warned.\n" );
+					// Wiki warned 0-15 days ago
+					$this->output( "{$wiki} does not seem to contain recentchanges entries, warned 0-15 days ago.\n" );
 				}
 			}
 		} else {
@@ -216,6 +230,7 @@ class ManageInactiveWikis extends Maintenance {
 		$from = new MailAddress( $wgPasswordSender, wfMessage( 'createwiki-close-email-sender' ));
 		$subject = wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text();
 		$body = wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text();
+
 		return UserMailer::send( $emails, $from, $subject, $body );
 	}
 }
