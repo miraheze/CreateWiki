@@ -62,7 +62,8 @@ class ManageInactiveWikis extends Maintenance {
 	public function checkLastActivity( $wikiObj ) {
 		$wiki = $wikiObj->getDBname();
 
-		$lastEntry = $dbr->selectRow(
+		$dbr = wfGetDB( DB_REPLICA, [], $wiki );
+		$lastEntryObj = $dbr->selectRow(
 			'recentchanges',
 			'rc_timestamp',
 			[
@@ -71,12 +72,11 @@ class ManageInactiveWikis extends Maintenance {
 			__METHOD__,
 			[
 				'ORDER BY' => 'rc_timestamp DESC',
-				'LIMIT' => '1'
 			]
 		);
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
-		if ( isset( $lastEntry ) && $lastEntry > date( "YmdHis", strtotime( "-45 days" ) ) ) {
+		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
 			if ( $this->hasOption( 'warn' ) && $wikiObj->isInactive() ) {
 				$this->unWarnWiki( $wiki );
 			}
@@ -86,22 +86,22 @@ class ManageInactiveWikis extends Maintenance {
 
 		if ( !$wikiObj->isClosed() ) {
 			// Wiki is NOT closed yet
-			if ( isset( $lastEntry ) && $lastEntry < date( "YmdHis", strtotime( "-60 days" ) ) ) {
+			if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-60 days" ) ) ) {
 				// Last RC entry older than 60 days
 				if ( $this->hasOption( 'close' ) ) {
 					$this->closeWiki( $wiki );
 					$this->emailBureaucrats( $wiki );
 					$this->output( "{$wiki} was eligible for closing and has been closed now.\n" );
 				} else {
-					$this->output( "{$wiki} should be closed. Timestamp of last recent changes entry: {$lastEntry}\n" );
+					$this->output( "{$wiki} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
-			} elseif ( isset( $lastEntry ) && $lastEntry < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			} elseif ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				// Last RC entry older than 45 days but newer than 60 days
 				if ( $this->hasOption( 'warn' ) ) {
 					$this->warnWiki( $wiki );
 					$this->output( "{$wiki} was eligible for a warning notice and one was given.\n" );
 				} else {
-					$this->output( "{$wiki} should get a warning notice. Timestamp of last recent changes entry: {$lastEntry}\n" );
+					$this->output( "{$wiki} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
 			} else {
 				// Fallback?
