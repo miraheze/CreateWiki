@@ -19,7 +19,7 @@
 * @ingroup Maintenance
 * @author Southparkfan
 * @author John Lewis
-* @version 1.4
+* @version 2.0
 */
 
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
@@ -118,7 +118,7 @@ class ManageInactiveWikis extends Maintenance {
 					} else {
 						$this->output( "{$wiki} does not seem to contain recentchanges entries, eligible for warning.\n" );
 					}
-			    	} elseif ( $wikiObj->inactiveDate() && $wikiObj->inactiveDate() < date( "YmdHis", strtotime( "-15 days" ) ) ) {
+			    	} elseif ( $wikiObj->getInactiveDate() && $wikiObj->getInactiveDate() < date( "YmdHis", strtotime( "-15 days" ) ) ) {
 					// Wiki already warned 15+ days ago, eligible for closure
 					if ( $this->hasOption( 'close' ) ) {
 						$this->closeWiki( $wiki );
