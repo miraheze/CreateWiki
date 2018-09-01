@@ -114,7 +114,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function onSubmit( array $formData ) {
 		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain;
 
-		$subdomain = $formData['subdomain'];
+		$subdomain = strtolower( $formData['subdomain'] );
+
+		if ( strpos( $subdomain, $wgCreateWikiSubdomain ) !== false ) {
+			str_replace( '.' . $wgCreateWikiSubdomain, '', $subdomain )
+		}
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$private = $formData['private'] ? 1 : 0;
@@ -136,8 +140,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 			return false;
 		} else {
-			$url = strtolower( $subdomain ) . '.' . $wgCreateWikiSubdomain;
-			$dbname = strtolower( $subdomain ) . 'wiki';
+			$url = $subdomain . '.' . $wgCreateWikiSubdomain;
+			$dbname = $subdomain . 'wiki';
 		}
 
 		$request = $this->getRequest();
