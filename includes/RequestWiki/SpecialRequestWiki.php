@@ -117,7 +117,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$subdomain = strtolower( $formData['subdomain'] );
 
 		if ( strpos( $subdomain, $wgCreateWikiSubdomain ) !== false ) {
-			str_replace( '.' . $wgCreateWikiSubdomain, '', $subdomain )
+			str_replace( '.' . $wgCreateWikiSubdomain, '', $subdomain );
 		}
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
