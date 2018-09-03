@@ -35,7 +35,7 @@
 	"createwiki-label-submit": "Soumettre",
 	"createwiki-legend": "Créer un wiki",
 	"createwiki-success": "Le wiki a bien été créé.",
-	"log-description-farmer": "Ce journal prend en charge les modifications des paramètres du wiki.",
+	"log-description-farmer": "Ce journal trace les créations de wiki.",
 	"logentry-farmer-createwiki": "$1 a crée le wiki \"$4\"",
 	"logentry-farmer-requestwiki": "$1 a demandé le wiki \"$4\" (langue: $5; privée: $6) en $7",
 	"logentry-farmer-requestwikiedit": "$1 a modifié la requête wiki numéro $4",

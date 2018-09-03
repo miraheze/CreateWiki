@@ -34,7 +34,7 @@
 	"createwiki-label-submit": "Отправить",
 	"createwiki-legend": "Создать вики",
 	"createwiki-success": "Вики была успешно создана.",
-	"log-description-farmer": "Этот журнал отслеживает запросы вики, вики творения и все связанные с ним.",
+	"log-description-farmer": "Этот журнал отслеживает создания вики.",
 	"logentry-farmer-createwiki": "$1 создал вики \"$4\"",
 	"logentry-farmer-requestwiki": "$1 запроса вики \"$4\" (язык: $5; скрытый: $6) в $7",
 	"logentry-farmer-requestwikiedit": "$1 отредактировал запрос на создание вики-сайта #$4",

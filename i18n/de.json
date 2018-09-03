@@ -30,7 +30,7 @@
 	"createwiki-label-submit": "Absenden",
 	"createwiki-legend": "Wiki erstellen",
 	"createwiki-success": "Die Wiki wurde erfolgreich erstellt.",
-	"log-description-farmer": "Dieser Log verfolgt Wiki Anfragen, wiki Erstellungen and alles andere in Bezug auf Wiki erstellung.",
+	"log-description-farmer": "Dieses Logbuch zeichnet Erstellungen von Wikis auf.",
 	"logentry-farmer-createwiki": "$1 Hat die Wiki \"$4\" erstellt.",
 	"logentry-farmer-requestwiki": "$1 beantragte die Wiki \"$4\" (Sprache: $5; privat: $6) in $7",
 	"logentry-farmer-requestwikiedit": "$1 bearbeitete die Wikianfrage $4",

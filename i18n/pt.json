@@ -30,7 +30,7 @@
 	"createwiki-label-submit": "Enviar",
 	"createwiki-legend": "Criar uma wiki",
 	"createwiki-success": "A wiki foi criada.",
-	"log-description-farmer": "Este registo documenta alterações às configurações da wiki.",
+	"log-description-farmer": "Este registo documenta criações de wikis.",
 	"logentry-farmer-createwiki": "$1 criou a wiki \"$4\"",
 	"logentry-farmer-requestwiki": "$1 solicitou a wiki \"$4\" (língua: $5; privada: $6) em $7",
 	"logentry-farmer-requestwikiedit": "$1 editou o pedido de uma wiki n.º $4",
