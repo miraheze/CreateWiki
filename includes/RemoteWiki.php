@@ -115,6 +115,10 @@ class RemoteWiki {
 		return $this->closed;
 	}
 
+	public function closureDate() {
+		return $this->closureDate;
+	}
+
 	public function getCategory() {
 		return $this->category;
 	}
