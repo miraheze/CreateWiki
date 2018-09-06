@@ -157,7 +157,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$this->sendCreationEmail( $notifyEmail, $siteName );
 		}
 
-		Hooks::run( 'CreateWikiCreation', [ $DBname ] );
+		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
