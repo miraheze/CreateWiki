@@ -4,7 +4,8 @@
 			"AlvaroMolina",
 			"Fitoschido",
 			"Adjen",
-			"Unai01"
+			"Unai01",
+			"Jelou"
 		]
 	},
 	"action-createwiki": "crear wikis",
@@ -30,7 +31,7 @@
 	"createwiki-label-submit": "Enviar",
 	"createwiki-legend": "Crear un wiki",
 	"createwiki-success": "Se creó el wiki correctamente.",
-	"log-description-farmer": "Este registro incluye modificaciones a la configuración de los wikis.",
+	"log-description-farmer": "Este registro rastrea las creaciones wiki.",
 	"logentry-farmer-createwiki": "$1 creó el wiki «$4»",
 	"logentry-farmer-requestwiki": "$1 solicitó el wiki «$4» (idioma: $5; privado: $6) en $7",
 	"logentry-farmer-requestwikiedit": "$1 editó la solicitud de wiki n.º $4",

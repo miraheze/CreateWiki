@@ -28,7 +28,7 @@
 	"createwiki-label-submit": "Skicka",
 	"createwiki-legend": "Skapa en wiki",
 	"createwiki-success": "Wikin har skapats.",
-	"log-description-farmer": "Denna logg spårar ändringar i wikiinställningarna.",
+	"log-description-farmer": "Denna logg spårar skapade wikis.",
 	"logentry-farmer-createwiki": "$1 skapade wikin \"$4\"",
 	"logentry-farmer-requestwiki": "$1 begärde wikin \"$4\" (språk: $5; privat: $6) på $7",
 	"logentry-farmer-requestwikiedit": "$1 redigerade wikibegäran nummer $4",
