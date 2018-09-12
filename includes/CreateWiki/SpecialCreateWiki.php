@@ -137,11 +137,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
-		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
-
 		$this->createMainPage( $language );
 
 		$dbw->selectDB( $wgDBname ); // revert back to main wiki
+
+		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
 
 		$shcreateaccount = exec( "/usr/bin/php " .
 			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $requesterName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
