@@ -137,6 +137,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
+		Hooks::run( 'CreateWikiCreation', [ $dbname, $private ] );
+
 		$this->createMainPage( $language );
 
 		$dbw->selectDB( $wgDBname ); // revert back to main wiki
@@ -156,8 +158,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 			$this->sendCreationEmail( $notifyEmail, $siteName );
 		}
-
-		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
