@@ -137,7 +137,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
-		Hooks::run( 'CreateWikiCreation', [ $dbname, $private ] );
+		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
 
 		$this->createMainPage( $language );
 
