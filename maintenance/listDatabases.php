@@ -1,5 +1,5 @@
 <?php
-require_once( __DIR__ . '/../../../maintenance/commandLine.inc' );
+require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
 class CreateWikiListDatabases extends Maintenance {
 	public function __construct() {
@@ -7,7 +7,9 @@ class CreateWikiListDatabases extends Maintenance {
 		$this->mDescription = 'Lists all databases known by the wiki farm.';
 	}
 
-	public function executeee() {
+	public function execute() {
+		global $wgLocalDatabases;
+
 		foreach ( $wgLocalDatabases as $db ) {
 			print "$db\n";
 		}
