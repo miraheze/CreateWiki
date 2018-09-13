@@ -29,7 +29,7 @@
 	"createwiki-label-submit": "إرسال",
 	"createwiki-legend": "إنشاء ويكي",
 	"createwiki-success": "أنشأت الويكي بنجاح.",
-	"log-description-farmer": "يتتبع هذا السجل التغييرات في إعدادات الويكي.",
+	"log-description-farmer": "هذا السجل يتتبع إنشاءات الويكيات.",
 	"logentry-farmer-createwiki": "$1 أنشأ الويكي \"$4\"",
 	"logentry-farmer-requestwiki": "$1 طلب الويكي \"$4\" (اللغة: $5، خاص: $6) في $7",
 	"logentry-farmer-requestwikiedit": "تم تحرير $1 لطلب الويكي #$4",
