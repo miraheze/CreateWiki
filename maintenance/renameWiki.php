@@ -76,7 +76,7 @@ class RenameWiki extends Maintenance {
 	 * @param string $new
 	 */
 	public static function doRename( $dbw, $table, $column, $old, $new ) {
-		$this->output( "$table:\n" );
+		echo "$table:\n";
 		$count = 0;
 		do {
 			$wikiQuoted = $dbw->addQuotes( $wiki );
@@ -88,10 +88,10 @@ class RenameWiki extends Maintenance {
 			);
 			$affected = $dbw->affectedRows();
 			$count += $affected;
-			$this->output( "$count\n" );
+			echo "$count\n";
 			wfWaitForSlaves();
 		} while ( $affected === 500 );
-		$this->output( "$count $table rows updated\n" );
+		echo "$count $table rows updated\n";
 	}
 
 	protected function notifyRename( $to, $from, $wikidata, $user ) {

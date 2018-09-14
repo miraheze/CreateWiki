@@ -79,10 +79,7 @@ class DeleteWiki extends Maintenance {
 	 * @param string $wiki
 	 */
 	public static function doDeletes( $dbw, $table, $column, $wiki ) {
-		if ( !$dbw->tableExists( $table ) ) {
-			$this->error( "Maintenance script cannot be run on this wiki as there is no $table table", 1 );
-		}
-		$this->output( "$table:\n" );
+		echo "$table:\n";
 		$count = 0;
 		do {
 			$wikiQuoted = $dbw->addQuotes( $wiki );
@@ -92,10 +89,10 @@ class DeleteWiki extends Maintenance {
 			);
 			$affected = $dbw->affectedRows();
 			$count += $affected;
-			$this->output( "$count\n" );
+			echo "$count\n";
 			wfWaitForSlaves();
 		} while ( $affected === 500 );
-		$this->output( "$count $table rows deleted\n" );
+		echo "$count $table rows deleted\n";
 	}
 
 	protected function notifyDeletions( $to, $from, $wikis, $user ) {
