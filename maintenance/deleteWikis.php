@@ -21,7 +21,7 @@
  */
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
-class DeleteWikis extends Maintenance {
+class DeleteWiki extends Maintenance {
 	function __construct() {
 		parent::__construct();
 		$this->mDescription = "Allows complete deletion of wikis with args controlling deletion levels. Will never DROP a database!";
@@ -107,5 +107,5 @@ class DeleteWikis extends Maintenance {
 		return UserMailer::send( $to, $from, 'Wikis Deleted Notification', $body );
 	}
 }
-$maintClass = 'DeleteWikis';
+$maintClass = 'DeleteWiki';
 require_once( DO_MAINTENANCE );

@@ -103,5 +103,5 @@ class RenameWiki extends Maintenance {
 		return UserMailer::send( $to, $from, 'Wiki Rename Notification', $body );
 	}
 }
-$maintClass = 'RenameWikis';
+$maintClass = 'RenameWiki';
 require_once( DO_MAINTENANCE );
