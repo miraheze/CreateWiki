@@ -79,7 +79,6 @@ class RenameWiki extends Maintenance {
 		echo "$table:\n";
 		$count = 0;
 		do {
-			$wikiQuoted = $dbw->addQuotes( $wiki );
 			$dbw->update(
 				$table,
 				[ $column => $new ],
