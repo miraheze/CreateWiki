@@ -21,9 +21,9 @@ class RenameWiki extends Maintenance {
 	function __construct() {
 		parent::__construct();
 		$this->mDescription = "Renames a wiki from it's original name to a new name. Will NOT perform core database operations so run AFTER new database exists and while old one still exists.";
+		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.', false );
 		$this->addArg( 'oldwiki', 'Old wiki database name', true );
 		$this->addArg( 'newwiki', 'New wiki database name', true );
-		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.', false );
 		$this->addArg( 'user', 'Username or reference name of the person running this script. Will be used in tracking and notification internally.', true );
 	}
 
