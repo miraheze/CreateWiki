@@ -30,8 +30,8 @@ class RenameWiki extends Maintenance {
 	function execute() {
 		global $wgCreateWikiDatabase, $wgCreateWikiNotificationEmail, $wgPasswordSender;
 
-		$oldwiki = $this->getArg( 'oldwiki' );
-		$newwiki = $this->getArg( 'newwiki' );
+		$oldwiki = $this->getArg( 0 );
+		$newwiki = $this->getArg( 1 );
 
 		$renamedWiki = [];
 		$dbw = $this->getDB( DB_MASTER, [], $wgCreateWikiDatabase );
@@ -64,7 +64,7 @@ class RenameWiki extends Maintenance {
 		$this->output( "Done.\n" );
 
 		if ( $this->hasOption( 'rename' ) ) {
-			$this->notifyRename( $wgCreateWikiNotificationEmail, $wgPasswordSender, $renamedWiki, $this->getArg( 'user' ) );
+			$this->notifyRename( $wgCreateWikiNotificationEmail, $wgPasswordSender, $renamedWiki, $this->getArg( 2 ) );
 		}
 	}
 
