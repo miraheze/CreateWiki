@@ -69,7 +69,7 @@ class DeleteWiki extends Maintenance {
 		}
 		$this->output( "Done.\n" );
 
-		$this->notifyDeletions( $wgCreateWikiNotificationEmail, $wgPasswordSender, $deletedWiki, $this->getArg( 'user' ) );
+		$this->notifyDeletions( $wgCreateWikiNotificationEmail, $wgPasswordSender, $deletedWiki, $this->getArg( 0 ) );
 	}
 
 	/**
