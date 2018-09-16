@@ -9,9 +9,10 @@ class CreateWikiDBListGenerator extends Maintenance {
 	}
 
 	public function execute() {
-		global $wgCreateWikiDBDirectory;
+		global $wgCreateWikiDBDirectory, $wgCreateWikiDatabase;
 
 		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
 		$res = $dbw->select(
 			'cw_wikis',
