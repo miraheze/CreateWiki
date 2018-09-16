@@ -47,7 +47,7 @@ class RemoteWiki {
 
 	private function determineCreationDate() {
 		global $wgCreateWikiGlobalWiki;
-		$res = wfGetDB( DB_MASTER, [], $wgCreateWikiGlobalWiki )->selectField(
+		$res = wfGetDB( DB_REPLICA, [], $wgCreateWikiGlobalWiki )->selectField(
 			'logging',
 			'log_timestamp',
 			[
