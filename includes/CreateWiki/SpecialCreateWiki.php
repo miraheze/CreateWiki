@@ -229,7 +229,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	public function addWikiToDatabase( $DBname, $siteName, $language, $private, $category ) {
 		global $wgCreateWikiDatabase;
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase; );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
 		if ( $private ) {
 			$private = 1;
