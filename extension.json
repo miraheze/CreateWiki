@@ -51,6 +51,8 @@
 		"CreateWikiCustomDomainPage": false,
 		"@wgCreateWikiDatabase": "String. Database name of where cw_wikis is stored.",
 		"CreateWikiDatabase": false,
+		"@wgCreateWikiGlobalWiki": "String. Database name of the global wiki.",
+		"CreateWikiGlobalWiki": false,
 		"@wgCreateWikiEmailNotifications": "Boolean. Whether to send emails for new wiki creations.",
 		"CreateWikiEmailNotifications": false,
 		"@wgCreateWikiInactiveWikisWhitelist": "Array. Array of wikis which are exempt from being inactive.",
