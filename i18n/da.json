@@ -21,6 +21,7 @@
 	"requestwikiqueue-pager-status-declined": "afslået",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Kommentar skrevet af $1",
 	"requestwikiqueue-request-label-comment": "Kommentar:",
+	"requestwikiqueue-request-label-create-wiki": "Opret wiki",
 	"requestwikiqueue-request-label-declined": "Afvist",
 	"requestwikiqueue-request-label-edit": "Rediger",
 	"requestwikiqueue-request-label-language": "Sprog",
