@@ -121,7 +121,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 		$dbw->query( 'SET storage_engine=InnoDB;' );
 		$dbw->query( 'CREATE DATABASE ' . $dbw->addIdentifierQuotes( $DBname ) . ';' );
 
@@ -165,7 +165,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function validateDBname( $DBname, $allData ) {
-		global $wgConf;
+		global $wgConf, $wgCreateWikiDatabase;
 
 		# HTMLForm's validation-callback somehow gets called, even
 		# while the form was not submitted yet. This should prevent
@@ -185,7 +185,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			}
 		}
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 		$res = $dbw->query( 'SHOW DATABASES LIKE ' . $dbw->addQuotes( $DBname ) . ';' );
 
 		if ( $res->numRows() !== 0 ) {
