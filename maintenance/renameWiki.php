@@ -97,7 +97,7 @@ class RenameWiki extends Maintenance {
 		$from = new MailAddress( $from, 'CreateWiki Notifications' );
 		$to = new MailAddress( $to, 'Server Administrators' );
 		$wikirename = implode( ' to ', $wikidata );
-		$body = "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now $user has rename the following wiki from CreateWiki and associated extensions - From $wikirename.";
+		$body = "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now $user has renamed the following wiki from CreateWiki and associated extensions - From $wikirename.";
 
 		return UserMailer::send( $to, $from, 'Wiki Rename Notification', $body );
 	}
