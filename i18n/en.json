@@ -89,5 +89,7 @@
 	"requestwikiqueue-searchbutton": "Search",
 	"requestwikiqueue-searchrequest": "Search wiki requests",
 	"requestwikiqueue-usernotfound": "The user was not found.",
-	"requestwikiqueue-view": "View wiki request"
+	"requestwikiqueue-view": "View wiki request",
+	"right-requestwiki": "Request wikis",
+	"right-createwiki": "Create wikis"
 }
