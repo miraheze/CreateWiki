@@ -1,6 +1,9 @@
 {
 	"name": "CreateWiki",
-	"author": [ "Southparkfan", "John Lewis" ],
+	"author": [
+		"Southparkfan",
+		"John Lewis"
+	],
 	"url": "//github.com/Miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
 	"type": "specialpage",
@@ -45,34 +48,77 @@
 		]
 	},
 	"config": {
-		"@wgCreateWikiCategories": "Array. An array of categories used for wiki categorisaion.",
-		"CreateWikiCategories": false,
-		"@wgCreateWikiCustomDomainPage": "String. Page name to link to for more information on custom domains.",
-		"CreateWikiCustomDomainPage": false,
-		"@wgCreateWikiDatabase": "String. Database name of where cw_wikis is stored.",
-		"CreateWikiDatabase": false,
-		"@wgCreateWikiGlobalWiki": "String. Database name of the global wiki.",
-		"CreateWikiGlobalWiki": false,
-		"@wgCreateWikiEmailNotifications": "Boolean. Whether to send emails for new wiki creations.",
-		"CreateWikiEmailNotifications": false,
-		"@wgCreateWikiInactiveWikisWhitelist": "Array. Array of wikis which are exempt from being inactive.",
-		"CreateWikiInactiveWikisWhitelist": false,
-		"CreateWikiNotificationEmail": "root@localhost",
-		"@wgCreateWikiSQLfiles": "Array. All SQLs to be loaded into every wiki by default.",
-		"CreateWikiSQLfiles": false,
-		"@wgCreateWikiSubdomain": "String. The master part of subdomains, e.g. wiki.miraheze.org, miraheze.org is the master part.",
-		"CreateWikiSubdomain": false,
-		"@wgCreateWikiUseCategories": "Boolean. Whether to use categories to categorise wikis.",
-		"CreateWikiUseCategories": false,
-		"@wgCreateWikiUseClosedWikis": "Boolean. Whether to implement front end logic for closing wikis.",
-		"CreateWikiUseClosedWikis": false,
-		"@wgCreateWikiUseCustomDomains": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
-		"CreateWikiUseCustomDomains": false,
-		"@wgCreateWikiUseInactiveWikis": "Boolean. Whether to implement front end logic for inactive wikis.",
-		"CreateWikiUseInactiveWikis": false,
-		"@wgCreateWikiUsePrivateWikis": "Boolean. Whether to implement front end logic for marking wikis as private.",
-		"CreateWikiUsePrivateWikis": false
+		"CreateWikiCategories": {
+			"description": "Array. An array of categories used for wiki categorisaion.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiCustomDomainPage": {
+			"description": "String. Page name to link to for more information on custom domains.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiDatabase": {
+			"description": "String. Database name of where cw_wikis is stored.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiGlobalWiki": {
+			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiEmailNotifications": {
+			"description": "Boolean. Whether to send emails for new wiki creations.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiInactiveWikisWhitelist": {
+			"description": "Array. Array of wikis which are exempt from being inactive.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiNotificationEmail": {
+			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications!",
+			"public": true,
+			"value": "root@localhost"
+		},
+		"CreateWikiSQLfiles": {
+			"description": "Array. All SQLs to be loaded into every wiki by default.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiSubdomain": {
+			"description": "String. The master part of subdomains, e.g. wiki.miraheze.org, miraheze.org is the master part.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseCategories": {
+			"description": "Boolean. Whether to use categories to categorise wikis.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseClosedWikis": {
+			"description": "Boolean. Whether to implement front end logic for closing wikis.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseCustomDomains": {
+			"description": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseInactiveWikis": {
+			"description": "Boolean. Whether to implement front end logic for inactive wikis.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUsePrivateWikis": {
+			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
+			"public": true,
+			"value": false
+		}
 	},
 	"callback": "CreateWikiHooks::onRegistration",
-	"manifest_version": 1
+	"manifest_version": 2
 }
