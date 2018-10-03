@@ -89,5 +89,6 @@
 	"requestwikiqueue-searchbutton": "חיפוש",
 	"requestwikiqueue-searchrequest": "חיפוש בקשות אתרי ויקי",
 	"requestwikiqueue-usernotfound": "המשתמש לא נמצא.",
-	"requestwikiqueue-view": "הצגת הבקשה לאתר הוויקי"
+	"requestwikiqueue-view": "הצגת הבקשה לאתר הוויקי",
+	"right-createwiki": "יצירת אתרי ויקי בחוות הוויקי"
 }

@@ -3,7 +3,8 @@
 		"authors": [
 			"Southparkfan",
 			"Mainframe98",
-			"SPQRobin"
+			"SPQRobin",
+			"Siebrand"
 		]
 	},
 	"action-createwiki": "wiki's aan te maken",
@@ -69,5 +70,6 @@
 	"requestwikiqueue-searchbutton": "Zoeken",
 	"requestwikiqueue-searchrequest": "Wikiaanvragen opzoeken",
 	"requestwikiqueue-usernotfound": "De gebruiker was niet gevonden.",
-	"requestwikiqueue-view": "Bekijk wikiaanvraag"
+	"requestwikiqueue-view": "Bekijk wikiaanvraag",
+	"right-createwiki": "Wiki's aanmaken in de wikifarm"
 }

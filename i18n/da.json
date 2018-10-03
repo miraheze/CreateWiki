@@ -4,6 +4,7 @@
 			"Saederup92"
 		]
 	},
+	"action-createwiki": "opret wikier",
 	"createwiki": "Opret en wiki",
 	"createwiki-label-category": "Kategori:",
 	"createwiki-label-dbname": "Databasenavn:",
@@ -30,6 +31,7 @@
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-status-colon": "Status:",
 	"requestwikiqueue-request-label-toolbox": "Værktøjskasse",
+	"requestwikiqueue-request-toolbox-createwiki": "Opret wiki",
 	"requestwikiqueue-searchbutton": "Søg",
 	"requestwikiqueue-usernotfound": "Brugeren blev ikke fundet."
 }

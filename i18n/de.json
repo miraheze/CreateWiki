@@ -90,5 +90,7 @@
 	"requestwikiqueue-searchbutton": "Suchen",
 	"requestwikiqueue-searchrequest": "Anträge durchsuchen",
 	"requestwikiqueue-usernotfound": "User nicht gefunden.",
-	"requestwikiqueue-view": "Wiki-Antrag anschauen"
+	"requestwikiqueue-view": "Wiki-Antrag anschauen",
+	"right-requestwiki": "Wikis beantragen",
+	"right-createwiki": "Wikis erstellen"
 }

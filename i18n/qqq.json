@@ -4,7 +4,8 @@
 			"Reception123",
 			"Liuxinyu970226",
 			"Revi",
-			"Robby"
+			"Robby",
+			"Purodha"
 		]
 	},
 	"action-createwiki": "{{doc-action|create wikis}}",
@@ -81,5 +82,6 @@
 	"requestwikiqueue-searchbutton": "Search button\n{{Identical|Search}}",
 	"requestwikiqueue-searchrequest": "To search wiki requests",
 	"requestwikiqueue-usernotfound": "The search user was not found message",
-	"requestwikiqueue-view": "To view the wiki request."
+	"requestwikiqueue-view": "To view the wiki request.",
+	"right-createwiki": "{{doc-right|createwiki}}"
 }

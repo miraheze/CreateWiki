@@ -2,7 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Amanojaku",
-			"Liuxinyu970226"
+			"Liuxinyu970226",
+			"A Chinese Wikipedian",
+			"Liangent"
 		]
 	},
 	"action-createwiki": "创建wiki",
@@ -90,5 +92,7 @@
 	"requestwikiqueue-searchbutton": "搜索",
 	"requestwikiqueue-searchrequest": "搜索wiki请求",
 	"requestwikiqueue-usernotfound": "用户不存在。",
-	"requestwikiqueue-view": "查看 Wiki 请求"
+	"requestwikiqueue-view": "查看 Wiki 请求",
+	"right-requestwiki": "Wiki要求",
+	"right-createwiki": "在wiki农场中创建wiki"
 }

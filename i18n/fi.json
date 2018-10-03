@@ -3,7 +3,8 @@
 		"authors": [
 			"Nike",
 			"Pyscowicz",
-			"01miki10"
+			"01miki10",
+			"Str4nd"
 		]
 	},
 	"action-createwiki": "luoda wikejä",
@@ -31,5 +32,6 @@
 	"requestwikiqueue-request-label-status": "Tila",
 	"requestwikiqueue-request-label-status-colon": "Tila:",
 	"requestwikiqueue-request-toolbox-createwiki": "Luo wiki",
-	"requestwikiqueue-searchbutton": "Hae"
+	"requestwikiqueue-searchbutton": "Hae",
+	"right-createwiki": "Luoda wikejä wikifarmiin"
 }

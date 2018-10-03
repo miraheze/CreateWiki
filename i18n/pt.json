@@ -90,5 +90,7 @@
 	"requestwikiqueue-searchbutton": "Pesquisar",
 	"requestwikiqueue-searchrequest": "Pesquisar os pedidos de wikis",
 	"requestwikiqueue-usernotfound": "O utilizador não foi encontrado.",
-	"requestwikiqueue-view": "Ver o pedido de uma wiki"
+	"requestwikiqueue-view": "Ver o pedido de uma wiki",
+	"right-requestwiki": "Pedir wikis",
+	"right-createwiki": "Criar wikis na fazenda"
 }

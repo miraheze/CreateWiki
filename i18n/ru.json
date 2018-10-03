@@ -7,7 +7,8 @@
 			"Okras",
 			"OlegCinema",
 			"Movses",
-			"Vlad5250"
+			"Vlad5250",
+			"Александр Сигачёв"
 		]
 	},
 	"action-createwiki": "создать вики",
@@ -94,5 +95,7 @@
 	"requestwikiqueue-searchbutton": "Поиск",
 	"requestwikiqueue-searchrequest": "Поиск запроса на вики",
 	"requestwikiqueue-usernotfound": "Такого участника не существует.",
-	"requestwikiqueue-view": "Просмотр запроса на вики"
+	"requestwikiqueue-view": "Просмотр запроса на вики",
+	"right-requestwiki": "запрос вики",
+	"right-createwiki": "создание вики на вики-ферме"
 }

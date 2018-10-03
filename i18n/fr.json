@@ -7,7 +7,8 @@
 			"Wladek92",
 			"Ltrlg",
 			"Jul545454",
-			"Kenjiraw"
+			"Kenjiraw",
+			"Zarisi"
 		]
 	},
 	"action-createwiki": "créer des wikis",
@@ -95,5 +96,7 @@
 	"requestwikiqueue-searchbutton": "Chercher",
 	"requestwikiqueue-searchrequest": "Chercher les demandes de wiki",
 	"requestwikiqueue-usernotfound": "L'utilisateur n'as pas éte trouvé.",
-	"requestwikiqueue-view": "Voir la requête wiki"
+	"requestwikiqueue-view": "Voir la requête wiki",
+	"right-requestwiki": "Wikis demandés",
+	"right-createwiki": "Créer des wikis"
 }

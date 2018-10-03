@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Elisardojm",
-			"Navhy"
+			"Navhy",
+			"Toliño"
 		]
 	},
 	"action-createwiki": "crear as wikis",
@@ -86,5 +87,6 @@
 	"requestwikiqueue-searchbutton": "Procurar",
 	"requestwikiqueue-searchrequest": "Procurar solicitudes de wikis",
 	"requestwikiqueue-usernotfound": "Non se atopou o usuario.",
-	"requestwikiqueue-view": "Ver solicitude de wiki"
+	"requestwikiqueue-view": "Ver solicitude de wiki",
+	"right-createwiki": "Crear wikis no wiki granxa"
 }

@@ -3,7 +3,8 @@
 		"authors": [
 			"Otokoume",
 			"Suyama",
-			"Yusuke1109"
+			"Yusuke1109",
+			"Shirayuki"
 		]
 	},
 	"action-createwiki": "ウィキの作成",
@@ -51,5 +52,6 @@
 	"requestwikiqueue-requestnotfound": "リクエストが見つかりません。",
 	"requestwikiqueue-searchbutton": "検索",
 	"requestwikiqueue-searchrequest": "ウィキリクエストを検索",
-	"requestwikiqueue-view": "ウィキリクエストを見る"
+	"requestwikiqueue-view": "ウィキリクエストを見る",
+	"right-createwiki": "ウィキファーム内にウィキを作成"
 }

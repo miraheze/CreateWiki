@@ -2,10 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Chrumps",
-			"Railfail536"
+			"Railfail536",
+			"Sp5uhe"
 		]
 	},
-	"action-createwiki": "utwórz wiki",
+	"action-createwiki": "tworzenia nowych wiki",
 	"action-requestwiki": "poproś o wiki",
 	"createwiki": "Utwórz wiki",
 	"createwiki-defaultmainpage": "== Witaj na {{GRAMMAR:D.lp|{{SITENAME}}}}! ==\nTa strona główna została automatycznie wygenerowana przez wolontariusza który założył tę wiki i wygląda na to, że jeszcze nie została zastąpiona.\n\n=== Dla biurokraty(ów) tej wiki ===\nWitaj na twojej nowej wiki! Dziękujemy za wybranie Miraheze na hosta twojej wiki i liczymy na to, że nasze hostowanie ci się spodoba.\n\nMożesz rozpocząć pracę na wiki kiedy tylko chcesz.\n\nPotrzebujesz pomoc? Żaden problem! W razie potrzeby chętnie pomożemy twojej wiki. Na początek dodaliśmy tutaj kilka linków do artykułów na temat pracy z MediaWiki:\n* <span class=\"plainlinks\">[//mediawiki.org/wiki/Help:Contents/pl Przewodnik po MediaWiki (np. nawigacja, edytowanie, kasowanie stron, blokowanie użytkowników itd.)]</span>\n* <span class=\"plainlinks\">[//meta.miraheze.org/wiki/FAQ Często zadawane pytania]</span>\n*<span class=\"plainlinks\">[//meta.miraheze.org/wiki/Request_features Poproś o zmianę ustawień na twojej wiki. (Zmiany rozszerzeń oraz logo/favicony pwoinny być wykonywane przez stronę Specjalna:ManageWiki)]</span>\n\n==== Ale Miraheze, ja ciągle nie rozumiem X! ====\nTo nie problem. Nawet jeżeli coś nie zostało wspomniane w dokumentacji/FAQ, ciągle z chęcią ci pomożemy. Możesz nas znaleźć tutaj:\n* <span class=\"plainlinks\">[//meta.miraheze.org/wiki/Help_center Na naszej własnej Miraheze Wiki]</span>\n* Na kanale IRC #miraheze w sieci irc.freenode.net ([irc://irc.freenode.net/#miraheze link bezpośredni]; [//webchat.freenode.net?channels=%23miraheze webchat])\n\n=== Dla odwiedzających tę wiki ===\nWitaj, domyślna strona główna tej wiki (to jest domyślna strona główna) nie została jeszcze zastąpiona przez lokalną administrację. Biurokrata(ci) mogą ciągle pracować nad wyglądem strony głównej, więc wróć sprawdź tą stronę ponownie później!\n\n__NOTOC__",
@@ -18,6 +19,7 @@
 	"createwiki-error-notalnum": "Nazwa bazy danych nie może zawierać znaków niealfanumerycznych.",
 	"createwiki-error-notlowercase": "Nazwa bazy danych może nie zawierać wielkich liter.",
 	"createwiki-error-notsuffixed": "Nazwa bazy danych nie kończy się poprawnym sufiksem (np. 'wiki').",
+	"createwiki-error-usernotcreated": "Użytkownik proszący o wiki nie został na niej utworzony.",
 	"createwiki-label-category": "Kategoria:",
 	"createwiki-label-dbname": "Nazwa bazy danych:",
 	"createwiki-label-requester": "Zgłaszający:",
@@ -28,7 +30,7 @@
 	"createwiki-label-submit": "Wyślij",
 	"createwiki-legend": "Załóż wiki",
 	"createwiki-success": "Wiki została pomyślnie utworzona.",
-	"log-description-farmer": "Ten rejestr śledzi zmiany w zgłoszeniach wiki.",
+	"log-description-farmer": "Ten rejestr śledzi operacje tworzenia wiki.",
 	"logentry-farmer-createwiki": "$1 stworzył wiki „$4”",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$1|poprosił|poprosiła}} o wiki „$4” (język: $5; prywatna: $6) $7",
 	"logentry-farmer-requestwikiedit": "$1 {{GENDER:$1|edytował|edytowała}} zgłoszenie #$4",
@@ -88,5 +90,7 @@
 	"requestwikiqueue-searchbutton": "Szukaj",
 	"requestwikiqueue-searchrequest": "Szukaj zgłoszeń wiki",
 	"requestwikiqueue-usernotfound": "Użytkownik nie został znaleziony.",
-	"requestwikiqueue-view": "Zobacz zgłoszenie"
+	"requestwikiqueue-view": "Zobacz zgłoszenie",
+	"right-requestwiki": "Poproś o wiki",
+	"right-createwiki": "Tworzenie nowych wiki na farmie wiki"
 }

@@ -3,7 +3,8 @@
 		"authors": [
 			"Beta16",
 			"S4b1nuz E.656",
-			"Sarah Bernabei"
+			"Sarah Bernabei",
+			"Darth Kule"
 		]
 	},
 	"action-createwiki": "crea wiki",
@@ -28,5 +29,6 @@
 	"requestwikiqueue-request-label-status": "Stato",
 	"requestwikiqueue-request-label-status-colon": "Stato:",
 	"requestwikiqueue-searchbutton": "Cerca",
-	"requestwikiqueue-usernotfound": "L'utente non è stato trovato."
+	"requestwikiqueue-usernotfound": "L'utente non è stato trovato.",
+	"right-createwiki": "Crea siti nella wiki farm"
 }

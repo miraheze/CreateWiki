@@ -29,7 +29,7 @@
 	"createwiki-label-submit": "Поднеси",
 	"createwiki-legend": "Создај вики",
 	"createwiki-success": "Викито е успешно создадено.",
-	"log-description-farmer": "Дневников ги следи промените во поставките на викито.",
+	"log-description-farmer": "Овој дневник следи создавања на викија.",
 	"logentry-farmer-createwiki": "$1 го создаде викито „$4“",
 	"logentry-farmer-requestwiki": "$1 го побара викито „$4“ (јазик: $5; скриено: $6) во $7",
 	"logentry-farmer-requestwikiedit": "$1 го уреди викибарањето бр. $4",
@@ -89,5 +89,7 @@
 	"requestwikiqueue-searchbutton": "Пребарај",
 	"requestwikiqueue-searchrequest": "Пребарај барања",
 	"requestwikiqueue-usernotfound": "Корисникот не е најден.",
-	"requestwikiqueue-view": "Погл. барање"
+	"requestwikiqueue-view": "Погл. барање",
+	"right-requestwiki": "Побарување на викија",
+	"right-createwiki": "Создавање на викија на вики-фармата"
 }

@@ -2,7 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"محمد أحمد عبد الفتاح",
-			"ديفيد"
+			"ديفيد",
+			"Meno25",
+			"OsamaK"
 		]
 	},
 	"action-createwiki": "إنشاء ويكيات",
@@ -89,5 +91,7 @@
 	"requestwikiqueue-searchbutton": "بحث",
 	"requestwikiqueue-searchrequest": "ابحث في طلبات الويكي",
 	"requestwikiqueue-usernotfound": "لم يتم العثور على المستخدم.",
-	"requestwikiqueue-view": "عرض طلب الويكي"
+	"requestwikiqueue-view": "عرض طلب الويكي",
+	"right-requestwiki": "طلب الويكيات",
+	"right-createwiki": "أنشئ ويكيات في مزرعة الويكي"
 }
