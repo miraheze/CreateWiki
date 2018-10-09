@@ -88,5 +88,7 @@
 	"requestwikiqueue-searchbutton": "Sök",
 	"requestwikiqueue-searchrequest": "Sök wikibegäran",
 	"requestwikiqueue-usernotfound": "Användaren hittades inte.",
-	"requestwikiqueue-view": "Visa wikibegäran"
+	"requestwikiqueue-view": "Visa wikibegäran",
+	"right-requestwiki": "Begär wikier",
+	"right-createwiki": "Skapa wikier"
 }
