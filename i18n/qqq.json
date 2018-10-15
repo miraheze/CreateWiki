@@ -9,6 +9,7 @@
 		]
 	},
 	"action-createwiki": "{{doc-action|create wikis}}",
+	"action-requestwiki": "Permission to request wiki. Used at Special:ListGroupRights",
 	"createwiki": "{{doc-action|Create a wiki}}",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
