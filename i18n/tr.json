@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Hedda",
-			"TmY e12"
+			"TmY e12",
+			"Sayginer"
 		]
 	},
 	"action-createwiki": "viki oluştur",
@@ -29,7 +30,7 @@
 	"createwiki-label-submit": "Gönder",
 	"createwiki-legend": "Bir viki oluştur",
 	"createwiki-success": "Viki başarıyla oluşturuldu.",
-	"log-description-farmer": "Bu log, viki ayarlarındaki değişiklikleri izler.",
+	"log-description-farmer": "Bu kayıt, viki sayfa oluşturmalarını izler.",
 	"logentry-farmer-createwiki": "$1, \"$4\" viki'sini oluşturdu.",
 	"logentry-farmer-requestwiki": "$1, \"$4\" vikisini talep etti (dil: $5; gizlilik: $6), $7.",
 	"logentry-farmer-requestwikiedit": "$1, #$4 viki isteğini düzenledi",
