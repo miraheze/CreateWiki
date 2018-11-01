@@ -165,7 +165,7 @@ class ManageInactiveWikis extends Maintenance {
 			__METHOD__
 		);
 
-		Hooks::run( 'CreateWikiStateClosed', [ $wikiDB ] );
+		Hooks::run( 'CreateWikiStateClosed', [ $wikiDb ] );
 
 		return true;
 	}
@@ -183,7 +183,7 @@ class ManageInactiveWikis extends Maintenance {
 			__METHOD__
 		);
 
-		Hooks::run( 'CreateWikiStateInactive', [ $wikiDB ] );
+		Hooks::run( 'CreateWikiStateInactive', [ $wikiDb ] );
 
 		return true;
 	}
@@ -203,7 +203,7 @@ class ManageInactiveWikis extends Maintenance {
 			__METHOD__
 		);
 
-		Hooks::run( 'CreateWikiStateActive', [ $wikiDB ] );
+		Hooks::run( 'CreateWikiStateActive', [ $wikiDb ] );
 
 		return true;
 	}
