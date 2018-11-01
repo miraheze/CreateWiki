@@ -151,16 +151,11 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function closeWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_SLAVE );
- 		$dbw->selectDB( $wgCreateWikiDatabase ); // force this
-
 		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
 				'wiki_closed' => '1',
-				'wiki_closed_timestamp' => $dbw->timestamp(), 
+				'wiki_closed_timestamp' => $this->createWikiDbw->timestamp(), 
 				'wiki_inactive' => '0',
 				'wiki_inactive_timestamp' => 'NULL', // Consistency
 			],
@@ -176,16 +171,11 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function warnWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_SLAVE );
- 		$dbw->selectDB( $wgCreateWikiDatabase ); // force this
-
 		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
 				'wiki_inactive' => '1',
-				'wiki_inactive_timestamp' => $dbw->timestamp(),
+				'wiki_inactive_timestamp' => $this->createWikiDbw->timestamp(),
 			],
 			[
 				'wiki_dbname' => $wikiDb
