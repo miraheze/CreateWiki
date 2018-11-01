@@ -78,8 +78,6 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		);
 
-		$dbr->close(); // minimize simultaneous connections
-
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
 			if ( $this->hasOption( 'warn' ) && $wikiObj->isInactive() ) {
@@ -227,12 +225,11 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		);
 
-		$dbr->close(); // minimize simultaneous connections
-
 		foreach ( $bureaucrats as $users ) {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
 		}
 
+		$from = new MailAddress( $wgPasswordSender, wfMessage('createwiki-close-email-sender' ));
 		$from = new MailAddress( $wgPasswordSender, wfMessage( 'createwiki-close-email-sender' ));
 		$subject = wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text();
 		$body = wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text();
