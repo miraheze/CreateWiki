@@ -229,6 +229,7 @@ class ManageInactiveWikis extends Maintenance {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
 		}
 
+		$from = new MailAddress( $wgPasswordSender, wfMessage('createwiki-close-email-sender' ));
 		$from = new MailAddress( $wgPasswordSender, wfMessage( 'createwiki-close-email-sender' ));
 		$subject = wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text();
 		$body = wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text();
