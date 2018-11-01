@@ -151,6 +151,11 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function closeWiki( $wikiDb ) {
+		global $wgCreateWikiDatabase;
+
+		$dbw = wfGetDB( DB_SLAVE );
+ 		$dbw->selectDB( $wgCreateWikiDatabase ); // force this
+
 		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
@@ -171,6 +176,11 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function warnWiki( $wikiDb ) {
+		global $wgCreateWikiDatabase;
+
+		$dbw = wfGetDB( DB_SLAVE );
+ 		$dbw->selectDB( $wgCreateWikiDatabase ); // force this
+
 		$this->createWikiDbw->update(
 			'cw_wikis',
 			[
