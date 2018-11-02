@@ -45,7 +45,8 @@ class ManageInactiveWikis extends Maintenance {
 				'wiki_inactive',
 				'wiki_inactive_timestamp',
 				'wiki_closed',
-				'wiki_closed_timestamp'
+				'wiki_closed_timestamp',
+				'wiki_created',
 			],
 			[],
 			__METHOD__
@@ -57,34 +58,13 @@ class ManageInactiveWikis extends Maintenance {
 			$inactive_date = $row->wiki_inactive_timestamp;
 			$closed = $row->wiki_closed;
 			$closed_date = $row->wiki_closed_timestamp;
+			$wikiCreated = $row->wiki_created;
 
 			if ( in_array( $dbname, $wgCreateWikiInactiveWikisWhitelist ) ) {
 				continue; // Wiki is in whitelist, do not check.
 			}
 
-			// Apparently I need to force this here too, so I'll do that.
- 			$dbr->selectDB( $wgCreateWikiGlobalWiki );
-
- 			$res = $dbr->selectRow(
- 				'logging',
- 				'log_timestamp',
- 				[
- 					'log_action' => 'createwiki',
- 					'log_params' => serialize( [ '4::wiki' => $dbname ] )
- 				],
- 				__METHOD__,
- 				[
-					// Sometimes a wiki might have been created multiple times.
- 					'ORDER BY' => 'log_timestamp DESC'
- 				]
- 			);
-
- 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {		
- 				$this->output( "ERROR: couldn't determine when {$dbname} was created!\n" );		
- 				continue;		
- 			}
-
-			if ( $res && $res->log_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			if ( $wikiCreated < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				$this->checkLastActivity( $dbname, $inactive, $inactive_date, $closed, $closed_date );
 			}
 		}
