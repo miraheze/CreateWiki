@@ -57,6 +57,7 @@ class RemoteWiki {
 			'wiki_sitename',
 			'wiki_language',
 			'wiki_private',
+			'wiki_creation',
 			'wiki_closed',
 			'wiki_closed_timestamp',
 			'wiki_inactive',
