@@ -51,7 +51,7 @@
 	"ResourceModules": {
 		"ext.createwiki.oouiform": {
 			"scripts": [
-				"ext.createwiki.oouiform.js",
+				"ext.createwiki.oouiform.edit.ooui.js",
 				"ext.createwiki.oouiform.ooui.js"
 			],
 			"styles": "ext.createwiki.oouiform.ooui.less",
