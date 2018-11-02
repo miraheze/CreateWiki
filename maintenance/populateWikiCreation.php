@@ -32,7 +32,7 @@ class PopulateWikiCreation extends Maintenance {
 	}
 
 	public function execute() {
-		global $wgCreateWikiDatabase;
+		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki;
 
 		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
@@ -50,7 +50,7 @@ class PopulateWikiCreation extends Maintenance {
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
 
-			$dbw->selectDB( $wgCreateWikiDatabase );
+			$dbw->selectDB( $wgCreateWikiGlobalWiki );
 
 			$res = $dbw->selectRow(		
 				'logging',		
@@ -64,6 +64,8 @@ class PopulateWikiCreation extends Maintenance {
 					'ORDER BY' => 'log_timestamp DESC'		
 				)		
 			);
+
+			$dbw->selectDB( $wgCreateWikiDatabase );
 
 			$dbw->insert( 'cw_wikis',
 				[
