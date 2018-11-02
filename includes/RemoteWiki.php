@@ -1,10 +1,11 @@
 <?php
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $closed, $closedDate, $inactive, $inactiveDate, $settings, $category, $extensions ) {
+	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $settings, $category, $extensions ) {
 		$this->dbname = $dbname;
 		$this->sitename = $sitename;
 		$this->language = $language;
 		$this->private = $private == 1 ? true : false;
+		$this->wikiCreation = $wikiCreation;
 		$this->closed = $closed == 1 ? true : false;
 		$this->inactive = $inactive == 1 ? true : false;
 		$this->settings = $settings;
@@ -32,6 +33,7 @@ class RemoteWiki {
 				$row->wiki_sitename,
 				$row->wiki_language,
 				$row->wiki_private,
+				$row->wiki_creation,
 				$row->wiki_closed,
 				$row->wiki_closed_timestamp,
 				$row->wiki_inactive,
@@ -46,21 +48,7 @@ class RemoteWiki {
 	}
 
 	private function determineCreationDate() {
-		global $wgCreateWikiGlobalWiki;
-		$res = wfGetDB( DB_REPLICA, [], $wgCreateWikiGlobalWiki )->selectField(
-			'logging',
-			'log_timestamp',
-			[
-				'log_action' => 'createwiki',
-				'log_params' => serialize( [ '4::wiki' => $this->dbname ] )
-			],
-			__METHOD__,
-			[ // Sometimes a wiki might have been created multiple times.
-				'ORDER BY' => 'log_timestamp DESC'
-			]
-		);
-
-		return is_string( $res ) ? $res : false;
+		return $this->wikiCreation;
 	}
 
 	public static function selectFields() {
