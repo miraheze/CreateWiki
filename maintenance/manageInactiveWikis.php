@@ -166,7 +166,7 @@ class ManageInactiveWikis extends Maintenance {
 				'wiki_closed' => '1',
 				'wiki_closed_timestamp' => $dbw->timestamp(), 
 				'wiki_inactive' => '0',
-				'wiki_inactive_timestamp' => 'NULL', // Consistency
+				'wiki_inactive_timestamp' => NULL, // Consistency
 			],
 			[
 				'wiki_dbname' => $wikiDb
@@ -212,9 +212,9 @@ class ManageInactiveWikis extends Maintenance {
 			'cw_wikis',
 			[
 				'wiki_closed' => '0',
-				'wiki_closed_timestamp' => 'NULL', // Consistency
+				'wiki_closed_timestamp' => NULL, // Consistency
 				'wiki_inactive' => '0',
-				'wiki_inactive_timestamp' => 'NULL', // Consistency
+				'wiki_inactive_timestamp' => NULL, // Consistency
 			],
 			[
 				'wiki_dbname' => $wikiDb
