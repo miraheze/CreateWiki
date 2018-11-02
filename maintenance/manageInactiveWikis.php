@@ -46,7 +46,7 @@ class ManageInactiveWikis extends Maintenance {
 				'wiki_inactive_timestamp',
 				'wiki_closed',
 				'wiki_closed_timestamp',
-				'wiki_created',
+				'wiki_creation',
 			],
 			[],
 			__METHOD__
@@ -58,7 +58,7 @@ class ManageInactiveWikis extends Maintenance {
 			$inactive_date = $row->wiki_inactive_timestamp;
 			$closed = $row->wiki_closed;
 			$closed_date = $row->wiki_closed_timestamp;
-			$wikiCreated = $row->wiki_created;
+			$wikiCreated = $row->wiki_creation;
 
 			if ( in_array( $dbname, $wgCreateWikiInactiveWikisWhitelist ) ) {
 				continue; // Wiki is in whitelist, do not check.
