@@ -5,7 +5,7 @@ class RemoteWiki {
 		$this->sitename = $sitename;
 		$this->language = $language;
 		$this->private = $private == 1 ? true : false;
-		$this->wikiCreation = $wikiCreation ? $wikiCreation : false;
+		$this->wikiCreation = $wikiCreation;
 		$this->closed = $closed == 1 ? true : false;
 		$this->inactive = $inactive == 1 ? true : false;
 		$this->settings = $settings;
