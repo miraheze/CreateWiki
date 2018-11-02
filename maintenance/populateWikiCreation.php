@@ -67,9 +67,13 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDB( $wgCreateWikiDatabase );
 
-			$dbw->update( 'cw_wikis',
+			$dbw->update(
+				'cw_wikis',
 				[
-					'wiki_creation' => $res->log_timestamp,
+					'wiki_creation' => $row->log_timestamp,
+				],
+				[
+					'wiki_dbname' => $DBname
 				],
 				__METHOD__
 			);
