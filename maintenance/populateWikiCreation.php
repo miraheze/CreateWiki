@@ -72,7 +72,7 @@ class PopulateWikiCreation extends Maintenance {
 				__METHOD__
 			);
 
-			$this->output( "Inserted {$res->log_timestamp} into wiki_creation column for db {$DBname}\n")
+			$this->output( "Inserted {$res->log_timestamp} into wiki_creation column for db {$DBname}\n");
 		}
 	}
 }
