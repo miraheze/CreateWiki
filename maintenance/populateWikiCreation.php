@@ -52,7 +52,7 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDB( $wgCreateWikiDatabase );
 
-			$res = $dbr->selectRow(		
+			$res = $dbw->selectRow(		
 				'logging',		
 				'log_timestamp',		
 				array(		
