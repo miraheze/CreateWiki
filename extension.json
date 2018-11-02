@@ -33,6 +33,7 @@
 	"AutoloadClasses": {
 		"CreateWikiHooks": "includes/CreateWikiHooks.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
+		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
@@ -46,6 +47,24 @@
 		"LoadExtensionSchemaUpdates": [
 			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
 		]
+	},
+	"ResourceModules": {
+		"ext.createwiki.oouiform": {
+			"scripts": [
+				"ext.createwiki.oouiform.js",
+				"ext.createwiki.oouiform.ooui.js"
+			],
+			"styles": "ext.createwiki.oouiform.ooui.less",
+			"dependencies": [
+				"oojs-ui",
+				"mediawiki.editfont.styles"
+			],
+			"targets": [ "desktop", "mobile" ]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "CreateWiki/modules"
 	},
 	"config": {
 		"CreateWikiCategories": {
