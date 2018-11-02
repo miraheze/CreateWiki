@@ -244,7 +244,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
 				'wiki_private' => $private,
-				'wiki_creation' => wfGetDB()->timestamp(),
+				'wiki_creation' => $dbw->timestamp(),
 				'wiki_closed' => 0,
 				'wiki_inactive' => 0,
 				'wiki_category' => $category,
