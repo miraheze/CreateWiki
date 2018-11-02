@@ -33,7 +33,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function execute() {
-		global $wgCreateWikiInactiveWikisWhitelist, $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki;
+		global $wgCreateWikiInactiveWikisWhitelist, $wgCreateWikiDatabase;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		$dbr->selectDB( $wgCreateWikiDatabase ); // force this
@@ -64,7 +64,7 @@ class ManageInactiveWikis extends Maintenance {
 				continue; // Wiki is in whitelist, do not check.
 			}
 
-			if ( $wikiCreation < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			if ( $dbName && $wikiCreation < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate );
 			}
 		}
