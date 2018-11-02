@@ -33,7 +33,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function execute() {
-		global $wgCreateWikiInactiveWikisWhitelist, $wgCreateWikiDatabase;
+		global $wgCreateWikiInactiveWikisWhitelist, $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		$dbr->selectDB( $wgCreateWikiDatabase ); // force this
@@ -63,7 +63,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 
 			// Apparently I need to force this here too, so I'll do that.
- 			$dbr->selectDB( $wgCreateWikiDatabase );
+ 			$dbr->selectDB( $wgCreateWikiGlobalWiki );
 
  			$res = $dbr->selectRow(
  				'logging',
