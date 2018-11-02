@@ -20,7 +20,7 @@
 * @author Southparkfan
 * @author John Lewis
 * @author Paladox
-* @version 2.0
+* @version 1.0
 */
 
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
