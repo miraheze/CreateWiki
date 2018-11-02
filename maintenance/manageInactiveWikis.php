@@ -38,13 +38,14 @@ class ManageInactiveWikis extends Maintenance {
 		$dbr = wfGetDB( DB_REPLICA );
 		$dbr->selectDB( $wgCreateWikiDatabase ); // force this
 
-
 		$res = $dbr->select(
 			'cw_wikis',
 			[
 				'wiki_dbname',
 				'wiki_inactive',
+				'wiki_inactive_timestamp',
 				'wiki_closed',
+				'wiki_closed_timestamp'
 			],
 			[],
 			__METHOD__
@@ -61,27 +62,32 @@ class ManageInactiveWikis extends Maintenance {
 				continue; // Wiki is in whitelist, do not check.
 			}
 
-			if ( $this->determineCreationDate( $dbname ) < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			// Apparently I need to force this here too, so I'll do that.
+ 			$dbr->selectDB( $wgCreateWikiDatabase );
+
+ 			$res = $dbr->selectRow(
+ 				'logging',
+ 				'log_timestamp',
+ 				[
+ 					'log_action' => 'createwiki',
+ 					'log_params' => serialize( [ '4::wiki' => $dbname ] )
+ 				],
+ 				__METHOD__,
+ 				[
+					// Sometimes a wiki might have been created multiple times.
+ 					'ORDER BY' => 'log_timestamp DESC'
+ 				]
+ 			);
+
+ 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {		
+ 				$this->output( "ERROR: couldn't determine when {$dbname} was created!\n" );		
+ 				continue;		
+ 			}
+
+			if ( $res && $res->log_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				$this->checkLastActivity( $dbname, $inactive, $inactive_date, $closed, $closed_date );
 			}
 		}
-	}
-
-	private function determineCreationDate( $dbname ) {
-		global $wgCreateWikiGlobalWiki;
-		$res = wfGetDB( DB_REPLICA, [], $wgCreateWikiGlobalWiki )->selectField(
-			'logging',
-			'log_timestamp',
-			[
-				'log_action' => 'createwiki',
-				'log_params' => serialize( [ '4::wiki' => $dbname ] )
-			],
-			__METHOD__,
-			[ // Sometimes a wiki might have been created multiple times.
-				'ORDER BY' => 'log_timestamp DESC'
-			]
-		);
-		return is_string( $res ) ? $res : false;
 	}
 
 	public function checkLastActivity( $dbname, $inactive, $inactive_date, $closed, $closed_date  ) {
@@ -203,7 +209,7 @@ class ManageInactiveWikis extends Maintenance {
 			'cw_wikis',
 			[
 				'wiki_inactive' => '1',
-				'wiki_inactive_timestamp' => $this->createWikiDbw->timestamp(),
+				'wiki_inactive_timestamp' => $dbw->timestamp(),
 			],
 			[
 				'wiki_dbname' => $wikiDb
