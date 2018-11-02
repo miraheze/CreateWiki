@@ -70,7 +70,7 @@ class PopulateWikiCreation extends Maintenance {
 			$dbw->update(
 				'cw_wikis',
 				[
-					'wiki_creation' => $row->log_timestamp,
+					'wiki_creation' => $res->log_timestamp,
 				],
 				[
 					'wiki_dbname' => $DBname
