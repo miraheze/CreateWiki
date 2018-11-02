@@ -29,7 +29,6 @@ class PopulateWikiCreation extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		 $this->mDescription = "Populates wiki_creation column in cw_wikis table";
-		 $this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
