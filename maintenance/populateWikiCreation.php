@@ -67,6 +67,11 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDB( $wgCreateWikiDatabase );
 
+			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {		
+ 				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );		
+ 				continue;		
+ 			}				
+
 			$dbw->update(
 				'cw_wikis',
 				[
