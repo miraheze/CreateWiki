@@ -61,20 +61,20 @@ class ManageInactiveWikis extends Maintenance {
 				continue; // Wiki is in whitelist, do not check.
 			}
 
-			if ( $this->determineCreationDate() < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			if ( $this->determineCreationDate( $dbname ) < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				$this->checkLastActivity( $dbname, $inactive, $inactive_date, $closed, $closed_date );
 			}
 		}
 	}
 
-	private function determineCreationDate() {
+	private function determineCreationDate( $dbname ) {
 		global $wgCreateWikiGlobalWiki;
 		$res = wfGetDB( DB_REPLICA, [], $wgCreateWikiGlobalWiki )->selectField(
 			'logging',
 			'log_timestamp',
 			[
 				'log_action' => 'createwiki',
-				'log_params' => serialize( [ '4::wiki' => $this->dbname ] )
+				'log_params' => serialize( [ '4::wiki' => $dbname ] )
 			],
 			__METHOD__,
 			[ // Sometimes a wiki might have been created multiple times.
@@ -244,7 +244,7 @@ class ManageInactiveWikis extends Maintenance {
 	public function emailBureaucrats( $wikiDb ) {
 		global $wgPasswordSender, $wgSitename;
 
-		$dbr = wfGetDB( DB_REPLICA );		
+		$dbr = wfGetDB( DB_REPLICA );
  		$dbr->selectDB( $wikiDb );
 
 		$bureaucrats = $dbr->select(
@@ -253,10 +253,10 @@ class ManageInactiveWikis extends Maintenance {
 			[ 'ug_group' => 'bureaucrat' ],
 			__METHOD__,
 			[],
-			[ 
+			[
 				'user_groups' => [
-					'INNER JOIN', 
-					[ 'user_id=ug_user' ] 
+					'INNER JOIN',
+					[ 'user_id=ug_user' ]
 				]
 			]
 		);
