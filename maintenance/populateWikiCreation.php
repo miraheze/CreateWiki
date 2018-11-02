@@ -57,7 +57,7 @@ class PopulateWikiCreation extends Maintenance {
 				'log_timestamp',		
 				array(		
 					'log_action' => 'createwiki',		
-					'log_params' => serialize( array( '4::wiki' => $dbname ) )		
+					'log_params' => serialize( array( '4::wiki' => $DBname ) )		
 				),		
 				__METHOD__,		
 				array( // Sometimes a wiki might have been created multiple times.		
@@ -67,7 +67,7 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDB( $wgCreateWikiDatabase );
 
-			$dbw->insert( 'cw_wikis',
+			$dbw->update( 'cw_wikis',
 				[
 					'wiki_creation' => $res->log_timestamp,
 				],
