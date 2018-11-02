@@ -53,26 +53,26 @@ class ManageInactiveWikis extends Maintenance {
 		);
 
 		foreach ( $res as $row ) {
-			$db_name = $row->wiki_dbname;
+			$dbName = $row->wiki_dbname;
 			$inactive = $row->wiki_inactive;
-			$inactive_date = $row->wiki_inactive_timestamp;
+			$inactiveDate = $row->wiki_inactive_timestamp;
 			$closed = $row->wiki_closed;
-			$closed_date = $row->wiki_closed_timestamp;
-			$wiki_creation = $row->wiki_creation;
+			$closedDate = $row->wiki_closed_timestamp;
+			$wikiCreation = $row->wiki_creation;
 
-			if ( in_array( $db_name, $wgCreateWikiInactiveWikisWhitelist ) ) {
+			if ( in_array( $dbName, $wgCreateWikiInactiveWikisWhitelist ) ) {
 				continue; // Wiki is in whitelist, do not check.
 			}
 
-			if ( $wiki_creation < date( "YmdHis", strtotime( "-45 days" ) ) ) {
-				$this->checkLastActivity( $db_name, $inactive, $inactive_date, $closed, $closed_date );
+			if ( $wikiCreation < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate );
 			}
 		}
 	}
 
-	public function checkLastActivity( $db_name, $inactive, $inactive_date, $closed, $closed_date  ) {
+	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate  ) {
 		$dbr = wfGetDB( DB_REPLICA );
-		$dbr->selectDB( $db_name );
+		$dbr->selectDB( $dbName );
 
 		$lastEntryObj = $dbr->selectRow(
 			'recentchanges',
@@ -89,7 +89,7 @@ class ManageInactiveWikis extends Maintenance {
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
 			if ( $this->hasOption( 'warn' ) && $inactive ) {
-				$this->unWarnWiki( $db_name );
+				$this->unWarnWiki( $dbName );
 			}
 
 			return true;
@@ -100,54 +100,54 @@ class ManageInactiveWikis extends Maintenance {
 			if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-60 days" ) ) ) {
 				// Last RC entry older than 60 days
 				if ( $this->hasOption( 'close' ) ) {
-					$this->closeWiki( $db_name );
-					$this->emailBureaucrats( $db_name );
-					$this->output( "{$db_name} was eligible for closing and has been closed now.\n" );
+					$this->closeWiki( $dbName );
+					$this->emailBureaucrats( $dbName );
+					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
-					$this->output( "{$db_name} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
+					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
 			} elseif ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				// Last RC entry older than 45 days but newer than 60 days
 				if ( $this->hasOption( 'warn' ) ) {
-					$this->warnWiki( $db_name );
-					$this->output( "{$db_name} was eligible for a warning notice and one was given.\n" );
+					$this->warnWiki( $dbName );
+					$this->output( "{$dbName} was eligible for a warning notice and one was given.\n" );
 				} else {
-					$this->output( "{$db_name} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
+					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
 			} else {
 				// No RC entries, but wiki is already 45+ days old
 				if ( !$inactive ) {
 					// Wiki not marked inactive yet, warning should be given
 					if ( $this->hasOption( 'warn' ) ) {
-						$this->warnWiki( $db_name );
-						$this->output( "{$db_name} does not seem to contain recentchanges entries, therefore warning.\n" );
+						$this->warnWiki( $dbName );
+						$this->output( "{$dbName} does not seem to contain recentchanges entries, therefore warning.\n" );
 					} else {
-						$this->output( "{$db_name} does not seem to contain recentchanges entries, eligible for warning.\n" );
+						$this->output( "{$dbName} does not seem to contain recentchanges entries, eligible for warning.\n" );
 					}
-			    	} elseif ( $inactive_date && $inactive_date < date( "YmdHis", strtotime( "-15 days" ) ) ) {
+			    	} elseif ( $inactiveDate && $inactiveDate < date( "YmdHis", strtotime( "-15 days" ) ) ) {
 					// Wiki already warned 15+ days ago, eligible for closure
 					if ( $this->hasOption( 'close' ) ) {
-						$this->closeWiki( $db_name );
-						$this->output( "{$db_name} does not seem to contain recentchanges entries after 15+ days warning, therefore closing.\n" );
+						$this->closeWiki( $dbName );
+						$this->output( "{$dbName} does not seem to contain recentchanges entries after 15+ days warning, therefore closing.\n" );
 					} else {
-						$this->output( "{$db_name} does not seem to contain recentchanges entries after 15+ days warning, eligible for closure.\n" );
+						$this->output( "{$dbName} does not seem to contain recentchanges entries after 15+ days warning, eligible for closure.\n" );
 					}
 				} else {
 					// Wiki warned 0-15 days ago
-					$this->output( "{$db_name} does not seem to contain recentchanges entries, warned 0-15 days ago.\n" );
+					$this->output( "{$dbName} does not seem to contain recentchanges entries, warned 0-15 days ago.\n" );
 				}
 			}
 		} else {
 			// Wiki already has been closed
-			if ( $closed_date && $closed_date < date( "YmdHis", strtotime( "-120 days" ) ) ) {
+			if ( $closedDate && $closedDate < date( "YmdHis", strtotime( "-120 days" ) ) ) {
 				// Wiki closed 120 days ago or longer; eligible for deletion
-				$this->output( "{$db_name} is eligible for deletion, has been closed on {$closed_date}.\n" );
-			} elseif ( $closed_date && $closed_date > date( "YmdHis", strtotime( "-120 days" ) ) ) {
+				$this->output( "{$dbName} is eligible for deletion, has been closed on {$closedDate}.\n" );
+			} elseif ( $closedDate && $closedDate > date( "YmdHis", strtotime( "-120 days" ) ) ) {
 				// Wiki closed but not 120 days ago yet
-				$this->output( "{$db_name} is not eligible for deletion yet, but has already been closed on {$closed_date}.\n" );
+				$this->output( "{$dbName} is not eligible for deletion yet, but has already been closed on {$closedDate}.\n" );
 			} else {
 				// Could not determine closure date, fallback
-				$this->output( "{$db_name} has already been closed but its closure date could not be determined. Please check!\n" );
+				$this->output( "{$dbName} has already been closed but its closure date could not be determined. Please check!\n" );
 			}
 		}
 
