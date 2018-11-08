@@ -58,7 +58,8 @@ class RequestWikiRequestViewer {
 			'cwRequester' => $user->getName(),
 			'cwLanguage' => $res->cw_language,
 			'cwSitename' => $res->cw_sitename,
-			'cwCategory' => $res->cw_category
+			'cwCategory' => $res->cw_category,
+			'cwDBname' => $res->cw_dbname
 		];
 
 		$formDescriptor = [
