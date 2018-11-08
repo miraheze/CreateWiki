@@ -88,5 +88,6 @@
 	"requestwikiqueue-searchrequest": "Procurar solicitudes de wikis",
 	"requestwikiqueue-usernotfound": "Non se atopou o usuario.",
 	"requestwikiqueue-view": "Ver solicitude de wiki",
+	"right-requestwiki": "Pedir wikis",
 	"right-createwiki": "Crear wikis no wiki granxa"
 }

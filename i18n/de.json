@@ -84,6 +84,8 @@
 	"requestwikiqueue-request-label-status-colon": "Status:",
 	"requestwikiqueue-request-label-toolbox": "Werkzeugkasten",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-visibility": "Die Sichtbarkeit dieser Anfragen markieren als …",
+	"requestwikiqueue-request-label-visibility-oversight": "Jeder mit der Berechtigung „suppressrevision“ kann diese Anfrage ansehen",
 	"requestwikiqueue-request-status": "Status des Antrages ändern:",
 	"requestwikiqueue-request-toolbox-createwiki": "Wiki erstellen",
 	"requestwikiqueue-requestnotfound": "Antrag nicht gefunden.",
