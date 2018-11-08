@@ -17,6 +17,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	function doPagerStuff() {
+		$sitename = $this->getRequest()->getText( 'sitename' );
 		$requester = $this->getRequest()->getText( 'requester' );
 		$status = $this->getRequest()->getText( 'status' );
 		$dbname = $this->getRequest()->getText( 'dbname' );
@@ -47,12 +48,19 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				],
 				'default' => ( $status ) ? $status : 'inreview'
 			]
+			'sitename' => [
+				'type' => 'user',
+				'name' => 'sitename',
+				'label-message' => 'requestwikiqueue-request-label-sitename',
+				'exist' => true,
+				'default' => $sitename
+			],
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
 		$htmlForm->setSubmitCallback( [ $this, 'dummyProcess' ] )->setMethod( 'get' )->prepareForm()->show();
 
-		$pager = new RequestWikiQueuePager( $requester, $dbname, $status );
+		$pager = new RequestWikiQueuePager( $sitename, $requester, $dbname, $status );
 		$table = $pager->getBody();
 
 		$this->getOutput()->addHTML( $pager->getNavigationBar() . $table . $pager->getNavigationBar() );
