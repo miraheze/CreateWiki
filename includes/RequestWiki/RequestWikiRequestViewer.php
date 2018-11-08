@@ -145,16 +145,16 @@ class RequestWikiRequestViewer {
 
 		if ( $wgUser->isAllowed( 'createwiki' ) ) {
 			$visibilityoptions = [
-				0 => wfMessage( 'requestwikiqueue-request-visibility-all' )->text(),
-				1 => wfMessage( 'requestwikiqueue-request-visibility-hide' )->text()
+				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
+				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
 			];
 
 			if ( $wgUser->isAllowed( 'delete' ) ) {
-				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-visibility-delete' )->text();
+				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
 			}
 
 			if ( $wgUser->isAllowed( 'suppressrevision' ) ) {
-				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-visibility-oversight' )->text();
+				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
 			$formDescriptor += [
