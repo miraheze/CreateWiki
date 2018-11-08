@@ -87,8 +87,8 @@ class RequestWikiQueuePager extends TablePager {
 			'joins_conds' => [],
 		];
 
-		if ( $this->sitename ) {
-			$info['conds']['cw_sitename'] = $this->sitename;
+		if ( $this->dbname ) {
+			$info['conds']['cw_dbname'] = $this->dbname;
 		}
 
 		if ( $this->requester ) {
