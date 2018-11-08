@@ -109,7 +109,7 @@ class RequestWikiRequestViewer {
 			]
 		];
 
-		if ( $wgUser->isAllowed( 'createwiki' ) || $context->getUser()->getId == $res->cw_user ) {
+		if ( $wgUser->isAllowed( 'createwiki' ) || $context->getUser()->getId() == $res->cw_user ) {
 			$formDescriptor['edit'] = array(
 				'type' => 'submit',
 				'section' => 'request',
