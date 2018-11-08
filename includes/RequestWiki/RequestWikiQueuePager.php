@@ -3,8 +3,9 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiQueuePager extends TablePager {
-	function __construct( $requester, $dbname, $status ) {
+	function __construct( $sitename, $requester, $dbname, $status ) {
 		$this->mDb = self::getCreateWikiGlobalWiki();
+		$this->sitename = $sitename;
 		$this->requester = $requester;
 		$this->dbname = $dbname;
 		$this->status = $status;
