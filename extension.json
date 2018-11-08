@@ -38,6 +38,7 @@
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
 		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
+		"RequestWikiRequestViewer": "includes/RequestWiki/RequestWikiRequestViewer.php",
 		"SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
 		"SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
 		"SpecialRequestWikiEdit": "includes/RequestWiki/SpecialRequestWikiEdit.php",
