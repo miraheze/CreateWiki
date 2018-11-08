@@ -34,7 +34,7 @@ class RequestWikiRequestViewer {
 			__METHOD__
 		);
 
-		$visibility = (int)$res->cw_visibility;
+		$visibility = ( $res ) ? (int)$res->cw_visibility : 0;
 
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
@@ -109,7 +109,7 @@ class RequestWikiRequestViewer {
 			]
 		];
 
-		if ( $wgUser->isAllowed( 'createwiki' ) || $context->getUser()->getId == $res->cw_user ) {
+		if ( $wgUser->isAllowed( 'createwiki' ) || $context->getUser()->getId() == $res->cw_user ) {
 			$formDescriptor['edit'] = array(
 				'type' => 'submit',
 				'section' => 'request',
