@@ -233,7 +233,7 @@ class RequestWikiRequestViewer {
 		}
 
 
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateGlobalWiki );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiGlobalWiki );
 
 		$dbw->update( 'cw_requests',
 			[
