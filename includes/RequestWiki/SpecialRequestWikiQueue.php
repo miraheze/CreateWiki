@@ -27,14 +27,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'type' => 'text',
 				'name' => 'dbname',
 				'label-message' => 'createwiki-label-dbname',
-				'default' => $dbname
+				'default' => $dbname,
 			],
 			'requester' => [
 				'type' => 'user',
 				'name' => 'requester',
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'exist' => true,
-				'default' => $requester
+				'default' => $requester,
 			],
 			'status' => [
 				'type' => 'select',
@@ -46,14 +46,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'Declined' => 'declined',
 					'All' => '*'
 				],
-				'default' => ( $status ) ? $status : 'inreview'
+				'default' => ( $status ) ? $status : 'inreview',
 			]
 			'sitename' => [
-				'type' => 'user',
+				'type' => 'text',
 				'name' => 'sitename',
 				'label-message' => 'requestwikiqueue-request-label-sitename',
 				'exist' => true,
-				'default' => $sitename
+				'default' => $sitename,
 			],
 		];
 
