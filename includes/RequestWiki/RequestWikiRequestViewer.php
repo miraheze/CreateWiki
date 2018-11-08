@@ -237,6 +237,7 @@ class RequestWikiRequestViewer {
 		$dbw->update( 'cw_requests',
 			[
 				'cw_status' => ( $formData['action'] != 'comment' ) ? $formData['action'] : 'inreview',
+				'cw_visibility' => $formData['visibility']
 			],
 			[
 				'cw_id' => $requestid
