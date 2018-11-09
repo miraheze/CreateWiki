@@ -70,6 +70,9 @@ class RequestWikiQueuePager extends TablePager {
 	}
 
 	function getQueryInfo() {
+		$user = $this->getUser();
+		$visibility = $user->isAllowed( 'createwiki' ) ? 1 : 0;
+		
 		$info = [
 			'tables' => [
 				'cw_requests'
@@ -83,7 +86,9 @@ class RequestWikiQueuePager extends TablePager {
 				'cw_url',
 				'cw_sitename'
 			],
-			'conds' => [],
+			'conds' => [
+				'cw_visibility <= ' . $visibility // Don't fetch what we can't see
+			],
 			'joins_conds' => [],
 		];
 
