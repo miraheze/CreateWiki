@@ -62,6 +62,10 @@ class RequestWikiRequestViewer {
 			'cwDBname' => $res->cw_dbname
 		];
 
+		if ( $res->cw_private != 0 && $wgCreateWikiUsePrivateWikis ) {
+			$creationParams['cwPrivate'] = 1;
+		}
+
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
