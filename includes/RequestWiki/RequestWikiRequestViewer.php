@@ -5,7 +5,7 @@ class RequestWikiRequestViewer {
 		int $requestid = NULL,
 		IContextSource $context
 	) {
-		global $wgUser, $wgCreateWikiGlobalWiki;
+		global $wgUser, $wgCreateWikiGlobalWiki, $wgCreateWikiUsePrivateWikis;
 
 		OutputPage::setupOOUI(
 			strtolower( $context->getSkin()->getSkinName() ),
