@@ -171,9 +171,9 @@ class RequestWikiRequestViewer {
 					'vertical-label' => false,
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options' => [
-						wfMessage( 'requestwikiqueue-request-label-comment' )->text() => 'comment',
-						wfMessage( 'requestwikiqueue-request-label-approved' )->text() => 'approve',
-						wfMessage( 'requestwikiqueue-request-label-declined' )->text() => 'decline'
+						wfMessage( 'requestwikiqueue-request-label-inreview' )->text() => 'inreview',
+						wfMessage( 'requestwikiqueue-request-label-approved' )->text() => 'approved',
+						wfMessage( 'requestwikiqueue-request-label-declined' )->text() => 'declined'
 					],
 					'section' => 'handling'
 				],
@@ -237,7 +237,7 @@ class RequestWikiRequestViewer {
 
 		$dbw->update( 'cw_requests',
 			[
-				'cw_status' => ( $formData['action'] != 'comment' ) ? $formData['action'] : 'inreview',
+				'cw_status' => $formData['action'],
 				'cw_visibility' => $formData['visibility']
 			],
 			[
