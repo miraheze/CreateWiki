@@ -72,7 +72,7 @@ class RequestWikiQueuePager extends TablePager {
 	function getQueryInfo() {
 		$user = $this->getUser();
 		$visibility = $user->isAllowed( 'createwiki' ) ? 1 : 0;
-		
+
 		$info = [
 			'tables' => [
 				'cw_requests'
@@ -97,7 +97,7 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = $this->requester;
+			$info['conds']['cw_user'] = User::newFromName( $this->requester )->getId();
 		}
 
 		if ( $this->status && $this->status != '*' ) {
