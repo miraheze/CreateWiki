@@ -260,7 +260,7 @@ class RequestWikiRequestViewer {
 			__METHOD__
 		);
 
-		$form->getContext()->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-success' )->escaped() . '</div>' );
+		$form->getContext()->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success', $requestid )->escaped() . '</div>' );
 
 		return true;
 	}
