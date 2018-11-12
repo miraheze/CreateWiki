@@ -60,6 +60,7 @@
 	"requestwikiqueue-pager-status-approved": "Approved wikis in queue.\n{{Identical|Approved}}",
 	"requestwikiqueue-pager-status-declined": "Declined wikis in queue.\n{{Identical|Declined}}",
 	"requestwikiqueue-pager-status-inreview": "In Review wikis in queue",
+	"requestwikiqueue-request": "{{Identical|Request}}",
 	"requestwikiqueue-request-header-changestatus": "Button to change the status of a wiki request.",
 	"requestwikiqueue-request-header-requestercomment": "Text for wiki request comment.",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Text for user who wrote the comment ($1)",

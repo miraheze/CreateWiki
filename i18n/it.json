@@ -16,6 +16,7 @@
 	"requestwiki-label-language": "Lingua:",
 	"requestwiki-label-sitename": "Nome wiki:",
 	"requestwiki-label-siteurl": "Subdominio: (subdomain.miraheze.org)",
+	"requestwikiqueue-request": "Richiesta",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Commento dato da $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Commento dato da $1 il $2",
 	"requestwikiqueue-request-label-approved": "Approvato",

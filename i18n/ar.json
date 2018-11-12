@@ -4,7 +4,8 @@
 			"محمد أحمد عبد الفتاح",
 			"ديفيد",
 			"Meno25",
-			"OsamaK"
+			"OsamaK",
+			"HendSalah16"
 		]
 	},
 	"action-createwiki": "إنشاء ويكيات",
@@ -93,6 +94,7 @@
 	"requestwikiqueue-request-label-visibility-all": "يمكن لكل من لديه \"قراءة\" مشاهدة هذا الطلب",
 	"requestwikiqueue-request-label-visibility-delete": "يمكن لكل شخص لديه صلاحيات \"حذف\" عرض هذا الطلب",
 	"requestwikiqueue-request-label-visibility-hide": "يمكن لكل شخص لديه صلاحيات \"إنشاء ويكي\" عرض هذا الطلب",
+	"requestwikiqueue-request-label-visibility-oversight": "بإمكان اي شخص لديه صلاحيات 'منع النشر و العرض' عرض هذا الطلب",
 	"requestwikiqueue-request-status": "تغيير حالة طلب الويكي هذا",
 	"requestwikiqueue-request-toolbox-createwiki": "إنشاء ويكي",
 	"requestwikiqueue-requestnotfound": "لم يتم العثور على الطلب.",

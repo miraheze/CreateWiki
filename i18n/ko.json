@@ -64,6 +64,7 @@
 	"requestwikiqueue-pager-status-approved": "승인됨",
 	"requestwikiqueue-pager-status-declined": "거절됨",
 	"requestwikiqueue-pager-status-inreview": "검토 중",
+	"requestwikiqueue-request": "요청",
 	"requestwikiqueue-request-header-changestatus": "이 위키 요청의 상태 바꾸기",
 	"requestwikiqueue-request-header-requestercomment": "위키 요청자의 코멘트",
 	"requestwikiqueue-request-header-wikicreatorcomment": "$1님의 코멘트",

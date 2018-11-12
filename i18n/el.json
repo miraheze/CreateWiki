@@ -39,6 +39,7 @@
 	"requestwikiqueue-pager-status-approved": "Εγκεκριμένο",
 	"requestwikiqueue-pager-status-declined": "απορριμένο",
 	"requestwikiqueue-pager-status-inreview": "σε αναθεώρηση",
+	"requestwikiqueue-request": "Αίτημα",
 	"requestwikiqueue-request-label-approved": "Εγκεκριμένο",
 	"requestwikiqueue-request-label-comment": "Σχόλιο:",
 	"requestwikiqueue-request-label-create-wiki": "Δημιουργία",
