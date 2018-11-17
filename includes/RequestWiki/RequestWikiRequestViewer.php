@@ -231,7 +231,7 @@ class RequestWikiRequestViewer {
 	) {
 		global $wgCreateWikiGlobalWiki;
 
-		if ( $formData['edit'] ) {
+		if ( isset( $formData['edit'] ) && $formData['edit'] ) {
 			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullUrl() . '/' . $requestid );
 			return;
 		}
