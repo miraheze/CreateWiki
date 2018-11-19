@@ -82,6 +82,11 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiCDBRequireFiles": {
+			"description": "Array. List of files which we should include in our final loading of a wiki.",
+			"public": false,
+			"value": false
+		},
 		"CreateWikiCustomDomainPage": {
 			"description": "String. Page name to link to for more information on custom domains.",
 			"public": true,

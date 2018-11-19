@@ -67,6 +67,15 @@ class CreateWikiHooks {
 		// Hook so other extensions can use our $wgConf to build
 		Hooks::run( 'CreateWikiCDBSetup', [ $wgConf, $wgDBname ] );
 
+		// hack to ensure all MediaWiki configs are accessible
+		foreach ( $wgConf->settings as $key => $val ) {
+			global $$key;
+		}
+
+		foreach ( $wgCreateWikiCDBRequireFiles as $file ) {
+			require_once( $file );
+		}
+
 		// Hook for "final" execution after all other hooks.
 		// Should be used for things that need to be done last
 		// and shouldn't usign $wgConf at all!
