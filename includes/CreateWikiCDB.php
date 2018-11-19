@@ -21,7 +21,7 @@ class CreateWikiCDB {
 		return true;
 	}
 
-	public static function get( string $wiki, string $section ) {
+	public static function get( string $wiki, $section ) {
 		global $wgCreateWikiCDBDirectory;
 
 		if ( $wgCreateWikiCDBDirectory ) {
@@ -29,6 +29,16 @@ class CreateWikiCDB {
 
 			if ( file_exists( $cdbfile ) ) {
 				$cdbr = \Cdb\Reader::open( $cdbfile );
+
+				if ( is_array( $section ) ) {
+					$returnArray = [];
+
+					foreach ( $section as $key ) {
+						$returnArray[$key] = $cdbr->get( $key );
+					}
+
+					return $returnArray;
+				}
 
 				return $cdbr->get( $section );
 			}
@@ -130,4 +140,87 @@ class CreateWikiCDB {
 			return unlink( "$wgCreateWikiCDBDirectory/$wiki.cdb" );
 		}
 	}
+
+	public static function getDatabaseList( $list = 'all' ) {
+		global $wgCreateWikiCDBDirectory, $wgCreateWikiDatabase;
+
+		$cdbFile = "$wgCreateWikiCDBDirectory/databaseList.cdb";
+
+		$cache = ObjectCache::getLocalClusterInstance();
+		$key = $cache->makeGlobalKey( 'CreateWiki', 'dbVersion' );
+		$cacheVersion = $cache->get( $key );
+
+		if ( file_exists( $cdbFile ) ) {
+			$cdbr = \Cdb\Reader::open( $cdbFile );
+		}
+
+		$cdbVersion = ( isset( $cdbr ) ) ? $cdbr->get( 'dbVersion' ) : null;
+
+		if ( !$cdbVersion || !( (int)$cdbVersion === (int)$cacheVersion ) ) {
+			if ( $cacheVersion ) {
+				$cacheVersion = (int)$cache->incr( $key );
+			} else {
+				$cacheVersion = (int)$cache->set( $key, 1, rand( 84600, 88200 ) );
+			}
+
+			$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
+
+			$all = [];
+			$private = [];
+			$closed = [];
+			$inactive = [];
+
+			$wikis = $dbr->select(
+				'cw_wikis',
+				[
+					'wiki_dbname',
+					'wiki_private',
+					'wiki_closed',
+					'wiki_inactive'
+				],
+				[],
+				__METHOD__
+			);
+
+			foreach ( $wikis as $wiki ) {
+				$all[] = $wiki->wiki_dbname;
+
+				if ( $wiki->wiki_private ) {
+					$private[] = $wiki->wiki_dbname;
+				}
+
+				if ( $wiki->wiki_closed ) {
+					$closed[] = $wiki->wiki_dbname;
+				}
+
+				if ( $wiki->wiki_inactive ) {
+					$inactive[] = $wiki->wiki_dbname;
+				}
+			}
+
+			$cdbw = \Cdb\Writer::open( $cdbFile );
+			$cdbw->set( 'dbVersion', $cacheVersion );
+			$cdbw->set( 'all', json_encode( $all ) );
+			$cdbw->set( 'private', json_encode( $private ) );
+			$cdbw->set( 'closed', json_encode( $closed ) );
+			$cdbw->set( 'inactive', json_encode( $inactive ) );
+			$cdbw->close();
+
+			$cdbr = \Cdb\Reader::open( $cdbFile );
+
+		}
+
+		if ( is_array( $list ) ) {
+			$returnArray = [];
+
+			foreach ( $list as $key ) {
+				$returnArray[$key] = json_decode( $cdbr->get( $key ), true );
+			}
+
+			return $returnArray;
+		}
+
+		return json_decode( $cdbr->get( $list ), true );
+	}
+
 }
