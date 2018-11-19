@@ -162,7 +162,7 @@ class CreateWikiCDB {
 		}
 	}
 
-	public static function getDatabaseList( $list = 'all' ) {
+	public static function getDatabaseList( $list = 'all', $update = false ) {
 		global $wgCreateWikiCDBDirectory, $wgCreateWikiDatabase;
 
 		$cdbFile = "$wgCreateWikiCDBDirectory/databaseList.cdb";
@@ -177,7 +177,7 @@ class CreateWikiCDB {
 
 		$cdbVersion = ( isset( $cdbr ) ) ? $cdbr->get( 'dbVersion' ) : null;
 
-		if ( !$cdbVersion || !( (int)$cdbVersion === (int)$cacheVersion ) ) {
+		if ( $update || !$cdbVersion || !( (int)$cdbVersion === (int)$cacheVersion ) ) {
 			if ( $cacheVersion ) {
 				$cacheVersion = (int)$cache->incr( $key );
 			} else {
