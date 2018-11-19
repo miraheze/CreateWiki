@@ -53,6 +53,8 @@ class CreateWikiCDB {
 		global $wgCreateWikiCDBDirectory, $wgCreateWikiDatabase;
 
 		if ( $wgCreateWikiCDBDirectory ) {
+			$cdbFile = "$wgCreateWikiCDBDirectory/$wiki.cdb";
+
 			$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
 			$cwWikis = $dbr->selectRow(
@@ -105,17 +107,26 @@ class CreateWikiCDB {
 			$key = $cache->makeKey( 'CreateWiki', 'version' );
 			$cacheVersion = $cache->get( $key );
 
-			// If we have a key, let's increase it! If not, add one!
-			if ( $cacheVersion ) {
+			// CDB version
+			if ( file_exists( $cdbFile ) ) {
+				$cdbr = \Cdb\Reader::open( $cdbFile );
+			}
+
+			$cdbVersion = ( isset( $cdbr ) ) ? $cdbr->get( 'version' ) : null;
+
+			// If we're running an out of date version, let's do nothing.
+			// If we're ruinning "the latest", let's increase it.
+			// If we don't have a key... let's make one!
+			if ( $cacheVersion == $cdbVersion) {
 				$cacheVersion = (int)$cache->incr( $key );
-			} else {
+			} elseif ( !$cacheVersion ) {
 				$cacheVersion = (int)$cache->set( $key, 1, rand( 84600, 88200 ) );
 			}
 
 			// Now we've added our end key to the array, let's push it
 			$cacheArray['version'] = $cacheVersion;
 
-			$cdbw = \Cdb\Writer::open( "$wgCreateWikiCDBDirectory/$wiki.cdb" );
+			$cdbw = \Cdb\Writer::open( $cdbFile );
 
 			foreach ( $cacheArray as $key => $value ) {
 				$cdbw->set( $key, $value );
@@ -138,6 +149,16 @@ class CreateWikiCDB {
 			$cache->delete( $key );
 
 			return unlink( "$wgCreateWikiCDBDirectory/$wiki.cdb" );
+		}
+	}
+
+	public static function changes() {
+		global $wgCreateWikiCDBDirectory;
+
+		if ( $wgCreateWikiCDBDirectory ) {
+			$cache = ObjectCache::getLocalClusterInstance();
+			$key = $cache->makeKey( 'CreateWiki', 'version' );
+			$cache->incr( $key );
 		}
 	}
 

@@ -48,6 +48,9 @@
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": [
 			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
+		],
+		"SetupAfterCache": [
+			"CreateWikiHooks::onSetupAfterCache"
 		]
 	},
 	"ResourceModules": {
