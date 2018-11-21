@@ -16,7 +16,8 @@ class CreateWikiHooks {
 	}
 
 	public static function onSetupAfterCache() {
-		global $wgCreateWikiCDBDirectory, $wgDBname, $wgConf, $wgCreateWikiPrivateWikis, $wgCreateWikiClosedWikis, $wgCreateWikiInactiveWikis, $wgLocalDatabases;
+		global $wgCreateWikiCDBDirectory, $wgDBname, $wgConf, $wgCreateWikiPrivateWikis,
+		$wgCreateWikiClosedWikis, $wgCreateWikiInactiveWikis, $wgLocalDatabases, $wgCreateWikiCDBRequireFiles;
 
 		if ( $wgCreateWikiCDBDirectory ) {
 			// Check version differences in general caching, if not up to date
@@ -73,8 +74,10 @@ class CreateWikiHooks {
 				global $$key;
 			}
 
-			foreach ( $wgCreateWikiCDBRequireFiles as $file ) {
-				require_once( $file );
+			if ( $wgCreateWikiCDBRequireFiles ) {
+				foreach ( $wgCreateWikiCDBRequireFiles as $file ) {
+					require_once( $file );
+				}
 			}
 
 			// Hook for "final" execution after all other hooks.
