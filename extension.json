@@ -31,7 +31,6 @@
 		]
 	},
 	"AutoloadClasses": {
-		"CreateWikiCDB": "includes/CreateWikiCDB.php",
 		"CreateWikiHooks": "includes/CreateWikiHooks.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
@@ -48,9 +47,6 @@
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": [
 			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
-		],
-		"SetupAfterCache": [
-			"CreateWikiHooks::onSetupAfterCache"
 		]
 	},
 	"ResourceModules": {
@@ -75,16 +71,6 @@
 		"CreateWikiCategories": {
 			"description": "Array. An array of categories used for wiki categorisaion.",
 			"public": true,
-			"value": false
-		},
-		"CreateWikiCDBDirectory": {
-			"description": "String. Directory to store CDB files in. This will enabled CDB capabilities in CreateWiki and extended extensions.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiCDBRequireFiles": {
-			"description": "Array. List of files which we should include in our final loading of a wiki.",
-			"public": false,
 			"value": false
 		},
 		"CreateWikiCustomDomainPage": {
