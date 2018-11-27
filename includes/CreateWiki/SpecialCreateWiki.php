@@ -5,7 +5,7 @@ class SpecialCreateWiki extends FormSpecialPage {
         }
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiCDBDirectory;
 
 		$par = $this->par;
 		$request = $this->getRequest();
