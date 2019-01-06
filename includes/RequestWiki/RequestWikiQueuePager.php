@@ -24,7 +24,7 @@ class RequestWikiQueuePager extends TablePager {
 		static $headers = null;
 
 		$headers = [
-			'cw_timestamp' => 'createwiki-label-requested-date',
+			'cw_timestamp' => 'requestwikiqueue-request-label-requested-date',
 			'cw_dbname' => 'createwiki-label-dbname',
 			'cw_sitename' => 'requestwikiqueue-request-label-sitename',
 			'cw_user' => 'requestwikiqueue-request-label-requester',
