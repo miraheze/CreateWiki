@@ -89,14 +89,14 @@ class RequestWikiRequestViewer {
 				'default' => (string)$res->cw_language
 			],
 			'requester' => [
-				'label-message' => 'requestwikiqueue-request-label-requester',
+				'label-message' => 'createwiki-label-requester',
 				'type' => 'info',
 				'section' => 'request',
 				'default' => $user->getName() . Linker::userToolLinks( $res->cw_user, $user->getName() ),
 				'raw' => true,
 			],
 			'requestedDate' => [
-				'label-message' => 'requestwikiqueue-request-label-requested-date',
+				'label-message' => 'createwiki-label-requested-date',
 				'type' => 'info',
 				'readonly' => true,
 				'section' => 'request',
