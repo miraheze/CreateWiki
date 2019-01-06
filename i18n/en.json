@@ -22,7 +22,6 @@
 	"createwiki-label-category": "Category:",
 	"createwiki-label-dbname": "Database name:",
 	"createwiki-label-requester": "Requester:",
-	"createwiki-label-requested-date": "Requested At:"
 	"createwiki-label-language": "Language:",
 	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Reason:",
@@ -83,6 +82,7 @@
 	"requestwikiqueue-request-label-language": "Language",
 	"requestwikiqueue-request-label-private": "Private",
 	"requestwikiqueue-request-label-requester": "Requester",
+	"requestwikiqueue-request-label-requested-date": "Requested At",
 	"requestwikiqueue-request-label-sitename": "Sitename",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-status-colon": "Status:",
