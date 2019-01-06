@@ -24,6 +24,7 @@
 	"createwiki-label-language": "Language:",
 	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Reason:",
+	"createwiki-label-requester": "Requester:",
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-submit": "Submit",
 	"createwiki-legend": "Create a wiki",
