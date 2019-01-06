@@ -22,6 +22,7 @@
 	"createwiki-label-category": "Category:",
 	"createwiki-label-dbname": "Database name:",
 	"createwiki-label-requester": "Requester:",
+	"createwiki-label-requested-date": "Requested At:",
 	"createwiki-label-language": "Language:",
 	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Reason:",
