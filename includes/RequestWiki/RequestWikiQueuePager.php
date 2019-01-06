@@ -43,7 +43,7 @@ class RequestWikiQueuePager extends TablePager {
 	function formatValue( $name, $value ) {
 		$row = $this->mCurrentRow;
 
-		$language = $this->specialPage->getLanguage();
+		$language = $this->getLanguage();
 
 		switch ( $name ) {
 			case 'cw_timestamp':
