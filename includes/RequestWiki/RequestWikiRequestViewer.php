@@ -93,7 +93,15 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'section' => 'request',
 				'default' => $user->getName() . Linker::userToolLinks( $res->cw_user, $user->getName() ),
-				'raw' => true
+				'raw' => true,
+			],
+			'requestedDate' => [
+				'label-message' => 'requestwikiqueue-request-label-requested-date',
+				'type' => 'info',
+				'readonly' => true,
+				'section' => 'request',
+				'default' => $context->getLanguage()->timeanddate( $res->cw_timestamp, true ),
+				'raw' => true,
 			],
 			'status' => [
 				'label-message' => 'requestwikiqueue-request-label-status',
