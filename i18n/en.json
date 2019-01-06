@@ -82,8 +82,6 @@
 	"requestwikiqueue-request-label-inreview": "In Review",
 	"requestwikiqueue-request-label-language": "Language",
 	"requestwikiqueue-request-label-private": "Private",
-	"requestwikiqueue-request-label-requester": "Requester",
-	"requestwikiqueue-request-label-requested-date": "Requested At",
 	"requestwikiqueue-request-label-sitename": "Sitename",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-status-colon": "Status:",
