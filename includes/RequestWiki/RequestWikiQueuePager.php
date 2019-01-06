@@ -24,6 +24,7 @@ class RequestWikiQueuePager extends TablePager {
 		static $headers = null;
 
 		$headers = [
+			'cw_timestamp' => 'createwiki-label-timestamp',
 			'cw_dbname' => 'createwiki-label-dbname',
 			'cw_sitename' => 'requestwikiqueue-request-label-sitename',
 			'cw_user' => 'requestwikiqueue-request-label-requester',
@@ -43,6 +44,9 @@ class RequestWikiQueuePager extends TablePager {
 		$row = $this->mCurrentRow;
 
 		switch ( $name ) {
+			case 'cw_timestamp':
+				$formatted = $row->cw_timestamp;
+				break;
 			case 'cw_dbname':
 				$formatted = $row->cw_dbname;
 				break;
@@ -79,6 +83,7 @@ class RequestWikiQueuePager extends TablePager {
 			],
 			'fields' => [
 				'cw_id',
+				'cw_timestamp',
 				'cw_dbname',
 				'cw_language',
 				'cw_user',
@@ -98,6 +103,10 @@ class RequestWikiQueuePager extends TablePager {
 
 		if ( $this->requester ) {
 			$info['conds']['cw_user'] = User::newFromName( $this->requester )->getId();
+		}
+		    
+		if ( $this->cw_timestamp ) {
+			$info['conds']['cw_timestamp'] = $this->timestamp;
 		}
 
 		if ( $this->status && $this->status != '*' ) {
