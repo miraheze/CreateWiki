@@ -47,9 +47,9 @@ class CreateWikiHooks {
 	public static function onBeforeCreateEchoEvent(
 		&$notifications, &$notificationCategories, &$icons
 	) {
-		$notificationCategories['farmer'] = [
+		$notificationCategories['wiki-creation'] = [
 			'priority' => 2,
-			'tooltip' => 'echo-pref-tooltip-farmer',
+			'tooltip' => 'echo-pref-tooltip-wiki-creation',
 		];
 		$notifications['wiki-creation'] = [
 			EchoAttributeManager::ATTR_LOCATORS => [
