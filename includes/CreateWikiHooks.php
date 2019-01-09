@@ -35,4 +35,35 @@ class CreateWikiHooks {
 			$wgLogTypes[] = 'farmer';
 		}
 	}
+	
+	/**
+	* Add CreateWiki events to Echo
+	*
+	* @param array &$notifications array of Echo notifications
+	* @param array &$notificationCategories array of Echo notification categories
+	* @param array &$icons array of icon details
+	* @return bool
+	*/
+	public static function onBeforeCreateEchoEvent(
+		&$notifications, &$notificationCategories, &$icons
+	) {
+		$notificationCategories['farmer'] = [
+			'priority' => 2,
+			'tooltip' => 'echo-pref-tooltip-farmer',
+		];
+		$notifications['wiki-creation'] = [
+			EchoAttributeManager::ATTR_LOCATORS => [
+				'EchoUserLocator::locateEventAgent'
+			],
+			'category' => 'farmer',
+			'group' => 'positive',
+			'section' => 'alert',
+			'canNotifyAgent' => true,
+			'presentation-model' => EchoCreateWikiPresentationModel::class,
+			'immediate' => true
+		];
+
+		return true;
+	}
+
 }
