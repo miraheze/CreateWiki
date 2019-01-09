@@ -35,7 +35,7 @@
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
-		"EchoCreateWikiPresentationModel": "includes/EchoCreateWikiPresentationModel.php",
+		"EchoCreateWikiPresentationModel": "includes/CreateWiki/EchoCreateWikiPresentationModel.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
 		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
@@ -133,7 +133,7 @@
 			"value": false
 		},
 		"CreateWikiUseEchoNotifications": {
-			"description": "Boolean. Whether to use Echo notifications (beta feature).",
+			"description": "Boolean. Whether to use Echo notifications (beta feature). If this is enabled, the value of $wgCreateWikiEmailNotifications will be ignored.",
 			"public": true,
 			"value": false
 		},
