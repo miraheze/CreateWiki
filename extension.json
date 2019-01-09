@@ -35,6 +35,7 @@
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
+		"EchoCreateWikiPresentationModel": "includes/EchoCreateWikiPresentationModel.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
 		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
@@ -45,6 +46,9 @@
 		"SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php"
 	},
 	"Hooks": {
+		"BeforeCreateEchoEvent": [
+			"CreateWikiHooks::onBeforeCreateEchoEvent"
+		],
 		"LoadExtensionSchemaUpdates": [
 			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
 		]
@@ -125,6 +129,11 @@
 		},
 		"CreateWikiUseCustomDomains": {
 			"description": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseEchoNotifications": {
+			"description": "Boolean. Whether to use Echo notifications (beta feature).",
 			"public": true,
 			"value": false
 		},
