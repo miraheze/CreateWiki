@@ -129,7 +129,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		// Let's ensure our wiki is in the DBlist on the server
 		// we run the maintenance scripts on.
-		exec( "/usr/bin/php /srv/mediawiki/w/extensions/CreateWiki/maintenance/DBListGenerator.php --wiki " . $wgCreateWikiDatabase );
+		exec( "/usr/bin/php " .
+		     "$IP/extensions/CreateWiki/maintenance/DBListGenerator.php --wiki " . $wgCreateWikiDatabase );
 
 		$dbw->selectDB( $DBname );
 
