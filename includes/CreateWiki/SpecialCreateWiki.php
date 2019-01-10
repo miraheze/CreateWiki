@@ -89,7 +89,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiEmailNotifications;
+		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname,
+		$wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiEmailNotifications,
+		$wgVersion;
 
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
@@ -152,8 +154,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 			return wfMessage( 'createwiki-error-usernotcreated' )->escaped();
 		}
 
+		$customGroup = '';
+		if ( version_compare( $wgVersion, '1.32c', '>' ) ) {
+			$customGroup = '--custom-groups interface-admin';
+		}
 		$shpromoteaccount = exec( "/usr/bin/php " .
-			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
+			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop {$customGroup} --force --wiki " . wfEscapeShellArg( $DBname ) );
 
 		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
 			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
