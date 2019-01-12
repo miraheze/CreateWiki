@@ -138,11 +138,16 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$dbw->sourceFile( $sqlfile );
 		}
 
-		$this->createMainPage( $language );
-
 		$dbw->selectDB( $wgDBname ); // revert back to main wiki
 
 		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
+
+		// FIXME: use Shell class for all exec statements
+		$shPopulateMainPage = exec( "/usr/bin/php " .
+			"$IP/extensions/CreateWiki/maintenance/populateMainPage.php" .
+				" --wiki " . wfEscapeShellArg( $DBname ) . 
+				" --lang=" . wfEscapeShellArg( $language ) 
+		);
 
 		$shcreateaccount = exec( "/usr/bin/php " .
 			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $requesterName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
@@ -251,30 +256,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'wiki_category' => $category,
 			),
 			__METHOD__
-		);
-
-		return true;
-	}
-
-	public function createMainPage( $language ) {
-		// Don't use Meta's mainpage message!
-		if ( $language !== 'en' ) {
-			$page = wfMessage( 'mainpage' )->inLanguage( $language )->plain();
-		} else {
-			$page = 'Main_Page';
-		}
-
-		$title = Title::newFromText( $page );
-		$article = WikiPage::factory( $title );
-
-		$article->doEditContent( 
-			new WikitextContent(
-				wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain() 
-			), // Text
-			'Create main page', // Edit summary
-			EDIT_SUPPRESS_RC, // Flags
-			false, // I have no idea what this is
-			User::newFromName( 'MediaWiki default' ) // We don't want to have incorrect user_id - user_name entries
 		);
 
 		return true;
