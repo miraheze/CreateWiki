@@ -83,6 +83,7 @@
 	"requestwikiqueue-request-label-language": "Idioma",
 	"requestwikiqueue-request-label-private": "Privado",
 	"requestwikiqueue-request-label-requester": "Autor do pedido",
+	"requestwikiqueue-request-label-requested-date": "Solicitado em",
 	"requestwikiqueue-request-label-sitename": "Nome do site",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-status-colon": "Status:",
