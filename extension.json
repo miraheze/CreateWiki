@@ -35,6 +35,7 @@
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
+		"PopulateMainPage": "maintenance/populateMainPage.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
 		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",

@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Reception123"
+			"Reception123",
+			"KlaudiuMihaila"
 		]
 	},
 	"createwiki": "Creați un wiki",
@@ -14,9 +15,9 @@
 	"createwiki-error-notsuffixed": " Data de bază nu are un suffix valid (e.x. 'wiki')",
 	"createwiki-error-usernotcreated": "Solicitant nu a fost creat pe wiki.",
 	"createwiki-label-dbname": "Nume dată de bază:",
-	"createwiki-label-requester": "Solicitant:",
 	"createwiki-label-language": "Limbă:",
 	"createwiki-label-reason": "Motiv:",
+	"createwiki-label-requester": "Solicitant:",
 	"createwiki-label-sitename": "Nume de site:",
 	"createwiki-label-submit": "Trimitere",
 	"createwiki-success": "Wiki-ul a fost creat cu success.",
@@ -34,7 +35,7 @@
 	"requestwiki-label-language": "Limbă:",
 	"requestwiki-label-private": "Wiki privat (nu poate fi citit de oricine):",
 	"requestwiki-label-sitename": "Nume de wiki:",
-	"requestwiki-label-siteurl": "Subdomeniu:",
+	"requestwiki-label-siteurl": "Subdomeniu: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "Trebuie să <span class=\"plainlinks\">[$1 vă logați]</span> înainte să cereți un wiki.",
 	"requestwiki-submit": "Trimiteți",
 	"requestwiki-success": "Cererea ($1) a fost trimisă.",

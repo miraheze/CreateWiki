@@ -36,5 +36,6 @@
 	"requestwikiqueue-request-label-toolbox": "Værktøjskasse",
 	"requestwikiqueue-request-toolbox-createwiki": "Opret wiki",
 	"requestwikiqueue-searchbutton": "Søg",
-	"requestwikiqueue-usernotfound": "Brugeren blev ikke fundet."
+	"requestwikiqueue-usernotfound": "Brugeren blev ikke fundet.",
+	"right-createwiki": "Opret wikier"
 }

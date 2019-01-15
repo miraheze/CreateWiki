@@ -10,6 +10,19 @@ class CreateWikiHooks {
 				__DIR__ . '/../sql/cw_wikis.sql' );
 			$updater->addExtensionTable( 'cw_comments',
 				__DIR__ . '/../sql/cw_comments.sql' );
+
+			$updater->modifyField(
+ 				'cw_comments',
+ 				'cw_comment_user',
+ 				__DIR__ . '/../sql/patches/patch-cw_comments-int.sql',
+				true
+ 			);
+			$updater->modifyField(
+ 				'cw_requests',
+ 				'cw_user',
+ 				__DIR__ . '/../sql/patches/patch-cw_requests-int.sql',
+				true
+ 			);
 		}
 
 		return true;

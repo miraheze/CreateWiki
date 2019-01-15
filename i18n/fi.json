@@ -4,7 +4,8 @@
 			"Nike",
 			"Pyscowicz",
 			"01miki10",
-			"Str4nd"
+			"Str4nd",
+			"Valtlait"
 		]
 	},
 	"action-createwiki": "luoda wikejä",
@@ -20,7 +21,7 @@
 	"createwiki-label-submit": "Lähetä",
 	"createwiki-legend": "Luo wiki",
 	"createwiki-success": "Wiki luotiin onnistuneesti.",
-	"logentry-farmer-createwiki": "$1 loi wikin \"$4\"",
+	"logentry-farmer-createwiki": "$1 loi wikin ”$4”",
 	"requestwiki-edit-id": "Wikipyynnön ID",
 	"requestwiki-label-language": "Kieli:",
 	"requestwiki-label-sitename": "Wikin nimi:",

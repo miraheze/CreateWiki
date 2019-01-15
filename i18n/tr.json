@@ -22,10 +22,10 @@
 	"createwiki-error-usernotcreated": "İstenen kullanıcı viki'de oluşturulmamış.",
 	"createwiki-label-category": "Kategori:",
 	"createwiki-label-dbname": "Veritabanı adı:",
-	"createwiki-label-requester": "Talep eden:",
 	"createwiki-label-language": "Dil:",
 	"createwiki-label-private": "Bu viki'yi özel olarak işaretle",
 	"createwiki-label-reason": "Gerekçe:",
+	"createwiki-label-requester": "Talep eden:",
 	"createwiki-label-sitename": "Site adı:",
 	"createwiki-label-submit": "Gönder",
 	"createwiki-legend": "Bir viki oluştur",
@@ -88,6 +88,7 @@
 	"requestwikiqueue-request-label-status-colon": "Durum:",
 	"requestwikiqueue-request-label-toolbox": "Araç Kutusu",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-visibility": "Bu istekleri görünürlük olarak işaretle...",
 	"requestwikiqueue-request-label-visibility-all": "'okuma' iznine sahip herkes bu isteği görüntüleyebilir",
 	"requestwikiqueue-request-label-visibility-delete": "'Silme' iznine sahip herkes bu isteği görüntüleyebilir",
 	"requestwikiqueue-request-label-visibility-hide": "'vikioluştur' iznine sahip herkes bu isteği görüntüleyebilir",
@@ -98,5 +99,7 @@
 	"requestwikiqueue-searchbutton": "Ara",
 	"requestwikiqueue-searchrequest": "Viki taleplerini ara",
 	"requestwikiqueue-usernotfound": "Kullanıcı bulunamadı.",
-	"requestwikiqueue-view": "Viki talebini gör"
+	"requestwikiqueue-view": "Viki talebini gör",
+	"right-requestwiki": "Viki talep et",
+	"right-createwiki": "Viki oluştur"
 }

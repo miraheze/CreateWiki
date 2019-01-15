@@ -24,6 +24,7 @@ class RequestWikiQueuePager extends TablePager {
 		static $headers = null;
 
 		$headers = [
+			'cw_timestamp' => 'requestwikiqueue-request-label-requested-date',
 			'cw_dbname' => 'createwiki-label-dbname',
 			'cw_sitename' => 'requestwikiqueue-request-label-sitename',
 			'cw_user' => 'requestwikiqueue-request-label-requester',
@@ -42,7 +43,12 @@ class RequestWikiQueuePager extends TablePager {
 	function formatValue( $name, $value ) {
 		$row = $this->mCurrentRow;
 
+		$language = $this->getLanguage();
+
 		switch ( $name ) {
+			case 'cw_timestamp':
+				$formatted = $language->timeanddate( $row->cw_timestamp );
+				break;
 			case 'cw_dbname':
 				$formatted = $row->cw_dbname;
 				break;
@@ -79,6 +85,7 @@ class RequestWikiQueuePager extends TablePager {
 			],
 			'fields' => [
 				'cw_id',
+				'cw_timestamp',
 				'cw_dbname',
 				'cw_language',
 				'cw_user',
