@@ -159,10 +159,22 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
-
-		if( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {
-			$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
-			$this->sendCreationEmail( $notifyEmail, $siteName );
+		
+		if ( $wgCreateWikiUseEchoNotifications ) {
+			EchoEvent::create( [
+				'type' => 'wiki-creation',
+				'extra' => [
+					'wiki-url' => 'https://' . substr( $DBname, 0, -4 ) . '.miraheze.org', // url of the wiki
+					'sitename' => $siteName, // sitename of the wiki
+					'notifyAgent' => true,
+				],
+				'agent' => User::newFromName( $requesterName ), // wiki founder
+			] );
+		} else {
+			if ( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {                             
+				$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
+				$this->sendCreationEmail( $notifyEmail, $siteName );
+			}
 		}
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
