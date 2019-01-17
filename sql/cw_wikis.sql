@@ -8,6 +8,8 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_closed_timestamp BINARY(14) NULL,
   wiki_inactive SMALLINT NOT NULL,
   wiki_inactive_timestamp BINARY(14) NULL,
+  wiki_deleted SMALLINT NOT NULL,
+  wiki_deleted_timestamp BINARY(14) NULL,
   wiki_settings LONGTEXT NULL,
   wiki_dbcluster VARCHAR(5) DEFAULT 'c1',
   wiki_category VARCHAR(64) NOT NULL,

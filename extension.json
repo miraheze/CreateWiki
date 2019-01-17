@@ -36,6 +36,7 @@
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
 		"EchoCreateWikiPresentationModel": "includes/CreateWiki/EchoCreateWikiPresentationModel.php",
+		"PopulateMainPage": "maintenance/populateMainPage.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
 		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
@@ -43,7 +44,8 @@
 		"SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
 		"SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
 		"SpecialRequestWikiEdit": "includes/RequestWiki/SpecialRequestWikiEdit.php",
-		"SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php"
+		"SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php",
+		"WikiManager": "includes/WikiManager.php"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [

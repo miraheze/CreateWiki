@@ -16,7 +16,9 @@ class CreateWikiDBListGenerator extends Maintenance {
 		$res = $dbw->select(
 			'cw_wikis',
 			'*',
-			array(),
+			[
+				'wiki_deleted' => 0
+			],
 			__METHOD__
 		);
 
@@ -24,10 +26,10 @@ class CreateWikiDBListGenerator extends Maintenance {
 			throw new MWException( '$res was not set to a valid array.' );
 		}
 
-		$allWikis = array();
-		$privateWikis = array();
-		$closedWikis = array();
-		$inactiveWikis = array();
+		$allWikis = [];
+		$privateWikis = [];
+		$closedWikis = [];
+		$inactiveWikis = [];
 
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
