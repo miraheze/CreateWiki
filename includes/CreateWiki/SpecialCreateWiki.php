@@ -252,6 +252,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'wiki_private' => $private,
 				'wiki_creation' => $dbw->timestamp(),
 				'wiki_closed' => 0,
+				'wiki_deleted' => 0,
 				'wiki_inactive' => 0,
 				'wiki_category' => $category,
 			),
