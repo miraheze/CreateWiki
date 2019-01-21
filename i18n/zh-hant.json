@@ -34,11 +34,16 @@
 	"createwiki-label-submit": "提交",
 	"createwiki-legend": "建立一個 Wiki",
 	"createwiki-success": "Wiki 已成功建立。",
+	"echo-category-title-wiki-creation": "Wiki 建立",
+	"echo-pref-tooltip-wiki-creation": "當我的 wiki 建立好後請通知我。",
 	"log-description-farmer": "此日誌追蹤 wiki 建立相關的記錄。",
 	"logentry-farmer-createwiki": "$1 建立了名為「$4」的 Wiki",
 	"logentry-farmer-requestwiki": "$1 在 $7 中申請了名為「$4」的 Wiki（語言：$5；是否私人：$6）",
 	"logentry-farmer-requestwikiedit": "$1 編輯了 wiki 請求 #$4",
 	"log-name-farmer": "農場日誌",
+	"notification-createwiki-wiki-creation-email-subject": "您的wiki$1已建立完成！",
+	"notification-createwiki-wiki-creation-visitwiki-label": "參觀 wiki",
+	"notification-header-wiki-creation": "您的wiki<strong>$1</strong>已建立完成！",
 	"requestwiki": "申請新 Wiki",
 	"requestwikiedit": "編輯 wiki 請求",
 	"requestwiki-edit-id": "Wiki 請求 ID",
@@ -106,5 +111,5 @@
 	"requestwikiqueue-usernotfound": "使用者不存在。",
 	"requestwikiqueue-view": "檢視 Wiki 請求",
 	"right-requestwiki": "請求 wiki",
-	"right-createwiki": "在 wiki 農場中建立 wiki"
+	"right-createwiki": "建立 wiki"
 }

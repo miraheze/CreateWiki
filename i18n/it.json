@@ -12,6 +12,8 @@
 	"createwiki-label-category": "Categoria:",
 	"createwiki-label-dbname": "Nome del database:",
 	"createwiki-label-submit": "Invia",
+	"notification-createwiki-wiki-creation-email-subject": "Il tuo wiki $1 è stato creato!",
+	"notification-header-wiki-creation": "Il tuo wiki <strong>$1</strong> è stato creato!",
 	"requestwiki-label-customdomain-info": "Devi fornire un subdominio sopra. Se vuoi un dominio personalizzato per il tuo wiki, per favore inseriscilo sotto.",
 	"requestwiki-label-language": "Lingua:",
 	"requestwiki-label-sitename": "Nome wiki:",
