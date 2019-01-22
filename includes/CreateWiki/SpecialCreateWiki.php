@@ -266,6 +266,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'wiki_closed' => 0,
 				'wiki_deleted' => 0,
 				'wiki_inactive' => 0,
+				'wiki_inactive_exempt' => 0,
 				'wiki_category' => $category,
 			),
 			__METHOD__

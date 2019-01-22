@@ -46,6 +46,12 @@ class CreateWikiHooks {
 				'wiki_deleted_timestamp',
 				__DIR__ . '/../sql/patches/patch-deleted-wiki.sql'
 			);
+
+			$updater->addExtensionField(
+				'cw_wikis',
+				'wiki_inactive_exempt',
+				__DIR__ . '/../sql/patches/patch-inactive-exempt.sql'
+			);
 		}
 
 		return true;

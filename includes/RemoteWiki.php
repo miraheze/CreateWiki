@@ -1,6 +1,6 @@
 <?php
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $settings, $category, $extensions ) {
+	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $settings, $category, $extensions ) {
 		$this->dbname = $dbname;
 		$this->sitename = $sitename;
 		$this->language = $language;
@@ -8,6 +8,7 @@ class RemoteWiki {
 		$this->wikiCreation = $wikiCreation;
 		$this->closed = $closed == 1 ? true : false;
 		$this->inactive = $inactive == 1 ? true : false;
+		$this->inactiveExempt = $inactiveExempt == 1 ? true : false;
 		$this->settings = $settings;
 		$this->closureDate = $closedDate;
 		$this->creationDate = $this->determineCreationDate();
@@ -38,6 +39,7 @@ class RemoteWiki {
 				$row->wiki_closed_timestamp,
 				$row->wiki_inactive,
 				$row->wiki_inactive_timestamp,
+				$row->wiki_inactive_exempt,
 				$row->wiki_settings,
 				$row->wiki_category,
 				$row->wiki_extensions
@@ -62,6 +64,7 @@ class RemoteWiki {
 			'wiki_closed_timestamp',
 			'wiki_inactive',
 			'wiki_inactive_timestamp',
+			'wiki_inactive_exempt',
 			'wiki_settings',
 			'wiki_category',
 			'wiki_extensions'
@@ -94,6 +97,10 @@ class RemoteWiki {
 
 	public function isInactive() {
 		return $this->inactive;
+	}
+
+	public function isInactiveExempt() {
+		return $this->inactiveExempt;
 	}
 
 	public function isPrivate() {

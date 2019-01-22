@@ -99,11 +99,6 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiInactiveWikisWhitelist": {
-			"description": "Array. Array of wikis which are exempt from being inactive.",
-			"public": true,
-			"value": false
-		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications!",
 			"public": true,
