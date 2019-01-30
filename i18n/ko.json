@@ -38,6 +38,7 @@
 	"log-name-farmer": "파머 기록",
 	"notification-createwiki-wiki-creation-email-subject": "$1 위키가 생성되었습니다!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "위키 방문",
+	"notification-header-wiki-creation": "<strong>$1</strong> 위키가 생성되었습니다!",
 	"requestwiki": "위키 요청하기",
 	"requestwikiedit": "위키 요청 편집",
 	"requestwiki-edit-id": "위키 요청 ID",

@@ -4,7 +4,8 @@
 			"Beta16",
 			"S4b1nuz E.656",
 			"Sarah Bernabei",
-			"Darth Kule"
+			"Darth Kule",
+			"Lorelai87"
 		]
 	},
 	"action-createwiki": "crea wiki",
@@ -13,6 +14,7 @@
 	"createwiki-label-dbname": "Nome del database:",
 	"createwiki-label-submit": "Invia",
 	"notification-createwiki-wiki-creation-email-subject": "Il tuo wiki $1 è stato creato!",
+	"notification-createwiki-wiki-creation-visitwiki-label": "Visita wiki",
 	"notification-header-wiki-creation": "Il tuo wiki <strong>$1</strong> è stato creato!",
 	"requestwiki-label-customdomain-info": "Devi fornire un subdominio sopra. Se vuoi un dominio personalizzato per il tuo wiki, per favore inseriscilo sotto.",
 	"requestwiki-label-language": "Lingua:",

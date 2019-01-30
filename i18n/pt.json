@@ -30,11 +30,16 @@
 	"createwiki-label-submit": "Enviar",
 	"createwiki-legend": "Criar uma wiki",
 	"createwiki-success": "A wiki foi criada.",
+	"echo-category-title-wiki-creation": "Criação de wiki",
+	"echo-pref-tooltip-wiki-creation": "Notificar-me quando a minha wiki tiver sido criada.",
 	"log-description-farmer": "Este registo documenta criações de wikis.",
 	"logentry-farmer-createwiki": "$1 criou a wiki \"$4\"",
 	"logentry-farmer-requestwiki": "$1 solicitou a wiki \"$4\" (língua: $5; privada: $6) em $7",
 	"logentry-farmer-requestwikiedit": "$1 editou o pedido de uma wiki n.º $4",
 	"log-name-farmer": "Registo do sítio de alojamento",
+	"notification-createwiki-wiki-creation-email-subject": "A sua wiki $1 foi criada!",
+	"notification-createwiki-wiki-creation-visitwiki-label": "Visitar wiki",
+	"notification-header-wiki-creation": "A sua wiki <strong>$1</strong> foi criada!",
 	"requestwiki": "Pedir uma wiki",
 	"requestwikiedit": "Editar um pedido de uma wiki",
 	"requestwiki-edit-id": "Identificador do pedido de uma wiki",
@@ -102,5 +107,5 @@
 	"requestwikiqueue-usernotfound": "O utilizador não foi encontrado.",
 	"requestwikiqueue-view": "Ver o pedido de uma wiki",
 	"right-requestwiki": "Pedir wikis",
-	"right-createwiki": "Criar wikis na fazenda"
+	"right-createwiki": "Criar wikis"
 }
