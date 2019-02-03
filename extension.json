@@ -130,7 +130,7 @@
 			"value": false
 		},
 		"CreateWikiUseEchoNotifications": {
-			"description": "Boolean. Whether to use Echo notifications (beta feature). If this is enabled, the value of $wgCreateWikiEmailNotifications will be ignored.",
+			"description": "Boolean. Whether to use Echo notifications (beta feature).",
 			"public": true,
 			"value": false
 		},

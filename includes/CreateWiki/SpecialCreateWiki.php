@@ -159,7 +159,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$shpromoteaccount = exec( "/usr/bin/php " .
 			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
-		
+
 		if ( $wgCreateWikiUseEchoNotifications ) {
 			EchoEvent::create( [
 				'type' => 'wiki-creation',
@@ -170,8 +170,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 				],
 				'agent' => User::newFromName( $requesterName ), // wiki founder
 			] );
-		} else {
-			if ( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {                             
+		}
+
+		if ( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {                             
 				$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 				$this->sendCreationEmail( $notifyEmail, $siteName );
 			}
