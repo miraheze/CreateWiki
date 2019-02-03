@@ -175,7 +175,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 		if ( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {                             
 				$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
 				$this->sendCreationEmail( $notifyEmail, $siteName );
-			}
 		}
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
