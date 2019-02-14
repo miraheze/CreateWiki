@@ -112,6 +112,6 @@
 	"requestwikiqueue-searchrequest": "Chercher les demandes de wiki",
 	"requestwikiqueue-usernotfound": "L'utilisateur n'as pas éte trouvé.",
 	"requestwikiqueue-view": "Voir la requête wiki",
-	"right-requestwiki": "Wikis demandés",
+	"right-requestwiki": "Demander des wikis",
 	"right-createwiki": "Créer des wikis"
 }
