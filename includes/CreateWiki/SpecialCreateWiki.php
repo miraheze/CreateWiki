@@ -89,7 +89,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname, $wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiEmailNotifications;
+		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname,
+		$wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseEchoNotifications,
+		$wgCreateWikiEmailNotifications;
 
 		$DBname = $formData['dbname'];
 		$requesterName = $formData['requester'];
