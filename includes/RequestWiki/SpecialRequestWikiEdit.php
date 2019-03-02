@@ -101,12 +101,14 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'label-message' => 'requestwiki-label-siteurl',
 				'default' => $subdomain,
 				'name' => 'rweSubdomain',
+				'required' => true,
 			),
 			'sitename' => array(
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
 				'default' => $res->cw_sitename,
 				'name' => 'rweSitename',
+				'required' => true,
 			),
 			'language' => array(
 				'type' => 'select',
@@ -150,6 +152,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'label-message' => 'createwiki-label-reason',
 			'default' => $res->cw_comment,
 			'name' => 'rweReason',
+			'required' => true,
 		);
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
