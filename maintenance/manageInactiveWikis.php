@@ -35,8 +35,7 @@ class ManageInactiveWikis extends Maintenance {
 	public function execute() {
 		global $wgCreateWikiDatabase;
 
-		$dbr = wfGetDB( DB_REPLICA );
-		$dbr->selectDB( $wgCreateWikiDatabase ); // force this
+		$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
 		$res = $dbr->select(
 			'cw_wikis',
@@ -69,8 +68,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate  ) {
-		$dbr = wfGetDB( DB_REPLICA );
-		$dbr->selectDB( $dbName );
+		$dbr = wfGetDB( DB_REPLICA, [], $dbName );
 
 		$lastEntryObj = $dbr->selectRow(
 			'recentchanges',
@@ -155,8 +153,7 @@ class ManageInactiveWikis extends Maintenance {
 	public function closeWiki( $wikiDb ) {
 		global $wgCreateWikiDatabase;
 
-		$dbw = wfGetDB( DB_REPLICA );
-		$dbw->selectDB( $wgCreateWikiDatabase );
+		$dbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
 		$dbw->update(
 			'cw_wikis',
@@ -180,8 +177,7 @@ class ManageInactiveWikis extends Maintenance {
 	public function warnWiki( $wikiDb ) {
 		global $wgCreateWikiDatabase;
 
-		$dbw = wfGetDB( DB_REPLICA );
-		$dbw->selectDB( $wgCreateWikiDatabase );
+		$dbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
 		$dbw->update(
 			'cw_wikis',
@@ -203,8 +199,7 @@ class ManageInactiveWikis extends Maintenance {
 	public function unWarnWiki( $wikiDb ) {
 		global $wgCreateWikiDatabase;
 
-		$dbw = wfGetDB( DB_REPLICA );
-		$dbw->selectDB( $wgCreateWikiDatabase );
+		$dbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
 		$dbw->update(
 			'cw_wikis',
@@ -228,8 +223,7 @@ class ManageInactiveWikis extends Maintenance {
 	public function emailBureaucrats( $wikiDb ) {
 		global $wgPasswordSender, $wgSitename;
 
-		$dbr = wfGetDB( DB_REPLICA );
- 		$dbr->selectDB( $wikiDb );
+		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
