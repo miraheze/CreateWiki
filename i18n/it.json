@@ -5,7 +5,8 @@
 			"S4b1nuz E.656",
 			"Sarah Bernabei",
 			"Darth Kule",
-			"Lorelai87"
+			"Lorelai87",
+			"Sakretsu"
 		]
 	},
 	"action-createwiki": "crea wiki",
@@ -20,6 +21,8 @@
 	"requestwiki-label-language": "Lingua:",
 	"requestwiki-label-sitename": "Nome wiki:",
 	"requestwiki-label-siteurl": "Subdominio: (subdomain.miraheze.org)",
+	"requestwikiqueue-pager-status-approved": "approvata",
+	"requestwikiqueue-pager-status-declined": "respinta",
 	"requestwikiqueue-request": "Richiesta",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Commento dato da $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Commento dato da $1 il $2",
