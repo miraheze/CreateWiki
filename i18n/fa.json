@@ -2,13 +2,14 @@
 	"@metadata": {
 		"authors": [
 			"Alireza Ivaz",
-			"Stewie"
+			"Stewie",
+			"Huji"
 		]
 	},
 	"action-createwiki": "ساختن ویکی",
 	"action-requestwiki": "درخواست ویکی‌ها",
 	"createwiki": "ساختن یک ویکی",
-	"createwiki-desc": "یک افزونه برای ساختن ویکی‌ها به‌روی یک مزرعهٔ ویکی به‌آسانی آب‌خوردن.",
+	"createwiki-desc": "یک افزونه برای ساختن آسان ویکی‌ها به‌روی یک مزرعهٔ ویکی.",
 	"createwiki-close-email-sender": "میراژز",
 	"createwiki-email-subject": "ویکی میراژز تازهٔ شما: $1",
 	"createwiki-label-category": "رده:",
@@ -17,7 +18,7 @@
 	"createwiki-label-private": "این ویکی را به‌عنوان خصوصی علامت بزن",
 	"createwiki-label-reason": "دلیل:",
 	"createwiki-label-requester": "درخواست‌کننده:",
-	"createwiki-label-sitename": "نام تارنما:",
+	"createwiki-label-sitename": "نام وبگاه:",
 	"createwiki-label-submit": "ثبت درخواست",
 	"createwiki-legend": "ساختن یک ویکی",
 	"createwiki-success": "ویکی با موفقیت ساخته شد.",
