@@ -1,17 +1,19 @@
 <?php
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $settings, $category, $extensions ) {
+	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $settings, $category, $extensions ) {
 		$this->dbname = $dbname;
 		$this->sitename = $sitename;
 		$this->language = $language;
-		$this->private = $private == 1 ? true : false;
+		$this->private = (bool)$private;
 		$this->wikiCreation = $wikiCreation;
-		$this->closed = $closed == 1 ? true : false;
-		$this->inactive = $inactive == 1 ? true : false;
-		$this->inactiveExempt = $inactiveExempt == 1 ? true : false;
+		$this->closed = (bool)$closed;
+		$this->deleted = (bool)$deleted;
+		$this->inactive = (bool)$inactive;
+		$this->inactiveExempt = (bool)$inactiveExempt;
 		$this->settings = $settings;
 		$this->closureDate = $closedDate;
 		$this->creationDate = $this->determineCreationDate();
+		$this->deletionDate = $deletionDate;
 		$this->inactiveDate = $inactiveDate;
 		$this->category = $category;
 		$this->extensions = $extensions;
@@ -40,6 +42,8 @@ class RemoteWiki {
 				$row->wiki_inactive,
 				$row->wiki_inactive_timestamp,
 				$row->wiki_inactive_exempt,
+				$row->wiki_deleted,
+				$row->wiki_deleted_date,
 				$row->wiki_settings,
 				$row->wiki_category,
 				$row->wiki_extensions
@@ -65,6 +69,8 @@ class RemoteWiki {
 			'wiki_inactive',
 			'wiki_inactive_timestamp',
 			'wiki_inactive_exempt',
+			'wiki_deleted',
+			'wiki_deleted_date',
 			'wiki_settings',
 			'wiki_category',
 			'wiki_extensions'
@@ -115,6 +121,14 @@ class RemoteWiki {
 		return $this->closureDate;
 	}
 
+	public function isDeleted() {
+		return $this->deleted;
+	}
+
+	public function deletionDate() {
+		return $this->deletionDate;
+	}
+
 	public function getCategory() {
 		return $this->category;
 	}
@@ -139,7 +153,7 @@ class RemoteWiki {
 		if ( isset( $settingsarray[$setting] ) ) {
 			return $settingsarray[$setting];
 		}
-		
+
 		return null;
 	}
 }
