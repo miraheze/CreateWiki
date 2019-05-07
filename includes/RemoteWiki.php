@@ -43,7 +43,7 @@ class RemoteWiki {
 				$row->wiki_inactive_timestamp,
 				$row->wiki_inactive_exempt,
 				$row->wiki_deleted,
-				$row->wiki_deleted_date,
+				$row->wiki_deleted_timestamp,
 				$row->wiki_settings,
 				$row->wiki_category,
 				$row->wiki_extensions
