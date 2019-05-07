@@ -70,7 +70,7 @@ class RemoteWiki {
 			'wiki_inactive_timestamp',
 			'wiki_inactive_exempt',
 			'wiki_deleted',
-			'wiki_deleted_date',
+			'wiki_deleted_timestamp',
 			'wiki_settings',
 			'wiki_category',
 			'wiki_extensions'
