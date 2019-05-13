@@ -64,7 +64,7 @@ class CreateWikiHooks {
 			$wgLogTypes[] = 'farmer';
 		}
 	}
-	
+
 	/**
 	* Add CreateWiki events to Echo
 	*
@@ -80,6 +80,12 @@ class CreateWikiHooks {
 			'priority' => 2,
 			'tooltip' => 'echo-pref-tooltip-wiki-creation',
 		];
+
+		$notificationCategories['wiki-rename'] = [
+			'priority' => 2,
+			'tooltip' => 'echo-pref-tooltip-wiki-rename'
+		];
+
 		$notifications['wiki-creation'] = [
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
@@ -89,6 +95,18 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoCreateWikiPresentationModel::class,
+			'immediate' => true
+		];
+
+		$notifications['wiki-rename'] = [
+			EchoAttributeManager::ATTR_LOCATORS => [
+				'EchoUserLocator::locateEventAgent'
+			],
+			'category' => 'farmer',
+			'group' => 'postive',
+			'section' => 'alert',
+			'canNotifyAgent' => true,
+			'presentation-model' => EchoRenameWikiPresentationModel::class,
 			'immediate' => true
 		];
 

@@ -35,7 +35,8 @@
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
-		"EchoCreateWikiPresentationModel": "includes/CreateWiki/EchoCreateWikiPresentationModel.php",
+		"EchoCreateWikiPresentationModel": "includes/echo/EchoCreateWikiPresentationModel.php",
+		"EchoRenameWikiPresentationModel": "includes/echo/EchoRenameWikiPresentationModel.php",
 		"PopulateMainPage": "maintenance/populateMainPage.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
@@ -88,6 +89,11 @@
 			"description": "String. Database name of where cw_wikis is stored.",
 			"public": true,
 			"value": false
+		},
+		"CreateWikiDeletionDays": {
+			"description": "Integer. Number of days a wiki must be deleted before it can removed permanently.",
+			"public": true,
+			"value": 7
 		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
