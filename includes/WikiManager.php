@@ -236,13 +236,13 @@ class WikiManager {
 	}
 
 	private function notificationsTrigger( string $type, string $wiki, string $siteName, $receivers ) {
-		global $wgCreateWikiUseEchoNotifications, $wgCreateWikiEmailNotifications, $wgPasswordSender, $wgSitename, $wgCreateWikiNotificationEmail;
+		global $wgCreateWikiUseEchoNotifications, $wgCreateWikiEmailNotifications, $wgPasswordSender, $wgSitename, $wgCreateWikiNotificationEmail, $wgCreateWikiSubdomain;
 
 		switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
 				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . '.miraheze.org',
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$wgCreateWikiSubdomain}",
 					'sitename' => $siteName,
 					'notifyAgent' => true
 				];
@@ -254,7 +254,7 @@ class WikiManager {
 			case 'rename':
 				$echoType = 'wiki-rename';
 				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . '.miraheze.org',
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$wgCreateWikiSubdomain}",
 					'sitename' => $siteName,
 					'notifyAgent' => true
 				];

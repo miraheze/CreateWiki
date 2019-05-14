@@ -10,53 +10,46 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$par = $this->par;
 		$request = $this->getRequest();
 
-		$formDescriptor = array();
-
-		$formDescriptor['dbname'] = array(
-			'label-message' => 'createwiki-label-dbname',
-			'type' => 'text',
-			'default' => $request->getVal( 'cwDBname' ) ? $request->getVal( 'cwDBname' ) : $par,
-			'size' => 20,
-			'required' => true,
-			'validation-callback' => array( __CLASS__, 'validateDBname' ),
-			'name' => 'cwDBname',
-
-		);
-
-		$formDescriptor['requester'] = array(
-			'label-message' => 'createwiki-label-requester',
-			'type' => 'text',
-			'default' => $request->getVal( 'cwRequester' ),
-			'size' => 20,
-			'required' => true,
-			'validation-callback' => array( __CLASS__, 'validateRequester' ),
-			'name' => 'cwRequester',
-		);
-
-		$formDescriptor['sitename'] = array(
-			'label-message' => 'createwiki-label-sitename',
-			'type' => 'text',
-			'default' => $request->getVal( 'cwSitename' ),
-			'size' => 20,
-			'name' => 'cwSitename',
-		);
-
-		// Building a language selector (attribution:
-		// includes/specials/SpecialPageLanguage.php L68)
-		$languages = Language::fetchLanguageNames( null, 'wmfile' );
+		// Build language selector
+		$languages = Language::fetchLanguageNames( NULL, 'wmfile' );
 		ksort( $languages );
-		$options = array();
+		$options = [];
 		foreach ( $languages as $code => $name ) {
-			$options["$code - $name"] = $code;
+			$options["{$code} - {$name}"] = $code;
 		}
 
-		$formDescriptor['language'] = array(
-			'type' => 'select',
-			'options' => $options,
-			'label-message' => 'createwiki-label-language',
-			'default' => $request->getVal( 'cwLanguage' ) ? $request->getVal( 'cwLanguage' ) : 'en',
-			'name' => 'cwLanguage',
-		);
+		$formDescriptor = [
+			'dbname' => [
+				'label-message' => 'createwiki-label-dbname',
+				'type' => 'text',
+				'default' => $request->getVal( 'cwDBname' ) ? $request->getVal( 'cwDBname' ) : $par,
+				'required' => true,
+				'validation-callback' => [ __CLASS__, 'validateDBname' ],
+				'name' => 'cwDBname',
+			],
+			'requester' => [
+				'label-message' => 'createwiki-label-requester',
+				'type' => 'user',
+				'default' => $request->getVal( 'cwRequester' ),
+				'exists' => true,
+				'required' => true,
+				'name' => 'cwRequester',
+			],
+			'sitename' => [
+				'label-message' => 'createwiki-label-sitename',
+				'type' => 'text',
+				'default' => $request->getVal( 'cwSitename' ),
+				'size' => 20,
+				'name' => 'cwSitename',
+			],
+			'language' => [
+				'type' => 'select',
+				'options' => $options,
+				'label-message' => 'createwiki-label-language',
+				'default' => $request->getVal( 'cwLanguage' ) ? $request->getVal( 'cwLanguage' ) : 'en',
+				'name' => 'cwLanguage',
+			]
+		];
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$formDescriptor['private'] = array(
@@ -93,12 +86,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseEchoNotifications,
 		$wgCreateWikiEmailNotifications;
 
-		$DBname = $formData['dbname'];
-		$requesterName = $formData['requester'];
-		$siteName = $formData['sitename'];
-		$language = $formData['language'];
-		$reason = $formData['reason'];
-
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$private = $formData['private'];
 		} else {
@@ -111,73 +98,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$category = 'uncategorised';
 		}
 
-		$farmerLogEntry = new ManualLogEntry( 'farmer', 'createwiki' );
-		$farmerLogEntry->setPerformer( $this->getUser() );
-		$farmerLogEntry->setTarget( $this->getTitle() );
-		$farmerLogEntry->setComment( $reason );
-		$farmerLogEntry->setParameters(
-			array(
-				'4::wiki' => $DBname
-			)
-		);
-		$farmerLogID = $farmerLogEntry->insert();
-		$farmerLogEntry->publish( $farmerLogID );
+		$wm = new WikiManager( $formData['dbname'] );
 
-		$dbw = wfGetDB( DB_MASTER );
-		$dbw->query( 'SET storage_engine=InnoDB;' );
-		$dbw->query( 'CREATE DATABASE ' . $dbw->addIdentifierQuotes( $DBname ) . ';' );
-
-		$this->addWikiToDatabase( $DBname, $siteName, $language, $private, $category );
-
-		// Let's ensure our wiki is in the DBlist on the server
-		// we run the maintenance scripts on.
-		exec( "/usr/bin/php " .
-		     "$IP/extensions/CreateWiki/maintenance/DBListGenerator.php --wiki " . $wgCreateWikiDatabase );
-
-		$dbw->selectDB( $DBname );
-
-		foreach ( $wgCreateWikiSQLfiles as $sqlfile ) {
-			$dbw->sourceFile( $sqlfile );
-		}
-
-		$dbw->selectDB( $wgDBname ); // revert back to main wiki
-
-		Hooks::run( 'CreateWikiCreation', [ $DBname, $private ] );
-
-		// FIXME: use Shell class for all exec statements
-		$shPopulateMainPage = exec( "/usr/bin/php " .
-			"$IP/extensions/CreateWiki/maintenance/populateMainPage.php" .
-				" --wiki " . wfEscapeShellArg( $DBname ) . 
-				" --lang=" . wfEscapeShellArg( $language ) 
-		);
-
-		$shcreateaccount = exec( "/usr/bin/php " .
-			"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php " . wfEscapeShellArg( $requesterName ) . " --wiki " . wfEscapeShellArg( $DBname ) );
-
-		if ( !strpos( $shcreateaccount, 'created' ) ) {
-			wfDebugLog( 'CreateWiki', 'Failed to create local account for requester. - error: ' . $shcreateaccount );
-			return wfMessage( 'createwiki-error-usernotcreated' )->escaped();
-		}
-
-		$shpromoteaccount = exec( "/usr/bin/php " .
-			"$IP/maintenance/createAndPromote.php " . wfEscapeShellArg( $requesterName ) . " --bureaucrat --sysop --force --wiki " . wfEscapeShellArg( $DBname ) );
-
-		if ( $wgCreateWikiUseEchoNotifications ) {
-			EchoEvent::create( [
-				'type' => 'wiki-creation',
-				'extra' => [
-					'wiki-url' => 'https://' . substr( $DBname, 0, -4 ) . '.miraheze.org', // url of the wiki
-					'sitename' => $siteName, // sitename of the wiki
-					'notifyAgent' => true,
-				],
-				'agent' => User::newFromName( $requesterName ), // wiki founder
-			] );
-		}
-
-		if ( $this->getUser()->getName() != $requesterName && $wgCreateWikiEmailNotifications ) {                             
-				$notifyEmail = MailAddress::newFromUser( User::newFromName( $requesterName ) );
-				$this->sendCreationEmail( $notifyEmail, $siteName );
-		}
+		$wm->create( $formData['sitename'], $formData['language'], $private, 0, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
@@ -185,94 +108,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function validateDBname( $DBname, $allData ) {
-		global $wgConf;
+		$wm = new WikiManager( $DBname );
 
-		# HTMLForm's validation-callback somehow gets called, even
-		# while the form was not submitted yet. This should prevent
-		# the validation from failing because the submitted value is
-		# NULL, but it is a hack, and instead the validation just
-		# shouldn't be called unless the form actually has been
-		# submitted..
-		if ( is_null( $DBname ) ) {
-			return true;
+		$check = $wm->checkDatabaseName( $DBname );
+
+		if ( $check ) {
+			return $check;
 		}
-
-		$suffixed = false;
-		foreach ( $wgConf->suffixes as $suffix ) {
-			if ( substr( $DBname, -strlen( $suffix ) ) === $suffix ) {
-				$suffixed = true;
-				break;
-			}
-		}
-
-		$dbw = wfGetDB( DB_MASTER );
-		$res = $dbw->query( 'SHOW DATABASES LIKE ' . $dbw->addQuotes( $DBname ) . ';' );
-
-		if ( $res->numRows() !== 0 ) {
-			return wfMessage( 'createwiki-error-dbexists' )->escaped();
-		}
-
-		if ( !$suffixed ) {
-			return wfMessage( 'createwiki-error-notsuffixed' )->escaped();
-		}
-
-		if ( !ctype_alnum( $DBname ) ) {
-			return wfMessage( 'createwiki-error-notalnum' )->escaped();
-		}
-
-		if ( strtolower( $DBname ) !== $DBname ) {
-			return wfMessage( 'createwiki-error-notlowercase' )->escaped();
-		}
-
-		return true;
-	}
-
-	public function validateRequester( $requesterName, $allData ) {
-		# HTMLForm's validation-callback somehow gets called, even
-                # while the form was not submitted yet. This should prevent
-                # the validation from failing because the submitted value is
-                # NULL, but it is a hack, and instead the validation just
-                # shouldn't be called unless the form actually has been
-                # submitted..
-		if ( is_null( $requesterName ) ) {
-			return true;
-		}
-
-		$user = User::newFromName( $requesterName );
-
-		if ( !$user->getId() ) {
-			return wfMessage( 'createwiki-error-requesternonexistent' )->escaped();
-		}
-
-		return true;
-	}
-
-	public function addWikiToDatabase( $DBname, $siteName, $language, $private, $category ) {
-		global $wgCreateWikiDatabase;
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
-
-		if ( $private ) {
-			$private = 1;
-		} else {
-			$private = 0;
-		}
-
-		$dbw->insert(
-			'cw_wikis',
-			array(
-				'wiki_dbname' => $DBname,
-				'wiki_sitename' => $siteName,
-				'wiki_language' => $language,
-				'wiki_private' => $private,
-				'wiki_creation' => $dbw->timestamp(),
-				'wiki_closed' => 0,
-				'wiki_deleted' => 0,
-				'wiki_inactive' => 0,
-				'wiki_inactive_exempt' => 0,
-				'wiki_category' => $category,
-			),
-			__METHOD__
-		);
 
 		return true;
 	}
@@ -283,15 +125,5 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	protected function getGroupName() {
 		return 'wikimanage';
-	}
-
-	protected function sendCreationEmail( $notifyEmail, $siteName ) {
-		global $wgPasswordSender, $wgSitename;
-
-		$from = new MailAddress( $wgPasswordSender, 'CreateWiki on ' . $wgSitename );
-		$subject = wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text();
-		$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
-
-		return UserMailer::send( $notifyEmail, $from, $subject, $body );
 	}
 }
