@@ -72,7 +72,7 @@ class WikiManager {
 			[
 				'--wiki', $wgCreateWikiGlobalWiki
 			]
-		)->execute();
+		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
 
 		// Let's maintain our current connection ID
 		$currentDB = $this->dbw->getDomainID();
@@ -91,7 +91,7 @@ class WikiManager {
 			[
 				'--wiki', $wiki
 			]
-		)->execute();
+		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
 			Shell::makeScriptCommand(
@@ -100,7 +100,7 @@ class WikiManager {
 					$requester,
 					'--wiki', $wiki
 				]
-			)->execute();
+			)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
 		}
 
 		Shell::makeScriptCommand(
@@ -112,7 +112,7 @@ class WikiManager {
 				'--force', // Let's not handle passwords
 				'--wiki', $wiki
 			]
-		)->execute();
+		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
 
 		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
 
