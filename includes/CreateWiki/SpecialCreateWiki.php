@@ -108,6 +108,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function validateDBname( $DBname, $allData ) {
+		if ( is_null( $DBname ) ) {
+			return true;
+		}
+
 		$wm = new WikiManager( $DBname );
 
 		$check = $wm->checkDatabaseName( $DBname );
