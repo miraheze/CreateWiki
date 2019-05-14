@@ -30,38 +30,36 @@ class DeleteWiki extends Maintenance {
 	}
 
 	function execute() {
-		global $wgCreateWikiDBDirectory, $wgCreateWikiDatabase, $wgCreateWikiNotificationEmail, $wgPasswordSender;
+		global $wgCreateWikiDatabase, $wgCreateWikiNotificationEmail, $wgPasswordSender;
 
-		$wikis = file( "$wgCreateWikiDBDirectory/deleted.dblist" );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
-		if ( $wikis === false ) {
-			$this->error( 'Unable to open deleted.dblist', 1 );
-		}
+		$res = $dbw->select(
+			'cw_wikis',
+			'*',
+			[
+				'wiki_deleted' => 1
+			]
+		);
+
 		$deletedWiki = [];
-		$dbw = $this->getDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
-		// check CA is installed
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
-			$cadbw = CentralAuthUser::getCentralDB();
-		}
-
-		foreach ( $wikis as $wiki ) {
-			$wiki = rtrim( $wiki );
+		foreach ( $res as $row ) {
+			$wiki = $row->wiki_dbname;
 			if ( $this->hasOption( 'delete' ) ) {
-				$this->output( "$wiki:\n" );
+				$wm = new WikiManager( $wiki );
 
-				$this->doDeletes( $dbw, 'cw_wikis', 'wiki_dbname', $wiki );
+				$delete = $wm->delete();
 
-				if ( $cadbw ) {
-					$this->doDeletes( $cadbw, 'localnames', 'ln_wiki', $wiki );
-					$this->doDeletes( $cadbw, 'localuser', 'lu_wiki', $wiki );
-				} else {
-					$this->output( "CentralAuth is not installed. If you are not running a hook for your local user management, users will not be deleted and may cause database errors. If you are using a hook, ignore this or consider contributing your method upstream at https://github.com/miraheze/CreateWiki!" );
+				if ( $delete ) {
+					$this->output( "{$wiki}: {$delete}\n" );
+					return;
 				}
 
 				// pass database connection to minimise connections and wiki name to extensions for their specific deletion stuff.
 				Hooks::run( 'CreateWikiDeletion', [ $dbw, $wiki ] );
 
+				$this->output( "DROP DATABASE {$wiki};" );
 				$deletedWiki[] = $wiki;
 			} else {
 				$this->output( "$wiki\n" );
@@ -72,30 +70,7 @@ class DeleteWiki extends Maintenance {
 		$this->notifyDeletions( $wgCreateWikiNotificationEmail, $wgPasswordSender, $deletedWiki, $this->getArg( 0 ) );
 	}
 
-	/**
-	 * @param DatabaseBase $dbw
-	 * @param string $table
-	 * @param string $column
-	 * @param string $wiki
-	 */
-	public static function doDeletes( $dbw, $table, $column, $wiki ) {
-		echo "$table:\n";
-		$count = 0;
-		do {
-			$wikiQuoted = $dbw->addQuotes( $wiki );
-			$dbw->query(
-				"DELETE FROM $table WHERE $column=$wikiQuoted LIMIT 500",
-				__METHOD__
-			);
-			$affected = $dbw->affectedRows();
-			$count += $affected;
-			echo "$count\n";
-			wfWaitForSlaves();
-		} while ( $affected === 500 );
-		echo "$count $table rows deleted\n";
-	}
-
-	protected function notifyDeletions( $to, $from, $wikis, $user ) {
+	private function notifyDeletions( $to, $from, $wikis, $user ) {
 		$from = new MailAddress( $from, 'CreateWiki Notifications' );
 		$to = new MailAddress( $to, 'Server Administrators' );
 		$wikilist = implode( ', ', $wikis );

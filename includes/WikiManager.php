@@ -65,7 +65,7 @@ class WikiManager {
 		);
 
 		$this->dbw->query( 'SET storage_engine=InnoDB;' );
-		$this->dbw->query( 'CREATE DATABASE ' . $this->dbw->addIdentiferQuotes( $wiki ) . ';' );
+		$this->dbw->query( 'CREATE DATABASE ' . $this->dbw->addIdentifierQuotes( $wiki ) . ';' );
 
 		Shell::makeScriptCommand(
 			"$IP/extensions/CreateWiki/maintenance/DBListGenerator.php",
@@ -122,6 +122,8 @@ class WikiManager {
 	}
 
 	public function delete( bool $force = false ) {
+		global $wgCreateWikiDeletionDays;
+
 		$this->compileTables();
 
 		$wiki = $this->dbname;

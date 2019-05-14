@@ -34,24 +34,21 @@ class RenameWiki extends Maintenance {
 		$newwiki = $this->getArg( 1 );
 
 		$renamedWiki = [];
-		$dbw = $this->getDB( DB_MASTER, [], $wgCreateWikiDatabase );
-
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
-			$cadbw = CentralAuthUser::getCentralDB();
-		}
 
 		if ( $this->hasOption( 'rename' ) ) {
 				$this->output( "Renaming $oldwiki to $newwiki. If this is wrong, Ctrl-C now!" );
 				$this->countDown( 10 ); // let's count down JUST to be safe!
 
-				$this->doRename( $dbw, 'cw_wikis', 'wiki_dbname', $oldwiki, $newwiki );
+				$wm = new WikiManager( $oldwiki );
 
-				if ( $cadbw ) {
-					$this->doRename( $cadbw, 'localuser', 'lu_wiki', $oldwiki, $newwiki );
-					$this->doRename( $cadbw, 'localnames', 'ln_wiki', $oldwiki, $newwiki );
-				} else {
-					$this->output( "CentralAuth is not installed. If you are not running a hook for your local user management, users will not exist on the new wiki. If you are using a hook, ignore this or considering contributing your method upstream at https://github.com/miraheze/CreateWiki!" );
+				$rename = $wm->rename( $newwiki );
+
+				if ( $rename ) {
+					$this->output( "{$rename}" );
+					return;
 				}
+
+				$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
 				Hooks::run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
 
@@ -68,32 +65,7 @@ class RenameWiki extends Maintenance {
 		}
 	}
 
-	/**
-	 * @param DatabaseBase $dbw
-	 * @param string $table
-	 * @param string $column
-	 * @param string $old
-	 * @param string $new
-	 */
-	public static function doRename( $dbw, $table, $column, $old, $new ) {
-		echo "$table:\n";
-		$count = 0;
-		do {
-			$dbw->update(
-				$table,
-				[ $column => $new ],
-				[ $column => $old ],
-				__METHOD__
-			);
-			$affected = $dbw->affectedRows();
-			$count += $affected;
-			echo "$count\n";
-			wfWaitForSlaves();
-		} while ( $affected === 500 );
-		echo "$count $table rows updated\n";
-	}
-
-	protected function notifyRename( $to, $from, $wikidata, $user ) {
+	private function notifyRename( $to, $from, $wikidata, $user ) {
 		$from = new MailAddress( $from, 'CreateWiki Notifications' );
 		$to = new MailAddress( $to, 'Server Administrators' );
 		$wikirename = implode( ' to ', $wikidata );
