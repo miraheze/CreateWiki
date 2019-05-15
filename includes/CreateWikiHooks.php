@@ -116,7 +116,7 @@ class CreateWikiHooks {
 		];
 
 		$notifications['wiki-request-declined'] = [
-			EchoAttributeManage::ATTR_LOCATORS => [
+			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
 			],
 			'category' => 'farmer',
