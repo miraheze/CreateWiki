@@ -166,6 +166,11 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$dbname = $params['subdomain'] . 'wiki';
 		$fullurl = $params['subdomain'] . '.' . $wgCreateWikiSubdomain;
 
+		if ( !ctype_alnum( $params['subdomain'] ) ) {
+			$this->getOutput()->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
+			return false;
+		}
+
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$private = $params['private'] ? 1 : 0;
 		} else {
