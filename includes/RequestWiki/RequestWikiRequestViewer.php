@@ -264,13 +264,13 @@ class RequestWikiRequestViewer {
 			$wm->notificationsTrigger( 'request-decline', $formData['dbname'], [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
 		}
 
-		if ( isset( $formData['submit-approve'] ) && $formData['submit-approve'] ) {
-			$wm = new WikiManager( $row->cw_dbname );
+		if ( isset( $formData['submit-create'] ) && $formData['submit-create'] ) {
+			$wm = new WikiManager( $reqRow->cw_dbname );
 
 			$requesterUser = User::newFromID( $reqRow->cw_user );
 			$actorUser = $form->getContext()->getUser();
 
-			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->private, false, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
+			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, false, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
 
 			if ( $created ) {
 				return $created;
