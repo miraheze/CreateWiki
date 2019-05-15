@@ -37,6 +37,7 @@
 		"DeleteWiki": "maintenance/deleteWikis.php",
 		"EchoCreateWikiPresentationModel": "includes/echo/EchoCreateWikiPresentationModel.php",
 		"EchoRenameWikiPresentationModel": "includes/echo/EchoRenameWikiPresentationModel.php",
+		"EchoRequestDeclinedPresentationModel": "includes/echo/EchoRequestDeclinedPresentationModel.php",
 		"PopulateMainPage": "maintenance/populateMainPage.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
