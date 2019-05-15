@@ -116,7 +116,7 @@ class WikiManager {
 
 		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
 
-		$this->notificationsTrigger( 'creation', $wiki, $siteName, $requester );
+		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 	}
@@ -235,7 +235,7 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function notificationsTrigger( string $type, string $wiki, string $siteName, $receivers ) {
+	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
 		global $wgCreateWikiUseEchoNotifications, $wgCreateWikiEmailNotifications, $wgPasswordSender, $wgSitename, $wgCreateWikiNotificationEmail, $wgCreateWikiSubdomain;
 
 		switch ( $type ) {
@@ -243,7 +243,7 @@ class WikiManager {
 				$echoType = 'wiki-creation';
 				$echoExtra = [
 					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$wgCreateWikiSubdomain}",
-					'sitename' => $siteName,
+					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
 				$notifyServerAdministrators = false;
@@ -255,10 +255,18 @@ class WikiManager {
 				$echoType = 'wiki-rename';
 				$echoExtra = [
 					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$wgCreateWikiSubdomain}",
-					'sitename' => $siteName,
+					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
 				$notifyServerAdministrators = false; // temp
+				break;
+			case 'request-declined':
+				$echoType = 'request-declined';
+				$echoExtra = [
+					'request-url' => SpecialPage::getTitleFor( 'Special:RequestWikiQueue', $specialData['id'] )->getFullURL(),
+					'reason' => $specialData['reason'],
+					'notifyAgent' => true
+				];
 				break;
 		}
 

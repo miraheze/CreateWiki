@@ -54,18 +54,6 @@ class RequestWikiRequestViewer {
 
 		$user = User::newFromId( $res->cw_user );
 
-		$creationParams = [
-			'cwRequester' => $user->getName(),
-			'cwLanguage' => $res->cw_language,
-			'cwSitename' => $res->cw_sitename,
-			'cwCategory' => $res->cw_category,
-			'cwDBname' => $res->cw_dbname
-		];
-
-		if ( $res->cw_private != 0 && $wgCreateWikiUsePrivateWikis ) {
-			$creationParams['cwPrivate'] = 1;
-		}
-
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
@@ -171,39 +159,46 @@ class RequestWikiRequestViewer {
 			}
 
 			$formDescriptor += [
-				'createwiki' => [
+				'info-approve' => [
 					'type' => 'info',
-					'label' => '',
-					'section' => 'handling',
-					'default' => Linker::link( Title::newFromText( 'Special:CreateWiki' ), wfMessage( 'requestwikiqueue-request-label-create-wiki' )->text(), [], $creationParams ),
-					'raw' => true
+					'default' => wfMessage( 'requestwikiqueue-request-info-approve' )->text(),
+					'section' => 'approve'
 				],
-				'action' => [
-					'type' => 'radio',
-					'vertical-label' => false,
-					'label-message' => 'requestwikiqueue-request-label-action',
-					'options' => [
-						wfMessage( 'requestwikiqueue-request-label-inreview' )->text() => 'inreview',
-						wfMessage( 'requestwikiqueue-request-label-approved' )->text() => 'approved',
-						wfMessage( 'requestwikiqueue-request-label-declined' )->text() => 'declined'
-					],
-					'section' => 'handling'
+				'submit-create' => [
+					'type' => 'submit',
+					'default' => wfMessage( 'requestwikiqueue-request-label-create-wiki' )->text(),
+					'section' => 'approve'
+				],
+				'info-decline' => [
+					'type' => 'info',
+					'default' => wfMessage( 'requestwikiqueue-request-info-decline' )->text(),
+					'section' => 'decline'
 				],
 				'visibility' => [
 					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-visibility',
 					'options' => array_flip( $visibilityoptions ),
-					'section' => 'handling'
+					'section' => 'decline'
+				],
+				'reason' => [
+					'type' => 'text',
+					'label-message' => 'createwiki-label-reason',
+					'section' => 'decline'
+				],
+				'submit-decline' => [
+					'type' => 'submit',
+					'default' => wfMessage( 'requestwikiqueue-decline' )->text(),
+					'section' => 'decline'
 				],
 				'comment' => [
 					'type' => 'text',
 					'label-message' => 'requestwikiqueue-request-label-comment',
-					'section' => 'handling'
+					'section' => 'comments'
 				],
-				'submit' => [
+				'submit-comment' => [
 					'type' => 'submit',
 					'default' => wfMessage( 'htmlform-submit' )->text(),
-					'section' => 'handling'
+					'section' => 'comments'
 				]
 			];
 		}
@@ -244,29 +239,84 @@ class RequestWikiRequestViewer {
 			return;
 		}
 
-
 		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiGlobalWiki );
 
+		if ( isset( $formData['submit-decline'] ) && $formData['submit-decline'] ) {
+			$rowsUpdate = [
+				'cw_visibility' => $formData['visibility'],
+				'cw_status' => 'declined'
+			];
+
+			$addCommentToRequest = $formData['reason'];
+
+			$wm = new WikiManager( $formData['dbname'] );
+
+			$requesterId = $dbw->selectRow(
+				'cw_requests',
+				'*',
+				[
+					'cw_id' => $requestid
+				]
+			)->cw_user;
+
+			$wm->notificationsTrigger( 'request-decline', $formData['dbname'], [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
+		}
+
+		if ( isset( $formData['submit-approve'] ) && $formData['submit-approve'] ) {
+			$row = $dbw->selectRow(
+				'cw_requests',
+				'*',
+				[
+					'cw_id' => $requestid
+				]
+			);
+
+			$wm = new WikiManager( $row->cw_dbname );
+
+			$requesterUser = User::newFromID( $row->cw_user );
+			$actorUser = $form->getContext()->getUser();
+
+			$created = $wm->create( $row->cw_sitename, $row->cw_language, $row->private, false, $row->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
+
+			if ( $created ) {
+				return $created;
+			}
+
+			$addCommentToRequest = 'Created.';
+
+			$rowsUpdate = [
+				'cw_status' => 'approved'
+			];
+		}
+
 		$dbw->update( 'cw_requests',
-			[
-				'cw_status' => $formData['action'],
-				'cw_visibility' => $formData['visibility']
-			],
+			$rowsUpdate,
 			[
 				'cw_id' => $requestid
 			],
 			__METHOD__
 		);
 
-		$dbw->insert( 'cw_comments',
-			[
-				'cw_id' => $requestid,
-				'cw_comment' => $formData['comment'],
-				'cw_comment_timestamp' => $dbw->timestamp(),
-				'cw_comment_user' => $form->getContext()->getUser()->getId()
-			],
-			__METHOD__
-		);
+		if ( isset( $formData['submit-comment'] ) && $formData['submit-comment'] ) {
+			$dbw->insert( 'cw_comments',
+				[
+					'cw_id' => $requestid,
+					'cw_comment' => $formData['comment'],
+					'cw_comment_timestamp' => $dbw->timestamp(),
+					'cw_comment_user' => $form->getContext()->getUser()->getId()
+				]
+			);
+		} elseif ( $addCommentToRequest ) {
+			$dbw->insert(
+				'cw_comments',
+				[
+					'cw_id' => $requestid,
+					'cw_comment' => $addCommentToRequest,
+					'cw_comment_timestamp' => $dbw->timestamp(),
+					'cw_comment_user' => $form->getContext()->getUser()->getId()
+				]
+			);
+		}
 
 		$form->getContext()->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success', $requestid )->escaped() . '</div>' );
 
