@@ -257,11 +257,11 @@ class RequestWikiRequestViewer {
 
 			$addCommentToRequest = $formData['reason'];
 
-			$wm = new WikiManager( $formData['dbname'] );
+			$wm = new WikiManager( $reqRow->cw_dbname );
 
 			$requesterId = $reqRow->cw_user;
 
-			$wm->notificationsTrigger( 'request-decline', $formData['dbname'], [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
+			$wm->notificationsTrigger( 'request-decline', $reqRow->cw_dbname, [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
 		}
 
 		if ( isset( $formData['submit-create'] ) && $formData['submit-create'] ) {
