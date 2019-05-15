@@ -241,6 +241,14 @@ class RequestWikiRequestViewer {
 
 		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiGlobalWiki );
 
+		$reqRow = $dbw->selectRow(
+			'cw_requests',
+			'*',
+			[
+				'cw_id' => $requestid
+			]
+		);
+
 		if ( isset( $formData['submit-decline'] ) && $formData['submit-decline'] ) {
 			$rowsUpdate = [
 				'cw_visibility' => $formData['visibility'],
@@ -251,32 +259,18 @@ class RequestWikiRequestViewer {
 
 			$wm = new WikiManager( $formData['dbname'] );
 
-			$requesterId = $dbw->selectRow(
-				'cw_requests',
-				'*',
-				[
-					'cw_id' => $requestid
-				]
-			)->cw_user;
+			$requesterId = $reqRow->cw_user;
 
 			$wm->notificationsTrigger( 'request-decline', $formData['dbname'], [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
 		}
 
 		if ( isset( $formData['submit-approve'] ) && $formData['submit-approve'] ) {
-			$row = $dbw->selectRow(
-				'cw_requests',
-				'*',
-				[
-					'cw_id' => $requestid
-				]
-			);
-
 			$wm = new WikiManager( $row->cw_dbname );
 
-			$requesterUser = User::newFromID( $row->cw_user );
+			$requesterUser = User::newFromID( $reqRow->cw_user );
 			$actorUser = $form->getContext()->getUser();
 
-			$created = $wm->create( $row->cw_sitename, $row->cw_language, $row->private, false, $row->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
+			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->private, false, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
 
 			if ( $created ) {
 				return $created;
@@ -293,8 +287,7 @@ class RequestWikiRequestViewer {
 			$rowsUpdate,
 			[
 				'cw_id' => $requestid
-			],
-			__METHOD__
+			]
 		);
 
 		if ( isset( $formData['submit-comment'] ) && $formData['submit-comment'] ) {
