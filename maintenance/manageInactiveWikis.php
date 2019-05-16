@@ -148,7 +148,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $closedDate && $closedDate < date( "YmdHis", strtotime( "-{$removeDays} days" ) ) ) {
 				// Wiki closed, eligible for deletion
 				if ( $canWrite ) {
-					$this->deleteWiki( $dbName );
+					$this->removeWiki( $dbName );
 					$this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
 				} else {
 					$this->output( "{$dbName} is eligible for public removal, was closed on {$closedDate}.\n" );
