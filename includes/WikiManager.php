@@ -86,6 +86,8 @@ class WikiManager {
 		// Now let's go back to our previous connection to avoid errors
 		$this->dbw->selectDomain( $currentDB );
 
+		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
+
 		Shell::makeScriptCommand(
 			"$IP/extensions/CreateWiki/maintenance/populateMainPage.php",
 			[
@@ -113,8 +115,6 @@ class WikiManager {
 				'--wiki', $wiki
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
-
-		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
 
 		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
 
