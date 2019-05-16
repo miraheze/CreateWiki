@@ -87,7 +87,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
 		$closeDays = (int)$wgCreateWikiStateDays['closed'];
-		$removeDays = (int)$wgCreateWikiStateDays['remove'];
+		$removeDays = (int)$wgCreateWikiStateDays['removed'];
 
 		$canWrite = $this->hasOption( 'write' );
 
