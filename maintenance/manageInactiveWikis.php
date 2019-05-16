@@ -27,13 +27,12 @@ require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 class ManageInactiveWikis extends Maintenance {
 	public function __construct() {
 		parent::__construct();
-		$this->addOption( 'warn', 'Actually warn wikis which are considered inactive but not closable yet', false, false );
-		$this->addOption( 'close', 'Actually close wikis which are considered inactive and closable.', false, false );
+		$this->addOption( 'write', 'Actually make changes to wikis which are considered for the next stage in dormancy', false, false );
 		$this->mDescription = 'A script to find inactive wikis in a farm.';
 	}
 
 	public function execute() {
-		global $wgCreateWikiDatabase;
+		global $wgCreateWikiDatabase, $wgCreateWikiStateDays;
 
 		$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
 
@@ -48,7 +47,8 @@ class ManageInactiveWikis extends Maintenance {
 				'wiki_creation',
 			],
 			[
-				'wiki_inactive_exempt' => 0
+				'wiki_inactive_exempt' => 0,
+				'wiki_deleted' => 0
 			],
 			__METHOD__
 		);
@@ -60,14 +60,17 @@ class ManageInactiveWikis extends Maintenance {
 			$closed = $row->wiki_closed;
 			$closedDate = $row->wiki_closed_timestamp;
 			$wikiCreation = $row->wiki_creation;
+			$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
 
-			if ( $dbName && $wikiCreation < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			if ( $dbName && $wikiCreation < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate );
 			}
 		}
 	}
 
 	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate  ) {
+		global $wgCreateWikiStateDays;
+
 		$dbr = wfGetDB( DB_REPLICA, [], $dbName );
 
 		$lastEntryObj = $dbr->selectRow(
@@ -82,9 +85,15 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		);
 
+		$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
+		$closeDays = (int)$wgCreateWikiStateDays['closed'];
+		$removeDays = (int)$wgCreateWikiStateDays['remove'];
+
+		$canWrite = $this->hasOption( 'write' );
+
 		// Wiki doesn't seem inactive: go on to the next wiki.
-		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-45 days" ) ) ) {
-			if ( $this->hasOption( 'warn' ) && $inactive ) {
+		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
+			if ( $canWrite && $inactive ) {
 				$this->unWarnWiki( $dbName );
 			}
 
@@ -93,9 +102,10 @@ class ManageInactiveWikis extends Maintenance {
 
 		if ( !$closed ) {
 			// Wiki is NOT closed yet
-			if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-60 days" ) ) ) {
-				// Last RC entry older than 60 days
-				if ( $this->hasOption( 'close' ) ) {
+			$closeTime = $inactiveDays + $closeDays;
+			if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-{$closeTime} days" ) ) ) {
+				// Last RC entry older than allowed time
+				if ( $canWrite ) {
 					$this->closeWiki( $dbName );
 					$this->emailBureaucrats( $dbName );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
@@ -103,44 +113,49 @@ class ManageInactiveWikis extends Maintenance {
 					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
 			} elseif ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
-				// Last RC entry older than 45 days but newer than 60 days
-				if ( $this->hasOption( 'warn' ) ) {
+				// Meets inactivity
+				if ( $canWrite ) {
 					$this->warnWiki( $dbName );
 					$this->output( "{$dbName} was eligible for a warning notice and one was given.\n" );
 				} else {
 					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
 				}
 			} else {
-				// No RC entries, but wiki is already 45+ days old
+				// No RC entries
 				if ( !$inactive ) {
 					// Wiki not marked inactive yet, warning should be given
-					if ( $this->hasOption( 'warn' ) ) {
+					if ( $canWrite ) {
 						$this->warnWiki( $dbName );
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, therefore warning.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, eligible for warning.\n" );
 					}
-			    	} elseif ( $inactiveDate && $inactiveDate < date( "YmdHis", strtotime( "-15 days" ) ) ) {
-					// Wiki already warned 15+ days ago, eligible for closure
-					if ( $this->hasOption( 'close' ) ) {
+				} elseif ( $inactiveDate && $inactiveDate < date( "YmdHis", strtotime( "-{$closeDays} days" ) ) ) {
+					// Wiki already warned, eligible for closure
+					if ( $canWrite ) {
 						$this->closeWiki( $dbName );
-						$this->output( "{$dbName} does not seem to contain recentchanges entries after 15+ days warning, therefore closing.\n" );
+						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
-						$this->output( "{$dbName} does not seem to contain recentchanges entries after 15+ days warning, eligible for closure.\n" );
+						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, eligible for closure.\n" );
 					}
 				} else {
-					// Wiki warned 0-15 days ago
-					$this->output( "{$dbName} does not seem to contain recentchanges entries, warned 0-15 days ago.\n" );
+					// Wiki warned recently
+					$this->output( "{$dbName} does not seem to contain recentchanges entries, warned recently.\n" );
 				}
 			}
 		} else {
 			// Wiki already has been closed
-			if ( $closedDate && $closedDate < date( "YmdHis", strtotime( "-120 days" ) ) ) {
-				// Wiki closed 120 days ago or longer; eligible for deletion
-				$this->output( "{$dbName} is eligible for deletion, has been closed on {$closedDate}.\n" );
-			} elseif ( $closedDate && $closedDate > date( "YmdHis", strtotime( "-120 days" ) ) ) {
-				// Wiki closed but not 120 days ago yet
-				$this->output( "{$dbName} is not eligible for deletion yet, but has already been closed on {$closedDate}.\n" );
+			if ( $closedDate && $closedDate < date( "YmdHis", strtotime( "-{$removeDays} days" ) ) ) {
+				// Wiki closed, eligible for deletion
+				if ( $canWrite ) {
+					$this->deleteWiki( $dbName );
+					$this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
+				} else {
+					$this->output( "{$dbName} is eligible for public removal, was closed on {$closedDate}.\n" );
+				}
+			} elseif ( $closedDate && $closedDate > date( "YmdHis", strtotime( "-{$removeDays} days" ) ) ) {
+				// Wiki closed but not yet eligible for removal
+				$this->output( "{$dbName} is not eligible for public removal yet, but has already been closed on {$closedDate}.\n" );
 			} else {
 				// Could not determine closure date, fallback
 				$this->output( "{$dbName} has already been closed but its closure date could not be determined. Please check!\n" );
@@ -148,6 +163,25 @@ class ManageInactiveWikis extends Maintenance {
 		}
 
 		return true;
+	}
+
+	public function removeWiki( $wikiDb ) {
+		global $wgCreateWikiDatabase;
+
+		$dbw = wfGetDB ( DB_MASTER, [], $wgCreateWikiDatabase );
+
+		$dbw->update(
+			'cw_wikis',
+			[
+				'wiki_closed' => 0,
+				'wiki_closed_timestamp' => NULL,
+				'wiki_deleted' => 1,
+				'wiki_deleted_timestamp' => $dbw->timestamp()
+			],
+			[
+				'wiki_dbname' => $wikiDb
+			]
+		);
 	}
 
 	public function closeWiki( $wikiDb ) {
@@ -159,7 +193,7 @@ class ManageInactiveWikis extends Maintenance {
 			'cw_wikis',
 			[
 				'wiki_closed' => '1',
-				'wiki_closed_timestamp' => $dbw->timestamp(), 
+				'wiki_closed_timestamp' => $dbw->timestamp(),
 				'wiki_inactive' => '0',
 				'wiki_inactive_timestamp' => NULL, // Consistency
 			],

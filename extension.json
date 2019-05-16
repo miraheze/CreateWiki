@@ -91,10 +91,15 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiDeletionDays": {
-			"description": "Integer. Number of days a wiki must be deleted before it can removed permanently.",
+		"CreateWikiStateDays": {
+			"description": "Array. Integer values in days when a wiki is deemed inactive, closed, removed (hidden) and deleted. Number of days passed since last change - not from initial inactivity.",
 			"public": true,
-			"value": 7
+			"value": {
+				"inactive": 45,
+				"closed": 15,
+				"removed": 120,
+				"deleted": 7
+			}
 		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
