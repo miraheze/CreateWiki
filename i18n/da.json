@@ -21,6 +21,8 @@
 	"requestwiki-label-language": "Sprog:",
 	"requestwiki-label-sitename": "Navn på wiki:",
 	"requestwiki-submit": "Indsend",
+	"requestwikiqueue-approve": "Godkend",
+	"requestwikiqueue-decline": "Afvis",
 	"requestwikiqueue-handling": "Håndter forespørgsel",
 	"requestwikiqueue-norequests": "Der blev ikke fundet noget resultat.",
 	"requestwikiqueue-pager-status-approved": "godkendt",

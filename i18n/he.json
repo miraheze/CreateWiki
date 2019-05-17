@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Guycn2"
+			"Guycn2",
+			"Erelon"
 		]
 	},
 	"action-createwiki": "ליצור אתרי ויקי",
@@ -58,6 +59,7 @@
 	"requestwiki-submit": "שליחה",
 	"requestwiki-success": "בקשת אתר הוויקי שלך ($1) נשלחה בהצלחה. הבקשה תיבדק על־ידי אחד המתנדבים בהקדם האפשרי.",
 	"requestwikiqueue": "תור בקשות אתרי הוויקי",
+	"requestwikiqueue-approve": "אישור",
 	"requestwikiqueue-logpagerentry": "$1 ביקש את אתר הוויקי $2 בבקשה $3 (מצב: $4)",
 	"requestwikiqueue-norequests": "לא נמצאו תוצאות.",
 	"requestwikiqueue-pager-status-approved": "אושר",
