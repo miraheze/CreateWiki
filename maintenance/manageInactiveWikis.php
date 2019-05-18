@@ -72,7 +72,9 @@ class ManageInactiveWikis extends Maintenance {
 	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw ) {
 		global $wgCreateWikiStateDays;
 
-		$lastEntryObj = $dbw->selectRow(
+		$dbr = wfGetDB( DB_REPLICA, [], $dbName );
+
+		$lastEntryObj = $dbr->selectRow(
 			'recentchanges',
 			'rc_timestamp',
 			[
@@ -93,7 +95,7 @@ class ManageInactiveWikis extends Maintenance {
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 			if ( $canWrite && $inactive ) {
-				$this->unWarnWiki( $dbName );
+				$this->unWarnWiki( $dbName, $dbw );
 			}
 
 			return true;
@@ -160,6 +162,8 @@ class ManageInactiveWikis extends Maintenance {
 				$this->output( "{$dbName} has already been closed but its closure date could not be determined. Please check!\n" );
 			}
 		}
+
+		$dbr->close();
 
 		return true;
 	}
