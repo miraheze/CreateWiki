@@ -4,7 +4,8 @@
 			"Amanojaku",
 			"Liuxinyu970226",
 			"A Chinese Wikipedian",
-			"Liangent"
+			"Liangent",
+			"科劳"
 		]
 	},
 	"action-createwiki": "创建wiki",
@@ -62,6 +63,7 @@
 	"requestwiki-success": "您的请求（$1）已经成功提交。志愿者们将会尽快处理您的请求。",
 	"requestwikiqueue": "Wiki申请队列",
 	"requestwikiqueue-comments": "评论请求",
+	"requestwikiqueue-decline": "拒绝",
 	"requestwikiqueue-handling": "处理请求",
 	"requestwikiqueue-logpagerentry": "$1 在请求 $3 中申请了名为 $2 的 Wiki（状态：$4）",
 	"requestwikiqueue-norequests": "结果未找到。",
