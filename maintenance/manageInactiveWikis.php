@@ -34,9 +34,9 @@ class ManageInactiveWikis extends Maintenance {
 	public function execute() {
 		global $wgCreateWikiDatabase, $wgCreateWikiStateDays;
 
-		$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
+		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
-		$res = $dbr->select(
+		$res = $dbw->select(
 			'cw_wikis',
 			[
 				'wiki_dbname',
@@ -59,21 +59,20 @@ class ManageInactiveWikis extends Maintenance {
 			$inactiveDate = $row->wiki_inactive_timestamp;
 			$closed = $row->wiki_closed;
 			$closedDate = $row->wiki_closed_timestamp;
+			$deleted = $row->wiki_deleted;
 			$wikiCreation = $row->wiki_creation;
 			$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
 
-			if ( $dbName && $wikiCreation < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
-				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate );
+			if ( !$deleted && $wikiCreation < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
+				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw );
 			}
 		}
 	}
 
-	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate  ) {
+	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw ) {
 		global $wgCreateWikiStateDays;
 
-		$dbr = wfGetDB( DB_REPLICA, [], $dbName );
-
-		$lastEntryObj = $dbr->selectRow(
+		$lastEntryObj = $dbw->selectRow(
 			'recentchanges',
 			'rc_timestamp',
 			[
@@ -106,7 +105,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-{$closeTime} days" ) ) ) {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
-					$this->closeWiki( $dbName );
+					$this->closeWiki( $dbName, $dbw );
 					$this->emailBureaucrats( $dbName );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
@@ -115,7 +114,7 @@ class ManageInactiveWikis extends Maintenance {
 			} elseif ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				// Meets inactivity
 				if ( $canWrite ) {
-					$this->warnWiki( $dbName );
+					$this->warnWiki( $dbName, $dbw );
 					$this->output( "{$dbName} was eligible for a warning notice and one was given.\n" );
 				} else {
 					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
@@ -125,7 +124,7 @@ class ManageInactiveWikis extends Maintenance {
 				if ( !$inactive ) {
 					// Wiki not marked inactive yet, warning should be given
 					if ( $canWrite ) {
-						$this->warnWiki( $dbName );
+						$this->warnWiki( $dbName, $dbw );
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, therefore warning.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, eligible for warning.\n" );
@@ -133,7 +132,7 @@ class ManageInactiveWikis extends Maintenance {
 				} elseif ( $inactiveDate && $inactiveDate < date( "YmdHis", strtotime( "-{$closeDays} days" ) ) ) {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
-						$this->closeWiki( $dbName );
+						$this->closeWiki( $dbName, $dbw );
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, eligible for closure.\n" );
@@ -148,7 +147,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $closedDate && $closedDate < date( "YmdHis", strtotime( "-{$removeDays} days" ) ) ) {
 				// Wiki closed, eligible for deletion
 				if ( $canWrite ) {
-					$this->removeWiki( $dbName );
+					$this->removeWiki( $dbName, $dbw );
 					$this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
 				} else {
 					$this->output( "{$dbName} is eligible for public removal, was closed on {$closedDate}.\n" );
@@ -165,11 +164,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function removeWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB ( DB_MASTER, [], $wgCreateWikiDatabase );
-
+	public function removeWiki( $wikiDb, $dbw ) {
 		$dbw->update(
 			'cw_wikis',
 			[
@@ -184,11 +179,7 @@ class ManageInactiveWikis extends Maintenance {
 		);
 	}
 
-	public function closeWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
-
+	public function closeWiki( $wikiDb, $dbw ) {
 		$dbw->update(
 			'cw_wikis',
 			[
@@ -208,11 +199,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function warnWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
-
+	public function warnWiki( $wikiDb, $dbw ) {
 		$dbw->update(
 			'cw_wikis',
 			[
@@ -230,11 +217,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function unWarnWiki( $wikiDb ) {
-		global $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
-
+	public function unWarnWiki( $wikiDb, $dbw ) {
 		$dbw->update(
 			'cw_wikis',
 			[
@@ -254,7 +237,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function emailBureaucrats( $wikiDb ) {
+	public function emailBureaucrats( $wikiDb, $dbw ) {
 		global $wgPasswordSender, $wgSitename;
 
 		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
