@@ -71,11 +71,11 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw ) {
-		global $wgCreateWikiStateDays;
+		global $wgCreateWikiStateDays, $wgCreateWikiDatabase;
 
-		$dbr = wfGetDB( DB_REPLICA, [], $dbName );
+		$dbw->selectDomain( $dbName );
 
-		$lastEntryObj = $dbr->selectRow(
+		$lastEntryObj = $dbw->selectRow(
 			'recentchanges',
 			'rc_timestamp',
 			[
@@ -86,6 +86,8 @@ class ManageInactiveWikis extends Maintenance {
 				'ORDER BY' => 'rc_timestamp DESC',
 			]
 		);
+
+		$dbw->selectDomain( $wgCreateWikiDatabase );
 
 		$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
 		$closeDays = (int)$wgCreateWikiStateDays['closed'];
@@ -109,7 +111,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$this->closeWiki( $dbName, $dbw );
-					$this->emailBureaucrats( $dbName, $dbr );
+					$this->emailBureaucrats( $dbName, $dbw );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
 					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
@@ -242,8 +244,10 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function emailBureaucrats( $wikiDb, $dbr ) {
-		global $wgPasswordSender, $wgSitename;
+	public function emailBureaucrats( $wikiDb, $dbw ) {
+		global $wgPasswordSender, $wgSitename, $wgCreateWikiDatabase;
+
+		$dbw->selectDomain( $wikiDb );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
@@ -258,6 +262,8 @@ class ManageInactiveWikis extends Maintenance {
 				]
 			]
 		);
+
+		$dbw->selectDomain( $wgCreateWikiDatabase );
 
 		foreach ( $bureaucrats as $users ) {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
