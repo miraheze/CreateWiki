@@ -45,6 +45,7 @@ class ManageInactiveWikis extends Maintenance {
 				'wiki_closed',
 				'wiki_closed_timestamp',
 				'wiki_creation',
+				'wiki_deleted'
 			],
 			[
 				'wiki_inactive_exempt' => 0,
@@ -108,7 +109,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$this->closeWiki( $dbName, $dbw );
-					$this->emailBureaucrats( $dbName );
+					$this->emailBureaucrats( $dbName, $dbr );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
 					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
@@ -241,10 +242,8 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function emailBureaucrats( $wikiDb, $dbw ) {
+	public function emailBureaucrats( $wikiDb, $dbr ) {
 		global $wgPasswordSender, $wgSitename;
-
-		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],

@@ -273,7 +273,8 @@ class RequestWikiRequestViewer {
 			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, false, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
 
 			if ( $created ) {
-				return $created;
+				$form->getContext()->getOutput()->addHTML( "<div class=\"errorbox\">{$created}</div>" );
+				return true;
 			}
 
 			$addCommentToRequest = 'Created.';
@@ -283,12 +284,14 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		$dbw->update( 'cw_requests',
-			$rowsUpdate,
-			[
-				'cw_id' => $requestid
-			]
-		);
+		if ( isset( $rowsUpdate ) ) {
+			$dbw->update( 'cw_requests',
+				$rowsUpdate,
+				[
+					'cw_id' => $requestid
+				]
+			);
+		}
 
 		if ( isset( $formData['submit-comment'] ) && $formData['submit-comment'] ) {
 			$dbw->insert( 'cw_comments',
