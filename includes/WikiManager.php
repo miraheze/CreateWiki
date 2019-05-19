@@ -165,7 +165,7 @@ class WikiManager {
 
 		$old = $this->dbname;
 
-		$error = $this->checkDatabaseName( $new );
+		$error = $this->checkDatabaseName( $new, true );
 
 		if ( $error ) {
 			throw new MWException( "Can not rename {$old} to {$new} because: {$error}" );
@@ -196,7 +196,7 @@ class WikiManager {
 		$this->tables = $tables;
 	}
 
-	public function checkDatabaseName( string $dbname ) {
+	public function checkDatabaseName( string $dbname, bool $rename = false ) {
 		global $wgConf;
 
 		$suffixed = false;
@@ -208,7 +208,8 @@ class WikiManager {
 		}
 
 		$error = false;
-		if ( $this->dbw->query( 'SHOW DATABASES LIKE ' . $this->dbw->addQuotes( $dbname ) . ';' )->numRows() !== 0 ) {
+
+		if ( ( $this->dbw->query( 'SHOW DATABASES LIKE ' . $this->dbw->addQuotes( $dbname ) . ';' )->numRows() !== 0 ) && !$rename ) {
 			$error = 'dbexists';
 		} elseif ( !$suffixed ) {
 			$error = 'notsuffixed';
