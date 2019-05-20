@@ -8,7 +8,8 @@
 			"OlegCinema",
 			"Movses",
 			"Vlad5250",
-			"Александр Сигачёв"
+			"Александр Сигачёв",
+			"1233qwer1234qwer4"
 		]
 	},
 	"action-createwiki": "создать вики",
@@ -70,6 +71,7 @@
 	"requestwiki-success": "Ваш запрос вики ($1) был успешно отправлен. Ваш запрос будет рассмотрен волонтера как можно скорее.",
 	"requestwikiqueue": "Очередь Вики запросы",
 	"requestwikiqueue-comments": "Комментарии к запросу",
+	"requestwikiqueue-decline": "Отклонить",
 	"requestwikiqueue-handling": "Обработать запрос",
 	"requestwikiqueue-logpagerentry": "$1 запрос вики $2 в запрос $3 (статус: $4)",
 	"requestwikiqueue-norequests": "Результатов не найдено.",

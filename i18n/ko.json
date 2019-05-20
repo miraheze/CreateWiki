@@ -66,6 +66,7 @@
 	"requestwiki-submit": "제출",
 	"requestwiki-success": "위키 요청($1)이 성공적으로 제출되었습니다. 요청은 자원봉사자가 가능한 조속히 검토할 것입니다.",
 	"requestwikiqueue": "위키 요청 큐",
+	"requestwikiqueue-approve": "승인",
 	"requestwikiqueue-logpagerentry": "$1님이 $2 위키를 $3 요청으로 요청했습니다 (상태: $4)",
 	"requestwikiqueue-norequests": "결과 없음.",
 	"requestwikiqueue-pager-status-approved": "승인됨",

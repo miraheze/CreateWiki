@@ -41,6 +41,7 @@
 	"log-name-farmer": "Rejestr farmy",
 	"notification-createwiki-wiki-creation-email-subject": "Wiki $1 została utworzona!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Odwiedź wiki",
+	"notification-createwiki-wiki-rename-subject": "Nazwa wiki $1 została zmieniona.",
 	"notification-header-wiki-creation": "Wiki <strong>$1</strong> została utworzona!",
 	"notification-header-request-declined": "Twoja prośba została odrzucona z powodu:",
 	"requestwiki": "Załóż wiki",
