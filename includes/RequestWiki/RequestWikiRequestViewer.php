@@ -261,7 +261,7 @@ class RequestWikiRequestViewer {
 
 			$requesterId = $reqRow->cw_user;
 
-			$wm->notificationsTrigger( 'request-decline', $reqRow->cw_dbname, [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
+			$wm->notificationsTrigger( 'request-declined', $reqRow->cw_dbname, [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
 		}
 
 		if ( isset( $formData['submit-create'] ) && $formData['submit-create'] ) {
