@@ -13,7 +13,7 @@ class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 
 	public function getBodyMessage() {
 		$reason = $this->event->getExtraParam( 'reason' );
-		$text = EchoDiscussionParser::getTextSnipper( $reason, $this->language );
+		$text = EchoDiscussionParser::getTextSnippet( $reason, $this->language );
 
 		return new RawMessage( "$1", [ $text ] );
 	}
