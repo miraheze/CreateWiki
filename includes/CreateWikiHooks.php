@@ -86,7 +86,7 @@ class CreateWikiHooks {
 			'tooltip' => 'echo-pref-tooltip-wiki-rename'
 		];
 
-		$notificationCategories['wiki-request-declined'] = [
+		$notificationCategories['request-declined'] = [
 			'priority' => 2,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
 		];
@@ -115,7 +115,7 @@ class CreateWikiHooks {
 			'immediate' => true
 		];
 
-		$notifications['wiki-request-declined'] = [
+		$notifications['request-declined'] = [
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
 			],
