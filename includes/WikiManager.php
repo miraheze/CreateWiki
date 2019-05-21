@@ -295,7 +295,7 @@ class WikiManager {
 			}
 
 			$from = new MailAddress( $wgPasswordSender, 'CreateWiki on ' . $wgSitename );
-			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName]' )->inContentLanguage()->text();
+			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
 			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 
 			UserMailer::send( $notifyEmails, $from, $subject, $body );
