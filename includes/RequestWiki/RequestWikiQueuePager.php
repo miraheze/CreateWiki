@@ -94,7 +94,7 @@ class RequestWikiQueuePager extends TablePager {
 				'cw_sitename'
 			],
 			'conds' => [
-				'cw_visibility <= ' . $visibility // Don't fetch what we can't see
+				'cw_visibility <= ' . $visibility
 			],
 			'joins_conds' => [],
 		];

@@ -31,7 +31,6 @@ class WikiManager {
 		string $siteName,
 		string $language,
 		bool $private,
-		bool $exempt,
 		string $category,
 		string $requester,
 		string $actor,
@@ -59,7 +58,6 @@ class WikiManager {
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
-				'wiki_inactive_exempt' => (int)$exempt,
 				'wiki_category' => $category
 			]
 		);
@@ -111,7 +109,7 @@ class WikiManager {
 				$requester,
 				'--bureaucrat',
 				'--sysop',
-				'--force', // Let's not handle passwords
+				'--force',
 				'--wiki', $wiki
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
@@ -142,7 +140,8 @@ class WikiManager {
 
 		$deletedWiki = (bool)$row->wiki_deleted;
 
-		if ( !$deletedWiki || !$force ) {
+		// Throw exception if: wiki is not deleted, force is not used & wiki 
+		if ( ( !$deletedWiki || !$force ) ) {
 			if ( ( $unixNow - $unixDeletion ) < ( (int)$wgCreateWikiDeletionDays * 86400 ) ) {
 				throw new MWException( "Wiki {$wiki} can not be deleted yet." );
 			}
@@ -187,13 +186,13 @@ class WikiManager {
 	}
 
 	private function compileTables() {
-		$tables = [];
+		$cTables = [];
 
-		Hooks::run( 'CreateWikiTables', [ &$tables ] );
+		Hooks::run( 'CreateWikiTables', [ &$cTables ] );
 
-		$tables['cw_wikis'] = 'wiki_dbname';
+		$cTables['cw_wikis'] = 'wiki_dbname';
 
-		$this->tables = $tables;
+		$this->tables = $cTables;
 	}
 
 	public function checkDatabaseName( string $dbname, bool $rename = false ) {
@@ -222,7 +221,7 @@ class WikiManager {
 		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->escaped() : false;
 	}
 
-	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = NULL ) {
+	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
 		global $wgCreateWikiGlobalWiki;
 
 		$logDBConn = wfGetDB( DB_MASTER, [], $loggingWiki ?? $wgCreateWikiGlobalWiki );
@@ -268,6 +267,9 @@ class WikiManager {
 					'reason' => $specialData['reason'],
 					'notifyAgent' => true
 				];
+				break;
+			default:
+				$echoType = false;
 				break;
 		}
 

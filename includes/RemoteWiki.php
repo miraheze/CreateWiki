@@ -20,7 +20,7 @@ class RemoteWiki {
 	}
 
 	public static function newFromName( $dbname ) {
-		return static::newFromConds( array( 'wiki_dbname' => $dbname ) );
+		return static::newFromConds( [ 'wiki_dbname' => $dbname ] );
 	}
 
 	protected static function newFromConds(
@@ -58,7 +58,7 @@ class RemoteWiki {
 	}
 
 	public static function selectFields() {
-		return array(
+		return [
 			'wiki_dbname',
 			'wiki_sitename',
 			'wiki_language',
@@ -74,7 +74,7 @@ class RemoteWiki {
 			'wiki_settings',
 			'wiki_category',
 			'wiki_extensions'
-		);
+		];
 	}
 
 	public function getCreationDate() {

@@ -19,11 +19,11 @@ class PopulateMainPage extends Maintenance {
                 $article->doEditContent(
                         new WikitextContent(
                                 wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain()
-                        ), // Text
-                        'Create main page', // Edit summary
-                        EDIT_SUPPRESS_RC, // Flags
-                        false, // I have no idea what this is
-                        User::newFromName( 'MediaWiki default' ) // We don't want to have incorrect user_id - user_name entries
+                        ),
+                        'Create main page',
+                        EDIT_SUPPRESS_RC,
+                        false,
+                        User::newFromName( 'MediaWiki default' )
                 );
         }
 }

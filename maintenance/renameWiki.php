@@ -37,7 +37,8 @@ class RenameWiki extends Maintenance {
 
 		if ( $this->hasOption( 'rename' ) ) {
 				$this->output( "Renaming $oldwiki to $newwiki. If this is wrong, Ctrl-C now!" );
-				$this->countDown( 10 ); // let's count down JUST to be safe!
+				// let's count down JUST to be safe!
+				$this->countDown( 10 );
 
 				$wm = new WikiManager( $oldwiki );
 

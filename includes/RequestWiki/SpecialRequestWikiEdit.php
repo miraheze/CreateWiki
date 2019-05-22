@@ -10,7 +10,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$this->setHeaders();
 
 		if ( !$this->getUser()->isLoggedIn() ) {
-			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( array( 'returnto' => $this->getPageTitle()->getPrefixedText() ) );
+			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
 			$out->addWikiMsg( 'requestwiki-edit-notloggedin', $loginurl );
 			return false;
 		}
@@ -23,17 +23,15 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	private function showRequestInput() {
-		$formDescriptor = array(
-			'requestid' => array(
+		$formDescriptor['requestid'] = [
 				'type' => 'text',
 				'label-message' => 'requestwiki-edit-id',
 				'required' => true,
 				'name' => 'rweID',
-			)
-		);
+		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'searchForm' );
-		$htmlForm->setMethod( 'post')->setSubmitCallback( array( $this, 'onSubmitRedirectToEditForm' ))->prepareForm()->show();
+		$htmlForm->setMethod( 'post')->setSubmitCallback( [ $this, 'onSubmitRedirectToEditForm' ] )->prepareForm()->show();
 
 		return true;
 	}
@@ -57,14 +55,14 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 		$languages = Language::fetchLanguageNames( null, 'wmfile' );
 		ksort( $languages );
-		$options = array();
+		$options = [];
 		foreach ( $languages as $code => $name ) {
 			$options["$code - $name"] = $code;
 		}
 
 		$dbr = wfGetDB( DB_SLAVE );
 		$res = $dbr->selectRow( 'cw_requests',
-			array(
+			[
 				'cw_user',
 				'cw_comment',
 				'cw_language',
@@ -73,10 +71,10 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'cw_url',
 				'cw_custom',
 				'cw_category'
-			),
-			array(
+			],
+			[
 				'cw_id' => $id
-			),
+			],
 			__METHOD__
 		);
 
@@ -87,75 +85,75 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 		$subdomain = substr( $res->cw_url, 0, -13 );
 
-		$formDescriptor = array(
-			'requestid' => array(
+		$formDescriptor = [
+			'requestid' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-edit-id',
 				'default' => $id,
 				'disabled' => true,
 				'name' => 'rweRequestID',
-			),
-			'subdomain' => array(
+			],
+			'subdomain' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-siteurl',
 				'default' => $subdomain,
 				'name' => 'rweSubdomain',
 				'required' => true,
-			),
-			'sitename' => array(
+			],
+			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
 				'default' => $res->cw_sitename,
 				'name' => 'rweSitename',
 				'required' => true,
-			),
-			'language' => array(
+			],
+			'language' => [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-language',
 				'options' => $options,
 				'default' => $res->cw_language,
 				'name' => 'rweLanguage',
-			),
-		);
+			],
+		];
 
 		if ( $wgCreateWikiUseCustomDomains ) {
-			$formDescriptor['customdomain'] = array(
+			$formDescriptor['customdomain'] = [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-customdomain',
 				'default' => $res->cw_custom,
 				'name' => 'rweCustomdomain',
-			);
+			];
 		}
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
-			$formDescriptor['private'] = array(
+			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
 				'default' => $res->cw_private == 1,
 				'name' => 'rwePrivate',
-			);
+			];
 		}
 
 		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
-			$formDescriptor['category'] = array(
+			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'options' => $wgCreateWikiCategories,
 				'default' => $res->cw_category,
 				'name' => 'rweCategory',
-			);
+			];
 		}
 
-		$formDescriptor['reason'] = array(
+		$formDescriptor['reason'] = [
 			'type' => 'text',
 			'label-message' => 'createwiki-label-reason',
 			'default' => $res->cw_comment,
 			'name' => 'rweReason',
 			'required' => true,
-		);
+		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
-		$htmlForm->setMethod( 'post' )->setSubmitCallback( array( $this, 'onSubmitInput' ) )->prepareForm()->show();
+		$htmlForm->setMethod( 'post' )->setSubmitCallback( [ $this, 'onSubmitInput' ] )->prepareForm()->show();
 
 	}
 
@@ -182,7 +180,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			$customdomain = "";
 		}
 
-		$values = array(
+		$values = [
 			'cw_comment' => $params['reason'],
 			'cw_language' => $params['language'],
 			'cw_sitename' => $params['sitename'],
@@ -191,14 +189,14 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'cw_custom' => $customdomain,
 			'cw_category' => $params['category'],
 			'cw_private' => $private,
-		);
+		];
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->update( 'cw_requests',
 			$values,
-			array(
+			[
 				'cw_id' => $params['requestid'],
-			),
+			],
 			__METHOD__
 		);
 
@@ -206,9 +204,9 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$farmerLogEntry->setPerformer( $this->getUser() );
 		$farmerLogEntry->setTarget( $this->getTitle() );
 		$farmerLogEntry->setParameters(
-			array(
+			[
 				'4::id' => $params['requestid'],
-			)
+			]
 		);
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );

@@ -39,7 +39,7 @@ class PopulateWikiCreation extends Maintenance {
 		$res = $dbw->select(
 			'cw_wikis',
 			'*',
-			array(),
+			[],
 			__METHOD__
 		);
 
@@ -52,25 +52,25 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDB( $wgCreateWikiGlobalWiki );
 
-			$res = $dbw->selectRow(		
-				'logging',		
-				'log_timestamp',		
-				array(		
-					'log_action' => 'createwiki',		
-					'log_params' => serialize( array( '4::wiki' => $DBname ) )		
-				),		
-				__METHOD__,		
-				array( // Sometimes a wiki might have been created multiple times.		
-					'ORDER BY' => 'log_timestamp DESC'		
-				)		
+			$res = $dbw->selectRow(
+				'logging',
+				'log_timestamp',
+				[
+					'log_action' => 'createwiki',
+					'log_params' => serialize( ['4::wiki' => $DBname ] )
+				],
+				__METHOD__,
+				[
+					'ORDER BY' => 'log_timestamp DESC'
+				]
 			);
 
 			$dbw->selectDB( $wgCreateWikiDatabase );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {		
  				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );		
- 				continue;		
- 			}				
+ 				continue;
+ 			}
 
 			$dbw->update(
 				'cw_wikis',

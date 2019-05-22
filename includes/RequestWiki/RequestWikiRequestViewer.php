@@ -2,7 +2,7 @@
 
 class RequestWikiRequestViewer {
 	public function getFormDescriptor(
-		int $requestid = NULL,
+		int $requestid,
 		IContextSource $context
 	) {
 		global $wgUser, $wgCreateWikiGlobalWiki, $wgCreateWikiUsePrivateWikis;
@@ -110,11 +110,11 @@ class RequestWikiRequestViewer {
 		];
 
 		if ( $wgUser->isAllowed( 'createwiki' ) || $context->getUser()->getId() == $res->cw_user ) {
-			$formDescriptor['edit'] = array(
+			$formDescriptor['edit'] = [
 				'type' => 'submit',
 				'section' => 'request',
 				'default' => wfMessage( 'requestwikiqueue-request-label-edit-wiki' )->text()
-			);
+			];
 		}
 
 		$comments = $dbr->select( 'cw_comments',
@@ -208,7 +208,7 @@ class RequestWikiRequestViewer {
 
 
 	public function getForm(
-		string $requestid = NULL,
+		string $requestid,
 		IContextSource $context,
 		$formClass = CreateWikiOOUIForm::class
 	) {
@@ -230,13 +230,13 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form,
-		int $requestid = NULL
+		int $requestid
 	) {
 		global $wgCreateWikiGlobalWiki;
 
 		if ( isset( $formData['edit'] ) && $formData['edit'] ) {
 			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullUrl() . '/' . $requestid );
-			return;
+			return null;
 		}
 
 		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiGlobalWiki );
@@ -270,7 +270,7 @@ class RequestWikiRequestViewer {
 			$requesterUser = User::newFromID( $reqRow->cw_user );
 			$actorUser = $form->getContext()->getUser();
 
-			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, false, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
+			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
 
 			if ( $created ) {
 				$form->getContext()->getOutput()->addHTML( "<div class=\"errorbox\">{$created}</div>" );

@@ -5,8 +5,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	public function execute( $par ) {
-		$request = $this->getRequest();
-		$out = $this->getOutput();
 		$this->setHeaders();
 
 		if ( is_null( $par ) || $par === '' ) {

@@ -11,7 +11,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$request = $this->getRequest();
 
 		// Build language selector
-		$languages = Language::fetchLanguageNames( NULL, 'wmfile' );
+		$languages = Language::fetchLanguageNames( null, 'wmfile' );
 		ksort( $languages );
 		$options = [];
 		foreach ( $languages as $code => $name ) {
@@ -52,31 +52,31 @@ class SpecialCreateWiki extends FormSpecialPage {
 		];
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
-			$formDescriptor['private'] = array(
+			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
 				'name' => 'cwPrivate',
-			);
+			];
 		}
 
 
 		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
-			$formDescriptor['category'] = array(
+			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'options' => $wgCreateWikiCategories,
 				'name' => 'cwCategory',
 				'default' => 'uncategorised',
-			);
+			];
 		}
 
-		$formDescriptor['reason'] = array(
+		$formDescriptor['reason'] = [
 			'label-message' => 'createwiki-label-reason',
 			'type' => 'text',
 			'default' => $request->getVal( 'wpreason' ),
 			'size' => 45,
 			'required' => true,
-		);
+		];
 
 		return $formDescriptor;
 	}
@@ -100,7 +100,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$wm = new WikiManager( $formData['dbname'] );
 
-		$wm->create( $formData['sitename'], $formData['language'], $private, 0, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
+		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 

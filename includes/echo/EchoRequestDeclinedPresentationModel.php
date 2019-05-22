@@ -6,9 +6,7 @@ class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 	}
 
 	public function getHeaderMessage() {
-		$msg = $this->msg( 'notification-header-request-declined' );
-
-		return $msg;
+		return $this->msg( 'notification-header-request-declined' );
 	}
 
 	public function getBodyMessage() {

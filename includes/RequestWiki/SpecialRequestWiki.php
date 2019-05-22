@@ -14,7 +14,7 @@ class SpecialRequestWiki extends FormSpecialPage {
                 $this->setHeaders();
 
                 if ( !$this->getUser()->isLoggedIn() ) {
-                        $loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( array( 'returnto' => $this->getPageTitle()->getPrefixedText() ) );
+                        $loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
                         $out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
                         return false;
                 }
@@ -35,78 +35,76 @@ class SpecialRequestWiki extends FormSpecialPage {
 	protected function getFormFields() {
 		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
 
-		$request = $this->getRequest();
+		$formDescriptor = [];
 
-		$formDescriptor = array();
-
-		$formDescriptor['subdomain'] = array(
+		$formDescriptor['subdomain'] = [
 			'type' => 'text',
 			'label-message' => 'requestwiki-label-siteurl',
 			'required' => true,
 			'name' => 'rwSubdomain',
-		);
+		];
 
 		if ( $wgCreateWikiUseCustomDomains ) {
-			$formDescriptor['customdomain-info'] = array(
+			$formDescriptor['customdomain-info'] = [
 				'type' => 'info',
 				'label' => '',
 				'label-message' => 'requestwiki-label-customdomain-info',
-			);
+			];
 
-			$formDescriptor['customdomain'] = array(
+			$formDescriptor['customdomain'] = [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-customdomain',
 				'name' => 'rwCustom',
-			);
+			];
 		}
 
-		$formDescriptor['sitename'] = array(
+		$formDescriptor['sitename'] = [
 			'type' => 'text',
 			'label-message' => 'requestwiki-label-sitename',
 			'required' => true,
 			'name' => 'rwSitename',
-		);
+		];
 
 		$languages = Language::fetchLanguageNames( null, 'wmfile' );
 		ksort( $languages );
-		$options = array();
+		$options = [];
 		foreach ( $languages as $code => $name ) {
 			$options["$code - $name"] = $code;
 		}
 
-		$formDescriptor['language'] = array(
+		$formDescriptor['language'] = [
 			'type' => 'select',
 			'options' => $options,
 			'label-message' => 'requestwiki-label-language',
 			'default' => 'en',
 			'name' => 'rwLanguage',
-		);
+		];
 
 		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
-			$formDescriptor['category'] = array(
+			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'options' => $wgCreateWikiCategories,
 				'default' => 'uncategorised',
 				'name' => 'rwCategory',
-			);
+			];
 		}
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
-			$formDescriptor['private'] = array(
+			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
 				'name' => 'rwPrivate',
-			);
+			];
 		}
 
-		$formDescriptor['reason'] = array(
+		$formDescriptor['reason'] = [
 			'type' => 'text',
 			'label-message' => 'createwiki-label-reason',
 			'required' => true,
-			'validation-callback' => array( __CLASS__, 'isValidReason' ),
+			'validation-callback' => [ __CLASS__, 'isValidReason' ],
 			'name' => 'rwReason',
-		);
+		];
 
 		return $formDescriptor;
 	}
@@ -145,10 +143,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$request = $this->getRequest();
-		
+
 		$dbw = wfGetDB( DB_MASTER );
 
-		$values = array(
+		$values = [
 			'cw_comment' => $formData['reason'],
 			'cw_dbname' => $dbname,
 			'cw_sitename' => $formData['sitename'],
@@ -161,7 +159,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'cw_custom' => $customdomain,
 			'cw_user' => $this->getUser()->getId(),
 			'cw_category' => $formData['category'],
-		);
+		];
 
 		$dbw->insert( 'cw_requests',
 			$values,
@@ -175,12 +173,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogEntry->setTarget( $this->getTitle() );
 		$farmerLogEntry->setComment( $formData['reason'] );
 		$farmerLogEntry->setParameters(
-			array(
+			[
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
 				'6::private' => $private,
 				'7::id' => "#{$dbw->insertId()}",
-			)
+			]
 		);
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
