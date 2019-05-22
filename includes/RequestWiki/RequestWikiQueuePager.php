@@ -3,15 +3,15 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiQueuePager extends TablePager {
-	function __construct( $requester, $dbname, $status ) {
-		$this->mDb = self::getCreateWikiGlobalWiki();
+	public function __construct( $requester, $dbname, $status ) {
+		$this->mDb = static::getCreateWikiGlobalWiki();
 		$this->requester = $requester;
 		$this->dbname = $dbname;
 		$this->status = $status;
 		parent::__construct( $this->getContext() );
 	}
 
-	static function getCreateWikiGlobalWiki() {
+	public static function getCreateWikiGlobalWiki() {
 		global $wgCreateWikiGlobalWiki;
 
 		$factory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
@@ -20,7 +20,7 @@ class RequestWikiQueuePager extends TablePager {
 		return $lb->getConnectionRef( DB_REPLICA, 'cw_requests', $wgCreateWikiGlobalWiki );
 	}
 
-	function getFieldNames() {
+	public function getFieldNames() {
 		static $headers = null;
 
 		$headers = [
@@ -40,7 +40,7 @@ class RequestWikiQueuePager extends TablePager {
 		return $headers;
 	}
 
-	function formatValue( $name, $value ) {
+	public function formatValue( $name, $value ) {
 		$row = $this->mCurrentRow;
 
 		$language = $this->getLanguage();
@@ -75,7 +75,7 @@ class RequestWikiQueuePager extends TablePager {
 		return $formatted;
 	}
 
-	function getQueryInfo() {
+	public function getQueryInfo() {
 		$user = $this->getUser();
 		$visibility = $user->isAllowed( 'createwiki' ) ? 1 : 0;
 
@@ -116,11 +116,11 @@ class RequestWikiQueuePager extends TablePager {
 		return $info;
 	}
 
-	function getDefaultSort() {
+	public function getDefaultSort() {
 		return 'cw_id';
 	}
 
-	function isFieldSortable( $name ) {
+	public function isFieldSortable( $name ) {
 		return true;
 	}
 }

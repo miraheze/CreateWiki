@@ -1,10 +1,10 @@
 <?php
 class SpecialRequestWikiQueue extends SpecialPage {
-	function __construct() {
+	public function __construct() {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 	}
 
-	function execute( $par ) {
+	public function execute( $par ) {
 		$request = $this->getRequest();
 		$out = $this->getOutput();
 		$this->setHeaders();
@@ -16,7 +16,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 	}
 
-	function doPagerStuff() {
+	private function doPagerStuff() {
 		$requester = $this->getRequest()->getText( 'requester' );
 		$status = $this->getRequest()->getText( 'status' );
 		$dbname = $this->getRequest()->getText( 'dbname' );
@@ -58,11 +58,11 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getOutput()->addHTML( $pager->getNavigationBar() . $table . $pager->getNavigationBar() );
 	}
 
-	function dummyProcess() {
+	private function dummyProcess() {
 		return false;
 	}
 
-	function lookupRequest( $par ) {
+	private function lookupRequest( $par ) {
 		global $wgUser;
 
 		$out = $this->getOutput();

@@ -20,7 +20,7 @@ class RemoteWiki {
 	}
 
 	public static function newFromName( $dbname ) {
-		return self::newFromConds( array( 'wiki_dbname' => $dbname ) );
+		return static::newFromConds( array( 'wiki_dbname' => $dbname ) );
 	}
 
 	protected static function newFromConds(
@@ -28,7 +28,7 @@ class RemoteWiki {
 	) {
 		global $wgCreateWikiDatabase;
 
-		$row = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase )->selectRow( 'cw_wikis', self::selectFields(), $conds, __METHOD__ );
+		$row = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase )->selectRow( 'cw_wikis', static::selectFields(), $conds, __METHOD__ );
 
 		if ( $row !== false ) {
 			return new self(

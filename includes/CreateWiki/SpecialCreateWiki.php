@@ -1,8 +1,8 @@
 <?php
 class SpecialCreateWiki extends FormSpecialPage {
-        function __construct() {
-                parent::__construct( 'CreateWiki', 'createwiki' );
-        }
+	public function __construct() {
+		parent::__construct( 'CreateWiki', 'createwiki' );
+	}
 
 	protected function getFormFields() {
 		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiCDBDirectory;

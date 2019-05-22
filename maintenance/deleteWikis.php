@@ -22,14 +22,14 @@
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
 class DeleteWiki extends Maintenance {
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		$this->mDescription = "Allows complete deletion of wikis with args controlling deletion levels. Will never DROP a database!";
 		$this->addOption( 'delete', 'Actually performs deletions and not outputs wikis to be deleted', false );
 		$this->addArg( 'user', 'Username or reference name of the person running this script. Will be used in tracking and notification internally.', true );
 	}
 
-	function execute() {
+	public function execute() {
 		global $wgCreateWikiDatabase, $wgCreateWikiNotificationEmail, $wgPasswordSender;
 
 		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );

@@ -3,7 +3,7 @@
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected $mSubSectionBeforeFields = false;
 
-	function wrapForm( $html ) {
+	public function wrapForm( $html ) {
 		$html = Xml::tags( 'div', [ 'id' => 'baseform' ], $html );
 
 		return parent::wrapForm( $html );
@@ -52,7 +52,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		return $wrapper;
 	}
 
-	function getBody() {
+	public function getBody() {
 		$fakeTabs = [];
 
 		foreach( $this->getFormSections() as $i => $key ) {
@@ -116,7 +116,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		);
 	}
 
-	function getFormSections() {
+	public function getFormSections() {
 		return array_keys( array_filter( $this->mFieldTree, 'is_array' ) );
 	}
 }

@@ -1,11 +1,11 @@
 <?php
 
 class SpecialRequestWikiEdit extends SpecialPage {
-	function __construct() {
+	public function __construct() {
 		parent::__construct( 'RequestWikiEdit', 'requestwiki' );
 	}
 
-	function execute( $par ) {
+	public function execute( $par ) {
 		$out = $this->getOutput();
 		$this->setHeaders();
 
@@ -22,7 +22,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		}
 	}
 
-	function showRequestInput() {
+	private function showRequestInput() {
 		$formDescriptor = array(
 			'requestid' => array(
 				'type' => 'text',
@@ -38,7 +38,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		return true;
 	}
 
-	function onSubmitRedirectToEditForm( array $params ) {
+	private function onSubmitRedirectToEditForm( array $params ) {
 		global $wgRequest;
 
 		if ( $params['requestid'] !== '' ) {
@@ -50,8 +50,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		return true;
 	}
 
-
-	function showEditForm( $id ) {
+	private function showEditForm( $id ) {
 		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
 
 		$out = $this->getOutput();
@@ -160,7 +159,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 	}
 
-	function onSubmitInput( array $params ) {
+	private function onSubmitInput( array $params ) {
 		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain;
 
 		$dbname = $params['subdomain'] . 'wiki';
