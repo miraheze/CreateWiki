@@ -26,6 +26,8 @@
 	"createwiki-label-submit": "送信",
 	"createwiki-legend": "ウィキを作成する",
 	"createwiki-success": "ウィキは無事作成されました。",
+	"echo-category-title-wiki-creation": "ウィキの作成",
+	"echo-category-title-wiki-rename": "ウィキの名前変更",
 	"logentry-farmer-createwiki": "$1 がウィキ \"$4\" を作成しました",
 	"logentry-farmer-requestwiki": "$1 が $7 でウィキ \"$4\" (言語: $5; 非公開: $6) をリクエストしました。",
 	"logentry-farmer-requestwikiedit": "$1 がウィキリクエスト #$4 を編集しました",
