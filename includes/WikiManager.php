@@ -41,7 +41,7 @@ class WikiManager {
 		$wiki = $this->dbname;
 
 		if ( $this->exists ) {
-			throw new MWException( "Wiki '{$wiki}' already exists" );
+			return wfMessage( 'createwiki-wiki-exists' )->params( $wiki )->escaped();
 		}
 
 		$checkErrors = $this->checkDatabaseName( $wiki );
