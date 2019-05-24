@@ -4,7 +4,7 @@ use MediaWiki\MediaWikiServices;
 
 class RequestWikiQueuePager extends TablePager {
 	public function __construct( $requester, $dbname, $status ) {
-		$this->mDb = static::getCreateWikiGlobalWiki();
+		$this->mDb = self::getCreateWikiGlobalWiki();
 		$this->requester = $requester;
 		$this->dbname = $dbname;
 		$this->status = $status;
