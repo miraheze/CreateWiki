@@ -270,10 +270,12 @@ class RequestWikiRequestViewer {
 			$requesterUser = User::newFromID( $reqRow->cw_user );
 			$actorUser = $form->getContext()->getUser();
 
-			$created = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
+			$validName = $wm->checkDatabaseName( $reqRow->cw_dbname );
+			$notCreated = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
 
-			if ( $created ) {
-				$form->getContext()->getOutput()->addHTML( "<div class=\"errorbox\">{$created}</div>" );
+			if ( $validName || $created ) {
+				$error = $notCreated ?? $validName;
+				$form->getContext()->getOutput()->addHTML( "<div class=\"errorbox\">{$error}</div>" );
 				return true;
 			}
 
