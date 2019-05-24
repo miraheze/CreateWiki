@@ -38,11 +38,11 @@ class WikiManager {
 	) {
 		global $IP, $wgCreateWikiGlobalWiki, $wgCreateWikiSQLfiles;
 
+		$wiki = $this->dbname;
+
 		if ( $this->exists ) {
 			throw new MWException( "Wiki '{$wiki}' already exists" );
 		}
-
-		$wiki = $this->dbname;
 
 		$checkErrors = $this->checkDatabaseName( $wiki );
 

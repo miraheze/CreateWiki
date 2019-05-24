@@ -40,6 +40,7 @@
 	"createwiki-success": "Le wiki a bien été créé.",
 	"echo-category-title-wiki-creation": "Création du wiki",
 	"echo-category-title-wiki-rename": "Renommer le wiki",
+	"echo-category-title-wiki-request-declined": "Requête du wiki rejetée",
 	"echo-pref-tooltip-wiki-creation": "Me notifier quand mon wiki a été créé.",
 	"echo-pref-tooltip-wiki-rename": "Me notifier si mon wiki a été renommé.",
 	"echo-pref-tooltip-wiki-request-declined": "Me notifier si ma requête du wiki est refusée.",

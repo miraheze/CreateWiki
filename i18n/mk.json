@@ -31,6 +31,7 @@
 	"createwiki-success": "Викито е успешно создадено.",
 	"echo-category-title-wiki-creation": "Создавање на вики",
 	"echo-category-title-wiki-rename": "Преименување на викито",
+	"echo-category-title-wiki-request-declined": "Брањето за вики е одбиено",
 	"echo-pref-tooltip-wiki-creation": "Извести ме кога ќе биде создадено викито.",
 	"echo-pref-tooltip-wiki-rename": "Извести ме ако ми го преименуваат викито.",
 	"echo-pref-tooltip-wiki-request-declined": "Извести ме ако ми го добијат викито.",
