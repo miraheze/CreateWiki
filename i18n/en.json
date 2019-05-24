@@ -29,6 +29,7 @@
 	"createwiki-label-submit": "Submit",
 	"createwiki-legend": "Create a wiki",
 	"createwiki-success": "The wiki was successfully created.",
+	"createwiki-wiki-exists": "Wiki '$1' already exists",
 	"echo-category-title-wiki-creation": "Wiki creation",
 	"echo-category-title-wiki-rename": "Wiki rename",
 	"echo-category-title-wiki-request-declined": "Wiki request declined",
