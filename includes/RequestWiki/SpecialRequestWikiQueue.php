@@ -56,7 +56,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getOutput()->addHTML( $pager->getNavigationBar() . $table . $pager->getNavigationBar() );
 	}
 
-	private function dummyProcess() {
+	public function dummyProcess() {
 		return false;
 	}
 
