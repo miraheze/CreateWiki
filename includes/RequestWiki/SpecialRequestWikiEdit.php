@@ -36,7 +36,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		return true;
 	}
 
-	private function onSubmitRedirectToEditForm( array $params ) {
+	public function onSubmitRedirectToEditForm( array $params ) {
 		global $wgRequest;
 
 		if ( $params['requestid'] !== '' ) {
