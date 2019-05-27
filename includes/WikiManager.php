@@ -141,10 +141,8 @@ class WikiManager {
 		$deletedWiki = (bool)$row->wiki_deleted;
 
 		// Throw exception if: wiki is not deleted, force is not used & wiki 
-		if ( ( !$deletedWiki || !$force ) ) {
-			if ( ( $unixNow - $unixDeletion ) < ( (int)$wgCreateWikiDeletionDays * 86400 ) ) {
-				throw new MWException( "Wiki {$wiki} can not be deleted yet." );
-			}
+		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$wgCreateWikiDeletionDays * 86400 ) ) {
+			throw new MWException( "Wiki {$wiki} can not be deleted yet." );
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
