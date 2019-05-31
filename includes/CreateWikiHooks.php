@@ -52,6 +52,12 @@ class CreateWikiHooks {
 				'wiki_inactive_exempt',
 				__DIR__ . '/../sql/patches/patch-inactive-exempt.sql'
 			);
+
+			$updater->addExtensionField(
+				'cw_wikis',
+				'wiki_locked',
+				__DIR__ . '/../sql/patches/patch-locked-wiki.sql'
+			);
 		}
 
 		return true;

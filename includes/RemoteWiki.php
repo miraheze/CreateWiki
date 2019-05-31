@@ -1,6 +1,6 @@
 <?php
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $settings, $category, $extensions ) {
+	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $locked, $settings, $category, $extensions ) {
 		$this->dbname = $dbname;
 		$this->sitename = $sitename;
 		$this->language = $language;
@@ -15,6 +15,7 @@ class RemoteWiki {
 		$this->creationDate = $this->determineCreationDate();
 		$this->deletionDate = $deletionDate;
 		$this->inactiveDate = $inactiveDate;
+		$this->locked = $locked;
 		$this->category = $category;
 		$this->extensions = $extensions;
 	}
@@ -44,6 +45,7 @@ class RemoteWiki {
 				$row->wiki_inactive_exempt,
 				$row->wiki_deleted,
 				$row->wiki_deleted_timestamp,
+				$row->wiki_locked,
 				$row->wiki_settings,
 				$row->wiki_category,
 				$row->wiki_extensions
@@ -71,6 +73,7 @@ class RemoteWiki {
 			'wiki_inactive_exempt',
 			'wiki_deleted',
 			'wiki_deleted_timestamp',
+			'wiki_locked',
 			'wiki_settings',
 			'wiki_category',
 			'wiki_extensions'
@@ -127,6 +130,10 @@ class RemoteWiki {
 
 	public function deletionDate() {
 		return $this->deletionDate;
+	}
+
+	public function isLocked() {
+		return $this->locked;
 	}
 
 	public function getCategory() {
