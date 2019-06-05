@@ -45,7 +45,7 @@ class RequestWikiRequestViewer {
 			|| $visibility === 3 && !$wgUser->isAllowed( 'suppressrevision' )
 		) {
 			$context->getOutput()->addWikiMsg( 'requestwikiqueue-requestnotfound' );
-			return false;
+			return [];
 		}
 
 		$status = ( $res->cw_status === 'inreview' ) ? 'In review' : ucfirst( $res->cw_status );
