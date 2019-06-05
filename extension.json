@@ -91,6 +91,11 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiDatabaseClusters": {
+			"description": "Array. LBFactory clusters which CreateWiki considers active.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiStateDays": {
 			"description": "Array. Integer values in days when a wiki is deemed inactive, closed, removed (hidden) and deleted. Number of days passed since last change - not from initial inactivity.",
 			"public": true,

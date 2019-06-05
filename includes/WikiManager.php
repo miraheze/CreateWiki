@@ -1,5 +1,6 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 
 class WikiManager {
@@ -9,7 +10,7 @@ class WikiManager {
 	private $tables = [];
 
 	public function __construct( string $dbname ) {
-		global $wgCreateWikiDatabase;
+		global $wgCreateWikiDatabase, $wgCreateWikiDatabaseClusters;
 
 		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
@@ -22,9 +23,37 @@ class WikiManager {
 			__METHOD__
 		);
 
+		if ( !$check && $wgCreateWikiDatabaseClusters ) {
+			// DB doesn't exist and we have clusters
+			$lbs = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getAllMainLBs();
+
+			foreach ( $wgCreateWikiDatabaseClusters as $cluster ) {
+				$count = $dbw->selectRowCount(
+					'cw_wikis',
+					'*',
+					[
+						'wiki_dbcluster' => $cluster
+					]
+				);
+
+				$clusterSize[$cluster] = $count;
+			}
+
+			$candidateArray = array_keys( $clusterSize, min( $clusterSize ) );
+			$rand = rand( 0, count( $candidateArray ) - 1 );
+			$newDbw = $lbs[$candidateArray[$rand]]->getConnection( DB_MASTER );
+
+		} elseif ( !$check && !$wgCreateWikiDatabaseClusters ) {
+			// DB doesn't exist and we don't have clusters
+			$newDbw = $dbw;
+		} else {
+			// DB exists
+			$newDbw = wfGetDB( DB_MASTER, [], $dbname );
+		}
+
 		$this->dbname = $dbname;
-		$this->dbw = $dbw;
-		$this->exists = $check;
+		$this->dbw = $newDbw;
+		$this->exists = (bool)$check;
 	}
 
 	public function create(
