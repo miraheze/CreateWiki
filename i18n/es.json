@@ -42,7 +42,7 @@
 	"requestwiki": "Solicitar un wiki",
 	"requestwikiedit": "Editar una solicitud de wiki",
 	"requestwiki-edit-id": "Id. de la solicitud de wiki",
-	"requestwiki-edit-success": "Los cambios para pedir $1 fueron enviados correctamente.",
+	"requestwiki-edit-success": "Se enviaron correctamente los cambios a la solicitud $1.",
 	"requestwiki-edit-notloggedin": "Es necesario <span class =\"plainlinks\">[$1 acceder]</span> antes de modificar una solicitud de wiki.",
 	"requestwiki-edit-user": "No cuentas con los privilegios suficientes para editar esta solicitud de wiki. Únicamente puedes editar las solicitudes que hayas hecho con tu cuenta actual.",
 	"requestwiki-error-csrf": "<strong>No se pudo enviar la solicitud debido a una pérdida de los datos de la sesión.</strong>\nEnvía el formulario otra vez. Si ello no funciona, [[Special:Userlogout|finaliza tu sesión]] y accede de nuevo.",
