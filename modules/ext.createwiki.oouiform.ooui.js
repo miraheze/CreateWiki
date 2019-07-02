@@ -17,7 +17,7 @@
 			// Do not remove focus from the tabs menu after choosing a tab
 			autoFocus: false
 		} );
-		
+
 		var cwt = mw.config.get( 'wgCreateWikiOOUIFormTabs' );
 		if (cwt == null) {
 			cwt = [];
