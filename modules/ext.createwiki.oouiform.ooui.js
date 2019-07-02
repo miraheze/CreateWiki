@@ -2,6 +2,10 @@
 	$( function () {
 		var $baseform, tabs, wrapper, previousTab, switchingNoHash;
 
+		if (mw.config.get( 'wgCreateWikiOOUIFormTabs' ) == null) {
+			return;
+		}
+
 		$baseform = $( '#baseform' );
 
 		// Make sure the accessibility tip is selectable so that screen reader users take notice,
@@ -18,12 +22,7 @@
 			autoFocus: false
 		} );
 
-		var cwt = mw.config.get( 'wgCreateWikiOOUIFormTabs' );
-		if (cwt == null) {
-			cwt = [];
-		}
-
-		cwt.forEach( function ( tabConfig ) {
+		mw.config.get( 'wgCreateWikiOOUIFormTabs' ).forEach( function ( tabConfig ) {
 			var panel, $panelContents;
 
 			panel = new OO.ui.TabPanelLayout( tabConfig.name, {
