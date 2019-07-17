@@ -263,6 +263,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$dbw->selectDomain( $wgCreateWikiDatabase );
 
+		$emails = [];
 		foreach ( $bureaucrats as $users ) {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
 		}

@@ -6,6 +6,7 @@ use MediaWiki\Shell\Shell;
 class WikiManager {
 	private $dbname = null;
 	private $dbw = null;
+	private $cwdb = null;
 	private $exists = null;
 	private $tables = [];
 
@@ -53,6 +54,7 @@ class WikiManager {
 
 		$this->dbname = $dbname;
 		$this->dbw = $newDbw;
+		$this->cwdb = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 		$this->exists = (bool)$check;
 	}
 
@@ -79,7 +81,7 @@ class WikiManager {
 			return $checkErrors;
 		}
 
-		$this->dbw->insert(
+		$this->cwdb->insert(
 			'cw_wikis',
 			[
 				'wiki_dbname' => $wiki,
@@ -155,7 +157,7 @@ class WikiManager {
 
 		$wiki = $this->dbname;
 
-		$row = $this->dbw->selectRow(
+		$row = $this->cwdb->selectRow(
 			'cw_wikis',
 			'*',
 			[
@@ -175,7 +177,7 @@ class WikiManager {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
-			$this->dbw->delete(
+			$this->cwdb->delete(
 				$table,
 				[
 					$selector => $wiki
@@ -183,7 +185,7 @@ class WikiManager {
 			);
 		}
 
-		Hooks::run( 'CreateWikiDeletion', [ $this->dbw, $wiki ] );
+		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
 	}
 
 	public function rename( string $new ) {
@@ -198,7 +200,7 @@ class WikiManager {
 		}
 
 		foreach ( (array)$this->tables as $table => $selector ) {
-			$this->dbw->update(
+			$this->cwdb->update(
 				$table,
 				[
 					$selector => $new
@@ -209,7 +211,7 @@ class WikiManager {
 			);
 		}
 
-		Hooks::run( 'CreateWikiRename', [ $this->dbw, $old, $new ] );
+		Hooks::run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
 	}
 
 	private function compileTables() {

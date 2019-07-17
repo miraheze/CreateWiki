@@ -56,10 +56,15 @@ class CreateWikiDBListGenerator extends Maintenance {
 			}
 		}
 
-		file_put_contents( "$wgCreateWikiDBDirectory/all.dblist", implode( "\n", $allWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/private.dblist", implode( "\n", $privateWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/closed.dblist", implode( "\n", $closedWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/inactive.dblist", implode( "\n", $inactiveWikis ), LOCK_EX );
+		file_put_contents( "$wgCreateWikiDBDirectory/all.dblist.tmp", implode( "\n", $allWikis ), LOCK_EX );
+		file_put_contents( "$wgCreateWikiDBDirectory/private.dblist.tmp", implode( "\n", $privateWikis ), LOCK_EX );
+		file_put_contents( "$wgCreateWikiDBDirectory/closed.dblist.tmp", implode( "\n", $closedWikis ), LOCK_EX );
+		file_put_contents( "$wgCreateWikiDBDirectory/inactive.dblist.tmp", implode( "\n", $inactiveWikis ), LOCK_EX );
+		
+		rename( "$wgCreateWikiDBDirectory/all.dblist.tmp", "$wgCreateWikiDBDirectory/all.dblist" );
+		rename( "$wgCreateWikiDBDirectory/private.dblist.tmp", "$wgCreateWikiDBDirectory/private.dblist" );
+		rename( "$wgCreateWikiDBDirectory/closed.dblist.tmp", "$wgCreateWikiDBDirectory/closed.dblist" );
+		rename( "$wgCreateWikiDBDirectory/inactive.dblist.tmp", "$wgCreateWikiDBDirectory/inactive.dblist" );
 	}
 }
 
