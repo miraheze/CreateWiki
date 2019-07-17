@@ -56,9 +56,6 @@ class DeleteWiki extends Maintenance {
 					return;
 				}
 
-				// pass database connection to minimise connections and wiki name to extensions for their specific deletion stuff.
-				Hooks::run( 'CreateWikiDeletion', [ $dbw, $wiki ] );
-
 				$this->output( "DROP DATABASE {$wiki};" );
 				$deletedWiki[] = $wiki;
 			} else {
