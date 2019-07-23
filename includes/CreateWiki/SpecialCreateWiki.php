@@ -100,7 +100,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$wm = new WikiManager( $formData['dbname'] );
 
-		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
+		try {
+			$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
+		} catch( Exception $e ) {
+			return wfMessage( 'createwiki-error-dbexists' )->text();
+		}
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 

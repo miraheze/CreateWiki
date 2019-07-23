@@ -237,9 +237,7 @@ class WikiManager {
 
 		$error = false;
 
-		if ( ( $this->dbw->query( 'SHOW DATABASES LIKE ' . $this->dbw->addQuotes( $dbname ) . ';' )->numRows() !== 0 ) && !$rename ) {
-			$error = 'dbexists';
-		} elseif ( !$suffixed ) {
+		if ( !$suffixed ) {
 			$error = 'notsuffixed';
 		} elseif( !ctype_alnum( $dbname ) ) {
 			$error = 'notalnum';
