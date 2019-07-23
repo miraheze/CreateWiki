@@ -102,7 +102,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		try {
 			$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
-		} catch( Exception $e ) {
+		} catch ( Exception $e ) {
 			return wfMessage( 'createwiki-error-dbexists' )->text();
 		}
 
