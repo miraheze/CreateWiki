@@ -93,7 +93,6 @@ class WikiManager {
 			]
 		);
 
-		$this->dbw->query( 'SET storage_engine=InnoDB;' );
 		$this->dbw->query( 'CREATE DATABASE ' . $this->dbw->addIdentifierQuotes( $wiki ) . ';' );
 
 		Shell::makeScriptCommand(
