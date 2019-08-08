@@ -34,18 +34,19 @@ class RequestWikiRequestViewer {
 			__METHOD__
 		);
 
-		$visibility = ( $res ) ? (int)$res->cw_visibility : 0;
+		$visibilityLevel = ( $res ) ? (int)$res->cw_visibility : 0;
+
+		$visibilityConds = [
+			0 => 'read',
+			1 => 'createwiki',
+			2 => 'delete',
+			3 => 'suppressrevision'
+		];
 
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
-		if (
-			!$res
-			|| $visibility === 1 && !$wgUser->isAllowed( 'createwiki' )
-			|| $visibility === 2 && !$wgUser->isAllowed( 'delete' )
-			|| $visibility === 3 && !$wgUser->isAllowed( 'suppressrevision' )
-		) {
-			$context->getOutput()->addWikiMsg( 'requestwikiqueue-requestnotfound' );
-			return [];
+		if ( !$res || !$wgUser->isAllowed( $visibilityConds[$visibilityLevel] ) ) {
+			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
 		}
 
 		$status = ( $res->cw_status === 'inreview' ) ? 'In review' : ucfirst( $res->cw_status );
