@@ -273,11 +273,7 @@ class RequestWikiRequestViewer {
 
 			$validName = $wm->checkDatabaseName( $reqRow->cw_dbname );
 
-			try {
-				$notCreated = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
-			} catch ( Exception $e ) {
-				$notCreated = wfMessage( 'createwiki-error-dbexists' )->text();
-			}
+			$notCreated = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
 				$error = $notCreated ?? $validName;

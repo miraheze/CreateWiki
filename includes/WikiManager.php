@@ -72,7 +72,7 @@ class WikiManager {
 		$wiki = $this->dbname;
 
 		if ( $this->exists ) {
-			throw new MWException( "Wiki '{$wiki}' already exists" );
+			throw new FatalError( "Wiki '{$wiki}' already exists" );
 		}
 
 		$checkErrors = $this->checkDatabaseName( $wiki );
