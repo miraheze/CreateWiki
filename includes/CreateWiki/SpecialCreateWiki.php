@@ -5,7 +5,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiCDBDirectory;
+		use MediaWiki\MediaWikiServices;
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$UseCategories = $config->get( 'UseCategories' );
+		$Categories = $config->get( 'Categories' );
+		$UsePrivateWikis = $config->get( 'UsePrivateWikis' );
+		$CDBDirectory = $config->get( 'UsePrivateWikis' );
 
 		$par = $this->par;
 		$request = $this->getRequest();
@@ -51,7 +56,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			]
 		];
 
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $UsePrivateWikis ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
@@ -60,11 +65,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 		}
 
 
-		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
+		if ( $UseCategories && $Categories ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $wgCreateWikiCategories,
+				'options' => $Categories,
 				'name' => 'cwCategory',
 				'default' => 'uncategorised',
 			];
