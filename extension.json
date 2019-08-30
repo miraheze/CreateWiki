@@ -160,7 +160,10 @@
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
 			"public": true,
 			"value": false
-		}
+		},
+		"ConfigRegistry": {
+		"createwiki": "GlobalVarConfig::newInstance"
+	},
 	},
 	"callback": "CreateWikiHooks::onRegistration",
 	"manifest_version": 2
