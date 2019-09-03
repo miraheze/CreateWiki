@@ -3,7 +3,8 @@
 		"authors": [
 			"Eduardo Addad de Oliveira",
 			"Eduardo.mps",
-			"Felipe L. Ewald"
+			"Felipe L. Ewald",
+			"Abijeet Patro"
 		]
 	},
 	"action-createwiki": "criar wikis",
@@ -33,7 +34,7 @@
 	"createwiki-success": "A wiki foi criada.",
 	"echo-category-title-wiki-creation": "Criação de Wiki",
 	"echo-category-title-wiki-rename": "Renomeação da Wiki",
-	"echo-category-title-wiki-request-declined": "Solicitação da Wiki recusado",
+	"echo-category-title-request-declined": "Solicitação da Wiki recusado",
 	"echo-pref-tooltip-wiki-creation": "Avise-me quando minha wiki tiver sido criada.",
 	"echo-pref-tooltip-wiki-rename": "Notifique-me se sua wiki for renomeada.",
 	"echo-pref-tooltip-wiki-request-declined": "Notifique-me se minha solicitação da wiki for recusada.",

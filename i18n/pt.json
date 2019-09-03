@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Hamilton Abreu",
-			"Athena in Wonderland"
+			"Athena in Wonderland",
+			"Abijeet Patro"
 		]
 	},
 	"action-createwiki": "criar wikis",
@@ -32,7 +33,7 @@
 	"createwiki-success": "A wiki foi criada.",
 	"echo-category-title-wiki-creation": "Criação de wiki",
 	"echo-category-title-wiki-rename": "Alteração de nome da wiki",
-	"echo-category-title-wiki-request-declined": "Pedido de wiki recusado",
+	"echo-category-title-request-declined": "Pedido de wiki recusado",
 	"echo-pref-tooltip-wiki-creation": "Notificar-me quando a minha wiki tiver sido criada.",
 	"echo-pref-tooltip-wiki-rename": "Notificar-me se o nome da minha wiki for alterado.",
 	"echo-pref-tooltip-wiki-request-declined": "Notificar-me se o meu pedido de uma wiki for recusado.",

@@ -5,7 +5,8 @@
 			"ديفيد",
 			"Meno25",
 			"OsamaK",
-			"HendSalah16"
+			"HendSalah16",
+			"Abijeet Patro"
 		]
 	},
 	"action-createwiki": "إنشاء ويكيات",
@@ -35,7 +36,7 @@
 	"createwiki-success": "أنشأت الويكي بنجاح.",
 	"echo-category-title-wiki-creation": "إنشاء ويكي",
 	"echo-category-title-wiki-rename": "إعادة تسمية الويكي",
-	"echo-category-title-wiki-request-declined": "تم رفض طلب الويكي",
+	"echo-category-title-request-declined": "تم رفض طلب الويكي",
 	"echo-pref-tooltip-wiki-creation": "إخطاري عندما يتم إنشاء الويكي الخاص بي.",
 	"echo-pref-tooltip-wiki-rename": "إخطاري إذا تمت إعادة تسمية الويكي الخاص بي.",
 	"echo-pref-tooltip-wiki-request-declined": "أعلمني إذا تم رفض طلب الويكي الخاص بي.",

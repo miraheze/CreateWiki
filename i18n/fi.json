@@ -6,7 +6,8 @@
 			"01miki10",
 			"Str4nd",
 			"Valtlait",
-			"Antsa"
+			"Antsa",
+			"Abijeet Patro"
 		]
 	},
 	"action-createwiki": "luoda wikejä",
@@ -24,7 +25,7 @@
 	"createwiki-success": "Wiki luotiin onnistuneesti.",
 	"echo-category-title-wiki-creation": "Wikin luominen",
 	"echo-category-title-wiki-rename": "Wikin uudelleennimeäminen",
-	"echo-category-title-wiki-request-declined": "Wikin pyynnöt vähentynyt",
+	"echo-category-title-request-declined": "Wikin pyynnöt vähentynyt",
 	"echo-pref-tooltip-wiki-creation": "Ilmoita minulle sitten, kun wikini on luotu.",
 	"echo-pref-tooltip-wiki-rename": "Ilmoita minulle sitten, kun minun wiki on nimetty uudelleen.",
 	"echo-pref-tooltip-wiki-request-declined": "Ilmoita minulle minun wikin pyynnön vähentymisestä.",

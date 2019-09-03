@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Revi",
-			"Ykhwong"
+			"Ykhwong",
+			"Abijeet Patro"
 		]
 	},
 	"action-createwiki": "위키 만들기",
@@ -32,7 +33,7 @@
 	"createwiki-success": "이 위키가 성공적으로 생성되었습니다.",
 	"echo-category-title-wiki-creation": "위키 생성",
 	"echo-category-title-wiki-rename": "위키 이름 변경",
-	"echo-category-title-wiki-request-declined": "위키 요청이 거부되었습니다",
+	"echo-category-title-request-declined": "위키 요청이 거부되었습니다",
 	"echo-pref-tooltip-wiki-rename": "내 위키의 이름이 변경되면 내게 알립니다.",
 	"echo-pref-tooltip-wiki-request-declined": "내 위키 요청이 거절되면 내게 알립니다.",
 	"log-description-farmer": "이 기록은 위키의 생성 항목을 추적합니다.",
