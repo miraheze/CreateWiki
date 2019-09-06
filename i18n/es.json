@@ -22,7 +22,7 @@
 	"createwiki-error-notalnum": "El nombre de la base de datos no puede contener caracteres no alfanuméricos.",
 	"createwiki-error-notlowercase": "El nombre de la base de datos no puede contener letras mayúsculas.",
 	"createwiki-error-notsuffixed": "El nombre de la base de datos no termina en un sufijo válido (por ejemplo, 'wiki').",
-	"createwiki-error-swiftcontainernot": "Fallado para crear contenedor rápido para wiki $<span class=\"notranslate\">1</span>",
+	"createwiki-error-swiftcontainernot": "Falló la creación del contenedor de Swift del wiki $1",
 	"createwiki-error-usernotcreated": "El usuario solicitante no fue creado en el wiki.",
 	"createwiki-label-category": "Categoría:",
 	"createwiki-label-dbname": "Nombre de la base de datos:",
@@ -96,6 +96,6 @@
 	"requestwikiqueue-searchrequest": "Buscar solicitudes de wikis",
 	"requestwikiqueue-usernotfound": "No se encontró el usuario.",
 	"requestwikiqueue-view": "Ver solicitud de wiki",
-	"right-requestwiki": "Petición de wikis",
+	"right-requestwiki": "Solicitar wikis",
 	"right-createwiki": "Crear wikis en la granja wiki"
 }
