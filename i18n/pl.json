@@ -3,7 +3,8 @@
 		"authors": [
 			"Chrumps",
 			"Railfail536",
-			"Sp5uhe"
+			"Sp5uhe",
+			"Rail"
 		]
 	},
 	"action-createwiki": "tworzenia nowych wiki",
@@ -43,6 +44,7 @@
 	"notification-createwiki-wiki-creation-email-subject": "Wiki $1 została utworzona!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Odwiedź wiki",
 	"notification-createwiki-wiki-rename-subject": "Nazwa wiki $1 została zmieniona.",
+	"notification-createwiki-visit-request": "Odwiedź wniosek",
 	"notification-header-wiki-creation": "Wiki <strong>$1</strong> została utworzona!",
 	"notification-header-wiki-rename": "Nazwa wiki <strong>$1</strong> została zmieniona!",
 	"notification-header-request-declined": "Twoja prośba została odrzucona z powodu:",
@@ -71,12 +73,15 @@
 	"requestwiki-success": "Twoje zgłoszenie ($1) zostało pomyślnie przesłane i zostanie sprawdzone przez wolontariusza najszybciej jak to możliwe.",
 	"requestwikiqueue": "Kolejka zgłoszeń",
 	"requestwikiqueue-approve": "Zatwierdź",
+	"requestwikiqueue-comments": "Komentarze wniosku",
 	"requestwikiqueue-decline": "Odrzuć",
+	"requestwikiqueue-handling": "Rozwiąż wniosek",
 	"requestwikiqueue-logpagerentry": "$1 {{GENDER:$1|poprosił|poprosiła}} o wiki $2 w zgłoszeniu $3 (status: $4)",
 	"requestwikiqueue-norequests": "Nie znaleziono wyników.",
 	"requestwikiqueue-pager-status-approved": "zaakceptowano",
 	"requestwikiqueue-pager-status-declined": "odrzucono",
 	"requestwikiqueue-pager-status-inreview": "w przeglądzie",
+	"requestwikiqueue-request": "Wniosek",
 	"requestwikiqueue-request-header-changestatus": "Zmień status tego zgłoszenia",
 	"requestwikiqueue-request-header-requestercomment": "Komentarz zostawiony przez zgłaszającego",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Komentarz zamieszczony przez $1",
@@ -97,6 +102,7 @@
 	"requestwikiqueue-request-label-status-colon": "Status:",
 	"requestwikiqueue-request-label-toolbox": "Przybornik",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-visibility": "Oznacz widoczność tego wniosku jako…",
 	"requestwikiqueue-request-label-visibility-all": "Każdy z uprawnieniem „read” może zobaczyć to zgłoszenie",
 	"requestwikiqueue-request-label-visibility-delete": "Każdy użytkownik z uprawnieniem „delete” może zobaczyć to zgłoszenie",
 	"requestwikiqueue-request-label-visibility-hide": "Każdy z uprawnieniem „createwiki” może zobaczyć to zgłoszenie",
