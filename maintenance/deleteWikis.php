@@ -56,7 +56,7 @@ class DeleteWiki extends Maintenance {
 					continue;
 				}
 
-				$this->output( "DROP DATABASE {$wiki};" );
+				$this->output( "DROP DATABASE {$wiki};\n" );
 				$deletedWiki[] = $wiki;
 			} else {
 				$this->output( "$wiki\n" );
