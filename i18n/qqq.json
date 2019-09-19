@@ -34,7 +34,7 @@
 	"createwiki-label-submit": "Used as a label for submitting.\n{{Identical|Submit}}",
 	"createwiki-legend": "{{doc-action|Create a wiki}}",
 	"createwiki-success": "Message when a wiki has successfully been created.",
-	"echo-category-title-wiki-creation": "Wikierstellung",
+	"echo-category-title-wiki-creation": "",
 	"echo-pref-tooltip-wiki-creation": "",
 	"log-description-farmer": "Description of farmer log",
 	"logentry-farmer-createwiki": "Used as log message.",
