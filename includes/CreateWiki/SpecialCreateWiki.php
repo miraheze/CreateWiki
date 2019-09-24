@@ -5,7 +5,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	protected function getFormFields() {
-		use MediaWiki\MediaWikiServices;
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$UseCategories = $config->get( 'UseCategories' );
 		$Categories = $config->get( 'Categories' );
