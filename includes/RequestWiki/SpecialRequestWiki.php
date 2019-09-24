@@ -144,6 +144,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$request = $this->getRequest();
 
+		
+		
 		$dbw = wfGetDB( DB_MASTER );
 
 		$values = [
@@ -160,7 +162,15 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'cw_user' => $this->getUser()->getId(),
 			'cw_category' => $formData['category'],
 		];
-
+		
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select( 'cw_requests', 'cw_dbname', __METHOD__ );
+		
+		if ( $dbname == $res ) {
+			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-wikitaken' )->escaped() . '</div>' );
+			wfDebugLog( 'CreateWiki', 'Wiki name already in use. Requested: ' . $dbname );
+			return false;
+					}
 		$dbw->insert( 'cw_requests',
 			$values,
 			__METHOD__
