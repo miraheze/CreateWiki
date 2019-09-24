@@ -190,7 +190,14 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'cw_category' => $params['category'],
 			'cw_private' => $private,
 		];
-
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select( 'cw_requests', 'cw_dbname', __METHOD__ );
+		
+		if ( $dbname == $res ) {
+			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-wikitaken' )->escaped() . '</div>' );
+			wfDebugLog( 'CreateWiki', 'Wiki name already in use. Requested: ' . $dbname );
+			return false;
+					}
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->update( 'cw_requests',
 			$values,
