@@ -113,6 +113,7 @@
 	"requestwikiqueue-request-status": "Change the status of this wiki request",
 	"requestwikiqueue-request-toolbox-createwiki": "Create wiki",
 	"requestwikiqueue-requestnotfound": "The request was not found.",
+	"createwiki-error-wikitaken": "The wiki name requested is already in use",
 	"requestwikiqueue-searchbutton": "Search",
 	"requestwikiqueue-searchrequest": "Search wiki requests",
 	"requestwikiqueue-usernotfound": "The user was not found.",
