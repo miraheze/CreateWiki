@@ -87,9 +87,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname,
-		$wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseEchoNotifications,
+		global $IP, $wgDBname,
 		$wgCreateWikiEmailNotifications;
+		$wgCreateWikiDatabase = $config->get( 'CreateWikiDatabase' );
+		$wgCreateWikiSQLfiles = $config->get( 'CreateWikiSQLfiles' );
+		$wgCreateWikiUseCategories = $config->get( 'CreateWikiUseCategories' );
+		$wgCreateWikiUsePrivateWikis = $config->get( 'CreateWikiUsePrivateWikis' );
+		$wgCreateWikiUseEchoNotifications = $config->get( 'CreateWikiUseEchoNotifications' );
 
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$private = $formData['private'];
