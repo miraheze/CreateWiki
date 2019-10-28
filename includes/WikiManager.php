@@ -72,13 +72,19 @@ class WikiManager {
 		$wiki = $this->dbname;
 
 		if ( $this->exists ) {
-			throw new FatalError( "Wiki '{$wiki}' already exists" );
+			throw new FatalError( "Wiki '{$wiki}' already exists." );
 		}
 
 		$checkErrors = $this->checkDatabaseName( $wiki );
 
 		if ( $checkErrors ) {
 			return $checkErrors;
+		}
+
+		try {
+			$this->dbw->query( 'CREATE DATABASE ' . $this->dbw->addIdentifierQuotes( $wiki ) . ';' );
+		} catch ( Exception $e ) {
+			throw new FatalError( "Wiki '{$wiki}' already exists." );
 		}
 
 		$this->cwdb->insert(
@@ -92,8 +98,6 @@ class WikiManager {
 				'wiki_category' => $category
 			]
 		);
-
-		$this->dbw->query( 'CREATE DATABASE ' . $this->dbw->addIdentifierQuotes( $wiki ) . ';' );
 
 		Shell::makeScriptCommand(
 			"$IP/extensions/CreateWiki/maintenance/DBListGenerator.php",
