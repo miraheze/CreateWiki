@@ -12,7 +12,8 @@
 			"HeartsDo",
 			"0x010C",
 			"Abijeet Patro",
-			"Thibaut120094"
+			"Thibaut120094",
+			"Verdy p"
 		]
 	},
 	"action-createwiki": "créer des wikis",
@@ -126,7 +127,7 @@
 	"requestwikiqueue-requestnotfound": "La demande n'a pas été trouvée.",
 	"requestwikiqueue-searchbutton": "Chercher",
 	"requestwikiqueue-searchrequest": "Chercher les demandes de wiki",
-	"requestwikiqueue-usernotfound": "L'utilisateur n'as pas éte trouvé.",
+	"requestwikiqueue-usernotfound": "L’utilisateur n’a pas été trouvé.",
 	"requestwikiqueue-view": "Voir la requête wiki",
 	"right-requestwiki": "Demander des wikis",
 	"right-createwiki": "Créer des wikis"
