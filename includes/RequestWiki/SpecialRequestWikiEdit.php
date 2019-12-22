@@ -202,7 +202,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'requestwikiedit' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
-		$farmerLogEntry->setTarget( $this->getTitle() );
+		$farmerLogEntry->setTarget( $this->getPageTitle() );
 		$farmerLogEntry->setParameters(
 			[
 				'4::id' => $params['requestid'],
