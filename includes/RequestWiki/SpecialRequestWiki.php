@@ -170,7 +170,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
-		$farmerLogEntry->setTarget( $this->getTitle() );
+		$farmerLogEntry->setTarget( $this->getPageTitle() );
 		$farmerLogEntry->setComment( $formData['reason'] );
 		$farmerLogEntry->setParameters(
 			[
