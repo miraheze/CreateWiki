@@ -13,7 +13,10 @@ class WikiManager {
 	public function __construct( string $dbname ) {
 		global $wgCreateWikiDatabase, $wgCreateWikiDatabaseClusters;
 
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$dbw = MediaWikiServices::getInstance()
+			->getDBLoadBalancerFactory()
+			->getMainLB( DB_MASTER )
+			->getConnectionRef( DB_MASTER, [], $wgCreateWikiDatabase );
 
 		$check = $dbw->selectRow(
 			'cw_wikis',
