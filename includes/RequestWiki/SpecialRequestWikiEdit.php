@@ -60,7 +60,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			$options["$code - $name"] = $code;
 		}
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->selectRow( 'cw_requests',
 			[
 				'cw_user',
