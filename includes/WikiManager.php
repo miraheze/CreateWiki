@@ -106,17 +106,11 @@ class WikiManager {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
 
-		// Let's maintain our current connection ID
-		$currentDB = $this->dbw->getDomainID();
-
-		$this->dbw->selectDomain( $wiki );
+		$newDbw = wfGetDB( DB_MASTER, [], $wiki );
 
 		foreach ( $wgCreateWikiSQLfiles as $sqlfile ) {
-			$this->dbw->sourceFile( $sqlfile );
+			$newDbw->sourceFile( $sqlfile );
 		}
-
-		// Now let's go back to our previous connection to avoid errors
-		$this->dbw->selectDomain( $currentDB );
 
 		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
 
