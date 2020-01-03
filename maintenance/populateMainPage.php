@@ -23,7 +23,7 @@ class PopulateMainPage extends Maintenance {
                         'Create main page',
                         EDIT_SUPPRESS_RC,
                         false,
-                        User::newFromName( 'MediaWiki default' )
+                        User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] );
                 );
         }
 }
