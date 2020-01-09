@@ -17,3 +17,5 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_category VARCHAR(64) NOT NULL,
   wiki_extensions MEDIUMTEXT NULL
 ) /*$wgDBTableOptions*/;
+
+CREATE INDEX /*i*/wiki_dbname ON /*_*/cw_wikis (wiki_dbname);
