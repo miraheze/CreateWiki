@@ -58,6 +58,12 @@ class CreateWikiHooks {
 				'wiki_locked',
 				__DIR__ . '/../sql/patches/patch-locked-wiki.sql'
 			);
+
+			$updater->modifyTable(
+				'cw_wikis',
+ 				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql',
+				true
+			);
 		}
 
 		return true;
