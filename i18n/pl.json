@@ -86,6 +86,7 @@
 	"requestwikiqueue-request-header-requestercomment": "Komentarz zostawiony przez zgłaszającego",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Komentarz zamieszczony przez $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Komentarz zamieszczony przez $1 $2",
+	"requestwikiqueue-request-info-approve": "Gdy klikniesz przycisk tworzenia wiki, ta zostanie utworzona automatycznie i wszelkie błędy zostaną zgłoszone. Gdy wiki zostanie utworzona żądanie zostanie automatycznie oznaczone jako zatwierdzone.",
 	"requestwikiqueue-request-label-approved": "Zaakceptowano",
 	"requestwikiqueue-request-label-comment": "Komentarz:",
 	"requestwikiqueue-request-label-create-wiki": "Utwórz wiki",
