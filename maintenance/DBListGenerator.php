@@ -37,7 +37,7 @@ class CreateWikiDBListGenerator extends Maintenance {
 			$private = $row->wiki_private;
 			$closed = $row->wiki_closed;
 			$inactive = $row->wiki_inactive;
-			$deleted = $row->wiki_deleted
+			$deleted = $row->wiki_deleted;
 			$extensions = $row->wiki_extensions;
 			$settings = $row->wiki_settings;
 
