@@ -16,9 +16,7 @@ class CreateWikiDBListGenerator extends Maintenance {
 		$res = $dbw->select(
 			'cw_wikis',
 			'*',
-			[
-				'wiki_deleted' => 0
-			],
+			[],
 			__METHOD__
 		);
 
@@ -30,6 +28,7 @@ class CreateWikiDBListGenerator extends Maintenance {
 		$privateWikis = [];
 		$closedWikis = [];
 		$inactiveWikis = [];
+		$deletedWikis = [];
 
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
@@ -38,21 +37,26 @@ class CreateWikiDBListGenerator extends Maintenance {
 			$private = $row->wiki_private;
 			$closed = $row->wiki_closed;
 			$inactive = $row->wiki_inactive;
+			$deleted = $row->wiki_deleted;
 			$extensions = $row->wiki_extensions;
 			$settings = $row->wiki_settings;
 
-			$allWikis[] = "$DBname|$siteName|$language|$extensions|$settings|";
+			if ( $deleted === "0" ) {
+				$allWikis[] = "$DBname|$siteName|$language|$extensions|$settings|";
 
-			if ( $private === "1" ) {
-				$privateWikis[] = $DBname;
-			}
+				if ( $private === "1" ) {
+					$privateWikis[] = $DBname;
+				}
 
-			if ( $closed === "1" ) {
-				$closedWikis[] = $DBname;
-			}
+				if ( $closed === "1" ) {
+					$closedWikis[] = $DBname;
+				}
 
-			if ( $inactive === "1" ) {
-				$inactiveWikis[] = $DBname;
+				if ( $inactive === "1" ) {
+					$inactiveWikis[] = $DBname;
+				}
+			} else {
+				$deletedWikis[] = $DBname;
 			}
 		}
 
@@ -60,11 +64,13 @@ class CreateWikiDBListGenerator extends Maintenance {
 		file_put_contents( "$wgCreateWikiDBDirectory/private.dblist.tmp", implode( "\n", $privateWikis ), LOCK_EX );
 		file_put_contents( "$wgCreateWikiDBDirectory/closed.dblist.tmp", implode( "\n", $closedWikis ), LOCK_EX );
 		file_put_contents( "$wgCreateWikiDBDirectory/inactive.dblist.tmp", implode( "\n", $inactiveWikis ), LOCK_EX );
-		
+		file_put_contents( "$wgCreateWikiDBDirectory/deleted.dblist.tmp", implode( "\n", $deletedWikis ), LOCK_EX );
+
 		rename( "$wgCreateWikiDBDirectory/all.dblist.tmp", "$wgCreateWikiDBDirectory/all.dblist" );
 		rename( "$wgCreateWikiDBDirectory/private.dblist.tmp", "$wgCreateWikiDBDirectory/private.dblist" );
 		rename( "$wgCreateWikiDBDirectory/closed.dblist.tmp", "$wgCreateWikiDBDirectory/closed.dblist" );
 		rename( "$wgCreateWikiDBDirectory/inactive.dblist.tmp", "$wgCreateWikiDBDirectory/inactive.dblist" );
+		rename( "$wgCreateWikiDBDirectory/deleted.dblist.tmp", "$wgCreateWikiDBDirectory/deleted.dblist" );
 	}
 }
 
