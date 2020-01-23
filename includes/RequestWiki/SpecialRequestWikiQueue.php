@@ -61,8 +61,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	private function lookupRequest( $par ) {
-		global $wgUser;
-
 		$out = $this->getOutput();
 
 		$out->addModules( 'ext.createwiki.oouiform' );
