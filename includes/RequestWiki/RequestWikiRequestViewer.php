@@ -5,7 +5,7 @@ class RequestWikiRequestViewer {
 		int $requestid,
 		IContextSource $context
 	) {
-		global $wgUser, $wgCreateWikiGlobalWiki, $wgCreateWikiUsePrivateWikis;
+		global $wgCreateWikiGlobalWiki, $wgCreateWikiUsePrivateWikis;
 
 		OutputPage::setupOOUI(
 			strtolower( $context->getSkin()->getSkinName() ),
@@ -43,9 +43,10 @@ class RequestWikiRequestViewer {
 			3 => 'suppressrevision'
 		];
 
+		$user = $context->getUser();
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
-		if ( !$res || !$wgUser->isAllowed( $visibilityConds[$visibilityLevel] ) ) {
+		if ( !$res || !$user->isAllowed( $visibilityConds[$visibilityLevel] ) ) {
 			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
 		}
 
@@ -110,7 +111,7 @@ class RequestWikiRequestViewer {
 			]
 		];
 
-		if ( $wgUser->isAllowed( 'createwiki' ) || $context->getUser()->getId() == $res->cw_user ) {
+		if ( $user->isAllowed( 'createwiki' ) || $user>getId() == $res->cw_user ) {
 			$formDescriptor['edit'] = [
 				'type' => 'submit',
 				'section' => 'request',
@@ -145,17 +146,17 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $wgUser->isAllowed( 'createwiki' ) ) {
+		if ( $user->isAllowed( 'createwiki' ) ) {
 			$visibilityoptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
 				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
 			];
 
-			if ( $wgUser->isAllowed( 'delete' ) ) {
+			if ( $user->isAllowed( 'delete' ) ) {
 				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
 			}
 
-			if ( $wgUser->isAllowed( 'suppressrevision' ) ) {
+			if ( $user->isAllowed( 'suppressrevision' ) ) {
 				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
