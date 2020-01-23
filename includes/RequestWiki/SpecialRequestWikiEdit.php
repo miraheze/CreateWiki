@@ -49,7 +49,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	private function showEditForm( $id ) {
-		global $wgUser, $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
 
 		$out = $this->getOutput();
 
@@ -78,7 +78,8 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			__METHOD__
 		);
 
-		if ( $wgUser->getId() != $res->cw_user && !$wgUser->isAllowed( 'createwiki' ) ) {
+		$user = $this->getUser();
+		if ( $user->getId() != $res->cw_user && !$user->isAllowed( 'createwiki' ) ) {
 			$out->addWikiMsg( 'requestwiki-edit-user' );
 			return;
 		}
