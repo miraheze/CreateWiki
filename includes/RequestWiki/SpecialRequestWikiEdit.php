@@ -79,7 +79,8 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		);
 
 		$user = $this->getUser();
-		if ( $user->getId() != $res->cw_user && !$user->isAllowed( 'createwiki' ) ) {
+		$mwService = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $user->getId() != $res->cw_user && !$mwService->userHasRight( $user, 'createwiki' ) ) {
 			$out->addWikiMsg( 'requestwiki-edit-user' );
 			return;
 		}
