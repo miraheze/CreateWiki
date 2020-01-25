@@ -77,7 +77,7 @@ class RequestWikiQueuePager extends TablePager {
 
 	public function getQueryInfo() {
 		$user = $this->getUser();
-		$mwService = MediaWikiServices::getInstance()->getPermissionManager();
+		$mwService = MediaWiki\MediaWikiServices::getInstance()->getPermissionManager();
 		$visibility = $mwService->userHasRight( $user, 'createwiki' ) ? 1 : 0;
 
 		$info = [
