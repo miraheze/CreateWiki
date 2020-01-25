@@ -44,10 +44,10 @@ class RequestWikiRequestViewer {
 		];
 
 		// Gets user from request
-		$user_r = $context->getUser();
+		$userR = $context->getUser();
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
-		if ( !$res || !$user_r->isAllowed( $visibilityConds[$visibilityLevel] ) ) {
+		if ( !$res || !$userR->isAllowed( $visibilityConds[$visibilityLevel] ) ) {
 			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
 		}
 
@@ -112,7 +112,7 @@ class RequestWikiRequestViewer {
 			]
 		];
 
-		if ( $user_r->isAllowed( 'createwiki' ) || $user_r->getId() == $res->cw_user ) {
+		if ( $userR->isAllowed( 'createwiki' ) || $userR->getId() == $res->cw_user ) {
 			$formDescriptor['edit'] = [
 				'type' => 'submit',
 				'section' => 'request',
@@ -147,17 +147,17 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $user_r->isAllowed( 'createwiki' ) ) {
+		if ( $userR->isAllowed( 'createwiki' ) ) {
 			$visibilityoptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
 				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
 			];
 
-			if ( $user_r->isAllowed( 'delete' ) ) {
+			if ( $userR->isAllowed( 'delete' ) ) {
 				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
 			}
 
-			if ( $user_r->isAllowed( 'suppressrevision' ) ) {
+			if ( $userR->isAllowed( 'suppressrevision' ) ) {
 				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
