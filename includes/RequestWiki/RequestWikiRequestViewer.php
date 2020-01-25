@@ -47,7 +47,7 @@ class RequestWikiRequestViewer {
 		$userR = $context->getUser();
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
-		$mwService = MediaWikiServices::getInstance()->getPermissionManager();
+		$mwService = MediaWiki\MediaWikiServices::getInstance()->getPermissionManager();
 		if ( !$res || !$mwService->userHasRight( $userR, $visibilityConds[$visibilityLevel] ) ) {
 			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
 		}
