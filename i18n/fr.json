@@ -13,7 +13,8 @@
 			"0x010C",
 			"Abijeet Patro",
 			"Thibaut120094",
-			"Verdy p"
+			"Verdy p",
+			"Urhixidur"
 		]
 	},
 	"action-createwiki": "créer des wikis",
@@ -73,7 +74,7 @@
 	"requestwiki-error-patient": "Vous avez déjà demandé un wiki. Veuillez patienter, un de nos créateurs de wiki devrait le créer sous peu. Si vous devez demander un autre wiki, veuillez attendre avant de pouvoir renouveler votre demande.",
 	"requestwiki-header": "Vous demandez un nouveau wiki sur Miraheze, génial! Merci de compléter ce formulaire auparavent, afin de permettre l'analyse de votre demande.\nVotre demande de wiki va être verifiée par un volontaire, et vous pouvez suivre son évolution sur la page dont le lien vous a été donné lors de l'envoi de votre demande.\n\nSi vous voulez un nom de domaine pour votre wiki (c'est à dire différent du sous-domaine standard .miraheze.org), merci de lire d'abord <span class=\"plainlinks\">[$1 this]</span> .\n\nSi vous soummetez votre demande, vous acceptez automatiquement notre [[Dormancy Policy]].",
 	"requestwiki-label-comments": "Commentaire (par exemple le domaine concerné par votre wiki) :",
-	"requestwiki-label-customdomain": "Domaine customisé :",
+	"requestwiki-label-customdomain": "Domaine personnalisé :",
 	"requestwiki-label-customdomain-info": "Vous devez fournir un sous-domaine ci-dessus. Si vous voulez un domaine personnalisé pour votre wiki, veuillez le fournir ci-dessous.",
 	"requestwiki-label-language": "Langue:",
 	"requestwiki-label-private": "Wiki privé (qui ne peut pas être lu par tout le monde):",
