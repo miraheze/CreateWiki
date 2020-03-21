@@ -238,9 +238,9 @@ class ManageInactiveWikis extends Maintenance {
 	public function emailBureaucrats( $wikiDb, $dbw ) {
 		global $wgPasswordSender, $wgSitename, $wgCreateWikiDatabase;
 
-		$dbw->selectDomain( $wikiDb );
+		$dbr = wfGetDB( DB_REPLICA );
 
-		$bureaucrats = $dbw->select(
+		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
 			[ 'user_email', 'user_name' ],
 			[ 'ug_group' => 'bureaucrat' ],
@@ -253,8 +253,6 @@ class ManageInactiveWikis extends Maintenance {
 				]
 			]
 		);
-
-		$dbw->selectDomain( $wgCreateWikiDatabase );
 
 		$emails = [];
 		foreach ( $bureaucrats as $users ) {
