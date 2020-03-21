@@ -73,7 +73,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw ) {
-		global $wgCreateWikiStateDays, $wgCreateWikiDatabase;
+		global $wgCreateWikiStateDays, $wgCreateWikiDatabase, $IP;
 
 		$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
 		$closeDays = (int)$wgCreateWikiStateDays['closed'];
