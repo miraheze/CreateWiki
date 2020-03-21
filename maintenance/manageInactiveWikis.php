@@ -19,8 +19,10 @@
 * @ingroup Maintenance
 * @author Southparkfan
 * @author John Lewis
-* @version 2.0
+* @version 2.1
 */
+
+use MediaWiki\Shell\Shell;
 
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
@@ -73,30 +75,21 @@ class ManageInactiveWikis extends Maintenance {
 	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw ) {
 		global $wgCreateWikiStateDays, $wgCreateWikiDatabase;
 
-		$dbw->selectDomain( $dbName );
-
-		$lastEntryObj = $dbw->selectRow(
-			'recentchanges',
-			'rc_timestamp',
-			[
-				"rc_log_action != 'renameuser'"
-			],
-			__METHOD__,
-			[
-				'ORDER BY' => 'rc_timestamp DESC',
-			]
-		);
-
-		$dbw->selectDomain( $wgCreateWikiDatabase );
-
 		$inactiveDays = (int)$wgCreateWikiStateDays['inactive'];
 		$closeDays = (int)$wgCreateWikiStateDays['closed'];
 		$removeDays = (int)$wgCreateWikiStateDays['removed'];
 
 		$canWrite = $this->hasOption( 'write' );
 
+		$timeStamp = (int)Shell::makeScriptCommand(
+			"$IP/extensions/CreateWiki/maintenance/checkLastWikiActivity.php",
+			[
+				'--wiki', $dbName
+			]
+		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute()->getStdout();
+
 		// Wiki doesn't seem inactive: go on to the next wiki.
-		if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
+		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 			if ( $canWrite && $inactive ) {
 				$this->unWarnWiki( $dbName, $dbw );
 			}
@@ -107,22 +100,22 @@ class ManageInactiveWikis extends Maintenance {
 		if ( !$closed ) {
 			// Wiki is NOT closed yet
 			$closeTime = $inactiveDays + $closeDays;
-			if ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-{$closeTime} days" ) ) ) {
+			if ( $timeStamp < date( "YmdHis", strtotime( "-{$closeTime} days" ) ) ) {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$this->closeWiki( $dbName, $dbw );
 					$this->emailBureaucrats( $dbName, $dbw );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
-					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
+					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$timeStamp}\n" );
 				}
-			} elseif ( isset( $lastEntryObj->rc_timestamp ) && $lastEntryObj->rc_timestamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
+			} elseif ( $timeStamp < date( "YmdHis", strtotime( "-45 days" ) ) ) {
 				// Meets inactivity
 				if ( $canWrite ) {
 					$this->warnWiki( $dbName, $dbw );
 					$this->output( "{$dbName} was eligible for a warning notice and one was given.\n" );
 				} else {
-					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$lastEntryObj->rc_timestamp}\n" );
+					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$timeStamp}\n" );
 				}
 			} else {
 				// No RC entries
