@@ -96,7 +96,6 @@
 		}
 
 		// Jump to correct section as indicated by the hash.
-		// This function is called onload and onhashchange.
 		function detectHash() {
 			var hash = location.hash,
 				matchedElement, parentSection;
@@ -115,16 +114,14 @@
 			}
 		}
 
-		$( window ).on( 'hashchange', function () {
+		$( window ).on( 'load', function () {
 			var hash = location.hash;
 			if ( hash.match( /^#mw-[\w-]+/ ) ) {
 				detectHash();
 			} else if ( hash === '' ) {
-				switchBaseFormTab( 'personal', true );
+				switchBaseFormTab( 'other', true );
 			}
-		} )
-			// Run the function immediately to select the proper tab on startup.
-			.trigger( 'hashchange' );
+		} );
 
 		// Restore the active tab after saving
 		previousTab = mw.storage.session.get( 'mwbaseform-prevTab' );
