@@ -32,6 +32,7 @@
 	},
 	"AutoloadClasses": {
 		"CreateWikiHooks": "includes/CreateWikiHooks.php",
+		"CreateWikiJson": "includes/CreateWikiJson.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWiki": "maintenance/deleteWikis.php",
