@@ -37,11 +37,13 @@ class CreateWikiJson {
 			'cw_wikis',
 			[
 				'wiki_dbname',
-				'wiki_deleted'
+				'wiki_deleted',
+				'wiki_url'
 			]
 		);
 
 		$wikiList = [];
+		$domainList = [];
 
 		foreach ( $allWikis as $wiki ) {
 			if ( $wiki->wiki_deleted == 0 ) {
@@ -49,9 +51,13 @@ class CreateWikiJson {
 			} else {
 				$wikiList['deleted'][] = $wiki->wiki_dbname;
 			}
+
+			if ( !is_null( $wiki->wiki_url ) ) {
+				$domainList[$wiki->wiki_url] = $this->wiki_dbname;
+			}
 		}
 
-		file_put_contents( $this->cacheDir . "/databases.json", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['all'] ] ), LOCK_EX );
+		file_put_contents( $this->cacheDir . "/databases.json", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['all'], 'domains' => $domainList ] ), LOCK_EX );
 		file_put_contents( $this->cacheDir . "/deleted.json", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['deleted'] ] ), LOCK_EX );
 	}
 
@@ -74,6 +80,7 @@ class CreateWikiJson {
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,
 			'category' => $wikiObject->wiki_category,
+			'url' => $wikiObject->wiki_url ?? false,
 			'core' => [
 				'wgSitename' => $wikiObject->wiki_sitename,
 				'wgLanguageCode' => $wikiObject->wiki_language
