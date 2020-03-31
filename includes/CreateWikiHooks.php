@@ -59,6 +59,12 @@ class CreateWikiHooks {
 				__DIR__ . '/../sql/patches/patch-locked-wiki.sql'
 			);
 
+			$updater->addExtensionField(
+				'cw_wikis',
+				'wiki_url',
+				__DIR__ . '/../sql/patches/patch-domain-cols.sql'
+			);
+
 			$updater->modifyTable(
 				'cw_wikis',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql',

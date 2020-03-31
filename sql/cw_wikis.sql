@@ -4,6 +4,7 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_language VARCHAR(12) NOT NULL,
   wiki_private SMALLINT NOT NULL,
   wiki_creation BINARY(14) NULL,
+  wiki_url TEXT NULL,
   wiki_closed SMALLINT NOT NULL,
   wiki_closed_timestamp BINARY(14) NULL,
   wiki_inactive SMALLINT NOT NULL,
