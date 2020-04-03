@@ -1,9 +1,10 @@
 <?php
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $locked, $settings, $category, $extensions ) {
+	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $locked, $settings, $category, $extensions, $url ) {
 		$this->dbname = $dbname;
 		$this->sitename = $sitename;
 		$this->language = $language;
+		$this->url = $url;
 		$this->private = (bool)$private;
 		$this->wikiCreation = $wikiCreation;
 		$this->closed = (bool)$closed;
@@ -48,7 +49,8 @@ class RemoteWiki {
 				$row->wiki_locked,
 				$row->wiki_settings,
 				$row->wiki_category,
-				$row->wiki_extensions
+				$row->wiki_extensions,
+				$row->wiki_url
 			);
 		} else {
 			return null;
@@ -148,6 +150,10 @@ class RemoteWiki {
 		$extensionsarray = explode( ",", $this->extensions );
 
 		return in_array( $extension, $extensionsarray );
+	}
+
+	public function getServerName() {
+		return $this->url ?? false;
 	}
 
 	public function getSettings() {
