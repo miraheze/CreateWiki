@@ -19,6 +19,14 @@ class CreateWikiJson {
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
 		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true );
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+
+		if ( !$this->databaseTimestamp ) {
+			$this->resetDatabaseList();
+		}
+
+		if ( !$this->wikiTimestamp ) {
+			$this->resetWiki();
+		}
 	}
 
 	public function resetWiki() {
