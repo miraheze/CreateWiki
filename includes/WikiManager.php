@@ -99,12 +99,7 @@ class WikiManager {
 			]
 		);
 
-		Shell::makeScriptCommand(
-			"$IP/extensions/CreateWiki/maintenance/DBListGenerator.php",
-			[
-				'--wiki', $wgCreateWikiGlobalWiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
+		$this->recacheJson();
 
 		$newDbw = wfGetDB( DB_MASTER, [], $wiki );
 
@@ -182,7 +177,10 @@ class WikiManager {
 			);
 		}
 
+		$this->recacheJson();
+
 		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
+
 	}
 
 	public function rename( string $new ) {
@@ -195,6 +193,8 @@ class WikiManager {
 		if ( $error ) {
 			throw new MWException( "Can not rename {$old} to {$new} because: {$error}" );
 		}
+
+		$this->recacheJson( $new );
 
 		foreach ( (array)$this->tables as $table => $selector ) {
 			$this->cwdb->update(
@@ -326,5 +326,13 @@ class WikiManager {
 
 			UserMailer::send( $notifyEmails, $from, $subject, $body );
 		}
+	}
+
+	private function recacheJson( $wiki = null ) {
+		global $wgCreateWikiGlobalWiki;
+
+		$cWJ = new CreateWikiJson( $wiki ?? $wgCreateWikiGlobalWiki );
+		$cWJ->resetDatabaseList();
+		$cWJ->update();
 	}
 }

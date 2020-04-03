@@ -83,6 +83,14 @@ class CreateWikiHooks {
 		}
 	}
 
+	public static function onSetupAfterCache() {
+		global $wgDBname;
+
+		$cWJ = new CreateWikiJson( $wgDBname );
+
+		$cWJ->update();
+	}
+
 	/**
 	* Add CreateWiki events to Echo
 	*

@@ -21,6 +21,20 @@ class CreateWikiJson {
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 	}
 
+	public function resetWiki() {
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->dbr->timestamp() );
+
+		// Rather than destroy object, let's fake the cache timestamp
+		$this->wikiTimestamp = PHP_INT_MAX;
+	}
+
+	public function resetDatabaseList() {
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->dbr->timestamp() );
+
+		// Rather than destroy object, let's fake the catch timestamp
+		$this->databaseTimestamp = PHP_INT_MAX;
+	}
+
 	public function update() {
 		if ( $this->newChanges() ) {
 			$this->generateDatabaseList();
