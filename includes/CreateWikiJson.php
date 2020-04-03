@@ -114,7 +114,7 @@ class CreateWikiJson {
 			]
 		];
 
-		Hooks::run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, $jsonArray ] );
+		Hooks::run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
 
 		file_put_contents( $this->cacheDir . '/' . $this->wiki . '.json', json_encode( $jsonArray ), LOCK_EX );
 	}
@@ -127,7 +127,7 @@ class CreateWikiJson {
 			return true;
 		}
 
-		return fase;
+		return false;
 	}
 }
 
