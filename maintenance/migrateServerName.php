@@ -25,9 +25,9 @@ class CreateWikiMigrateServerName extends Maintenance {
 		);
 
 		foreach ( $res as $row ) {
-			$settingsArray = json_decode( $row->wiki_settings );
+			$settingsArray = json_decode( $row->wiki_settings, true );
 
-			if ( !is_null( $settingsArray['wgServer'] ) ) {
+			if ( isset( $settingsArray['wgServer'] ) ) {
 				$dbw->update(
 					'cw_wikis',
 					[
