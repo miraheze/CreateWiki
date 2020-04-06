@@ -20,12 +20,16 @@ class WikiInitialise {
 		$this->config->suffixes = $suffixes;
 		$this->hostname = $_SERVER['HTTP_HOST'] ?? 'undefined';
 
-		// We have to fatal if no wikis exist here
+		// Let's fake a database list - default config should suffice
 		if ( !file_exists( $this->cacheDir . '/databases.json' ) ) {
-			throw ErrorException( 'Databases JSON file can not be found.' );
+			$databasesArray = [
+				'timestamp' => 0,
+				'databases' => [],
+				'domains' => []
+			];
+		} else {
+			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 		}
-
-		$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 
 		// Let's found out what the database name is!
 		if ( defined( 'MW_DB' ) ) {
@@ -46,6 +50,8 @@ class WikiInitialise {
 		// We use this quite a bit. If we don't have one, something is wrong
 		if ( is_null( $this->dbname ) ) {
 			throw new ErrorException( 'Can not detect database name.' );
+		} elseif ( !count( $databasesArray['databases'] ) ) {
+			$databasesArray['databases'][] = $this->dbname;
 		}
 
 		// As soon as we know the database name, let's assign it
@@ -58,14 +64,14 @@ class WikiInitialise {
 		// MediaWiki has a cross-wiki depedency in wikifarms. So we need to know what else exists here, but not their real domains - just accessible ones
 		foreach ( $databasesArray['databases'] as $db ) {
 			foreach ( $suffixes as $suffix ) {
-				if ( substr( $this->dbname, -strlen( $suffix ) == $suffix ) ) {
+				if ( substr( $db, -strlen( $suffix ) == $suffix ) ) {
 					$this->config->settings['wgServer'][$db] = 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
 				}
 			}
 		}
 
 		// We need the CLI to be able to access 'deleted' wikis
-		if ( PHP_SAPI == 'cli' ) {
+		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
 			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
 
 			$this->config->wikis = array_merge( $this->config->wikis, $deletedDatabases['databases'] );

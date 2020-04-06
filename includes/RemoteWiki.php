@@ -1,6 +1,6 @@
 <?php
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $locked, $settings, $category, $extensions, $url ) {
+	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $locked, $category, $url, $extensions, $settings ) {
 		$this->dbname = $dbname;
 		$this->sitename = $sitename;
 		$this->language = $language;
@@ -11,7 +11,6 @@ class RemoteWiki {
 		$this->deleted = (bool)$deleted;
 		$this->inactive = (bool)$inactive;
 		$this->inactiveExempt = (bool)$inactiveExempt;
-		$this->settings = $settings;
 		$this->closureDate = $closedDate;
 		$this->creationDate = $this->determineCreationDate();
 		$this->deletionDate = $deletionDate;
@@ -19,6 +18,7 @@ class RemoteWiki {
 		$this->locked = $locked;
 		$this->category = $category;
 		$this->extensions = $extensions;
+		$this->settings = $settings;
 	}
 
 	public static function newFromName( $dbname ) {
@@ -31,6 +31,7 @@ class RemoteWiki {
 		global $wgCreateWikiDatabase;
 
 		$row = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase )->selectRow( 'cw_wikis', static::selectFields(), $conds, __METHOD__ );
+		$mwRow = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase)->selectRow( 'mw_settings', '*', [ 's_dbname' => $conds['wiki_dbname'] ] );
 
 		if ( $row !== false ) {
 			return new self(
@@ -47,10 +48,10 @@ class RemoteWiki {
 				$row->wiki_deleted,
 				$row->wiki_deleted_timestamp,
 				$row->wiki_locked,
-				$row->wiki_settings,
 				$row->wiki_category,
-				$row->wiki_extensions,
-				$row->wiki_url
+				$row->wiki_url,
+				$mwRow->s_extensions,
+				$mwRow->s_settings
 			);
 		} else {
 			return null;
@@ -78,7 +79,8 @@ class RemoteWiki {
 			'wiki_locked',
 			'wiki_settings',
 			'wiki_category',
-			'wiki_extensions'
+			'wiki_extensions',
+			'wiki_url'
 		];
 	}
 
@@ -143,13 +145,11 @@ class RemoteWiki {
 	}
 
 	public function getExtensions() {
-		return $this->extensions;
+		return json_decode( $this->extensions, true );
 	}
 
 	public function hasExtension( $extension ) {
-		$extensionsarray = explode( ",", $this->extensions );
-
-		return in_array( $extension, $extensionsarray );
+		return in_array( $extension, $this->getExtensions() );
 	}
 
 	public function getServerName() {

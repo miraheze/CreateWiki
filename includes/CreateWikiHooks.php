@@ -84,11 +84,15 @@ class CreateWikiHooks {
 	}
 
 	public static function onSetupAfterCache() {
-		global $wgDBname;
+		global $wgDBname, $wgConf;
 
 		$cWJ = new CreateWikiJson( $wgDBname );
 
 		$cWJ->update();
+
+		// Unfortunately we don't exist in a world where no one sets
+		// any defaults - so we have to override our version over exts.
+		$wgConf->extractAllGlobals( $wgDBname );
 	}
 
 	/**

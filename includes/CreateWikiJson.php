@@ -15,10 +15,15 @@ class CreateWikiJson {
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $wgCreateWikiCacheDirectory;
 		$this->wiki = $wiki;
+
+		Wikimedia\suppressWarnings();
 		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
 		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true );
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+		Wikimedia\restoreWarnings();
+
+		$this->initTime = $this->dbr->timestamp();
 
 		if ( !$this->databaseTimestamp ) {
 			$this->resetDatabaseList();
@@ -30,17 +35,17 @@ class CreateWikiJson {
 	}
 
 	public function resetWiki() {
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->dbr->timestamp() );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
 
 		// Rather than destroy object, let's fake the cache timestamp
-		$this->wikiTimestamp = PHP_INT_MAX;
+		$this->wikiTimestamp = $this->initTime;
 	}
 
 	public function resetDatabaseList() {
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->dbr->timestamp() );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
 		// Rather than destroy object, let's fake the catch timestamp
-		$this->databaseTimestamp = PHP_INT_MAX;
+		$this->databaseTimestamp = $this->initTime;
 	}
 
 	public function update() {
@@ -75,7 +80,7 @@ class CreateWikiJson {
 			}
 
 			if ( !is_null( $wiki->wiki_url ) ) {
-				$domainList[$wiki->wiki_url] = $this->wiki_dbname;
+				$domainList[$wiki->wiki_url] = $wiki->wiki_dbname;
 			}
 		}
 
