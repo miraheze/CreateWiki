@@ -15,9 +15,8 @@ class WikiInitialise {
 		$this->config = new SiteConfiguration;
 	}
 
-	public function setVariables( string $cacheDir, array $settings, array $suffixes, array $siteMatch ) {
+	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch ) {
 		$this->cacheDir = $cacheDir;
-		$this->config->settings = $settings;
 		$this->config->suffixes = $suffixes;
 		$this->hostname = $_SERVER['HTTP_HOST'] ?? 'undefined';
 
