@@ -4,6 +4,7 @@ class WikiInitialise {
 	public $config = null;
 	public $hostname = null;
 	public $dbname = null;
+	public $missing = false;
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
@@ -34,10 +35,14 @@ class WikiInitialise {
 		// Let's found out what the database name is!
 		if ( defined( 'MW_DB' ) ) {
 			$this->dbname = MW_DB;
-		} elseif ( isset( $databasesArray['domains']['https://' . $this->hostname . '/'] ) ) {
-			$this->dbname = $databasesArray['domains']['https://' . $this->hostname . '/'];
+		} elseif ( isset( $databasesArray['domains']['https://' . $this->hostname] ) ) {
+			$this->dbname = $databasesArray['domains']['https://' . $this->hostname];
 		} else {
 			$explode = explode( '.', $this->hostname, 2 );
+
+			if ( $explode[0] == 'www' ) {
+				$explode( '.', $explode[1], 2 );
+			}
 
 			foreach ( $siteMatch as $site => $suffix ) {
 				if ( $explode[1] == $site ) {
@@ -49,7 +54,7 @@ class WikiInitialise {
 
 		// We use this quite a bit. If we don't have one, something is wrong
 		if ( is_null( $this->dbname ) ) {
-			throw new ErrorException( 'Can not detect database name.' );
+			$this->missing = true;
 		} elseif ( !count( $databasesArray['databases'] ) ) {
 			$databasesArray['databases'][] = $this->dbname;
 		}
@@ -58,6 +63,10 @@ class WikiInitialise {
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
 
 		$this->config->wikis = $databasesArray['databases'];
+
+		if ( !in_array( $this->dbname, $databasesArray['databases'] ) ) {
+			$this->missing = true;
+		}
 
 		$suffixMatch = array_flip( $siteMatch );
 
