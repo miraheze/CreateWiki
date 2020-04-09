@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Abijeet Patro",
 			"Amanojaku",
-			"Liuxinyu970226",
-			"Laundry Machine",
 			"Kly",
 			"LNDDYL",
-			"Mark85296341",
-			"Abijeet Patro"
+			"Laundry Machine",
+			"Liuxinyu970226",
+			"Mark85296341"
 		]
 	},
 	"action-createwiki": "建立 Wiki",

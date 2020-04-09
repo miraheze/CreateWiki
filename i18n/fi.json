@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"01miki10",
+			"Abijeet Patro",
+			"Antsa",
 			"Nike",
 			"Pyscowicz",
-			"01miki10",
 			"Str4nd",
-			"Valtlait",
-			"Antsa",
-			"Abijeet Patro"
+			"Valtlait"
 		]
 	},
 	"action-createwiki": "luoda wikejä",

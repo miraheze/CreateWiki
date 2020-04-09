@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Adjen",
 			"AlvaroMolina",
 			"Fitoschido",
-			"Adjen",
-			"Unai01",
-			"Jelou",
 			"GOTILON",
-			"Pertile"
+			"Jelou",
+			"Pertile",
+			"Unai01"
 		]
 	},
 	"action-createwiki": "crear wikis",

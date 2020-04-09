@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Southparkfan",
 			"Mainframe98",
 			"SPQRobin",
-			"Siebrand"
+			"Siebrand",
+			"Southparkfan"
 		]
 	},
 	"action-createwiki": "wiki's aan te maken",
