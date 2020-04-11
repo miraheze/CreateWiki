@@ -84,15 +84,28 @@ class CreateWikiHooks {
 	}
 
 	public static function onSetupAfterCache() {
-		global $wgDBname, $wgConf;
+		global $wgDBname, $wi, $wgConf, $wgGroupPermissions;
 
 		$cWJ = new CreateWikiJson( $wgDBname );
 
 		$cWJ->update();
 
+		$wi->readCache();
+
+		// Redefine
+		$wgConf = $wi->config;
+
 		// Unfortunately we don't exist in a world where no one sets
 		// any defaults - so we have to override our version over exts.
 		$wgConf->extractAllGlobals( $wgDBname );
+
+		// Safety Catch!
+		if ( $wgConf->settings['cwPrivate'][$wgDBname] ) {
+			$wgGroupPermissions['*']['read'] = false;
+			$wgGroupPermissions['sysop']['read'] = true;
+		} else {
+			$wgGroupPermissions['*']['read'] = true;
+		}
 	}
 
 	/**
