@@ -40,7 +40,7 @@ class WikiInitialise {
 			$explode = explode( '.', $this->hostname, 2 );
 
 			if ( $explode[0] == 'www' ) {
-				$explode( '.', $explode[1], 2 );
+				$explode = explode( '.', $explode[1], 2 );
 			}
 
 			foreach ( $siteMatch as $site => $suffix ) {
@@ -169,7 +169,16 @@ class WikiInitialise {
 				}
 
 				if ( !is_null( $perm['autopromote'] ) ) {
-					$this->config->settings['wgAutopromote'][$this->dbname][$group] = $perm['autopromote'];
+					$onceId = array_search( 'once', $perm['autopromote'] );
+
+					if ( !is_bool( $onceId ) ) {
+						unset( $perm['autopromote'][$onceId] );
+						$promoteVar = 'wgAutopromoteOnce';
+					} else {
+						$promoteVar = 'wgAutopromote';
+					}
+
+					$this->config->settings[$promoteVar][$this->dbname][$group] = $perm['autopromote'];
 				}
 			}
 		}

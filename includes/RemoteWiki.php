@@ -149,7 +149,7 @@ class RemoteWiki {
 	}
 
 	public function hasExtension( $extension ) {
-		return in_array( $extension, $this->getExtensions() );
+		return in_array( $extension, (array)$this->getExtensions() );
 	}
 
 	public function getServerName() {
