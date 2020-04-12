@@ -68,15 +68,19 @@ class WikiInitialise {
 		}
 
 		$suffixMatch = array_flip( $siteMatch );
+		$domainsMatch = array_flip( $databasesArray['domains'] );
+		$serverArray = [];
 
 		// MediaWiki has a cross-wiki depedency in wikifarms. So we need to know what else exists here, but not their real domains - just accessible ones
 		foreach ( $databasesArray['databases'] as $db ) {
 			foreach ( $suffixes as $suffix ) {
 				if ( substr( $db, -strlen( $suffix ) == $suffix ) ) {
-					$this->config->settings['wgServer'][$db] = 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
+					$serverArray[$db] = 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
 				}
 			}
 		}
+
+		$this->confg->settings['wgServer'] = array_merge( $serverArray, $domainsMatch );
 
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
