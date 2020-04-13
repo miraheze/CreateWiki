@@ -134,7 +134,7 @@ class WikiInitialise {
 		if ( isset( $cacheArray['namespaces'] ) ) {
 			foreach ( (array)$cacheArray['namespaces'] as $name => $ns ) {
 				$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
-				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] = $nss['searchable'];
+				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] = $ns['searchable'];
 				$this->config->settings['wgNamespacesWithSubpages'][$this->dbname][(int)$ns['id']] = $ns['subpages'];
 				$this->config->settings['wgNamespaceContentModels'][$this->dbname][(int)$ns['id']] = $ns['contentmodel'];
 
