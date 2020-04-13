@@ -13,6 +13,7 @@ class WikiInitialise {
 		}
 
 		$this->config = new SiteConfiguration;
+		$this->cacheFile = 
 	}
 
 	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch ) {
@@ -80,6 +81,10 @@ class WikiInitialise {
 			}
 		}
 
+		$cacheArray = $this->getCache();
+		if ( $cacheArray ) {
+			$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename']
+		}
 		$this->config->settings['wgServer'] = array_merge( $serverArray, $domainsMatch );
 
 		// We need the CLI to be able to access 'deleted' wikis
@@ -95,11 +100,10 @@ class WikiInitialise {
 
 	public function readCache() {
 		// If we don't have a cache file, let us exit here
-		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
+		$cacheArray = $this->getCache();
+		if ( $cacheArray === false ) {
 			return;
 		}
-
-		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 
 		// Assign top level variables first
 		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'];
@@ -189,5 +193,13 @@ class WikiInitialise {
 				}
 			}
 		}
+	}
+	
+	private function getCache() {
+		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
+			return false;
+		}
+
+		return json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 	}
 }
