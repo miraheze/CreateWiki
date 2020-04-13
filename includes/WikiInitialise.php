@@ -13,7 +13,6 @@ class WikiInitialise {
 		}
 
 		$this->config = new SiteConfiguration;
-		$this->cacheFile = 
 	}
 
 	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch ) {
