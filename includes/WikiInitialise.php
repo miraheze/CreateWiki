@@ -81,6 +81,7 @@ class WikiInitialise {
 		}
 
 		$this->config->settings['wgServer'] = array_merge( $serverArray, $domainsMatch );
+		$this->config->settings['wgServer']['default'] = 'https://example.org';
 
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
