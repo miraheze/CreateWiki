@@ -69,7 +69,9 @@ class WikiInitialise {
 
 		$suffixMatch = array_flip( $siteMatch );
 		$domainsMatch = array_flip( $databasesArray['domains'] );
-		$serverArray = [];
+		$serverArray = [
+			'default' => $suffixMatch[ array_key_first( $suffixMatch ) ],
+		];
 
 		// MediaWiki has a cross-wiki depedency in wikifarms. So we need to know what else exists here, but not their real domains - just accessible ones
 		foreach ( $databasesArray['databases'] as $db ) {
@@ -77,7 +79,6 @@ class WikiInitialise {
 				if ( substr( $db, -strlen( $suffix ) == $suffix ) ) {
 					$serverArray[$db] = 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
 				}
-				$serverArray['default'] = 'https://' . $suffixMatch[$suffix];
 			}
 		}
 
