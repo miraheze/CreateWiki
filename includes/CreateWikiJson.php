@@ -49,14 +49,15 @@ class CreateWikiJson {
 	}
 
 	public function update() {
-		if ( $this->newChanges() ) {
-			$this->generateDatabaseList();
-			$this->generateWiki();
+		$changes = $this->newChanges()
 
-			return true;
+		if ( $changes['databases'] _) {
+			$this->generateDatabaseList();
 		}
 
-		return false;
+		if ( $changes['wiki'] ) {
+			$this->generateWiki();
+		}
 	}
 
 	private function generateDatabaseList() {
@@ -125,14 +126,20 @@ class CreateWikiJson {
 	}
 
 	private function newChanges() {
-		if (
-			$this->databaseArray['timestamp'] < ( ( $this->databaseTimestamp ) ? $this->databaseTimestamp : PHP_INT_MAX )
-			|| $this->wikiArray['timestamp'] < ( ( $this->wikiTimestamp ) ? $this->wikiTimestamp : PHP_INT_MAX )
-		) {
-			return true;
+		$changes = [
+			'databases' => false,
+			'wiki' => false
+		];
+
+		if ( $this->databaseArray['timestamp'] < ( ( $this->databaseTimestamp ) ? $this->databaseTimestamp : PHP_INT_MAX ) ) {
+			$changes['databases'] = true;
 		}
 
-		return false;
+		if ( $this->wikiArray['timestamp'] < ( ( $this->wikiTimestamp ) ? $this->wikiTimestamp : PHP_INT_MAX ) ) {
+			$changes['wiki'] = true;
+		}
+
+		return $changes;
 	}
 }
 
