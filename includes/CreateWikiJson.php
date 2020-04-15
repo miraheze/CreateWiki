@@ -51,7 +51,7 @@ class CreateWikiJson {
 	public function update() {
 		$changes = $this->newChanges()
 
-		if ( $changes['databases'] _) {
+		if ( $changes['databases'] ) {
 			$this->generateDatabaseList();
 		}
 
