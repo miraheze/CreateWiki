@@ -89,6 +89,7 @@ class WikiInitialise {
 			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
 
 			$this->config->wikis = array_merge( $this->config->wikis, $deletedDatabases['databases'] );
+			$this->missing = false;
 		}
 
 		// Now let's formalise our database list to the world
