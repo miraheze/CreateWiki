@@ -63,10 +63,6 @@ class WikiInitialise {
 
 		$this->config->wikis = $databasesArray['databases'];
 
-		if ( !in_array( $this->dbname, $databasesArray['databases'] ) ) {
-			$this->missing = true;
-		}
-
 		$suffixMatch = array_flip( $siteMatch );
 		$domainsMatch = array_flip( $databasesArray['domains'] );
 		$serverArray = [
@@ -93,6 +89,10 @@ class WikiInitialise {
 
 		// Now let's formalise our database list to the world
 		$this->config->settings['wgLocalDatabases']['default'] = $this->config->wikis;
+
+		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
+			$this->missing = true;
+		}
 	}
 
 	public function readCache() {
