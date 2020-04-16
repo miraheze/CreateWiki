@@ -85,8 +85,11 @@ class CreateWikiJson {
 			}
 		}
 
-		file_put_contents( $this->cacheDir . "/databases.json", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['all'], 'domains' => $domainList ] ), LOCK_EX );
-		file_put_contents( $this->cacheDir . "/deleted.json", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['deleted'] ] ), LOCK_EX );
+		file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['all'], 'domains' => $domainList ] ), LOCK_EX );
+		file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['deleted'] ] ), LOCK_EX );
+
+		rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
+		rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
 	}
 
 	private function generateWiki() {
@@ -122,7 +125,9 @@ class CreateWikiJson {
 
 		Hooks::run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
 
-		file_put_contents( $this->cacheDir . '/' . $this->wiki . '.json', json_encode( $jsonArray ), LOCK_EX );
+		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
+		
+		rename( "{$this->cacheDir}/{$this->wiki}.json.tmp", "{$this->cacheDir}/{$this->wiki}.json" );
 	}
 
 	private function newChanges() {
