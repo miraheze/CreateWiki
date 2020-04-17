@@ -80,6 +80,9 @@ class WikiInitialise {
 
 		$this->config->settings['wgServer'] = array_merge( $serverArray, $domainsMatch );
 
+		// Same as above but for sitenames
+		$this->config->settings['wgSitename'] = array_merge( [ 'default' => 'No sitename set.' ], $databasesArray['sitenames'] );
+
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
 			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
