@@ -25,8 +25,7 @@ class WikiInitialise {
 			$databasesArray = [
 				'timestamp' => 0,
 				'databases' => [],
-				'domains' => [],
-				'sitenames' => []
+				'domains' => []
 			];
 		} else {
 			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
@@ -81,9 +80,6 @@ class WikiInitialise {
 
 		$this->config->settings['wgServer'] = array_merge( $serverArray, $domainsMatch );
 
-		// Same as above, but for sitenames
-		$this->config->settings['wgSitename'] = [ 'default' => 'No sitename set' ] + $databasesArray['sitenames'];
-
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
 			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
@@ -107,8 +103,12 @@ class WikiInitialise {
 
 		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 
-		// Assign language
+		// Assign top level variables first
+		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'];
 		$this->config->settings['wgLanguageCode'][$this->dbname] = $cacheArray['core']['wgLanguageCode'];
+		if ( $cacheArray['url'] ) {
+			$this->config->settings['wgServer'][$this->dbname] = $cacheArray['url'];
+		}
 
 		// Assign states
 		$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'];
