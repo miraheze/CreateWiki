@@ -194,7 +194,7 @@ class WikiManager {
 			throw new MWException( "Can not rename {$old} to {$new} because: {$error}" );
 		}
 
-		$this->recacheJson( $new );
+		$this->recacheJson();
 
 		foreach ( (array)$this->tables as $table => $selector ) {
 			$this->cwdb->update(
