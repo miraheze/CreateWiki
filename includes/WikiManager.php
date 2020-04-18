@@ -194,6 +194,8 @@ class WikiManager {
 			throw new MWException( "Can not rename {$old} to {$new} because: {$error}" );
 		}
 
+		$this->recacheJson();
+
 		foreach ( (array)$this->tables as $table => $selector ) {
 			$this->cwdb->update(
 				$table,
@@ -205,8 +207,6 @@ class WikiManager {
 				]
 			);
 		}
-		
-		$this->recacheJson( $new );
 
 		Hooks::run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
 	}
