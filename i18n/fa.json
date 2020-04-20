@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Alireza Ivaz",
+			"FarsiNevis",
 			"Huji",
 			"Stewie"
 		]
@@ -45,7 +46,7 @@
 	"requestwikiqueue-norequests": "نتیجه‌ای یافت نشد.",
 	"requestwikiqueue-pager-status-approved": "پذیرفته‌شده",
 	"requestwikiqueue-pager-status-declined": "پذیرفته‌نشده",
-	"requestwikiqueue-pager-status-inreview": "درحال بازبینی",
+	"requestwikiqueue-pager-status-inreview": "در حال بازبینی",
 	"requestwikiqueue-request": "درخواست",
 	"requestwikiqueue-request-header-changestatus": "تغییر وضعیت این درخواست ویکی",
 	"requestwikiqueue-request-label-approved": "پذیرفته‌شد",
@@ -55,7 +56,7 @@
 	"requestwikiqueue-request-label-declined": "پذیرفته‌نشده",
 	"requestwikiqueue-request-label-edit": "ویرایش",
 	"requestwikiqueue-request-label-edit-wiki": "ویرایش درخواست ویکی",
-	"requestwikiqueue-request-label-inreview": "درحال بازبینی",
+	"requestwikiqueue-request-label-inreview": "در حال بازبینی",
 	"requestwikiqueue-request-label-language": "زبان",
 	"requestwikiqueue-request-label-private": "خصوصی",
 	"requestwikiqueue-request-label-requester": "درخواست‌کننده",
