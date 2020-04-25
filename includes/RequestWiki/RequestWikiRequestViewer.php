@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 class RequestWikiRequestViewer {
 	public function getFormDescriptor(
 		int $requestid,
@@ -47,8 +49,8 @@ class RequestWikiRequestViewer {
 		$userR = $context->getUser();
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
-		$mwService = MediaWiki\MediaWikiServices::getInstance()->getPermissionManager();
-		if ( !$res || !$mwService->userHasRight( $userR, $visibilityConds[$visibilityLevel] ) ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( !$res || !$permissionManager->userHasRight( $userR, $visibilityConds[$visibilityLevel] ) ) {
 			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
 		}
 
