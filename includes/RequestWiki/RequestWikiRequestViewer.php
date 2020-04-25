@@ -115,7 +115,7 @@ class RequestWikiRequestViewer {
 			]
 		];
 
-		if ( $mwService->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $res->cw_user ) {
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $res->cw_user ) {
 			$formDescriptor['edit'] = [
 				'type' => 'submit',
 				'section' => 'request',
@@ -150,17 +150,17 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $mwService->userHasRight( $userR, 'createwiki' ) ) {
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
 			$visibilityoptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
 				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
 			];
 
-			if ( $mwService->userHasRight( $userR, 'delete' ) ) {
+			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
 				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
 			}
 
-			if ( $mwService->userHasRight( $userR, 'suppressrevision' ) ) {
+			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
 				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
