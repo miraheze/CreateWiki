@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 class RequestWikiRequestViewer {
 	public function getFormDescriptor(
 		int $requestid,
@@ -47,7 +49,8 @@ class RequestWikiRequestViewer {
 		$userR = $context->getUser();
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
-		if ( !$res || !$userR->isAllowed( $visibilityConds[$visibilityLevel] ) ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( !$res || !$permissionManager->userHasRight( $userR, $visibilityConds[$visibilityLevel] ) ) {
 			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
 		}
 
@@ -112,7 +115,7 @@ class RequestWikiRequestViewer {
 			]
 		];
 
-		if ( $userR->isAllowed( 'createwiki' ) || $userR->getId() == $res->cw_user ) {
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $res->cw_user ) {
 			$formDescriptor['edit'] = [
 				'type' => 'submit',
 				'section' => 'request',
@@ -147,17 +150,17 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $userR->isAllowed( 'createwiki' ) ) {
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
 			$visibilityoptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
 				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
 			];
 
-			if ( $userR->isAllowed( 'delete' ) ) {
+			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
 				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
 			}
 
-			if ( $userR->isAllowed( 'suppressrevision' ) ) {
+			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
 				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
