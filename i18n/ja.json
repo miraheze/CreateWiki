@@ -5,14 +5,17 @@
 			"Otokoume",
 			"Shirayuki",
 			"Suyama",
-			"Yusuke1109"
+			"Yusuke1109",
+			"そらたこ"
 		]
 	},
 	"action-createwiki": "ウィキの作成",
 	"action-requestwiki": "ウィキの要求",
 	"createwiki": "ウィキの作成",
+	"createwiki-desc": "ウィキファームで新しいウィキを簡単に作成するための拡張機能。",
 	"createwiki-email-subject": "あなたの新しい Miraheze ウィキ: $1",
 	"createwiki-error-dbexists": "指定したデータベース名のウィキは既に存在します。",
+	"createwiki-error-requesternonexistent": "リクエスト者はMiraheze Metaに登録されていません。",
 	"createwiki-error-notalnum": "データベース名には半角英数字以外を使用できません。",
 	"createwiki-error-notlowercase": "データベース名には大文字を使用できません。",
 	"createwiki-error-notsuffixed": "データベース名の終わりに指定文字列がありません (例: ‘wiki’)。",
