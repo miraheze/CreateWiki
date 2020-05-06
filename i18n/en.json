@@ -66,6 +66,7 @@
 	"requestwiki-label-customdomain-info": "You must provide a subdomain above. If you want a custom domain for your wiki, please provide it below.",
 	"requestwiki-label-language": "Language:",
 	"requestwiki-label-private": "Private wiki (not readable by everyone):",
+	"requestwiki-label-reopen": "Reopen request?",
 	"requestwiki-label-sitename": "Wiki name:",
 	"requestwiki-label-siteurl": "Subdomain: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "Sorry, you need to <span class=\"plainlinks\">[$1 log in]</span> before you can request a wiki.",

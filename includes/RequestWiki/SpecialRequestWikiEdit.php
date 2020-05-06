@@ -51,7 +51,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	private function showEditForm( $id ) {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
 
 		$out = $this->getOutput();
 
@@ -72,7 +72,8 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'cw_sitename',
 				'cw_url',
 				'cw_custom',
-				'cw_category'
+				'cw_category',
+				'cw_status'
 			],
 			[
 				'cw_id' => $id
@@ -120,15 +121,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			],
 		];
 
-		if ( $wgCreateWikiUseCustomDomains ) {
-			$formDescriptor['customdomain'] = [
-				'type' => 'text',
-				'label-message' => 'requestwiki-label-customdomain',
-				'default' => $res->cw_custom,
-				'name' => 'rweCustomdomain',
-			];
-		}
-
 		if ( $wgCreateWikiUsePrivateWikis ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
@@ -155,6 +147,15 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'name' => 'rweReason',
 			'required' => true,
 		];
+
+		if ( $res->cw_status == 'declined' ) {
+			$formDescriptor['reopen'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-reopen',
+				'default' => ( $user->getId() == $res->cw_user ),
+				'name' => 'rweReopen'
+			];
+		}
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'editForm' );
 		$htmlForm->setMethod( 'post' )->setSubmitCallback( [ $this, 'onSubmitInput' ] )->prepareForm()->show();
@@ -194,6 +195,10 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			'cw_category' => $params['category'],
 			'cw_private' => $private,
 		];
+
+		if ( $params['reopen'] ?? false ) {
+			$values['cw_status'] = 'inreview';
+		}
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->update( 'cw_requests',
