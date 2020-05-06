@@ -80,6 +80,11 @@
 		"remoteExtPath": "CreateWiki/modules"
 	},
 	"config": {
+		"CreateWikiBlacklistedSubdomains": {
+			"description": "String. Regex to match for a blacklisted subdomain.",
+			"public": true,
+			"value": "/ /"
+		},
 		"CreateWikiCategories": {
 			"description": "Array. An array of categories used for wiki categorisaion.",
 			"public": true,

@@ -110,7 +110,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain;
+		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain, $wgCreateWikiBlacklistedSubdomains;
 
 		$subdomain = strtolower( $formData['subdomain'] );
 
@@ -136,6 +136,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 		if ( !ctype_alnum( $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
 			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
+			return false;
+		} elseif ( preg_match( $wgCreateWikiBlacklistedSubdomains, $subdomain ) ) {
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
 			return false;
 		} else {
 			$url = $subdomain . '.' . $wgCreateWikiSubdomain;
