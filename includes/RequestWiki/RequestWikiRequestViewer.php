@@ -56,8 +56,6 @@ class RequestWikiRequestViewer {
 
 		$status = ( $res->cw_status === 'inreview' ) ? 'In review' : ucfirst( $res->cw_status );
 
-		$url = ( $res->cw_custom  != '' ) ? $res->cw_custom : $res->cw_url;
-
 		$user = User::newFromId( $res->cw_user );
 
 		$formDescriptor = [
@@ -73,7 +71,7 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$url
+				'default' => (string)$res->cw_url
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',

@@ -33,7 +33,7 @@ class SpecialRequestWiki extends FormSpecialPage {
         }
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains;
+		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
 
 		$formDescriptor = [];
 
@@ -43,20 +43,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'required' => true,
 			'name' => 'rwSubdomain',
 		];
-
-		if ( $wgCreateWikiUseCustomDomains ) {
-			$formDescriptor['customdomain-info'] = [
-				'type' => 'info',
-				'label' => '',
-				'label-message' => 'requestwiki-label-customdomain-info',
-			];
-
-			$formDescriptor['customdomain'] = [
-				'type' => 'text',
-				'label-message' => 'requestwiki-label-customdomain',
-				'name' => 'rwCustom',
-			];
-		}
 
 		$formDescriptor['sitename'] = [
 			'type' => 'text',
@@ -110,7 +96,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain, $wgCreateWikiBlacklistedSubdomains;
+		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiSubdomain, $wgCreateWikiBlacklistedSubdomains;
 
 		$subdomain = strtolower( $formData['subdomain'] );
 
@@ -122,12 +108,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$private = $formData['private'] ? 1 : 0;
 		} else {
 			$private = 0;
-		}
-
-		if ( $wgCreateWikiUseCustomDomains ) {
-			$customdomain = $formData['customdomain'];
-		} else {
-			$customdomain = "";
 		}
 
 		$out = $this->getOutput();
@@ -159,9 +139,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'cw_status' => 'inreview',
 			'cw_timestamp' => $dbw->timestamp(),
 			'cw_url' => $url,
-			'cw_custom' => $customdomain,
 			'cw_user' => $this->getUser()->getId(),
 			'cw_category' => $formData['category'],
+			'cw_custom' => '' // todo remove this entirely
 		];
 
 		$dbw->insert( 'cw_requests',
