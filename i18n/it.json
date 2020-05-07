@@ -6,11 +6,13 @@
 			"Lorelai87",
 			"S4b1nuz E.656",
 			"Sakretsu",
-			"Sarah Bernabei"
+			"Sarah Bernabei",
+			"Scompo"
 		]
 	},
 	"action-createwiki": "crea wiki",
 	"createwiki": "Crea un wiki",
+	"createwiki-error-blacklisted": "Il sotto-dominio che hai richiesto non può essere creato. Per favore richiedi un nuovo sotto-dominio o contatta l'amministratore di sistema per ricevere aiuto.",
 	"createwiki-label-category": "Categoria:",
 	"createwiki-label-dbname": "Nome del database:",
 	"createwiki-label-submit": "Invia",
@@ -23,6 +25,7 @@
 	"notification-header-wiki-rename": "Il tuo wiki <strong>$1</strong> è stato rinominato!",
 	"requestwiki-label-customdomain-info": "Devi fornire un subdominio sopra. Se vuoi un dominio personalizzato per il tuo wiki, per favore inseriscilo sotto.",
 	"requestwiki-label-language": "Lingua:",
+	"requestwiki-label-reopen": "Riaprire la richiesta?",
 	"requestwiki-label-sitename": "Nome wiki:",
 	"requestwiki-label-siteurl": "Subdominio: (subdomain.miraheze.org)",
 	"requestwikiqueue-approve": "Approva",
