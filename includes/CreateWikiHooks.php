@@ -14,18 +14,16 @@ class CreateWikiHooks {
 				__DIR__ . '/../sql/cw_comments.sql'
 			);
 
-			$updater->modifyField(
+			$updater->modifyExtensionField(
  				'cw_comments',
  				'cw_comment_user',
- 				__DIR__ . '/../sql/patches/patch-cw_comments-int.sql',
-				true
+ 				__DIR__ . '/../sql/patches/patch-cw_comments-int.sql'
  			);
 
-			$updater->modifyField(
+			$updater->modifyExtensionField(
  				'cw_requests',
  				'cw_user',
- 				__DIR__ . '/../sql/patches/patch-cw_requests-int.sql',
-				true
+ 				__DIR__ . '/../sql/patches/patch-cw_requests-int.sql'
  			);
 		}
 
@@ -65,10 +63,9 @@ class CreateWikiHooks {
 				__DIR__ . '/../sql/patches/patch-domain-cols.sql'
 			);
 
-			$updater->modifyTable(
+			$updater->modifyExtensionTable(
 				'cw_wikis',
- 				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql',
-				true
+ 				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
 			);
 		}
 
