@@ -5,6 +5,7 @@
 			"HendSalah16",
 			"Meno25",
 			"OsamaK",
+			"Tala Ali",
 			"ديفيد",
 			"محمد أحمد عبد الفتاح"
 		]
@@ -70,6 +71,7 @@
 	"requestwiki-label-customdomain-info": "يجب عليك تقديم نطاق فرعي أعلاه، إذا كنت تريد نطاقا مخصصا لك، فيُرجَى تقديمه أدناه.",
 	"requestwiki-label-language": "اللغة:",
 	"requestwiki-label-private": "ويكي خاص (غير قابل للقراءة من قبل الجميع):",
+	"requestwiki-label-reopen": "إعادة فتح الطلب",
 	"requestwiki-label-sitename": "اسم الويكي:",
 	"requestwiki-label-siteurl": "النطاق الفرعي: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "عذرا، يجب <span class=\"plainlinks\">[$1 سجيل الدخول]</span> قبل أن تتمكن من طلب ويكي.",
