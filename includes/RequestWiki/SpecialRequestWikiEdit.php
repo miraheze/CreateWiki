@@ -163,7 +163,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	public function onSubmitInput( array $params ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain;
+		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiSubdomain;
 
 		$dbname = $params['subdomain'] . 'wiki';
 		$fullurl = $params['subdomain'] . '.' . $wgCreateWikiSubdomain;
