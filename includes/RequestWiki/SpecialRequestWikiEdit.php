@@ -163,7 +163,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	public function onSubmitInput( array $params ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseCustomDomains, $wgCreateWikiSubdomain;
+		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiSubdomain;
 
 		$dbname = $params['subdomain'] . 'wiki';
 		$fullurl = $params['subdomain'] . '.' . $wgCreateWikiSubdomain;
@@ -179,19 +179,14 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			$private = 0;
 		}
 
-		if ( $wgCreateWikiUseCustomDomains ) {
-			$customdomain = $params['customdomain'];
-		} else {
-			$customdomain = "";
-		}
-
 		$values = [
 			'cw_comment' => $params['reason'],
 			'cw_language' => $params['language'],
 			'cw_sitename' => $params['sitename'],
 			'cw_dbname' => $dbname,
 			'cw_url' => $fullurl,
-			'cw_custom' => $customdomain,
+			// todo remove this entirely
+			'cw_custom' => '',
 			'cw_category' => $params['category'],
 			'cw_private' => $private,
 		];
