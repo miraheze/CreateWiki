@@ -136,5 +136,9 @@
 			mw.storage.session.set( 'mwbaseform-prevTab', value );
 		} );
 
+		infuse = $( document.body ).find( '.createwiki-infuse' );
+		infuse.each( function () {
+			OO.ui.infuse( this );
+		});
 	} );
 }() );
