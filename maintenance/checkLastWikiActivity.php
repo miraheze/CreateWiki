@@ -23,7 +23,7 @@ class CheckLastWikiActivity extends Maintenance {
 			]
 		);
 
-		$timeStamp = isset( $row ) ? $row->rc_timestamp : 0;
+		$timeStamp = isset( $row->rc_timestamp ) ? $row->rc_timestamp : 0;
 
 		$this->output( (int)$timeStamp );
 	}
