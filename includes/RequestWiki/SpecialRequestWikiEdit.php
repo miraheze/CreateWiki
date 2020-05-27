@@ -55,13 +55,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 
 		$out = $this->getOutput();
 
-		$languages = Language::fetchLanguageNames( null, 'wmfile' );
-		ksort( $languages );
-		$options = [];
-		foreach ( $languages as $code => $name ) {
-			$options["$code - $name"] = $code;
-		}
-
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->selectRow( 'cw_requests',
 			[
@@ -113,9 +106,8 @@ class SpecialRequestWikiEdit extends SpecialPage {
 				'required' => true,
 			],
 			'language' => [
-				'type' => 'select',
+				'type' => 'language',
 				'label-message' => 'requestwiki-label-language',
-				'options' => $options,
 				'default' => $res->cw_language,
 				'name' => 'rweLanguage',
 			],

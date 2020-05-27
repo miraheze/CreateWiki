@@ -35,35 +35,25 @@ class SpecialRequestWiki extends FormSpecialPage {
 	protected function getFormFields() {
 		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
 
-		$formDescriptor = [];
-
-		$formDescriptor['subdomain'] = [
-			'type' => 'text',
-			'label-message' => 'requestwiki-label-siteurl',
-			'required' => true,
-			'name' => 'rwSubdomain',
-		];
-
-		$formDescriptor['sitename'] = [
-			'type' => 'text',
-			'label-message' => 'requestwiki-label-sitename',
-			'required' => true,
-			'name' => 'rwSitename',
-		];
-
-		$languages = Language::fetchLanguageNames( null, 'wmfile' );
-		ksort( $languages );
-		$options = [];
-		foreach ( $languages as $code => $name ) {
-			$options["$code - $name"] = $code;
-		}
-
-		$formDescriptor['language'] = [
-			'type' => 'select',
-			'options' => $options,
-			'label-message' => 'requestwiki-label-language',
-			'default' => 'en',
-			'name' => 'rwLanguage',
+		$formDescriptor = [
+			'subdomain' => [
+				'type' => 'text',
+				'label-message' => 'requestwiki-label-siteurl',
+				'required' => true,
+				'name' => 'rwSubdomain',
+			],
+			'sitename' => [
+				'type' => 'text',
+				'label-message' => 'requestwiki-label-sitename',
+				'required' => true,
+				'name' => 'rwSitename',
+			],
+			'language' => [
+				'type' => 'language',
+				'label-message' => 'requestwiki-label-language',
+				'default' => 'en',
+				'name' => 'rwLanguage',
+			]
 		];
 
 		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {

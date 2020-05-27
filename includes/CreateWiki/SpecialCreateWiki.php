@@ -10,14 +10,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$par = $this->par;
 		$request = $this->getRequest();
 
-		// Build language selector
-		$languages = Language::fetchLanguageNames( null, 'wmfile' );
-		ksort( $languages );
-		$options = [];
-		foreach ( $languages as $code => $name ) {
-			$options["{$code} - {$name}"] = $code;
-		}
-
 		$formDescriptor = [
 			'dbname' => [
 				'label-message' => 'createwiki-label-dbname',
@@ -43,8 +35,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'name' => 'cwSitename',
 			],
 			'language' => [
-				'type' => 'select',
-				'options' => $options,
+				'type' => 'language',
 				'label-message' => 'createwiki-label-language',
 				'default' => $request->getVal( 'cwLanguage' ) ? $request->getVal( 'cwLanguage' ) : 'en',
 				'name' => 'cwLanguage',
