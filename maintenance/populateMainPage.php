@@ -20,7 +20,7 @@ class PopulateMainPage extends Maintenance {
                         new WikitextContent(
                                 wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain()
                         ),
-                        'Create main page',
+                        wfMessage( 'createwiki-defaultmainpage-summary' )->inLanguage( $language )->plain(),
                         EDIT_SUPPRESS_RC,
                         false,
                         User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] )
