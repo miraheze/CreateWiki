@@ -1,5 +1,8 @@
 <?php
+
 require_once __DIR__ . '/../../../maintenance/Maintenance.php';
+
+use MediaWiki\Revision\SlotRecord;
 
 class PopulateMainPage extends Maintenance {
         public function __construct() {
@@ -15,18 +18,12 @@ class PopulateMainPage extends Maintenance {
 
                 $mainPageName = wfMessage( 'mainpage' )->inLanguage( $language )->plain();
                 $title = Title::newFromText( $mainPageName );
-                $article = WikiPage::factory( $title );
-                $article->doEditContent(
-                        new WikitextContent(
-                                wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain()
-                        ),
-                        wfMessage( 'createwiki-defaultmainpage-summary' )->inLanguage( $language )->plain(),
-                        EDIT_SUPPRESS_RC,
-                        false,
-                        User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] )
-                );
+                $article = WikiPage::factory( $title )->newPageUpdater( User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] ) );
+                $article->setContent( SlotRecord::MAIN, new WikitextContent( wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain() ) );
+                $article->saveRevision( CommentStoreComment::newUnsavedComment( wfMessage( 'createwiki-defaultmainpage-summary' )->inLanguage( $language )->plain() ), EDIT_SUPPRESS_RC );
+
         }
 }
 
 $maintClass = 'PopulateMainPage';
-require_once DO_MAINTENANCE;
+require_once( RUN_MAINTENANCE_IF_MAIN );

@@ -1,5 +1,8 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionRecord;
+
 class SpecialRequestWiki extends FormSpecialPage {
 	public function __construct() {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
@@ -139,7 +142,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			__METHOD__
 		);
 
-		$idlink = Linker::link( Title::newFromText( 'Special:RequestWikiQueue/' . $dbw->insertId() ), "#{$dbw->insertId()}" );
+		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $dbw->insertId() ), "#{$dbw->insertId()}" );
 
 		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
@@ -164,7 +167,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	public function isValidReason( $reason, $allData ) {
 		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
-		$wikiPageContent = WikiPage::factory( $title )->getContent( Revision::RAW );
+		$wikiPageContent = WikiPage::factory( $title )->getContent( RevisionRecord::RAW );
 		$content = ContentHandler::getContentText( $wikiPageContent );
 
 		$regexes = explode( PHP_EOL, $content );

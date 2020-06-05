@@ -51,9 +51,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$htmlForm->setSubmitCallback( [ $this, 'dummyProcess' ] )->setMethod( 'get' )->prepareForm()->show();
 
 		$pager = new RequestWikiQueuePager( $requester, $dbname, $status );
-		$table = $pager->getBody();
-
-		$this->getOutput()->addHTML( $pager->getNavigationBar() . $table . $pager->getNavigationBar() );
+		$table = $pager->getFullOutput();
 	}
 
 	public function dummyProcess() {

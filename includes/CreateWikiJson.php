@@ -1,5 +1,7 @@
 <?php
 
+use Wikimedia\AtEase\AtEase;
+
 class CreateWikiJson {
 	private $dbr = null;
 	private $cache = null;
@@ -16,12 +18,12 @@ class CreateWikiJson {
 		$this->cacheDir = $wgCreateWikiCacheDirectory;
 		$this->wiki = $wiki;
 
-		Wikimedia\suppressWarnings();
+		AtEase::suppressWarnings();
 		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
 		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true );
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
-		Wikimedia\restoreWarnings();
+		AtEase::restoreWarnings();
 
 		$this->initTime = $this->dbr->timestamp();
 
