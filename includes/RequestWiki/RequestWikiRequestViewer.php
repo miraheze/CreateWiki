@@ -239,7 +239,7 @@ class RequestWikiRequestViewer {
 		global $wgCreateWikiGlobalWiki;
 
 		if ( isset( $formData['edit'] ) && $formData['edit'] ) {
-			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullUrl() . '/' . $requestid );
+			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullURL() . '/' . $requestid );
 			return null;
 		}
 
@@ -265,13 +265,13 @@ class RequestWikiRequestViewer {
 
 			$requesterId = $reqRow->cw_user;
 
-			$wm->notificationsTrigger( 'request-declined', $reqRow->cw_dbname, [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromID( $requesterId )->getName() );
+			$wm->notificationsTrigger( 'request-declined', $reqRow->cw_dbname, [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromId( $requesterId )->getName() );
 		}
 
 		if ( isset( $formData['submit-create'] ) && $formData['submit-create'] ) {
 			$wm = new WikiManager( $reqRow->cw_dbname );
 
-			$requesterUser = User::newFromID( $reqRow->cw_user );
+			$requesterUser = User::newFromId( $reqRow->cw_user );
 			$actorUser = $form->getContext()->getUser();
 
 			$validName = $wm->checkDatabaseName( $reqRow->cw_dbname );

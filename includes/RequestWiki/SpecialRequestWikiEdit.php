@@ -12,7 +12,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		$this->setHeaders();
 
 		if ( !$this->getUser()->isLoggedIn() ) {
-			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullUrl( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
+			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
 			$out->addWikiMsg( 'requestwiki-edit-notloggedin', $loginurl );
 			return false;
 		}
@@ -42,7 +42,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 		global $wgRequest;
 
 		if ( $params['requestid'] !== '' ) {
-			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullUrl() . '/' . $params['requestid'] );
+			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullURL() . '/' . $params['requestid'] );
 		} else {
 			return 'Invalid url.';
 		}
