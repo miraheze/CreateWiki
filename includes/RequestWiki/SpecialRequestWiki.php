@@ -192,7 +192,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return 'wikimanage';
 	}
 
-	public function getDisplayFormat() {
+	protected function getDisplayFormat() {
 		return 'ooui';
 	}
 }
