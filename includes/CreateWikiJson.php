@@ -91,11 +91,15 @@ class CreateWikiJson {
 			}
 		}
 
-		file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['all'], 'domains' => $domainList, 'sitenames' => $siteNameList ] ), LOCK_EX );
-		file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['deleted'] ] ), LOCK_EX );
+		$dbJson = file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['all'], 'domains' => $domainList, 'sitenames' => $siteNameList ] ), LOCK_EX );
+		$deletedJson = file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $wikiList['deleted'] ] ), LOCK_EX );
 
-		rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
-		rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
+		if ( $dbJson ) {
+			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
+		}
+		if ( $deletedJson ) {
+			rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
+		}
 	}
 
 	private function generateWiki() {
