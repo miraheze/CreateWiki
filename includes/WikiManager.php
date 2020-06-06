@@ -140,6 +140,8 @@ class WikiManager {
 		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
+
+		return true;
 	}
 
 	public function delete( bool $force = false ) {
@@ -181,6 +183,7 @@ class WikiManager {
 
 		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
 
+		return true;
 	}
 
 	public function rename( string $new ) {

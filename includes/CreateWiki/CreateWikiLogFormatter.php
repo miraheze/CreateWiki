@@ -14,7 +14,8 @@ class CreateWikiLogFormatter extends LogFormatter {
 				Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[6] ),
 				'#' . $params[6]
 			) );
-			return $params;
 		}
+
+		return $params;
 	}
 }
