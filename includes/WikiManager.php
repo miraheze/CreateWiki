@@ -194,7 +194,7 @@ class WikiManager {
 		$error = $this->checkDatabaseName( $new, true );
 
 		if ( $error ) {
-			throw new MWException( "Can not rename {$old} to {$new} because: {$error}" );
+			return "Can not rename {$old} to {$new} because: {$error}";
 		}
 
 		foreach ( (array)$this->tables as $table => $selector ) {
@@ -212,6 +212,8 @@ class WikiManager {
 		$this->recacheJson();
 
 		Hooks::run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
+
+		return true;
 	}
 
 	private function compileTables() {
@@ -274,9 +276,6 @@ class WikiManager {
 					'notifyAgent' => true
 				];
 				$notifyServerAdministrators = false;
-				break;
-			case 'deletion':
-				$echoType = false;
 				break;
 			case 'rename':
 				$echoType = 'wiki-rename';
