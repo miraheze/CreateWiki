@@ -52,6 +52,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$pager = new RequestWikiQueuePager( $requester, $dbname, $status );
 		$table = $pager->getFullOutput();
+		
+		$this->getOutput()->addParserOutputContent( $table );
 	}
 
 	public function dummyProcess() {
