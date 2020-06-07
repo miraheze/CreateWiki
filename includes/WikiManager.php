@@ -141,7 +141,7 @@ class WikiManager {
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 
-		return true;
+		return null;
 	}
 
 	public function delete( bool $force = false ) {
@@ -183,7 +183,7 @@ class WikiManager {
 
 		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
 
-		return true;
+		return null;
 	}
 
 	public function rename( string $new ) {
@@ -213,7 +213,7 @@ class WikiManager {
 
 		Hooks::run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
 
-		return true;
+		return null;
 	}
 
 	private function compileTables() {
