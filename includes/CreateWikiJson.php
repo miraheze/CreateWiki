@@ -135,9 +135,11 @@ class CreateWikiJson {
 
 		Hooks::run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
 
-		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
-		
-		rename( "{$this->cacheDir}/{$this->wiki}.json.tmp", "{$this->cacheDir}/{$this->wiki}.json" );
+		$wikiJson = file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
+
+		if ( $wikiJson ) {
+			rename( "{$this->cacheDir}/{$this->wiki}.json.tmp", "{$this->cacheDir}/{$this->wiki}.json" );
+		}
 	}
 
 	private function newChanges() {
