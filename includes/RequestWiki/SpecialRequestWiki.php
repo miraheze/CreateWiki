@@ -113,6 +113,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 		} elseif ( preg_match( $wgCreateWikiBlacklistedSubdomains, $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
 			return false;
+		} elseif ( $subdomain == 'subdomain' ) {
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-badsubdomain' )->escaped() . '</div>' );
+			return false;
 		} else {
 			$url = $subdomain . '.' . $wgCreateWikiSubdomain;
 			$dbname = $subdomain . 'wiki';
