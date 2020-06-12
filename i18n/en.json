@@ -12,6 +12,7 @@
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "Your new Miraheze wiki: $1",
+	"createwiki-error-badsubdomain": "Wait! You forgot to specify a subdomain",
 	"createwiki-email-body": "Hello, you've recently requested a wiki at Miraheze and we are happy to tell you that it has now been created by one of our volunteers.\n\nThank you for choosing Miraheze, we wish you good luck with you new wiki!",
 	"createwiki-error-blacklisted": "The subdomain you have requested can not be created. Please either request a new subdomain or contact system administrators for help.",
 	"createwiki-error-dbexists": "A wiki with that database name already exists.",
