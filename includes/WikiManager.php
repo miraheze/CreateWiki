@@ -289,7 +289,7 @@ class WikiManager {
 			case 'request-declined':
 				$echoType = 'request-declined';
 				$echoExtra = [
-					'request-url' => SpecialPage::getTitleFor( 'Special:RequestWikiQueue', $specialData['id'] )->getFullURL(),
+					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
 					'reason' => $specialData['reason'],
 					'notifyAgent' => true
 				];
