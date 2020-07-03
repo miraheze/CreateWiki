@@ -5,6 +5,7 @@ use MediaWiki\Shell\Shell;
 
 class WikiManager {
 	private $dbname = null;
+	private $dbw = null;
 	private $cwdb = null;
 	private $exists = null;
 	private $tables = [];
