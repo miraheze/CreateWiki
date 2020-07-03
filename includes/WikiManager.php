@@ -54,7 +54,7 @@ class WikiManager {
 
 		$this->dbname = $dbname;
 		$this->dbw = $newDbw;
-		$this->cwdb = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$this->cwdb = $dbw;
 		$this->exists = (bool)$check;
 	}
 
