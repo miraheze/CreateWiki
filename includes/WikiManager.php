@@ -13,9 +13,9 @@ class WikiManager {
 	public function __construct( string $dbname ) {
 		global $wgCreateWikiDatabase, $wgCreateWikiDatabaseClusters;
 
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$this->cwdb = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
-		$check = $dbw->selectRow(
+		$check = $this->cwdb->selectRow(
 			'cw_wikis',
 			'wiki_dbname',
 			[
@@ -29,7 +29,7 @@ class WikiManager {
 			$lbs = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getAllMainLBs();
 
 			foreach ( $wgCreateWikiDatabaseClusters as $cluster ) {
-				$count = $dbw->selectRowCount(
+				$count = $this->cwdb->selectRowCount(
 					'cw_wikis',
 					'*',
 					[
@@ -46,7 +46,7 @@ class WikiManager {
 
 		} elseif ( !$check && !$wgCreateWikiDatabaseClusters ) {
 			// DB doesn't exist and we don't have clusters
-			$newDbw = $dbw;
+			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
 			$newDbw = wfGetDB( DB_MASTER, [], $dbname );
@@ -54,7 +54,6 @@ class WikiManager {
 
 		$this->dbname = $dbname;
 		$this->dbw = $newDbw;
-		$this->cwdb = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 		$this->exists = (bool)$check;
 	}
 
