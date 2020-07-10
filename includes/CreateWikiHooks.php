@@ -29,7 +29,7 @@ class CreateWikiHooks {
 			$updater->modifyExtensionField(
  				'cw_comments',
  				'cw_comment_user',
- 				__DIR__ . '/../sql/patches/patch-cw_comments-varchar-increase.sql'
+ 				__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
  			);
 		}
 
