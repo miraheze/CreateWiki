@@ -25,6 +25,12 @@ class CreateWikiHooks {
  				'cw_user',
  				__DIR__ . '/../sql/patches/patch-cw_requests-int.sql'
  			);
+
+			$updater->modifyExtensionField(
+ 				'cw_comments',
+ 				'cw_comment_user',
+ 				__DIR__ . '/../sql/patches/patch-cw_comments-text.sql'
+ 			);
 		}
 
 		if ( $wgCreateWikiDatabase === $wgDBname ) {
