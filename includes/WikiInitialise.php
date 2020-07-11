@@ -1,9 +1,10 @@
 <?php
 
 class WikiInitialise {
-	public $config = null;
-	public $hostname = null;
-	public $dbname = null;
+	private $cacheDir;
+	public $config;
+	public $hostname;
+	public $dbname;
 	public $missing = false;
 
 	public function __construct() {
@@ -31,11 +32,39 @@ class WikiInitialise {
 			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 		}
 
+		// Assign all known wikis
+		$this->config->wikis = array_keys( $databasesArray['combi'] );
+
+		// Handle wgServer and wgSitename
+		$suffixMatch = array_flip( $siteMatch );
+		$this->config->settings['wgServer']['default'] = 'https://' . $suffixMatch[ array_key_first( $suffixMatch ) ];
+		$this->config->settings['wgSitename']['default'] = 'No sitename set.';
+
+		foreach ( $databasesArray['combi'] as $db => $data ) {
+			foreach ( $suffixes as $suffix ) {
+				if ( substr( $db, -strlen( $suffix ) == $suffix ) ) {
+					$this->config->settings['wgServer'][$db] = $data['u'] ?? 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
+				}
+			}
+
+			$this->config->settings['wgSitename'][$db] = $data['s'];
+		}
+
+		// We need the CLI to be able to access 'deleted' wikis
+		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
+			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
+
+			$this->config->wikis = array_merge( $this->config->wikis, $deletedDatabases['databases'] );
+		}
+
+		// Now let's formalise our database list to the world
+		$this->config->settings['wgLocalDatabases']['default'] = $this->config->wikis;
+
 		// Let's found out what the database name is!
 		if ( defined( 'MW_DB' ) ) {
 			$this->dbname = MW_DB;
-		} elseif ( isset( $databasesArray['domains']['https://' . $this->hostname] ) ) {
-			$this->dbname = $databasesArray['domains']['https://' . $this->hostname];
+		} elseif ( isset( array_flip( $this->config->settings['wgServerName'] )['https://' . $this->hostname] ) ) {
+			$this->dbname = array_flip( $this->config->settings['wgServerName'] )['https://' . $this->hostname];
 		} else {
 			$explode = explode( '.', $this->hostname, 2 );
 
@@ -60,38 +89,6 @@ class WikiInitialise {
 
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
-
-		$this->config->wikis = $databasesArray['databases'];
-
-		$suffixMatch = array_flip( $siteMatch );
-		$domainsMatch = array_flip( $databasesArray['domains'] );
-		$serverArray = [
-			'default' => 'https://' . $suffixMatch[ array_key_first( $suffixMatch ) ],
-		];
-
-		// MediaWiki has a cross-wiki depedency in wikifarms. So we need to know what else exists here, but not their real domains - just accessible ones
-		foreach ( $databasesArray['databases'] as $db ) {
-			foreach ( $suffixes as $suffix ) {
-				if ( substr( $db, -strlen( $suffix ) == $suffix ) ) {
-					$serverArray[$db] = 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
-				}
-			}
-		}
-
-		$this->config->settings['wgServer'] = array_merge( $serverArray, $domainsMatch );
-
-		// Same as above but for sitenames
-		$this->config->settings['wgSitename'] = array_merge( [ 'default' => 'No sitename set.' ], $databasesArray['sitenames'] );
-
-		// We need the CLI to be able to access 'deleted' wikis
-		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
-			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
-
-			$this->config->wikis = array_merge( $this->config->wikis, $deletedDatabases['databases'] );
-		}
-
-		// Now let's formalise our database list to the world
-		$this->config->settings['wgLocalDatabases']['default'] = $this->config->wikis;
 
 		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
 			$this->missing = true;
