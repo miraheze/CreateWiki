@@ -62,8 +62,8 @@ class WikiInitialise {
 		// Let's found out what the database name is!
 		if ( defined( 'MW_DB' ) ) {
 			$this->dbname = MW_DB;
-		} elseif ( isset( array_flip( $this->config->settings['wgServerName'] )['https://' . $this->hostname] ) ) {
-			$this->dbname = array_flip( $this->config->settings['wgServerName'] )['https://' . $this->hostname];
+		} elseif ( isset( array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname] ) ) {
+			$this->dbname = array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname];
 		} else {
 			$explode = explode( '.', $this->hostname, 2 );
 
