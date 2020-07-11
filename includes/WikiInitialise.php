@@ -25,8 +25,7 @@ class WikiInitialise {
 		if ( !file_exists( $this->cacheDir . '/databases.json' ) ) {
 			$databasesArray = [
 				'timestamp' => 0,
-				'databases' => [],
-				'domains' => []
+				'combi' => []
 			];
 		} else {
 			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
@@ -83,8 +82,8 @@ class WikiInitialise {
 		// We use this quite a bit. If we don't have one, something is wrong
 		if ( is_null( $this->dbname ) ) {
 			$this->missing = true;
-		} elseif ( !count( $databasesArray['databases'] ) ) {
-			$databasesArray['databases'][] = $this->dbname;
+		} elseif ( !count( $databasesArray['combi'] ) ) {
+			$databasesArray['combi'][$this->dbname] = [];
 		}
 
 		// As soon as we know the database name, let's assign it
