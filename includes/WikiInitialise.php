@@ -142,7 +142,7 @@ class WikiInitialise {
 				$this->config->settings['wgNamespaceContentModels'][$this->dbname][(int)$ns['id']] = $ns['contentmodel'];
 
 				if ( $ns['content'] ) {
-					$this->config->settings['wgContentNamespaces'][$this->dbname][] = $ns['id'];
+					$this->config->settings['wgContentNamespaces'][$this->dbname][] = (int)$ns['id'];
 				}
 
 				if ( $ns['protection'] ) {
