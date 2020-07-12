@@ -4,10 +4,11 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 
 class WikiManager {
-	private $dbname = null;
-	private $dbw = null;
-	private $cwdb = null;
-	private $exists = null;
+	private $cluster;
+	private $dbname;
+	private $dbw;
+	private $cwdb;
+	private $exists;
 	private $tables = [];
 
 	public function __construct( string $dbname ) {
@@ -42,7 +43,8 @@ class WikiManager {
 
 			$candidateArray = array_keys( $clusterSize, min( $clusterSize ) );
 			$rand = rand( 0, count( $candidateArray ) - 1 );
-			$newDbw = $lbs[$candidateArray[$rand]]->getConnection( DB_MASTER );
+			$this->cluster = $candidateArray[$rand];
+			$newDbw = $lbs[$this->cluster]->getMaintenanceConnectionRef( DB_MASTER );
 
 		} elseif ( !$check && !$wgCreateWikiDatabaseClusters ) {
 			// DB doesn't exist and we don't have clusters
@@ -90,6 +92,7 @@ class WikiManager {
 			'cw_wikis',
 			[
 				'wiki_dbname' => $wiki,
+				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,
