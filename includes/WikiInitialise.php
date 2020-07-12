@@ -6,6 +6,7 @@ class WikiInitialise {
 	public $hostname;
 	public $dbname;
 	public $missing = false;
+	public $wikiDBClusters = [];
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
@@ -47,6 +48,7 @@ class WikiInitialise {
 			}
 
 			$this->config->settings['wgSitename'][$db] = $data['s'];
+			$this->wikiDBClusters[$db] = $data['c'];
 		}
 
 		// We need the CLI to be able to access 'deleted' wikis
