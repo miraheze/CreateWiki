@@ -29,7 +29,7 @@ class ChangeDBCluster extends Maintenance {
 			$this->updateDbCluster( $wgDBname );
 
 			$this->recacheDBListJson();
-			$this->recacheWikiJson();
+			$this->recacheWikiJson( $wgDBname );
 			return;
 		}
 
