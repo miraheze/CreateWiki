@@ -11,8 +11,8 @@ class ChangeDBCluster extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
-		$this->addOption( 'file', 'Path to file where the wikinames are store. Must be one wikidb name per line. (Optional, fallsback to current dbname)', false, true );
 		$this->addOption( 'db-cluster', 'Sets the wikis requested to a different db cluster.', true, true );
+		$this->addOption( 'file', 'Path to file where the wikinames are store. Must be one wikidb name per line. (Optional, fallsback to current dbname)', false, true );
 	}
 
 	public function execute() {
@@ -31,6 +31,8 @@ class ChangeDBCluster extends Maintenance {
 			}
 		} else {
 			$this->updateDbCluster( $wgDBname );
+
+			$this->recacheJson();
 			return;
 		}
 
@@ -42,6 +44,8 @@ class ChangeDBCluster extends Maintenance {
 
 			$this->updateDbCluster( $line );
 		}
+
+		$this->recacheJson();
 	}
 
 	private function updateDbCluster( string $wiki ) {
@@ -55,6 +59,14 @@ class ChangeDBCluster extends Maintenance {
 			],
 			__METHOD__
 		);
+	}
+
+	private function recacheJson() {
+		global $wgCreateWikiGlobalWiki;
+
+		$cWJ = new CreateWikiJson( $wgCreateWikiGlobalWiki );
+		$cWJ->resetDatabaseList();
+		$cWJ->update();
 	}
 }
 
