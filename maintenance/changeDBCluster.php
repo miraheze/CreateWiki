@@ -16,7 +16,11 @@ class ChangeDBCluster extends Maintenance {
 	}
 
 	public function execute() {
-		global $wgCreateWikiDatabase, $wgDBname;
+		global $wgCreateWikiDatabase, $wgCreateWikiDatabaseClusters, $wgDBname;
+		
+		if ( !$wgCreateWikiDatabaseClusters ) {
+			$this->fatalError( "You have not set \$wgCreateWikiDatabaseClusters." );
+		}
 
 		$this->dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
