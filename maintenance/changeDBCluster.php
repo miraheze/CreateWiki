@@ -28,7 +28,8 @@ class ChangeDBCluster extends Maintenance {
 		} else {
 			$this->updateDbCluster( $wgDBname );
 
-			$this->recacheJson();
+			$this->recacheDBListJson();
+			$this->recacheWikiJson();
 			return;
 		}
 
@@ -39,9 +40,10 @@ class ChangeDBCluster extends Maintenance {
 			}
 
 			$this->updateDbCluster( $line );
+			$this->recacheWikiJson( $line );
 		}
 
-		$this->recacheJson();
+		$this->recacheDBListJson();
 	}
 
 	private function updateDbCluster( string $wiki ) {
@@ -57,7 +59,13 @@ class ChangeDBCluster extends Maintenance {
 		);
 	}
 
-	private function recacheJson() {
+	private function recacheWikiJson( string $wiki ) {
+		$cWJ = new CreateWikiJson( $wiki );
+		$cWJ->resetWiki();
+		$cWJ->update();
+	}
+
+	private function recacheDBListJson() {
 		global $wgCreateWikiGlobalWiki;
 
 		$cWJ = new CreateWikiJson( $wgCreateWikiGlobalWiki );
