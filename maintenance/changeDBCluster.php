@@ -6,8 +6,8 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
-class ChangeDbCluster extends Maintenance {
-	private $dbObj = null;
+class ChangeDBCluster extends Maintenance {
+	private $dbw = null;
 
 	public function __construct() {
 		parent::__construct();
@@ -18,7 +18,7 @@ class ChangeDbCluster extends Maintenance {
 	public function execute() {
 		global $wgCreateWikiDatabase, $wgDBname;
 
-		$this->dbObj = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$this->dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
 
 		if ( (bool)$this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
@@ -41,7 +41,7 @@ class ChangeDbCluster extends Maintenance {
 	}
 
 	private function updateDbCluster( string $wiki ) {
-		$this->dbObj->update(
+		$this->dbw->update(
 			'cw_wikis',
 			[
 				'wiki_dbcluster' => (string)$this->getOption( 'db-cluster' ),
@@ -54,5 +54,5 @@ class ChangeDbCluster extends Maintenance {
 	}
 }
 
-$maintClass = 'ChangeDbCluster';
+$maintClass = 'ChangeDBCluster';
 require_once RUN_MAINTENANCE_IF_MAIN;
