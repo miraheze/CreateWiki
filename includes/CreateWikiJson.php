@@ -79,16 +79,19 @@ class CreateWikiJson {
 
 		foreach ( $allWikis as $wiki ) {
 			if ( $wiki->wiki_deleted == 1 ) {
-				$deletedList[] = $wiki->wiki_dbname;
-			}
+				$deletedList[$wiki->wiki_dbname] = [
+					's' => $wiki->wiki_sitename,
+					'c' => $wiki->wiki_dbcluster
+				];
+			} else {
+				$combiList[$wiki->wiki_dbname] = [
+					's' => $wiki->wiki_sitename,
+					'c' => $wiki->wiki_dbcluster
+				];
 
-			$combiList[$wiki->wiki_dbname] = [
-				's' => $wiki->wiki_sitename,
-				'c' => $wiki->wiki_dbcluster
-			];
-
-			if ( !is_null( $wiki->wiki_url ) ) {
-				$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
+				if ( !is_null( $wiki->wiki_url ) ) {
+					$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
+				}
 			}
 		}
 
