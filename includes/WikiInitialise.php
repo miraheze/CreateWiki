@@ -32,6 +32,14 @@ class WikiInitialise {
 			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 		}
 
+		if ( !file_exists( $this->cacheDir . '/deleted.json' ) ) {
+			$deletedDatabases = [
+				'databases' => []
+			];
+		} else {
+			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
+		}
+
 		// Assign all known wikis
 		$this->config->wikis = array_keys( $databasesArray['combi'] );
 
@@ -51,16 +59,14 @@ class WikiInitialise {
 			$this->wikiDBClusters[$db] = $data['c'];
 		}
 
+		foreach ( $deletedDatabases['databases'] as $db => $data ) {
+			$this->config->settings['wgSitename'][$db] = $data['s'];
+			$this->wikiDBClusters[$db] = $data['c'];
+		}
+
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
-			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
-
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
-
-			foreach ( $deletedDatabases['databases'] as $db => $data ) {
-				$this->config->settings['wgSitename'][$db] = $data['s'];
-				$this->wikiDBClusters[$db] = $data['c'];
-			}
 		}
 
 		// Now let's formalise our database list to the world
