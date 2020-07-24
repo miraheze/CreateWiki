@@ -57,7 +57,7 @@ class WikiInitialise {
 
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['combi'] ) );
 
-			foreach ( $deletedDatabasesArray['combi'] as $db => $data ) {
+			foreach ( $deletedDatabases['combi'] as $db => $data ) {
 				$this->config->settings['wgSitename'][$db] = $data['s'];
 				$this->wikiDBClusters[$db] = $data['c'];
 			}
