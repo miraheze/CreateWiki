@@ -62,7 +62,6 @@ class WikiInitialise {
 				$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
 			}
 
-			
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
 
 			foreach ( $deletedDatabases['databases'] as $db => $data ) {
