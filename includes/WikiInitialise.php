@@ -53,8 +53,16 @@ class WikiInitialise {
 
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
-			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
+			// Let's fake a database list - default config should suffice
+			if ( !file_exists( $this->cacheDir . '/deleted.json' ) ) {
+				$deletedDatabases = [
+					'databases' => []
+				];
+			} else {
+				$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
+			}
 
+			
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
 
 			foreach ( $deletedDatabases['databases'] as $db => $data ) {
