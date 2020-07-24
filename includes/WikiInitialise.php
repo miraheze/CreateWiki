@@ -53,9 +53,14 @@ class WikiInitialise {
 
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
-			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
+			$deletedDatabasesArray = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
 
-			$this->config->wikis = array_merge( $this->config->wikis, $deletedDatabases['databases'] );
+			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabasesArray['combi'] ) );
+
+			foreach ( $deletedDatabasesArray['combi'] as $db => $data ) {
+				$this->config->settings['wgSitename'][$db] = $data['s'];
+				$this->wikiDBClusters[$db] = $data['c'];
+			}
 		}
 
 		// Now let's formalise our database list to the world
