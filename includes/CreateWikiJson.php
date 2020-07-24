@@ -79,21 +79,29 @@ class CreateWikiJson {
 
 		foreach ( $allWikis as $wiki ) {
 			if ( $wiki->wiki_deleted == 1 ) {
-				$deletedList[] = $wiki->wiki_dbname;
-			}
+				$deletedList[$wiki->wiki_dbname] = [
+					's' => $wiki->wiki_sitename,
+					'c' => $wiki->wiki_dbcluster
+				];
 
-			$combiList[$wiki->wiki_dbname] = [
-				's' => $wiki->wiki_sitename,
-				'c' => $wiki->wiki_dbcluster
-			];
+				if ( !is_null( $wiki->wiki_url ) ) {
+					$deletedList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
+				}
+			} else {
 
-			if ( !is_null( $wiki->wiki_url ) ) {
-				$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
+				$combiList[$wiki->wiki_dbname] = [
+					's' => $wiki->wiki_sitename,
+					'c' => $wiki->wiki_dbcluster
+				];
+
+				if ( !is_null( $wiki->wiki_url ) ) {
+					$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
+				}
 			}
 		}
 
 		$dbJson = file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
-		$deletedJson = file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
+		$deletedJson = file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $deletedList ] ), LOCK_EX );
 
 		if ( $dbJson ) {
 			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
