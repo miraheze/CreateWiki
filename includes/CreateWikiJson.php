@@ -83,12 +83,7 @@ class CreateWikiJson {
 					's' => $wiki->wiki_sitename,
 					'c' => $wiki->wiki_dbcluster
 				];
-
-				if ( !is_null( $wiki->wiki_url ) ) {
-					$deletedList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
-				}
 			} else {
-
 				$combiList[$wiki->wiki_dbname] = [
 					's' => $wiki->wiki_sitename,
 					'c' => $wiki->wiki_dbcluster
