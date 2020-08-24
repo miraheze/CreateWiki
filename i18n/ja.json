@@ -45,7 +45,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "ウィキの申請が却下されたときに通知する。",
 	"log-description-farmer": "これはウィキ作成の追跡ログです。",
 	"logentry-farmer-createwiki": "$1 がウィキ \"$4\" を作成しました",
-	"logentry-farmer-requestwiki": "$1 が $7 でウィキ \"$4\" (言語: $5; 非公開: $6) をリクエストしました。",
+	"logentry-farmer-requestwiki": "$1 が $7 でウィキ \"$4\" (言語: $5; 非公開: $6) をリクエストしました",
 	"logentry-farmer-requestwikiedit": "$1 がウィキの申請 #$4 を編集しました",
 	"notification-createwiki-wiki-creation-email-subject": "あなたのウィキ$1が作成されました！",
 	"notification-createwiki-wiki-creation-visitwiki-label": "ウィキを訪れる",
