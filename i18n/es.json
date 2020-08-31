@@ -39,7 +39,7 @@
 	"createwiki-legend": "Crear un wiki",
 	"createwiki-success": "Se creó el wiki correctamente.",
 	"echo-category-title-wiki-creation": "Creación de wiki",
-	"echo-category-title-wiki-rename": "Renombramiento de wiki",
+	"echo-category-title-wiki-rename": "Cambio de nombre de wiki",
 	"echo-category-title-request-declined": "Solicitud de wiki rechazada",
 	"echo-pref-tooltip-wiki-creation": "Notificarme cuando mi wiki se haya creado.",
 	"echo-pref-tooltip-wiki-rename": "Notificarme si mi wiki es renombrada.",
