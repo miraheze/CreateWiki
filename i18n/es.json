@@ -42,7 +42,7 @@
 	"echo-category-title-wiki-rename": "Cambio de nombre de wiki",
 	"echo-category-title-request-declined": "Solicitud de wiki rechazada",
 	"echo-pref-tooltip-wiki-creation": "Notificarme cuando mi wiki se haya creado.",
-	"echo-pref-tooltip-wiki-rename": "Notificarme si mi wiki es renombrada.",
+	"echo-pref-tooltip-wiki-rename": "Notificarme si se cambia el nombre de mi wiki.",
 	"echo-pref-tooltip-wiki-request-declined": "Notificarme si mi solicitud de wiki es rechazada.",
 	"log-description-farmer": "Este registro rastrea las creaciones wiki.",
 	"logentry-farmer-createwiki": "$1 creó el wiki «$4»",
