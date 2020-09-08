@@ -4,40 +4,39 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 
 class SpecialRequestWiki extends FormSpecialPage {
+	private $config;
+
 	public function __construct() {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
         public function execute( $par ) {
-		global $wgCreateWikiUseCustomDomains, $wgCreateWikiCustomDomainPage;
+			$request = $this->getRequest();
+			$out = $this->getOutput();
+			$this->setParameter( $par );
+			$this->setHeaders();
 
-                $request = $this->getRequest();
-                $out = $this->getOutput();
-                $this->setParameter( $par );
-                $this->setHeaders();
+			if ( !$this->getUser()->isLoggedIn() ) {
+				$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
+				$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
+				return false;
+			}
 
-                if ( !$this->getUser()->isLoggedIn() ) {
-                        $loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
-                        $out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
-                        return false;
-                }
+			$this->checkExecutePermissions( $this->getUser() );
 
-                $this->checkExecutePermissions( $this->getUser() );
+			if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
+				$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
+				$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
+			}
 
-                if ( !$request->wasPosted() && $wgCreateWikiUseCustomDomains && $wgCreateWikiCustomDomainPage ) {
-                        $customdomainurl = Title::newFromText( $wgCreateWikiCustomDomainPage )->getFullURL();
-                        $out->addWikiMsg( 'requestwiki-header', $customdomainurl );
-                }
-
-                $form = $this->getForm();
-                if ( $form->show() ) {
-                        $this->onSuccess();
-                }
+			$form = $this->getForm();
+			if ( $form->show() ) {
+				$this->onSuccess();
+			}
         }
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
-
 		$formDescriptor = [
 			'subdomain' => [
 				'type' => 'text',
@@ -59,17 +58,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 			]
 		];
 
-		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
+		if ( $this->config->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $wgCreateWikiCategories,
+				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
 				'name' => 'rwCategory',
 			];
 		}
 
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
@@ -89,15 +88,13 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiSubdomain, $wgCreateWikiBlacklistedSubdomains;
-
 		$subdomain = strtolower( $formData['subdomain'] );
 
-		if ( strpos( $subdomain, $wgCreateWikiSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $wgCreateWikiSubdomain, '', $subdomain );
+		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
+			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
 		}
 
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$private = $formData['private'] ? 1 : 0;
 		} else {
 			$private = 0;
@@ -110,11 +107,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
 			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 			return false;
-		} elseif ( preg_match( $wgCreateWikiBlacklistedSubdomains, $subdomain ) ) {
+		} elseif ( preg_match( $this->config->get( 'CreateWikiBlacklistedSubdomains' ), $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
 			return false;
 		} else {
-			$url = $subdomain . '.' . $wgCreateWikiSubdomain;
+			$url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
 			$dbname = $subdomain . 'wiki';
 		}
 

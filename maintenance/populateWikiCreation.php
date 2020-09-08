@@ -23,18 +23,21 @@
 * @version 1.0
 */
 
+use MediaWiki\MediaWikiServices;
+
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
 class PopulateWikiCreation extends Maintenance {
+	private $config;
+
 	public function __construct() {
 		parent::__construct();
-		 $this->mDescription = "Populates wiki_creation column in cw_wikis table";
+		$this->mDescription = "Populates wiki_creation column in cw_wikis table";
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute() {
-		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki;
-
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbw->select(
 			'cw_wikis',
@@ -50,7 +53,7 @@ class PopulateWikiCreation extends Maintenance {
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
 
-			$dbw->selectDB( $wgCreateWikiGlobalWiki );
+			$dbw->selectDB( $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 			$res = $dbw->selectRow(
 				'logging',
@@ -65,7 +68,7 @@ class PopulateWikiCreation extends Maintenance {
 				]
 			);
 
-			$dbw->selectDB( $wgCreateWikiDatabase );
+			$dbw->selectDB( $this->config->get( 'CreateWikiDatabase' ) );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {		
  				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );		

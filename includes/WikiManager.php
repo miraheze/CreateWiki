@@ -4,6 +4,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 
 class WikiManager {
+	private $config;
 	private $cluster;
 	private $dbname;
 	private $dbw;
@@ -12,9 +13,8 @@ class WikiManager {
 	private $tables = [];
 
 	public function __construct( string $dbname ) {
-		global $wgCreateWikiDatabase, $wgCreateWikiDatabaseClusters;
-
-		$this->cwdb = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->cwdb = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
 			'cw_wikis',
@@ -25,11 +25,11 @@ class WikiManager {
 			__METHOD__
 		);
 
-		if ( !$check && $wgCreateWikiDatabaseClusters ) {
+		if ( !$check && $this->config->get( 'CreateWikiDatabaseClusters' ) ) {
 			// DB doesn't exist and we have clusters
 			$lbs = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getAllMainLBs();
 
-			foreach ( $wgCreateWikiDatabaseClusters as $cluster ) {
+			foreach ( $this->config->get( 'CreateWikiDatabaseClusters' ) as $cluster ) {
 				$count = $this->cwdb->selectRowCount(
 					'cw_wikis',
 					'*',
@@ -53,7 +53,7 @@ class WikiManager {
 			)->wiki_dbname;
 			$newDbw = $lbs[$this->cluster]->getConnection( DB_MASTER, [], $clusterDB );
 
-		} elseif ( !$check && !$wgCreateWikiDatabaseClusters ) {
+		} elseif ( !$check && !$this->config->get( 'CreateWikiDatabaseClusters' ) ) {
 			// DB doesn't exist and we don't have clusters
 			$newDbw = $this->cwdb;
 		} else {
@@ -75,8 +75,6 @@ class WikiManager {
 		string $actor,
 		string $reason
 	) {
-		global $IP, $wgCreateWikiGlobalWiki, $wgCreateWikiSQLfiles;
-
 		$wiki = $this->dbname;
 
 		if ( $this->exists ) {
@@ -112,14 +110,16 @@ class WikiManager {
 
 		$this->recacheJson();
 
-		foreach ( $wgCreateWikiSQLfiles as $sqlfile ) {
+		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
 		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
 
+		$blankConfig = new GlobalVarConfig( '' );
+
 		Shell::makeScriptCommand(
-			"$IP/extensions/CreateWiki/maintenance/populateMainPage.php",
+			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/populateMainPage.php',
 			[
 				'--wiki', $wiki
 			]
@@ -127,7 +127,7 @@ class WikiManager {
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
 			Shell::makeScriptCommand(
-				"$IP/extensions/CentralAuth/maintenance/createLocalAccount.php",
+				$blankConfig->get( 'IP' ) . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
 				[
 					$requester,
 					'--wiki', $wiki
@@ -136,7 +136,7 @@ class WikiManager {
 		}
 
 		Shell::makeScriptCommand(
-			"$IP/maintenance/createAndPromote.php",
+			$blankConfig->get( 'IP' ) . '/maintenance/createAndPromote.php',
 			[
 				$requester,
 				'--bureaucrat',
@@ -154,8 +154,6 @@ class WikiManager {
 	}
 
 	public function delete( bool $force = false ) {
-		global $wgCreateWikiStateDays;
-
 		$this->compileTables();
 
 		$wiki = $this->dbname;
@@ -175,7 +173,7 @@ class WikiManager {
 		$deletedWiki = (bool)$row->wiki_deleted;
 
 		// Return error if: wiki is not deleted, force is not used & wiki 
-		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$wgCreateWikiStateDays['deleted'] * 86400 ) ) {
+		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
 
@@ -236,10 +234,8 @@ class WikiManager {
 	}
 
 	public function checkDatabaseName( string $dbname, bool $rename = false ) {
-		global $wgConf;
-
 		$suffixed = false;
-		foreach( $wgConf->suffixes as $suffix ) {
+		foreach( $this->config->get( 'Conf' )->suffixes as $suffix ) {
 			if ( substr( $dbname, -strlen( $suffix ) ) === $suffix ) {
 				$suffixed = true;
 				break;
@@ -260,9 +256,7 @@ class WikiManager {
 	}
 
 	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
-		global $wgCreateWikiGlobalWiki;
-
-		$logDBConn = wfGetDB( DB_MASTER, [], $loggingWiki ?? $wgCreateWikiGlobalWiki );
+		$logDBConn = wfGetDB( DB_MASTER, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( User::newFromName( $actor ) );
@@ -274,13 +268,11 @@ class WikiManager {
 	}
 
 	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
-		global $wgCreateWikiUseEchoNotifications, $wgCreateWikiEmailNotifications, $wgPasswordSender, $wgSitename, $wgCreateWikiNotificationEmail, $wgCreateWikiSubdomain;
-
 		switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
 				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$wgCreateWikiSubdomain}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
@@ -289,7 +281,7 @@ class WikiManager {
 			case 'rename':
 				$echoType = 'wiki-rename';
 				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$wgCreateWikiSubdomain}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
@@ -308,7 +300,7 @@ class WikiManager {
 				break;
 		}
 
-		if ( $wgCreateWikiUseEchoNotifications && $echoType ) {
+		if ( $this->config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
 			foreach ( (array)$receivers as $receiver ) {
 				EchoEvent::create(
 					[
@@ -320,7 +312,7 @@ class WikiManager {
 			}
 		}
 
-		if ( $wgCreateWikiEmailNotifications && $type == 'creation' ) {
+		if ( $this->config->get( 'CreateWikiEmailNotifications' ) && $type == 'creation' ) {
 			$notifyEmails = [];
 
 			foreach ( (array)$receivers as $receiver ) {
@@ -328,10 +320,10 @@ class WikiManager {
 			}
 
 			if ( $notifyServerAdministrators ) {
-				$notifyEmails[] = new MailAddress( $wgCreateWikiNotificationEmail, 'Server Administrators' );
+				$notifyEmails[] = new MailAddress( $this->config->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
 			}
 
-			$from = new MailAddress( $wgPasswordSender, 'CreateWiki on ' . $wgSitename );
+			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
 			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
 			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 
@@ -340,9 +332,7 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-		global $wgCreateWikiGlobalWiki;
-
-		$cWJ = new CreateWikiJson( $wiki ?? $wgCreateWikiGlobalWiki );
+		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}

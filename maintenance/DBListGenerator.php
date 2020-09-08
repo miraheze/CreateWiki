@@ -1,17 +1,20 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 require_once __DIR__ . '/../../../maintenance/Maintenance.php';
 
 class CreateWikiDBListGenerator extends Maintenance {
+	private $config;
+
 	public function __construct() {
 		parent::__construct();
 		$this->requireExtension( 'CreateWiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute() {
-		global $wgCreateWikiDBDirectory, $wgCreateWikiDatabase;
-
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbw->select(
 			'cw_wikis',
@@ -60,17 +63,17 @@ class CreateWikiDBListGenerator extends Maintenance {
 			}
 		}
 
-		file_put_contents( "$wgCreateWikiDBDirectory/all.dblist.tmp", implode( "\n", $allWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/private.dblist.tmp", implode( "\n", $privateWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/closed.dblist.tmp", implode( "\n", $closedWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/inactive.dblist.tmp", implode( "\n", $inactiveWikis ), LOCK_EX );
-		file_put_contents( "$wgCreateWikiDBDirectory/deleted.dblist.tmp", implode( "\n", $deletedWikis ), LOCK_EX );
+		file_put_contents( $this->config->get( 'CreateWikiDBDirectory' ) . '/all.dblist.tmp', implode( "\n", $allWikis ), LOCK_EX );
+		file_put_contents( $this->config->get( 'CreateWikiDBDirectory' ) . '/private.dblist.tmp', implode( "\n", $privateWikis ), LOCK_EX );
+		file_put_contents( $this->config->get( 'CreateWikiDBDirectory' ) . '/closed.dblist.tmp', implode( "\n", $closedWikis ), LOCK_EX );
+		file_put_contents( $this->config->get( 'CreateWikiDBDirectory' ) . '/inactive.dblist.tmp', implode( "\n", $inactiveWikis ), LOCK_EX );
+		file_put_contents( $this->config->get( 'CreateWikiDBDirectory' ) . '/deleted.dblist.tmp', implode( "\n", $deletedWikis ), LOCK_EX );
 
-		rename( "$wgCreateWikiDBDirectory/all.dblist.tmp", "$wgCreateWikiDBDirectory/all.dblist" );
-		rename( "$wgCreateWikiDBDirectory/private.dblist.tmp", "$wgCreateWikiDBDirectory/private.dblist" );
-		rename( "$wgCreateWikiDBDirectory/closed.dblist.tmp", "$wgCreateWikiDBDirectory/closed.dblist" );
-		rename( "$wgCreateWikiDBDirectory/inactive.dblist.tmp", "$wgCreateWikiDBDirectory/inactive.dblist" );
-		rename( "$wgCreateWikiDBDirectory/deleted.dblist.tmp", "$wgCreateWikiDBDirectory/deleted.dblist" );
+		rename( $this->config->get( 'CreateWikiDBDirectory' ) . '/all.dblist.tmp', $this->config->get( 'CreateWikiDBDirectory' ) . '/all.dblist' );
+		rename( $this->config->get( 'CreateWikiDBDirectory' ) . '/private.dblist.tmp', $this->config->get( 'CreateWikiDBDirectory' ) . '/private.dblist' );
+		rename( $this->config->get( 'CreateWikiDBDirectory' ) . '/closed.dblist.tmp', $this->config->get( 'CreateWikiDBDirectory' ) . '/closed.dblist' );
+		rename( $this->config->get( 'CreateWikiDBDirectory' ) . '/inactive.dblist.tmp', $this->config->get( 'CreateWikiDBDirectory' ) . '/inactive.dblist' );
+		rename( $this->config->get( 'CreateWikiDBDirectory' ) . '/deleted.dblist.tmp', $this->config->get( 'CreateWikiDBDirectory' ) . '/deleted.dblist' );
 	}
 }
 

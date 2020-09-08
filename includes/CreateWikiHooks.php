@@ -1,9 +1,14 @@
 <?php
-class CreateWikiHooks {
-	public static function fnCreateWikiSchemaUpdates( DatabaseUpdater $updater ) {
-		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki, $wgDBname;
 
-		if ( $wgCreateWikiGlobalWiki === $wgDBname ) {
+use MediaWiki\MediaWikiServices;
+
+class CreateWikiHooks {
+	public static function getConfig( string $var ) {
+		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );
+	}
+
+	public static function fnCreateWikiSchemaUpdates( DatabaseUpdater $updater ) {
+		if ( self::getConfig( 'CreateWikiGlobalWiki' ) === self::getConfig( 'DBname' ) ) {
 			$updater->addExtensionTable(
 				'cw_requests',
 				__DIR__ . '/../sql/cw_requests.sql'
@@ -33,7 +38,7 @@ class CreateWikiHooks {
  			);
 		}
 
-		if ( $wgCreateWikiDatabase === $wgDBname ) {
+		if ( self::getConfig( 'CreateWikiDatabase' ) === self::getConfig( 'DBname' ) ) {
 			$updater->addExtensionTable(
 				'cw_wikis',
 				__DIR__ . '/../sql/cw_wikis.sql'
@@ -87,9 +92,9 @@ class CreateWikiHooks {
 	}
 
 	public static function onSetupAfterCache() {
-		global $wgDBname, $wi, $wgConf, $wgGroupPermissions;
+		global $wi, $wgConf, $wgGroupPermissions;
 
-		$cWJ = new CreateWikiJson( $wgDBname );
+		$cWJ = new CreateWikiJson( self::getConfig( 'DBname' ) );
 
 		$cWJ->update();
 
@@ -100,10 +105,10 @@ class CreateWikiHooks {
 
 		// Unfortunately we don't exist in a world where no one sets
 		// any defaults - so we have to override our version over exts.
-		$wgConf->extractAllGlobals( $wgDBname );
+		$wgConf->extractAllGlobals( self::getConfig( 'DBname' ) );
 
 		// Safety Catch!
-		if ( $wgConf->settings['cwPrivate'][$wgDBname] ) {
+		if ( $wgConf->settings['cwPrivate'][self::getConfig( 'DBname' )] ) {
 			$wgGroupPermissions['*']['read'] = false;
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {

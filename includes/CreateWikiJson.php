@@ -1,21 +1,25 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
 use Wikimedia\AtEase\AtEase;
 
 class CreateWikiJson {
-	private $dbr = null;
-	private $cache = null;
-	private $wiki = null;
-	private $databaseArray = [];
-	private $wikiArray = [];
-	private $cacheDir = null;
+	private $config;
+	private $dbr;
+	private $cache;
+	private $wiki;
+	private $databaseArray;
+	private $wikiArray;
+	private $cacheDir;
+	private $databaseTimestamp;
+	private $wikiTimestamp;
+	private $initTime;
 
 	public function __construct( string $wiki ) {
-		global $wgCreateWikiDatabase, $wgCreateWikiCacheDirectory;
-
-		$this->dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiDatabase );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$this->cache = ObjectCache::getLocalClusterInstance();
-		$this->cacheDir = $wgCreateWikiCacheDirectory;
+		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
 
 		AtEase::suppressWarnings();

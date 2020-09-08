@@ -3,8 +3,11 @@
 use MediaWiki\MediaWikiServices;
 
 class SpecialRequestWikiEdit extends SpecialPage {
+	private $config;
+
 	public function __construct() {
 		parent::__construct( 'RequestWikiEdit', 'requestwiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute( $par ) {
@@ -39,8 +42,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	public function onSubmitRedirectToEditForm( array $params ) {
-		global $wgRequest;
-
 		if ( $params['requestid'] !== '' ) {
 			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullURL() . '/' . $params['requestid'] );
 		} else {
@@ -51,8 +52,6 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	private function showEditForm( $id ) {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis;
-
 		$out = $this->getOutput();
 
 		$dbr = wfGetDB( DB_REPLICA );
@@ -113,7 +112,7 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			],
 		];
 
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
@@ -122,11 +121,11 @@ class SpecialRequestWikiEdit extends SpecialPage {
 			];
 		}
 
-		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
+		if ( $this->config->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $wgCreateWikiCategories,
+				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'default' => $res->cw_category,
 				'name' => 'rweCategory',
 			];
@@ -155,17 +154,15 @@ class SpecialRequestWikiEdit extends SpecialPage {
 	}
 
 	public function onSubmitInput( array $params ) {
-		global $wgCreateWikiUsePrivateWikis, $wgCreateWikiSubdomain;
-
 		$dbname = $params['subdomain'] . 'wiki';
-		$fullurl = $params['subdomain'] . '.' . $wgCreateWikiSubdomain;
+		$fullurl = $params['subdomain'] . '.' . $this->config->get( 'CreateWikiSubdomain' );
 
 		if ( !ctype_alnum( $params['subdomain'] ) ) {
 			$this->getOutput()->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
 			return false;
 		}
 
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$private = $params['private'] ? 1 : 0;
 		} else {
 			$private = 0;

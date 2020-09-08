@@ -1,12 +1,16 @@
 <?php
+
+use MediaWiki\MediaWikiServices;
+
 class SpecialCreateWiki extends FormSpecialPage {
+	private $config;
+
 	public function __construct() {
 		parent::__construct( 'CreateWiki', 'createwiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	protected function getFormFields() {
-		global $wgCreateWikiUseCategories, $wgCreateWikiCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiCDBDirectory;
-
 		$par = $this->par;
 		$request = $this->getRequest();
 
@@ -42,7 +46,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			]
 		];
 
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
@@ -51,11 +55,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 		}
 
 
-		if ( $wgCreateWikiUseCategories && $wgCreateWikiCategories ) {
+		if ( $this->config->get( 'CreateWikiUseCategories' ) && $this->config->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $wgCreateWikiCategories,
+				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'name' => 'cwCategory',
 				'default' => 'uncategorised',
 			];
@@ -73,17 +77,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		global $IP, $wgCreateWikiDatabase, $wgCreateWikiSQLfiles, $wgDBname,
-		$wgCreateWikiUseCategories, $wgCreateWikiUsePrivateWikis, $wgCreateWikiUseEchoNotifications,
-		$wgCreateWikiEmailNotifications;
-
-		if ( $wgCreateWikiUsePrivateWikis ) {
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$private = $formData['private'];
 		} else {
 			$private = 0;
 		}
 
-		if ( $wgCreateWikiUseCategories ) {
+		if ( $this->config->get( 'CreateWikiUseCategories' ) ) {
 			$category = $formData['category'];
 		} else {
 			$category = 'uncategorised';

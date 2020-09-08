@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -7,18 +9,18 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 class ChangeDBCluster extends Maintenance {
+	private $config;
 	private $dbw = null;
 
 	public function __construct() {
 		parent::__construct();
 		$this->addOption( 'db-cluster', 'Sets the wikis requested to a different db cluster.', true, true );
 		$this->addOption( 'file', 'Path to file where the wikinames are store. Must be one wikidb name per line. (Optional, fallsback to current dbname)', false, true );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute() {
-		global $wgCreateWikiDatabase, $wgDBname;
-
-		$this->dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase );
+		$this->dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		if ( (bool)$this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
@@ -26,10 +28,10 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( "Unable to read file, exiting" );
 			}
 		} else {
-			$this->updateDbCluster( $wgDBname );
+			$this->updateDbCluster( $this->config->get( 'DBname' ) );
 
 			$this->recacheDBListJson();
-			$this->recacheWikiJson( $wgDBname );
+			$this->recacheWikiJson( $this->config->get( 'DBname' ) );
 			return;
 		}
 
@@ -66,9 +68,7 @@ class ChangeDBCluster extends Maintenance {
 	}
 
 	private function recacheDBListJson() {
-		global $wgCreateWikiGlobalWiki;
-
-		$cWJ = new CreateWikiJson( $wgCreateWikiGlobalWiki );
+		$cWJ = new CreateWikiJson( $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}

@@ -3,18 +3,22 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiRequestViewer {
+	private $config;
+
+	public function __construct() {
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+	}
+
 	public function getFormDescriptor(
 		int $requestid,
 		IContextSource $context
 	) {
-		global $wgCreateWikiGlobalWiki, $wgCreateWikiUsePrivateWikis;
-
 		OutputPage::setupOOUI(
 			strtolower( $context->getSkin()->getSkinName() ),
 			$context->getLanguage()->getDir()
 		);
 
-		$dbr = wfGetDB( DB_REPLICA, [], $wgCreateWikiGlobalWiki );
+		$dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$res = $dbr->selectRow( 'cw_requests',
 			[
 				'cw_user',
@@ -236,14 +240,12 @@ class RequestWikiRequestViewer {
 		HTMLForm $form,
 		int $requestid
 	) {
-		global $wgCreateWikiGlobalWiki;
-
 		if ( isset( $formData['edit'] ) && $formData['edit'] ) {
 			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullURL() . '/' . $requestid );
 			return null;
 		}
 
-		$dbw = wfGetDB( DB_MASTER, [], $wgCreateWikiGlobalWiki );
+		$dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$reqRow = $dbw->selectRow(
 			'cw_requests',

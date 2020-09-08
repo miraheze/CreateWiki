@@ -171,6 +171,9 @@
 			"value": false
 		}
 	},
+	"ConfigRegistry": {
+		"createwiki": "GlobalVarConfig::newInstance"
+	},
 	"callback": "CreateWikiHooks::onRegistration",
 	"manifest_version": 2
 }

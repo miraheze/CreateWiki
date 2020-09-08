@@ -3,21 +3,18 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiQueuePager extends TablePager {
+	private $config;
+	private $requester;
+	private $dbname;
+	private $status;
+
 	public function __construct( $requester, $dbname, $status ) {
-		$this->mDb = static::getCreateWikiGlobalWiki();
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->mDb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $this->config->get( 'CreateWikiGlobalWik' ) )->getConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$this->requester = $requester;
 		$this->dbname = $dbname;
 		$this->status = $status;
 		parent::__construct( $this->getContext() );
-	}
-
-	public static function getCreateWikiGlobalWiki() {
-		global $wgCreateWikiGlobalWiki;
-
-		$factory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$lb = $factory->getMainLB( $wgCreateWikiGlobalWiki );
-
-		return $lb->getConnectionRef( DB_REPLICA, 'cw_requests', $wgCreateWikiGlobalWiki );
 	}
 
 	public function getFieldNames() {
