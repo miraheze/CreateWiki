@@ -115,31 +115,19 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$dbname = $subdomain . 'wiki';
 		}
 
-		$request = $this->getRequest();
+		$request = new WikiRequest();
+		$request->description = $formData['reason'];
+		$request->dbname = $dbname;
+		$request->sitename = $formData['sitename'];
+		$request->language = $formData['language'];
+		$request->private = $private;
+		$request->url = $url;
+		$request->requester = $this->getUser();
+		$request->category = $formData['category'];
 
-		$dbw = wfGetDB( DB_MASTER );
+		$requestID = $request->save();
 
-		$values = [
-			'cw_comment' => $formData['reason'],
-			'cw_dbname' => $dbname,
-			'cw_sitename' => $formData['sitename'],
-			'cw_ip' => $request->getIP(),
-			'cw_language' => $formData['language'],
-			'cw_private' => $private,
-			'cw_status' => 'inreview',
-			'cw_timestamp' => $dbw->timestamp(),
-			'cw_url' => $url,
-			'cw_user' => $this->getUser()->getId(),
-			'cw_category' => $formData['category'],
-			'cw_custom' => '' // todo remove this entirely
-		];
-
-		$dbw->insert( 'cw_requests',
-			$values,
-			__METHOD__
-		);
-
-		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $dbw->insertId() ), "#{$dbw->insertId()}" );
+		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
 		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
@@ -150,7 +138,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
 				'6::private' => $private,
-				'7::id' => "#{$dbw->insertId()}",
+				'7::id' => "#{$requestID}",
 			]
 		);
 		$farmerLogID = $farmerLogEntry->insert();

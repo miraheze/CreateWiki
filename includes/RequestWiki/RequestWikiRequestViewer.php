@@ -10,38 +10,9 @@ class RequestWikiRequestViewer {
 	}
 
 	public function getFormDescriptor(
-		int $requestid,
+		WikiRequest $request,
 		IContextSource $context
 	) {
-		OutputPage::setupOOUI(
-			strtolower( $context->getSkin()->getSkinName() ),
-			$context->getLanguage()->getDir()
-		);
-
-		$dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
-		$res = $dbr->selectRow( 'cw_requests',
-			[
-				'cw_user',
-				'cw_comment',
-				'cw_dbname',
-				'cw_language',
-				'cw_private',
-				'cw_sitename',
-				'cw_status',
-				'cw_timestamp',
-				'cw_url',
-				'cw_custom',
-				'cw_category',
-				'cw_visibility'
-			],
-			[
-				'cw_id' => $requestid
-			],
-			__METHOD__
-		);
-
-		$visibilityLevel = ( $res ) ? (int)$res->cw_visibility : 0;
-
 		$visibilityConds = [
 			0 => 'read',
 			1 => 'createwiki',
@@ -54,13 +25,12 @@ class RequestWikiRequestViewer {
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		if ( !$res || !$permissionManager->userHasRight( $userR, $visibilityConds[$visibilityLevel] ) ) {
-			throw new PermissionsError( $visibilityConds[$visibilityLevel] );
+		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility]) ) {
+			$context->getOutput()->addHTML( '<div class="errorbox">' . wfMessage( 'requestwiki-unknown') . '</div>' );
+			return [];
 		}
 
-		$status = ( $res->cw_status === 'inreview' ) ? 'In review' : ucfirst( $res->cw_status );
-
-		$user = User::newFromId( $res->cw_user );
+		$status = ( $request->getStatus() === 'inreview' ) ? 'In review' : ucfirst( $request->getStatus() );
 
 		$formDescriptor = [
 			'sitename' => [
@@ -68,27 +38,27 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$res->cw_sitename
+				'default' => (string)$request->sitename
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$res->cw_url
+				'default' => (string)$request->url
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$res->cw_language
+				'default' => (string)$request->language
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => $user->getName() . Linker::userToolLinks( $res->cw_user, $user->getName() ),
+				'default' => $request->requester->getName() . Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
 				'raw' => true,
 			],
 			'requestedDate' => [
@@ -96,7 +66,7 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $context->getLanguage()->timeanddate( $res->cw_timestamp, true ),
+				'default' => $context->getLanguage()->timeanddate( $request->timestamp, true ),
 				'raw' => true,
 			],
 			'status' => [
@@ -112,92 +82,24 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'section' => 'request',
 				'rows' => 5,
-				'default' => (string)$res->cw_comment,
+				'default' => (string)$request->description,
 				'raw' => true
 			]
 		];
 
-		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $res->cw_user ) {
-			$formDescriptor['edit'] = [
-				'type' => 'submit',
-				'section' => 'request',
-				'default' => wfMessage( 'requestwikiqueue-request-label-edit-wiki' )->text()
-			];
-		}
-
-		$comments = $dbr->select( 'cw_comments',
-			[
-				'cw_id',
-				'cw_comment',
-				'cw_comment_user',
-				'cw_comment_timestamp'
-			],
-			[
-				'cw_id' => $requestid
-			],
-			__METHOD__,
-			[
-				'ORDER BY' => 'cw_comment_timestamp DESC'
-			]
-		);
-
-		foreach ( $comments as $comment ) {
-			$formDescriptor["comment-$comment->cw_comment_timestamp"] = [
+		foreach ( $request->getComments() as $comment ) {
+			$formDescriptor['comment' . $comment['timestamp'] ] = [
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 3,
-				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( User::newFromId( $comment->cw_comment_user )->getName() )->params( $context->getLanguage()->timeanddate( $comment->cw_comment_timestamp, true ) )->text(),
-				'default' => $comment->cw_comment
+				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
+				'default' => $comment['comment']
 			];
 		}
 
-		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
-			$visibilityoptions = [
-				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
-				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
-			];
-
-			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
-				$visibilityoptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
-			}
-
-			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
-				$visibilityoptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
-			}
-
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $request->requester->getId() ) {
 			$formDescriptor += [
-				'info-approve' => [
-					'type' => 'info',
-					'default' => wfMessage( 'requestwikiqueue-request-info-approve' )->text(),
-					'section' => 'approve'
-				],
-				'submit-create' => [
-					'type' => 'submit',
-					'default' => wfMessage( 'requestwikiqueue-request-label-create-wiki' )->text(),
-					'section' => 'approve'
-				],
-				'info-decline' => [
-					'type' => 'info',
-					'default' => wfMessage( 'requestwikiqueue-request-info-decline' )->text(),
-					'section' => 'decline'
-				],
-				'visibility' => [
-					'type' => 'radio',
-					'label-message' => 'requestwikiqueue-request-label-visibility',
-					'options' => array_flip( $visibilityoptions ),
-					'section' => 'decline'
-				],
-				'reason' => [
-					'type' => 'text',
-					'label-message' => 'createwiki-label-reason',
-					'section' => 'decline'
-				],
-				'submit-decline' => [
-					'type' => 'submit',
-					'default' => wfMessage( 'requestwikiqueue-decline' )->text(),
-					'section' => 'decline'
-				],
 				'comment' => [
 					'type' => 'text',
 					'label-message' => 'requestwikiqueue-request-label-comment',
@@ -207,6 +109,107 @@ class RequestWikiRequestViewer {
 					'type' => 'submit',
 					'default' => wfMessage( 'htmlform-submit' )->text(),
 					'section' => 'comments'
+				],
+				'edit-sitename' => [
+					'label-message' => 'requestwikiqueue-request-label-sitename',
+					'type' => 'text',
+					'section' => 'edit',
+					'default' => (string)$request->sitename
+				],
+				'edit-url' => [
+					'label-message' => 'requestwikiqueue-request-label-url',
+					'type' => 'text',
+					'section' => 'edit',
+					'default' => (string)$request->url
+				],
+				'edit-language' => [
+					'label-message' => 'requestwikiqueue-request-label-language',
+					'type' => 'text',
+					'section' => 'edit',
+					'default' => (string)$request->language
+				],
+				'edit-description' => [
+					'label-message' => 'requestwikiqueue-request-header-requestercomment',
+					'type' => 'textarea',
+					'section' => 'edit',
+					'rows' => 5,
+					'default' => (string)$request->description,
+					'raw' => true
+				]
+			];
+
+			if ( $this->config->get( 'CreateWikiCategories' ) ) {
+				$formDescriptor['edit-category'] = [
+					'type' => 'select',
+					'label-message' => 'createwiki-label-category',
+					'options' => $this->config->get( 'CreateWikiCategories' ),
+					'default' => (string)$request->category,
+					'section' => 'edit'
+				];
+			}
+
+			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+				$formDescriptor['edit-private'] = [
+					'type' => 'check',
+					'label-message' => 'requestwiki-label-private',
+					'default' => $request->private,
+					'section' => 'edit'
+				];
+			}
+
+			$formDescriptor['submit-edit'] = [
+				'type' => 'submit',
+				'default' => wfMessage( 'requestwikiqueue-request-label-edit-wiki' )->text(),
+				'section' => 'edit'
+			];
+		}
+
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
+			$visibilityOptions = [
+				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
+				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
+			];
+
+			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
+				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
+			}
+
+			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
+				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
+			}
+
+			$formDescriptor += [
+				'info-submission' => [
+					'type' => 'info',
+					'default' => wfMessage( 'requestwikiqueue-request-info-submission' )->text(),
+					'section' => 'handle'
+				],
+				'submission-action' => [
+					'type' => 'select',
+					'label-message' => 'requestwikiqueue-request-label-action',
+					'options' => [
+						wfMessage( 'requestwikiqueue-approve')->text() => 'approve',
+						wfMessage( 'requestwikiqueue-decline')->text() => 'decline'
+					],
+					'default' => $request->getStatus(),
+					'section' => 'handle'
+				],
+				'visibility' => [
+					'type' => 'select',
+					'label-message' => 'requestwikiqueue-request-label-visibility',
+					'options' => array_flip( $visibilityOptions ),
+					'default' => $request->visibility,
+					'section' => 'handle'
+				],
+				'reason' => [
+					'type' => 'text',
+					'label-message' => 'createwiki-label-reason',
+					'section' => 'handle'
+				],
+				'submit-handle' => [
+					'type' => 'submit',
+					'default' => wfMessage( 'htmlform-submit' )->text(),
+					'section' => 'handle'
 				]
 			];
 		}
@@ -216,19 +219,26 @@ class RequestWikiRequestViewer {
 
 
 	public function getForm(
-		string $requestid,
+		string $id,
 		IContextSource $context,
 		$formClass = CreateWikiOOUIForm::class
 	) {
-		$formDescriptor = $this->getFormDescriptor( $requestid, $context );
+		try {
+			$request = new WikiRequest( $id );
+		} catch ( MWException $e ) {
+			$context->getOutput()->addHTML( '<div class="errorbox">' . wfMessage( 'requestwiki-unknown') . '</div>' );
+			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );;
+		}
+
+		$formDescriptor = $this->getFormDescriptor( $request, $context );
 
 		$htmlForm = new $formClass( $formDescriptor, $context, 'requestwikiqueue' );
 
 		$htmlForm->setId( 'mw-baseform-requestviewer' );
 		$htmlForm->suppressDefaultSubmit();
 		$htmlForm->setSubmitCallback(
-			function ( array $formData, HTMLForm $form ) use ( $requestid ) {
-				return $this->submitForm( $formData, $form, $requestid );
+			function ( array $formData, HTMLForm $form ) use ( $request ) {
+				return $this->submitForm( $formData, $form, $request );
 			}
 		);
 
@@ -238,92 +248,30 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form,
-		int $requestid
+		WikiRequest $request
 	) {
-		if ( isset( $formData['edit'] ) && $formData['edit'] ) {
-			header( 'Location: ' . SpecialPage::getTitleFor( 'RequestWikiEdit' )->getFullURL() . '/' . $requestid );
-			return null;
-		}
 
-		$dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+		if ( isset( $formData['submit-comment'] ) ) {
+			$request->addComment( $formData['comment'], $form->getUser() );
+		} elseif ( isset( $formData['submit-edit'] ) ) {
+			$request->sitename = $formData['edit-sitename'];
+			$request->url = $formData['edit-url'];
+			$request->language = $formData['edit-language'];
+			$request->description = $formData['edit-description'];
+			$request->category = $formData['edit-category'];
+			$request->private = $formData['edit-private'];
+			$request->reopen( $form->getUser() );
+		} elseif ( isset( $formData['submit-handle'] ) ) {
+			$request->visibility = $formData['visibility'];
 
-		$reqRow = $dbw->selectRow(
-			'cw_requests',
-			'*',
-			[
-				'cw_id' => $requestid
-			]
-		);
-
-		if ( isset( $formData['submit-decline'] ) && $formData['submit-decline'] ) {
-			$rowsUpdate = [
-				'cw_visibility' => $formData['visibility'],
-				'cw_status' => 'declined'
-			];
-
-			$addCommentToRequest = $formData['reason'];
-
-			$wm = new WikiManager( $reqRow->cw_dbname );
-
-			$requesterId = $reqRow->cw_user;
-
-			$wm->notificationsTrigger( 'request-declined', $reqRow->cw_dbname, [ 'reason' => $formData['reason'], 'id' => $requestid ], User::newFromId( $requesterId )->getName() );
-		}
-
-		if ( isset( $formData['submit-create'] ) && $formData['submit-create'] ) {
-			$wm = new WikiManager( $reqRow->cw_dbname );
-
-			$requesterUser = User::newFromId( $reqRow->cw_user );
-			$actorUser = $form->getContext()->getUser();
-
-			$validName = $wm->checkDatabaseName( $reqRow->cw_dbname );
-
-			$notCreated = $wm->create( $reqRow->cw_sitename, $reqRow->cw_language, $reqRow->cw_private, $reqRow->cw_category, $requesterUser->getName(), $actorUser->getName(), "[[Special:RequestWikiQueue/{$requestid}|Requested]]" );
-
-			if ( $validName || $notCreated ) {
-				$error = $notCreated ?? $validName;
-				$form->getContext()->getOutput()->addHTML( "<div class=\"errorbox\">{$error}</div>" );
-				return true;
+			if ( $formData['submission-action'] == 'approve' ) {
+				$request->approve( $form->getUser(), $formData['reason'] );
+			} else {
+				$request->decline( $formData['reason'], $form->getUser() );
 			}
-
-			$addCommentToRequest = 'Created.';
-
-			$rowsUpdate = [
-				'cw_status' => 'approved'
-			];
 		}
 
-		if ( isset( $rowsUpdate ) ) {
-			$dbw->update( 'cw_requests',
-				$rowsUpdate,
-				[
-					'cw_id' => $requestid
-				]
-			);
-		}
-
-		if ( isset( $formData['submit-comment'] ) && $formData['submit-comment'] ) {
-			$dbw->insert( 'cw_comments',
-				[
-					'cw_id' => $requestid,
-					'cw_comment' => $formData['comment'],
-					'cw_comment_timestamp' => $dbw->timestamp(),
-					'cw_comment_user' => $form->getContext()->getUser()->getId()
-				]
-			);
-		} elseif ( $addCommentToRequest ) {
-			$dbw->insert(
-				'cw_comments',
-				[
-					'cw_id' => $requestid,
-					'cw_comment' => $addCommentToRequest,
-					'cw_comment_timestamp' => $dbw->timestamp(),
-					'cw_comment_user' => $form->getContext()->getUser()->getId()
-				]
-			);
-		}
-
-		$form->getContext()->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success', $requestid )->escaped() . '</div>' );
+		$form->getContext()->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success' )->escaped() . '</div>' );
 
 		return true;
 	}

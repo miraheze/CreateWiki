@@ -142,6 +142,11 @@ class CreateWikiHooks {
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
 		];
 
+		$notificationCategories['request-comment'] = [
+			'priority' => 2,
+			'tooltip' => 'echo-pref-tooltip-wiki-comment'
+		];
+
 		$notifications['wiki-creation'] = [
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
@@ -175,6 +180,18 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestDeclinedPresentationModel::class,
+			'immediate' => true
+		];
+
+		$notifications['request-comment'] = [
+			EchoAttributeManager::ATTR_LOCATORS => [
+				'EchoUserLocator::locateEventAgent'
+			],
+			'category' => 'farmer',
+			'group' => 'positive',
+			'section' => 'alert',
+			'canNotifyAgent' => true,
+			'presentation-model' => EchoRequestCommentPresentationModel::class,
 			'immediate' => true
 		];
 

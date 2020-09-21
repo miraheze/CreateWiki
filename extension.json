@@ -14,7 +14,6 @@
 	"SpecialPages": {
 		"CreateWiki": "SpecialCreateWiki",
 		"RequestWiki": "SpecialRequestWiki",
-		"RequestWikiEdit": "SpecialRequestWikiEdit",
 		"RequestWikiQueue": "SpecialRequestWikiQueue"
 	},
 	"LogTypes": [
@@ -46,9 +45,9 @@
 		"RequestWikiRequestViewer": "includes/RequestWiki/RequestWikiRequestViewer.php",
 		"SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
 		"SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
-		"SpecialRequestWikiEdit": "includes/RequestWiki/SpecialRequestWikiEdit.php",
 		"SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php",
-		"WikiManager": "includes/WikiManager.php"
+		"WikiManager": "includes/WikiManager.php",
+		"WikiRequest": "includes/RequestWiki/WikiRequest.php"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
