@@ -22,23 +22,22 @@
 * @version 2.1
 */
 
+require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
+
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 
-require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
-
 class ManageInactiveWikis extends Maintenance {
-	private $config;
-
 	public function __construct() {
 		parent::__construct();
 		$this->addOption( 'write', 'Actually make changes to wikis which are considered for the next stage in dormancy', false, false );
 		$this->mDescription = 'A script to find inactive wikis in a farm.';
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute() {
-		$dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+
+		$dbw = wfGetDB( DB_MASTER, [], $config->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbw->select(
 			'cw_wikis',
@@ -66,18 +65,18 @@ class ManageInactiveWikis extends Maintenance {
 			$closedDate = $row->wiki_closed_timestamp;
 			$deleted = $row->wiki_deleted;
 			$wikiCreation = $row->wiki_creation;
-			$inactiveDays = (int)$this->config->get( 'CreateWikiStateDays' )['inactive'];
+			$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( !$deleted && $wikiCreation < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
-				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw );
+				$this->checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw, $config );
 			}
 		}
 	}
 
-	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw ) {
-		$inactiveDays = (int)$this->config->get( 'CreateWikiStateDays' )['inactive'];
-		$closeDays = (int)$this->config->get( 'CreateWikiStateDays' )['closed'];
-		$removeDays = (int)$this->config->get( 'CreateWikiStateDays' )['removed'];
+	public function checkLastActivity( $dbName, $inactive, $inactiveDate, $closed, $closedDate, $dbw, $config ) {
+		$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
+		$closeDays = (int)$config->get( 'CreateWikiStateDays' )['closed'];
+		$removeDays = (int)$config->get( 'CreateWikiStateDays' )['removed'];
 
 		$canWrite = $this->hasOption( 'write' );
 
@@ -106,7 +105,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$this->closeWiki( $dbName, $dbw );
-					$this->emailBureaucrats( $dbName, $dbw );
+					$this->emailBureaucrats( $dbName, $config );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
 					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$timeStamp}\n" );
@@ -237,7 +236,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function emailBureaucrats( $wikiDb, $dbw ) {
+	public function emailBureaucrats( $wikiDb, $config ) {
 		$dbr = wfGetDB( DB_REPLICA );
 
 		$bureaucrats = $dbr->select(
@@ -259,7 +258,7 @@ class ManageInactiveWikis extends Maintenance {
 			$emails[] = new MailAddress( $users->user_email, $users->user_name );
 		}
 
-		$from = new MailAddress( $this->config->get( 'PasswordSender' ), wfMessage( 'createwiki-close-email-sender' ) );
+		$from = new MailAddress( $config->get( 'PasswordSender' ), wfMessage( 'createwiki-close-email-sender' ) );
 		$subject = wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text();
 		$body = wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text();
 

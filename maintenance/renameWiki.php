@@ -16,13 +16,11 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-use MediaWiki\MediaWikiServices;
-
 require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
-class RenameWiki extends Maintenance {
-	private $config;
+use MediaWiki\MediaWikiServices;
 
+class RenameWiki extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->mDescription = "Renames a wiki from it's original name to a new name. Will NOT perform core database operations so run AFTER new database exists and while old one still exists.";
@@ -30,10 +28,10 @@ class RenameWiki extends Maintenance {
 		$this->addArg( 'oldwiki', 'Old wiki database name', true );
 		$this->addArg( 'newwiki', 'New wiki database name', true );
 		$this->addArg( 'user', 'Username or reference name of the person running this script. Will be used in tracking and notification internally.', true );
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute() {
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$oldwiki = $this->getArg( 0 );
 		$newwiki = $this->getArg( 1 );
 
@@ -53,7 +51,7 @@ class RenameWiki extends Maintenance {
 					return;
 				}
 
-				$dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
+				$dbw = wfGetDB( DB_MASTER, [], $config->get( 'CreateWikiDatabase' ) );
 
 				Hooks::run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
 
@@ -66,7 +64,7 @@ class RenameWiki extends Maintenance {
 		$this->output( "Done.\n" );
 
 		if ( $this->hasOption( 'rename' ) ) {
-			$this->notifyRename( $this->config->get( 'CreateWikiNotificationEmail' ), $this->config->get( 'PasswordSender' ), $renamedWiki, $this->getArg( 2 ) );
+			$this->notifyRename( $config->get( 'CreateWikiNotificationEmail' ), $config->get( 'PasswordSender' ), $renamedWiki, $this->getArg( 2 ) );
 		}
 	}
 

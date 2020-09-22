@@ -1,26 +1,25 @@
 <?php
 
-use MediaWiki\MediaWikiServices;
-
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
 }
 require_once "$IP/maintenance/Maintenance.php";
 
+use MediaWiki\MediaWikiServices;
+
 class ChangeDBCluster extends Maintenance {
-	private $config;
 	private $dbw = null;
 
 	public function __construct() {
 		parent::__construct();
 		$this->addOption( 'db-cluster', 'Sets the wikis requested to a different db cluster.', true, true );
 		$this->addOption( 'file', 'Path to file where the wikinames are store. Must be one wikidb name per line. (Optional, fallsback to current dbname)', false, true );
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
 	public function execute() {
-		$this->dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->dbw = wfGetDB( DB_MASTER, [], $config->get( 'CreateWikiDatabase' ) );
 
 		if ( (bool)$this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
@@ -28,10 +27,10 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( "Unable to read file, exiting" );
 			}
 		} else {
-			$this->updateDbCluster( $this->config->get( 'DBname' ) );
+			$this->updateDbCluster( $config->get( 'DBname' ) );
 
-			$this->recacheDBListJson();
-			$this->recacheWikiJson( $this->config->get( 'DBname' ) );
+			$this->recacheDBListJson( $config->get( 'DBname' ) );
+			$this->recacheWikiJson( $config->get( 'DBname' ) );
 			return;
 		}
 
@@ -45,7 +44,7 @@ class ChangeDBCluster extends Maintenance {
 			$this->recacheWikiJson( $line );
 		}
 
-		$this->recacheDBListJson();
+		$this->recacheDBListJson( $config->get( 'DBname' ) );
 	}
 
 	private function updateDbCluster( string $wiki ) {
@@ -67,8 +66,8 @@ class ChangeDBCluster extends Maintenance {
 		$cWJ->update();
 	}
 
-	private function recacheDBListJson() {
-		$cWJ = new CreateWikiJson( $this->config->get( 'CreateWikiGlobalWiki' ) );
+	private function recacheDBListJson( string $wiki ) {
+		$cWJ = new CreateWikiJson( $wiki );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}
