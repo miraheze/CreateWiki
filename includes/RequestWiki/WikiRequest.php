@@ -52,6 +52,10 @@ class WikiRequest {
 				'*',
 				[
 					'cw_id' => $id
+				],
+				__METHOD__,
+				[
+					'cw_timestamp DESC'
 				]
 			);
 
