@@ -113,6 +113,15 @@ class WikiRequest {
 		$this->save();
 		$this->addComment( $reason, $user );
 		$this->sendNotification( 'declined', $reason );
+
+		// Additionally log declines
+		$logEntry = new ManualLogEntry( 'farmer', 'requestdecline' );
+		$logEntry->setPerformer( $user );
+		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
+		$logEntry->setComment( $reason );
+		$logEntry->setParameters( [ '4::id' => $this->id ] );
+		$logID = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logID );
 	}
 
 	public function reopen( User $user ) {
@@ -154,6 +163,28 @@ class WikiRequest {
 	}
 
 	public function save() {
+		$inReview = $this->dbw->select(
+			'cw_requests',
+			[
+				'cw_comment',
+				'cw_dbname',
+				'cw_sitename'
+			],
+			[
+				'cw_status' => 'inreview'
+			]
+		);
+
+		foreach ( $inReview as $row ) {
+			if (
+				$this->sitename == $row->cw_sitename
+				|| $this->dbname == $row->cw_dbname
+				|| $this->description == $row->cw_comment
+			) {
+				throw new MWException( 'Request too similar to an existing open request!' );
+			}
+		}
+
 		$rows = [
 			'cw_comment' => $this->description,
 			'cw_dbname' => $this->dbname,

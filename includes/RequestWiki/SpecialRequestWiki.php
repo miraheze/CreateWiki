@@ -125,7 +125,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->requester = $this->getUser();
 		$request->category = $formData['category'];
 
-		$requestID = $request->save();
+		try {
+			$requestID = $request->save();
+		} catch ( MWException $e ) {
+			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->plain() . '</div>' );
+			return false;
+		}
 
 		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
