@@ -181,9 +181,10 @@ class WikiRequest {
 
 		foreach ( $inReview as $row ) {
 			if (
-				$this->sitename == $row->cw_sitename
+				is_null( $this->id )
+				&& ( $this->sitename == $row->cw_sitename
 				|| $this->dbname == $row->cw_dbname
-				|| $this->description == $row->cw_comment
+				|| $this->description == $row->cw_comment )
 			) {
 				throw new MWException( 'Request too similar to an existing open request!' );
 			}
