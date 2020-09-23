@@ -21,6 +21,7 @@
 	],
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
+		"farmer/requestdecline": "LogFormatter",
 		"farmer/requestwikiedit": "LogFormatter",
 		"farmer/requestwiki": "CreateWikiLogFormatter"
 	},
