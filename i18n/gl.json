@@ -58,7 +58,7 @@
 	"requestwiki-success": "Enviouse a súa solicitude de wiki ($1) correctamente. Un voluntario revisará a solicitude tan pronto como sexa posible.",
 	"requestwikiqueue": "Cola de solicitudes de wikis",
 	"requestwikiqueue-comments": "Comentarios da petición",
-	"requestwikiqueue-handling": "Tratar petición",
+	"requestwikiqueue-handle": "Tratar petición",
 	"requestwikiqueue-logpagerentry": "$1 solicitou a wiki $2 na solicitude $3 (estado: $4)",
 	"requestwikiqueue-norequests": "Non se atoparon resultados.",
 	"requestwikiqueue-pager-status-approved": "aprobado",

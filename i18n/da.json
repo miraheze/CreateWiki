@@ -23,7 +23,7 @@
 	"requestwiki-submit": "Indsend",
 	"requestwikiqueue-approve": "Godkend",
 	"requestwikiqueue-decline": "Afvis",
-	"requestwikiqueue-handling": "Håndter forespørgsel",
+	"requestwikiqueue-handle": "Håndter forespørgsel",
 	"requestwikiqueue-norequests": "Der blev ikke fundet noget resultat.",
 	"requestwikiqueue-pager-status-approved": "godkendt",
 	"requestwikiqueue-pager-status-declined": "afslået",

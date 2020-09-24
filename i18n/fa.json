@@ -42,7 +42,7 @@
 	"requestwiki-submit": "اعمال",
 	"requestwikiqueue": "صف درخواست ویکی",
 	"requestwikiqueue-comments": "یادداشت‌های درخواست",
-	"requestwikiqueue-handling": "مدیریت درخواست",
+	"requestwikiqueue-handle": "مدیریت درخواست",
 	"requestwikiqueue-norequests": "نتیجه‌ای یافت نشد.",
 	"requestwikiqueue-pager-status-approved": "پذیرفته‌شده",
 	"requestwikiqueue-pager-status-declined": "پذیرفته‌نشده",

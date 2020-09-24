@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Sabelöga",
 			"WikiPhoenix"
 		]
 	},
@@ -32,6 +33,7 @@
 	"echo-pref-tooltip-wiki-creation": "Meddela mig när min wiki har skapats.",
 	"log-description-farmer": "Denna logg spårar skapade wikis.",
 	"logentry-farmer-createwiki": "$1 skapade wikin \"$4\"",
+	"logentry-farmer-requestdecline": "$1 nekade wikibegäran #$4",
 	"logentry-farmer-requestwiki": "$1 begärde wikin \"$4\" (språk: $5; privat: $6) på $7",
 	"logentry-farmer-requestwikiedit": "$1 redigerade wikibegäran nummer $4",
 	"log-name-farmer": "Farmer-logg",
@@ -41,7 +43,7 @@
 	"requestwiki": "Begär en wiki",
 	"requestwikiedit": "Redigera en wikibegäran",
 	"requestwiki-edit-id": "Wikibegäran-ID",
-	"requestwiki-edit-success": "Ändringar i begäran $1 skickades.",
+	"requestwiki-edit-success": "Ändringar i begäran skickades.",
 	"requestwiki-edit-notloggedin": "Tyvärr, du måste <span class =\"plainlinks\">[$1 logga in]</span> innan du kan redigera en wikibegäran.",
 	"requestwiki-edit-user": "Du har inte de nödvändiga rättigheterna för att redigera denna wikibegäran. Observera att du kan endast redigera begäran som du har gjort med ditt nuvarande konto.",
 	"requestwiki-error-csrf": "<strong>Tyvärr, begäran kunde inte skickas p.g.a. förlust av sessionsdata.</strong>\nVar god skicka in formuläret igen. Om det inte går, var god [[Special:Userlogout|logga ut]] och in igen.",
@@ -61,9 +63,11 @@
 	"requestwiki-notloggedin": "Tyvärr, du måste <span class=\"plainlinks\">[$1 logga in]</span> innan du kan begära en wiki.",
 	"requestwiki-submit": "Skicka",
 	"requestwiki-success": "Din wikibegäran ($1) skickades in. Din begäran kommer att granskas av en volontär så snart som möjligt.",
+	"requestwiki-unknown": "Ingen begäran finns med det här ID:t.",
 	"requestwikiqueue": "Kö över wikibegäran",
 	"requestwikiqueue-comments": "Begäranskommentarer",
-	"requestwikiqueue-handling": "Hantera begäran",
+	"requestwikiqueue-edit": "Redigeringsbegäran",
+	"requestwikiqueue-handle": "Hantera begäran",
 	"requestwikiqueue-logpagerentry": "$1 begärde wikin $2 i begäran $3 (status: $4)",
 	"requestwikiqueue-norequests": "Inga resultat hittades.",
 	"requestwikiqueue-pager-status-approved": "godkända",

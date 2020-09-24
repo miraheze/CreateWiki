@@ -89,7 +89,6 @@
 	"requestwikiqueue-request-header-requestercomment": "申請者によるコメント",
 	"requestwikiqueue-request-header-wikicreatorcomment": "$1によるコメント",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "$2での$1によるコメント",
-	"requestwikiqueue-request-info-approve": "下のウィキを作成ボタンを押すと、ウィキが自動的に作成され、エラーがあった場合は報告されます。ウィキが作成されると、リクエストは自動的に承認済みとしてマークされます。",
 	"requestwikiqueue-request-info-decline": "拒否時に申請の表示を変更し、理由を説明することができます。ここで入力した理由は申請履歴に表示され、利用者に直接送信されます。",
 	"requestwikiqueue-request-label-approved": "承認済",
 	"requestwikiqueue-request-label-comment": "コメント:",

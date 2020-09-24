@@ -23,7 +23,7 @@
 	"requestwiki-submit": "Schécken",
 	"requestwikiqueue-approve": "Zoustëmmen",
 	"requestwikiqueue-decline": "Refuséieren",
-	"requestwikiqueue-handling": "Ufro verschaffen",
+	"requestwikiqueue-handle": "Ufro verschaffen",
 	"requestwikiqueue-norequests": "Näischt fonnt.",
 	"requestwikiqueue-request": "Ufro",
 	"requestwikiqueue-request-header-wikicreatorcomment": "Bemierkung vum $1",
