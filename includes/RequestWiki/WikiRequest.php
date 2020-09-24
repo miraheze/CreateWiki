@@ -113,7 +113,7 @@ class WikiRequest {
 	}
 
 	public function decline( string $reason, User $user ) {
-		$this->status = 'declined';
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 		$this->addComment( $reason, $user );
 		$this->sendNotification( 'declined', $reason );
@@ -137,7 +137,7 @@ class WikiRequest {
 	}
 
 	public function reopen( User $user ) {
-		$this->status = 'inreview';
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
 		$this->save();
 		$this->addComment( 'Updated request.', $user );
 	}
@@ -175,10 +175,6 @@ class WikiRequest {
 	}
 
 	public function save() {
-		if ( $this->status == 'approved' ) {
-			return null;
-		}
-
 		$inReview = $this->dbw->select(
 			'cw_requests',
 			[
