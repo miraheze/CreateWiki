@@ -85,7 +85,6 @@
 	"requestwikiqueue-request-header-requestercomment": "위키 요청자의 코멘트",
 	"requestwikiqueue-request-header-wikicreatorcomment": "$1님의 코멘트",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "$1님이 $2에 남긴 코멘트",
-	"requestwikiqueue-request-info-approve": "아래의 위키 만들기 버튼을 누르면 위키가 자동으로 만들어지며 오류가 보고됩니다. 위키가 만들어지면 요청은 자동으로 승인으로 표시됩니다.",
 	"requestwikiqueue-request-label-approved": "승인됨",
 	"requestwikiqueue-request-label-comment": "코멘트:",
 	"requestwikiqueue-request-label-create-wiki": "위키 만들기",

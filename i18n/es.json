@@ -8,6 +8,7 @@
 			"Geryescalier",
 			"Jelou",
 			"Pertile",
+			"Rodney Araujo",
 			"SRuizR",
 			"Unai01"
 		]
@@ -59,7 +60,7 @@
 	"requestwiki": "Solicitar un wiki",
 	"requestwikiedit": "Editar una solicitud de wiki",
 	"requestwiki-edit-id": "Id. de la solicitud de wiki",
-	"requestwiki-edit-success": "Se enviaron correctamente los cambios a la solicitud $1.",
+	"requestwiki-edit-success": "Los cambios a la solicitud se enviaron con éxito.",
 	"requestwiki-edit-notloggedin": "Es necesario <span class =\"plainlinks\">[$1 acceder]</span> antes de modificar una solicitud de wiki.",
 	"requestwiki-edit-user": "No cuentas con los privilegios suficientes para editar esta solicitud de wiki. Únicamente puedes editar las solicitudes que hayas hecho con tu cuenta actual.",
 	"requestwiki-error-csrf": "<strong>No se pudo enviar la solicitud debido a una pérdida de los datos de la sesión.</strong>\nEnvía el formulario otra vez. Si ello no funciona, [[Special:Userlogout|finaliza tu sesión]] y accede de nuevo.",
@@ -83,6 +84,7 @@
 	"requestwikiqueue": "Cola de solicitudes de wikis",
 	"requestwikiqueue-approve": "Aprobar",
 	"requestwikiqueue-decline": "Rechazar",
+	"requestwikiqueue-edit": "Solicitud de edición",
 	"requestwikiqueue-logpagerentry": "$1 solicitó la wiki $2 en la solicitud $3 (estado: $4)",
 	"requestwikiqueue-norequests": "No se encontró ningún resultado.",
 	"requestwikiqueue-pager-status-approved": "aprobado",

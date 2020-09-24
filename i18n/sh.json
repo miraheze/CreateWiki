@@ -25,7 +25,7 @@
 	"requestwikiqueue-approve": "Odobri",
 	"requestwikiqueue-comments": "Zatraži komentare",
 	"requestwikiqueue-decline": "Odbij",
-	"requestwikiqueue-handling": "Obradi zahtjev",
+	"requestwikiqueue-handle": "Obradi zahtjev",
 	"requestwikiqueue-norequests": "Nisam pronašao ništa.",
 	"requestwikiqueue-pager-status-approved": "odobren",
 	"requestwikiqueue-pager-status-declined": "odbijen",

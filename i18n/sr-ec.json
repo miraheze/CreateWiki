@@ -41,7 +41,7 @@
 	"requestwikiedit": "Уреди захтев за вики",
 	"requestwiki-edit-id": "ID захтева за вики",
 	"requestwikiqueue-comments": "Коментари захтева",
-	"requestwikiqueue-handling": "Захтев за руковање",
+	"requestwikiqueue-handle": "Захтев за руковање",
 	"requestwikiqueue-request": "Захтев",
 	"requestwikiqueue-request-label-action": "Означи радњу овог захтева као…",
 	"requestwikiqueue-request-label-approved": "Одобрено",

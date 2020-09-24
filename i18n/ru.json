@@ -84,7 +84,7 @@
 	"requestwikiqueue-approve": "Утвердить",
 	"requestwikiqueue-comments": "Комментарии к запросу",
 	"requestwikiqueue-decline": "Отклонить",
-	"requestwikiqueue-handling": "Обработать запрос",
+	"requestwikiqueue-handle": "Обработать запрос",
 	"requestwikiqueue-logpagerentry": "$1 запрос вики $2 в запрос $3 (статус: $4)",
 	"requestwikiqueue-norequests": "Результатов не найдено.",
 	"requestwikiqueue-pager-status-approved": "утвержден",
