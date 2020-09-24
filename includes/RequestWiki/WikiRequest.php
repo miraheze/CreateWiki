@@ -122,7 +122,16 @@ class WikiRequest {
 		$logEntry = new ManualLogEntry( 'farmer', 'requestdecline' );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
-		$logEntry->setParameters( [ '4::id' => $this->id ] );
+		$logEntry->setParameters(
+			[
+				'4::id' => Message::rawParam(
+					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
+					'#' . $this->id
+					)
+				)
+			]
+		);
 		$logID = $logEntry->insert( $this->dbw );
 		$logEntry->publish( $logID );
 	}
