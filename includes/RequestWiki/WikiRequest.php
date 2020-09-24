@@ -122,7 +122,6 @@ class WikiRequest {
 		$logEntry = new ManualLogEntry( 'farmer', 'requestdecline' );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
-		$logEntry->setComment( $reason );
 		$logEntry->setParameters( [ '4::id' => $this->id ] );
 		$logID = $logEntry->insert( $this->dbw );
 		$logEntry->publish( $logID );
@@ -167,6 +166,10 @@ class WikiRequest {
 	}
 
 	public function save() {
+		if ( $this->status == 'approved' ) {
+			return null;
+		}
+
 		$inReview = $this->dbw->select(
 			'cw_requests',
 			[
