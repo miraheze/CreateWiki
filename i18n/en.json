@@ -41,7 +41,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "Notify me if my wiki request is declined.",
 	"log-description-farmer": "This log tracks wiki creations.",
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
-	"logentry-farmer-requestdecline": "$1 declined the wiki request $6",
+	"logentry-farmer-requestdecline": "$1 declined the wiki request $4",
 	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in $7",
 	"logentry-farmer-requestwikiedit": "$1 edited the wiki request #$4",
 	"log-name-farmer": "Farmer log",
