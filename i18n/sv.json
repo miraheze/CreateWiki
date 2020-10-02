@@ -33,7 +33,7 @@
 	"echo-pref-tooltip-wiki-creation": "Meddela mig när min wiki har skapats.",
 	"log-description-farmer": "Denna logg spårar skapade wikis.",
 	"logentry-farmer-createwiki": "$1 skapade wikin \"$4\"",
-	"logentry-farmer-requestdecline": "$1 nekade wikibegäran #$4",
+	"logentry-farmer-requestdecline": "$1 nekade wikibegäran $4",
 	"logentry-farmer-requestwiki": "$1 begärde wikin \"$4\" (språk: $5; privat: $6) på $7",
 	"logentry-farmer-requestwikiedit": "$1 redigerade wikibegäran nummer $4",
 	"log-name-farmer": "Farmer-logg",

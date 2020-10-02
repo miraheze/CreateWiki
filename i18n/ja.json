@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"A2y4",
 			"Aefgh39622",
 			"Omotecho",
 			"Otokoume",
@@ -80,6 +81,7 @@
 	"requestwikiqueue-approve": "承認",
 	"requestwikiqueue-comments": "リクエストコメント",
 	"requestwikiqueue-decline": "拒否",
+	"requestwikiqueue-edit": "編集をリクエスト",
 	"requestwikiqueue-norequests": "見つかりませんでした。",
 	"requestwikiqueue-pager-status-approved": "承認済",
 	"requestwikiqueue-pager-status-declined": "却下",
