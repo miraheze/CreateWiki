@@ -5,7 +5,8 @@
 			"Movses",
 			"Piramidion",
 			"Ua2004",
-			"Vlad5250"
+			"Vlad5250",
+			"Ата"
 		]
 	},
 	"action-createwiki": "створення вікі",
@@ -53,7 +54,7 @@
 	"requestwiki": "Надіслати запит на вікі",
 	"requestwikiedit": " Редагувати зепит до вікі",
 	"requestwiki-edit-id": "Ідентифікатор запиту на вікі",
-	"requestwiki-edit-success": "Зміни до запиту $1 надіслані успішно.",
+	"requestwiki-edit-success": "Зміни до запиту надіслані успішно.",
 	"requestwiki-edit-notloggedin": "Вибачте, Вам треба <span class =\"plainlinks\">[$1 увійти в систему]</span>, перш ніж редагувати запит на вікі.",
 	"requestwiki-edit-user": "У Вас недостатньо прав для редагування цього запиту на вікі. Будь ласка, майте на увазі, що Ви можете редагувати лише ті запити на вікі, які Ви подали зі свого облікового запису.",
 	"requestwiki-error-csrf": "<strong>Вибачте, запит не вдалося надіслати через втрату даних сесії.</strong>\nБудь ласка, надішліть цю форму ще раз. Якщо це не спрацює, будь ласка, [[Special:Userlogout|вийдіть із системи]] та увійдіть ще раз.",
@@ -89,7 +90,7 @@
 	"requestwikiqueue-request-header-wikicreatorcomment": "Коментар додано $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Коментар додано $1, $2",
 	"requestwikiqueue-request-info-decline": "Ви можете змінювати видимість запитів при їх відхиленні, і зазначати причину. Причина буде видима в історії запиту, а також її буде надіслано до користувача безпосередньо.",
-	"requestwikiqueue-request-label-action": "Позначити цей запит як...",
+	"requestwikiqueue-request-label-action": "Позначити цей запит як…",
 	"requestwikiqueue-request-label-approved": "Затверджено",
 	"requestwikiqueue-request-label-comment": "Коментар:",
 	"requestwikiqueue-request-label-create-wiki": "Створити вікі",
