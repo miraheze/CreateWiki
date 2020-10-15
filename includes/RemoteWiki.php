@@ -1,99 +1,61 @@
 <?php
+
+use MediaWiki\MediaWikiServices;
+
 class RemoteWiki {
-	private function __construct( $dbname, $sitename, $language, $private, $wikiCreation, $closed, $closedDate, $inactive, $inactiveDate, $inactiveExempt, $deleted, $deletionDate, $locked, $category, $url, $extensions, $settings ) {
-		$this->dbname = $dbname;
-		$this->sitename = $sitename;
-		$this->language = $language;
-		$this->url = $url;
-		$this->private = (bool)$private;
-		$this->wikiCreation = $wikiCreation;
-		$this->closed = (bool)$closed;
-		$this->deleted = (bool)$deleted;
-		$this->inactive = (bool)$inactive;
-		$this->inactiveExempt = (bool)$inactiveExempt;
-		$this->closureDate = $closedDate;
-		$this->creationDate = $this->determineCreationDate();
-		$this->deletionDate = $deletionDate;
-		$this->inactiveDate = $inactiveDate;
-		$this->locked = $locked;
-		$this->category = $category;
-		$this->extensions = $extensions;
-		$this->settings = $settings;
-	}
+	public $changes = [];
+	public $specialLog;
 
-	public static function newFromName( $dbname ) {
-		return static::newFromConds( [ 'wiki_dbname' => $dbname ] );
-	}
+	private $hooks = [];
+	private $newRows = [];
+	private $config;
+	private $dbw;
+	private $dbname;
+	private $sitename;
+	private $language;
+	private $private;
+	private $creation;
+	private $url;
+	private $closed;
+	private $inactive;
+	private $inactiveExempt;
+	private $deleted;
+	private $locked;
+	private $dbcluster;
+	private $category;
 
-	protected static function newFromConds(
-		$conds
-	) {
-		global $wgCreateWikiDatabase;
+	public function __construct( string $wiki ) {
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$wikiRow = $this->dbw->selectRow(
+			'cw_wikis',
+			'*',
+			[
+				'wiki_dbname' => $wiki
+			]
+		);
 
-		$row = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase )->selectRow( 'cw_wikis', static::selectFields(), $conds, __METHOD__ );
-		$mwRow = wfGetDB( DB_MASTER, [], $wgCreateWikiDatabase)->selectRow( 'mw_settings', '*', [ 's_dbname' => $conds['wiki_dbname'] ] );
-
-		if ( $row !== false ) {
-			return new self(
-				$row->wiki_dbname,
-				$row->wiki_sitename,
-				$row->wiki_language,
-				$row->wiki_private,
-				$row->wiki_creation,
-				$row->wiki_closed,
-				$row->wiki_closed_timestamp,
-				$row->wiki_inactive,
-				$row->wiki_inactive_timestamp,
-				$row->wiki_inactive_exempt,
-				$row->wiki_deleted,
-				$row->wiki_deleted_timestamp,
-				$row->wiki_locked,
-				$row->wiki_category,
-				$row->wiki_url,
-				$mwRow->s_extensions,
-				$mwRow->s_settings
-			);
-		} else {
+		if ( !$wikiRow ) {
 			return null;
 		}
-	}
 
-	private function determineCreationDate() {
-		return $this->wikiCreation;
-	}
-
-	public static function selectFields() {
-		return [
-			'wiki_dbname',
-			'wiki_sitename',
-			'wiki_language',
-			'wiki_private',
-			'wiki_creation',
-			'wiki_closed',
-			'wiki_closed_timestamp',
-			'wiki_inactive',
-			'wiki_inactive_timestamp',
-			'wiki_inactive_exempt',
-			'wiki_deleted',
-			'wiki_deleted_timestamp',
-			'wiki_locked',
-			'wiki_settings',
-			'wiki_category',
-			'wiki_extensions',
-			'wiki_url'
-		];
+		$this->dbname = $wikiRow->wiki_dbname;
+		$this->sitename = $wikiRow->wiki_sitename;
+		$this->language = $wikiRow->wiki_language;
+		$this->private = $wikiRow->wiki_private;
+		$this->creation = $wikiRow->wiki_creation;
+		$this->url = $wikiRow->wiki_url;
+		$this->closed = $wikiRow->wiki_closed_timestamp ?? false;
+		$this->inactive = $wikiRow->wiki_inactive_timestamp ?? false;
+		$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
+		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? false;
+		$this->locked = $wikiRow->wiki_locked;
+		$this->dbcluster = $wikiRow->wiki_dbcluster;
+		$this->category = $wikiRow->wiki_category;
 	}
 
 	public function getCreationDate() {
-		return $this->creationDate;
-	}
-
-	public function getClosureDate() {
-		return $this->closureDate;
-	}
-
-	public function getInactiveDate() {
-		return $this->inactiveDate;
+		return $this->creation;
 	}
 
 	public function getDBname() {
@@ -104,69 +66,245 @@ class RemoteWiki {
 		return $this->sitename;
 	}
 
+	public function setSitename( string $sitename ) {
+		$this->changes['sitename'] = [
+			'old' => $this->sitename,
+			'new' => $sitename
+		];
+
+		$this->sitename = $sitename;
+		$this->newRows['wiki_sitename'] = $sitename;
+	}
+
 	public function getLanguage() {
 		return $this->language;
+	}
+
+	public function setLanguage( string $lang ) {
+		$this->changes['language'] = [
+			'old' => $this->language,
+			'new' => $lang
+		];
+
+		$this->language = $lang;
+		$this->newRows['wiki_language'] = $lang;
 	}
 
 	public function isInactive() {
 		return $this->inactive;
 	}
 
+	public function markInactive() {
+		$this->changes['inactive'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->inactive = $this->dbw->timestamp();
+		$this->newRows += [
+			'wiki_inactive' => 1,
+			'wiki_inactive_timestamp' =>$this->inactive
+		];
+	}
+
+	public function markActive() {
+		$this->changes['active'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->hooks[] = 'CreateWikiStateOpen';
+		$this->inactive = false;
+		$this->closed = false;
+		$this->newRows += [
+			'wiki_closed' => 0,
+			'wiki_closed_timestamp' => null,
+			'wiki_inactive' => 0,
+			'wiki_inactive_timestamp' => null
+		];
+	}
+
 	public function isInactiveExempt() {
 		return $this->inactiveExempt;
+	}
+
+	public function markExempt() {
+		$this->changes['inactive-exempt'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->inactiveExempt = true;
+		$this->newRows['wiki_inactive_exempt'] = true;
+	}
+
+	public function unExempt() {
+		$this->changes['inactive-exempt'] = [
+			'old' => 1,
+			'new' => 0
+		];
+
+		$this->inactiveExempt = false;
+		$this->newRows['wiki_inactive_exempt'] = false;
 	}
 
 	public function isPrivate() {
 		return $this->private;
 	}
 
+	public function markPrivate() {
+		$this->changes['private'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->hooks[] = 'CreateWikiStatePrivate';
+		$this->private = true;
+		$this->newRows['wiki_private'] = true;
+	}
+
+	public function markPublic() {
+		$this->changes['public'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->hooks[] = 'CreateWikiStatePublic';
+		$this->private = false;
+		$this->newRows['wiki_private'] = false;
+	}
+
 	public function isClosed() {
 		return $this->closed;
 	}
 
-	public function closureDate() {
-		return $this->closureDate;
+	public function markClosed() {
+		$this->changes['closed'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->hooks[] = 'CreateWikiStateClosed';
+		$this->closed = $this->dbw->timestamp();
+		$this->newRows += [
+			'wiki_closed' => 1,
+			'wiki_closed_timestamp' => $this->closed
+		];
 	}
 
 	public function isDeleted() {
 		return $this->deleted;
 	}
 
-	public function deletionDate() {
-		return $this->deletionDate;
+	public function delete() {
+		$this->changes['deleted'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->specialLog = 'delete';
+		$this->deleted = $this->dbw->timestamp();
+		$this->newRows += [
+			'wiki_deleted' => 1,
+			'wiki_deleted_timestamp' => $this->deleted
+		];
+	}
+
+	public function undelete() {
+		$this->changes['deleted'] = [
+			'old' => 1,
+			'new' => 0
+		];
+
+		$this->specialLog = 'undelete';
+		$this->deleted = false;
+		$this->newRows += [
+			'wiki_deleted' => 0,
+			'wiki_deleted_timestamp' => null
+		];
 	}
 
 	public function isLocked() {
 		return $this->locked;
 	}
 
+	public function lock() {
+		$this->changes['locked'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->specialLog = 'lock';
+		$this->locked = true;
+		$this->newRows['wiki_locked'] = 1;
+	}
+
+	public function unlock() {
+		$this->changes['locked'] = [
+			'old' => 1,
+			'new' => 0
+		];
+
+		$this->specialLog = 'unlock';
+		$this->locked = false;
+		$this->newRows['wiki_locked'] = 0;
+	}
+
 	public function getCategory() {
 		return $this->category;
 	}
 
-	public function getExtensions() {
-		return json_decode( $this->extensions, true );
-	}
+	public function setCategory( string $category ) {
+		$this->changes['category'] = [
+			'old' => $this->category,
+			'new' => $category
+		];
 
-	public function hasExtension( $extension ) {
-		return in_array( $extension, (array)$this->getExtensions() );
+		$this->category = $category;
+		$this->newRows['wiki_category'] = $category;
 	}
 
 	public function getServerName() {
-		return $this->url ?? false;
+		return $this->url;
 	}
 
-	public function getSettings() {
-		return json_decode( $this->settings, true );
+	public function setServerName( string $server ) {
+		$this->changes['servername'] = [
+			'old' => $this->url,
+			'new' => $server
+		];
+
+		$this->url = $server;
+		$this->newRows['wiki_url'] = $server;
 	}
 
-	public function getSettingsValue( $setting ) {
-		$settingsarray = $this->getSettings();
+	public function getDBCluster() {
+		return $this->dbcluster;
+	}
 
-		if ( isset( $settingsarray[$setting] ) ) {
-			return $settingsarray[$setting];
+	public function setDBCluster( string $dbcluster ) {
+		$this->changes['dbcluster'] = [
+			'old' => $this->dbcluster,
+			'new' => $dbcluster
+		];
+
+		$this->dbcluster = $dbcluster;
+		$this->newRows['wiki_dbcluster'] = $dbcluster;
+	}
+
+	public function commit() {
+		if ( !empty( $this->changes ) ) {
+			$this->dbw->update(
+				'cw_wikis',
+				$this->newRows,
+				[
+					'wiki_dbname' => $this->dbname
+				]
+			);
+
+			$cWJ = new CreateWikiJson( $this->dbname );
+			$cWJ->resetDatabaseList();
+			$cWJ->resetWiki();
 		}
-
-		return null;
 	}
 }
