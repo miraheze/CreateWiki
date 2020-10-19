@@ -198,6 +198,11 @@ class WikiRequest {
 			}
 		}
 
+		$urlExp = explode( '.', $this->url, 2 );
+		if ( $urlExp[1] == $this->config->get( 'CreateWikiSubdomain' ) ) {
+			$this->dbname = $urlExp[0] . 'wiki';
+		}
+
 		$rows = [
 			'cw_comment' => $this->description,
 			'cw_dbname' => $this->dbname,
