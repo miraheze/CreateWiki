@@ -98,17 +98,35 @@ class WikiRequest {
 	}
 
 	public function approve( User $user, string $reason = null ) {
-		$wm = new WikiManager( $this->dbname );
-		$validName = $wm->checkDatabaseName( $this->dbname );
-
-		$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
-
-		if ( $validName || $notCreated ) {
-			throw new MWException( $notCreated ?? $validName );
-		} else {
+		if ( $this->config->get( 'CreateWikiUseJobQueue') ) {
+			$jobParams = [
+				'id' => $this->id,
+				'dbname' => $this->dbname,
+				'sitename' => $this->sitename,
+				'language' => $this->language,
+				'private' => $this->private,
+				'category' => $this->category,
+				'requester' => $this->requester->getName(),
+				'creator' => $user->getName()
+			];
+			JobQueueGroup::singleton()->push( new CreateWikiJob( $jobParams ) );
 			$this->status = 'approved';
 			$this->save();
-			$this->addComment( 'Request approved and wiki created. ' . ( $reason ?? '' ) , $user );
+			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
+			$this->log( $user, 'requestwikiaccept' );
+		} else {
+			$wm = new WikiManager( $this->dbname );
+			$validName = $wm->checkDatabaseName( $this->dbname );
+
+			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
+
+			if ( $validName || $notCreated ) {
+				throw new MWException( $notCreated ?? $validName );
+			} else {
+				$this->status = 'approved';
+				$this->save();
+				$this->addComment( 'Request approved and wiki created. ' . ( $reason ?? '' ), $user );
+			}
 		}
 	}
 
@@ -117,9 +135,11 @@ class WikiRequest {
 		$this->save();
 		$this->addComment( $reason, $user );
 		$this->sendNotification( 'declined', $reason );
+		$this->log( $user, 'requestwikidecline' );
+	}
 
-		// Additionally log declines
-		$logEntry = new ManualLogEntry( 'farmer', 'requestdecline' );
+	private function log( User $user, string $log ) {
+		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
 		$logEntry->setParameters(
@@ -127,7 +147,7 @@ class WikiRequest {
 				'4::id' => Message::rawParam(
 					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
 						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
-					'#' . $this->id
+						'#' . $this->id
 					)
 				)
 			]

@@ -16,6 +16,9 @@
 		"RequestWiki": "SpecialRequestWiki",
 		"RequestWikiQueue": "SpecialRequestWikiQueue"
 	},
+	"JobClasses": {
+		"CreateWikiJob": "CreateWikiJob"
+	},
 	"LogTypes": [
 		"farmer"
 	],
@@ -32,6 +35,7 @@
 	},
 	"AutoloadClasses": {
 		"CreateWikiHooks": "includes/CreateWikiHooks.php",
+		"CreateWikiJob": "includes/CreateWiki/CreateWikiJob.php",
 		"CreateWikiJson": "includes/CreateWikiJson.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
@@ -168,6 +172,11 @@
 		},
 		"CreateWikiUseInactiveWikis": {
 			"description": "Boolean. Whether to implement front end logic for inactive wikis.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseJobQueue": {
+			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
 			"public": true,
 			"value": false
 		},
