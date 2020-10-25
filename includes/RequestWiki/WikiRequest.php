@@ -109,7 +109,7 @@ class WikiRequest {
 				'requester' => $this->requester->getName(),
 				'creator' => $user->getName()
 			];
-			JobQueueGroup::singleton()->push( new CreateWikiJob( $jobParams ) );
+			JobQueueGroup::singleton()->push( new CreateWikiJob( Title::newMainPage(), $jobParams ) );
 			$this->status = 'approved';
 			$this->save();
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );

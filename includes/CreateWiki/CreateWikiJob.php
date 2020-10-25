@@ -1,7 +1,7 @@
 <?php
 
 class CreateWikiJob extends Job {
-	public function __construct( array $params ) {
+	public function __construct( Title $title, array $params ) {
 		parent::__construct( 'CreateWikiJob', $params );
 	}
 
