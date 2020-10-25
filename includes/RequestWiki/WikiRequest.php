@@ -113,7 +113,7 @@ class WikiRequest {
 			$this->status = 'approved';
 			$this->save();
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
-			$this->log( $user, 'requestwikiaccept' );
+			$this->log( $user, 'requestaccept' );
 		} else {
 			$wm = new WikiManager( $this->dbname );
 			$validName = $wm->checkDatabaseName( $this->dbname );
@@ -135,7 +135,7 @@ class WikiRequest {
 		$this->save();
 		$this->addComment( $reason, $user );
 		$this->sendNotification( 'declined', $reason );
-		$this->log( $user, 'requestwikidecline' );
+		$this->log( $user, 'requestdecline' );
 	}
 
 	private function log( User $user, string $log ) {
