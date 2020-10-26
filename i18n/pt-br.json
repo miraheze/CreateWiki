@@ -45,6 +45,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "Notifique-me se minha solicitação da wiki for recusada.",
 	"log-description-farmer": "Este registro rastreia as criações da wiki.",
 	"logentry-farmer-createwiki": "$1 criou a wiki \"$4\"",
+	"logentry-farmer-requestaccept": "$1 aceitou o pedido da wiki $4",
 	"logentry-farmer-requestdecline": "$1 recusou o pedido da wiki $4",
 	"logentry-farmer-requestwiki": "$1 solicitou a wiki \"$4\" (língua: $5; privada: $6) em $7",
 	"logentry-farmer-requestwikiedit": "$1 editou o pedido de uma wiki n.º $4",
