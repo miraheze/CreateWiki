@@ -42,6 +42,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "Varsle meg om forespørselen om en wiki avvises.",
 	"log-description-farmer": "Denne loggen sporer opprettelser av wikier.",
 	"logentry-farmer-createwiki": "$1 opprettet wikien «$4»",
+	"logentry-farmer-requestaccept": "$1 godkjente wikiforespørsel $4",
 	"logentry-farmer-requestdecline": "$1 avviste wikiforespørsel $4",
 	"logentry-farmer-requestwiki": "$1 ba om wikien «$4» (språk: $5, privat: $6) i $7",
 	"logentry-farmer-requestwikiedit": "$1 redigerte wikiforespørsel #$4",
