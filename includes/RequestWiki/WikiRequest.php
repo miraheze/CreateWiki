@@ -156,10 +156,12 @@ class WikiRequest {
 		$logEntry->publish( $logID );
 	}
 
-	public function reopen( User $user ) {
+	public function reopen( User $user, $log = true ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
 		$this->save();
-		$this->addComment( 'Updated request.', $user );
+		if ( $log ) {
+			$this->addComment( 'Updated request.', $user );
+		}
 	}
 
 	private function sendNotification( string $type, string $text ) {

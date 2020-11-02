@@ -26,8 +26,9 @@ class CreateWikiJob extends Job {
 				$this->params['creator'],
 				"[[Special:RequestWikiQueue/{$this->params['id']}|Requested]]"
 			);
-		} catch ( MWException $e ) {
-			$wr->addComment( 'Exception experienced creating the wiki.', User::newSystemUser( 'CreateWiki Extension' ) );
+		} catch ( Exception $e ) {
+			$wr->addComment( 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(), User::newSystemUser( 'CreateWiki Extension' ) );
+			$wr->reopen( User::newSystemUser( 'CreateWiki Extension'), false );
 			return true;
 		}
 
