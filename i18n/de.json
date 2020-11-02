@@ -2,13 +2,14 @@
 	"@metadata": {
 		"authors": [
 			"Aira",
+			"Ameisenigel",
 			"Metalhead64"
 		]
 	},
 	"action-createwiki": "create wikis",
 	"action-requestwiki": "Wikis zu beantragen",
 	"createwiki": "Kreiere eine wiki",
-	"createwiki-defaultmainpage": "__NOTOC__\n== Willkommen zu {{SITENAME}}! ==\nDiese Main Page automatisch generiert von einem wiki-kreator (ein volunteer der diese Wiki aufgrund einer anfrage kreiert hat), und ist anscheinen nopch nicht ersetzt worden.\n\n=== Für die Bürokrat diser Wiki ===\nHallo und Willkommen in Eurer neuen Wiki! Schön, dass Ihr Euch für Miraheze als Hoster entschieden habt. Wir hoffen dass Euch unser Angebot zusagt.\n\nIhr könnt ab sofort zu jedwedem Zeitpunkt anfangen Eure Wiki zu benutzen un d zu bearbeiten.\n\nIhr braucht Hilfe? Kein Problem! Wir helfen Euch gerne bei allen Fragen und Problemen. Um den Start zu erleichtern, haben wir einige Links eingefügt zu MediaWiki:\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Help:Contents MediaWiki guide (e.g. navigation, editieren, Seiten löschen, User blockieren)]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ Miraheze FAQ]</span>\n\n==== Aber liebe Miraheze-Leute, cih verstehe immer noch nicht... ...! ====\nKein Problem! auch wenn etwas nicht Dokumentiert oder in der FAQ zu finden ist, helfen wir Euch gerne. Ihr findent und hier:\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center In unserer eigenen Miraheze-Wiki]</span>\n* Auf IRC in #miraheze auf irc.freenode.net ([irc://irc.freenode.net/#miraheze direct link]; [http://webchat.freenode.net?channels=%23miraheze webchat])\n\n=== Für Besucher dieser Wiki ===\nHAllo, die auto-kreierte Haupseite (diese Seite) Ist noch nicht ersetzt oder bearbeitet worden. Die Bürokrat arbeiten vielleicht noch daran, also versucht es doch einfahc spöter noch einmal!",
+	"createwiki-defaultmainpage": "__NOTOC__\n== Willkommen bei {{SITENAME}}! ==\nDiese Hauptseite wurde automatisch generiert von einem Wiki-Ersteller (ein Freiwilliger, der dieses Wiki aufgrund einer Anfrage erstellt hat) und ist anscheinen noch nicht ersetzt worden.\n\n=== Für die Bürokraten dieses Wikis ===\nHallo und Willkommen in eurem neuen Wiki! Schön, dass Ihr euch für Miraheze als Hoster entschieden habt. Wir hoffen, dass euch unser Angebot zusagt.\n\nIhr könnt ab sofort zu jedwedem Zeitpunkt anfangen, euer Wiki zu benutzen und zu bearbeiten.\n\nIhr braucht Hilfe? Kein Problem! Wir helfen Euch gerne bei allen Fragen und Problemen. Um den Start zu erleichtern, haben wir einige Links eingefügt zu MediaWiki:\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents MediaWiki-Anleitung (z.B. Navigation, Editieren, Seiten löschen, Benutzer sperren)]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ Miraheze FAQ]</span>\n\n==== Aber liebe Miraheze-Leute, ich verstehe immer noch nicht ...! ====\nKein Problem! Auch wenn etwas nicht dokumentiert oder in den FAQ zu finden ist, helfen wir ruch gerne. Ihr findet uns hier:\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center In unserem eigenen Miraheze-Wiki]</span>\n* Auf IRC in #miraheze auf irc.freenode.net ([irc://irc.freenode.net/#miraheze direct link]; [http://webchat.freenode.net?channels=%23miraheze Webchat])\n\n=== Für Besucher dieses Wikis ===\nHallo, die automatisch erstellte Haupseite (diese Seite) ist noch nicht ersetzt oder bearbeitet worden. Die Bürokraten arbeiten vielleicht noch daran, also versucht es doch einfach später noch einmal!",
 	"createwiki-desc": "Extension zur einfachen Erstellung einer Wiki.",
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "Dein neues Miraheze-Wiki: $1",
@@ -50,7 +51,7 @@
 	"requestwiki": "Wiki beantragen",
 	"requestwikiedit": "Eine Wikianfrage bearbeiten",
 	"requestwiki-edit-id": "Wikianfrage-Kennung",
-	"requestwiki-edit-success": "Änderungen für die Anfrage von $1 erfolgreich übermittelt.",
+	"requestwiki-edit-success": "Änderungen für die Anfrage erfolgreich übermittelt.",
 	"requestwiki-edit-notloggedin": "Du musst dich leider <span class =\"plainlinks\">[$1 anmelden]</span>, bevor du eine Wikianfrage bearbeiten kannst.",
 	"requestwiki-edit-user": "Du hast keine ausreichenden Berechtigungen, um diese Wikianfrage zu bearbeiten. Beachte bitte, dass du nur Anfragen bearbeiten kannst, die du mit deinem aktuellen Benutzerkonto gestellt hast.",
 	"requestwiki-error-csrf": "<strong>Sorry, diese Wiki konnte nicht erstellt werden wegen misteriösem Datenverlust.</strong>\nBitte sende Sie das Formular erneut. Sollte das nicht funktionieren, [[Special:Userlogout|Loggen Sie sich aus]] und dann wieder ein.",
@@ -59,7 +60,7 @@
 	"requestwiki-error-notallfilledin": "Sie müssen WENIGSTENS einen Wiki-namen und die Sprache selektieren.",
 	"requestwiki-error-notime": "Mit deiner Anfrage gibt es ein Problem. Bitte schicke sie erneut ab.",
 	"requestwiki-error-patient": "Du hast bereits ein Wiki beantragt. Bitte habe Geduld und einer unserer Wikiersteller sollte es bald erstellen. Falls du ein weiteres Wiki beantragen musst, warte bitte, bis du später eines beantragen kannst.",
-	"requestwiki-header": "Sie sind dabei, eine neue Wiki auf Miraheze zu beantragen, prima! Bitte füllen Sie dieses Formular aus.\nIhr Antrag wird von einem Volontär begutachtet und kann auf der Seite, welche beim abschicken dieses Formulares angegeben wird, nachvollzogen werden.\n\nFall Sie eine eigene Domain wünschen (keine standard wiki.miraheze.org subdomain), lesen Sie bitte zuerst <span class=\"plainlinks\">[$1 hier]</span> .\n\nWenn Sie eine Wiki beantragen, stimmen Sie automatisch unserer [[Dormancy Policy]] zu.",
+	"requestwiki-header": "Sie sind dabei, eine neue Wiki auf Miraheze zu beantragen, prima! Bitte füllen Sie dieses Formular aus, bevor wir die Anfrage bearbeiten können.\nIhr Antrag wird von einem Freiwilligen begutachtet und kann auf der Seite, welche beim Abschicken dieses Formulares angegeben wird, nachvollzogen werden.\n\nFall Sie eine eigene Domain wünschen (keine standard .miraheze.org-Subdomain), lesen Sie bitte zuerst <span class=\"plainlinks\">[$1 hier]</span>. Sie müssen zuerst eine Subdomain auswählen und die benutzerdefinierte Domain wird anschließend konfiguriert.\n\nWenn Sie ein Wiki beantragen, stimmen Sie automatisch unserer [[Dormancy Policy]] zu.",
 	"requestwiki-label-comments": "Comments (e.g. what is your wiki about?):",
 	"requestwiki-label-customdomain": "Benutzerdefinierte Domain:",
 	"requestwiki-label-customdomain-info": "Du musst oben eine Subdomain angeben. Falls du eine benutzerdefinierte Domain für dein Wiki möchtest, gib sie bitte unten an.",
@@ -86,7 +87,7 @@
 	"requestwikiqueue-request-header-wikicreatorcomment": "Kommentar abgegeben von $1",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Kommentar abgegeben von $1 am $2",
 	"requestwikiqueue-request-info-decline": "Du kannst die Anfragensichtbarkeit bei der Ablehnung verändern und einen Grund angeben. Der Grund wird in der Anfragengeschichte sichtbar sein und direkt an den Benutzer gesendet.",
-	"requestwikiqueue-request-label-action": "Diese Anfragenaktion markieren als …",
+	"requestwikiqueue-request-label-action": "Diese Anfrageaktion markieren als …",
 	"requestwikiqueue-request-label-approved": "Bestätigt",
 	"requestwikiqueue-request-label-comment": "Kommentar:",
 	"requestwikiqueue-request-label-create-wiki": "Wiki erstellen",
