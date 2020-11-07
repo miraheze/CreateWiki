@@ -80,6 +80,7 @@ class ManageInactiveWikis extends Maintenance {
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 			if ( $canWrite && $wiki->isInactive() ) {
 				$wiki->markActive();
+				$wiki->commit();
 			}
 
 			return true;
