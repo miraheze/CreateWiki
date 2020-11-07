@@ -45,7 +45,8 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$request->url
+				'default' => (string)$request->url,
+				'validation-callback' => function( $url ) { return ctype_alnum( explode( '.', $url, 2 )[0] ); }
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
@@ -250,7 +251,6 @@ class RequestWikiRequestViewer {
 		HTMLForm $form,
 		WikiRequest $request
 	) {
-
 		if ( isset( $formData['submit-comment'] ) ) {
 			$request->addComment( $formData['comment'], $form->getUser() );
 		} elseif ( isset( $formData['submit-edit'] ) ) {
