@@ -269,6 +269,8 @@ class RemoteWiki {
 	}
 
 	public function setServerName( string $server ) {
+		$server = $server == '' ? null : $server;
+
 		$this->changes['servername'] = [
 			'old' => $this->url,
 			'new' => $server
