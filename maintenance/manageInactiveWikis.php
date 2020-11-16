@@ -55,6 +55,7 @@ class ManageInactiveWikis extends Maintenance {
 			$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
+				$dbw = wfGetDB( DB_MASTER, [], $dbName );
 				$this->checkLastActivity( $dbName, $wiki, $dbw, $config );
 			}
 		}
@@ -69,16 +70,21 @@ class ManageInactiveWikis extends Maintenance {
 
 		$blankConfig = new GlobalVarConfig( '' );
 
-		$timeStamp = (int)Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php',
-			[
-				'--wiki', $dbName
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute()->getStdout();
+		$lastEntryObj = $dbw->selectRow(
+ 			'recentchanges',
+ 			'rc_timestamp',
+ 			[
+ 				"rc_log_action != 'renameuser'"
+ 			],
+ 			__METHOD__,
+ 			[
+ 				'ORDER BY' => 'rc_timestamp DESC',
+ 			]
+ 		);
 
-		// If for some reason $timeStamp returns anything other than a timestamp
-		// or timeouts, then bail out.
-		if ( (int)!$timeStamp ) {
+		$timeStamp = isset( $lastEntryObj->rc_timestamp ) ? (int)$lastEntryObj->rc_timestamp : false;
+
+		if ( !$timeStamp ) {
 			return true;
 		}
 
