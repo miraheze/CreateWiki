@@ -168,7 +168,7 @@ class ManageInactiveWikis extends Maintenance {
 		$dbw = wfGetDB( DB_MASTER, [], $dbName  );
 
 		$logEntry = new ManualLogEntry( 'managewiki', 'settings' );
-		$logEntry->setPerformer( User::newSystemUser( 'Miraheze Inactive Script' );
+		$logEntry->setPerformer( User::newSystemUser( 'Miraheze Inactive Script' ) );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'ManageWiki' ) );
 		$logEntry->setParameters(
 			[
