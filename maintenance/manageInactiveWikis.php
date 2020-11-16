@@ -76,6 +76,12 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute()->getStdout();
 
+		// If for some reason $timeStamp returns anything other than a timestamp
+		// or timeouts, then bail out.
+		if ( (int)!$timeStamp ) {
+			return true;
+		}
+
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 			if ( $canWrite && $wiki->isInactive() ) {
