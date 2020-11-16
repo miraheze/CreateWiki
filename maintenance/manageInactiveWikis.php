@@ -87,6 +87,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $canWrite && $wiki->isInactive() ) {
 				$wiki->markActive();
 				$wiki->commit();
+				$this->log( $dbName, 'active' );
 			}
 
 			return true;
@@ -99,6 +100,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
+					$this->log( $dbName, 'closed' );
 					$this->emailBureaucrats( $dbName, $config );
 					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
 				} else {
@@ -108,6 +110,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Meets inactivity
 				if ( $canWrite ) {
 					$wiki->markInactive();
+					$this->log( $dbName, 'inactive' );
 					$this->output( "{$dbName} was eligible for a warning notice and one was given.\n" );
 				} else {
 					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$timeStamp}\n" );
@@ -118,6 +121,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki not marked inactive yet, warning should be given
 					if ( $canWrite ) {
 						$wiki->markInactive();
+						$this->log( $dbName, 'inactive' );
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, therefore warning.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, eligible for warning.\n" );
@@ -126,6 +130,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
 						$wiki->markClosed();
+						$this->log( $dbName, 'closed' );
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, eligible for closure.\n" );
@@ -140,6 +145,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $wiki->isClosed() && $wiki->isClosed() < date( "YmdHis", strtotime( "-{$removeDays} days" ) ) ) {
 				// Wiki closed, eligible for deletion
 				if ( $canWrite ) {
+					$this->log( $dbName, 'deleted' );
 					$wiki->delete();
 					$this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
 				} else {
@@ -156,6 +162,22 @@ class ManageInactiveWikis extends Maintenance {
 
 		$wiki->commit();
 		return true;
+	}
+
+	private function log( string $dbName, string $type ) {
+		$dbw = wfGetDB( DB_MASTER, [], $dbName  );
+
+		$logEntry = new ManualLogEntry( 'managewiki', 'settings' );
+		$logEntry->setPerformer( User::newSystemUser( 'Miraheze Inactive Script' );
+		$logEntry->setTarget( SpecialPage::getTitleFor( 'ManageWiki' ) );
+		$logEntry->setParameters(
+			[
+				'4::wiki' => $dbName,
+				'5::changes' => $type
+			]
+		);
+		$logID = $logEntry->insert( $dbw );
+		$logEntry->publish( $logID );
 	}
 
 	public function emailBureaucrats( $wikiDb, $config ) {
