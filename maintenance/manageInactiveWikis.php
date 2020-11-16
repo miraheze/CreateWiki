@@ -74,7 +74,7 @@ class ManageInactiveWikis extends Maintenance {
 			[
 				'--wiki', $dbName
 			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0 ] )->execute()->getStdout();
+		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute()->getStdout();
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
