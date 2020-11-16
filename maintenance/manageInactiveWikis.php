@@ -76,7 +76,8 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute()->getStdout();
 
-		// If for some reason $timeStamp returns 0 or the script timeouts, bail out.
+		// If for some reason $timeStamp returns anything other than a timestamp
+		// or timeouts, then bail out.
 		if ( (int)!$timeStamp ) {
 			return true;
 		}
