@@ -76,7 +76,7 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
 
-		// If for some reason $timeStamp returns a 0 exit code, bail out.
+		// If for some reason $timeStamp returns a non-zero exit code, bail out.
 		if ( $timeStamp->getExitCode() !== 0 ) {
 			return true;
 		}
