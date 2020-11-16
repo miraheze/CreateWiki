@@ -85,8 +85,10 @@ class ManageInactiveWikis extends Maintenance {
 		$timeStamp = isset( $lastEntryObj->rc_timestamp ) ? (int)$lastEntryObj->rc_timestamp : false;
 
 		if ( !$timeStamp ) {
-			return true;
-		}
+      return true;
+    }
+		
+		$timeStamp = $timeStamp->getStdout();
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
