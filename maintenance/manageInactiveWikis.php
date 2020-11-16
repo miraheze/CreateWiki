@@ -69,7 +69,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$blankConfig = new GlobalVarConfig( '' );
 
-		$timeStamp = (int)Shell::makeScriptCommand(
+		$timeStamp = Shell::makeScriptCommand(
 			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php',
 			[
 				'--wiki', $dbName
