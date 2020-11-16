@@ -85,8 +85,8 @@ class ManageInactiveWikis extends Maintenance {
 		$timeStamp = isset( $lastEntryObj->rc_timestamp ) ? (int)$lastEntryObj->rc_timestamp : false;
 
 		if ( !$timeStamp ) {
-      return true;
-    }
+			return true;
+		}
 		
 		$timeStamp = $timeStamp->getStdout();
 
