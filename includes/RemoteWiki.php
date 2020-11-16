@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use Wikimedia\Rdbms\IDatabase;
 
 class RemoteWiki {
 	public $changes = [];
@@ -24,9 +25,9 @@ class RemoteWiki {
 	private $dbcluster;
 	private $category;
 
-	public function __construct( string $wiki ) {
+	public function __construct( string $wiki, IDatabase $dbw = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->dbw = $dbw ?? wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
 			'*',
