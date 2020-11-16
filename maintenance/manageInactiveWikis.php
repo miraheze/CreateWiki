@@ -74,7 +74,9 @@ class ManageInactiveWikis extends Maintenance {
 			[
 				'--wiki', $dbName
 			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
+		)
+			->limits( [ 'filesize' => 0, 'memory' => 0, 'time' => 0, 'walltime' => 0 ] )
+			->execute();
 
 		// If for some reason $timeStamp returns a non-zero exit code, bail out.
 		if ( $timeStamp->getExitCode() !== 0 ) {
