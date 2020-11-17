@@ -119,6 +119,13 @@ class WikiManager {
 		$blankConfig = new GlobalVarConfig( '' );
 
 		Shell::makeScriptCommand(
+			$blankConfig->get( 'IP' ) . '/maintenance/populateContentTables.php',
+			[
+				'--wiki', $wiki
+			]
+		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
+
+		Shell::makeScriptCommand(
 			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/populateMainPage.php',
 			[
 				'--wiki', $wiki
