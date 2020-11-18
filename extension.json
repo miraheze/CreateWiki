@@ -34,6 +34,9 @@
 			"i18n"
 		]
 	},
+	"ExtensionMessagesFiles": {
+		"SpecialCreateWikiAliases": "includes/CreateWikiAliases.php"
+	},
 	"AutoloadClasses": {
 		"CreateWikiHooks": "includes/CreateWikiHooks.php",
 		"CreateWikiJob": "includes/CreateWiki/CreateWikiJob.php",
