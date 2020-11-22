@@ -99,13 +99,16 @@ class CreateWikiJson {
 			}
 		}
 
-		$dbJson = file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
-		$deletedJson = file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
+		$dbJsonFile = "{$this->cacheDir}/databases.json";
+		$deletedJsonFile = "{$this->cacheDir}/deleted.json";
 
-		if ( $dbJson ) {
+		$dbJson = file_put_contents( "{$dbJsonFile}.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
+		$deletedJson = file_put_contents( "{$deletedJsonFile}.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
+
+		if ( file_exists( "{$dbJsonFile}.tmp" ) ) {
 			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
 		}
-		if ( $deletedJson ) {
+		if ( file_exists( "{$deletedJsonFile}.tmp" ) ) {
 			rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
 		}
 	}
