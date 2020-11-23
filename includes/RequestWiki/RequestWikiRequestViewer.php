@@ -213,7 +213,6 @@ class RequestWikiRequestViewer {
 				'submit-handle' => [
 					'type' => 'submit',
 					'default' => wfMessage( 'htmlform-submit' )->text(),
-					'disabled' => (bool)$wmError,
 					'section' => 'handle'
 				]
 			];
@@ -224,6 +223,9 @@ class RequestWikiRequestViewer {
 					'default' => $wmError,
 					'section' => 'handle'
 				];
+
+				$formDescriptor['submission-action']['default'] = 'decline';
+				$formDescriptor['submission-action']['disabled'] = true;
 			}
 		}
 
