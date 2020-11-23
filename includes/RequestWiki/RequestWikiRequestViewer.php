@@ -179,6 +179,9 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
+			$wm = new WikiManager( $request->dbname );
+			$wmError = $wm->checkDatabaseName( $request->dbname );
+
 			$formDescriptor += [
 				'info-submission' => [
 					'type' => 'info',
@@ -210,9 +213,18 @@ class RequestWikiRequestViewer {
 				'submit-handle' => [
 					'type' => 'submit',
 					'default' => wfMessage( 'htmlform-submit' )->text(),
+					'disabled' => (bool)$wmError,
 					'section' => 'handle'
 				]
 			];
+
+			if ( $wmError ) {
+				$formDescriptor['submit-error-info'] = [
+					'type' => 'info',
+					'default' => $wmError,
+					'section' => 'handle'
+				];
+			}
 		}
 
 		return $formDescriptor;
