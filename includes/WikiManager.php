@@ -10,6 +10,7 @@ class WikiManager {
 	private $dbw;
 	private $cwdb;
 	private $exists;
+	private $lb = false;
 	private $tables = [];
 
 	public function __construct( string $dbname ) {
@@ -51,6 +52,7 @@ class WikiManager {
 					'wiki_dbcluster' => $this->cluster
 				]
 			)->wiki_dbname;
+			$this->lb = $lbs[$this->cluster];
 			$newDbw = $lbs[$this->cluster]->getConnection( DB_MASTER, [], $clusterDB );
 
 		} elseif ( !$check && !$this->config->get( 'CreateWikiDatabaseClusters' ) ) {
@@ -93,7 +95,11 @@ class WikiManager {
 			throw new FatalError( "Wiki '{$wiki}' already exists." );
 		}
 
-		$this->dbw->selectDomain( $wiki );
+		if ( $this->lb ) {
+			$this->dbw = $this->lb->getConnection( DB_MASTER, [], $wiki );
+		} else {
+			$this->dbw->selectDomain( $wiki );
+		}
 
 		$this->cwdb->insert(
 			'cw_wikis',
