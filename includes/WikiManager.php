@@ -252,6 +252,8 @@ class WikiManager {
 
 		if ( !$suffixed ) {
 			$error = 'notsuffixed';
+		} elseif( !$rename && $this->exists ) {
+			$error = 'dbexists';
 		} elseif( !ctype_alnum( $dbname ) ) {
 			$error = 'notalnum';
 		} elseif ( strtolower( $dbname ) !== $dbname ) {
