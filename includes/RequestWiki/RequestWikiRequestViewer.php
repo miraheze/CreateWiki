@@ -115,17 +115,19 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-label-sitename',
 					'type' => 'text',
 					'section' => 'edit',
+					'required' => true,
 					'default' => (string)$request->sitename
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
 					'type' => 'text',
 					'section' => 'edit',
+					'required' => true,
 					'default' => (string)$request->url
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
-					'type' => 'text',
+					'type' => 'language',
 					'section' => 'edit',
 					'default' => (string)$request->language
 				],
