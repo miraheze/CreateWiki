@@ -127,6 +127,16 @@ class WikiInitialise {
 		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 
+		// Utilise SiteConfiguration magic here
+		$this->config->siteParamsCallback = function() use ( $cacheArray ) {
+			return [
+				'suffix' => null,
+				'lang' => $cacheArray['core']['wgLanguageCode'],
+				'tags' => $cacheArray['extensions'],
+				'params' => []
+				];
+		};
+
 		// The following is ManageWiki additional code
 		// If ManageWiki isn't installed, this does nothing
 

@@ -103,7 +103,7 @@ class RemoteWiki {
 		$this->inactive = $this->dbw->timestamp();
 		$this->newRows += [
 			'wiki_inactive' => 1,
-			'wiki_inactive_timestamp' =>$this->inactive
+			'wiki_inactive_timestamp' => $this->inactive
 		];
 	}
 
@@ -273,7 +273,7 @@ class RemoteWiki {
 	}
 
 	public function setServerName( string $server ) {
-		$server = ( $server == '' ) ? NULL : $server;
+		$server = ( $server == '' ) ? null : $server;
 
 		$this->changes['servername'] = [
 			'old' => $this->url,
