@@ -28,7 +28,7 @@
 	"createwiki-label-dbname": "Used as a label for dbname.\n{{Identical|Database name}}",
 	"createwiki-label-language": "Used as a label for 'language'.\n{{Identical|Language}}",
 	"createwiki-label-private": "Used as a label for to mark the wiki as private.",
-	"createwiki-label-reason": "Used as a label for 'reason'.\n{{Identical|Reason}}",
+	"createwiki-label-reason": "Used as a label for 'description'.\n{{Identical|Description}}",
 	"createwiki-label-requester": "Used as a label for 'requester'.\n{{Identical|Requester}}",
 	"createwiki-label-sitename": "Used as a label for 'sitename'.\n{{Identical|Sitename}}",
 	"createwiki-label-submit": "Used as a label for submitting.\n{{Identical|Submit}}",
