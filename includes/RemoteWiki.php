@@ -188,7 +188,9 @@ class RemoteWiki {
 		$this->closed = $this->dbw->timestamp();
 		$this->newRows += [
 			'wiki_closed' => 1,
-			'wiki_closed_timestamp' => $this->closed
+			'wiki_closed_timestamp' => $this->closed,
+			'wiki_inactive' => 0,
+			'wiki_inactive_timestamp' => null
 		];
 	}
 
@@ -206,7 +208,9 @@ class RemoteWiki {
 		$this->deleted = $this->dbw->timestamp();
 		$this->newRows += [
 			'wiki_deleted' => 1,
-			'wiki_deleted_timestamp' => $this->deleted
+			'wiki_deleted_timestamp' => $this->deleted,
+			'wiki_closed' => 0,
+			'wiki_closed_timestamp' => null
 		];
 	}
 
