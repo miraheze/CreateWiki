@@ -123,7 +123,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => (string)$request->url,
-					'validation-callback' => function( $url, $formData ) { if ( $formData['submit-handle'] ) { return true; } else { return ctype_alnum( explode( '.', $url, 2 )[0] ); } }
+					'validation-callback' => function( $url, $formData ) { if ( isset( $formData['submit-handle'] ) ) { return true; } else { return ctype_alnum( explode( '.', $url, 2 )[0] ); } }
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
