@@ -45,8 +45,7 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$request->url,
-				'validation-callback' => function( $url ) { return ctype_alnum( explode( '.', $url, 2 )[0] ); }
+				'default' => (string)$request->url
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
@@ -123,7 +122,8 @@ class RequestWikiRequestViewer {
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => (string)$request->url
+					'default' => (string)$request->url,
+					'validation-callback' => function( $url, $formData ) { if ( $formData['submit-handle'] ) { return true; } else { return ctype_alnum( explode( '.', $url, 2 )[0] ); } }
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
