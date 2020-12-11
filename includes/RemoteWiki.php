@@ -13,6 +13,7 @@ class RemoteWiki {
 	private $dbname;
 	private $sitename;
 	private $language;
+	private $description;
 	private $private;
 	private $creation;
 	private $url;
@@ -42,6 +43,7 @@ class RemoteWiki {
 		$this->dbname = $wikiRow->wiki_dbname;
 		$this->sitename = $wikiRow->wiki_sitename;
 		$this->language = $wikiRow->wiki_language;
+		$this->description = $wikiRow->wiki_description;
 		$this->private = $wikiRow->wiki_private;
 		$this->creation = $wikiRow->wiki_creation;
 		$this->url = $wikiRow->wiki_url;
@@ -88,6 +90,20 @@ class RemoteWiki {
 
 		$this->language = $lang;
 		$this->newRows['wiki_language'] = $lang;
+	}
+
+	public function getDescription() {
+		return $this->description;
+	}
+
+	public function setDescription( string $description ) {
+		$this->changes['description'] = [
+			'old' => $this->description,
+			'new' => $description
+		];
+
+		$this->description = $description;
+		$this->newRows['wiki_description'] = $description;
 	}
 
 	public function isInactive() {
