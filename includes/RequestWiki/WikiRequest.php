@@ -4,8 +4,8 @@ use MediaWiki\MediaWikiServices;
 
 class WikiRequest {
 	public $dbname;
-	public $description;
 	public $language;
+	public $description;
 	public $private;
 	public $sitename;
 	public $url;
@@ -36,8 +36,8 @@ class WikiRequest {
 		if ( $dbRequest ) {
 			$this->id = $dbRequest->cw_id;
 			$this->dbname = $dbRequest->cw_dbname;
-			$this->description = $dbRequest->cw_comment;
 			$this->language = $dbRequest->cw_language;
+			$this->description = $dbRequest->cw_comment;
 			$this->private = $dbRequest->cw_private;
 			$this->sitename = $dbRequest->cw_sitename;
 			$this->url = $dbRequest->cw_url;
@@ -104,6 +104,7 @@ class WikiRequest {
 				'dbname' => $this->dbname,
 				'sitename' => $this->sitename,
 				'language' => $this->language,
+				'description' => $this->description,
 				'private' => $this->private,
 				'category' => $this->category,
 				'requester' => $this->requester->getName(),
@@ -118,7 +119,7 @@ class WikiRequest {
 			$wm = new WikiManager( $this->dbname );
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
-			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
+			$notCreated = $wm->create( $this->sitename, $this->language, $this->description, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
 				throw new MWException( $notCreated ?? $validName );
