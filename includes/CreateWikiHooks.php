@@ -78,6 +78,12 @@ class CreateWikiHooks {
 				'cw_wikis',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
 			);
+			
+			$updater->modifyExtensionTable(
+				'cw_wikis',
+ 				__DIR__ . '/../sql/patches/patch-wiki_description.sql'
+			);
+
 		}
 
 		return true;
