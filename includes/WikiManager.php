@@ -71,6 +71,7 @@ class WikiManager {
 	public function create(
 		string $siteName,
 		string $language,
+		string $description,
 		bool $private,
 		string $category,
 		string $requester,
@@ -108,6 +109,7 @@ class WikiManager {
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
+				'wiki_description' => $description,
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category
