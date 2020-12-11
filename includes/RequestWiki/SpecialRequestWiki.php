@@ -80,6 +80,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'type' => 'text',
 			'label-message' => 'createwiki-label-reason',
 			'required' => true,
+			'maxlength' => 512,
 			'validation-callback' => [ __CLASS__, 'isValidReason' ],
 			'name' => 'rwReason',
 		];
