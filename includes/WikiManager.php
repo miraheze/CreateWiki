@@ -76,6 +76,7 @@ class WikiManager {
 		string $category,
 		string $requester,
 		string $actor,
+		string $reason
 	) {
 		$wiki = $this->dbname;
 
@@ -155,7 +156,7 @@ class WikiManager {
 
 		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
 
-		$this->logEntry( 'farmer', 'createwiki', $actor, $description, [ '4::wiki' => $wiki ] );
+		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 
 		return null;
 	}
@@ -264,13 +265,13 @@ class WikiManager {
 		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->escaped() : false;
 	}
 
-	private function logEntry( string $log, string $action, string $actor, string $description, array $params, string $loggingWiki = null ) {
+	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
 		$logDBConn = wfGetDB( DB_MASTER, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( User::newFromName( $actor ) );
 		$logEntry->setTarget( Title::newFromID( 1 ) );
-		$logEntry->setComment( $description );
+		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
 		$logID = $logEntry->insert( $logDBConn );
 		$logEntry->publish( $logID );
