@@ -70,6 +70,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'type' => 'text',
 			'default' => $request->getVal( 'wpreason' ),
 			'size' => 45,
+			'maxlength' => 512,
 			'required' => true,
 		];
 
@@ -91,7 +92,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$wm = new WikiManager( $formData['dbname'] );
 
-		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
+		$wm->create( $formData['sitename'], $formData['language'], $formData['reason'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
 		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
 
