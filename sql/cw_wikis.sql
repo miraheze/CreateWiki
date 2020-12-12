@@ -2,7 +2,7 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_dbname VARCHAR(64) NOT NULL PRIMARY KEY,
   wiki_sitename VARCHAR(128) NOT NULL,
   wiki_language VARCHAR(12) NOT NULL,
-  wiki_description TEXT DEFAULT NULL,
+  wiki_description BLOB DEFAULT NULL,
   wiki_private SMALLINT NOT NULL,
   wiki_creation BINARY(14) NULL,
   wiki_url TEXT NULL,
