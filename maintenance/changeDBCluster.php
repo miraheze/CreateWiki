@@ -6,8 +6,6 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
-use MediaWiki\MediaWikiServices;
-
 class ChangeDBCluster extends Maintenance
 {
 	public function __construct()
@@ -15,19 +13,18 @@ class ChangeDBCluster extends Maintenance
 		parent::__construct();
 		$this->addOption( 'db-cluster', 'Sets the wikis requested to a different db cluster.', true, true );
 		$this->addOption( 'file', 'Path to file where the wikinames are store. Must be one wikidb name per line. (Optional, fallsback to current dbname)', false, true );
+		$this->addOption( 'wiki-dbname', 'Sets the db cluster for specified wiki (doesn\'t use the db specified in --wiki)', true, true );
 	}
 
 	public function execute()
 	{
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-
 		if ( (bool)$this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
 			if ( !$file ) {
 				$this->fatalError( "Unable to read file, exiting" );
 			}
 		} else {
-			$wiki = new RemoteWiki( $config->get( 'DBname' ) );
+			$wiki = new RemoteWiki( (string)$this->getOption( 'wiki-dbname' ) );
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 			return;
