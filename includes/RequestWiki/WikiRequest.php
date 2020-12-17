@@ -86,7 +86,7 @@ class WikiRequest {
 			]
 		);
 
-		$this->sendNotification( 'comment', $comment );
+		$this->sendNotification( 'comment', $comment, $user );
 	}
 
 	public function getComments() {
@@ -134,7 +134,7 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 		$this->addComment( $reason, $user );
-		$this->sendNotification( 'declined', $reason );
+		$this->sendNotification( 'declined', $reason, $user );
 		$this->log( $user, 'requestdecline' );
 	}
 
@@ -164,7 +164,7 @@ class WikiRequest {
 		}
 	}
 
-	private function sendNotification( string $type, string $text ) {
+	private function sendNotification( string $type, string $text, User $user ) {
 		 if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
 		 	return;
 		 }
@@ -184,6 +184,9 @@ class WikiRequest {
 				'notifyAgent' => true
 			];
 		}
+
+		// Don't notify the acting user of their action
+		unset( $this->involvedUsers[$user->getId()] );
 
 		foreach ( $this->involvedUsers as $user => $object ) {
 			EchoEvent::create(
