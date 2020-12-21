@@ -308,6 +308,10 @@ class RemoteWiki {
 				]
 			);
 
+			foreach( $this->hooks as $hook ) {
+				Hooks::run( $hook, [ $this->dbname ] );
+			}
+
 			$cWJ = new CreateWikiJson( $this->dbname );
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
