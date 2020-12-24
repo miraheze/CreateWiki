@@ -4,7 +4,8 @@ use MediaWiki\MediaWikiServices;
 
 class RemoteWiki {
 	public $changes = [];
-	public $specialLog;
+	public $log;
+	public $logParams = [];
 
 	private $hooks = [];
 	private $newRows = [];
@@ -204,7 +205,7 @@ class RemoteWiki {
 			'new' => 1
 		];
 
-		$this->specialLog = 'delete';
+		$this->log = 'delete';
 		$this->deleted = $this->dbw->timestamp();
 		$this->newRows += [
 			'wiki_deleted' => 1,
@@ -220,7 +221,7 @@ class RemoteWiki {
 			'new' => 0
 		];
 
-		$this->specialLog = 'undelete';
+		$this->log = 'undelete';
 		$this->deleted = false;
 		$this->newRows += [
 			'wiki_deleted' => 0,
@@ -238,7 +239,7 @@ class RemoteWiki {
 			'new' => 1
 		];
 
-		$this->specialLog = 'lock';
+		$this->log = 'lock';
 		$this->locked = true;
 		$this->newRows['wiki_locked'] = 1;
 	}
@@ -249,7 +250,7 @@ class RemoteWiki {
 			'new' => 0
 		];
 
-		$this->specialLog = 'unlock';
+		$this->log = 'unlock';
 		$this->locked = false;
 		$this->newRows['wiki_locked'] = 0;
 	}
@@ -315,6 +316,13 @@ class RemoteWiki {
 			$cWJ = new CreateWikiJson( $this->dbname );
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
+
+			if ( is_null( $this->log ) ) {
+				$this->log = 'settings';
+				$this->logParams = [
+					'5::changes' => implode( ', ', array_keys( $this->changes ) )
+				];
+			}
 		}
 	}
 }
