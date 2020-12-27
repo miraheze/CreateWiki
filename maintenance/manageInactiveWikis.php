@@ -103,7 +103,7 @@ class ManageInactiveWikis extends Maintenance {
 				if ( $canWrite ) {
 					$wiki->markClosed();
 					$this->emailBureaucrats( $dbName, $config );
-					$this->output( "{$dbName} was eligible for closing and has been closed now.\n" );
+					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
 					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$timeStamp}\n" );
 				}
@@ -111,7 +111,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Meets inactivity
 				if ( $canWrite ) {
 					$wiki->markInactive();
-					$this->output( "{$dbName} was eligible for a warning notice and one was given.\n" );
+					$this->output( "{$dbName} was eligible for a warning notice and one was given. Last activity was at {$timeStamp}\n" );
 				} else {
 					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$timeStamp}\n" );
 				}
