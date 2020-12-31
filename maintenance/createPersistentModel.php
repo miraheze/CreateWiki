@@ -34,7 +34,7 @@ class CreateWikiCreatePersistentModel extends Maintenance {
 		
 		foreach ( $res as $row ) {
 			if ( $row->cw_status != 'inreview' && !in_array( $row->cw_comment, $comments ) ) {
-				$comments[] = $row->cw_comment;
+				$comments[] = explode( ' ', strtolower( $row->cw_comment ) );
 				$status[] = $row->cw_status;
 			}
 		}
