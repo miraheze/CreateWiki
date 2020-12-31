@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use Phpml\ModelManager;
 
 class WikiRequest {
 	public $dbname;
@@ -252,6 +253,18 @@ class WikiRequest {
 		);
 
 		return $this->dbw->insertId();
+	}
+	
+	public function tryAutoCreate() {
+		$modelFile = $this->config->get( 'CreateWikiPersistentSVCModelFile' );
+		
+		if ( file_exists( $modelFile ) ) {
+			$modelManager = new ModelManager();
+			$modelManager->restoreFromFile( $modelFile );
+			$approveScore = $modelManager->predictProbability( $this->description )['approve'];
+			
+			$this->addComment( 'Experimental Approval Score: ' . $approveScore, User::newSystemUser( 'CreateWiki Extension' ) );
+		}
 	}
 
 }
