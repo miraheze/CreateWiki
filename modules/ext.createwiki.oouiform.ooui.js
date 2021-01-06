@@ -136,7 +136,7 @@
 			mw.storage.session.set( 'mwbaseform-prevTab', value );
 		} );
 
-		infuse = $( document.body ).find( '.createwiki-infuse' );
+		infuse = $( document.body ).find( '[data-ooui*="createwiki-infuse"], .createwiki-infuse[name]' );
 		infuse.each( function () {
 			OO.ui.infuse( this );
 		});
