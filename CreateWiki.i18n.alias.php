@@ -1,9 +1,6 @@
 <?php
-/**
- * Aliases for special pages of CreateWiki extension.
- * @file
- * @ingroup Extensions
- */
+
+$specialPageAliases = [];
 
 $specialPageAliases['en'] = [
 	'CreateWiki' => [ 'CreateWiki' ],
