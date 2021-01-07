@@ -102,12 +102,14 @@ class CreateWikiJson {
 		$dbJson = file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
 		$deletedJson = file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
 
+		AtEase::suppressWarnings();
 		if ( $dbJson ) {
 			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
 		}
 		if ( $deletedJson ) {
 			rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
 		}
+		AtEase::restoreWarnings();
 	}
 
 	private function generateWiki() {
@@ -145,9 +147,11 @@ class CreateWikiJson {
 
 		$wikiJson = file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
 
+		AtEase::suppressWarnings();
 		if ( $wikiJson ) {
 			rename( "{$this->cacheDir}/{$this->wiki}.json.tmp", "{$this->cacheDir}/{$this->wiki}.json" );
 		}
+		AtEase::restoreWarnings();
 	}
 
 	private function newChanges() {
