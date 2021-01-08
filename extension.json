@@ -35,7 +35,7 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"SpecialCreateWikiAliases": "includes/CreateWikiAliases.php"
+		"CreateWikiAliases": "CreateWiki.i18n.alias.php"
 	},
 	"AutoloadClasses": {
 		"CreateWikiHooks": "includes/CreateWikiHooks.php",
