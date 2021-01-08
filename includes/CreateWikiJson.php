@@ -78,6 +78,10 @@ class CreateWikiJson {
 			]
 		);
 
+		if ( !$allWikis ) {
+			return;
+		}
+
 		$combiList = [];
 		$deletedList = [];
 
