@@ -79,7 +79,7 @@ class ManageInactiveWikis extends Maintenance {
 			->execute();
 
 		// If for some reason $timeStamp returns a non-zero exit code, bail out.
-		if ( $timeStamp->getExitCode() !== 0 ) {
+		if ( $timeStamp->getExitCode() !== 0 || !is_numeric( $timeStamp->getStdout() ) ) {
 			return true;
 		}
 		
