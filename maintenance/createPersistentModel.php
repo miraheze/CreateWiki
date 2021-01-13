@@ -4,8 +4,12 @@ require_once __DIR__ . '/../../../maintenance/Maintenance.php';
 
 use MediaWiki\MediaWikiServices;
 use Phpml\Classification\SVC;
-use Phpml\SupportVectorMachine\Kernel;
+use Phpml\FeatureExtraction\StopWords\English;
+use Phpml\FeatureExtraction\TokenCountVectorizer;
 use Phpml\ModelManager;
+use Phpml\Pipeline;
+use Phpml\SupportVectorMachine\Kernel;
+use Phpml\Tokenization\WordTokenizer;
 
 class CreateWikiCreatePersistentModel extends Maintenance {
 	public function __construct() {
@@ -24,37 +28,53 @@ class CreateWikiCreatePersistentModel extends Maintenance {
 				'cw_status'
 			],
 			[
-				'cw_id >= ' . 2000
+				'cw_status' => [
+					'approved',
+					'declined'
+				],
+				'cw_language' => 'en'
 			],
-			__METHOD__
+			__METHOD__,
+			[
+				'LIMIT' => 2500,
+				'ORDER BY' => 'cw_id DESC'
+			]
 		);
 		
 		$comments = [];
 		$status = [];
 		
 		foreach ( $res as $row ) {
-			if ( $row->cw_status != 'inreview' && !in_array( $row->cw_comment, $comments ) ) {
-				$comments[] = explode( ' ', strtolower( $row->cw_comment ) );
+			if ( !in_array( strtolower( $row->cw_comment ), $comments ) ) {
+				$comments[] = strtolower( $row->cw_comment );
 				$status[] = $row->cw_status;
 			}
 		}
 		
-		$classifier = new SVC(
-			Kernel::LINEAR,
-			1.0,
-			3,
-			null,
-			0.0,
-			0.001,
-			50,
-			true,
-			true
+		$pipeline = new Pipeline(
+			[
+				new TokenCountVectorizer(
+					new WordTokenizer,
+					new English
+				)
+			],
+			new SVC(
+				Kernel::LINEAR,
+				1.0,
+				3,
+				null,
+				0.0,
+				0.001,
+				50,
+				true,
+				true
+			)
 		);
 		
-		$classifier->train( $comments, $status );
+		$pipeline->train( $comments, $status );
 		
 		$modelManager = new ModelManager();
-		$modelManager->saveToFile( $classifer, $config->get( 'CreateWikiPersistentModelFile' ) );
+		$modelManager->saveToFile( $pipeline, $config->get( 'CreateWikiPersistentModelFile' ) );
     
 	}
 }
