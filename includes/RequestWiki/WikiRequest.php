@@ -261,9 +261,11 @@ class WikiRequest {
 		if ( file_exists( $modelFile ) ) {
 			$modelManager = new ModelManager();
 			$modelManager->restoreFromFile( $modelFile );
-			$approveScore = $modelManager->predictProbability( $this->description )['approve'];
+			$tokenDescription = $this->description;
+			$modelManager->transform( $tokenDescription );
+			$approveScore = $modelManager->getEstimator()->predictProbability( $okenDescription )['approve'];
 			
-			$this->addComment( 'Experimental Approval Score: ' . $approveScore, User::newSystemUser( 'CreateWiki Extension' ) );
+			$this->addComment( 'Experimental Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
 		}
 	}
 
