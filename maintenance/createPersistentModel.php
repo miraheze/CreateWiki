@@ -59,10 +59,10 @@ class CreateWikiCreatePersistentModel extends Maintenance {
 				)
 			],
 			new SVC(
-				Kernel::LINEAR,
+				Kernel::RBF,
 				1.0,
 				3,
-				null,
+				0.1,
 				0.0,
 				0.001,
 				50,
