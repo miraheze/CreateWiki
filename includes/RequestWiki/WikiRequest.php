@@ -115,6 +115,7 @@ class WikiRequest {
 			$this->save();
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
 			$this->log( $user, 'requestaccept' );
+			$this->tryAutoCreate();
 		} else {
 			$wm = new WikiManager( $this->dbname );
 			$validName = $wm->checkDatabaseName( $this->dbname );
@@ -137,6 +138,7 @@ class WikiRequest {
 		$this->addComment( $reason, $user );
 		$this->sendNotification( 'declined', $reason, $user );
 		$this->log( $user, 'requestdecline' );
+		$this->tryAutoCreate();
 	}
 
 	private function log( User $user, string $log ) {
