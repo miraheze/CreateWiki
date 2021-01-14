@@ -13,6 +13,7 @@
 	"action-createwiki": "luoda wikejä",
 	"action-requestwiki": "pyytää wikejä",
 	"createwiki": "Luo wiki",
+	"createwiki-defaultmainpage-summary": "Luo etusivu",
 	"createwiki-error-swiftcontainernot": "Swift-säilön luominen wikille $1 epäonnistui",
 	"createwiki-label-category": "Luokka:",
 	"createwiki-label-dbname": "Tietokannan nimi:",
