@@ -17,7 +17,8 @@
 		"RequestWikiQueue": "SpecialRequestWikiQueue"
 	},
 	"JobClasses": {
-		"CreateWikiJob": "CreateWikiJob"
+		"CreateWikiJob": "CreateWikiJob",
+		"RequestWikiAIJob": "RequestWikiAIJob"
 	},
 	"LogTypes": [
 		"farmer"
@@ -51,6 +52,7 @@
 		"PopulateMainPage": "maintenance/populateMainPage.php",
 		"RenameWiki": "maintenance/renameWiki.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
+		"RequestWikiAIJob": "includes/RequestWiki/RequestWikiAIJob.php",
 		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
 		"RequestWikiRequestViewer": "includes/RequestWiki/RequestWikiRequestViewer.php",
 		"SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",

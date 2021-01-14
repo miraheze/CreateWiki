@@ -257,17 +257,22 @@ class WikiRequest {
 		return $this->dbw->insertId();
 	}
 	
-	public function tryAutoCreate() {
-		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
-		
-		if ( file_exists( $modelFile ) ) {
-			$modelManager = new ModelManager();
-			$pipeline = $modelManager->restoreFromFile( $modelFile );
-			$tokenDescription = (array)strtolower( $this->description );
-			$pipeline->transform( $tokenDescription );
-			$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approve'];
-			
-			$this->addComment( 'Experimental Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
+	public function tryAutoCreate( bool $job = true ) {
+		// Memory exceeds in a web request but not via command line, work around for now is a job via web
+		if ( $job ) {
+			JobQueueGroup::singleton()->push( new RequestWikiAIJob( Title::newMainPage(), [ 'id' => $this->id ] ) );
+		} else {
+			$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
+
+			if ( file_exists( $modelFile ) ) {
+				$modelManager = new ModelManager();
+				$pipeline = $modelManager->restoreFromFile( $modelFile );
+				$tokenDescription = (array)strtolower( $this->description );
+				$pipeline->transform( $tokenDescription );
+				$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approved'];
+
+				$this->addComment( 'Experimental Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
+			}
 		}
 	}
 
