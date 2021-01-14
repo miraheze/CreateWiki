@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use Phpml\ModelManager;
 
 class WikiRequest {
 	public $dbname;
@@ -114,6 +115,7 @@ class WikiRequest {
 			$this->save();
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
 			$this->log( $user, 'requestaccept' );
+			$this->tryAutoCreate();
 		} else {
 			$wm = new WikiManager( $this->dbname );
 			$validName = $wm->checkDatabaseName( $this->dbname );
@@ -136,6 +138,7 @@ class WikiRequest {
 		$this->addComment( $reason, $user );
 		$this->sendNotification( 'declined', $reason, $user );
 		$this->log( $user, 'requestdecline' );
+		$this->tryAutoCreate();
 	}
 
 	private function log( User $user, string $log ) {
@@ -252,6 +255,20 @@ class WikiRequest {
 		);
 
 		return $this->dbw->insertId();
+	}
+	
+	public function tryAutoCreate() {
+		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
+		
+		if ( file_exists( $modelFile ) ) {
+			$modelManager = new ModelManager();
+			$modelManager->restoreFromFile( $modelFile );
+			$tokenDescription = $this->description;
+			$modelManager->transform( $tokenDescription );
+			$approveScore = $modelManager->getEstimator()->predictProbability( $tokenDescription )['approve'];
+			
+			$this->addComment( 'Experimental Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
+		}
 	}
 
 }

@@ -1,0 +1,8 @@
+{
+	"name": "miraheze/CreateWiki",
+	"require": {
+		"php-ai/php-ml": "*"
+	},
+	"prepend-autoloader": false,
+	"optimize-autoloader": true
+}

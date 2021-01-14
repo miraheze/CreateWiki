@@ -119,6 +119,11 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiPersistentModelFile": {
+			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiStateDays": {
 			"description": "Array. Integer values in days when a wiki is deemed inactive, closed, removed (hidden) and deleted. Number of days passed since last change - not from initial inactivity.",
 			"public": true,
@@ -193,6 +198,7 @@
 	"ConfigRegistry": {
 		"createwiki": "GlobalVarConfig::newInstance"
 	},
+	"load_composer_autoloader": true,
 	"callback": "CreateWikiHooks::onRegistration",
 	"manifest_version": 2
 }
