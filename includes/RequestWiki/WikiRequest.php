@@ -258,14 +258,14 @@ class WikiRequest {
 	}
 	
 	public function tryAutoCreate() {
-		$modelFile = $this->config->get( 'CreateWikiPersistentSVCModelFile' );
+		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
 		
 		if ( file_exists( $modelFile ) ) {
 			$modelManager = new ModelManager();
 			$modelManager->restoreFromFile( $modelFile );
 			$tokenDescription = $this->description;
 			$modelManager->transform( $tokenDescription );
-			$approveScore = $modelManager->getEstimator()->predictProbability( $okenDescription )['approve'];
+			$approveScore = $modelManager->getEstimator()->predictProbability( $tokenDescription )['approve'];
 			
 			$this->addComment( 'Experimental Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
 		}
