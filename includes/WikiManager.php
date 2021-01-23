@@ -129,7 +129,7 @@ class WikiManager {
 			[
 				'--wiki', $wiki
 			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
+		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
 			Shell::makeScriptCommand(
@@ -138,7 +138,7 @@ class WikiManager {
 					$requester,
 					'--wiki', $wiki
 				]
-			)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
+			)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 		}
 
 		Shell::makeScriptCommand(
@@ -150,7 +150,7 @@ class WikiManager {
 				'--force',
 				'--wiki', $wiki
 			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0 ] )->execute();
+		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
 
