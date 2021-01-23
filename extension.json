@@ -195,6 +195,11 @@
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
 			"public": true,
 			"value": false
+		},
+		"CreateWikiCollation": {
+			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
+			"public": true,
+			"value": ""
 		}
 	},
 	"ConfigRegistry": {
