@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"1917 Ekim Devrimi",
 			"Mirzali",
 			"Orbot707"
 		]
@@ -8,6 +9,7 @@
 	"action-createwiki": "Wiki vırazê",
 	"action-requestwiki": "Wiki bıwazê",
 	"createwiki": "Yew wiki vırazê",
+	"createwiki-defaultmainpage-summary": "Pera seri vırazê",
 	"createwiki-email-subject": "Newe Mirahaze wikiya to :$1",
 	"createwiki-label-category": "Kategoriye:",
 	"createwiki-label-dbname": "Database name:",
@@ -26,6 +28,22 @@
 	"echo-pref-tooltip-wiki-rename": "Wikiya mı reyna name bena se mı pey bıhesne",
 	"echo-pref-tooltip-wiki-request-declined": "Waştışê wikiya mı bena red se mı pey bıhesne",
 	"log-description-farmer": "Na rocekê, wiki pela vıraştışi kena temaşe",
+	"logentry-farmer-createwiki": "$1, wikiya \"$4\" vıraşt.",
+	"log-name-farmer": "Rocekê resberi",
+	"notification-createwiki-wiki-creation-email-subject": "$1 wiki vıraziyê !",
+	"notification-createwiki-wiki-creation-visitwiki-label": "Wikiy ziyaret kerê",
+	"notification-createwiki-wiki-rename-subject": "$1 wikiya şıma fına name biya .",
+	"notification-createwiki-visit-request": "Waştışê ziyareti",
+	"requestwiki": "Wiki bıwazê",
+	"requestwikiedit": "Waştışê wiki bıvurnê",
+	"requestwiki-edit-id": "ID'a waştışa kamiye",
+	"requestwiki-label-customdomain": "Domaino bağse:",
+	"requestwiki-label-language": "Zıwan:",
+	"requestwiki-label-private": "Wikiya Bağse (herkes nêşeno bıwano ):",
+	"requestwiki-label-reopen": "Waştış fına wa abıyo?",
+	"requestwiki-label-sitename": "Namey Wiki:",
+	"requestwiki-label-siteurl": "Subdomain: (subdomain.miraheze.org)",
+	"requestwiki-submit": "Bırışê",
 	"requestwikiqueue-approve": "Tesdiq ke",
 	"requestwikiqueue-decline": "Red kerê",
 	"requestwikiqueue-request-label-approved": "Tesdiq biyo",
