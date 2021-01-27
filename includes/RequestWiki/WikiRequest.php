@@ -87,7 +87,7 @@ class WikiRequest {
 			]
 		);
 
-		$this->sendNotification( 'comment', $comment, $user );
+		$this->sendNotification( $comment, $user );
 	}
 
 	public function getComments() {
@@ -136,7 +136,6 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 		$this->addComment( $reason, $user );
-		$this->sendNotification( 'declined', $reason, $user );
 		$this->log( $user, 'requestdecline' );
 		$this->tryAutoCreate();
 	}
@@ -167,26 +166,10 @@ class WikiRequest {
 		}
 	}
 
-	private function sendNotification( string $type, string $text, User $user ) {
+	private function sendNotification( string $text, User $user ) {
 		 if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
 		 	return;
 		 }
-
-		if ( $type == 'declined' ) {
-			$echoType = 'request-declined';
-			$echoExtra = [
-				'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
-				'reason' => $text,
-				'notifyAgent' => true
-			];
-		} else {
-			$echoType = 'request-comment';
-			$echoExtra = [
-				'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
-				'comment' => $text,
-				'notifyAgent' => true
-			];
-		}
 
 		// Don't notify the acting user of their action
 		unset( $this->involvedUsers[$user->getId()] );
@@ -194,8 +177,12 @@ class WikiRequest {
 		foreach ( $this->involvedUsers as $user => $object ) {
 			EchoEvent::create(
 				[
-					'type' => $echoType,
-					'extra' => $echoExtra,
+					'type' => 'request-comment',
+					'extra' => $echoExtra = [
+						'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
+						'comment' => $text,
+						'notifyAgent' => true
+					],
 					'agent' => $object
 				]
 			);
