@@ -33,16 +33,30 @@ class CreateWikiDBListGenerator extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
-			$siteName = $row->wiki_sitename;
-			$language = $row->wiki_language;
-			$private = $row->wiki_private;
-			$closed = $row->wiki_closed;
-			$inactive = $row->wiki_inactive;
-			$deleted = $row->wiki_deleted;
-			$extensions = $row->wiki_extensions;
-			$settings = $row->wiki_settings;
 
-			if ( $deleted === "0" ) {
+			if ( (int)$deleted === "0" ) {
+				$siteName = $row->wiki_sitename;
+				$language = $row->wiki_language;
+				$private = $row->wiki_private;
+				$closed = $row->wiki_closed;
+				$inactive = $row->wiki_inactive;
+				$deleted = $row->wiki_deleted;
+
+				$row = $dbw->selectRow(
+					'mw_settings',
+					'*',
+					[
+						's_dbname' => $DBname
+					],
+					__METHOD__
+				);
+				$extensions = '';
+				$settings = '';
+				if ( $row ) {
+					$extensions = $row->s_extensions;
+					$settings = $row->s_settings;
+				}
+
 				$allWikis[] = "$DBname|$siteName|$language|$extensions|$settings|";
 
 				if ( $private === "1" ) {
