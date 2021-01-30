@@ -78,6 +78,18 @@ class CreateWikiHooks {
 				'cw_wikis',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
 			);
+
+			$updater->dropExtensionField(
+				'cw_wikis',
+				'wiki_extensions',
+ 				__DIR__ . '/../sql/patches/patch-remove-extensions.sql'
+			);
+
+			$updater->dropExtensionField(
+				'cw_wikis',
+				'wiki_settings',
+ 				__DIR__ . '/../sql/patches/patch-remove-settings.sql'
+			);
 		}
 
 		return true;
