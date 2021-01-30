@@ -13,10 +13,8 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_deleted SMALLINT NOT NULL,
   wiki_deleted_timestamp BINARY(14) NULL,
   wiki_locked TINYINT NOT NULL,
-  wiki_settings LONGTEXT NULL,
   wiki_dbcluster VARCHAR(5) DEFAULT 'c1',
-  wiki_category VARCHAR(64) NOT NULL,
-  wiki_extensions MEDIUMTEXT NULL
+  wiki_category VARCHAR(64) NOT NULL
 ) /*$wgDBTableOptions*/;
 
 CREATE INDEX /*i*/wiki_dbname ON /*_*/cw_wikis (wiki_dbname);
