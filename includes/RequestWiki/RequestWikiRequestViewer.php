@@ -160,6 +160,25 @@ class RequestWikiRequestViewer {
 				];
 			}
 
+			if ( $this->config->get( 'CreateWikiShowBiographicalOption') ) {
+				$formDescriptor['edit-bio'] = [
+					'type' => 'check',
+					'label-message' => 'requestwiki-label-bio',
+					'default' => $request->bio,
+					'section' => 'edit'
+				];
+			}
+
+			if ( $this->config->get( 'CreateWikiPurposes') ) {
+				$formDescriptor['edit-purpose'] = [
+					'type' => 'select',
+					'label-message' => 'requestwiki-label-purpose',
+					'options' => $this->config->get( 'CreateWikiPurposes'),
+					'default' => $request->purpose,
+					'section' => 'edit'
+				];
+			}
+
 			$formDescriptor['submit-edit'] = [
 				'type' => 'submit',
 				'default' => wfMessage( 'requestwikiqueue-request-label-edit-wiki' )->text(),
@@ -219,6 +238,11 @@ class RequestWikiRequestViewer {
 				]
 			];
 
+			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
+				$formDescriptor['reason']['type'] = 'select';
+				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
+			}
+
 			if ( $wmError ) {
 				$formDescriptor['submit-error-info'] = [
 					'type' => 'info',
@@ -244,7 +268,7 @@ class RequestWikiRequestViewer {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( '<div class="errorbox">' . wfMessage( 'requestwiki-unknown') . '</div>' );
-			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );;
+			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );
 		}
 
 		$formDescriptor = $this->getFormDescriptor( $request, $context );

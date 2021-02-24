@@ -14,6 +14,8 @@ class WikiRequest {
 	public $requester;
 	public $visibility = 0;
 	public $timestamp;
+	public $bio;
+	public $purpose;
 
 	private $id;
 	private $dbw;
@@ -37,7 +39,6 @@ class WikiRequest {
 		if ( $dbRequest ) {
 			$this->id = $dbRequest->cw_id;
 			$this->dbname = $dbRequest->cw_dbname;
-			$this->description = $dbRequest->cw_comment;
 			$this->language = $dbRequest->cw_language;
 			$this->private = $dbRequest->cw_private;
 			$this->sitename = $dbRequest->cw_sitename;
@@ -47,6 +48,17 @@ class WikiRequest {
 			$this->status = $dbRequest->cw_status;
 			$this->timestamp = $dbRequest->cw_timestamp;
 			$this->visibility = $dbRequest->cw_visibility;
+			$this->bio = $dbRequest->cw_bio;
+
+			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
+			$purposeCheck = explode( ':', $newDesc[0], 2);
+
+			if ( $purposeCheck[0] == 'Purpose' ) {
+				$this->description = $newDesc[1];
+				$this->purpose = $purposeCheck[1];
+			} else {
+				$this->description = $dbRequest->cw_comment;
+			}
 
 			$commentsReq = $this->dbw->select(
 				'cw_comments',
@@ -218,8 +230,10 @@ class WikiRequest {
 			$this->dbname = $urlExp[0] . 'wiki';
 		}
 
+		$comment = ( $this->config->get( 'CreateWikiPurposes') ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
+
 		$rows = [
-			'cw_comment' => $this->description,
+			'cw_comment' => $comment,
 			'cw_dbname' => $this->dbname,
 			'cw_language' => $this->language,
 			'cw_private' => $this->private,

@@ -76,6 +76,21 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
+		if ( $this->config->get( 'CreateWikiShowBiographicalOption') ) {
+			$formDescriptor['bio'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-bio'
+			];
+		}
+
+		if ( $this->config->get( 'CreateWikiPurposes') ) {
+			$formDescriptor['purpose'] = [
+				'type' => 'select',
+				'label-message' => 'requestwiki-label-purpose',
+				'options' => $this->config->get( 'CreateWikiPurposes')
+			];
+		}
+
 		$formDescriptor['reason'] = [
 			'type' => 'text',
 			'label-message' => 'createwiki-label-reason',
@@ -92,12 +107,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
 			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
-		}
-
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-			$private = $formData['private'] ? 1 : 0;
-		} else {
-			$private = 0;
 		}
 
 		$out = $this->getOutput();
@@ -120,10 +129,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->dbname = $dbname;
 		$request->sitename = $formData['sitename'];
 		$request->language = $formData['language'];
-		$request->private = $private;
+		$request->private = $formData['private'] ?? 0;
 		$request->url = $url;
 		$request->requester = $this->getUser();
 		$request->category = $formData['category'];
+		$request->purpose = $formData['purpose'] ?? '';
+		$request->bio = $formData['bio'] ?? 0;
 
 		try {
 			$requestID = $request->save();
@@ -142,7 +153,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			[
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
-				'6::private' => $private,
+				'6::private' => $formData['private'] ?? 0,
 				'7::id' => "#{$requestID}",
 			]
 		);

@@ -96,6 +96,11 @@
 			"public": true,
 			"value": "/ /"
 		},
+		"CreateWikiCannedResponses": {
+			"description": "Boolean. Array of default responses to give. If this is enabled, free-text options are removed.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiCategories": {
 			"description": "Array. An array of categories used for wiki categorisaion.",
 			"public": true,
@@ -151,8 +156,18 @@
 			"public": true,
 			"value": "root@localhost"
 		},
+		"CreateWikiPurposes": {
+			"description": "Array. List of identified purposes to show when requesting a wiki.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiSQLfiles": {
 			"description": "Array. All SQLs to be loaded into every wiki by default.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiShowBiographicalOption": {
+			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
 			"public": true,
 			"value": false
 		},
