@@ -242,7 +242,7 @@ class RequestWikiRequestViewer {
 	) {
 		try {
 			$request = new WikiRequest( $id );
-		} catch ( TypeError $e ) {
+		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( '<div class="errorbox">' . wfMessage( 'requestwiki-unknown') . '</div>' );
 			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );;
 		}
