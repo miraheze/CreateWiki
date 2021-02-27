@@ -30,6 +30,7 @@ class WikiManager {
 			// DB doesn't exist and we have clusters
 			$lbs = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getAllMainLBs();
 
+			$clusterSize = [];
 			foreach ( $this->config->get( 'CreateWikiDatabaseClusters' ) as $cluster ) {
 				$count = $this->cwdb->selectRowCount(
 					'cw_wikis',
