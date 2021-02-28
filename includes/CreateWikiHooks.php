@@ -14,6 +14,12 @@ class CreateWikiHooks {
 				__DIR__ . '/../sql/cw_requests.sql'
 			);
 
+			$updater->modifyExtensionField(
+ 				'cw_requests',
+ 				'cw_bio',
+ 				__DIR__ . '/../sql/patches/patch-bio.sql'
+ 			);
+
 			$updater->addExtensionTable(
 				'cw_comments',
 				__DIR__ . '/../sql/cw_comments.sql'
