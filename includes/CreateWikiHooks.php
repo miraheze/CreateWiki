@@ -36,6 +36,11 @@ class CreateWikiHooks {
  				'cw_comment_user',
  				__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
  			);
+
+			$updater->modifyExtensionTable(
+ 				'cw_requests',
+ 				__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
+ 			);
 		}
 
 		if ( self::getConfig( 'CreateWikiDatabase' ) === self::getConfig( 'DBname' ) ) {
