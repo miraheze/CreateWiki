@@ -27,12 +27,6 @@ class CreateWikiHooks {
 
 			$updater->modifyExtensionField(
  				'cw_requests',
- 				'cw_bio',
- 				__DIR__ . '/../sql/patches/patch-cw_bio.sql'
- 			);
-
-			$updater->modifyExtensionField(
- 				'cw_requests',
  				'cw_user',
  				__DIR__ . '/../sql/patches/patch-cw_requests-int.sql'
  			);
@@ -41,6 +35,11 @@ class CreateWikiHooks {
  				'cw_comments',
  				'cw_comment_user',
  				__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
+ 			);
+
+			$updater->modifyExtensionTable(
+ 				'cw_requests',
+ 				__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
  			);
 		}
 
