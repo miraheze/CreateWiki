@@ -92,7 +92,7 @@
 	},
 	"config": {
 		"CreateWikiBlacklistedSubdomains": {
-			"description": "String. Regex to match for a blacklisted subdomain.",
+			"description": "String or array. Regex to match for a blacklisted subdomain.",
 			"public": true,
 			"value": "/ /"
 		},
