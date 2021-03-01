@@ -54,6 +54,21 @@ class SpecialCreateWiki extends FormSpecialPage {
 			];
 		}
 
+		if ( $this->config->get( 'CreateWikiShowBiographicalOption' ) ) {
+			$formDescriptor['bio'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-bio'
+			];
+		}
+
+		if ( $this->config->get( 'CreateWikiPurposes') ) {
+			$formDescriptor['purpose'] = [
+				'type' => 'select',
+				'label-message' => 'requestwiki-label-purpose',
+				'options' => $this->config->get( 'CreateWikiPurposes')
+			];
+		}
+
 
 		if ( $this->config->get( 'CreateWikiUseCategories' ) && $this->config->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
