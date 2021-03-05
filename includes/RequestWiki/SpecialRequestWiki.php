@@ -105,6 +105,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function onSubmit( array $formData ) {
 		$subdomain = strtolower( $formData['subdomain'] );
 
+		if ( is_array( $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) ) {
+			$subdomainBlacklist = '/^(' . implode( '|', $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) . ')+$/';
+		} else {
+			$subdomainBlacklist = $this->config->get( 'CreateWikiBlacklistedSubdomains' );
+		}
+
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
 			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
 		}
@@ -116,7 +122,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
 			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 			return false;
-		} elseif ( preg_match( $this->config->get( 'CreateWikiBlacklistedSubdomains' ), $subdomain ) ) {
+		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
 			return false;
 		} else {
