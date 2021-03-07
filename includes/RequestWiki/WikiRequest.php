@@ -243,7 +243,8 @@ class WikiRequest {
 			'cw_url' => $this->url,
 			'cw_user' => $this->requester->getId(),
 			'cw_category' => $this->category,
-			'cw_visibility' => $this->visibility
+			'cw_visibility' => $this->visibility,
+			'cw_bio' => $this->bio
 		];
 
 		$this->dbw->upsert(
