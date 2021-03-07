@@ -297,9 +297,11 @@ class RequestWikiRequestViewer {
 			$request->sitename = $formData['edit-sitename'];
 			$request->url = $formData['edit-url'];
 			$request->language = $formData['edit-language'];
+			$request->purpose = $formData['edit-purpose'];
 			$request->description = $formData['edit-description'];
 			$request->category = $formData['edit-category'];
 			$request->private = $formData['edit-private'];
+			$request->bio = $formData['edit-bio'];
 			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
