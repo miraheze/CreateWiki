@@ -9,6 +9,7 @@
 			"SomeyaMako",
 			"Tiger",
 			"列维劳德",
+			"坑触可",
 			"科劳",
 			"铁桶"
 		]
@@ -61,7 +62,7 @@
 	"requestwiki": "申请wiki",
 	"requestwikiedit": "编辑wiki请求",
 	"requestwiki-edit-id": "wiki请求ID",
-	"requestwiki-edit-success": "对请求$1的更改已成功提交。",
+	"requestwiki-edit-success": "对请求的更改已成功提交。",
 	"requestwiki-edit-notloggedin": "抱歉，在您可以编辑wiki请求前您需要<span class =\"plainlinks\">[$1 登录]</span>。",
 	"requestwiki-edit-user": "您没有足够权限编辑此wiki请求。请注意您只可以编辑您使用您当前的账户做出的请求。",
 	"requestwiki-error-csrf": "<strong>抱歉，由于会话数据丢失，您的请求未能发送到服务器。</strong>\n请您重新提交表单。如果仍然遇到问题，请尝试[[Special:Userlogout|注销]]然后重新登录。",
