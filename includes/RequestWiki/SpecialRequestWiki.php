@@ -79,7 +79,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		if ( $this->config->get( 'CreateWikiShowBiographicalOption') ) {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
-				'label-message' => 'requestwiki-label-bio'
+				'label-message' => 'requestwiki-label-bio',
+				'name' => 'rwBio',
 			];
 		}
 
@@ -87,7 +88,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'options' => $this->config->get( 'CreateWikiPurposes')
+				'options' => $this->config->get( 'CreateWikiPurposes'),
+				'name' => 'rwPurpose',
 			];
 		}
 
