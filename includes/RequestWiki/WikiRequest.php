@@ -260,7 +260,7 @@ class WikiRequest {
 			$rows
 		);
 		
-		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) {
+		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 				$this->tryAutoCreate();
 		}
 
