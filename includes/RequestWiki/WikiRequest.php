@@ -151,7 +151,7 @@ class WikiRequest {
 		$this->save();
 		$this->addComment( $reason, $user );
 		$this->log( $user, 'requestdecline' );
-		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) {
+		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
 		}
 	}
