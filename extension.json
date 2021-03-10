@@ -91,6 +91,11 @@
 		"remoteExtPath": "CreateWiki/modules"
 	},
 	"config": {
+		"CreateWikiAIThreshold": {
+			"description": "Integer. Minimum percentage points for a request to be created when acceptable.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiBlacklistedSubdomains": {
 			"description": "String or array. Regex to match for a blacklisted subdomain.",
 			"public": true,
