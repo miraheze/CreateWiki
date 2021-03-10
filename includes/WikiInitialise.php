@@ -5,6 +5,7 @@ class WikiInitialise {
 	public $config;
 	public $hostname;
 	public $dbname;
+	public $sitename;
 	public $missing = false;
 	public $wikiDBClusters = [];
 
@@ -101,6 +102,8 @@ class WikiInitialise {
 
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
+		
+		$this->sitename = $this->config->settings['wgSitename'][$this->dbname];
 
 		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
 			$this->missing = true;
