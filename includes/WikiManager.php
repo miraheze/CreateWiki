@@ -90,8 +90,6 @@ class WikiManager {
 			return $checkErrors;
 		}
 
-		$this->dbw->setSchemaVars( [ 'wgDBTableOptions' => $this->config->get( 'DBTableOptions' ) ] );
-
 		try {
 			$dbCollation = $this->config->get( 'CreateWikiCollation' );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $wiki );
@@ -105,6 +103,8 @@ class WikiManager {
 		} else {
 			$this->dbw->selectDomain( $wiki );
 		}
+
+		$this->dbw->setSchemaVars( [ 'wgDBTableOptions' => $this->config->get( 'DBTableOptions' ) ] );
 
 		$this->cwdb->insert(
 			'cw_wikis',
