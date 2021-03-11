@@ -90,7 +90,7 @@ class WikiManager {
 			return $checkErrors;
 		}
 
-		$this->dbw->setSchemaVars( [ 'wgDBTableOptions' => $this->config->get( 'wgDBTableOptions' ) ] );
+		$this->dbw->setSchemaVars( [ 'wgDBTableOptions' => $this->config->get( 'DBTableOptions' ) ] );
 
 		try {
 			$dbCollation = $this->config->get( 'CreateWikiCollation' );
