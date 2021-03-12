@@ -173,20 +173,21 @@ class WikiRequest {
 	public function reopen( User $user, $log = true ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
 		$this->save();
+
 		if ( $log ) {
 			$this->addComment( 'Updated request.', $user );
 		}
 	}
 
 	private function sendNotification( string $text, User $user, string $type ) {
-		 if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
-		 	return;
-		 }
+		if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
+			return;
+		}
+
+		$comment = $type == 'declined' ? 'reason' : 'comment';
 
 		// Don't notify the acting user of their action
 		unset( $this->involvedUsers[$user->getId()] );
-
-		$comment = $type == 'declined' ? 'reason' : 'comment';
 
 		foreach ( $this->involvedUsers as $user => $object ) {
 			EchoEvent::create(
