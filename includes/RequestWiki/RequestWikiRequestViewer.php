@@ -174,7 +174,7 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
 					'options' => $this->config->get( 'CreateWikiPurposes'),
-					'default' => $request->purpose,
+					'default' => trim( $request->purpose ),
 					'section' => 'edit'
 				];
 			}
