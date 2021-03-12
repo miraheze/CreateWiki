@@ -51,7 +51,7 @@ class WikiRequest {
 			$this->bio = $dbRequest->cw_bio;
 
 			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
-			$purposeCheck = explode( ':', $newDesc[0], 2);
+			$purposeCheck = explode( ':', $newDesc[0], 2 );
 
 			if ( $purposeCheck[0] == 'Purpose' ) {
 				$this->description = $newDesc[1];
@@ -88,7 +88,7 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, User $user ) {
+	public function addComment( string $comment, User $user, string $type = 'comment' ) {
 		$this->dbw->insert(
 			'cw_comments',
 			[
@@ -99,7 +99,7 @@ class WikiRequest {
 			]
 		);
 
-		$this->sendNotification( $comment, $user );
+		$this->sendNotification( $comment, $user, $type );
 	}
 
 	public function getComments() {
@@ -147,7 +147,7 @@ class WikiRequest {
 	public function decline( string $reason, User $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
-		$this->addComment( $reason, $user );
+		$this->addComment( $reason, $user, 'declined' );
 		$this->log( $user, 'requestdecline' );
 		$this->tryAutoCreate();
 	}
@@ -173,15 +173,18 @@ class WikiRequest {
 	public function reopen( User $user, $log = true ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
 		$this->save();
+
 		if ( $log ) {
 			$this->addComment( 'Updated request.', $user );
 		}
 	}
 
-	private function sendNotification( string $text, User $user ) {
-		 if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
-		 	return;
-		 }
+	private function sendNotification( string $text, User $user, string $type ) {
+		if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
+			return;
+		}
+
+		$comment = $type == 'declined' ? 'reason' : 'comment';
 
 		// Don't notify the acting user of their action
 		unset( $this->involvedUsers[$user->getId()] );
@@ -189,10 +192,10 @@ class WikiRequest {
 		foreach ( $this->involvedUsers as $user => $object ) {
 			EchoEvent::create(
 				[
-					'type' => 'request-comment',
-					'extra' => $echoExtra = [
+					'type' => "request-{$type}",
+					'extra' => [
 						'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
-						'comment' => $text,
+						$comment => $text,
 						'notifyAgent' => true
 					],
 					'agent' => $object
