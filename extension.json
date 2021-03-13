@@ -2,10 +2,13 @@
 	"name": "CreateWiki",
 	"author": [
 		"Southparkfan",
-		"John Lewis"
+		"John Lewis",
+		"paladox",
+		"Universal Omega"
 	],
 	"url": "//github.com/Miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
+	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"AvailableRights": [
 		"createwiki",
