@@ -17,7 +17,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$this->setParameter( $par );
 			$this->setHeaders();
 
-			if ( !$this->getUser()->isLoggedIn() ) {
+			if ( !$this->getUser()->isRegistered() ) {
 				$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
 				$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
 				return false;
