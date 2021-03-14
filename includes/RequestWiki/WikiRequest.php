@@ -271,7 +271,13 @@ class WikiRequest {
 	}
 	
 	public function tryAutoCreate() {
-		JobQueueGroup::singleton()->push( new RequestWikiAIJob( Title::newMainPage(), [ 'id' => $this->id ] ) );
+		JobQueueGroup::singleton()->push( new RequestWikiAIJob(
+			Title::newMainPage(),
+			[
+				'description' => $this->description,
+				'id' => $this->id
+			]
+		) );
 	}
 
 }

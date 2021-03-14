@@ -17,7 +17,7 @@ class RequestWikiAIJob extends Job {
 		if ( file_exists( $modelFile ) ) {
 			$modelManager = new ModelManager();
 			$pipeline = $modelManager->restoreFromFile( $modelFile );
-			$tokenDescription = (array)strtolower( $this->description );
+			$tokenDescription = (array)strtolower( $this->params['description'] );
 			$pipeline->transform( $tokenDescription );
 			$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approved'];
 
