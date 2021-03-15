@@ -5,7 +5,8 @@
 			"Ameisenigel",
 			"DraconicDark",
 			"FF11",
-			"Metalhead64"
+			"Metalhead64",
+			"Wolfdietmann"
 		]
 	},
 	"action-createwiki": "create wikis",
@@ -71,7 +72,7 @@
 	"requestwiki-error-notime": "Mit deiner Anfrage gibt es ein Problem. Bitte schicke sie erneut ab.",
 	"requestwiki-error-patient": "Du hast bereits ein Wiki beantragt. Bitte habe Geduld und einer unserer Wikiersteller sollte es bald erstellen. Falls du ein weiteres Wiki beantragen musst, warte bitte, bis du später eines beantragen kannst.",
 	"requestwiki-header": "Sie sind dabei, eine neue Wiki auf Miraheze zu beantragen, prima! Bitte füllen Sie dieses Formular aus, bevor wir die Anfrage bearbeiten können.\nIhr Antrag wird von einem Freiwilligen begutachtet und kann auf der Seite, welche beim Abschicken dieses Formulares angegeben wird, nachvollzogen werden.\n\nFall Sie eine eigene Domain wünschen (keine standard .miraheze.org-Subdomain), lesen Sie bitte zuerst <span class=\"plainlinks\">[$1 hier]</span>. Sie müssen zuerst eine Subdomain auswählen und die benutzerdefinierte Domain wird anschließend konfiguriert.\n\nWenn Sie ein Wiki beantragen, stimmen Sie automatisch unserer [[Dormancy Policy]] zu.",
-	"requestwiki-label-bio": "Wird das Hauptthema dieses Wikis lebende Personen sein?",
+	"requestwiki-label-bio": "Wird das Hauptthema dieses Wikis lebende Personen betreffen?",
 	"requestwiki-label-comments": "Comments (e.g. what is your wiki about?):",
 	"requestwiki-label-customdomain": "Benutzerdefinierte Domain:",
 	"requestwiki-label-customdomain-info": "Du musst oben eine Subdomain angeben. Falls du eine benutzerdefinierte Domain für dein Wiki möchtest, gib sie bitte unten an.",
