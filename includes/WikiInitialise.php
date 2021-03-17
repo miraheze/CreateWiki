@@ -104,7 +104,7 @@ class WikiInitialise {
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
 		
-		$this->server = $this->config->settings['wgServer'][$this->dbname];
+		$this->server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
 		$this->sitename = $this->config->settings['wgSitename'][$this->dbname];
 
 		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
