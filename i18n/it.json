@@ -8,7 +8,8 @@
 			"Sakretsu",
 			"Sarah Bernabei",
 			"Scompo",
-			"Sofia Stecchi"
+			"Sofia Stecchi",
+			"Toa"
 		]
 	},
 	"action-createwiki": "crea wiki",
@@ -20,7 +21,7 @@
 	"createwiki-error-blacklisted": "Il sotto-dominio che hai richiesto non può essere creato. Per favore richiedi un nuovo sotto-dominio o contatta l'amministratore di sistema per ricevere aiuto.",
 	"createwiki-error-dbexists": "Un wiki con quel nome esiste già.",
 	"createwiki-error-requesternonexistent": "Il richiedente non esiste su Miraheze Meta.",
-	"createwiki-error-notalnum": "Il nome non può contenere caratteri non-alfanumerici.",
+	"createwiki-error-notalnum": "Il nome del database non può contenere caratteri non alfanumerici.",
 	"createwiki-error-notlowercase": "Il nome non può contenere lettere in maiuscolo.",
 	"createwiki-error-notsuffixed": "Il nome non finisce con un suffisso valido (es. 'wiki').",
 	"createwiki-error-swiftcontainernot": "L'attento di creare lo swift container per il wiki $1 è fallito",
