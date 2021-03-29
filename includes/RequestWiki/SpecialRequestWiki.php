@@ -87,7 +87,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'options' => $this->config->get( 'CreateWikiPurposes')
+				'options' => $this->config->get( 'CreateWikiPurposes'),
 				'default' => '',
 			];
 		}
