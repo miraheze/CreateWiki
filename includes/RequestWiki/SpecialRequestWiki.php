@@ -88,6 +88,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
 				'options' => $this->config->get( 'CreateWikiPurposes')
+				'default' => '',
 			];
 		}
 
