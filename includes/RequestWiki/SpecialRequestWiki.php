@@ -42,19 +42,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-siteurl',
 				'required' => true,
-				'name' => 'rwSubdomain',
 			],
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
 				'required' => true,
-				'name' => 'rwSitename',
 			],
 			'language' => [
 				'type' => 'language',
 				'label-message' => 'requestwiki-label-language',
 				'default' => 'en',
-				'name' => 'rwLanguage',
 			]
 		];
 
@@ -64,7 +61,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-category',
 				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
-				'name' => 'rwCategory',
 			];
 		}
 
@@ -72,7 +68,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
-				'name' => 'rwPrivate',
 			];
 		}
 
@@ -96,7 +91,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'label-message' => 'createwiki-label-reason',
 			'required' => true,
 			'validation-callback' => [ __CLASS__, 'isValidReason' ],
-			'name' => 'rwReason',
 		];
 
 		return $formDescriptor;
@@ -159,7 +153,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			[
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
-				'6::private' => $formData['private'] ?? 0,
+				'6::private' => (string)( $formData['private'] ?? 0 ),
 				'7::id' => "#{$requestID}",
 			]
 		);
