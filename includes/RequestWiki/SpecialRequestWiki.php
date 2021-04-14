@@ -153,7 +153,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			[
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
-				'6::private' => (string)( $formData['private'] ?? 0 ),
+				'6::private' => $formData['private'] ?? 0,
 				'7::id' => "#{$requestID}",
 			]
 		);
