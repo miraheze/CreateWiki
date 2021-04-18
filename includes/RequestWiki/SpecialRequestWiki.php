@@ -166,7 +166,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 
-	public function isValidReason( $reason, $allData ) {
+	public static function isValidReason( $reason, $allData ) {
 		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
 		$wikiPageContent = WikiPage::factory( $title )->getContent( RevisionRecord::RAW );
 		$content = ContentHandler::getContentText( $wikiPageContent );
