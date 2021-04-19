@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ajeje Brazorf",
 			"Beta16",
 			"Darth Kule",
 			"Lorelai87",
@@ -79,6 +80,7 @@
 	"requestwikiqueue-request-label-private": "Privato",
 	"requestwikiqueue-request-label-status": "Stato",
 	"requestwikiqueue-request-label-status-colon": "Stato:",
+	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-searchbutton": "Cerca",
 	"requestwikiqueue-usernotfound": "L'utente non è stato trovato.",
 	"right-createwiki": "Crea wiki"
