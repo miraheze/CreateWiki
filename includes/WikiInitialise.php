@@ -105,7 +105,7 @@ class WikiInitialise {
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
 		
 		$this->server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
-		$this->sitename = $this->config->settings['wgSitename'][$this->dbname];
+		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ?? $this->config->settings['wgSitename']['default'];
 
 		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
 			$this->missing = true;
