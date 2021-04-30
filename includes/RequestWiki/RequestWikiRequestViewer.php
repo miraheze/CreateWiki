@@ -200,9 +200,6 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
-			$wm = new WikiManager( $request->dbname );
-			$wmError = $wm->checkDatabaseName( $request->dbname );
-
 			$formDescriptor += [
 				'info-submission' => [
 					'type' => 'info',
@@ -241,17 +238,6 @@ class RequestWikiRequestViewer {
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
 				$formDescriptor['reason']['type'] = 'select';
 				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
-			}
-
-			if ( $wmError ) {
-				$formDescriptor['submit-error-info'] = [
-					'type' => 'info',
-					'default' => $wmError,
-					'section' => 'handle'
-				];
-
-				$formDescriptor['submission-action']['default'] = 'decline';
-				$formDescriptor['submission-action']['disabled'] = true;
 			}
 		}
 
