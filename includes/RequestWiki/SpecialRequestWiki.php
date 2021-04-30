@@ -99,6 +99,13 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function onSubmit( array $formData ) {
 		$subdomain = strtolower( $formData['subdomain'] );
 
+		// Make the subdomain a dbname
+		$url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
+		$dbname = $subdomain . 'wiki';
+
+		$wm = new WikiManager( $dbname );
+		$wmError = $wm->checkDatabaseName( $dbname );
+
 		if ( is_array( $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) ) {
 			$subdomainBlacklist = '/^(' . implode( '|', $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) . ')+$/';
 		} else {
@@ -111,17 +118,18 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$out = $this->getOutput();
 
-		// Make the subdomain a dbname
-		if ( !ctype_alnum( $subdomain ) ) {
+		if ( $wmError ) {
+			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-dbexists' )->escaped() . '</div>' );
+			wfDebugLog( 'CreateWiki', 'Database already exists. Requested: ' . $dbname );
+			return false;
+		} elseif ( !ctype_alnum( $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
 			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 			return false;
 		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
+			wfDebugLog( 'CreateWiki', 'Reserved subdomain entered. Requested: ' . $subdomain );
 			return false;
-		} else {
-			$url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
-			$dbname = $subdomain . 'wiki';
 		}
 
 		$request = new WikiRequest();
