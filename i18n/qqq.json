@@ -6,7 +6,8 @@
 			"Reception123",
 			"Revi",
 			"Robby",
-			"Tobi 406"
+			"Tobi 406",
+			"Universal Omega"
 		]
 	},
 	"action-createwiki": "{{doc-action|create wikis}}",
@@ -56,11 +57,13 @@
 	"requestwiki-submit": "Submit button.\n{{Identical|Submit}}",
 	"requestwiki-success": "Message after a wiki request has been sent successfully.",
 	"requestwikiqueue": "Queue for wiki requests",
+	"requestwikiqueue-invalid": "Label for invalid wiki requests",
 	"requestwikiqueue-logpagerentry": "Text for log page entry",
 	"requestwikiqueue-norequests": "Message when no requests following a query have been found",
-	"requestwikiqueue-pager-status-approved": "Approved wikis in queue.\n{{Identical|Approved}}",
-	"requestwikiqueue-pager-status-declined": "Declined wikis in queue.\n{{Identical|Declined}}",
-	"requestwikiqueue-pager-status-inreview": "In Review wikis in queue",
+	"requestwikiqueue-pager-status-approved": "Approved wiki requests in queue.\n{{Identical|Approved}}",
+	"requestwikiqueue-pager-status-declined": "Declined wiki requests in queue.\n{{Identical|Declined}}",
+	"requestwikiqueue-pager-status-inreview": "In Review wiki requests in queue",
+	"requestwikiqueue-pager-status-invalid": "Invalid wiki requests in queue",
 	"requestwikiqueue-request": "{{Identical|Request}}",
 	"requestwikiqueue-request-header-changestatus": "Button to change the status of a wiki request.",
 	"requestwikiqueue-request-header-requestercomment": "Text for wiki request comment.",
