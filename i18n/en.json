@@ -94,6 +94,7 @@
 	"requestwikiqueue-pager-status-approved": "approved",
 	"requestwikiqueue-pager-status-declined": "declined",
 	"requestwikiqueue-pager-status-inreview": "in review",
+	"requestwikiqueue-pager-status-invalid": "invalid",
 	"requestwikiqueue-request": "Request",
 	"requestwikiqueue-request-header-changestatus": "Change the status of this wiki request",
 	"requestwikiqueue-request-header-requestercomment": "Comment given by the wiki requester",
