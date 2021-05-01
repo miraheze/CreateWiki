@@ -156,6 +156,12 @@ class WikiRequest {
 		}
 	}
 
+	public function invalidate( string $reason, User $user ) {
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'invalid';
+		$this->save();
+		$this->addComment( $reason, $user );
+	}
+
 	private function log( User $user, string $log ) {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
@@ -175,7 +181,7 @@ class WikiRequest {
 	}
 
 	public function reopen( User $user, $log = true ) {
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
+		$this->status = ( $this->status == 'approved' || $this->status == 'invalid' ) ? $this->status : 'inreview';
 		$this->save();
 
 		if ( $log ) {
