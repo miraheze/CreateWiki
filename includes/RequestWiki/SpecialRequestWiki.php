@@ -143,7 +143,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		if ( $wmError ) {
 			$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
 			$request->invalidate( $wmError, User::newSystemUser( 'CreateWiki Extension' ) );
-			wfDebugLog( 'CreateWiki', 'Database already exists. Requested: ' . $dbname );
+			return true;
 		}
 
 		try {
