@@ -156,11 +156,14 @@ class WikiRequest {
 		}
 	}
 
-	public function invalidate( string $reason, User $user ) {
+	public function invalidate( string $reason, User $user, $log = true ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'invalid';
 		$this->save();
-		$this->addComment( $reason, $user );
-		$this->log( $user, 'requestinvalid' );
+
+		if ( $log ) {
+			$this->addComment( $reason, $user );
+			$this->log( $user, 'requestinvalid' );
+		}
 	}
 
 	private function log( User $user, string $log ) {
@@ -186,7 +189,7 @@ class WikiRequest {
 		$wmError = $wm->checkDatabaseName( $this->dbname );
 
 		if ( $wmError ) {
-			$this->invalidate( $wmError, User::newSystemUser( 'CreateWiki Extension' ) );
+			$this->invalidate( $wmError, User::newSystemUser( 'CreateWiki Extension' ), false );
 			return;
 		}
 
