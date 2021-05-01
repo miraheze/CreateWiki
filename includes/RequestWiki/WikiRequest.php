@@ -160,6 +160,7 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'invalid';
 		$this->save();
 		$this->addComment( $reason, $user );
+		$this->log( $user, 'requestinvalid' );
 	}
 
 	private function log( User $user, string $log ) {
