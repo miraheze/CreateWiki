@@ -118,11 +118,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$out = $this->getOutput();
 
-		if ( $wmError ) {
-			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-dbexists' )->escaped() . '</div>' );
-			wfDebugLog( 'CreateWiki', 'Database already exists. Requested: ' . $dbname );
-			return false;
-		} elseif ( !ctype_alnum( $subdomain ) ) {
+		if ( !ctype_alnum( $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
 			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 			return false;
@@ -143,6 +139,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->category = $formData['category'];
 		$request->purpose = $formData['purpose'] ?? '';
 		$request->bio = $formData['bio'] ?? 0;
+
+		if ( $wmError ) {
+			$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
+			$request->invalidate( $wmError, User::newSystemUser( 'CreateWiki Extension' ) );
+			wfDebugLog( 'CreateWiki', 'Database already exists. Requested: ' . $dbname );
+		}
 
 		try {
 			$requestID = $request->save();
