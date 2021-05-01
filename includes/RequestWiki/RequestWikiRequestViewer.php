@@ -213,8 +213,9 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options' => [
-						wfMessage( 'requestwikiqueue-approve')->text() => 'approve',
-						wfMessage( 'requestwikiqueue-decline')->text() => 'decline'
+						wfMessage( 'requestwikiqueue-approve' )->text() => 'approve',
+						wfMessage( 'requestwikiqueue-decline' )->text() => 'decline',
+						wfMessage( 'requestwikiqueue-invalid' )->text() => 'invalid'
 					],
 					'default' => $request->getStatus(),
 					'section' => 'handle'
@@ -250,7 +251,7 @@ class RequestWikiRequestViewer {
 					'section' => 'handle'
 				];
 
-				$formDescriptor['submission-action']['default'] = 'decline';
+				$formDescriptor['submission-action']['default'] = 'invalid';
 				$formDescriptor['submission-action']['disabled'] = true;
 			}
 		}
@@ -308,6 +309,8 @@ class RequestWikiRequestViewer {
 
 			if ( $formData['submission-action'] == 'approve' ) {
 				$request->approve( $form->getUser(), $formData['reason'] );
+			} elseif ( $formData['submission-action'] == 'invalid' ) {
+				$request->invalidate( $formData['reason'], $form->getUser() );
 			} else {
 				$request->decline( $formData['reason'], $form->getUser() );
 			}
