@@ -120,11 +120,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( !ctype_alnum( $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
-			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
 			return false;
 		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
-			wfDebugLog( 'CreateWiki', 'Reserved subdomain entered. Requested: ' . $subdomain );
 			return false;
 		}
 
