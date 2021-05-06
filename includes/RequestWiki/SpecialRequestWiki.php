@@ -179,12 +179,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 			preg_match( "/" . $regex . "/i", $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return wfMessage( 'requestwiki-error-invalidcomment' );
+				return wfMessage( 'requestwiki-error-invalidcomment' )->escaped();
 			}
 		}
 
-		if ( $reason == '' ) {
-			return wfMessage( 'htmlform-required', 'parseinline' );
+		if ( !trim( $reason ) ) {
+			return wfMessage( 'htmlform-required', 'parseinline' )->escaped();
 		}
 
 		return true;
