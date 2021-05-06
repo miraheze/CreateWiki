@@ -66,10 +66,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 		}
 
 		$formDescriptor['reason'] = [
+			'type' => 'textarea',
+			'rows' => 6,
 			'label-message' => 'createwiki-label-reason',
-			'type' => 'text',
 			'default' => $request->getVal( 'wpreason' ),
-			'size' => 45,
 			'required' => true,
 		];
 
@@ -98,7 +98,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function validateDBname( $DBname, $allData ) {
+	public static function validateDBname( $DBname, $allData ) {
 		if ( is_null( $DBname ) ) {
 			return true;
 		}
