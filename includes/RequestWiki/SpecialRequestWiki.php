@@ -90,6 +90,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'type' => 'textarea',
 			'rows' => 6,
 			'label-message' => 'createwiki-label-reason',
+			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'validation-callback' => [ __CLASS__, 'isValidReason' ],
 		];
