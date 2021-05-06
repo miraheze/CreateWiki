@@ -87,7 +87,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$formDescriptor['reason'] = [
-			'type' => 'text',
+			'type' => 'textarea',
 			'label-message' => 'createwiki-label-reason',
 			'required' => true,
 			'validation-callback' => [ __CLASS__, 'isValidReason' ],
