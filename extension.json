@@ -10,6 +10,9 @@
 	"descriptionmsg": "createwiki-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.36.0"
+	},
 	"AvailableRights": [
 		"createwiki",
 		"requestwiki"
