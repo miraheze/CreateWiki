@@ -77,11 +77,11 @@ class RequestWikiRequestViewer {
 				'default' => (string)$status
 			],
 			'description' => [
-				'label-message' => 'requestwikiqueue-request-header-requestercomment',
 				'type' => 'textarea',
-				'readonly' => true,
-				'section' => 'request',
 				'rows' => 5,
+				'readonly' => true,
+				'label-message' => 'requestwikiqueue-request-header-requestercomment',
+				'section' => 'request',
 				'default' => (string)$request->description,
 				'raw' => true
 			]
@@ -92,7 +92,7 @@ class RequestWikiRequestViewer {
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
-				'rows' => 3,
+				'rows' => 5,
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment']
 			];
@@ -101,7 +101,8 @@ class RequestWikiRequestViewer {
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $request->requester->getId() ) {
 			$formDescriptor += [
 				'comment' => [
-					'type' => 'text',
+					'type' => 'textarea',
+					'rows' => 5,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments'
 				],
