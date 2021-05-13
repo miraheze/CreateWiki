@@ -149,6 +149,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'createwiki-label-category',
 					'options' => $this->config->get( 'CreateWikiCategories' ),
 					'default' => (string)$request->category,
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit'
 				];
 			}
