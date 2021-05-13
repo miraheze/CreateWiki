@@ -31,8 +31,6 @@ class RequestWikiRequestViewer {
 		}
 
 		$status = ( $request->getStatus() === 'inreview' ) ? 'In review' : ucfirst( $request->getStatus() );
-		
-		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
 
 		$formDescriptor = [
 			'sitename' => [
@@ -270,6 +268,8 @@ class RequestWikiRequestViewer {
 		IContextSource $context,
 		$formClass = CreateWikiOOUIForm::class
 	) {
+		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
+
 		try {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
