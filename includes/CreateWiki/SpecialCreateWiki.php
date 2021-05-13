@@ -67,7 +67,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 5,
+			'rows' => 4,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'default' => $request->getVal( 'wpreason' ),
