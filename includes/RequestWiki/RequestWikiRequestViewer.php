@@ -94,6 +94,7 @@ class RequestWikiRequestViewer {
 				'section' => 'comments',
 				'rows' => 4,
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
+				'cssclass' => 'createwiki-infuse',
 				'default' => $comment['comment']
 			];
 		}
@@ -104,6 +105,7 @@ class RequestWikiRequestViewer {
 					'type' => 'textarea',
 					'rows' => 4,
 					'label-message' => 'requestwikiqueue-request-label-comment',
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'comments'
 				],
 				'submit-comment' => [
@@ -139,6 +141,7 @@ class RequestWikiRequestViewer {
 					'rows' => 4,
 					'required' => true,
 					'default' => (string)$request->description,
+					'cssclass' => 'createwiki-infuse',
 					'raw' => true
 				]
 			];
@@ -178,6 +181,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwiki-label-purpose',
 					'options' => $this->config->get( 'CreateWikiPurposes'),
 					'default' => trim( $request->purpose ),
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit'
 				];
 			}
@@ -220,6 +224,7 @@ class RequestWikiRequestViewer {
 						wfMessage( 'requestwikiqueue-decline')->text() => 'decline'
 					],
 					'default' => $request->getStatus(),
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle'
 				],
 				'visibility' => [
@@ -227,10 +232,12 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-label-visibility',
 					'options' => array_flip( $visibilityOptions ),
 					'default' => $request->visibility,
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle'
 				],
 				'reason' => [
 					'label-message' => 'createwiki-label-reason',
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle'
 				],
 				'submit-handle' => [
