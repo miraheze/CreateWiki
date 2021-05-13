@@ -137,6 +137,7 @@ class RequestWikiRequestViewer {
 					'type' => 'textarea',
 					'section' => 'edit',
 					'rows' => 4,
+					'required' => true,
 					'default' => (string)$request->description,
 					'raw' => true
 				]
