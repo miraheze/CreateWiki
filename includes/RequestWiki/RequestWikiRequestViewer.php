@@ -78,7 +78,7 @@ class RequestWikiRequestViewer {
 			],
 			'description' => [
 				'type' => 'textarea',
-				'rows' => 3,
+				'rows' => 4,
 				'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-requestercomment',
 				'section' => 'request',
@@ -92,7 +92,7 @@ class RequestWikiRequestViewer {
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
-				'rows' => 3,
+				'rows' => 4,
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment']
 			];
@@ -102,7 +102,7 @@ class RequestWikiRequestViewer {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 3,
+					'rows' => 4,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments'
 				],
@@ -136,7 +136,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-requestercomment',
 					'type' => 'textarea',
 					'section' => 'edit',
-					'rows' => 3,
+					'rows' => 4,
 					'required' => true,
 					'default' => (string)$request->description,
 					'raw' => true
@@ -249,7 +249,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
 			} else {
 				$formDescriptor['reason']['type'] = 'textarea';
-				$formDescriptor['reason']['rows'] = 3;
+				$formDescriptor['reason']['rows'] = 4;
 			}
 
 			if ( $wmError ) {
