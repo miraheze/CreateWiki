@@ -77,11 +77,11 @@ class RequestWikiRequestViewer {
 				'default' => (string)$status
 			],
 			'description' => [
-				'label-message' => 'requestwikiqueue-request-header-requestercomment',
 				'type' => 'textarea',
+				'rows' => 4,
 				'readonly' => true,
+				'label-message' => 'requestwikiqueue-request-header-requestercomment',
 				'section' => 'request',
-				'rows' => 5,
 				'default' => (string)$request->description,
 				'raw' => true
 			]
@@ -92,7 +92,7 @@ class RequestWikiRequestViewer {
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
-				'rows' => 3,
+				'rows' => 4,
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment']
 			];
@@ -101,7 +101,8 @@ class RequestWikiRequestViewer {
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $request->requester->getId() ) {
 			$formDescriptor += [
 				'comment' => [
-					'type' => 'text',
+					'type' => 'textarea',
+					'rows' => 4,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments'
 				],
@@ -135,7 +136,8 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-requestercomment',
 					'type' => 'textarea',
 					'section' => 'edit',
-					'rows' => 5,
+					'rows' => 4,
+					'required' => true,
 					'default' => (string)$request->description,
 					'raw' => true
 				]
@@ -147,6 +149,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'createwiki-label-category',
 					'options' => $this->config->get( 'CreateWikiCategories' ),
 					'default' => (string)$request->category,
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit'
 				];
 			}
@@ -175,6 +178,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwiki-label-purpose',
 					'options' => $this->config->get( 'CreateWikiPurposes'),
 					'default' => trim( $request->purpose ),
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit'
 				];
 			}
@@ -217,6 +221,7 @@ class RequestWikiRequestViewer {
 						wfMessage( 'requestwikiqueue-decline')->text() => 'decline'
 					],
 					'default' => $request->getStatus(),
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle'
 				],
 				'visibility' => [
@@ -224,11 +229,12 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-label-visibility',
 					'options' => array_flip( $visibilityOptions ),
 					'default' => $request->visibility,
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle'
 				],
 				'reason' => [
-					'type' => 'text',
 					'label-message' => 'createwiki-label-reason',
+					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle'
 				],
 				'submit-handle' => [
@@ -241,6 +247,9 @@ class RequestWikiRequestViewer {
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
 				$formDescriptor['reason']['type'] = 'select';
 				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
+			} else {
+				$formDescriptor['reason']['type'] = 'textarea';
+				$formDescriptor['reason']['rows'] = 4;
 			}
 
 			if ( $wmError ) {
@@ -264,6 +273,8 @@ class RequestWikiRequestViewer {
 		IContextSource $context,
 		$formClass = CreateWikiOOUIForm::class
 	) {
+		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
+
 		try {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
