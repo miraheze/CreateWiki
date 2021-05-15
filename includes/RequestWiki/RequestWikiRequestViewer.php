@@ -129,8 +129,9 @@ class RequestWikiRequestViewer {
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
 					'type' => 'language',
-					'section' => 'edit',
-					'default' => (string)$request->language
+					'default' => (string)$request->language,
+					'cssclass' => 'createwiki-infuse',
+					'section' => 'edit'
 				],
 				'edit-description' => [
 					'label-message' => 'requestwikiqueue-request-header-requestercomment',
