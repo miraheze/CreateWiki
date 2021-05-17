@@ -25,6 +25,7 @@
 	"createwiki-error-notsuffixed": "O nome da base de dados não termina com um sufixo válido (p. ex. 'wiki').",
 	"createwiki-error-swiftcontainernot": "Não foi possível criar o recipiente swift da wiki $1",
 	"createwiki-error-usernotcreated": "O usuário solicitador não foi criado na wiki.",
+	"createwiki-help-reason": "Por favor, insira um resumo suficiente descrevendo o tópico, escopo e propósito da wiki que você está solicitando.",
 	"createwiki-label-category": "Categoria:",
 	"createwiki-label-dbname": "Nome do banco de dados:",
 	"createwiki-label-language": "Idioma:",

@@ -27,6 +27,7 @@
 	"createwiki-error-notsuffixed": "資料庫名稱未能以合法的字尾結束（例如應當以「wiki」結尾）。",
 	"createwiki-error-swiftcontainernot": "建立用於 wiki $1 的即時容器失敗",
 	"createwiki-error-usernotcreated": "申請者帳號尚未建立。",
+	"createwiki-help-reason": "請輸入足夠的摘要，以描述您所請求 Wiki 的主題、範圍、與目的。",
 	"createwiki-label-category": "分類：",
 	"createwiki-label-dbname": "資料庫名稱：",
 	"createwiki-label-language": "語言：",
