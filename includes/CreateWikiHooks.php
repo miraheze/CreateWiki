@@ -41,6 +41,11 @@ class CreateWikiHooks {
  				'cw_requests',
  				__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
  			);
+
+			$updater->modifyExtensionTable(
+ 				'cw_wikis',
+ 				__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_inactive_exempt_reason.sql'
+ 			);
 		}
 
 		if ( self::getConfig( 'CreateWikiDatabase' ) === self::getConfig( 'DBname' ) ) {
