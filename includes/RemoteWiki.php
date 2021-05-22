@@ -20,6 +20,7 @@ class RemoteWiki {
 	private $closed;
 	private $inactive;
 	private $inactiveExempt;
+	private $inactiveExemptReason;
 	private $deleted;
 	private $locked;
 	private $dbcluster;
@@ -49,6 +50,7 @@ class RemoteWiki {
 		$this->closed = $wikiRow->wiki_closed_timestamp ?? false;
 		$this->inactive = $wikiRow->wiki_inactive_timestamp ?? false;
 		$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
+		$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
 		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? false;
 		$this->locked = $wikiRow->wiki_locked;
 		$this->dbcluster = $wikiRow->wiki_dbcluster;
@@ -147,6 +149,25 @@ class RemoteWiki {
 
 		$this->inactiveExempt = false;
 		$this->newRows['wiki_inactive_exempt'] = false;
+
+		$this->inactiveExemptReason = null;
+		$this->newRows['wiki_inactive_exempt_reason'] = null;
+	}
+
+	public function setInactiveExemptReason( string $reason ) {
+		$reason = ( $reason == '' ) ? null : $reason;
+
+		$this->changes['inactive-exempt-reason'] = [
+			'old' => $this->inactiveExemptReason,
+			'new' => $reason
+		];
+
+		$this->inactiveExemptReason = $reason;
+		$this->newRows['wiki_inactive_exempt_reason'] = $reason;
+	}
+
+	public function getInactiveExemptReason() {
+		return $this->inactiveExemptReason;
 	}
 
 	public function isPrivate() {
