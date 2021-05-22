@@ -212,7 +212,7 @@
 		"CreateWikiInactiveExemptReasonOptions": {
 			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
 			"public": true,
-			"value": []
+			"value": [ "Test Wiki" ]
 		},
 		"CreateWikiUseJobQueue": {
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
