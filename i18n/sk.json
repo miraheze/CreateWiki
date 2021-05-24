@@ -20,6 +20,7 @@
 	"createwiki-error-notsuffixed": "Názov databázy nekončí s platnou príponou (napríklad: wiki).",
 	"createwiki-error-swiftcontainernot": "Nepodarilo sa vytvoriť kontajner pre wiki $1",
 	"createwiki-error-usernotcreated": "Konto žiadateľa nebolo na wiki vytvorené.",
+	"createwiki-help-reason": "Prosím zadajte dostačujúce zhrnutie popisujúce tému, sféru a účel wiki pre ktorú ste poslali žiadosť.",
 	"createwiki-label-category": "Kategória:",
 	"createwiki-label-dbname": "Názov databázy:",
 	"createwiki-label-language": "Jazyk:",

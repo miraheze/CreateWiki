@@ -27,6 +27,7 @@
 	"createwiki-error-notsuffixed": "Veritabanı adı geçerli bir sonekle bitmez (ör. 'viki').",
 	"createwiki-error-swiftcontainernot": "$1 vikisi için hızlı kapsayıcı oluşturulamadı",
 	"createwiki-error-usernotcreated": "İstenen kullanıcı viki'de oluşturulmamış.",
+	"createwiki-help-reason": "Lütfen talep ettiğiniz vikinin konusunu, kapsamını ve amacını açıklayan yeterli bir özet girin.",
 	"createwiki-label-category": "Kategori:",
 	"createwiki-label-dbname": "Veritabanı adı:",
 	"createwiki-label-language": "Dil:",
