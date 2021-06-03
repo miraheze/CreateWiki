@@ -34,6 +34,7 @@
 	"createwiki-error-notsuffixed": "Имя базы данных не заканчивается допустимым суффиксом (например 'wiki').",
 	"createwiki-error-swiftcontainernot": "Не удалось создать swift-контейнер для вики $1",
 	"createwiki-error-usernotcreated": "Запросивший пользователь не был создан на вики.",
+	"createwiki-help-reason": "Пожалуйста, укажите достаточное описание тематики, размера и цели запрашиваемой вами вики.",
 	"createwiki-label-category": "Категория:",
 	"createwiki-label-dbname": "Имя базы данных:",
 	"createwiki-label-language": "Язык:",
