@@ -64,7 +64,9 @@
 	"requestwiki-label-reopen": "Riaprire la richiesta?",
 	"requestwiki-label-sitename": "Nome wiki:",
 	"requestwiki-label-siteurl": "Subdominio: (subdomain.miraheze.org)",
+	"requestwiki-submit": "Invia",
 	"requestwikiqueue-approve": "Approva",
+	"requestwikiqueue-decline": "Rifiuta",
 	"requestwikiqueue-pager-status-approved": "approvata",
 	"requestwikiqueue-pager-status-declined": "respinta",
 	"requestwikiqueue-request": "Richiesta",
@@ -81,6 +83,7 @@
 	"requestwikiqueue-request-label-status": "Stato",
 	"requestwikiqueue-request-label-status-colon": "Stato:",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-toolbox-createwiki": "Crea wiki",
 	"requestwikiqueue-searchbutton": "Cerca",
 	"requestwikiqueue-usernotfound": "L'utente non è stato trovato.",
 	"right-createwiki": "Crea wiki"
