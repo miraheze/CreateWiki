@@ -26,7 +26,7 @@ class WikiRequest {
 
 	public function __construct( int $id = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$dbRequest = $this->dbw->selectRow(
 			'cw_requests',

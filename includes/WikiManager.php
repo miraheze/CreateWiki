@@ -15,7 +15,7 @@ class WikiManager {
 
 	public function __construct( string $dbname ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->cwdb = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
 			'cw_wikis',
@@ -54,14 +54,14 @@ class WikiManager {
 				]
 			)->wiki_dbname;
 			$this->lb = $lbs[$this->cluster];
-			$newDbw = $lbs[$this->cluster]->getConnection( DB_MASTER, [], $clusterDB );
+			$newDbw = $lbs[$this->cluster]->getConnection( DB_PRIMARY, [], $clusterDB );
 
 		} elseif ( !$check && !$this->config->get( 'CreateWikiDatabaseClusters' ) ) {
 			// DB doesn't exist and we don't have clusters
 			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
-			$newDbw = wfGetDB( DB_MASTER, [], $dbname );
+			$newDbw = wfGetDB( DB_PRIMARY, [], $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -99,7 +99,7 @@ class WikiManager {
 		}
 
 		if ( $this->lb ) {
-			$this->dbw = $this->lb->getConnection( DB_MASTER, [], $wiki );
+			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
 			$this->dbw->selectDomain( $wiki );
 		}
@@ -267,7 +267,7 @@ class WikiManager {
 	}
 
 	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
-		$logDBConn = wfGetDB( DB_MASTER, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( User::newFromName( $actor ) );
