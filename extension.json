@@ -30,7 +30,6 @@
 		"farmer/createwiki": "LogFormatter",
 		"farmer/requestaccept": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
-		"farmer/requestinvalid": "LogFormatter",
 		"farmer/requestwikiedit": "LogFormatter",
 		"farmer/requestwiki": "CreateWikiLogFormatter"
 	},

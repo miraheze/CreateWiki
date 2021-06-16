@@ -146,23 +146,17 @@ class WikiRequest {
 		}
 	}
 
-	public function decline( string $reason, User $user ) {
+	public function decline( string $reason, User $user, bool $log = true, bool $tryAutoCreate = true ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 		$this->addComment( $reason, $user, 'declined' );
-		$this->log( $user, 'requestdecline' );
-		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
-			$this->tryAutoCreate();
+
+		if ( $log ) { 
+			$this->log( $user, 'requestdecline' );
 		}
-	}
 
-	public function invalidate( string $reason, User $user, $log = true ) {
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'invalid';
-		$this->save();
-
-		if ( $log ) {
-			$this->addComment( $reason, $user );
-			$this->log( $user, 'requestinvalid' );
+		if ( $tryAutoCreate && !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
+			$this->tryAutoCreate();
 		}
 	}
 
@@ -189,7 +183,7 @@ class WikiRequest {
 		$wmError = $wm->checkDatabaseName( $this->dbname );
 
 		if ( $wmError ) {
-			$this->invalidate( $wmError, User::newSystemUser( 'CreateWiki Extension' ), false );
+			$this->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), false, false );
 			return;
 		}
 

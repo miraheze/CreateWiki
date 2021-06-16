@@ -140,7 +140,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( $wmError ) {
 			$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
-			$request->invalidate( $wmError, User::newSystemUser( 'CreateWiki Extension' ) );
+			$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
 			return true;
 		}
 
