@@ -90,7 +90,7 @@ class WikiRequest {
 
 	public function addComment( string $comment, User $user, string $type = 'comment' ) {
 		// don't post empty comments
-		if ( !trim( $comment ) ) {
+		if ( !$comment || ctype_space( $comment ) ) {
 			return;
 		}
 

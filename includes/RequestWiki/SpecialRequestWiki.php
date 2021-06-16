@@ -184,7 +184,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			}
 		}
 
-		if ( !trim( $reason ) ) {
+		if ( !$reason || ctype_space( $reason ) ) {
 			return wfMessage( 'htmlform-required', 'parseinline' )->escaped();
 		}
 
