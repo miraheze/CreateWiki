@@ -179,6 +179,9 @@ class WikiRequest {
 	}
 
 	public function reopen( User $user, $log = true ) {
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
+		$this->save();
+
 		$wm = new WikiManager( $this->dbname );
 		$wmError = $wm->checkDatabaseName( $this->dbname );
 
@@ -186,9 +189,6 @@ class WikiRequest {
 			$this->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), false, false );
 			return;
 		}
-
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
-		$this->save();
 
 		if ( $log ) {
 			$this->addComment( 'Updated request.', $user );
