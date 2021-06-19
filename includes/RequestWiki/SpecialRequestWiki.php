@@ -143,6 +143,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$idlink = $linkRenderer->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
+			$request->save();
+
 			$request = new WikiRequest();
 
 			$wm = new WikiManager( $request->dbname );
