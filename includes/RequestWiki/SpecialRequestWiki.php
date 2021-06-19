@@ -139,23 +139,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		try {
 			$requestID = $request->save();
-
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
-			$idlink = $linkRenderer->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
-
-			$request->save();
-
-			$request = new WikiRequest();
-
-			$wm = new WikiManager( $request->dbname );
-			$wmError = $wm->checkDatabaseName( $request->dbname );
-
-			if ( $wmError ) {
-				$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
-
-				$out->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
-				return true;
-			}
 		} catch ( MWException $e ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->plain() . '</div>' );
 			return false;
