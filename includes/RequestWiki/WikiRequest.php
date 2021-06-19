@@ -26,7 +26,7 @@ class WikiRequest {
 
 	public function __construct( int $id = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->dbw = wfGetDB( DB_MASTER, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$dbRequest = $this->dbw->selectRow(
 			'cw_requests',
@@ -89,6 +89,11 @@ class WikiRequest {
 	}
 
 	public function addComment( string $comment, User $user, string $type = 'comment' ) {
+		// don't post empty comments
+		if ( !$comment || ctype_space( $comment ) ) {
+			return;
+		}
+
 		$this->dbw->insert(
 			'cw_comments',
 			[

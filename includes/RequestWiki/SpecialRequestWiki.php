@@ -87,8 +87,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$formDescriptor['reason'] = [
-			'type' => 'text',
+			'type' => 'textarea',
+			'rows' => 4,
 			'label-message' => 'createwiki-label-reason',
+			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'validation-callback' => [ __CLASS__, 'isValidReason' ],
 		];
@@ -186,12 +188,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 			preg_match( "/" . $regex . "/i", $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return wfMessage( 'requestwiki-error-invalidcomment' );
+				return wfMessage( 'requestwiki-error-invalidcomment' )->escaped();
 			}
 		}
 
-		if ( $reason == '' ) {
-			return wfMessage( 'htmlform-required', 'parseinline' );
+		if ( !$reason || ctype_space( $reason ) ) {
+			return wfMessage( 'htmlform-required', 'parseinline' )->escaped();
 		}
 
 		return true;

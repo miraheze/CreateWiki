@@ -10,6 +10,7 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_inactive SMALLINT NOT NULL,
   wiki_inactive_timestamp BINARY(14) NULL,
   wiki_inactive_exempt SMALLINT NOT NULL,
+  wiki_inactive_exempt_reason TEXT NULL,
   wiki_deleted SMALLINT NOT NULL,
   wiki_deleted_timestamp BINARY(14) NULL,
   wiki_locked TINYINT NOT NULL,

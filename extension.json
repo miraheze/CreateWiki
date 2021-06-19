@@ -10,6 +10,9 @@
 	"descriptionmsg": "createwiki-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.36.0"
+	},
 	"AvailableRights": [
 		"createwiki",
 		"requestwiki"
@@ -208,6 +211,11 @@
 			"description": "Boolean. Whether to implement front end logic for inactive wikis.",
 			"public": true,
 			"value": false
+		},
+		"CreateWikiInactiveExemptReasonOptions": {
+			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
+			"public": true,
+			"value": []
 		},
 		"CreateWikiUseJobQueue": {
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
