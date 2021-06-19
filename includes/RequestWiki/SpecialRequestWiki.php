@@ -139,19 +139,19 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		try {
 			$requestID = $request->save();
+
+			$wm = new WikiManager( $request->dbname );
+			$wmError = $wm->checkDatabaseName( $request->dbname );
+
+			if ( $wmError ) {
+				$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
+
+				$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
+				return true;
+			}
 		} catch ( MWException $e ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->plain() . '</div>' );
 			return false;
-		}
-
-		$wm = new WikiManager( $request->dbname );
-		$wmError = $wm->checkDatabaseName( $request->dbname );
-
-		if ( $wmError ) {
-			$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
-
-			$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
-			return true;
 		}
 
 		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
