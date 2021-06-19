@@ -139,38 +139,50 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		try {
 			$requestID = $request->save();
-			$log = true;
+
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$idlink = $linkRenderer->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
 			$wm = new WikiManager( $request->dbname );
 			$wmError = $wm->checkDatabaseName( $request->dbname );
 
 			if ( $wmError ) {
-				$log = false;
+				$request->description = $request->description;
+				$request->dbname = $request->dbname;
+				$request->sitename = $request->sitename;
+				$request->language = $request->language;
+				$request->private = $request->private;
+				$request->url = $request->url;
+				$request->requester = $request->requester;
+				$request->category = $request->category;
+				$request->purpose = $request->purpose;
+				$request->bio = $request->bio;
+
+				$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
+
+				$out->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
+				return true;
 			}
 		} catch ( MWException $e ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->plain() . '</div>' );
 			return false;
 		}
 
-		if ( $log ) {
-			$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
+		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
+		$farmerLogEntry->setPerformer( $this->getUser() );
+		$farmerLogEntry->setTarget( $this->getPageTitle() );
+		$farmerLogEntry->setComment( $formData['reason'] );
+		$farmerLogEntry->setParameters(
+			[
+				'4::sitename' => $formData['sitename'],
+				'5::language' => $formData['language'],
+				'6::private' => (int)( $formData['private'] ?? 0 ),
+				'7::id' => "#{$requestID}",
+			]
+		);
 
-			$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
-			$farmerLogEntry->setPerformer( $this->getUser() );
-			$farmerLogEntry->setTarget( $this->getPageTitle() );
-			$farmerLogEntry->setComment( $formData['reason'] );
-			$farmerLogEntry->setParameters(
-				[
-					'4::sitename' => $formData['sitename'],
-					'5::language' => $formData['language'],
-					'6::private' => (int)( $formData['private'] ?? 0 ),
-					'7::id' => "#{$requestID}",
-				]
-			);
-
-			$farmerLogID = $farmerLogEntry->insert();
-			$farmerLogEntry->publish( $farmerLogID );
-		}
+		$farmerLogID = $farmerLogEntry->insert();
+		$farmerLogEntry->publish( $farmerLogID );
 
 		$out->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
 
