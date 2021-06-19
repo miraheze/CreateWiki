@@ -138,17 +138,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->purpose = $formData['purpose'] ?? '';
 		$request->bio = $formData['bio'] ?? 0;
 
-		if ( $wmError ) {
-			$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
-			$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
-			return true;
-		}
-
 		try {
 			$requestID = $request->save();
 		} catch ( MWException $e ) {
 			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->plain() . '</div>' );
 			return false;
+		}
+
+		if ( $wmError ) {
+			$out->addHTML( '<div class="errorbox">' .  $wmError . '</div>' );
+			$request->decline( $wmError, User::newSystemUser( 'CreateWiki Extension' ), true, false );
+			return true;
 		}
 
 		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
