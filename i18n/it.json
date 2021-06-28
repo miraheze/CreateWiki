@@ -80,6 +80,7 @@
 	"requestwikiqueue-request-label-edit-wiki": "Richiesta di modifica wiki",
 	"requestwikiqueue-request-label-language": "Lingua",
 	"requestwikiqueue-request-label-private": "Privato",
+	"requestwikiqueue-request-label-sitename": "Nome del sito",
 	"requestwikiqueue-request-label-status": "Stato",
 	"requestwikiqueue-request-label-status-colon": "Stato:",
 	"requestwikiqueue-request-label-url": "URL",
