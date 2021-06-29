@@ -162,10 +162,7 @@ class WikiInitialise {
 			),
 		true );
 
-		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
-				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
-			)
-		);
+		$credits = $reg->readFromQueue( $queue )['credits'];
 
 		// Assign extensions variables now
 		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
@@ -178,7 +175,7 @@ class WikiInitialise {
 
 				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 					if ( $ext['var'] === $var ) {
-						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
 
 						if ( $path ) {
 							$pathInfo = pathinfo( $path );
