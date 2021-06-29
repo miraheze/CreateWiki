@@ -178,7 +178,7 @@ class WikiInitialise {
 						if ( $path ) {
 							$pathInfo = pathinfo( $path );
 							$pathInfo['extension'] === 'php' ? require_once $path : ( preg_match('/extension(.*)/', $pathInfo['filename'] ) ?
-								wfLoadExtension( pathinfo( dirname( $path ) ), $path ) : wfLoadSkin( pathinfo( dirname( $path ) ) )
+								wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
 							);
 						}
 					}
