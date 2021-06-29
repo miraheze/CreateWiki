@@ -178,7 +178,7 @@ class WikiInitialise {
 
 				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 					if ( $ext['var'] === $var ) {
-						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
 
 						if ( $path ) {
 							$pathInfo = pathinfo( $path );
