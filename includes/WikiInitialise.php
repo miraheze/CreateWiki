@@ -153,11 +153,9 @@ class WikiInitialise {
 		}
 
 		//$reg = new ExtensionRegistry();
-		$config = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-
 		$queue = array_fill_keys( array_merge(
-				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
-				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
+				glob( $wgExtensionDirectory . '/*/extension*.json' ),
+				glob( $wgStyleDirectory . '/*/skin.json' )
 			),
 		true );
 
@@ -171,7 +169,7 @@ class WikiInitialise {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
 
-				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+				foreach ( $wgManageWikiExtensions as $name => $ext ) {
 					if ( $ext['var'] === $var ) {
 						 $path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
 						if ( $path ) {
