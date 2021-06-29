@@ -152,7 +152,7 @@ class WikiInitialise {
 			}
 		}
 
-		$reg = new ExtensionRegistry();
+		//$reg = new ExtensionRegistry();
 		$config = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 
 		$queue = array_fill_keys( array_merge(
@@ -161,10 +161,10 @@ class WikiInitialise {
 			),
 		true );
 
-		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
+		/*$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
 				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
 			)
-		);
+		);*/
 
 		// Assign extensions variables now
 		if ( isset( $cacheArray['extensions'] ) ) {
