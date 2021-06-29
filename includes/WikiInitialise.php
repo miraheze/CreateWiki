@@ -172,6 +172,10 @@ class WikiInitialise {
 			$this->config->settings[ $ext['var'] ]['default'] = false;
 		}
 
+		global $wgDBname;
+
+		$wgDBname = $this->dbname;
+
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
