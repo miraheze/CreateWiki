@@ -153,11 +153,6 @@ class WikiInitialise {
 		}
 
 		// Assign extensions variables now
-		$config = new GlobalVarConfig( 'wg' );
-		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
-			$this->config->settings[ $ext['var'] ]['default'] = false;
-		}
-
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
@@ -239,6 +234,10 @@ class WikiInitialise {
 		true );
 
 		$credits = $reg->readFromQueue( $queue )['credits'];
+
+		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+			$this->config->settings[ $ext['var'] ]['default'] = false;
+		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
