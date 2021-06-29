@@ -9,7 +9,7 @@ class WikiInitialise {
 	public $sitename;
 	public $missing = false;
 	public $wikiDBClusters = [];
-	public $disabledExtensions;
+	public $disabledExtensions = [];
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
