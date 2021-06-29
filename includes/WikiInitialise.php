@@ -152,6 +152,8 @@ class WikiInitialise {
 			}
 		}
 
+		require_once( '/srv/mediawiki/w/includes/WebStart.php' );
+
 		$reg = new ExtensionRegistry();
 		$queue = array_fill_keys( array_merge(
 				glob( $wgExtensionDirectory . '/*/extension*.json' ),
