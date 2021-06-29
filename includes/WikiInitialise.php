@@ -152,8 +152,6 @@ class WikiInitialise {
 			}
 		}
 
-		require_once( '/srv/mediawiki/w/includes/WebStart.php' );
-
 		$reg = new ExtensionRegistry();
 		$queue = array_fill_keys( array_merge(
 				glob( $wgExtensionDirectory . '/*/extension*.json' ),
@@ -162,7 +160,7 @@ class WikiInitialise {
 		true );
 
 		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
-				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
+				array_merge( ...array_values( $wgExtensionCredits ) )
 			)
 		);
 
