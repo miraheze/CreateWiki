@@ -154,7 +154,7 @@ class WikiInitialise {
 
 		$reg = new ExtensionRegistry();
 
-		$config = MediaWiki\MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$config = new GlobalVarConfig( 'wg' );
 
 		$queue = array_fill_keys( array_merge(
 				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
