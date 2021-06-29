@@ -175,9 +175,9 @@ class WikiInitialise {
 						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
 						if ( $path ) {
 							$pathInfo = pathinfo( $path );
-							$pathInfo['extension'] === 'php' ? /*require_once $path*/ false : ( $pathInfo['filename'] === 'extension' ?
+							/*$pathInfo['extension'] === 'php' ? require_once $path : ( $pathInfo['filename'] === 'extension' ?
 								wfLoadExtension( pathinfo( dirname( $path ) ) ) : wfLoadSkin( pathinfo( dirname( $path ) ) )
-							);
+							);*/
 						}
 					}
 				}
