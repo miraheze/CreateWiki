@@ -171,16 +171,18 @@ class WikiInitialise {
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
-				foreach ( $credits as $name ) {
-					$credits[$name]['var'] = $var;
-				}
 
-				$path = array_column( $credits, 'path', 'var' )[ $var ] ?? false;
-				if ( $path ) {
-					$pathInfo = pathinfo( $path );
-					$pathInfo['extension'] === 'php' ? require_once $path : ( preg_match('/extension(.*)/', $pathInfo['filename'] ) ?
-						wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
-					);
+				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+					if ( $ext['var'] === $var ) {
+						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+
+						if ( $path ) {
+							$pathInfo = pathinfo( $path );
+							$pathInfo['extension'] === 'php' ? require_once $path : ( preg_match('/extension(.*)/', $pathInfo['filename'] ) ?
+								wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
+							);
+						}
+					}
 				}
 			}
 		}
