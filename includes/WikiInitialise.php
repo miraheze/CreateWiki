@@ -152,17 +152,17 @@ class WikiInitialise {
 			}
 		}
 
-		//$reg = new ExtensionRegistry();
+		$reg = new ExtensionRegistry();
 		$queue = array_fill_keys( array_merge(
 				glob( $wgExtensionDirectory . '/*/extension*.json' ),
 				glob( $wgStyleDirectory . '/*/skin.json' )
 			),
 		true );
 
-		/*$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
+		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
 				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
 			)
-		);*/
+		);
 
 		// Assign extensions variables now
 		if ( isset( $cacheArray['extensions'] ) ) {
