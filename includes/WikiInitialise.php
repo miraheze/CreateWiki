@@ -9,6 +9,7 @@ class WikiInitialise {
 	public $sitename;
 	public $missing = false;
 	public $wikiDBClusters = [];
+	public $disabledExtensions = [];
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
@@ -245,7 +246,10 @@ class WikiInitialise {
 					if ( $ext['var'] === $var ) {
 						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
 
-						if ( $path ) {
+						if ( $path &&
+							!in_array( $name, $this->disabledExtensions ) &&
+							!in_array( $ext['name'], $this->disabledExtensions )
+						) {
 							$pathInfo = pathinfo( $path );
 							$pathInfo['extension'] === 'php' ? require_once $path : ( preg_match( '/extension(.*)/', $pathInfo['filename'] ) ?
 								wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
