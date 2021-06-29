@@ -152,31 +152,30 @@ class WikiInitialise {
 			}
 		}
 
-		require_once( '/srv/mediawiki/w/includes/WebStart.php' );
-
 		$reg = new ExtensionRegistry();
+		$config = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 
 		$queue = array_fill_keys( array_merge(
-				glob( $this->config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
-				glob( $this->config->get( 'StyleDirectory' ) . '/*/skin.json' )
+				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
+				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
 			),
 		true );
 
 		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
-				array_merge( ...array_values( $this->config->get( 'ExtensionCredits' ) ) )
+				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
 			)
 		);
 
 		// Assign extensions variables now
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
-				$this->config->settings[$var][$this->dbname] = true;
+				$config->settings[$var][$this->dbname] = true;
 
-				foreach ( $this->config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 					if ( $ext['var'] === $var ) {
-						// $path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+						 $path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
 						if ( $path ) {
-						//	$pathInfo = pathinfo( $path );
+							$pathInfo = pathinfo( $path );
 							/*$pathInfo['extension'] === 'php' ? require_once $path : ( $pathInfo['filename'] === 'extension' ?
 								wfLoadExtension( pathinfo( dirname( $path ) ) ) : wfLoadSkin( pathinfo( dirname( $path ) ) )
 							);*/
