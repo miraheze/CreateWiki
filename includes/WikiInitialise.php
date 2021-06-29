@@ -168,6 +168,10 @@ class WikiInitialise {
 		);
 
 		// Assign extensions variables now
+		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+			$this->config->settings[ $ext['var'] ]['default'] = false;
+		}
+
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
