@@ -152,10 +152,32 @@ class WikiInitialise {
 			}
 		}
 
+		$reg = new ExtensionRegistry();
+
+		$queue = array_fill_keys( array_merge(
+				glob( $this->config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
+				glob( $this->config->get( 'StyleDirectory' ) . '/*/skin.json' )
+			),
+		true );
+
+		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
+				array_merge( ...array_values( $this->config->get( 'ExtensionCredits' ) ) )
+			)
+		);
+
 		// Assign extensions variables now
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
+
+				foreach ( $this->config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+					if ( $ext['var'] === $var ) {
+						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ];
+						$pathInfo = pathinfo( $path );
+						$pathInfo['extension'] === 'php' ? require_once $path : ( $pathInfo['filename'] === 'extension' ?
+							wfLoadExtension( pathinfo( dirname( $path ) ) : wfLoadSkin( pathinfo( dirname( $path ) ) );
+					}
+				}
 			}
 		}
 
