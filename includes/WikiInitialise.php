@@ -169,7 +169,7 @@ class WikiInitialise {
 		// Assign extensions variables now
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
-				$config->settings[$var][$this->dbname] = true;
+				$this->config->settings[$var][$this->dbname] = true;
 
 				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 					if ( $ext['var'] === $var ) {
