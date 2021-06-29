@@ -152,46 +152,10 @@ class WikiInitialise {
 			}
 		}
 
-		$reg = new ExtensionRegistry();
-
-		$config = new GlobalVarConfig( 'wg' );
-
-		$queue = array_fill_keys( array_merge(
-				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
-				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
-			),
-		true );
-
-		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
-				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
-			)
-		);
-
 		// Assign extensions variables now
-		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
-			$this->config->settings[ $ext['var'] ]['default'] = false;
-		}
-
-		global $wgDBname;
-
-		$wgDBname = $this->dbname;
-
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
-
-				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
-					if ( $ext['var'] === $var ) {
-						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
-
-						if ( $path ) {
-							$pathInfo = pathinfo( $path );
-							$pathInfo['extension'] === 'php' ? require_once $path : ( preg_match( '/extension(.*)/', $pathInfo['filename'] ) ?
-								wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
-							);
-						}
-					}
-				}
 			}
 		}
 
@@ -251,6 +215,43 @@ class WikiInitialise {
 					}
 
 					$this->config->settings[$promoteVar][$this->dbname][$group] = $perm['autopromote'];
+				}
+			}
+		}
+	}
+
+	public function readExtensions() {
+		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
+
+		$reg = new ExtensionRegistry();
+
+		$config = new GlobalVarConfig( 'wg' );
+
+		$queue = array_fill_keys( array_merge(
+				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
+				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
+			),
+		true );
+
+		$credits = $reg->readFromQueue( $queue )['credits'];
+
+		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+			$this->config->settings[ $ext['var'] ]['default'] = false;
+		}
+
+		if ( isset( $cacheArray['extensions'] ) ) {
+			foreach ( (array)$cacheArray['extensions'] as $var ) {
+				foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+					if ( $ext['var'] === $var ) {
+						$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
+
+						if ( $path ) {
+							$pathInfo = pathinfo( $path );
+							$pathInfo['extension'] === 'php' ? require_once $path : ( preg_match( '/extension(.*)/', $pathInfo['filename'] ) ?
+								wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
+							);
+						}
+					}
 				}
 			}
 		}
