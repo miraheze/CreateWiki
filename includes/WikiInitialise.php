@@ -153,6 +153,7 @@ class WikiInitialise {
 		}
 
 		// Assign extensions variables now
+		$config = new GlobalVarConfig( 'wg' );
 		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 			$this->config->settings[ $ext['var'] ]['default'] = false;
 		}
