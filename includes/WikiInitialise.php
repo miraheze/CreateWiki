@@ -163,7 +163,7 @@ class WikiInitialise {
 		true );
 
 		$credits = array_merge( $reg->readFromQueue( $queue )['credits'], array_values(
-				array_merge( ...array_values( $wgExtensionCredits ) )
+				array_merge( ...array_values( $config->get( 'ExtensionCredits' ) ) )
 			)
 		);
 
