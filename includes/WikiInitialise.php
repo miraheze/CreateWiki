@@ -172,7 +172,7 @@ class WikiInitialise {
 			foreach ( (array)$cacheArray['extensions'] as $var ) {
 				$this->config->settings[$var][$this->dbname] = true;
 				foreach ( $credits as $name ) {
-					$credits[$name]['var'] = $var
+					$credits[$name]['var'] = $var;
 				}
 
 				$path = array_column( $credits, 'path', 'var' )[ $var ] ?? false;
