@@ -237,10 +237,6 @@ class WikiInitialise {
 
 		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 			$this->config->settings[ $ext['var'] ]['default'] = false;
-
-			if ( $ext['entrypoint'] ?? false ) {
-				require_once $ext['entrypoint'];
-			}
 		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
@@ -251,7 +247,7 @@ class WikiInitialise {
 
 						if ( $path ) {
 							$pathInfo = pathinfo( $path );
-							$pathInfo['extension'] === 'php' ? null : ( preg_match( '/extension(.*)/', $pathInfo['filename'] ) ?
+							$pathInfo['extension'] === 'php' ? require_once $path; : ( preg_match( '/extension(.*)/', $pathInfo['filename'] ) ?
 								wfLoadExtension( pathinfo( dirname( $path ) )['filename'], $path ) : wfLoadSkin( pathinfo( dirname( $path ) )['filename'] )
 							);
 						}
