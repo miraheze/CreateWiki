@@ -195,6 +195,10 @@ class WikiManager {
 			);
 		}
 
+		
+		$cWJ = new CreateWikiJson( $wiki );
+		$cWJ->resetWiki();
+
 		$this->recacheJson();
 
 		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
@@ -224,6 +228,10 @@ class WikiManager {
 				]
 			);
 		}
+
+
+		$cWJ = new CreateWikiJson( $old );
+		$cWJ->resetWiki();
 
 		$this->recacheJson();
 
