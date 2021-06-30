@@ -237,11 +237,6 @@ class WikiRequest {
 			}
 		}
 
-		$urlExp = explode( '.', $this->url, 2 );
-		if ( $urlExp[1] == $this->config->get( 'CreateWikiSubdomain' ) ) {
-			$this->dbname = $urlExp[0] . 'wiki';
-		}
-
 		$comment = ( $this->config->get( 'CreateWikiPurposes') ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
 		$rows = [
@@ -269,7 +264,7 @@ class WikiRequest {
 		);
 		
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
-				$this->tryAutoCreate();
+			$this->tryAutoCreate();
 		}
 
 		return $this->dbw->insertId();
@@ -283,6 +278,42 @@ class WikiRequest {
 				'id' => $this->id
 			]
 		) );
+	}
+
+	/**
+	 * Extract database name from subdomain and automatically configure url and dbname
+	 * 
+	 * @param string $subdomain subdomain
+	 * @param string &$err optional error string for reported errors
+	 *
+	 * @return boolean true subdomain is valid and accepted, false otherwise
+	 */
+	public function parseSubdomain( string $subdomain, string &$err = '' ) {
+		$subdomain = strtolower( $subdomain );
+
+		if ( is_array( $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) ) {
+			$subdomainBlacklist = '/^(' . implode( '|', $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) . ')+$/';
+		} else {
+			$subdomainBlacklist = $this->config->get( 'CreateWikiBlacklistedSubdomains' );
+		}
+
+		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
+			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
+		}
+
+		// Make the subdomain a dbname
+		if ( !ctype_alnum( $subdomain ) ) {
+			$err = 'notalnum';
+			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
+			return false;
+		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
+			$err = 'blacklisted';
+			return false;
+		} else {
+			$this->dbname = $subdomain . 'wiki';
+			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
+			return true;
+		}
 	}
 
 }

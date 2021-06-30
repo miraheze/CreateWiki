@@ -124,7 +124,6 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => (string)$request->url,
-					'validation-callback' => function( $url, $formData ) { if ( isset( $formData['submit-handle'] ) ) { return true; } else { return ctype_alnum( explode( '.', $url, 2 )[0] ); } }
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
@@ -303,11 +302,23 @@ class RequestWikiRequestViewer {
 		HTMLForm $form,
 		WikiRequest $request
 	) {
+		$out = $form->getContext()->getOutput();
+
 		if ( isset( $formData['submit-comment'] ) ) {
 			$request->addComment( $formData['comment'], $form->getUser() );
 		} elseif ( isset( $formData['submit-edit'] ) ) {
+			$subdomain = $formData['edit-url'];
+			$err = '';
+			$status = $request->parseSubdomain( $subdomain, $err );
+
+			if ( $status === false ) {
+				if ( $err !== '' ) {
+					$out->addHTML( '<div class="errorbox">' .  wfMessage( 'createwiki-error-' . $err )->escaped() . '</div>' );
+				}
+				return false;
+			}
+
 			$request->sitename = $formData['edit-sitename'];
-			$request->url = $formData['edit-url'];
 			$request->language = $formData['edit-language'];
 			$request->purpose = $formData['edit-purpose'];
 			$request->description = $formData['edit-description'];
@@ -325,7 +336,7 @@ class RequestWikiRequestViewer {
 			}
 		}
 
-		$form->getContext()->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success' )->escaped() . '</div>' );
+		$out->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success' )->escaped() . '</div>' );
 
 		return true;
 	}

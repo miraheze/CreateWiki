@@ -99,40 +99,23 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$subdomain = strtolower( $formData['subdomain'] );
-
-		if ( is_array( $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) ) {
-			$subdomainBlacklist = '/^(' . implode( '|', $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) . ')+$/';
-		} else {
-			$subdomainBlacklist = $this->config->get( 'CreateWikiBlacklistedSubdomains' );
-		}
-
-		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
-			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
-		}
-
-		$out = $this->getOutput();
-
-		// Make the subdomain a dbname
-		if ( !ctype_alnum( $subdomain ) ) {
-			$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-notalnum' )->escaped() . '</div>' );
-			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
-			return false;
-		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
-			$out->addHTML( '<div class="errorbox">' . $this->msg( 'createwiki-error-blacklisted' )->escaped() . '</div>' );
-			return false;
-		} else {
-			$url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
-			$dbname = $subdomain . 'wiki';
-		}
-
 		$request = new WikiRequest();
+		$subdomain = strtolower( $formData['subdomain'] );
+		$out = $this->getOutput();
+		$err = '';
+
+		$status = $request->parseSubdomain( $subdomain, $err );
+		if ( $status === false ) {
+			if ( $err !== '' ) {
+				$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-' . $err )->escaped() . '</div>' );
+			}
+			return false;
+		}
+
 		$request->description = $formData['reason'];
-		$request->dbname = $dbname;
 		$request->sitename = $formData['sitename'];
 		$request->language = $formData['language'];
 		$request->private = $formData['private'] ?? 0;
-		$request->url = $url;
 		$request->requester = $this->getUser();
 		$request->category = $formData['category'];
 		$request->purpose = $formData['purpose'] ?? '';
