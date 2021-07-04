@@ -26,7 +26,7 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility]) ) {
-			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown') ) );
+			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 			return [];
 		}
 
@@ -278,7 +278,7 @@ class RequestWikiRequestViewer {
 		try {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
-			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown') ) );
+			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );
 		}
 
