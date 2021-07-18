@@ -94,7 +94,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
-		$this->getOutput()->addHTML( '<div class="successbox">' . wfMessage( 'createwiki-success' )->escaped() . '</div>' );
+		$this->getOutput()->addHTML( Html::successBox( wfMessage( 'createwiki-success' )->escaped() ) );
 
 		return true;
 	}

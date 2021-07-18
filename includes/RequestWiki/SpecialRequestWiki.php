@@ -107,7 +107,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$status = $request->parseSubdomain( $subdomain, $err );
 		if ( $status === false ) {
 			if ( $err !== '' ) {
-				$out->addHTML( '<div class="errorbox">' .  $this->msg( 'createwiki-error-' . $err )->escaped() . '</div>' );
+				$out->addHTML( Html::errorBox( $this->msg( 'createwiki-error-' . $err )->escaped() ) );
 			}
 			return false;
 		}
@@ -124,7 +124,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		try {
 			$requestID = $request->save();
 		} catch ( MWException $e ) {
-			$out->addHTML( '<div class="errorbox">' . $this->msg( 'requestwiki-error-patient' )->plain() . '</div>' );
+			$out->addHTML( Html::errorBox( $this->msg( 'requestwiki-error-patient' )->plain() ) );
 			return false;
 		}
 
@@ -145,7 +145,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$out->addHTML( '<div class="successbox">' . $this->msg( 'requestwiki-success', $idlink )->plain() . '</div>' );
+		$out->addHTML( Html::successBox( $this->msg( 'requestwiki-success', $idlink )->plain() ) );
 
 		return true;
 	}

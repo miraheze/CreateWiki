@@ -26,7 +26,7 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility]) ) {
-			$context->getOutput()->addHTML( '<div class="errorbox">' . wfMessage( 'requestwiki-unknown') . '</div>' );
+			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 			return [];
 		}
 
@@ -278,7 +278,7 @@ class RequestWikiRequestViewer {
 		try {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
-			$context->getOutput()->addHTML( '<div class="errorbox">' . wfMessage( 'requestwiki-unknown') . '</div>' );
+			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );
 		}
 
@@ -313,7 +313,7 @@ class RequestWikiRequestViewer {
 
 			if ( $status === false ) {
 				if ( $err !== '' ) {
-					$out->addHTML( '<div class="errorbox">' .  wfMessage( 'createwiki-error-' . $err )->escaped() . '</div>' );
+					$out->addHTML( Html::errorBox( wfMessage( 'createwiki-error-' . $err )->escaped() ) );
 				}
 				return false;
 			}
@@ -336,7 +336,7 @@ class RequestWikiRequestViewer {
 			}
 		}
 
-		$out->addHTML( '<div class="successbox">' . wfMessage( 'requestwiki-edit-success' )->escaped() . '</div>' );
+		$out->addHTML( Html::successBox( wfMessage( 'requestwiki-edit-success' )->escaped() ) );
 
 		return true;
 	}
