@@ -3,6 +3,8 @@
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected $mSubSectionBeforeFields = false;
 
+	public $buttons = '';
+
 	public function wrapForm( $html ) {
 		$html = Xml::tags( 'div', [ 'id' => 'baseform' ], $html );
 
@@ -114,6 +116,14 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				)
 			)
 		);
+	}
+
+	public function getButtons() {
+		$html = parent::getButtons();
+
+		$html .= $this->buttons;
+
+		return $html;
 	}
 
 	public function getFormSections() {
