@@ -107,7 +107,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$status = $request->parseSubdomain( $subdomain, $err );
 		if ( $status === false ) {
 			if ( $err !== '' ) {
-				$out->addHTML( Html::errorBox( $this->msg( 'createwiki-error-' . $err )->escaped() ) );
+				$out->addHTML( Html::errorBox( $this->msg( 'createwiki-error-' . $err )->parse() ) );
 			}
 			return false;
 		}
