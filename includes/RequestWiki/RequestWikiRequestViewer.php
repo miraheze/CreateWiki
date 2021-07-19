@@ -313,7 +313,7 @@ class RequestWikiRequestViewer {
 
 			if ( $status === false ) {
 				if ( $err !== '' ) {
-					$out->addHTML( Html::errorBox( wfMessage( 'createwiki-error-' . $err )->escaped() ) );
+					$out->addHTML( Html::errorBox( wfMessage( 'createwiki-error-' . $err )->parse() ) );
 				}
 				return false;
 			}

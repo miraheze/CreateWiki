@@ -271,7 +271,7 @@ class WikiManager {
 			$error = 'notlowercase';
 		}
 
-		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->escaped() : false;
+		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->parse() : false;
 	}
 
 	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
