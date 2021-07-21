@@ -271,6 +271,12 @@ class WikiRequest {
 	}
 	
 	public function tryAutoCreate() {
+		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
+
+		if ( !$modelFile ) {
+			return;
+		}
+
 		JobQueueGroup::singleton()->push( new RequestWikiAIJob(
 			Title::newMainPage(),
 			[
