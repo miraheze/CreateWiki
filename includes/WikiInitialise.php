@@ -224,8 +224,6 @@ class WikiInitialise {
 	public function readExtensions() {
 		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 
-		$reg = new ExtensionRegistry();
-
 		$config = new GlobalVarConfig( 'wg' );
 
 		$queue = array_fill_keys( array_merge(
@@ -234,7 +232,19 @@ class WikiInitialise {
 			),
 		true );
 
-		$credits = $reg->readFromQueue( $queue )['credits'];
+		$processor = new ExtensionProcessor();
+
+		foreach ( $queue as $path => $mtime ) {
+			$json = file_get_contents( $path );
+			$info = json_decode( $json, true );
+			$version = $info['manifest_version'];
+
+			$processor->extractInfo( $path, $info, $version );
+		}
+
+		$data = $processor->getExtractedInfo();
+
+		$credits = $data['credits'];
 
 		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 			$this->config->settings[ $ext['var'] ]['default'] = false;
