@@ -117,6 +117,9 @@ class WikiManager {
 			]
 		);
 
+		$cWJ = new CreateWikiJson( $wiki );
+		$cWJ->resetWiki();
+
 		$this->recacheJson();
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
