@@ -86,7 +86,7 @@
 	"requestwiki-label-siteurl": "子網域：（subdomain.miraheze.org）",
 	"requestwiki-notloggedin": "抱歉，您需要<span class=\"plainlinks\">[$1 登入]</span>之後才能申請新 Wiki。",
 	"requestwiki-submit": "提交",
-	"requestwiki-success": "您的請求（$1）已經成功提交。志工 Wiki 創建者們會儘快處理您的請求。",
+	"requestwiki-success": "您的請求（$1）已經成功提交。志工 Wiki 創建者們會儘快審核您的請求。",
 	"requestwiki-unknown": "不存在帶有此 ID 的請求。",
 	"requestwikiqueue": "Wiki 申請佇列",
 	"requestwikiqueue-approve": "批准",
