@@ -322,13 +322,15 @@ class RemoteWiki {
 
 	public function commit() {
 		if ( !empty( $this->changes ) ) {
-			$this->dbw->update(
-				'cw_wikis',
-				$this->newRows,
-				[
-					'wiki_dbname' => $this->dbname
-				]
-			);
+			if ( $this->newRows ) {
+				$this->dbw->update(
+					'cw_wikis',
+					$this->newRows,
+					[
+						'wiki_dbname' => $this->dbname
+					]
+				);
+			}
 
 			foreach( $this->hooks as $hook ) {
 				Hooks::run( $hook, [ $this->dbname ] );
