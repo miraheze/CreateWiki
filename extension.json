@@ -236,6 +236,16 @@
 	"ConfigRegistry": {
 		"createwiki": "GlobalVarConfig::newInstance"
 	},
+	"DefaultUserOptions": {
+		"echo-subscriptions-web-request-comment": true,
+		"echo-subscriptions-email-request-comment": false,
+		"echo-subscriptions-web-request-declined": true,
+		"echo-subscriptions-email-request-declined": true,
+		"echo-subscriptions-web-wiki-creation": true,
+		"echo-subscriptions-email-wiki-creation": false,
+		"echo-subscriptions-web-wiki-rename": true,
+		"echo-subscriptions-email-wiki-rename": false
+	},
 	"load_composer_autoloader": true,
 	"callback": "CreateWikiHooks::onRegistration",
 	"manifest_version": 2
