@@ -132,7 +132,6 @@ class CreateWikiHooks {
 	* @param array &$notifications array of Echo notifications
 	* @param array &$notificationCategories array of Echo notification categories
 	* @param array &$icons array of icon details
-	* @return bool
 	*/
 	public static function onBeforeCreateEchoEvent(
 		&$notifications, &$notificationCategories, &$icons
@@ -166,7 +165,11 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoCreateWikiPresentationModel::class,
-			'immediate' => true
+			'immediate' => true,
+			'bundle' => [
+				'web' => true,
+				'email' => true
+			]
 		];
 
 		$notifications['wiki-rename'] = [
@@ -178,7 +181,11 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRenameWikiPresentationModel::class,
-			'immediate' => true
+			'immediate' => true,
+			'bundle' => [
+				'web' => true,
+				'email' => true
+			]
 		];
 
 		$notifications['request-declined'] = [
@@ -190,7 +197,11 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestDeclinedPresentationModel::class,
-			'immediate' => true
+			'immediate' => true,
+			'bundle' => [
+				'web' => true,
+				'email' => true
+			]
 		];
 
 		$notifications['request-comment'] = [
@@ -202,10 +213,34 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestCommentPresentationModel::class,
-			'immediate' => true
+			'immediate' => true,
+			'bundle' => [
+				'web' => true,
+				'email' => true
+			]
 		];
-
-		return true;
 	}
 
+	/**
+	 * Set bundle for message
+	 *
+	 * @param EchoEvent $event
+	 * @param string &$bundleString
+	 */
+	public static function onEchoGetBundleRules( $event, &$bundleString ) {
+		switch ( $event->getType() ) {
+			case 'wiki-creation':
+				$bundleString = 'wiki-creation';
+				break;
+			case 'wiki-rename':
+				$bundleString = 'wiki-rename';
+				break;
+			case 'request-declined':
+				$bundleString = 'request-declined';
+				break;
+			case 'request-comment':
+				$bundleString = 'request-comment';
+				break;
+		}
+	}
 }
