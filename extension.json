@@ -71,6 +71,9 @@
 		"BeforeCreateEchoEvent": [
 			"CreateWikiHooks::onBeforeCreateEchoEvent"
 		],
+		"EchoGetBundleRules": [
+			"CreateWikiHooks::onEchoGetBundleRules"
+		],
 		"LoadExtensionSchemaUpdates": [
 			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
 		],
