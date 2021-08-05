@@ -288,6 +288,8 @@ class WikiManager {
 
 	public static function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+
+		$sendEmail = false;
 		$notifyServerAdministrators = false;
 
 		switch ( $type ) {
@@ -298,14 +300,20 @@ class WikiManager {
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
+
+				$sendEmail = true;
+
+				$fromName = 'CreateWiki on ' . $config->get( 'Sitename' );
+				$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
+				$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 				break;
 			case 'rename':
-				$echoType = 'wiki-rename';
-				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$config->get( 'CreateWikiSubdomain' )}",
-					'sitename' => $specialData['siteName'],
-					'notifyAgent' => true
-				];
+				$echoType = false;
+				$sendEmail = true;
+
+				$fromName = 'CreateWiki Notifications';
+				$subject = 'Wiki Rename Notification';
+				$body = "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$specialData['user']} has renamed the following wiki from CreateWiki and associated extensions - From {$specialData['wikiRename']}.";
 
 				$notifyServerAdministrators = true;
 				break;
@@ -340,7 +348,7 @@ class WikiManager {
 			}
 		}
 
-		if ( $config->get( 'CreateWikiEmailNotifications' ) && $type == 'creation' ) {
+		if ( $config->get( 'CreateWikiEmailNotifications' ) && $sendEmail ) {
 			$notifyEmails = [];
 
 			foreach ( (array)$receivers as $receiver ) {
@@ -351,9 +359,7 @@ class WikiManager {
 				$notifyEmails[] = new MailAddress( $config->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
 			}
 
-			$from = new MailAddress( $config->get( 'PasswordSender' ), 'CreateWiki on ' . $config->get( 'Sitename' ) );
-			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
-			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
+			$from = new MailAddress( $config->get( 'PasswordSender' ), $fromName );
 
 			UserMailer::send( $notifyEmails, $from, $subject, $body );
 		}
