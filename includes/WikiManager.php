@@ -339,7 +339,7 @@ class WikiManager {
 		}
 
 		if ( $config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
-			foreach ( (array)$receivers as $receiver ) {
+			foreach ( $receivers as $receiver ) {
 				EchoEvent::create( [
 					'type' => $echoType,
 					'extra' => $echoExtra,
@@ -351,7 +351,7 @@ class WikiManager {
 		if ( $config->get( 'CreateWikiEmailNotifications' ) && $sendEmail ) {
 			$notifyEmails = [];
 
-			foreach ( (array)$receivers as $receiver ) {
+			foreach ( $receivers as $receiver ) {
 				$notifyEmails[] = MailAddress::newFromUser( User::newFromName( $receiver ) );
 			}
 
