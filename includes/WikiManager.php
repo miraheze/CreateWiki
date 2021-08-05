@@ -155,7 +155,7 @@ class WikiManager {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		self::notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
+		self::notificationsTrigger( 'creation', [ 'siteName' => $siteName ], [ $requester ], $wiki );
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 
@@ -286,7 +286,7 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	public static function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
+	public static function notificationsTrigger( string $type, array $specialData, array $receivers, string $wiki = '' ) {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 
 		$sendEmail = false;
