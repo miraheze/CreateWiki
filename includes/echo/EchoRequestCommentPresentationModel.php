@@ -1,12 +1,15 @@
 <?php
 class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
-		// No icon yet
-		return 'placeholder';
+		return 'chat';
 	}
 
 	public function getHeaderMessage() {
-		return $this->msg( 'notification-header-request-comment' );
+		if ( $this->isBundled() ) {
+			return $this->msg( 'notification-request-comment-bundle', $this->getBundleCount() );
+		} else {
+			return $this->msg( 'notification-header-request-comment' );
+		}
 	}
 
 	public function getBodyMessage() {
@@ -17,16 +20,9 @@ class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 	}
 
 	public function getPrimaryLink() {
-		return false;
-	}
-
-	public function getSecondaryLinks() {
-		$visitLink = [
+		return [
 			'url' => $this->event->getExtraParam( 'request-url', 0 ),
 			'label' => $this->msg( 'notification-createwiki-visit-request' )->text(),
-			'prioritized' => true,
 		];
-
-		return [ $visitLink ];
 	}
 }
