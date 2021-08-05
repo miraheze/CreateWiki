@@ -168,8 +168,9 @@ class CreateWikiHooks {
 			'immediate' => true,
 			'bundle' => [
 				'web' => true,
-				'email' => true
-			]
+				'email' => false,
+				'expandable' => true,
+			],
 		];
 
 		$notifications['wiki-rename'] = [
@@ -184,8 +185,9 @@ class CreateWikiHooks {
 			'immediate' => true,
 			'bundle' => [
 				'web' => true,
-				'email' => true
-			]
+				'email' => false,
+				'expandable' => true,
+			],
 		];
 
 		$notifications['request-declined'] = [
@@ -200,8 +202,9 @@ class CreateWikiHooks {
 			'immediate' => true,
 			'bundle' => [
 				'web' => true,
-				'email' => true
-			]
+				'email' => false,
+				'expandable' => true,
+			],
 		];
 
 		$notifications['request-comment'] = [
@@ -213,11 +216,11 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestCommentPresentationModel::class,
-			'immediate' => true,
 			'bundle' => [
 				'web' => true,
-				'email' => true
-			]
+				'email' => true,
+				'expandable' => true,
+			],
 		];
 	}
 
