@@ -165,12 +165,7 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoCreateWikiPresentationModel::class,
-			'immediate' => true,
-			'bundle' => [
-				'web' => true,
-				'email' => false,
-				'expandable' => true,
-			],
+			'immediate' => true
 		];
 
 		$notifications['wiki-rename'] = [
@@ -182,12 +177,7 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRenameWikiPresentationModel::class,
-			'immediate' => true,
-			'bundle' => [
-				'web' => true,
-				'email' => false,
-				'expandable' => true,
-			],
+			'immediate' => true
 		];
 
 		$notifications['request-declined'] = [
@@ -199,12 +189,7 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestDeclinedPresentationModel::class,
-			'immediate' => true,
-			'bundle' => [
-				'web' => true,
-				'email' => false,
-				'expandable' => true,
-			],
+			'immediate' => true
 		];
 
 		$notifications['request-comment'] = [
@@ -220,7 +205,7 @@ class CreateWikiHooks {
 				'web' => true,
 				'email' => true,
 				'expandable' => true,
-			],
+			]
 		];
 	}
 
@@ -232,15 +217,6 @@ class CreateWikiHooks {
 	 */
 	public static function onEchoGetBundleRules( $event, &$bundleString ) {
 		switch ( $event->getType() ) {
-			case 'wiki-creation':
-				$bundleString = 'wiki-creation';
-				break;
-			case 'wiki-rename':
-				$bundleString = 'wiki-rename';
-				break;
-			case 'request-declined':
-				$bundleString = 'request-declined';
-				break;
 			case 'request-comment':
 				$bundleString = 'request-comment';
 				break;
