@@ -153,7 +153,7 @@ class CreateWikiHooks {
 
 		$notificationCategories['request-comment'] = [
 			'priority' => 2,
-			'tooltip' => 'echo-pref-tooltip-wiki-comment'
+			'tooltip' => 'echo-pref-tooltip-wiki-request-comment'
 		];
 
 		$notifications['wiki-creation'] = [
