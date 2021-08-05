@@ -196,18 +196,12 @@ class WikiRequest {
 		// Don't notify the acting user of their action
 		unset( $this->involvedUsers[$user->getId()] );
 
-		foreach ( $this->involvedUsers as $user => $object ) {
-			EchoEvent::create( [
-				'type' => "request-{$type}",
-				'title' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ),
-				'agent' => $object,
-				'extra' => [
-					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
-					'comment' => $text,
-					'notifyAgent' => true
-				]
-			] );
-		}
+		$echoExtra = [
+			'id' => $this->id,
+			'reason' => $text
+		];
+
+		WikiManager::notificationsTrigger( $type, '', $echoExtra, $this->involvedUsers );
 	}
 
 	public function save() {
