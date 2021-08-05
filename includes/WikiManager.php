@@ -318,7 +318,7 @@ class WikiManager {
 				];
 				break;
 			case 'comment':
-				$echoType = 'request-declined';
+				$echoType = 'request-comment';
 				$echoExtra = [
 					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
 					'comment' => $specialData['reason'],
@@ -332,13 +332,11 @@ class WikiManager {
 
 		if ( $config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
 			foreach ( (array)$receivers as $receiver ) {
-				EchoEvent::create(
-					[
-						'type' => $echoType,
-						'extra' => $echoExtra,
-						'agent' => User::newFromName( $receiver )
-					]
-				);
+				EchoEvent::create( [
+					'type' => $echoType,
+					'extra' => $echoExtra,
+					'agent' => User::newFromName( $receiver )
+				] );
 			}
 		}
 
