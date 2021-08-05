@@ -155,7 +155,7 @@ class WikiManager {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
+		self::notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 
@@ -286,31 +286,42 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
+	public static function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$notifyServerAdministrators = false;
+
 		switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
 				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
-				$notifyServerAdministrators = false;
 				break;
 			case 'rename':
 				$echoType = 'wiki-rename';
 				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
-				$notifyServerAdministrators = false; // temp
+
+				$notifyServerAdministrators = true;
 				break;
-			case 'request-declined':
+			case 'declined':
 				$echoType = 'request-declined';
 				$echoExtra = [
 					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
 					'reason' => $specialData['reason'],
+					'notifyAgent' => true
+				];
+				break;
+			case 'comment':
+				$echoType = 'request-declined';
+				$echoExtra = [
+					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
+					'comment' => $specialData['reason'],
 					'notifyAgent' => true
 				];
 				break;
@@ -319,7 +330,7 @@ class WikiManager {
 				break;
 		}
 
-		if ( $this->config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
+		if ( $config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
 			foreach ( (array)$receivers as $receiver ) {
 				EchoEvent::create(
 					[
@@ -331,7 +342,7 @@ class WikiManager {
 			}
 		}
 
-		if ( $this->config->get( 'CreateWikiEmailNotifications' ) && $type == 'creation' ) {
+		if ( $config->get( 'CreateWikiEmailNotifications' ) && $type == 'creation' ) {
 			$notifyEmails = [];
 
 			foreach ( (array)$receivers as $receiver ) {
@@ -339,10 +350,10 @@ class WikiManager {
 			}
 
 			if ( $notifyServerAdministrators ) {
-				$notifyEmails[] = new MailAddress( $this->config->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
+				$notifyEmails[] = new MailAddress( $config->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
 			}
 
-			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
+			$from = new MailAddress( $config->get( 'PasswordSender' ), 'CreateWiki on ' . $config->get( 'Sitename' ) );
 			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
 			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
 
