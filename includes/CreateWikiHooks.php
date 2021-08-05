@@ -190,6 +190,10 @@ class CreateWikiHooks {
 				'expandable' => true,
 			]
 		];
+
+		$icons['request-declined'] = [
+			'path' => 'CreateWiki/modules/icons/decline.svg'
+		];
 	}
 
 	/**
