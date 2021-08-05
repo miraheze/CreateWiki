@@ -64,18 +64,15 @@ class RenameWiki extends Maintenance {
 		$this->output( "Done.\n" );
 
 		if ( $this->hasOption( 'rename' ) ) {
-			$this->notifyRename( $config->get( 'CreateWikiNotificationEmail' ), $config->get( 'PasswordSender' ), $renamedWiki, $this->getArg( 2 ) );
+			$renameData = [
+				'wikiRename' => implode( ' to ', $renamedWiki ),
+				'user' => $this->getArg( 2 )
+			];
+
+			WikiManager::notificationsTrigger( 'rename', '', $renameData, [] );
 		}
 	}
-
-	private function notifyRename( $to, $from, $wikidata, $user ) {
-		$from = new MailAddress( $from, 'CreateWiki Notifications' );
-		$to = new MailAddress( $to, 'Server Administrators' );
-		$wikirename = implode( ' to ', $wikidata );
-		$body = "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now $user has renamed the following wiki from CreateWiki and associated extensions - From $wikirename.";
-
-		return UserMailer::send( $to, $from, 'Wiki Rename Notification', $body );
-	}
 }
+
 $maintClass = 'RenameWiki';
 require_once( RUN_MAINTENANCE_IF_MAIN );
