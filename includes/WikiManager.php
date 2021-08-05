@@ -286,7 +286,7 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	public static function notificationsTrigger( string $type, array $specialData, array $receivers, string $wiki = '' ) {
+	public static function notificationsTrigger( string $type, array $specialData, array $receivers = [], string $wiki = '' ) {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 
 		$sendEmail = false;
