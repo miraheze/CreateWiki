@@ -141,11 +141,6 @@ class CreateWikiHooks {
 			'tooltip' => 'echo-pref-tooltip-wiki-creation',
 		];
 
-		$notificationCategories['wiki-rename'] = [
-			'priority' => 2,
-			'tooltip' => 'echo-pref-tooltip-wiki-rename'
-		];
-
 		$notificationCategories['request-declined'] = [
 			'priority' => 2,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
@@ -165,18 +160,6 @@ class CreateWikiHooks {
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoCreateWikiPresentationModel::class,
-			'immediate' => true
-		];
-
-		$notifications['wiki-rename'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
-			],
-			'category' => 'farmer',
-			'group' => 'postive',
-			'section' => 'alert',
-			'canNotifyAgent' => true,
-			'presentation-model' => EchoRenameWikiPresentationModel::class,
 			'immediate' => true
 		];
 
