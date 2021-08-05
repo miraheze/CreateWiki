@@ -201,7 +201,7 @@ class WikiRequest {
 			'reason' => $text
 		];
 
-		WikiManager::notificationsTrigger( $type, '', $echoExtra, $this->involvedUsers );
+		WikiManager::notificationsTrigger( $type, $echoExtra, $this->involvedUsers );
 	}
 
 	public function save() {
