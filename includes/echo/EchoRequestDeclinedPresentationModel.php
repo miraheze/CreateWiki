@@ -1,8 +1,7 @@
 <?php
 class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
-		// No icon yet
-		return 'placeholder';
+		return 'request-declined';
 	}
 
 	public function getHeaderMessage() {
