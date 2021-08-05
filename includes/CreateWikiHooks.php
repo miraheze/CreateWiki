@@ -137,17 +137,17 @@ class CreateWikiHooks {
 		&$notifications, &$notificationCategories, &$icons
 	) {
 		$notificationCategories['wiki-creation'] = [
-			'priority' => 2,
+			'priority' => 3,
 			'tooltip' => 'echo-pref-tooltip-wiki-creation',
 		];
 
 		$notificationCategories['request-declined'] = [
-			'priority' => 2,
+			'priority' => 3,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
 		];
 
 		$notificationCategories['request-comment'] = [
-			'priority' => 2,
+			'priority' => 3,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-comment'
 		];
 
@@ -155,7 +155,7 @@ class CreateWikiHooks {
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
 			],
-			'category' => 'farmer',
+			'category' => 'wiki-creation',
 			'group' => 'positive',
 			'section' => 'alert',
 			'canNotifyAgent' => true,
@@ -167,7 +167,7 @@ class CreateWikiHooks {
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
 			],
-			'category' => 'farmer',
+			'category' => 'request-declined',
 			'group' => 'positive',
 			'section' => 'alert',
 			'canNotifyAgent' => true,
@@ -179,7 +179,7 @@ class CreateWikiHooks {
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
 			],
-			'category' => 'farmer',
+			'category' => 'request-comment',
 			'group' => 'positive',
 			'section' => 'alert',
 			'canNotifyAgent' => true,
