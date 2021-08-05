@@ -69,7 +69,7 @@ class RenameWiki extends Maintenance {
 				'user' => $this->getArg( 2 )
 			];
 
-			WikiManager::notificationsTrigger( 'rename', '', $renameData, [] );
+			WikiManager::notificationsTrigger( 'rename', $renameData );
 		}
 	}
 }
