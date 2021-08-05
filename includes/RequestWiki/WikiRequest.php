@@ -193,23 +193,20 @@ class WikiRequest {
 			return;
 		}
 
-		$comment = $type == 'declined' ? 'reason' : 'comment';
-
 		// Don't notify the acting user of their action
 		unset( $this->involvedUsers[$user->getId()] );
 
 		foreach ( $this->involvedUsers as $user => $object ) {
-			EchoEvent::create(
-				[
-					'type' => "request-{$type}",
-					'extra' => [
-						'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
-						$comment => $text,
-						'notifyAgent' => true
-					],
-					'agent' => $object
+			EchoEvent::create( [
+				'type' => "request-{$type}",
+				'title' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ),
+				'agent' => $object,
+				'extra' => [
+					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
+					'comment' => $text,
+					'notifyAgent' => true
 				]
-			);
+			] );
 		}
 	}
 
@@ -321,5 +318,4 @@ class WikiRequest {
 			return true;
 		}
 	}
-
 }
