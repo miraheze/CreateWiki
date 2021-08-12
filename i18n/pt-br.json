@@ -5,7 +5,8 @@
 			"Eduardo.mps",
 			"Eduardoaddad",
 			"Felipe L. Ewald",
-			"Leonardo9387"
+			"Leonardo9387",
+			"McDutchie"
 		]
 	},
 	"action-createwiki": "criar wikis",
@@ -54,7 +55,7 @@
 	"notification-createwiki-wiki-creation-email-subject": "Sua wiki $1 foi criada!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Visite a wiki",
 	"notification-createwiki-wiki-rename-subject": "Sua wiki $1 foi renomeada.",
-	"notification-createwiki-visit-request": "Solicitação de visita",
+	"notification-createwiki-visit-request": "Visitar pedido",
 	"notification-header-wiki-creation": "Sua wiki <strong>$1</strong> foi criada!",
 	"notification-header-wiki-rename": "Sua wiki <strong>$1</strong> foi renomeada.",
 	"notification-header-request-comment": "Uma solicitação que você está seguindo recebeu um novo comentário:",
