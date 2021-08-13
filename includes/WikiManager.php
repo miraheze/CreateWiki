@@ -317,6 +317,16 @@ class WikiManager {
 
 				$notifyServerAdministrators = true;
 				break;
+			case 'deletion':
+				$echoType = false;
+				$sendEmail = true;
+
+				$fromName = 'CreateWiki Notifications';
+				$subject = 'Wikis Deleted Notification';
+				$body = "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$specialData['user']} has deleted the following wikis from the CreateWiki and associated extensions:\n{$specialData['deletedWikis']}";
+
+				$notifyServerAdministrators = true;
+				break;
 			case 'declined':
 				$echoType = 'request-declined';
 				$echoExtra = [
