@@ -187,7 +187,8 @@ class CreateWikiHooks {
 			'bundle' => [
 				'web' => true,
 				'expandable' => true,
-			]
+			],
+			'immediate' => true
 		];
 
 		$icons['request-declined'] = [
