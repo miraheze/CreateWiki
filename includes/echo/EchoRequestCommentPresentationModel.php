@@ -25,4 +25,18 @@ class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 			'label' => $this->msg( 'notification-createwiki-visit-request' )->text(),
 		];
 	}
+
+	public function getSecondaryLinks() {
+		if ( $this->isBundled() ) {
+			return [];
+		}
+
+		$visitLink = [
+			'url' => $this->event->getExtraParam( 'request-url', 0 ),
+			'label' => $this->msg( 'notification-createwiki-visit-request' )->text(),
+			'prioritized' => true,
+		];
+
+		return [ $visitLink ];
+	}
 }
