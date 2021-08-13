@@ -344,7 +344,7 @@ class WikiManager {
 
 			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
 			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
-			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
+			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse();
 
 			UserMailer::send( $notifyEmails, $from, $subject, $body );
 		}
