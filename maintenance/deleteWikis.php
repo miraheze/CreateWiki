@@ -44,7 +44,7 @@ class DeleteWiki extends Maintenance {
 			]
 		);
 
-		$deletedWiki = [];
+		$deletedWikis = [];
 
 		foreach ( $res as $row ) {
 			$wiki = $row->wiki_dbname;
@@ -59,24 +59,21 @@ class DeleteWiki extends Maintenance {
 				}
 
 				$this->output( "DROP DATABASE {$wiki};\n" );
-				$deletedWiki[] = $wiki;
+				$deletedWikis[] = $wiki;
 			} else {
 				$this->output( "$wiki\n" );
 			}
 		}
 		$this->output( "Done.\n" );
 
-		$this->notifyDeletions( $config->get( 'CreateWikiNotificationEmail' ), $config->get( 'PasswordSender' ), $deletedWiki, $this->getArg( 0 ) );
-	}
+		$deletionData => [
+			'deletedWikis' => implode( ', ', $deletedWikis ),
+			'user' => $this->getArg( 0 )
+		];
 
-	private function notifyDeletions( $to, $from, $wikis, $user ) {
-		$from = new MailAddress( $from, 'CreateWiki Notifications' );
-		$to = new MailAddress( $to, 'Server Administrators' );
-		$wikilist = implode( ', ', $wikis );
-		$body = "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now $user has deleted the following wikis from the CreateWiki and associated extensions:\n$wikilist";
-
-		return UserMailer::send( $to, $from, 'Wikis Deleted Notification', $body );
+		WikiManager::notificationsTrigger( 'deletion', $deletionData );
 	}
 }
+
 $maintClass = 'DeleteWiki';
 require_once( RUN_MAINTENANCE_IF_MAIN );
