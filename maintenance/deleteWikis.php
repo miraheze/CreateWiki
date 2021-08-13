@@ -64,9 +64,10 @@ class DeleteWiki extends Maintenance {
 				$this->output( "$wiki\n" );
 			}
 		}
+
 		$this->output( "Done.\n" );
 
-		$deletionData => [
+		$deletionData = [
 			'deletedWikis' => implode( ', ', $deletedWikis ),
 			'user' => $this->getArg( 0 )
 		];
