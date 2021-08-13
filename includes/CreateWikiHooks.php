@@ -181,7 +181,7 @@ class CreateWikiHooks {
 			],
 			'category' => 'request-comment',
 			'group' => 'positive',
-			'section' => 'message',
+			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestCommentPresentationModel::class,
 			'bundle' => [
