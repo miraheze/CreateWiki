@@ -305,7 +305,7 @@ class WikiManager {
 
 				$fromName = 'CreateWiki on ' . $config->get( 'Sitename' );
 				$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
-				$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->text();
+				$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse();
 				break;
 			case 'rename':
 				$echoType = false;
