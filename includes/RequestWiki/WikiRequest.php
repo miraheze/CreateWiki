@@ -194,7 +194,7 @@ class WikiRequest {
 		}
 
 		// Don't notify the acting user of their action
-		unset( $this->involvedUsers[$user->getId()] );
+		//unset( $this->involvedUsers[$user->getId()] );
 
 		$echoExtra = [
 			'id' => $this->id,
