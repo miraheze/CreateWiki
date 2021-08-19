@@ -24,7 +24,7 @@
 	"createwiki-error-notsuffixed": "De databasenaam eindigt niet op een geldig achtervoegsel (bijvoorbeeld 'wiki').",
 	"createwiki-error-swiftcontainernot": "Het aanmaken van een swift-container voor de wiki $1 is mislukt",
 	"createwiki-error-usernotcreated": "De aanvragende gebruiker is niet aangemaakt op de wiki.",
-	"createwiki-help-reason": "Voer een samenvatting in waarin u het onderwerp, de reikwijdte en het doel van de wiki die u aanvraagt, toereikend uiteenzet.",
+	"createwiki-help-reason": "Schrijf een samenvatting waarin u het onderwerp, de reikwijdte en het doel van de wiki die u aanvraagt, kort en duidelijk uitlegt.",
 	"createwiki-label-category": "Categorie:",
 	"createwiki-label-dbname": "Databasenaam:",
 	"createwiki-label-language": "Taal:",

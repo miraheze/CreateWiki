@@ -24,7 +24,7 @@
 	"createwiki-desc": "可以在wiki农场上轻松创建新wiki的扩展。",
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "您在Miraheze上的新wiki：$1",
-	"createwiki-email-body": "您最近在Miraheze上面申请了一个新wiki。我们很高兴地告诉您：您的申请已通过，并且我们的志愿者已经创建了该wiki。\n\n感谢您选择Miraheze，祝您在新wiki上面编辑愉快！",
+	"createwiki-email-body": "您好！\n\n您最近在Miraheze上面申请了一个新wiki。我们很高兴地告诉您：您的申请已通过！\n\nMiraheze将在这里帮助您的每一步，不要害怕问问题！访问我们的[[Help center|帮助中心]]来获取多个领域的详细帮助，例如使用ManageWiki工具来管理您的维基，使用照片、模板、归档任务等等！\n\n请记住所有的维基都须遵守[[Content Policy|内容方针]]，否则它们可能会被关闭。请记住您的维基不能过度偏离它所批准的用途，否则它可能也会被关闭。\n\n感谢您选择Miraheze！祝您在新wiki编辑愉快！",
 	"createwiki-error-blacklisted": "您所选择的子域名无法使用。请选择一个新的子域名，或选择联系系统管理员以寻求帮助。",
 	"createwiki-error-dbexists": "数据库名称已经被其他wiki使用。",
 	"createwiki-error-requesternonexistent": "申请者账户在Miraheze Meta上面不存在。",
