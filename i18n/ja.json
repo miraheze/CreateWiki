@@ -3,6 +3,7 @@
 		"authors": [
 			"A2y4",
 			"Aefgh39622",
+			"HappyLeLeBoss",
 			"Kkairri",
 			"Omotecho",
 			"Otokoume",
@@ -73,7 +74,7 @@
 	"requestwiki-error-csrf": "<strong>申し訳ありませんが、セッションデータが失われため申請が送信できませんでした。</strong>\nフォームを再送信してください。それでも問題が解決しない場合は、いったん[[Special:Userlogout|ログアウト]]してから、ログインし直してください。",
 	"requestwiki-error-invalidcomment": "Wiki申請に無効な記号が含まれています。再度申請し直してください。もしエラーが続くようでしたら、[[Help center|ご連絡をお願いいたします]]。",
 	"requestwiki-error-nodomain": "サブドメインかカスタムドメインのどちらかを選択してください。",
-	"requestwiki-error-notallfilledin": "サブドメイン、Wiki名、説明の各項目を入力する必要があります。",
+	"requestwiki-error-notallfilledin": "サブドメイン、Wiki名、及の各項目を入力する必要があります。",
 	"requestwiki-error-notime": "リクエストの処理に問題がありました。再度リクエストを送信してください。",
 	"requestwiki-error-patient": "すでにWikiを申請しています。しばらくお待ちください。Wiki作成者の1人が間もなく作成します。別のWikiを申請する必要がある場合は、お待ちください。しばらくした後で申請することができます。",
 	"requestwiki-header": "MirahezeをあなたのWikiのホストとしてお選びいただき、ありがとうございます。まずは、こちらのフォームにご記入いただき、リクエストを確認させていただきます。\nあなたのWikiリクエストはボランティアによって審査され、リクエストを提出する際に与えられるページで追跡することができます。\n\nWikiにカスタムドメイン（つまり、標準の.miraheze.orgサブドメインではない）が必要な場合は、まず<span class=\"plainlinks\">[$1 ここ]</span>をお読みください。最初にサブドメインを選択する必要があります。その後、カスタムドメインが設定されます。\n\nWikiを申請すると、自動的に[[Content Policy|コンテンツポリシー]] と、 [[Dormancy Policy|休眠の方針]]に同意したことになります。",
