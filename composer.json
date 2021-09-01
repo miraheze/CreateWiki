@@ -1,5 +1,5 @@
 {
-	"name": "miraheze/CreateWiki",
+	"name": "miraheze/createwiki",
 	"require": {
 		"php-ai/php-ml": "*"
 	},
