@@ -42,7 +42,7 @@
 	"echo-pref-tooltip-wiki-rename": "להודיע לי אם שם הוויקי שלי השתנה.",
 	"echo-pref-tooltip-wiki-request-comment": "להודיע לי כשיש הערה על בקשה לוויקי.",
 	"echo-pref-tooltip-wiki-request-declined": "להודיע לי אם הבקשה שלי לוויקי נדחתה.",
-	"log-description-farmer": "יומן זה מציג את השינויים בהגדרות של אתרי הוויקי.",
+	"log-description-farmer": "היומן הזה עוקב אחרי יצירות ויקי.",
 	"logentry-farmer-createwiki": "$1 יצר את אתר הוויקי \"$4\"",
 	"logentry-farmer-requestwiki": "$1 ביקש את אתר הוויקי \"$4\" (שפה: $5; פרטי: $6) ב־$7",
 	"logentry-farmer-requestwikiedit": "$1 ערך את בקשת אתר הוויקי #$4",
