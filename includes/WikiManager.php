@@ -9,9 +9,10 @@ class WikiManager {
 	private $dbname;
 	private $dbw;
 	private $cwdb;
-	private $exists;
 	private $lb = false;
 	private $tables = [];
+
+	public $exists;
 
 	public function __construct( string $dbname ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
