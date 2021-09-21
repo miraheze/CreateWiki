@@ -8,9 +8,9 @@ class CreateWikiHooks {
 	}
 
 	public static function fnCreateWikiSchemaUpdates( DatabaseUpdater $updater ) {
-		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki, $wgDBname;
+		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki, $wgDBname, $wgContinuousIntegrationInstance;
 
-		if ( $wgCreateWikiGlobalWiki === $wgDBname ) {
+		if ( ( $wgCreateWikiGlobalWiki === $wgDBname ) || $wgContinuousIntegrationInstance ) {
 			$updater->addExtensionTable(
 				'cw_requests',
 				__DIR__ . '/../sql/cw_requests.sql'
@@ -50,7 +50,7 @@ class CreateWikiHooks {
  			);
 		}
 
-		if ( $wgCreateWikiDatabase === $wgDBname ) {
+		if ( ( $wgCreateWikiDatabase === $wgDBname ) || $wgContinuousIntegrationInstance ) {
 			$updater->addExtensionTable(
 				'cw_wikis',
 				__DIR__ . '/../sql/cw_wikis.sql'
