@@ -8,9 +8,9 @@ class CreateWikiHooks {
 	}
 
 	public static function fnCreateWikiSchemaUpdates( DatabaseUpdater $updater ) {
-		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki, $wgDBname, $wgContinuousIntegrationInstance;
+		global $wgCreateWikiDatabase, $wgCreateWikiGlobalWiki, $wgDBname;
 
-		if ( ( $wgCreateWikiGlobalWiki === $wgDBname ) || $wgContinuousIntegrationInstance ) {
+		// if ( $wgCreateWikiGlobalWiki === $wgDBname ) {
 			$updater->addExtensionTable(
 				'cw_requests',
 				__DIR__ . '/../sql/cw_requests.sql'
@@ -48,9 +48,9 @@ class CreateWikiHooks {
  				'cw_wikis',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_inactive_exempt_reason.sql'
  			);
-		}
+		// }
 
-		if ( ( $wgCreateWikiDatabase === $wgDBname ) || $wgContinuousIntegrationInstance ) {
+		// if ( $wgCreateWikiDatabase === $wgDBname ) {
 			$updater->addExtensionTable(
 				'cw_wikis',
 				__DIR__ . '/../sql/cw_wikis.sql'
@@ -90,7 +90,7 @@ class CreateWikiHooks {
 				'cw_wikis',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
 			);
-		}
+		// }
 
 		return true;
 	}
