@@ -88,8 +88,9 @@ class CreateWikiHooks {
 				__DIR__ . '/../sql/patches/patch-domain-cols.sql'
 			);
 
-			$updater->modifyExtensionTable(
+			$updater->addExtensionIndex(
 				'cw_wikis',
+				'wiki_dbname',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
 			);
 		// }
