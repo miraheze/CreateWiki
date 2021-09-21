@@ -120,7 +120,7 @@ class CreateWikiJson {
 		);
 
 		if ( !$wikiObject ) {
-			throw new MWException( 'Wiki can not be found.' );
+			throw new MWException( "Wiki \"{$this->wiki}\" can not be found." );
 		}
 
 		$jsonArray = [
