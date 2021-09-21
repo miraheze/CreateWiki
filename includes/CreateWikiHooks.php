@@ -39,13 +39,15 @@ class CreateWikiHooks {
  				__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
  			);
 
-			$updater->modifyExtensionTable(
- 				'cw_requests',
+			$updater->addExtensionField(
+				'cw_requests',
+				'cw_bio',
  				__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
  			);
 
-			$updater->modifyExtensionTable(
- 				'cw_wikis',
+			$updater->addExtensionField(
+				'cw_wikis',
+				'wiki_inactive_exempt_reason',
  				__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_inactive_exempt_reason.sql'
  			);
 		// }
