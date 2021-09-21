@@ -231,6 +231,11 @@
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
 			"public": true,
 			"value": ""
+		},
+		"CreateWikiCacheDirectory": {
+			"description": "String. The path to store CreateWiki cache files at.",
+			"public": true,
+			"value": ""
 		}
 	},
 	"ConfigRegistry": {
