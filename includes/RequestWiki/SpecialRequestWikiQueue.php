@@ -6,7 +6,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function execute( $par ) {
 		$this->setHeaders();
-		$this->getOutput()->setPageTitle( $this->msg( 'requestwikiqueue' ) );
+
+		if ( RequestContext::getMain()->getTitle() == null ) {
+			RequestContext::getMain()->setTitle(
+				SpecialPage::getTitleFor( 'RequestWikiQueue' )
+			);
+		}
 
 		if ( is_null( $par ) || $par === '' ) {
 			$this->doPagerStuff();
