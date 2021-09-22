@@ -137,9 +137,9 @@ class WikiInitialise {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
-				'tags' => $cacheArray['extensions'],
+				'tags' => $cacheArray['extensions'] ?? [],
 				'params' => []
-				];
+			];
 		};
 
 		// The following is ManageWiki additional code
