@@ -1,0 +1,42 @@
+{
+	"@metadata": {
+		"authors": [
+			"Teashae"
+		]
+	},
+	"action-createwiki": "ویکیاں بنائیں",
+	"action-requestwiki": "ویکیاں درخواست کریں",
+	"createwiki": "ویکی بنائیں",
+	"createwiki-defaultmainpage-summary": "صفحہ اول تخلیق کریں",
+	"createwiki-label-category": "زمرہ:",
+	"createwiki-label-language": "زبان:",
+	"createwiki-label-private": "اس ویکی کو بطور نجی نشان زد کریں۔",
+	"createwiki-label-reason": "وجہ:",
+	"createwiki-label-requester": "درخواست کرنے والا:",
+	"createwiki-label-submit": "جمع کرائیں",
+	"createwiki-legend": "ویکی بنائیں",
+	"createwiki-success": "ویکی کامیابی سے بنائی گئی۔",
+	"echo-category-title-wiki-creation": "ویکی تخلیق",
+	"echo-category-title-request-declined": "وکی درخواست رد کر دی گئی",
+	"echo-pref-tooltip-wiki-creation": "میری ویکی بن جانے پر مجھے مطلع کریں۔",
+	"echo-pref-tooltip-wiki-rename": "میرے ویکی کے نام کے بدلنے پر مجھے مطلع کریں۔",
+	"echo-pref-tooltip-wiki-request-declined": "میری ویکی درخواست رد ہونے پر مجھے مطلع کریں۔",
+	"logentry-farmer-createwiki": "$1 نے \"$4\" ویکی کو تخلیق کیا",
+	"logentry-farmer-requestaccept": "$1 نے وکی درخواست $4 کو قبول کیا۔",
+	"logentry-farmer-requestdecline": "$1 نے ویکی درخواست $4 کو رد کیا۔",
+	"requestwiki": "ویکی کی درخواست کریں",
+	"requestwikiedit": "ویکی درخواست میں ترمیم کریں",
+	"requestwiki-label-sitename": "ویکی کا نام:",
+	"requestwiki-submit": "جمع کرائیں",
+	"requestwikiqueue-approve": "منظور",
+	"requestwikiqueue-decline": "رد کریں",
+	"requestwikiqueue-handle": "درخواست سنبھال لیں",
+	"requestwikiqueue-norequests": "کوئی نتیجہ نہیں",
+	"requestwikiqueue-pager-status-approved": "منظورہ شدہ",
+	"requestwikiqueue-request-label-approved": "منظورہ شدہ",
+	"requestwikiqueue-request-label-comment": "تبصرہ:",
+	"requestwikiqueue-request-label-create-wiki": "ویکی بنائیں",
+	"requestwikiqueue-request-label-inreview": "نظرثانی میں",
+	"requestwikiqueue-request-label-language": "زبان",
+	"requestwikiqueue-request-label-requester": "درخواست کرنے والا:"
+}
