@@ -2,13 +2,14 @@
 class SpecialRequestWikiQueue extends SpecialPage {
 	public function __construct() {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
-
-		if ( $wgWikimediaJenkinsCI ) {
-			return;
-		}
 	}
 
 	public function execute( $par ) {
+		global $wgWikimediaJenkinsCI;
+		if ( $wgWikimediaJenkinsCI ) {
+			return;
+		}
+
 		$this->setHeaders();
 
 		if ( is_null( $par ) || $par === '' ) {
