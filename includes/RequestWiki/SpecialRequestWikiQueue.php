@@ -13,6 +13,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			);
 		}
 
+		if ( RequestContext::getMain()->getTitle() == null ) {
+			RequestContext::getMain()->setTitle(
+				SpecialPage::getTitleFor( 'RequestWikiQueue' )
+			);
+		}
+
 		if ( is_null( $par ) || $par === '' ) {
 			$this->doPagerStuff();
 		} else {
