@@ -2,20 +2,14 @@
 class SpecialRequestWikiQueue extends SpecialPage {
 	public function __construct() {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+
+		if ( $wgWikimediaJenkinsCI ) {
+			return;
+		}
 	}
 
 	public function execute( $par ) {
 		$this->setHeaders();
-
-		if ( RequestContext::getMain() == null ) {
-			$this->setContext(
-				new DerivativeContext( RequestContext::getMain() );
-			);
-		}
-
-		RequestContext::getMain()->setTitle(
-			SpecialPage::getTitleFor( 'RequestWikiQueue' )
-		);
 
 		if ( is_null( $par ) || $par === '' ) {
 			$this->doPagerStuff();
