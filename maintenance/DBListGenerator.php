@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../../maintenance/Maintenance.php';
 
 use MediaWiki\MediaWikiServices;
 
-class CreateWikiDBListGenerator extends Maintenance {
+class DBListGenerator extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->requireExtension( 'CreateWiki' );
@@ -75,5 +75,5 @@ class CreateWikiDBListGenerator extends Maintenance {
 	}
 }
 
-$maintClass = 'CreateWikiDBListGenerator';
+$maintClass = DBListGenerator::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
