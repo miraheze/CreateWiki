@@ -4,7 +4,7 @@ require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
 
 use MediaWiki\MediaWikiServices;
 
-class CreateWikiListDatabases extends Maintenance {
+class ListDatabases extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->mDescription = 'Lists all databases known by the wiki farm.';
@@ -19,5 +19,5 @@ class CreateWikiListDatabases extends Maintenance {
 	}
 }
 
-$maintClass = 'CreateWikiListDatabases';
+$maintClass = ListDatabases::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
