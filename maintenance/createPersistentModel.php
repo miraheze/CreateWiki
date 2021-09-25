@@ -11,7 +11,7 @@ use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
 
-class CreateWikiCreatePersistentModel extends Maintenance {
+class CreatePersistentModel extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->requireExtension( 'CreateWiki' );
@@ -79,5 +79,5 @@ class CreateWikiCreatePersistentModel extends Maintenance {
 	}
 }
 
-$maintClass = 'CreateWikiCreatePersistentModel';
+$maintClass = CreatePersistentModel::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
