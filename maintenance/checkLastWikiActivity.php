@@ -29,5 +29,5 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 }
 
-$maintClass = 'CheckLastWikiActivity';
+$maintClass = CheckLastWikiActivity::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
