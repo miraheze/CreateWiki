@@ -101,8 +101,6 @@ class CreateWikiHooks {
 	public static function onSetupAfterCache() {
 		global $wi, $wgConf, $wgGroupPermissions;
 
-		Hooks::run( 'CreateWikiBeforeSetup' );
-
 		$cWJ = new CreateWikiJson( self::getConfig( 'DBname' ) );
 
 		$cWJ->update();
