@@ -191,5 +191,5 @@ class ManageInactiveWikis extends Maintenance {
 	}
 }
 
-$maintClass = 'ManageInactiveWikis';
+$maintClass = ManageInactiveWikis::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
