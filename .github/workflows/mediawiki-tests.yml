@@ -321,7 +321,7 @@ jobs:
           # MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->setRequestInfo(). THIS IS ALREADY FIXED FOR REL1_37 AND LATER.
           # WITH https://github.com/wikimedia/mediawiki/commit/29827d
 
-          if [ -d src/extensions/CreateWiki ] && [ "${MEDIAWIKI_VERSION}" == 'REL1_36' ]; then
+          if [ -d src/extensions/CreateWiki ] || [ "${{ github.event.repository.name }}" == 'CreateWiki' ] && [ "${MEDIAWIKI_VERSION}" == 'REL1_36' ]; then
             curl -sL https://raw.githubusercontent.com/Universal-Omega/scripts/master/mediawiki/hacks/Setup-REL1_36.php > src/includes/Setup.php
           fi
 
