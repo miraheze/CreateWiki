@@ -25,5 +25,5 @@ class PopulateMainPage extends Maintenance {
 	}
 }
 
-$maintClass = 'PopulateMainPage';
+$maintClass = PopulateMainPage::class;
 require_once( RUN_MAINTENANCE_IF_MAIN );
