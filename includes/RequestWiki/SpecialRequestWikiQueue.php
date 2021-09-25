@@ -48,16 +48,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
-		$htmlForm->setSubmitCallback( [ $this, 'dummyProcess' ] )->setMethod( 'get' )->prepareForm()->show();
+		$htmlForm->setMethod( 'get' )->prepareForm()->displayForm( false );
 
-		$pager = new RequestWikiQueuePager( $requester, $dbname, $status );
+		$pager = new RequestWikiQueuePager( $this, $requester, $dbname, $status );
 		$table = $pager->getFullOutput();
 		
 		$this->getOutput()->addParserOutputContent( $table );
-	}
-
-	public function dummyProcess() {
-		return false;
 	}
 
 	private function lookupRequest( $par ) {
