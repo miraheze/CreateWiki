@@ -6,7 +6,7 @@
 		"Paladox",
 		"Universal Omega"
 	],
-	"url": "//github.com/Miraheze/CreateWiki",
+	"url": "https://github.com/miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
@@ -50,7 +50,7 @@
 		"CreateWikiJson": "includes/CreateWikiJson.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
-		"DeleteWiki": "maintenance/deleteWikis.php",
+		"DeleteWikis": "maintenance/deleteWikis.php",
 		"EchoCreateWikiPresentationModel": "includes/echo/EchoCreateWikiPresentationModel.php",
 		"EchoRenameWikiPresentationModel": "includes/echo/EchoRenameWikiPresentationModel.php",
 		"EchoRequestCommentPresentationModel": "includes/echo/EchoRequestCommentPresentationModel.php",
