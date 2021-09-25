@@ -89,5 +89,5 @@ class PopulateWikiCreation extends Maintenance {
 	}
 }
 
-$maintClass = 'PopulateWikiCreation';
+$maintClass = PopulateWikiCreation::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
