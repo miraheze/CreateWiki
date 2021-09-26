@@ -1,28 +1,11 @@
 <?php
-/**
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-* http://www.gnu.org/copyleft/gpl.html
-*
-* @file
-* @ingroup Maintenance
-* @author Southparkfan
-* @author John Lewis
-* @version 2.1
-*/
 
-require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+
+require_once "$IP/maintenance/Maintenance.php";
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
@@ -30,16 +13,19 @@ use MediaWiki\Shell\Shell;
 class ManageInactiveWikis extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
 		$this->addOption( 'write', 'Actually make changes to wikis which are considered for the next stage in dormancy', false, false );
 		$this->mDescription = 'A script to find inactive wikis in a farm.';
+
+		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 
-		$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
+		$dbr = wfGetDB( DB_REPLICA, [], $config->get( 'CreateWikiDatabase' ) );
 
-		$res = $dbw->select(
+		$res = $dbr->select(
 			'cw_wikis',
 			'wiki_dbname',
 			[
@@ -55,12 +41,12 @@ class ManageInactiveWikis extends Maintenance {
 			$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
-				$this->checkLastActivity( $dbName, $wiki, $dbw, $config );
+				$this->checkLastActivity( $dbName, $wiki, $config );
 			}
 		}
 	}
 
-	public function checkLastActivity( $dbName, $wiki, $dbw, $config ) {
+	public function checkLastActivity( $dbName, $wiki, $config ) {
 		$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 		$closeDays = (int)$config->get( 'CreateWikiStateDays' )['closed'];
 		$removeDays = (int)$config->get( 'CreateWikiStateDays' )['removed'];
@@ -98,11 +84,13 @@ class ManageInactiveWikis extends Maintenance {
 		if ( !$wiki->isClosed() ) {
 			// Wiki is NOT closed yet
 			$closeTime = $inactiveDays + $closeDays;
+
 			if ( $timeStamp < date( "YmdHis", strtotime( "-{$closeTime} days" ) ) ) {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
 					$this->emailBureaucrats( $dbName, $config );
+
 					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
 					$this->output( "{$dbName} should be closed. Timestamp of last recent changes entry: {$timeStamp}\n" );
@@ -111,6 +99,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Meets inactivity
 				if ( $canWrite ) {
 					$wiki->markInactive();
+
 					$this->output( "{$dbName} was eligible for a warning notice and one was given. Last activity was at {$timeStamp}\n" );
 				} else {
 					$this->output( "{$dbName} should get a warning notice. Timestamp of last recent changes entry: {$timeStamp}\n" );
@@ -121,6 +110,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki not marked inactive yet, warning should be given
 					if ( $canWrite ) {
 						$wiki->markInactive();
+
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, therefore warning.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries, eligible for warning.\n" );
@@ -129,6 +119,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
 						$wiki->markClosed();
+
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, eligible for closure.\n" );
@@ -144,6 +135,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Wiki closed, eligible for deletion
 				if ( $canWrite ) {
 					$wiki->delete();
+
 					$this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
 				} else {
 					$this->output( "{$dbName} is eligible for public removal, was closed on {$wiki->isClosed()}.\n" );
@@ -158,6 +150,7 @@ class ManageInactiveWikis extends Maintenance {
 		}
 
 		$wiki->commit();
+
 		return true;
 	}
 
