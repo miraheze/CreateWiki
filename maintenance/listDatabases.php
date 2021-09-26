@@ -1,13 +1,20 @@
 <?php
 
-require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+
+require_once "$IP/maintenance/Maintenance.php";
 
 use MediaWiki\MediaWikiServices;
 
 class ListDatabases extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
 		$this->mDescription = 'Lists all databases known by the wiki farm.';
+		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
