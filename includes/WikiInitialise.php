@@ -259,7 +259,7 @@ class WikiInitialise {
 					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
 
 					if ( $path ) {
-						pathinfo( $path )['extension'] === 'php' ? require_once $path : ExtensionRegistry::getInstance()->queue( $path );
+						pathinfo( $path )['extension'] === 'php' ? include_once $path : ExtensionRegistry::getInstance()->queue( $path );
 					}
 				}
 			}
