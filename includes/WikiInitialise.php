@@ -253,7 +253,6 @@ class WikiInitialise {
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
-					!in_array( $name, $this->disabledExtensions ) &&
 					!in_array( $ext['name'], $this->disabledExtensions )
 				) {
 					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
