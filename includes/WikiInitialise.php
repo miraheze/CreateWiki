@@ -9,6 +9,7 @@ class WikiInitialise {
 	public $sitename;
 	public $missing = false;
 	public $wikiDBClusters = [];
+	public $disabledExtensions = [];
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
@@ -215,6 +216,50 @@ class WikiInitialise {
 					}
 
 					$this->config->settings[$promoteVar][$this->dbname][$group] = $perm['autopromote'];
+				}
+			}
+		}
+	}
+
+	public function loadExtensions() {
+		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
+
+		$config = new GlobalVarConfig( 'wg' );
+
+		$queue = array_fill_keys( array_merge(
+				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
+				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
+			),
+		true );
+
+		$processor = new ExtensionProcessor();
+
+		foreach ( $queue as $path => $mtime ) {
+			$json = file_get_contents( $path );
+			$info = json_decode( $json, true );
+			$version = $info['manifest_version'];
+
+			$processor->extractInfo( $path, $info, $version );
+		}
+
+		$data = $processor->getExtractedInfo();
+
+		$credits = $data['credits'];
+
+		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+			$this->config->settings[ $ext['var'] ]['default'] = false;
+		}
+
+		if ( isset( $cacheArray['extensions'] ) ) {
+			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
+					!in_array( $ext['name'], $this->disabledExtensions )
+				) {
+					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+
+					if ( $path && pathinfo( $path )['extension'] === 'json' ) {
+						ExtensionRegistry::getInstance()->queue( $path );
+					}
 				}
 			}
 		}
