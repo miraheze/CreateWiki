@@ -4,6 +4,7 @@ $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
 }
+
 require_once "$IP/maintenance/Maintenance.php";
 
 use MediaWiki\MediaWikiServices;
@@ -11,6 +12,8 @@ use MediaWiki\MediaWikiServices;
 class MigrateServerName extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
+		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
@@ -22,7 +25,9 @@ class MigrateServerName extends Maintenance {
 			[
 				'wiki_dbname',
 				'wiki_settings',
-			]
+			],
+			[],
+			__METHOD__
 		);
 
 		foreach ( $res as $row ) {
@@ -36,7 +41,8 @@ class MigrateServerName extends Maintenance {
 					],
 					[
 						'wiki_dbname' => $row->wiki_dbname
-					]
+					],
+					__METHOD__
 				);
 			}
 
