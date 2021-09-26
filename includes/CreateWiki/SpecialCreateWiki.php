@@ -18,7 +18,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'dbname' => [
 				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
-				'default' => $request->getVal( 'cwDBname' ) ? $request->getVal( 'cwDBname' ) : $par,
+				'default' => $request->getVal( 'cwDBname' ) ?: $par,
 				'required' => true,
 				'validation-callback' => [ __CLASS__, 'validateDBname' ],
 				'name' => 'cwDBname',
@@ -41,7 +41,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'language' => [
 				'type' => 'language',
 				'label-message' => 'createwiki-label-language',
-				'default' => $request->getVal( 'cwLanguage' ) ? $request->getVal( 'cwLanguage' ) : 'en',
+				'default' => $request->getVal( 'cwLanguage' ) ?: 'en',
 				'name' => 'cwLanguage',
 			]
 		];
