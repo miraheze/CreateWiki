@@ -265,9 +265,7 @@ class WikiInitialise {
 				}
 			}
 
-			foreach ( $require as $path ) {
-				require_once $path;
-			}
+			return $require;
 		}
 	}
 }
