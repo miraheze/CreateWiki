@@ -1,6 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../../maintenance/Maintenance.php';
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+
+require_once "$IP/maintenance/Maintenance.php";
 
 use MediaWiki\MediaWikiServices;
 use Phpml\Classification\SVC;
@@ -14,14 +19,15 @@ use Phpml\Tokenization\WordTokenizer;
 class CreatePersistentModel extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
 		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$dbw = wfGetDB( DB_REPLICA );
+		$dbr = wfGetDB( DB_REPLICA, [], $config->get( 'CreateWikiGlobalWiki' ) );
 
-		$res = $dbw->select(
+		$res = $dbr->select(
 			'cw_requests',
 			[
 				'cw_comment',
