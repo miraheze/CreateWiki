@@ -1,11 +1,18 @@
 <?php
 
-require_once( __DIR__ . '/../../../maintenance/Maintenance.php' );
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+
+require_once "$IP/maintenance/Maintenance.php";
 
 class CheckLastWikiActivity extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
 		$this->mDescription = 'Calculates the timestamp of the last meaningful contribution to the wiki.';
+		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
