@@ -251,6 +251,7 @@ class WikiInitialise {
 		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
+			$require = [];
 			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
 					!in_array( $name, $this->disabledExtensions ) &&
@@ -259,12 +260,14 @@ class WikiInitialise {
 					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
 
 					if ( $path ) {
-						pathinfo( $path )['extension'] === 'php' ? ( $req = require_once $path ) : ExtensionRegistry::getInstance()->queue( $path );
+						pathinfo( $path )['extension'] === 'php' ? ( $require[] = $path ) : ExtensionRegistry::getInstance()->queue( $path );
 					}
 				}
 			}
 
-			return $req ?? true;
+			foreach ( $require as $path ) {
+				require_once $path;
+			}
 		}
 	}
 }
