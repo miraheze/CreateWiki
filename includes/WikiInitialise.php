@@ -221,7 +221,7 @@ class WikiInitialise {
 		}
 	}
 
-	public function readExtensions() {
+	public function loadExtensions() {
 		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 
 		$config = new GlobalVarConfig( 'wg' );
