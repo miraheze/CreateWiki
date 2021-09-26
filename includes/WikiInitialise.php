@@ -251,21 +251,18 @@ class WikiInitialise {
 		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
-			$require = [];
 			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
 					!in_array( $name, $this->disabledExtensions ) &&
 					!in_array( $ext['name'], $this->disabledExtensions )
 				) {
-					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? $ext['entrypoint'] ?? false;
+					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
 
 					if ( $path ) {
-						pathinfo( $path )['extension'] === 'php' ? ( $require[] = $path ) : ExtensionRegistry::getInstance()->queue( $path );
+						pathinfo( $path )['extension'] === 'json' ?: ExtensionRegistry::getInstance()->queue( $path );
 					}
 				}
 			}
-
-			return $require;
 		}
 	}
 }
