@@ -444,14 +444,3 @@ jobs:
           nickname: miraheze-github
           message: ${{ github.repository }} - ${{ github.actor }} the build has errored.
           sasl_password: ${{ secrets.IRC_MIRAHEZEBOTS }}
-
-      - name: cancelled
-        uses: technote-space/workflow-conclusion-action@v2
-      - uses: rectalogic/notify-irc@v1
-        if: env.WORKFLOW_CONCLUSION == 'cancelled'
-        with:
-          channel: "#miraheze-sre"
-          server: "irc.libera.chat"
-          nickname: miraheze-github
-          message: ${{ github.repository }} - ${{ github.actor }} the build has been cancelled.
-          sasl_password: ${{ secrets.IRC_MIRAHEZEBOTS }}
