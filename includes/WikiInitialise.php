@@ -263,6 +263,8 @@ class WikiInitialise {
 					}
 				}
 			}
+
+			return $req ?? true;
 		}
 	}
 }
