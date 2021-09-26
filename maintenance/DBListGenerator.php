@@ -7,6 +7,7 @@ use MediaWiki\MediaWikiServices;
 class DBListGenerator extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
 		$this->requireExtension( 'CreateWiki' );
 	}
 
