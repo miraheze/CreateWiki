@@ -305,6 +305,8 @@ class WikiManager {
 		$sendEmail = false;
 		$notifyServerAdministrators = false;
 
+		$echoExtra = [];
+
 		$fromName = '';
 		$subject = '';
 		$body = '';
@@ -362,7 +364,6 @@ class WikiManager {
 				break;
 			default:
 				$echoType = false;
-				$echoExtra = [];
 				break;
 		}
 
