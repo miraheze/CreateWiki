@@ -66,8 +66,7 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$context->getLanguage()->timeanddate( $request->timestamp, true ),
-				'raw' => true,
+				'default' => $context->getLanguage()->timeanddate( $request->timestamp, true ),
 			],
 			'status' => [
 				'label-message' => 'requestwikiqueue-request-label-status',
