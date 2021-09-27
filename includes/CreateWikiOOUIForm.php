@@ -55,7 +55,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	public function getBody() {
 		$fakeTabs = [];
 
-		foreach( $this->getFormSections() as $i => $key ) {
+		foreach ( $this->getFormSections() as $i => $key ) {
 			$fakeTabs[] = Html::rawElement(
 				'div',
 				[

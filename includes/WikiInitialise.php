@@ -96,7 +96,7 @@ class WikiInitialise {
 		}
 
 		// We use this quite a bit. If we don't have one, something is wrong
-		if ( is_null( $this->dbname ) ) {
+		if ( $this->dbname === null ) {
 			$this->missing = true;
 		} elseif ( !count( $databasesArray['combi'] ) ) {
 			$databasesArray['combi'][$this->dbname] = [];
@@ -104,7 +104,7 @@ class WikiInitialise {
 
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
-		
+
 		$this->server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
 		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ?? $this->config->settings['wgSitename']['default'];
 
@@ -133,14 +133,14 @@ class WikiInitialise {
 		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 
-		// Utilise SiteConfiguration magic here
-		$this->config->siteParamsCallback = function() use ( $cacheArray ) {
+		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
+		$this->config->siteParamsCallback = static function () use ( $cacheArray ) {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
-				'tags' => $cacheArray['extensions'],
+				'tags' => $cacheArray['extensions'] ?? [],
 				'params' => []
-				];
+			];
 		};
 
 		// The following is ManageWiki additional code
@@ -205,7 +205,7 @@ class WikiInitialise {
 					$this->config->settings['wgGroupsRemoveFromSelf'][$this->dbname][$group][] = $name;
 				}
 
-				if ( !is_null( $perm['autopromote'] ) ) {
+				if ( $perm['autopromote'] !== null ) {
 					$onceId = array_search( 'once', $perm['autopromote'] );
 
 					if ( !is_bool( $onceId ) ) {
@@ -257,7 +257,8 @@ class WikiInitialise {
 				) {
 					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
 
-					if ( $path && pathinfo( $path )['extension'] === 'json' ) {
+					$pathInfo = pathinfo( $path )['extension'] ?? false;
+					if ( $path && $pathInfo === 'json' ) {
 						ExtensionRegistry::getInstance()->queue( $path );
 					}
 				}

@@ -1,6 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../../maintenance/Maintenance.php';
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+
+require_once "$IP/maintenance/Maintenance.php";
 
 use MediaWiki\MediaWikiServices;
 use Phpml\Classification\SVC;
@@ -11,17 +16,18 @@ use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
 
-class CreateWikiCreatePersistentModel extends Maintenance {
+class CreatePersistentModel extends Maintenance {
 	public function __construct() {
 		parent::__construct();
+
 		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$dbw = wfGetDB( DB_REPLICA );
+		$dbr = wfGetDB( DB_REPLICA, [], $config->get( 'CreateWikiGlobalWiki' ) );
 
-		$res = $dbw->select(
+		$res = $dbr->select(
 			'cw_requests',
 			[
 				'cw_comment',
@@ -40,17 +46,17 @@ class CreateWikiCreatePersistentModel extends Maintenance {
 				'ORDER BY' => 'cw_id DESC'
 			]
 		);
-		
+
 		$comments = [];
 		$status = [];
-		
+
 		foreach ( $res as $row ) {
 			if ( !in_array( strtolower( $row->cw_comment ), $comments ) ) {
 				$comments[] = strtolower( $row->cw_comment );
 				$status[] = $row->cw_status;
 			}
 		}
-		
+
 		$pipeline = new Pipeline(
 			[
 				new TokenCountVectorizer(
@@ -70,14 +76,13 @@ class CreateWikiCreatePersistentModel extends Maintenance {
 				true
 			)
 		);
-		
+
 		$pipeline->train( $comments, $status );
-		
+
 		$modelManager = new ModelManager();
 		$modelManager->saveToFile( $pipeline, $config->get( 'CreateWikiPersistentModelFile' ) );
-    
 	}
 }
 
-$maintClass = 'CreateWikiCreatePersistentModel';
+$maintClass = CreatePersistentModel::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
