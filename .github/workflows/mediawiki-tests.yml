@@ -187,37 +187,9 @@ jobs:
             php-docker: 73
             experimental: false
             stage: npm-test
-
-          # Latest MediaWiki release branch - PHP 7.3 (npm-test)
-          - mw: 'REL1_37'
-            php: 7.3
-            php-docker: 73
-            experimental: false
-            stage: npm-test
-
-          # Latest MediaWiki master - PHP 7.3 (npm-test)
-          - mw: 'master'
-            php: 7.3
-            php-docker: 73
-            experimental: false
-            stage: npm-test
-            
+  
           # Latest stable MediaWiki - PHP 7.3 (composer-test)
           - mw: 'REL1_36'
-            php: 7.3
-            php-docker: 73
-            experimental: false
-            stage: composer-test
-
-          # Latest MediaWiki release branch - PHP 7.3 (composer-test)
-          - mw: 'REL1_37'
-            php: 7.3
-            php-docker: 73
-            experimental: false
-            stage: composer-test
-
-          # Latest MediaWiki master - PHP 7.3 (composer-test)
-          - mw: 'master'
             php: 7.3
             php-docker: 73
             experimental: false
@@ -358,7 +330,7 @@ jobs:
 
       - name: Fix PHPCS violations
         continue-on-error: true
-        if: ${{ github.event_name == 'pull_request' && matrix.stage == 'composer-test' && matrix.mw == 'REL1_36' && matrix.php == '7.3' }}
+        if: ${{ github.event_name == 'pull_request' && matrix.stage == 'composer-test' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
