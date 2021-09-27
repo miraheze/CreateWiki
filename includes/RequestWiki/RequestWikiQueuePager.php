@@ -41,6 +41,8 @@ class RequestWikiQueuePager extends TablePager {
 	public function formatValue( $name, $value ) {
 		$row = $this->mCurrentRow;
 
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$language = $this->getLanguage();
 
 		switch ( $name ) {
@@ -54,7 +56,7 @@ class RequestWikiQueuePager extends TablePager {
 				$formatted = $row->cw_sitename;
 				break;
 			case 'cw_user':
-				$formatted = User::newFromId( $row->cw_user )->getName();
+				$formatted = $userFactory->newFromId( $row->cw_user )->getName();
 				break;
 			case 'cw_url':
 				$formatted = $row->cw_url;
@@ -75,7 +77,10 @@ class RequestWikiQueuePager extends TablePager {
 
 	public function getQueryInfo() {
 		$user = $this->getUser();
+
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$visibility = $permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
 
 		$info = [
@@ -103,7 +108,7 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = User::newFromName( $this->requester )->getId();
+			$info['conds']['cw_user'] = $userFactory->newFromName( $this->requester )->getId();
 		}
 
 		if ( $this->status && $this->status != '*' ) {
