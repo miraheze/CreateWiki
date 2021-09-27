@@ -278,10 +278,12 @@ class WikiManager {
 	}
 
 	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
-		$logEntry->setPerformer( User::newFromName( $actor ) );
+		$logEntry->setPerformer( $userFactory->newFromName( $actor ) );
 		$logEntry->setTarget( Title::newFromID( 1 ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
@@ -290,6 +292,8 @@ class WikiManager {
 	}
 
 	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$echoExtra = [];
 
 		switch ( $type ) {
@@ -328,7 +332,7 @@ class WikiManager {
 					[
 						'type' => $echoType,
 						'extra' => $echoExtra,
-						'agent' => User::newFromName( $receiver )
+						'agent' => $userFactory->newFromName( $receiver )
 					]
 				);
 			}
@@ -338,7 +342,7 @@ class WikiManager {
 			$notifyEmails = [];
 
 			foreach ( (array)$receivers as $receiver ) {
-				$notifyEmails[] = MailAddress::newFromUser( User::newFromName( $receiver ) );
+				$notifyEmails[] = MailAddress::newFromUser( $userFactory->newFromName( $receiver ) );
 			}
 
 			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
