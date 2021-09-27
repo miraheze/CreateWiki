@@ -182,7 +182,7 @@ class WikiManager {
 
 		$deletedWiki = (bool)$row->wiki_deleted;
 
-		// Return error if: wiki is not deleted, force is not used & wiki 
+		// Return error if: wiki is not deleted, force is not used & wiki
 		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
@@ -255,7 +255,7 @@ class WikiManager {
 
 	public function checkDatabaseName( string $dbname, bool $rename = false ) {
 		$suffixed = false;
-		foreach( $this->config->get( 'Conf' )->suffixes as $suffix ) {
+		foreach ( $this->config->get( 'Conf' )->suffixes as $suffix ) {
 			if ( substr( $dbname, -strlen( $suffix ) ) === $suffix ) {
 				$suffixed = true;
 				break;
@@ -266,9 +266,9 @@ class WikiManager {
 
 		if ( !$suffixed ) {
 			$error = 'notsuffixed';
-		} elseif( !$rename && $this->exists ) {
+		} elseif ( !$rename && $this->exists ) {
 			$error = 'dbexists';
-		} elseif( !ctype_alnum( $dbname ) ) {
+		} elseif ( !ctype_alnum( $dbname ) ) {
 			$error = 'notalnum';
 		} elseif ( strtolower( $dbname ) !== $dbname ) {
 			$error = 'notlowercase';

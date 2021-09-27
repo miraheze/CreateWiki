@@ -108,7 +108,7 @@ class RequestWikiQueuePager extends TablePager {
 
 		if ( $this->status && $this->status != '*' ) {
 			$info['conds']['cw_status'] = $this->status;
-		} elseif( !$this->status ) {
+		} elseif ( !$this->status ) {
 			$info['conds']['cw_status'] = 'inreview';
 		}
 

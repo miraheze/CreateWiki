@@ -93,7 +93,7 @@ class CreateWikiJson {
 					'c' => $wiki->wiki_dbcluster
 				];
 
-				if ( !is_null( $wiki->wiki_url ) ) {
+				if ( $wiki->wiki_url !== null ) {
 					$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
 				}
 			}
@@ -168,4 +168,3 @@ class CreateWikiJson {
 		return $changes;
 	}
 }
-

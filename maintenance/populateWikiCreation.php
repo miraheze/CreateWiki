@@ -52,10 +52,10 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDB( $config->get( 'CreateWikiDatabase' ) );
 
-			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {		
- 				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );		
- 				continue;
- 			}
+			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
+				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );
+				continue;
+			}
 
 			$dbw->update(
 				'cw_wikis',
@@ -68,7 +68,7 @@ class PopulateWikiCreation extends Maintenance {
 				__METHOD__
 			);
 
-			$this->output( "Inserted {$res->log_timestamp} into wiki_creation column for db {$DBname}\n");
+			$this->output( "Inserted {$res->log_timestamp} into wiki_creation column for db {$DBname}\n" );
 		}
 	}
 }

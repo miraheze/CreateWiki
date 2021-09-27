@@ -19,34 +19,34 @@ class CreateWikiHooks {
 		);
 
 		$updater->modifyExtensionField(
- 			'cw_comments',
- 			'cw_comment_user',
- 			__DIR__ . '/../sql/patches/patch-cw_comments-int.sql'
- 		);
+			'cw_comments',
+			'cw_comment_user',
+			__DIR__ . '/../sql/patches/patch-cw_comments-int.sql'
+		);
 
 		$updater->modifyExtensionField(
- 			'cw_requests',
- 			'cw_user',
- 			__DIR__ . '/../sql/patches/patch-cw_requests-int.sql'
- 		);
+			'cw_requests',
+			'cw_user',
+			__DIR__ . '/../sql/patches/patch-cw_requests-int.sql'
+		);
 
 		$updater->modifyExtensionField(
- 			'cw_comments',
- 			'cw_comment_user',
- 			__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
- 		);
+			'cw_comments',
+			'cw_comment_user',
+			__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
+		);
 
 		$updater->addExtensionField(
 			'cw_requests',
 			'cw_bio',
- 			__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
- 		);
+			__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
+		);
 
 		$updater->addExtensionField(
 			'cw_wikis',
 			'wiki_inactive_exempt_reason',
- 			__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_inactive_exempt_reason.sql'
- 		);
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_inactive_exempt_reason.sql'
+		);
 
 		$updater->addExtensionTable(
 			'cw_wikis',
@@ -86,7 +86,7 @@ class CreateWikiHooks {
 		$updater->addExtensionIndex(
 			'cw_wikis',
 			'wiki_dbname',
- 			__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
 		);
 	}
 

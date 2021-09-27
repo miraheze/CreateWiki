@@ -25,7 +25,7 @@ class RequestWikiRequestViewer {
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility]) ) {
+		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility] ) ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 			return [];
 		}
@@ -162,7 +162,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( 'CreateWikiShowBiographicalOption') ) {
+			if ( $this->config->get( 'CreateWikiShowBiographicalOption' ) ) {
 				$formDescriptor['edit-bio'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
@@ -171,11 +171,11 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( 'CreateWikiPurposes') ) {
+			if ( $this->config->get( 'CreateWikiPurposes' ) ) {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
-					'options' => $this->config->get( 'CreateWikiPurposes'),
+					'options' => $this->config->get( 'CreateWikiPurposes' ),
 					'default' => trim( $request->purpose ),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit'
@@ -217,8 +217,8 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options' => [
-						wfMessage( 'requestwikiqueue-approve')->text() => 'approve',
-						wfMessage( 'requestwikiqueue-decline')->text() => 'decline'
+						wfMessage( 'requestwikiqueue-approve' )->text() => 'approve',
+						wfMessage( 'requestwikiqueue-decline' )->text() => 'decline'
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
@@ -267,7 +267,6 @@ class RequestWikiRequestViewer {
 
 		return $formDescriptor;
 	}
-
 
 	public function getForm(
 		string $id,

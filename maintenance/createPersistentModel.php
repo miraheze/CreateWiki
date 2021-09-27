@@ -46,17 +46,17 @@ class CreatePersistentModel extends Maintenance {
 				'ORDER BY' => 'cw_id DESC'
 			]
 		);
-		
+
 		$comments = [];
 		$status = [];
-		
+
 		foreach ( $res as $row ) {
 			if ( !in_array( strtolower( $row->cw_comment ), $comments ) ) {
 				$comments[] = strtolower( $row->cw_comment );
 				$status[] = $row->cw_status;
 			}
 		}
-		
+
 		$pipeline = new Pipeline(
 			[
 				new TokenCountVectorizer(
@@ -76,12 +76,11 @@ class CreatePersistentModel extends Maintenance {
 				true
 			)
 		);
-		
+
 		$pipeline->train( $comments, $status );
-		
+
 		$modelManager = new ModelManager();
 		$modelManager->saveToFile( $pipeline, $config->get( 'CreateWikiPersistentModelFile' ) );
-    
 	}
 }
 

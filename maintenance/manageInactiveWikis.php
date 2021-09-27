@@ -68,7 +68,7 @@ class ManageInactiveWikis extends Maintenance {
 		if ( $timeStamp->getExitCode() !== 0 || !is_numeric( $timeStamp->getStdout() ) ) {
 			return true;
 		}
-		
+
 		$timeStamp = $timeStamp->getStdout();
 
 		// Wiki doesn't seem inactive: go on to the next wiki.

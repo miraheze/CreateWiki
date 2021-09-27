@@ -1,7 +1,6 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
-use Phpml\ModelManager;
 
 class WikiRequest {
 	public $dbname;
@@ -116,7 +115,7 @@ class WikiRequest {
 	}
 
 	public function approve( User $user, string $reason = null ) {
-		if ( $this->config->get( 'CreateWikiUseJobQueue') ) {
+		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobParams = [
 				'id' => $this->id,
 				'dbname' => $this->dbname,
@@ -230,7 +229,7 @@ class WikiRequest {
 
 		foreach ( $inReview as $row ) {
 			if (
-				is_null( $this->id )
+				$this->id === null
 				&& ( $this->sitename == $row->cw_sitename
 				|| $this->dbname == $row->cw_dbname
 				|| $this->description == $row->cw_comment )
@@ -239,7 +238,7 @@ class WikiRequest {
 			}
 		}
 
-		$comment = ( $this->config->get( 'CreateWikiPurposes') ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
+		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
 		$rows = [
 			'cw_comment' => $comment,
@@ -264,14 +263,14 @@ class WikiRequest {
 			'cw_id',
 			$rows
 		);
-		
+
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
 		}
 
 		return $this->dbw->insertId();
 	}
-	
+
 	public function tryAutoCreate() {
 		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
 
@@ -290,7 +289,7 @@ class WikiRequest {
 
 	/**
 	 * Extract database name from subdomain and automatically configure url and dbname
-	 * 
+	 *
 	 * @param string $subdomain subdomain
 	 * @param string &$err optional error string for reported errors
 	 *

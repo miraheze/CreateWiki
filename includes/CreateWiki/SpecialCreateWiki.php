@@ -54,7 +54,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			];
 		}
 
-
 		if ( $this->config->get( 'CreateWikiUseCategories' ) && $this->config->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
@@ -100,7 +99,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	public function validateDBname( $DBname, $allData ) {
-		if ( is_null( $DBname ) ) {
+		if ( $DBname === null ) {
 			return true;
 		}
 
@@ -117,7 +116,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	protected function getDisplayFormat() {
 		return 'ooui';
-        }
+	}
 
 	protected function getGroupName() {
 		return 'wikimanage';

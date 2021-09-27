@@ -7,7 +7,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	public function execute( $par ) {
 		$this->setHeaders();
 
-		if ( is_null( $par ) || $par === '' ) {
+		if ( $par === null || $par === '' ) {
 			$this->doPagerStuff();
 		} else {
 			$this->lookupRequest( $par );
@@ -52,7 +52,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$pager = new RequestWikiQueuePager( $this, $requester, $dbname, $status );
 		$table = $pager->getFullOutput();
-		
+
 		$this->getOutput()->addParserOutputContent( $table );
 	}
 
@@ -66,7 +66,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$sectionTitles = $htmlForm->getFormSections();
 
 		$sectTabs = [];
-		foreach( $sectionTitles as $key ) {
+		foreach ( $sectionTitles as $key ) {
 			$sectTabs[] = [
 				'name' => $key,
 				'label' => $htmlForm->getLegend( $key )
@@ -76,7 +76,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$out->addJsConfigVars( 'wgCreateWikiOOUIFormTabs', $sectTabs );
 
 		$htmlForm->show();
-
 	}
 
 	protected function getGroupName() {

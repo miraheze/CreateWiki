@@ -51,9 +51,9 @@ class RenameWiki extends Maintenance {
 
 				$renamedWiki[] = $oldwiki;
 				$renamedWiki[] = $newwiki;
-			} else {
+		} else {
 				$this->output( "Wiki $oldwiki will be renamed to $newwiki" );
-			}
+		}
 
 		$this->output( "Done.\n" );
 

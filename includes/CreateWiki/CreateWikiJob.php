@@ -28,7 +28,7 @@ class CreateWikiJob extends Job {
 			);
 		} catch ( Exception $e ) {
 			$wr->addComment( 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(), User::newSystemUser( 'CreateWiki Extension' ) );
-			$wr->reopen( User::newSystemUser( 'CreateWiki Extension'), false );
+			$wr->reopen( User::newSystemUser( 'CreateWiki Extension' ), false );
 			return true;
 		}
 

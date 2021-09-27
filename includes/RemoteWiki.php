@@ -332,7 +332,7 @@ class RemoteWiki {
 				);
 			}
 
-			foreach( $this->hooks as $hook ) {
+			foreach ( $this->hooks as $hook ) {
 				Hooks::run( $hook, [ $this->dbname ] );
 			}
 
@@ -342,7 +342,7 @@ class RemoteWiki {
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
 
-			if ( is_null( $this->log ) ) {
+			if ( $this->log === null ) {
 				$this->log = 'settings';
 				$this->logParams = [
 					'5::changes' => implode( ', ', array_keys( $this->changes ) )

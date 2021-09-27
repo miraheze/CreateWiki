@@ -11,14 +11,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
-        public function execute( $par ) {
+		public function execute( $par ) {
 			$request = $this->getRequest();
 			$out = $this->getOutput();
 			$this->setParameter( $par );
 			$this->setHeaders();
 
 			if ( !$this->getUser()->isRegistered() ) {
-				$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( ['returnto' => $this->getPageTitle()->getPrefixedText() ] );
+				$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( [ 'returnto' => $this->getPageTitle()->getPrefixedText() ] );
 				$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
 				return false;
 			}
@@ -34,7 +34,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			if ( $form->show() ) {
 				$this->onSuccess();
 			}
-        }
+		}
 
 	protected function getFormFields() {
 		$formDescriptor = [
@@ -71,18 +71,18 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiShowBiographicalOption') ) {
+		if ( $this->config->get( 'CreateWikiShowBiographicalOption' ) ) {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio'
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiPurposes') ) {
+		if ( $this->config->get( 'CreateWikiPurposes' ) ) {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'options' => $this->config->get( 'CreateWikiPurposes')
+				'options' => $this->config->get( 'CreateWikiPurposes' )
 			];
 		}
 
@@ -130,7 +130,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
-		$farmerLogEntry = new ManualLogEntry ( 'farmer', 'requestwiki' );
+		$farmerLogEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
 		$farmerLogEntry->setTarget( $this->getPageTitle() );
 		$farmerLogEntry->setComment( $formData['reason'] );
@@ -149,7 +149,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		return true;
 	}
-
 
 	public static function isValidReason( $reason, $allData ) {
 		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
