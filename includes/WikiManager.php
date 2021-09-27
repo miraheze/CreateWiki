@@ -279,11 +279,16 @@ class WikiManager {
 
 	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+		$user = $userFactory->newFromName( $actor );
+
+		if ( !$user ) {
+			return;
+		}
 
 		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
-		$logEntry->setPerformer( $userFactory->newFromName( $actor ) );
+		$logEntry->setPerformer(  );
 		$logEntry->setTarget( Title::newFromID( 1 ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
@@ -342,7 +347,13 @@ class WikiManager {
 			$notifyEmails = [];
 
 			foreach ( (array)$receivers as $receiver ) {
-				$notifyEmails[] = MailAddress::newFromUser( $userFactory->newFromName( $receiver ) );
+				$user = $userFactory->newFromName( $receiver );
+
+				if ( !$user ) {
+					continue;
+				}
+
+				$notifyEmails[] = MailAddress::newFromUser( $user );
 			}
 
 			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
