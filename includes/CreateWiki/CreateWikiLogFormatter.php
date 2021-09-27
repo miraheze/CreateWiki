@@ -10,6 +10,8 @@ class CreateWikiLogFormatter extends LogFormatter {
 
 		if ( $subtype === 'requestwiki' ) {
 			$params[6] = str_replace( '#', '', $params[6] );
+
+			// @phan-suppress-next-line SecurityCheck-DoubleEscaped
 			$params[6] = Message::rawParam( $linkRenderer->makeKnownLink(
 				Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[6] ),
 				'#' . $params[6]
