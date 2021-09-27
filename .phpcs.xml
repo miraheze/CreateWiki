@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset>
+	<file>.</file>
+	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
+		<exclude name="Generic.Files.LineLength.TooLong" />
+		<exclude name="MediaWiki.Commenting" />
+	</rule>
+	<arg name="bootstrap" value="./vendor/mediawiki/mediawiki-codesniffer/utils/bootstrap-ci.php"/>
+	<arg name="extensions" value="php"/>
+	<arg name="encoding" value="UTF-8"/>
+</ruleset>
