@@ -290,7 +290,6 @@ class WikiManager {
 	}
 
 	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
-		$notifyServerAdministrators = false;
 		$echoExtra = [];
 
 		switch ( $type ) {
@@ -340,10 +339,6 @@ class WikiManager {
 
 			foreach ( (array)$receivers as $receiver ) {
 				$notifyEmails[] = MailAddress::newFromUser( User::newFromName( $receiver ) );
-			}
-
-			if ( $notifyServerAdministrators ) {
-				$notifyEmails[] = new MailAddress( $this->config->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
 			}
 
 			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
