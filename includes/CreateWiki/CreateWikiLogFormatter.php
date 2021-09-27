@@ -3,6 +3,10 @@
 use MediaWiki\MediaWikiServices;
 
 class CreateWikiLogFormatter extends LogFormatter {
+
+	/**
+	 * @return array
+	 */
 	protected function getMessageParameters() {
 		$params = parent::getMessageParameters();
 		$subtype = $this->entry->getSubtype();
