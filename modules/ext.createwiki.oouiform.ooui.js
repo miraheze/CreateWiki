@@ -1,6 +1,6 @@
 ( function () {
 	$( function () {
-		var $baseform, tabs, wrapper, previousTab, switchingNoHash;
+		var $baseform, tabs, wrapper, previousTab, switchingNoHash, $infuse;
 
 		$baseform = $( '#baseform' );
 
@@ -67,17 +67,17 @@
 		// Jump to correct section as indicated by the hash.
 		function detectHash() {
 			var hash = location.hash,
-				matchedElement, parentSection;
+				matchedElement, $parentSection;
 			if ( hash.match( /^#mw-section-[\w]+$/ ) ) {
 				mw.storage.session.remove( 'mwbaseform-prevTab' );
 				switchBaseFormTab( hash.replace( '#mw-section-', '' ) );
 			} else if ( hash.match( /^#mw-[\w-]+$/ ) ) {
 				matchedElement = document.getElementById( hash.slice( 1 ) );
-				parentSection = $( matchedElement ).parent().closest( '[id^="mw-section-"]' );
-				if ( parentSection.length ) {
+				$parentSection = $( matchedElement ).parent().closest( '[id^="mw-section-"]' );
+				if ( $parentSection.length ) {
 					mw.storage.session.remove( 'mwbaseform-prevTab' );
 					// Switch to proper tab and scroll to selected item.
-					switchBaseFormTab( parentSection.attr( 'id' ).replace( 'mw-section-', '' ), true );
+					switchBaseFormTab( $parentSection.attr( 'id' ).replace( 'mw-section-', '' ), true );
 					matchedElement.scrollIntoView();
 				}
 			}
@@ -85,7 +85,7 @@
 
 		if ( mw.config.get( 'wgCreateWikiOOUIFormTabs' ) ) {
 			mw.config.get( 'wgCreateWikiOOUIFormTabs' ).forEach( function ( tabConfig ) {
-				var panel, $panelContents, infuse;
+				var panel, $panelContents;
 
 				panel = new OO.ui.TabPanelLayout( tabConfig.name, {
 					expanded: false,
@@ -141,8 +141,8 @@
 			} );
 		}
 
-		infuse = $( document.body ).find( '[data-ooui*="createwiki-infuse"], .createwiki-infuse[name]' );
-		infuse.each( function () {
+		$infuse = $( document.body ).find( '[data-ooui*="createwiki-infuse"], .createwiki-infuse[name]' );
+		$infuse.each( function () {
 			OO.ui.infuse( this );
 		} );
 	} );
