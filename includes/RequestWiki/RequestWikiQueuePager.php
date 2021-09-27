@@ -3,19 +3,27 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiQueuePager extends TablePager {
+
+	/** @var Config */
 	private $config;
+
+	/** @var string */
 	private $requester;
+
+	/** @var string */
 	private $dbname;
+
+	/** @var string */
 	private $status;
 
 	public function __construct( $page, $requester, $dbname, $status ) {
+		parent::__construct( $page->getContext(), $page->getLinkRenderer() );
+
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$this->mDb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )->getConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$this->requester = $requester;
 		$this->dbname = $dbname;
 		$this->status = $status;
-
-		parent::__construct( $page->getContext(), $page->getLinkRenderer() );
 	}
 
 	public function getFieldNames() {
@@ -28,7 +36,7 @@ class RequestWikiQueuePager extends TablePager {
 			'cw_user' => 'requestwikiqueue-request-label-requester',
 			'cw_language' => 'requestwikiqueue-request-label-language',
 			'cw_url' => 'requestwikiqueue-request-label-url',
-			'cw_status' => 'requestwikiqueue-request-label-status'
+			'cw_status' => 'requestwikiqueue-request-label-status',
 		];
 
 		foreach ( $headers as &$msg ) {
@@ -85,7 +93,7 @@ class RequestWikiQueuePager extends TablePager {
 
 		$info = [
 			'tables' => [
-				'cw_requests'
+				'cw_requests',
 			],
 			'fields' => [
 				'cw_id',
@@ -95,10 +103,10 @@ class RequestWikiQueuePager extends TablePager {
 				'cw_user',
 				'cw_status',
 				'cw_url',
-				'cw_sitename'
+				'cw_sitename',
 			],
 			'conds' => [
-				'cw_visibility <= ' . $visibility
+				'cw_visibility <= ' . $visibility,
 			],
 			'joins_conds' => [],
 		];
