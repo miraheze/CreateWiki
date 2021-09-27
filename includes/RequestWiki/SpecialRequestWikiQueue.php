@@ -43,7 +43,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'Declined' => 'declined',
 					'All' => '*'
 				],
-				'default' => ( $status ) ? $status : 'inreview'
+				'default' => $status ?: 'inreview'
 			]
 		];
 
