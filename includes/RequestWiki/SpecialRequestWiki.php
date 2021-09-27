@@ -8,33 +8,36 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	public function __construct() {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
+
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
-		public function execute( $par ) {
-			$request = $this->getRequest();
-			$out = $this->getOutput();
-			$this->setParameter( $par );
-			$this->setHeaders();
+	public function execute( $par ) {
+		$request = $this->getRequest();
+		$out = $this->getOutput();
 
-			if ( !$this->getUser()->isRegistered() ) {
-				$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( [ 'returnto' => $this->getPageTitle()->getPrefixedText() ] );
-				$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
-				return false;
-			}
+		$this->setParameter( $par );
+		$this->setHeaders();
 
-			$this->checkExecutePermissions( $this->getUser() );
+		if ( !$this->getUser()->isRegistered() ) {
+			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( [ 'returnto' => $this->getPageTitle()->getPrefixedText() ] );
+			$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
 
-			if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
-				$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
-				$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
-			}
-
-			$form = $this->getForm();
-			if ( $form->show() ) {
-				$this->onSuccess();
-			}
+			return false;
 		}
+
+		$this->checkExecutePermissions( $this->getUser() );
+
+		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
+			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
+			$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
+		}
+
+		$form = $this->getForm();
+		if ( $form->show() ) {
+			$this->onSuccess();
+		}
+	}
 
 	protected function getFormFields() {
 		$formDescriptor = [
@@ -142,6 +145,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'7::id' => "#{$requestID}",
 			]
 		);
+
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
@@ -152,7 +156,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	public static function isValidReason( $reason, $allData ) {
 		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
-		$wikiPageContent = WikiPage::factory( $title )->getContent( RevisionRecord::RAW );
+		$wikiPageContent = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getContent( RevisionRecord::RAW );
 		$content = ContentHandler::getContentText( $wikiPageContent );
 
 		$regexes = explode( PHP_EOL, $content );
