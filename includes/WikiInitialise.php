@@ -132,8 +132,8 @@ class WikiInitialise {
 		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 
-		// Utilise SiteConfiguration magic here
-		$this->config->siteParamsCallback = static function ( $conf, $wiki ) use ( $cacheArray ): array {
+		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
+		$this->config->siteParamsCallback = function() use ( $cacheArray ) {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
