@@ -58,7 +58,7 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => $request->requester->getName() . Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
+				'default' => (string)$request->requester->getName() . Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
 				'raw' => true,
 			],
 			'requestedDate' => [
