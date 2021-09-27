@@ -3,6 +3,8 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiRequestViewer {
+
+	/** @var Config */
 	private $config;
 
 	public function __construct() {
@@ -22,11 +24,14 @@ class RequestWikiRequestViewer {
 
 		// Gets user from request
 		$userR = $context->getUser();
+
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+
 		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility] ) ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
+
 			return [];
 		}
 
@@ -38,21 +43,21 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$request->sitename
+				'default' => (string)$request->sitename,
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$request->url
+				'default' => (string)$request->url,
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$request->language
+				'default' => (string)$request->language,
 			],
 			'requester' => [
 				// @phan-suppress-next-line SecurityCheck-XSS
@@ -65,7 +70,6 @@ class RequestWikiRequestViewer {
 			'requestedDate' => [
 				'label-message' => 'requestwikiqueue-request-label-requested-date',
 				'type' => 'info',
-				'readonly' => true,
 				'section' => 'request',
 				'default' => $context->getLanguage()->timeanddate( $request->timestamp, true ),
 			],
@@ -74,7 +78,7 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$status
+				'default' => (string)$status,
 			],
 			'description' => [
 				'type' => 'textarea',
@@ -83,8 +87,8 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-header-requestercomment',
 				'section' => 'request',
 				'default' => (string)$request->description,
-				'raw' => true
-			]
+				'raw' => true,
+			],
 		];
 
 		foreach ( $request->getComments() as $comment ) {
@@ -95,7 +99,7 @@ class RequestWikiRequestViewer {
 				'rows' => 4,
 				// @phan-suppress-next-line SecurityCheck-XSS
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
-				'default' => $comment['comment']
+				'default' => $comment['comment'],
 			];
 		}
 
@@ -105,33 +109,33 @@ class RequestWikiRequestViewer {
 					'type' => 'textarea',
 					'rows' => 4,
 					'label-message' => 'requestwikiqueue-request-label-comment',
-					'section' => 'comments'
+					'section' => 'comments',
 				],
 				'submit-comment' => [
 					'type' => 'submit',
 					'default' => wfMessage( 'htmlform-submit' )->text(),
-					'section' => 'comments'
+					'section' => 'comments',
 				],
 				'edit-sitename' => [
 					'label-message' => 'requestwikiqueue-request-label-sitename',
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => (string)$request->sitename
+					'default' => (string)$request->sitename,
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => (string)$request->url,
+					'default' => (string)$request->url,,
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
 					'type' => 'language',
 					'default' => (string)$request->language,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'edit'
+					'section' => 'edit',
 				],
 				'edit-description' => [
 					'label-message' => 'requestwikiqueue-request-header-requestercomment',
@@ -140,8 +144,8 @@ class RequestWikiRequestViewer {
 					'rows' => 4,
 					'required' => true,
 					'default' => (string)$request->description,
-					'raw' => true
-				]
+					'raw' => true,
+				],
 			];
 
 			if ( $this->config->get( 'CreateWikiCategories' ) ) {
@@ -151,7 +155,7 @@ class RequestWikiRequestViewer {
 					'options' => $this->config->get( 'CreateWikiCategories' ),
 					'default' => (string)$request->category,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'edit'
+					'section' => 'edit',
 				];
 			}
 
@@ -160,7 +164,7 @@ class RequestWikiRequestViewer {
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
 					'default' => $request->private,
-					'section' => 'edit'
+					'section' => 'edit',
 				];
 			}
 
@@ -169,7 +173,7 @@ class RequestWikiRequestViewer {
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
 					'default' => $request->bio,
-					'section' => 'edit'
+					'section' => 'edit',
 				];
 			}
 
@@ -180,21 +184,21 @@ class RequestWikiRequestViewer {
 					'options' => $this->config->get( 'CreateWikiPurposes' ),
 					'default' => trim( $request->purpose ),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'edit'
+					'section' => 'edit',
 				];
 			}
 
 			$formDescriptor['submit-edit'] = [
 				'type' => 'submit',
 				'default' => wfMessage( 'requestwikiqueue-request-label-edit-wiki' )->text(),
-				'section' => 'edit'
+				'section' => 'edit',
 			];
 		}
 
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
 			$visibilityOptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
-				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text()
+				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text(),
 			];
 
 			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
@@ -207,24 +211,25 @@ class RequestWikiRequestViewer {
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $request->dbname );
+
 			$wmError = $wm->checkDatabaseName( $request->dbname );
 
 			$formDescriptor += [
 				'info-submission' => [
 					'type' => 'info',
 					'default' => wfMessage( 'requestwikiqueue-request-info-submission' )->text(),
-					'section' => 'handle'
+					'section' => 'handle',
 				],
 				'submission-action' => [
 					'type' => 'select',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options' => [
 						wfMessage( 'requestwikiqueue-approve' )->text() => 'approve',
-						wfMessage( 'requestwikiqueue-decline' )->text() => 'decline'
+						wfMessage( 'requestwikiqueue-decline' )->text() => 'decline',
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle'
+					'section' => 'handle',
 				],
 				'visibility' => [
 					'type' => 'select',
@@ -232,18 +237,18 @@ class RequestWikiRequestViewer {
 					'options' => array_flip( $visibilityOptions ),
 					'default' => $request->visibility,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle'
+					'section' => 'handle',
 				],
 				'reason' => [
 					'label-message' => 'createwiki-label-reason',
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle'
+					'section' => 'handle',
 				],
 				'submit-handle' => [
 					'type' => 'submit',
 					'default' => wfMessage( 'htmlform-submit' )->text(),
-					'section' => 'handle'
-				]
+					'section' => 'handle',
+				],
 			];
 
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
@@ -281,6 +286,7 @@ class RequestWikiRequestViewer {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
+
 			return;
 		}
 
@@ -317,6 +323,7 @@ class RequestWikiRequestViewer {
 				if ( $err !== '' ) {
 					$out->addHTML( Html::errorBox( wfMessage( 'createwiki-error-' . $err )->parse() ) );
 				}
+
 				return false;
 			}
 
