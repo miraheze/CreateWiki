@@ -356,6 +356,27 @@ jobs:
             composer install --prefer-dist --no-progress --no-interaction
           fi
 
+      - name: Fix Linting issues
+        continue-on-error: true
+        if: ${{ matrix.stage == 'phan' && matrix.mw == 'REL1_36' && matrix.php == '7.3' }}
+        run: |
+          composer fix
+          npm run fix
+
+      - name: Push the changes
+        continue-on-error: true
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git add .
+          git commit -am "CI: lint code to MediaWiki standards" -m "Check commit and GitHub actions for more details" || echo "No changes to commit"
+          git pull --rebase
+          git push
+
       - name: Main Test
         continue-on-error: ${{ matrix.experimental }}
         run: |
