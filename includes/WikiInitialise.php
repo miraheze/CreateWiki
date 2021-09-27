@@ -257,7 +257,8 @@ class WikiInitialise {
 				) {
 					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
 
-					if ( $path && pathinfo( $path )['extension'] === 'json' ) {
+					$pathInfo = pathinfo( $path )['extension'] ?? false;
+					if ( $path && $pathInfo === 'json' ) {
 						ExtensionRegistry::getInstance()->queue( $path );
 					}
 				}
