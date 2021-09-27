@@ -141,6 +141,6 @@
 		infuse = $( document.body ).find( '[data-ooui*="createwiki-infuse"], .createwiki-infuse[name]' );
 		infuse.each( function () {
 			OO.ui.infuse( this );
-		});
+		} );
 	} );
 }() );
