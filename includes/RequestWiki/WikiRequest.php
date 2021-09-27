@@ -27,6 +27,8 @@ class WikiRequest {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$dbRequest = $this->dbw->selectRow(
 			'cw_requests',
 			'*',
@@ -43,7 +45,7 @@ class WikiRequest {
 			$this->sitename = $dbRequest->cw_sitename;
 			$this->url = $dbRequest->cw_url;
 			$this->category = $dbRequest->cw_category;
-			$this->requester = User::newFromId( $dbRequest->cw_user );
+			$this->requester = $userFactory->newFromId( $dbRequest->cw_user );
 			$this->status = $dbRequest->cw_status;
 			$this->timestamp = $dbRequest->cw_timestamp;
 			$this->visibility = $dbRequest->cw_visibility;
@@ -72,7 +74,7 @@ class WikiRequest {
 			);
 
 			foreach ( $commentsReq as $comment ) {
-				$userObj = User::newFromId( $comment->cw_comment_user );
+				$userObj = $userFactory->newFromId( $comment->cw_comment_user );
 
 				$this->comments[] = [
 					'timestamp' => $comment->cw_comment_timestamp,
