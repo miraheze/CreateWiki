@@ -3,10 +3,13 @@
 use MediaWiki\MediaWikiServices;
 
 class SpecialCreateWiki extends FormSpecialPage {
+
+	/** @var Config */
 	private $config;
 
 	public function __construct() {
 		parent::__construct( 'CreateWiki', 'createwiki' );
+
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 	}
 
@@ -18,39 +21,34 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'dbname' => [
 				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
-				'default' => $request->getVal( 'cwDBname' ) ?: $par,
+				'default' => $request->getVal( 'wpdbname' ) ?: $par,
 				'required' => true,
-				'validation-callback' => [ __CLASS__, 'validateDBname' ],
-				'name' => 'cwDBname',
+				'validation-callback' => [ $this, 'validateDBname' ],
 			],
 			'requester' => [
 				'label-message' => 'createwiki-label-requester',
 				'type' => 'user',
-				'default' => $request->getVal( 'cwRequester' ),
+				'default' => $request->getVal( 'wprequester' ),
 				'exists' => true,
 				'required' => true,
-				'name' => 'cwRequester',
 			],
 			'sitename' => [
 				'label-message' => 'createwiki-label-sitename',
 				'type' => 'text',
-				'default' => $request->getVal( 'cwSitename' ),
+				'default' => $request->getVal( 'wpsitename' ),
 				'size' => 20,
-				'name' => 'cwSitename',
 			],
 			'language' => [
 				'type' => 'language',
 				'label-message' => 'createwiki-label-language',
-				'default' => $request->getVal( 'cwLanguage' ) ?: 'en',
-				'name' => 'cwLanguage',
-			]
+				'default' => $request->getVal( 'wplanguage' ) ?: 'en',
+			],
 		];
 
 		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
-				'name' => 'cwPrivate',
 			];
 		}
 
@@ -59,7 +57,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'options' => $this->config->get( 'CreateWikiCategories' ),
-				'name' => 'cwCategory',
 				'default' => 'uncategorised',
 			];
 		}
