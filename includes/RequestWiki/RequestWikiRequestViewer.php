@@ -66,7 +66,7 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $context->getLanguage()->timeanddate( $request->timestamp, true ),
+				'default' => (string)$context->getLanguage()->timeanddate( $request->timestamp, true ),
 				'raw' => true,
 			],
 			'status' => [
@@ -204,6 +204,7 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $request->dbname );
 			$wmError = $wm->checkDatabaseName( $request->dbname );
 
