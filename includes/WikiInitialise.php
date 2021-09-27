@@ -133,7 +133,7 @@ class WikiInitialise {
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 
 		// Utilise SiteConfiguration magic here
-		$this->config->siteParamsCallback = function () use ( $cacheArray ): array {
+		$this->config->siteParamsCallback = function ( $conf, $wiki ) use ( $cacheArray ): array {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
