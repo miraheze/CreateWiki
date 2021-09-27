@@ -196,8 +196,9 @@ class WikiManager {
 			);
 		}
 
-		
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cWJ = new CreateWikiJson( $wiki );
+
 		$cWJ->resetWiki();
 
 		$this->recacheJson();
@@ -230,8 +231,9 @@ class WikiManager {
 			);
 		}
 
-
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cWJ = new CreateWikiJson( $old );
+
 		$cWJ->resetWiki();
 
 		$this->recacheJson();
@@ -288,6 +290,9 @@ class WikiManager {
 	}
 
 	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
+		$notifyServerAdministrators = false;
+		$echoExtra = [];
+
 		switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
@@ -296,7 +301,6 @@ class WikiManager {
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
-				$notifyServerAdministrators = false;
 				break;
 			case 'rename':
 				$echoType = 'wiki-rename';
@@ -305,7 +309,6 @@ class WikiManager {
 					'sitename' => $specialData['siteName'],
 					'notifyAgent' => true
 				];
-				$notifyServerAdministrators = false; // temp
 				break;
 			case 'request-declined':
 				$echoType = 'request-declined';
