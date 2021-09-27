@@ -54,11 +54,12 @@ class RequestWikiRequestViewer {
 				'section' => 'request',
 				'default' => (string)$request->language
 			],
+			// @phan-suppress-next-line SecurityCheck-XSS
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => (string)$request->requester->getName() . Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
+				'default' => $request->requester->getName() . Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
 				'raw' => true,
 			],
 			'requestedDate' => [
@@ -87,12 +88,13 @@ class RequestWikiRequestViewer {
 		];
 
 		foreach ( $request->getComments() as $comment ) {
+			// @phan-suppress-next-line SecurityCheck-XSS
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 4,
-				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->escaped(),
+				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment']
 			];
 		}
