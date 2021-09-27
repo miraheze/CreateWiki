@@ -288,7 +288,7 @@ class WikiManager {
 		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
-		$logEntry->setPerformer(  );
+		$logEntry->setPerformer();
 		$logEntry->setTarget( Title::newFromID( 1 ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
