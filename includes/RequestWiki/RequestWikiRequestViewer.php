@@ -279,7 +279,7 @@ class RequestWikiRequestViewer {
 			$request = new WikiRequest( $id );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
-			return $htmlForm = new $formClass( [], $context, 'requestwikiqueue' );
+			return;
 		}
 
 		$formDescriptor = $this->getFormDescriptor( $request, $context );
