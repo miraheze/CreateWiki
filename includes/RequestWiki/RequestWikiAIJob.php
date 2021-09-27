@@ -30,7 +30,6 @@ class RequestWikiAIJob extends Job {
 			if ( is_int( $config->get( 'CreateWikiAIThreshold' ) ) && ( (int)round( $approveScore, 2 ) > $config->get( 'CreateWikiAIThreshold' ) ) ) {
 				$wr->approve( User::newSystemUser( 'CreateWiki Extension' ) );
 			}
-
 		}
 
 		return true;
