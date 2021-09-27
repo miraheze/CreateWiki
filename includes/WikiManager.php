@@ -305,6 +305,10 @@ class WikiManager {
 		$sendEmail = false;
 		$notifyServerAdministrators = false;
 
+		$fromName = '';
+		$subject = '';
+		$body = '';
+
 		switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
@@ -358,6 +362,7 @@ class WikiManager {
 				break;
 			default:
 				$echoType = false;
+				$echoExtra = [];
 				break;
 		}
 
