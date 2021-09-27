@@ -1,5 +1,7 @@
 <?php
+
 class SpecialRequestWikiQueue extends SpecialPage {
+
 	public function __construct() {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 	}
@@ -24,14 +26,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'type' => 'text',
 				'name' => 'dbname',
 				'label-message' => 'createwiki-label-dbname',
-				'default' => $dbname
+				'default' => $dbname,
 			],
 			'requester' => [
 				'type' => 'user',
 				'name' => 'requester',
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'exist' => true,
-				'default' => $requester
+				'default' => $requester,
 			],
 			'status' => [
 				'type' => 'select',
@@ -41,10 +43,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'Unreviewed' => 'inreview',
 					'Approved' => 'approved',
 					'Declined' => 'declined',
-					'All' => '*'
+					'All' => '*',
 				],
-				'default' => $status ?: 'inreview'
-			]
+				'default' => $status ?: 'inreview',
+			],
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
@@ -69,7 +71,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		foreach ( $sectionTitles as $key ) {
 			$sectTabs[] = [
 				'name' => $key,
-				'label' => $htmlForm->getLegend( $key )
+				'label' => $htmlForm->getLegend( $key ),
 			];
 		}
 
