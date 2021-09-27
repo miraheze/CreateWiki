@@ -18,14 +18,80 @@
 			autoFocus: false
 		} );
 
+		function enhancePanel( panel ) {
+			if ( !panel.$element.data( 'mw-section-infused' ) ) {
+				// mw-htmlform-autoinfuse-lazy class has been removed by replacing faketabs
+				mw.hook( 'htmlform.enhance' ).fire( panel.$element );
+				panel.$element.data( 'mw-section-infused', true );
+			}
+		}
+
+		function onTabPanelSet( panel ) {
+			var scrollTop, active;
+
+			if ( switchingNoHash ) {
+				return;
+			}
+			// Handle hash manually to prevent jumping,
+			// therefore save and restore scrollTop to prevent jumping.
+			scrollTop = $( window ).scrollTop();
+			// Changing the hash apparently causes keyboard focus to be lost?
+			// Save and restore it. This makes no sense though.
+			active = document.activeElement;
+			location.hash = '#mw-section-' + panel.getName();
+			if ( active ) {
+				active.focus();
+			}
+			$( window ).scrollTop( scrollTop );
+		}
+
+		tabs.on( 'set', onTabPanelSet );
+
+		/**
+		 * @ignore
+		 * @param {string} name the name of a tab without the prefix ("mw-section-")
+		 * @param {boolean} [noHash] A hash will be set according to the current
+		 *  open section. Use this flag to suppress this.
+		 */
+		function switchBaseFormTab( name, noHash ) {
+			if ( noHash ) {
+				switchingNoHash = true;
+			}
+			tabs.setTabPanel( name );
+			enhancePanel( tabs.getCurrentTabPanel() );
+			if ( noHash ) {
+				switchingNoHash = false;
+			}
+		}
+
+		// Jump to correct section as indicated by the hash.
+		function detectHash() {
+			var hash = location.hash,
+				matchedElement, parentSection;
+			if ( hash.match( /^#mw-section-[\w]+$/ ) ) {
+				mw.storage.session.remove( 'mwbaseform-prevTab' );
+				switchBaseFormTab( hash.replace( '#mw-section-', '' ) );
+			} else if ( hash.match( /^#mw-[\w-]+$/ ) ) {
+				matchedElement = document.getElementById( hash.slice( 1 ) );
+				parentSection = $( matchedElement ).parent().closest( '[id^="mw-section-"]' );
+				if ( parentSection.length ) {
+					mw.storage.session.remove( 'mwbaseform-prevTab' );
+					// Switch to proper tab and scroll to selected item.
+					switchBaseFormTab( parentSection.attr( 'id' ).replace( 'mw-section-', '' ), true );
+					matchedElement.scrollIntoView();
+				}
+			}
+		}
+
 		if ( mw.config.get( 'wgCreateWikiOOUIFormTabs' ) ) {
 			mw.config.get( 'wgCreateWikiOOUIFormTabs' ).forEach( function ( tabConfig ) {
-				var panel, $panelContents;
+				var panel, $panelContents, infuse;
 
 				panel = new OO.ui.TabPanelLayout( tabConfig.name, {
 					expanded: false,
 					label: tabConfig.label
 				} );
+
 				$panelContents = $( '#mw-section-' + tabConfig.name );
 
 				// Hide the unnecessary PHP PanelLayouts
@@ -46,74 +112,11 @@
 				padded: false,
 				framed: true
 			} );
+
 			wrapper.$element.append( tabs.$element );
 			$baseform.prepend( wrapper.$element );
+
 			$( '.mw-baseform-faketabs' ).remove();
-
-			function enhancePanel( panel ) {
-				if ( !panel.$element.data( 'mw-section-infused' ) ) {
-					// mw-htmlform-autoinfuse-lazy class has been removed by replacing faketabs
-					mw.hook( 'htmlform.enhance' ).fire( panel.$element );
-					panel.$element.data( 'mw-section-infused', true );
-				}
-			}
-
-			function onTabPanelSet( panel ) {
-				var scrollTop, active;
-
-				if ( switchingNoHash ) {
-					return;
-				}
-				// Handle hash manually to prevent jumping,
-				// therefore save and restore scrollTop to prevent jumping.
-				scrollTop = $( window ).scrollTop();
-				// Changing the hash apparently causes keyboard focus to be lost?
-				// Save and restore it. This makes no sense though.
-				active = document.activeElement;
-				location.hash = '#mw-section-' + panel.getName();
-				if ( active ) {
-					active.focus();
-				}
-				$( window ).scrollTop( scrollTop );
-			}
-
-			tabs.on( 'set', onTabPanelSet );
-
-			/**
-			 * @ignore
-			 * @param {string} name the name of a tab without the prefix ("mw-section-")
-			 * @param {boolean} [noHash] A hash will be set according to the current
-			 *  open section. Use this flag to suppress this.
-			 */
-			function switchBaseFormTab( name, noHash ) {
-				if ( noHash ) {
-					switchingNoHash = true;
-				}
-				tabs.setTabPanel( name );
-				enhancePanel( tabs.getCurrentTabPanel() );
-				if ( noHash ) {
-					switchingNoHash = false;
-				}
-			}
-
-			// Jump to correct section as indicated by the hash.
-			function detectHash() {
-				var hash = location.hash,
-					matchedElement, parentSection;
-				if ( hash.match( /^#mw-section-[\w]+$/ ) ) {
-					mw.storage.session.remove( 'mwbaseform-prevTab' );
-					switchBaseFormTab( hash.replace( '#mw-section-', '' ) );
-				} else if ( hash.match( /^#mw-[\w-]+$/ ) ) {
-					matchedElement = document.getElementById( hash.slice( 1 ) );
-					parentSection = $( matchedElement ).parent().closest( '[id^="mw-section-"]' );
-					if ( parentSection.length ) {
-						mw.storage.session.remove( 'mwbaseform-prevTab' );
-						// Switch to proper tab and scroll to selected item.
-						switchBaseFormTab( parentSection.attr( 'id' ).replace( 'mw-section-', '' ), true );
-						matchedElement.scrollIntoView();
-					}
-				}
-			}
 
 			$( window ).on( 'load', function () {
 				var hash = location.hash;
