@@ -38,7 +38,7 @@ class RemoteWiki {
 		);
 
 		if ( !$wikiRow ) {
-			return null;
+			return;
 		}
 
 		$this->dbname = $wikiRow->wiki_dbname;
@@ -336,7 +336,9 @@ class RemoteWiki {
 				Hooks::run( $hook, [ $this->dbname ] );
 			}
 
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $this->dbname );
+
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
 
