@@ -19,7 +19,7 @@ class RequestWikiRequestViewer {
 			0 => 'read',
 			1 => 'createwiki',
 			2 => 'delete',
-			3 => 'suppressrevision'
+			3 => 'suppressrevision',
 		];
 
 		// Gets user from request
@@ -128,7 +128,7 @@ class RequestWikiRequestViewer {
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => (string)$request->url,,
+					'default' => (string)$request->url,
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
