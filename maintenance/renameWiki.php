@@ -30,29 +30,29 @@ class RenameWiki extends Maintenance {
 		$renamedWiki = [];
 
 		if ( $this->hasOption( 'rename' ) ) {
-				$this->output( "Renaming $oldwiki to $newwiki. If this is wrong, Ctrl-C now!" );
+			$this->output( "Renaming $oldwiki to $newwiki. If this is wrong, Ctrl-C now!" );
 
-				// let's count down JUST to be safe!
-				$this->countDown( 10 );
+			// let's count down JUST to be safe!
+			$this->countDown( 10 );
 
-				$wm = new WikiManager( $oldwiki );
+			$wm = new WikiManager( $oldwiki );
 
-				$rename = $wm->rename( $newwiki );
+			$rename = $wm->rename( $newwiki );
 
-				if ( $rename ) {
-					$this->output( "{$rename}" );
+			if ( $rename ) {
+				$this->output( "{$rename}" );
 
-					return;
-				}
+				return;
+			}
 
-				$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
+			$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
 
-				MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
+			MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
 
-				$renamedWiki[] = $oldwiki;
-				$renamedWiki[] = $newwiki;
+			$renamedWiki[] = $oldwiki;
+			$renamedWiki[] = $newwiki;
 		} else {
-				$this->output( "Wiki $oldwiki will be renamed to $newwiki" );
+			$this->output( "Wiki $oldwiki will be renamed to $newwiki" );
 		}
 
 		$this->output( "Done.\n" );
@@ -71,5 +71,6 @@ class RenameWiki extends Maintenance {
 		return UserMailer::send( $to, $from, 'Wiki Rename Notification', $body );
 	}
 }
+
 $maintClass = RenameWiki::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
