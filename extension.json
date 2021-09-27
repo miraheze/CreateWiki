@@ -6,7 +6,7 @@
 		"Paladox",
 		"Universal Omega"
 	],
-	"url": "//github.com/Miraheze/CreateWiki",
+	"url": "https://github.com/miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
@@ -50,7 +50,7 @@
 		"CreateWikiJson": "includes/CreateWikiJson.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
-		"DeleteWiki": "maintenance/deleteWikis.php",
+		"DeleteWikis": "maintenance/deleteWikis.php",
 		"EchoCreateWikiPresentationModel": "includes/echo/EchoCreateWikiPresentationModel.php",
 		"EchoRequestCommentPresentationModel": "includes/echo/EchoRequestCommentPresentationModel.php",
 		"EchoRequestDeclinedPresentationModel": "includes/echo/EchoRequestDeclinedPresentationModel.php",
@@ -117,32 +117,32 @@
 		"CreateWikiCategories": {
 			"description": "Array. An array of categories used for wiki categorisaion.",
 			"public": true,
-			"value": false
+			"value": []
 		},
 		"CreateWikiCustomDomainPage": {
 			"description": "String. Page name to link to for more information on custom domains.",
 			"public": true,
-			"value": false
+			"value": ""
 		},
 		"CreateWikiDatabase": {
 			"description": "String. Database name of where cw_wikis is stored.",
 			"public": true,
-			"value": false
+			"value": ""
 		},
 		"CreateWikiDatabaseClusters": {
 			"description": "Array. LBFactory clusters which CreateWiki considers active.",
 			"public": true,
-			"value": false
+			"value": []
 		},
 		"CreateWikiDatabaseClustersInactive": {
 			"description": "Array. LBFactory clusters which are not considered active for use of automatic loadbalancing.",
 			"public": true,
-			"value": false
+			"value": []
 		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
 			"public": true,
-			"value": false
+			"value": ""
 		},
 		"CreateWikiStateDays": {
 			"description": "Array. Integer values in days when a wiki is deemed inactive, closed, removed (hidden) and deleted. Number of days passed since last change - not from initial inactivity.",
@@ -157,7 +157,7 @@
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
 			"public": true,
-			"value": false
+			"value": ""
 		},
 		"CreateWikiEmailNotifications": {
 			"description": "Boolean. Whether to send emails for new wiki creations.",
@@ -172,12 +172,12 @@
 		"CreateWikiPurposes": {
 			"description": "Array. List of identified purposes to show when requesting a wiki.",
 			"public": true,
-			"value": false
+			"value": []
 		},
 		"CreateWikiSQLfiles": {
 			"description": "Array. All SQLs to be loaded into every wiki by default.",
 			"public": true,
-			"value": false
+			"value": []
 		},
 		"CreateWikiShowBiographicalOption": {
 			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
@@ -187,7 +187,7 @@
 		"CreateWikiSubdomain": {
 			"description": "String. The master part of subdomains, e.g. wiki.miraheze.org, miraheze.org is the master part.",
 			"public": true,
-			"value": false
+			"value": ""
 		},
 		"CreateWikiUseCategories": {
 			"description": "Boolean. Whether to use categories to categorise wikis.",
@@ -231,6 +231,11 @@
 		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
+			"public": true,
+			"value": ""
+		},
+		"CreateWikiCacheDirectory": {
+			"description": "String. The path to store CreateWiki cache files at.",
 			"public": true,
 			"value": ""
 		}

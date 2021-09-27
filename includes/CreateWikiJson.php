@@ -93,7 +93,7 @@ class CreateWikiJson {
 					'c' => $wiki->wiki_dbcluster
 				];
 
-				if ( !is_null( $wiki->wiki_url ) ) {
+				if ( $wiki->wiki_url !== null ) {
 					$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
 				}
 			}
@@ -120,7 +120,7 @@ class CreateWikiJson {
 		);
 
 		if ( !$wikiObject ) {
-			throw new MWException( 'Wiki can not be found.' );
+			throw new MWException( "Wiki '{$this->wiki}' can not be found." );
 		}
 
 		$jsonArray = [
@@ -141,8 +141,9 @@ class CreateWikiJson {
 			]
 		];
 
-		Hooks::run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
 
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
 
 		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.json.tmp" ) ) {
@@ -156,15 +157,14 @@ class CreateWikiJson {
 			'wiki' => false
 		];
 
-		if ( $this->databaseArray['timestamp'] < ( ( $this->databaseTimestamp ) ? $this->databaseTimestamp : PHP_INT_MAX ) ) {
+		if ( $this->databaseArray['timestamp'] < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['databases'] = true;
 		}
 
-		if ( $this->wikiArray['timestamp'] < ( ( $this->wikiTimestamp ) ? $this->wikiTimestamp : PHP_INT_MAX ) ) {
+		if ( $this->wikiArray['timestamp'] < ( $this->wikiTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['wiki'] = true;
 		}
 
 		return $changes;
 	}
 }
-

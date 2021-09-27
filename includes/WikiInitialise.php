@@ -9,6 +9,7 @@ class WikiInitialise {
 	public $sitename;
 	public $missing = false;
 	public $wikiDBClusters = [];
+	public $disabledExtensions = [];
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
@@ -95,7 +96,7 @@ class WikiInitialise {
 		}
 
 		// We use this quite a bit. If we don't have one, something is wrong
-		if ( is_null( $this->dbname ) ) {
+		if ( $this->dbname === null ) {
 			$this->missing = true;
 		} elseif ( !count( $databasesArray['combi'] ) ) {
 			$databasesArray['combi'][$this->dbname] = [];
@@ -103,7 +104,7 @@ class WikiInitialise {
 
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
-		
+
 		$this->server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
 		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ?? $this->config->settings['wgSitename']['default'];
 
@@ -132,14 +133,14 @@ class WikiInitialise {
 		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 
-		// Utilise SiteConfiguration magic here
-		$this->config->siteParamsCallback = function() use ( $cacheArray ) {
+		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
+		$this->config->siteParamsCallback = static function () use ( $cacheArray ) {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
-				'tags' => $cacheArray['extensions'],
+				'tags' => $cacheArray['extensions'] ?? [],
 				'params' => []
-				];
+			];
 		};
 
 		// The following is ManageWiki additional code
@@ -204,7 +205,7 @@ class WikiInitialise {
 					$this->config->settings['wgGroupsRemoveFromSelf'][$this->dbname][$group][] = $name;
 				}
 
-				if ( !is_null( $perm['autopromote'] ) ) {
+				if ( $perm['autopromote'] !== null ) {
 					$onceId = array_search( 'once', $perm['autopromote'] );
 
 					if ( !is_bool( $onceId ) ) {
@@ -215,6 +216,51 @@ class WikiInitialise {
 					}
 
 					$this->config->settings[$promoteVar][$this->dbname][$group] = $perm['autopromote'];
+				}
+			}
+		}
+	}
+
+	public function loadExtensions() {
+		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
+
+		$config = new GlobalVarConfig( 'wg' );
+
+		$queue = array_fill_keys( array_merge(
+				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
+				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
+			),
+		true );
+
+		$processor = new ExtensionProcessor();
+
+		foreach ( $queue as $path => $mtime ) {
+			$json = file_get_contents( $path );
+			$info = json_decode( $json, true );
+			$version = $info['manifest_version'];
+
+			$processor->extractInfo( $path, $info, $version );
+		}
+
+		$data = $processor->getExtractedInfo();
+
+		$credits = $data['credits'];
+
+		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+			$this->config->settings[ $ext['var'] ]['default'] = false;
+		}
+
+		if ( isset( $cacheArray['extensions'] ) ) {
+			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
+					!in_array( $ext['name'], $this->disabledExtensions )
+				) {
+					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+
+					$pathInfo = pathinfo( $path )['extension'] ?? false;
+					if ( $path && $pathInfo === 'json' ) {
+						ExtensionRegistry::getInstance()->queue( $path );
+					}
 				}
 			}
 		}

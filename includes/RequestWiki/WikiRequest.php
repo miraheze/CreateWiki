@@ -1,7 +1,6 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
-use Phpml\ModelManager;
 
 class WikiRequest {
 	public $dbname;
@@ -28,12 +27,15 @@ class WikiRequest {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$dbRequest = $this->dbw->selectRow(
 			'cw_requests',
 			'*',
 			[
-				'cw_id' => $id
-			]
+				'cw_id' => $id,
+			],
+			__METHOD__
 		);
 
 		if ( $dbRequest ) {
@@ -44,7 +46,7 @@ class WikiRequest {
 			$this->sitename = $dbRequest->cw_sitename;
 			$this->url = $dbRequest->cw_url;
 			$this->category = $dbRequest->cw_category;
-			$this->requester = User::newFromId( $dbRequest->cw_user );
+			$this->requester = $userFactory->newFromId( $dbRequest->cw_user );
 			$this->status = $dbRequest->cw_status;
 			$this->timestamp = $dbRequest->cw_timestamp;
 			$this->visibility = $dbRequest->cw_visibility;
@@ -64,21 +66,21 @@ class WikiRequest {
 				'cw_comments',
 				'*',
 				[
-					'cw_id' => $id
+					'cw_id' => $id,
 				],
 				__METHOD__,
 				[
-					'cw_timestamp DESC'
+					'cw_timestamp DESC',
 				]
 			);
 
 			foreach ( $commentsReq as $comment ) {
-				$userObj = User::newFromId( $comment->cw_comment_user );
+				$userObj = $userFactory->newFromId( $comment->cw_comment_user );
 
 				$this->comments[] = [
 					'timestamp' => $comment->cw_comment_timestamp,
 					'user' => $userObj,
-					'comment' => $comment->cw_comment
+					'comment' => $comment->cw_comment,
 				];
 
 				$this->involvedUsers[$comment->cw_comment_user] = $userObj;
@@ -100,8 +102,9 @@ class WikiRequest {
 				'cw_id' => $this->id,
 				'cw_comment' => $comment,
 				'cw_comment_timestamp' => $this->dbw->timestamp(),
-				'cw_comment_user' => $user->getId()
-			]
+				'cw_comment_user' => $user->getId(),
+			],
+			__METHOD__
 		);
 
 		$this->sendNotification( $comment, $user, $type );
@@ -116,7 +119,7 @@ class WikiRequest {
 	}
 
 	public function approve( User $user, string $reason = null ) {
-		if ( $this->config->get( 'CreateWikiUseJobQueue') ) {
+		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobParams = [
 				'id' => $this->id,
 				'dbname' => $this->dbname,
@@ -125,18 +128,23 @@ class WikiRequest {
 				'private' => $this->private,
 				'category' => $this->category,
 				'requester' => $this->requester->getName(),
-				'creator' => $user->getName()
+				'creator' => $user->getName(),
 			];
+
 			JobQueueGroup::singleton()->push( new CreateWikiJob( Title::newMainPage(), $jobParams ) );
+
 			$this->status = 'approved';
 			$this->save();
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
 			$this->log( $user, 'requestaccept' );
+
 			if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 				$this->tryAutoCreate();
 			}
 		} else {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $this->dbname );
+
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
 			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
@@ -146,6 +154,7 @@ class WikiRequest {
 			} else {
 				$this->status = 'approved';
 				$this->save();
+
 				$this->addComment( 'Request approved and wiki created. ' . ( $reason ?? '' ), $user );
 			}
 		}
@@ -154,8 +163,10 @@ class WikiRequest {
 	public function decline( string $reason, User $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
+
 		$this->addComment( $reason, $user, 'declined' );
 		$this->log( $user, 'requestdecline' );
+
 		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
 		}
@@ -165,6 +176,7 @@ class WikiRequest {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
+
 		$logEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
@@ -172,9 +184,10 @@ class WikiRequest {
 						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
 						'#' . $this->id
 					)
-				)
+				),
 			]
 		);
+
 		$logID = $logEntry->insert( $this->dbw );
 		$logEntry->publish( $logID );
 	}
@@ -198,7 +211,7 @@ class WikiRequest {
 
 		$echoExtra = [
 			'id' => $this->id,
-			'reason' => $text
+			'reason' => $text,
 		];
 
 		WikiManager::notificationsTrigger( $type, $echoExtra, $this->involvedUsers );
@@ -210,16 +223,17 @@ class WikiRequest {
 			[
 				'cw_comment',
 				'cw_dbname',
-				'cw_sitename'
+				'cw_sitename',
 			],
 			[
-				'cw_status' => 'inreview'
-			]
+				'cw_status' => 'inreview',
+			],
+			__METHOD__
 		);
 
 		foreach ( $inReview as $row ) {
 			if (
-				is_null( $this->id )
+				$this->id === null
 				&& ( $this->sitename == $row->cw_sitename
 				|| $this->dbname == $row->cw_dbname
 				|| $this->description == $row->cw_comment )
@@ -228,7 +242,7 @@ class WikiRequest {
 			}
 		}
 
-		$comment = ( $this->config->get( 'CreateWikiPurposes') ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
+		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
 		$rows = [
 			'cw_comment' => $comment,
@@ -242,25 +256,26 @@ class WikiRequest {
 			'cw_user' => $this->requester->getId(),
 			'cw_category' => $this->category,
 			'cw_visibility' => $this->visibility,
-			'cw_bio' => $this->bio
+			'cw_bio' => $this->bio,
 		];
 
 		$this->dbw->upsert(
 			'cw_requests',
 			[
-				'cw_id' => $this->id
+				'cw_id' => $this->id,
 			] + $rows,
 			'cw_id',
-			$rows
+			$rows,
+			__METHOD__
 		);
-		
+
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
 		}
 
 		return $this->dbw->insertId();
 	}
-	
+
 	public function tryAutoCreate() {
 		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
 
@@ -272,14 +287,14 @@ class WikiRequest {
 			Title::newMainPage(),
 			[
 				'description' => $this->description,
-				'id' => $this->id
+				'id' => $this->id,
 			]
 		) );
 	}
 
 	/**
 	 * Extract database name from subdomain and automatically configure url and dbname
-	 * 
+	 *
 	 * @param string $subdomain subdomain
 	 * @param string &$err optional error string for reported errors
 	 *
@@ -301,14 +316,16 @@ class WikiRequest {
 		// Make the subdomain a dbname
 		if ( !ctype_alnum( $subdomain ) ) {
 			$err = 'notalnum';
-			wfDebugLog( 'CreateWiki', 'Invalid subdomain entered. Requested: ' . $subdomain );
+
 			return false;
 		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
 			$err = 'blacklisted';
+
 			return false;
 		} else {
 			$this->dbname = $subdomain . 'wiki';
 			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
+
 			return true;
 		}
 	}

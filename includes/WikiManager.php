@@ -9,9 +9,10 @@ class WikiManager {
 	private $dbname;
 	private $dbw;
 	private $cwdb;
-	private $exists;
 	private $lb = false;
 	private $tables = [];
+
+	public $exists;
 
 	public function __construct( string $dbname ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
@@ -123,7 +124,7 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiCreation', [ $wiki, $private ] );
 
 		$blankConfig = new GlobalVarConfig( '' );
 
@@ -181,7 +182,7 @@ class WikiManager {
 
 		$deletedWiki = (bool)$row->wiki_deleted;
 
-		// Return error if: wiki is not deleted, force is not used & wiki 
+		// Return error if: wiki is not deleted, force is not used & wiki
 		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
@@ -195,13 +196,14 @@ class WikiManager {
 			);
 		}
 
-		
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cWJ = new CreateWikiJson( $wiki );
+
 		$cWJ->resetWiki();
 
 		$this->recacheJson();
 
-		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
 
 		return null;
 	}
@@ -229,13 +231,14 @@ class WikiManager {
 			);
 		}
 
-
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cWJ = new CreateWikiJson( $old );
+
 		$cWJ->resetWiki();
 
 		$this->recacheJson();
 
-		Hooks::run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
 
 		return null;
 	}
@@ -243,7 +246,7 @@ class WikiManager {
 	private function compileTables() {
 		$cTables = [];
 
-		Hooks::run( 'CreateWikiTables', [ &$cTables ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiTables', [ &$cTables ] );
 
 		$cTables['cw_wikis'] = 'wiki_dbname';
 
@@ -252,7 +255,7 @@ class WikiManager {
 
 	public function checkDatabaseName( string $dbname, bool $rename = false ) {
 		$suffixed = false;
-		foreach( $this->config->get( 'Conf' )->suffixes as $suffix ) {
+		foreach ( $this->config->get( 'Conf' )->suffixes as $suffix ) {
 			if ( substr( $dbname, -strlen( $suffix ) ) === $suffix ) {
 				$suffixed = true;
 				break;
@@ -263,9 +266,9 @@ class WikiManager {
 
 		if ( !$suffixed ) {
 			$error = 'notsuffixed';
-		} elseif( !$rename && $this->exists ) {
+		} elseif ( !$rename && $this->exists ) {
 			$error = 'dbexists';
-		} elseif( !ctype_alnum( $dbname ) ) {
+		} elseif ( !ctype_alnum( $dbname ) ) {
 			$error = 'notalnum';
 		} elseif ( strtolower( $dbname ) !== $dbname ) {
 			$error = 'notlowercase';
@@ -275,10 +278,17 @@ class WikiManager {
 	}
 
 	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+		$user = $userFactory->newFromName( $actor );
+
+		if ( !$user ) {
+			return;
+		}
+
 		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
-		$logEntry->setPerformer( User::newFromName( $actor ) );
+		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( Title::newFromID( 1 ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
@@ -288,11 +298,12 @@ class WikiManager {
 
 	public static function notificationsTrigger( string $type, array $specialData, array $receivers = [], string $wiki = '' ) {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 
 		$sendEmail = false;
 		$notifyServerAdministrators = false;
 
-		switch ( $type ) {
+  	switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
 				$echoExtra = [
@@ -353,7 +364,7 @@ class WikiManager {
 				EchoEvent::create( [
 					'type' => $echoType,
 					'extra' => $echoExtra,
-					'agent' => User::newFromName( $receiver )
+					'agent' => $userFactory->newFromName( $receiver ),
 				] );
 			}
 		}
@@ -362,7 +373,13 @@ class WikiManager {
 			$notifyEmails = [];
 
 			foreach ( $receivers as $receiver ) {
-				$notifyEmails[] = MailAddress::newFromUser( User::newFromName( $receiver ) );
+				$user = $userFactory->newFromName( $receiver );
+
+				if ( !$user ) {
+					continue;
+				}
+
+				$notifyEmails[] = MailAddress::newFromUser( $user );
 			}
 
 			if ( $notifyServerAdministrators ) {

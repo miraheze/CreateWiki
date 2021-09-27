@@ -3,18 +3,27 @@
 use MediaWiki\MediaWikiServices;
 
 class RequestWikiQueuePager extends TablePager {
+
+	/** @var Config */
 	private $config;
+
+	/** @var string */
 	private $requester;
+
+	/** @var string */
 	private $dbname;
+
+	/** @var string */
 	private $status;
 
-	public function __construct( $requester, $dbname, $status ) {
+	public function __construct( $page, $requester, $dbname, $status ) {
+		parent::__construct( $page->getContext(), $page->getLinkRenderer() );
+
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$this->mDb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )->getConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$this->requester = $requester;
 		$this->dbname = $dbname;
 		$this->status = $status;
-		parent::__construct( $this->getContext() );
 	}
 
 	public function getFieldNames() {
@@ -27,7 +36,7 @@ class RequestWikiQueuePager extends TablePager {
 			'cw_user' => 'requestwikiqueue-request-label-requester',
 			'cw_language' => 'requestwikiqueue-request-label-language',
 			'cw_url' => 'requestwikiqueue-request-label-url',
-			'cw_status' => 'requestwikiqueue-request-label-status'
+			'cw_status' => 'requestwikiqueue-request-label-status',
 		];
 
 		foreach ( $headers as &$msg ) {
@@ -39,6 +48,8 @@ class RequestWikiQueuePager extends TablePager {
 
 	public function formatValue( $name, $value ) {
 		$row = $this->mCurrentRow;
+
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 
 		$language = $this->getLanguage();
 
@@ -53,7 +64,7 @@ class RequestWikiQueuePager extends TablePager {
 				$formatted = $row->cw_sitename;
 				break;
 			case 'cw_user':
-				$formatted = User::newFromId( $row->cw_user )->getName();
+				$formatted = $userFactory->newFromId( $row->cw_user )->getName();
 				break;
 			case 'cw_url':
 				$formatted = $row->cw_url;
@@ -74,12 +85,15 @@ class RequestWikiQueuePager extends TablePager {
 
 	public function getQueryInfo() {
 		$user = $this->getUser();
+
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
 		$visibility = $permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
 
 		$info = [
 			'tables' => [
-				'cw_requests'
+				'cw_requests',
 			],
 			'fields' => [
 				'cw_id',
@@ -89,10 +103,10 @@ class RequestWikiQueuePager extends TablePager {
 				'cw_user',
 				'cw_status',
 				'cw_url',
-				'cw_sitename'
+				'cw_sitename',
 			],
 			'conds' => [
-				'cw_visibility <= ' . $visibility
+				'cw_visibility <= ' . $visibility,
 			],
 			'joins_conds' => [],
 		];
@@ -102,12 +116,12 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = User::newFromName( $this->requester )->getId();
+			$info['conds']['cw_user'] = $userFactory->newFromName( $this->requester )->getId();
 		}
 
 		if ( $this->status && $this->status != '*' ) {
 			$info['conds']['cw_status'] = $this->status;
-		} elseif( !$this->status ) {
+		} elseif ( !$this->status ) {
 			$info['conds']['cw_status'] = 'inreview';
 		}
 

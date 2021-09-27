@@ -38,7 +38,7 @@ class RemoteWiki {
 		);
 
 		if ( !$wikiRow ) {
-			return null;
+			return;
 		}
 
 		$this->dbname = $wikiRow->wiki_dbname;
@@ -332,15 +332,17 @@ class RemoteWiki {
 				);
 			}
 
-			foreach( $this->hooks as $hook ) {
-				Hooks::run( $hook, [ $this->dbname ] );
+			foreach ( $this->hooks as $hook ) {
+				MediaWikiServices::getInstance()->getHookContainer()->run( $hook, [ $this->dbname ] );
 			}
 
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $this->dbname );
+
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
 
-			if ( is_null( $this->log ) ) {
+			if ( $this->log === null ) {
 				$this->log = 'settings';
 				$this->logParams = [
 					'5::changes' => implode( ', ', array_keys( $this->changes ) )
