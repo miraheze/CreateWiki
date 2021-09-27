@@ -18,7 +18,11 @@ class RequestWikiAIJob extends Job {
 			$modelManager = new ModelManager();
 			$pipeline = $modelManager->restoreFromFile( $modelFile );
 			$tokenDescription = (array)strtolower( $this->params['description'] );
+
+			// @phan-suppress-next-line PhanUndeclaredMethod
 			$pipeline->transform( $tokenDescription );
+
+			// @phan-suppress-next-line PhanUndeclaredMethod
 			$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approved'];
 
 			$wr->addComment( 'Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
