@@ -26,7 +26,7 @@ class PopulateMainPage extends Maintenance {
 
 		$mainPageName = wfMessage( 'mainpage' )->inLanguage( $language )->plain();
 		$title = Title::newFromText( $mainPageName );
-		$article = WikiPage::factory( $title )->newPageUpdater( User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] ) );
+		$article = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->newPageUpdater( User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] ) );
 		$article->setContent( SlotRecord::MAIN, new WikitextContent( wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain() ) );
 		$article->saveRevision( CommentStoreComment::newUnsavedComment( wfMessage( 'createwiki-defaultmainpage-summary' )->inLanguage( $language )->plain() ), EDIT_SUPPRESS_RC );
 	}
