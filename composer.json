@@ -14,7 +14,11 @@
 		"fix": [
 			"minus-x fix ."
 		],
-		"test": [],
+		"test": [
+			"parallel-lint . --exclude node_modules --exclude vendor",
+			"minus-x check .",
+			"@phpcs"
+		],
 		"phan": "phan -d . --long-progress-bar",
 		"phpcs": "phpcs -sp --cache"
 	},
