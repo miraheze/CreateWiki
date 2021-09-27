@@ -134,12 +134,14 @@ class WikiInitialise {
 
 		// Utilise SiteConfiguration magic here
 		$this->config->siteParamsCallback = function() use ( $cacheArray ) {
-			return [
+			$params = [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
 				'tags' => $cacheArray['extensions'] ?? [],
 				'params' => []
 			];
+
+			return $params;
 		};
 
 		// The following is ManageWiki additional code
