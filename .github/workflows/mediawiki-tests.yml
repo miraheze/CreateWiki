@@ -366,7 +366,7 @@ jobs:
             composer install --prefer-dist --no-progress --no-interaction
             composer fix
 
-            rm -rf vendor
+            rm composer.lock
 
             git config --global user.name "github-actions"
             git config --global user.email "github-actions@users.noreply.github.com"
