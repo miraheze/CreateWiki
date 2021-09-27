@@ -92,7 +92,7 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 4,
-				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
+				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->escaped(),
 				'default' => $comment['comment']
 			];
 		}
