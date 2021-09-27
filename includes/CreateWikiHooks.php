@@ -99,6 +99,7 @@ class CreateWikiHooks {
 	}
 
 	public static function onSetupAfterCache() {
+		// phpcs:ignore MediaWiki.NamingConventions.ValidGlobalName.allowedPrefix
 		global $wi, $wgConf, $wgGroupPermissions;
 
 		$cWJ = new CreateWikiJson( self::getConfig( 'DBname' ) );
