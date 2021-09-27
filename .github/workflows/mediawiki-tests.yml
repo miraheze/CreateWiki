@@ -370,7 +370,7 @@ jobs:
 
       - name: Push the changes
         continue-on-error: true
-        if: $ {{ github.event_name == 'pull_request' && ( matrix.stage == 'composer-test' || matrix.stage == 'npm-test' ) && matrix.mw == 'REL1_36' && matrix.php == '7.3' }}
+        if: ${{ github.event_name == 'pull_request' && ( matrix.stage == 'composer-test' || matrix.stage == 'npm-test' ) && matrix.mw == 'REL1_36' && matrix.php == '7.3' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
