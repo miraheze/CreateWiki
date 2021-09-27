@@ -136,7 +136,9 @@ class WikiRequest {
 				$this->tryAutoCreate();
 			}
 		} else {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $this->dbname );
+
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
 			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
