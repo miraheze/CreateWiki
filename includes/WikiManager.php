@@ -303,7 +303,7 @@ class WikiManager {
 		$sendEmail = false;
 		$notifyServerAdministrators = false;
 
-  	switch ( $type ) {
+	switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
 				$echoExtra = [
@@ -357,7 +357,7 @@ class WikiManager {
 			default:
 				$echoType = false;
 				break;
-		}
+	}
 
 		if ( $config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
 			foreach ( $receivers as $receiver ) {
