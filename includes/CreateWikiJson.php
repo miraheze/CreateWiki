@@ -157,11 +157,11 @@ class CreateWikiJson {
 			'wiki' => false
 		];
 
-		if ( $this->databaseArray['timestamp'] < ( ( $this->databaseTimestamp ) ? $this->databaseTimestamp : PHP_INT_MAX ) ) {
+		if ( $this->databaseArray['timestamp'] < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['databases'] = true;
 		}
 
-		if ( $this->wikiArray['timestamp'] < ( ( $this->wikiTimestamp ) ? $this->wikiTimestamp : PHP_INT_MAX ) ) {
+		if ( $this->wikiArray['timestamp'] < ( $this->wikiTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['wiki'] = true;
 		}
 
