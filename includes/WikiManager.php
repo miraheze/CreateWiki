@@ -22,7 +22,7 @@ class WikiManager {
 			'cw_wikis',
 			'wiki_dbname',
 			[
-				'wiki_dbname' => $dbname
+				'wiki_dbname' => $dbname,
 			],
 			__METHOD__
 		);
@@ -37,8 +37,9 @@ class WikiManager {
 					'cw_wikis',
 					'*',
 					[
-						'wiki_dbcluster' => $cluster
-					]
+						'wiki_dbcluster' => $cluster,
+					],
+					__METHOD__
 				);
 
 				$clusterSize[$cluster] = $count;
@@ -51,8 +52,9 @@ class WikiManager {
 				'cw_wikis',
 				'wiki_dbname',
 				[
-					'wiki_dbcluster' => $this->cluster
-				]
+					'wiki_dbcluster' => $this->cluster,
+				],
+				__METHOD__
 			)->wiki_dbname;
 			$this->lb = $lbs[$this->cluster];
 			$newDbw = $lbs[$this->cluster]->getConnection( DB_PRIMARY, [], $clusterDB );
@@ -303,13 +305,13 @@ class WikiManager {
 		$sendEmail = false;
 		$notifyServerAdministrators = false;
 
-	switch ( $type ) {
+		switch ( $type ) {
 			case 'creation':
 				$echoType = 'wiki-creation';
 				$echoExtra = [
 					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $specialData['siteName'],
-					'notifyAgent' => true
+					'notifyAgent' => true,
 				];
 
 				$sendEmail = true;
@@ -343,7 +345,7 @@ class WikiManager {
 				$echoExtra = [
 					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
 					'reason' => $specialData['reason'],
-					'notifyAgent' => true
+					'notifyAgent' => true,
 				];
 				break;
 			case 'comment':
@@ -351,13 +353,13 @@ class WikiManager {
 				$echoExtra = [
 					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
 					'comment' => $specialData['reason'],
-					'notifyAgent' => true
+					'notifyAgent' => true,
 				];
 				break;
 			default:
 				$echoType = false;
 				break;
-	}
+		}
 
 		if ( $config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
 			foreach ( $receivers as $receiver ) {
