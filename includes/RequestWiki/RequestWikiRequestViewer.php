@@ -256,8 +256,9 @@ class RequestWikiRequestViewer {
 			if ( $wmError ) {
 				$formDescriptor['submit-error-info'] = [
 					'type' => 'info',
+					'section' => 'handle',
 					'default' => $wmError,
-					'section' => 'handle'
+					'raw' => true,
 				];
 
 				$formDescriptor['submission-action']['default'] = 'decline';
