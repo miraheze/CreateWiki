@@ -47,7 +47,7 @@ class RenameWiki extends Maintenance {
 
 				$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
 
-				Hooks::run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
+				MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
 
 				$renamedWiki[] = $oldwiki;
 				$renamedWiki[] = $newwiki;
