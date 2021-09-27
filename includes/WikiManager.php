@@ -124,7 +124,7 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		Hooks::run( 'CreateWikiCreation', [ $wiki, $private ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiCreation', [ $wiki, $private ] );
 
 		$blankConfig = new GlobalVarConfig( '' );
 
@@ -203,7 +203,7 @@ class WikiManager {
 
 		$this->recacheJson();
 
-		Hooks::run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
 
 		return null;
 	}
@@ -238,7 +238,7 @@ class WikiManager {
 
 		$this->recacheJson();
 
-		Hooks::run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
 
 		return null;
 	}
@@ -246,7 +246,7 @@ class WikiManager {
 	private function compileTables() {
 		$cTables = [];
 
-		Hooks::run( 'CreateWikiTables', [ &$cTables ] );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiTables', [ &$cTables ] );
 
 		$cTables['cw_wikis'] = 'wiki_dbname';
 
