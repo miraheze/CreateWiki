@@ -4,6 +4,8 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 
 class SpecialRequestWiki extends FormSpecialPage {
+
+	/** @var Config */
 	private $config;
 
 	public function __construct() {
@@ -21,6 +23,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( !$this->getUser()->isRegistered() ) {
 			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( [ 'returnto' => $this->getPageTitle()->getPrefixedText() ] );
+
 			$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
 
 			return false;
@@ -30,6 +33,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
 			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
+
 			$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
 		}
 
@@ -55,7 +59,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'language',
 				'label-message' => 'requestwiki-label-language',
 				'default' => 'en',
-			]
+			],
 		];
 
 		if ( $this->config->get( 'CreateWikiCategories' ) ) {
@@ -77,7 +81,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		if ( $this->config->get( 'CreateWikiShowBiographicalOption' ) ) {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
-				'label-message' => 'requestwiki-label-bio'
+				'label-message' => 'requestwiki-label-bio',
 			];
 		}
 
@@ -85,7 +89,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'options' => $this->config->get( 'CreateWikiPurposes' )
+				'options' => $this->config->get( 'CreateWikiPurposes' ),
 			];
 		}
 
@@ -95,7 +99,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
-			'validation-callback' => [ __CLASS__, 'isValidReason' ],
+			'validation-callback' => [ $this, 'isValidReason' ],
 		];
 
 		return $formDescriptor;
@@ -112,6 +116,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			if ( $err !== '' ) {
 				$out->addHTML( Html::errorBox( $this->msg( 'createwiki-error-' . $err )->parse() ) );
 			}
+
 			return false;
 		}
 
@@ -128,6 +133,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$requestID = $request->save();
 		} catch ( MWException $e ) {
 			$out->addHTML( Html::errorBox( $this->msg( 'requestwiki-error-patient' )->plain() ) );
+
 			return false;
 		}
 
@@ -154,7 +160,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public static function isValidReason( $reason, $allData ) {
+	public function isValidReason( $reason, $allData ) {
 		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
 		$wikiPageContent = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getContent( RevisionRecord::RAW );
 		$content = ContentHandler::getContentText( $wikiPageContent );
@@ -166,22 +172,22 @@ class SpecialRequestWiki extends FormSpecialPage {
 			preg_match( "/" . $regex . "/i", $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return wfMessage( 'requestwiki-error-invalidcomment' )->escaped();
+				return $this->msg( 'requestwiki-error-invalidcomment' )->escaped();
 			}
 		}
 
 		if ( !$reason || ctype_space( $reason ) ) {
-			return wfMessage( 'htmlform-required', 'parseinline' )->escaped();
+			return $this->msg( 'htmlform-required', 'parseinline' )->escaped();
 		}
 
 		return true;
 	}
 
-	protected function getGroupName() {
-		return 'wikimanage';
-	}
-
 	protected function getDisplayFormat() {
 		return 'ooui';
+	}
+
+	protected function getGroupName() {
+		return 'wikimanage';
 	}
 }
