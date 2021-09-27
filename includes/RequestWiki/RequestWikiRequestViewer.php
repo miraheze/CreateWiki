@@ -54,8 +54,8 @@ class RequestWikiRequestViewer {
 				'section' => 'request',
 				'default' => (string)$request->language
 			],
-			// @phan-suppress-next-line SecurityCheck-XSS
 			'requester' => [
+				// @phan-suppress-next-line SecurityCheck-XSS
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
@@ -88,12 +88,12 @@ class RequestWikiRequestViewer {
 		];
 
 		foreach ( $request->getComments() as $comment ) {
-			// @phan-suppress-next-line SecurityCheck-XSS
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 4,
+				// @phan-suppress-next-line SecurityCheck-XSS
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment']
 			];
