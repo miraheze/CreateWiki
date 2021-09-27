@@ -333,7 +333,7 @@ class RemoteWiki {
 			}
 
 			foreach ( $this->hooks as $hook ) {
-				Hooks::run( $hook, [ $this->dbname ] );
+				MediaWikiServices::getInstance()->getHookContainer()->run( $hook, [ $this->dbname ] );
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
