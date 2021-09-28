@@ -47,11 +47,11 @@ class RemoteWiki {
 		$this->private = $wikiRow->wiki_private;
 		$this->creation = $wikiRow->wiki_creation;
 		$this->url = $wikiRow->wiki_url;
-		$this->closed = $wikiRow->wiki_closed_timestamp ?? false;
-		$this->inactive = $wikiRow->wiki_inactive_timestamp ?? false;
+		$this->closed = $wikiRow->wiki_closed_timestamp ?? 0;
+		$this->inactive = $wikiRow->wiki_inactive_timestamp ?? 0;
 		$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
 		$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
-		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? false;
+		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? 0;
 		$this->locked = $wikiRow->wiki_locked;
 		$this->dbcluster = $wikiRow->wiki_dbcluster;
 		$this->category = $wikiRow->wiki_category;

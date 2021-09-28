@@ -283,7 +283,7 @@ class RequestWikiRequestViewer {
 		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
 
 		try {
-			$request = new WikiRequest( $id );
+			$request = new WikiRequest( (int)$id );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 

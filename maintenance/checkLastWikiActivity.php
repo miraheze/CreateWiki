@@ -32,7 +32,7 @@ class CheckLastWikiActivity extends Maintenance {
 
 		$timeStamp = $row ? $row->rc_timestamp : 0;
 
-		$this->output( (int)$timeStamp );
+		$this->output( (string)$timeStamp );
 	}
 }
 
