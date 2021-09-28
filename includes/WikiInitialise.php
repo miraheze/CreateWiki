@@ -53,7 +53,7 @@ class WikiInitialise {
 
 		foreach ( $databasesArray['combi'] as $db => $data ) {
 			foreach ( $suffixes as $suffix ) {
-				if ( substr( $db, -strlen( $suffix ) == $suffix ) ) {
+				if ( substr( $db, -strlen( $suffix ) ) == $suffix ) {
 					$this->config->settings['wgServer'][$db] = $data['u'] ?? 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
 				}
 			}
