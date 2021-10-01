@@ -226,7 +226,7 @@ class WikiInitialise {
 
 		$config = new GlobalVarConfig( 'wg' );
 
-		if ( !file_exists( "{$this->cacheDir}/extensions.json" ) ) {
+		if ( !file_exists( "{$this->cacheDir}/extension-list.json" ) ) {
 			$queue = array_fill_keys( array_merge(
 					glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
 					glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
