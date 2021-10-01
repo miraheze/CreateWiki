@@ -221,12 +221,14 @@ class WikiInitialise {
 		}
 	}
 
-	public function loadExtensions() {
+	public function loadExtensions( $mtimeFile = false ) {
 		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 
 		$config = new GlobalVarConfig( 'wg' );
 
-		if ( !file_exists( "{$this->cacheDir}/extension-list.json" ) ) {
+		if ( !file_exists( "{$this->cacheDir}/extension-list.json" ) ||
+			( $mtimeFile && ( filemtime( "{$this->cacheDir}/extension-list.json" ) < filemtime( $mtimeFile ) ) )
+		) {
 			$queue = array_fill_keys( array_merge(
 					glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
 					glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
