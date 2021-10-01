@@ -226,11 +226,17 @@ class WikiInitialise {
 
 		$config = new GlobalVarConfig( 'wg' );
 
-		$queue = array_fill_keys( array_merge(
-				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
-				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
-			),
-		true );
+		if ( !file_exists( "{$this->cacheDir}/extensions.json" ) ) {
+			$queue = array_fill_keys( array_merge(
+					glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
+					glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
+				),
+			true );
+
+			file_put_contents( "{$this->cacheDir}/extension-list.json", json_encode( $queue ), LOCK_EX );
+		} else {
+			$queue = json_decode( file_get_contents( "{$this->cacheDir}/extension-list.json" ), true );
+		}
 
 		$processor = new ExtensionProcessor();
 
