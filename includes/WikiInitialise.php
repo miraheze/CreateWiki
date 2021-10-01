@@ -233,35 +233,33 @@ class WikiInitialise {
 				),
 			true );
 
-			file_put_contents( "{$this->cacheDir}/extension-list.json", json_encode( $queue ), LOCK_EX );
+			$processor = new ExtensionProcessor();
+
+			foreach ( $queue as $path => $mtime ) {
+				$json = file_get_contents( $path );
+				$info = json_decode( $json, true );
+				$version = $info['manifest_version'];
+
+				$processor->extractInfo( $path, $info, $version );
+			}
+
+			$data = $processor->getExtractedInfo();
+
+			$list = array_column( $data['credits'], 'path', 'name' );
+
+			file_put_contents( "{$this->cacheDir}/extension-list.json", json_encode( $list ), LOCK_EX );
 		} else {
-			$queue = json_decode( file_get_contents( "{$this->cacheDir}/extension-list.json" ), true );
-		}
-
-		$processor = new ExtensionProcessor();
-
-		foreach ( $queue as $path => $mtime ) {
-			$json = file_get_contents( $path );
-			$info = json_decode( $json, true );
-			$version = $info['manifest_version'];
-
-			$processor->extractInfo( $path, $info, $version );
-		}
-
-		$data = $processor->getExtractedInfo();
-
-		$credits = $data['credits'];
-
-		foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
-			$this->config->settings[ $ext['var'] ]['default'] = false;
+			$list = json_decode( file_get_contents( "{$this->cacheDir}/extension-list.json" ), true );
 		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
 			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
+				$this->config->settings[ $ext['var'] ]['default'] = false;
+
 				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
 					!in_array( $ext['name'], $this->disabledExtensions )
 				) {
-					$path = array_column( $credits, 'path', 'name' )[ $ext['name'] ] ?? false;
+					$path = $list[ $ext['name'] ] ?? false;
 
 					$pathInfo = pathinfo( $path )['extension'] ?? false;
 					if ( $path && $pathInfo === 'json' ) {
