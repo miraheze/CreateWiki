@@ -101,13 +101,22 @@ class CreateWikiHooks {
 	public static function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		$cWJ = new CreateWikiJson( self::getConfig( 'DBname' ) );
-		$remoteWiki = new RemoteWiki( self::getConfig( 'DBname' ) );
+		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );
+		$dbName = self::getConfig( 'DBname' );
 
+		$cWJ = new CreateWikiJson( $dbName );
 		$cWJ->update();
 
+		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
+			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
+			$isPrivate = (bool)$cacheArray['states']['private'];
+		} else {
+			$remoteWiki = new RemoteWiki( $dbName );
+			$isPrivate = $remoteWiki->isPrivate();
+		}
+
 		// Safety Catch!
-		if ( $remoteWiki->isPrivate() ) {
+		if ( $isPrivate ) {
 			$wgGroupPermissions['*']['read'] = false;
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
