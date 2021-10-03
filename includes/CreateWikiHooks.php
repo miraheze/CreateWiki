@@ -99,24 +99,15 @@ class CreateWikiHooks {
 	}
 
 	public static function onSetupAfterCache() {
-		// phpcs:ignore MediaWiki.NamingConventions.ValidGlobalName.allowedPrefix
-		global $wi, $wgConf, $wgGroupPermissions;
+		global $wgGroupPermissions;
 
 		$cWJ = new CreateWikiJson( self::getConfig( 'DBname' ) );
+		$remoteWiki = new RemoteWiki( self::getConfig( 'DBname' ) );
 
 		$cWJ->update();
 
-		$wi->readCache();
-
-		// Redefine
-		$wgConf = $wi->config;
-
-		// Unfortunately we don't exist in a world where no one sets
-		// any defaults - so we have to override our version over exts.
-		$wgConf->extractAllGlobals( self::getConfig( 'DBname' ) );
-
 		// Safety Catch!
-		if ( $wgConf->settings['cwPrivate'][self::getConfig( 'DBname' )] ) {
+		if ( $remoteWiki->isPrivate() ) {
 			$wgGroupPermissions['*']['read'] = false;
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
