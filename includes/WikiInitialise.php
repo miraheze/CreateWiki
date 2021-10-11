@@ -221,7 +221,7 @@ class WikiInitialise {
 		}
 	}
 
-	public function loadExtensions() {
+	public function loadExtensions( $mtimeFile = false ) {
 		// If we don't have a cache file, let us exit here
 		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
 			return;
@@ -231,7 +231,9 @@ class WikiInitialise {
 
 		$config = new GlobalVarConfig( 'wg' );
 
-		if ( !file_exists( "{$this->cacheDir}/extension-list.json" ) ) {
+		if ( !file_exists( "{$this->cacheDir}/extension-list.json" ) ||
+			( $mtimeFile && ( filemtime( "{$this->cacheDir}/extension-list.json" ) <= filemtime( $mtimeFile ) ) )
+		) {
 			$queue = array_fill_keys( array_merge(
 					glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
 					glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
