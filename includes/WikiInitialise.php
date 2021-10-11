@@ -222,6 +222,11 @@ class WikiInitialise {
 	}
 
 	public function loadExtensions( $mtimeFile = false ) {
+		// If we don't have a cache file, let us exit here
+		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
+			return;
+		}
+
 		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
 
 		$config = new GlobalVarConfig( 'wg' );
