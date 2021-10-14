@@ -28,7 +28,7 @@ class GenerateMissingCache extends Maintenance {
 			$cWJ = new CreateWikiJson( $db );
 			$cWJ->update();
 
-			$this->output( "Cache generated for {$db}" );
+			$this->output( "Cache generated for {$db}\n" );
 		}
 	}
 }
