@@ -137,7 +137,8 @@ class CreateWikiJson {
 			'states' => [
 				'private' => (bool)$wikiObject->wiki_private,
 				'closed' => $wikiObject->wiki_closed_timestamp ?? false,
-				'inactive' => ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false )
+				'inactive' => ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false ),
+				'experimental' => (bool)$wikiObject->wiki_experimental
 			]
 		];
 
