@@ -236,6 +236,11 @@
 			"description": "String. The path to store CreateWiki cache files at.",
 			"public": true,
 			"value": ""
+		},
+		"CreateWikiUseExperimental": {
+			"description": "Boolean. Whether to implement front end logic for marking wikis as experimental.",
+			"public": true,
+			"value": false
 		}
 	},
 	"ConfigRegistry": {
