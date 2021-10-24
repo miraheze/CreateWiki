@@ -321,7 +321,7 @@ class RemoteWiki {
 		$this->dbcluster = $dbcluster;
 		$this->newRows['wiki_dbcluster'] = $dbcluster;
 	}
-	
+
 	public function isExperimental() {
 		return $this->experimental;
 	}
