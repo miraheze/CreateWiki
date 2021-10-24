@@ -25,6 +25,7 @@ class RemoteWiki {
 	private $locked;
 	private $dbcluster;
 	private $category;
+	private $experimental;
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
@@ -55,6 +56,7 @@ class RemoteWiki {
 		$this->locked = $wikiRow->wiki_locked;
 		$this->dbcluster = $wikiRow->wiki_dbcluster;
 		$this->category = $wikiRow->wiki_category;
+		$this->experimental = $wikiRow->wiki_experimental;
 	}
 
 	public function getCreationDate() {
@@ -318,6 +320,10 @@ class RemoteWiki {
 
 		$this->dbcluster = $dbcluster;
 		$this->newRows['wiki_dbcluster'] = $dbcluster;
+	}
+	
+	public function isExperimental() {
+		return $this->experimental;
 	}
 
 	public function commit() {
