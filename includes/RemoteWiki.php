@@ -325,7 +325,7 @@ class RemoteWiki {
 	public function isExperimental() {
 		return $this->experimental;
 	}
-	
+
 	public function markExperimental() {
 		$this->changes['experimental'] = [
 			'old' => 0,
@@ -335,7 +335,7 @@ class RemoteWiki {
 		$this->experimental = true;
 		$this->newRows['wiki_experimental'] = true;
 	}
-	
+
 	public function unMarkExperimental() {
 		$this->changes['experimental'] = [
 			'old' => 1,
