@@ -92,7 +92,7 @@ class CreateWikiHooks {
 		$updater->addExtensionField(
 			'cw_wikis',
 			'wiki_experimental',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-cw_experimental.sql'
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_experimental.sql'
 		);
 	}
 
