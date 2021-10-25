@@ -325,6 +325,26 @@ class RemoteWiki {
 	public function isExperimental() {
 		return $this->experimental;
 	}
+	
+	public function markExperimental() {
+		$this->changes['experimental'] = [
+			'old' => 0,
+			'new' => 1
+		];
+
+		$this->experimental = true;
+		$this->newRows['wiki_experimental'] = true;
+	}
+	
+	public function unMarkExprimental() {
+		$this->changes['experimental'] = [
+			'old' => 1,
+			'new' => 0
+		];
+
+		$this->experimental = false;
+		$this->newRows['wiki_experimental'] = false;
+	}
 
 	public function commit() {
 		if ( !empty( $this->changes ) ) {
