@@ -59,7 +59,7 @@ function wfOnMediaWikiServices( MediaWiki\MediaWikiServices $services ) {
 			]
 		);
 	} catch ( Wikimedia\Rdbms\DBQueryError $e ) {
-		print $e
+		print $e;
 		return;
 	}
 }
