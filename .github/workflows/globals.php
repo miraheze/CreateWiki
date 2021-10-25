@@ -25,6 +25,9 @@ $wi->config->settings += [
 	'cwPrivate' => [
 		'default' => false,
 	],
+	'cwExperimental' => [
+		'default' => false,
+	],
 ];
 
 $wgCreateWikiGlobalWiki = 'wikidb';
