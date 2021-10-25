@@ -336,7 +336,7 @@ class RemoteWiki {
 		$this->newRows['wiki_experimental'] = true;
 	}
 	
-	public function unMarkExprimental() {
+	public function unMarkExperimental() {
 		$this->changes['experimental'] = [
 			'old' => 1,
 			'new' => 0
