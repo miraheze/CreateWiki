@@ -101,7 +101,7 @@ class CreateWikiJson {
 				}
 			}
 			if $wiki->wiki_experimental == 1) {
-				$experimenalList[$wiki->wiki_dbname]
+				$experimenalList[$wiki->wiki_dbname] = "";
 			}
 		}
 
