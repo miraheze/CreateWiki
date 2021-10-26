@@ -74,7 +74,8 @@ class CreateWikiJson {
 				'wiki_dbname',
 				'wiki_deleted',
 				'wiki_url',
-				'wiki_sitename'
+				'wiki_sitename',
+				'wiki_experimental'
 			]
 		);
 
