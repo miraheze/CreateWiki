@@ -100,7 +100,7 @@ class CreateWikiJson {
 					$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
 				}
 			}
-			if $wiki->wiki_experimental == 1) {
+			if ( $wiki->wiki_experimental == 1 ) {
 				$experimenalList[$wiki->wiki_dbname] = "";
 			}
 		}
