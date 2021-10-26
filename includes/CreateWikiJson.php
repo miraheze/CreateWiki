@@ -81,7 +81,7 @@ class CreateWikiJson {
 
 		$combiList = [];
 		$deletedList = [];
-		$experimenalList = [];
+		$experimentalList = [];
 
 		foreach ( $allWikis as $wiki ) {
 			if ( $wiki->wiki_deleted == 1 ) {
