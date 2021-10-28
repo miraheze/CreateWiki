@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Amire80",
 			"Liuxinyu970226",
 			"Purodha",
 			"Reception123",
@@ -10,7 +11,7 @@
 		]
 	},
 	"action-createwiki": "{{doc-action|create wikis}}",
-	"action-requestwiki": "Permission to request wiki. Used at Special:ListGroupRights",
+	"action-requestwiki": "{{doc-action|request wikis}}",
 	"createwiki": "{{doc-action|Create a wiki}}",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
@@ -87,5 +88,6 @@
 	"requestwikiqueue-searchrequest": "To search wiki requests",
 	"requestwikiqueue-usernotfound": "The search user was not found message",
 	"requestwikiqueue-view": "To view the wiki request.",
+	"right-requestwiki": "{{doc-right|requestwiki}}",
 	"right-createwiki": "{{doc-right|createwiki}}"
 }
