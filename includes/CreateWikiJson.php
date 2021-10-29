@@ -101,6 +101,7 @@ class CreateWikiJson {
 					$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
 				}
 			}
+
 			if ( $wiki->wiki_experimental == 1 ) {
 				$experimentalList[$wiki->wiki_dbname] = [];
 			}
@@ -108,16 +109,12 @@ class CreateWikiJson {
 
 		file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
 		file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
-		file_put_contents( "{$this->cacheDir}/experimental.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $experimentalList ] ), LOCK_EX );
 
 		if ( file_exists( "{$this->cacheDir}/databases.json.tmp" ) ) {
 			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
 		}
 		if ( file_exists( "{$this->cacheDir}/deleted.json.tmp" ) ) {
 			rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
-		}
-		if ( file_exists( "{$this->cacheDir}/experimental.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/experimental.json.tmp", "{$this->cacheDir}/experimental.json" );
 		}
 	}
 
