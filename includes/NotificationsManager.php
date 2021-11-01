@@ -83,7 +83,7 @@ class NotificationsManager {
 		foreach ( $receivers as $receiver ) {
 			EchoEvent::create( [
 				'type' => $this->type,
-				'extra' => $data['extra'],
+				'extra' => $data['extra'] + [ 'notifyAgent' => true ],
 				'agent' => $this->userFactory->newFromName( $receiver ),
 			] );
 		}
