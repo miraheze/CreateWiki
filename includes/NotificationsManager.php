@@ -22,7 +22,7 @@ class NotificationsManager {
 	 * @return string
 	 */
 	private function getFromName(): string {
-		return $this->type === 'creation' ?
+		return $this->type === 'wiki-creation' ?
 			'CreateWiki on ' . $this->config->get( 'Sitename' ) :
 			'CreateWiki Notifications';
 	}
@@ -32,9 +32,9 @@ class NotificationsManager {
 	 */
 	private function getEmailTypes(): array {
 		return [
-			'creation',
 			'deletion',
-			'rename',
+			'wiki-creation',
+			'wiki-rename',
 		];
 	}
 
@@ -43,9 +43,9 @@ class NotificationsManager {
 	 */
 	private function getEchoTypes(): array {
 		return [
-			'comment',
-			'creation',
-			'declined',
+			'request-comment',
+			'request-declined',
+			'wiki-creation',
 		];
 	}
 
@@ -54,8 +54,8 @@ class NotificationsManager {
 	 */
 	private function notifyServerAdministratorsTypes(): array {
 		return [
-			'rename',
 			'deletion',
+			'wiki-rename',
 		];
 	}
 
