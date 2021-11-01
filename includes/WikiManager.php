@@ -161,13 +161,12 @@ class WikiManager {
 			'extra' => [
 				'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 				'sitename' => $siteName,
-				'notifyAgent' => true
 			],
 			'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
 			'body' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse(),
 		];
 
-		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationManager' )
+		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
 			->sendNotification( $notificationData, [ $requester ] );
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
