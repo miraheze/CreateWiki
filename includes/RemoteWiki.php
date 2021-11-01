@@ -368,7 +368,7 @@ class RemoteWiki {
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
 
-			if ( $this->log === null ) {
+			if ( $this->log === null || count( $this->changes ) > 1 ) {
 				$this->log = 'settings';
 				$this->logParams = [
 					'5::changes' => implode( ', ', array_keys( $this->changes ) )
