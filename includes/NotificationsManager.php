@@ -76,7 +76,7 @@ class NotificationsManager {
 		$this->type = $data['type'];
 
 		if ( in_array( $this->type, $this->getEchoTypes() ) ) {
-			$this->sendEchoNotification( $receivers );
+			$this->sendEchoNotification( $data, $receivers );
 		}
 
 		if ( in_array( $this->type, $this->getEmailTypes() ) ) {
@@ -90,8 +90,12 @@ class NotificationsManager {
 	 */
 	private function sendEchoNotification( array $data, array $receivers ) {
 		foreach ( $receivers as $receiver ) {
-
 			$user = !is_object( $receiver ) ? $this->userFactory->newFromName( $receiver ) : $receiver;
+
+			if ( !$user ) {
+				continue;
+			}
+
 			EchoEvent::create( [
 				'type' => $this->type,
 				'extra' => $data['extra'] + [ 'notifyAgent' => true ],
