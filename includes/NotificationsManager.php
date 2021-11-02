@@ -90,10 +90,12 @@ class NotificationsManager {
 	 */
 	private function sendEchoNotification( array $data, array $receivers ) {
 		foreach ( $receivers as $receiver ) {
+
+			$user = !is_object( $receiver ) ? $this->userFactory->newFromName( $receiver ) : $receiver;
 			EchoEvent::create( [
 				'type' => $this->type,
 				'extra' => $data['extra'] + [ 'notifyAgent' => true ],
-				'agent' => $this->userFactory->newFromName( $receiver ),
+				'agent' => $user,
 			] );
 		}
 	}
@@ -107,7 +109,7 @@ class NotificationsManager {
 			$notifyEmails = [];
 
 			foreach ( $receivers as $receiver ) {
-				$user = $this->userFactory->newFromName( $receiver );
+				$user = !is_object( $receiver ) ? $this->userFactory->newFromName( $receiver ) : $receiver;
 
 				if ( !$user ) {
 					continue;
