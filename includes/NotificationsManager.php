@@ -90,7 +90,7 @@ class NotificationsManager {
 	 */
 	private function sendEchoNotification( array $data, array $receivers ) {
 		foreach ( $receivers as $receiver ) {
-			$user = !is_object( $receiver ) ? $this->userFactory->newFromName( $receiver ) : $receiver;
+			$user = is_object( $receiver ) ? $receiver : $this->userFactory->newFromName( $receiver );
 
 			if ( !$user ) {
 				continue;
@@ -113,7 +113,7 @@ class NotificationsManager {
 			$notifyEmails = [];
 
 			foreach ( $receivers as $receiver ) {
-				$user = !is_object( $receiver ) ? $this->userFactory->newFromName( $receiver ) : $receiver;
+				$user = is_object( $receiver ) ? $receiver : $this->userFactory->newFromName( $receiver );
 
 				if ( !$user ) {
 					continue;
