@@ -1,8 +1,7 @@
 <?php
 class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
-		// No icon yet
-		return 'placeholder';
+		return 'chat';
 	}
 
 	public function getHeaderMessage() {
