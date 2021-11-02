@@ -2,7 +2,7 @@
 
 use MediaWiki\User\UserFactory;
 
-class NotificationsManager {
+class CreateWikiNotificationsManager {
 	/** @var Config */
 	private $config;
 
