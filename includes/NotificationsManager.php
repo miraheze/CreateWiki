@@ -22,9 +22,15 @@ class NotificationsManager {
 	 * @return string
 	 */
 	private function getFromName(): string {
-		return $this->type === 'wiki-creation' ?
-			'CreateWiki on ' . $this->config->get( 'Sitename' ) :
-			'CreateWiki Notifications';
+		if ( $this->type === 'closure' ) {
+			return wfMessage( 'createwiki-close-email-sender' )->text();
+		}
+
+		if ( $this->type === 'wiki-creation' ) {
+			return 'CreateWiki on ' . $this->config->get( 'Sitename' );
+		}
+
+		return 'CreateWiki Notifications';
 	}
 
 	/**
@@ -32,6 +38,7 @@ class NotificationsManager {
 	 */
 	private function getEmailTypes(): array {
 		return [
+			'closure',
 			'deletion',
 			'wiki-creation',
 			'wiki-rename',
