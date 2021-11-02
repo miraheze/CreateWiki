@@ -107,7 +107,20 @@ class WikiRequest {
 			__METHOD__
 		);
 
-		$this->sendNotification( $comment, $user, $type );
+		$reason = $type === 'declined' ? 'reason' : 'comment';
+		$notificationData = [
+			'type' => "request-{$type}",
+			'extra' => [
+				'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
+				$reason => $comment,
+			],
+		];
+
+		// Don't notify the acting user of their action
+		unset( $this->involvedUsers[$user->getId()] );
+
+		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+			->sendNotification( $notificationData, $this->involvedUsers );
 	}
 
 	public function getComments() {
@@ -198,31 +211,6 @@ class WikiRequest {
 
 		if ( $log ) {
 			$this->addComment( 'Updated request.', $user );
-		}
-	}
-
-	private function sendNotification( string $text, User $user, string $type ) {
-		if ( !$this->config->get( 'CreateWikiUseEchoNotifications' ) ) {
-			return;
-		}
-
-		$comment = $type == 'declined' ? 'reason' : 'comment';
-
-		// Don't notify the acting user of their action
-		unset( $this->involvedUsers[$user->getId()] );
-
-		foreach ( $this->involvedUsers as $user => $object ) {
-			EchoEvent::create(
-				[
-					'type' => "request-{$type}",
-					'extra' => [
-						'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
-						$comment => $text,
-						'notifyAgent' => true,
-					],
-					'agent' => $object,
-				]
-			);
 		}
 	}
 
