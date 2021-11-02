@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\User\UserFactory;
+
 class NotificationsManager {
 	/** @var Config */
 	private $config;
