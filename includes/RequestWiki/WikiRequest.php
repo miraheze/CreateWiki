@@ -120,7 +120,7 @@ class WikiRequest {
 		unset( $this->involvedUsers[$user->getId()] );
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, $this->involvedUsers );
+			->sendNotification( $notificationData, array_values( $this->involvedUsers ) );
 	}
 
 	public function getComments() {
