@@ -136,7 +136,6 @@ class CreateWikiHooks {
 	* @param array &$notifications array of Echo notifications
 	* @param array &$notificationCategories array of Echo notification categories
 	* @param array &$icons array of icon details
-	* @return bool
 	*/
 	public static function onBeforeCreateEchoEvent(
 		&$notifications, &$notificationCategories, &$icons
