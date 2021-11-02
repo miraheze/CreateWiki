@@ -63,8 +63,8 @@ class DeleteWikis extends Maintenance {
 
 		$notificationData = [
 			'type' => 'deletion',
-			'subject' => 'Wikis Deleted Notification';
-			'body' => "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$user} has deleted the following wikis from the CreateWiki and associated extensions:\n{$deletedWikis}";
+			'subject' => 'Wikis Deleted Notification',
+			'body' => "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$user} has deleted the following wikis from the CreateWiki and associated extensions:\n{$deletedWikis}",
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
