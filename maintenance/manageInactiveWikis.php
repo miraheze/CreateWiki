@@ -157,19 +157,23 @@ class ManageInactiveWikis extends Maintenance {
 	private function emailBureaucrats( $wikiDb ) {
 		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
-		$bureaucrats = $dbr->select(
-			[ 'user', 'user_groups' ],
-			[ 'user_name' ],
+		$ids = $dbr->selectFieldValues(
+			'user_groups',
+			'ug_user',
 			[ 'ug_group' => 'bureaucrat' ],
 			__METHOD__,
-			[],
 			[
-				'user_groups' => [
-					'INNER JOIN',
-					[ 'user_id=ug_user' ]
-				]
+				'DISTINCT' => true,
+				'ORDER BY' => 'ug_user',
 			]
-		);
+		) ?: [];
+
+		$userArray = UserArray::newFromIDs( $ids );
+		$bureaucrats = [];
+
+		foreach ( $userArray as $user ) {
+			$bureaucrats[] = $user->getName();
+		}
 
 		$notificationData = [
 			'type' => 'closure',
