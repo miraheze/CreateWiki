@@ -63,7 +63,7 @@ class NotificationsManager {
 	 * @param array $data
 	 * @param array $receivers
 	 */
-	public function sendNotification( array $data, array $receivers ) {
+	public function sendNotification( array $data, array $receivers = [] ) {
 		$this->type = $data['type'];
 
 		if ( in_array( $this->type, $this->getEchoTypes() ) {
