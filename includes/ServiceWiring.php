@@ -3,8 +3,8 @@
 use MediaWiki\MediaWikiServices;
 
 return [
-	'CreateWiki.NotificationsManager' => static function ( MediaWikiServices $services ): NotificationsManager {
-		return new NotificationsManager(
+	'CreateWiki.NotificationsManager' => static function ( MediaWikiServices $services ): CreateWikiNotificationsManager {
+		return new CreateWikiNotificationsManager(
 			$services->getConfigFactory()->makeConfig( 'createwiki' ),
 			$services->getUserFactory()
 		);
