@@ -168,12 +168,7 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		) ?: [];
 
-		$userArray = UserArray::newFromIDs( $ids );
-		$bureaucrats = [];
-
-		foreach ( $userArray as $user ) {
-			$bureaucrats[] = $user->getName();
-		}
+		$bureaucrats = UserArray::newFromIDs( $ids );
 
 		$notificationData = [
 			'type' => 'closure',
