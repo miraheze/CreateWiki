@@ -157,7 +157,7 @@ class WikiManager {
 		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 		$notificationData = [
-			'type' => 'wiki-creation';
+			'type' => 'wiki-creation',
 			'extra' => [
 				'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 				'sitename' => $siteName,
