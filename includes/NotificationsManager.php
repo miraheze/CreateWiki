@@ -75,11 +75,17 @@ class NotificationsManager {
 	public function sendNotification( array $data, array $receivers = [] ) {
 		$this->type = $data['type'];
 
-		if ( in_array( $this->type, $this->getEchoTypes() ) ) {
+		if (
+			$this->config->get( 'CreateWikiUseEchoNotifications' ) &&
+			in_array( $this->type, $this->getEchoTypes() )
+		) {
 			$this->sendEchoNotification( $data, $receivers );
 		}
 
-		if ( in_array( $this->type, $this->getEmailTypes() ) ) {
+		if (
+			$this->config->get( 'CreateWikiEmailNotifications' ) &&
+			in_array( $this->type, $this->getEmailTypes() )
+		) {
 			$this->sendEmailNotification( $data, $receivers );
 		}
 	}
