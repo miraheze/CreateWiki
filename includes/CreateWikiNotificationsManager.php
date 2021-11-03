@@ -1,10 +1,23 @@
 <?php
 
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\User\UserFactory;
 
 class CreateWikiNotificationsManager {
-	/** @var Config */
-	private $config;
+
+	public const CONSTRUCTOR_OPTIONS = [
+		'CreateWikiEmailNotifications',
+		'CreateWikiNotificationEmail',
+		'CreateWikiUseEchoNotifications',
+		'PasswordSender',
+		'Sitename',
+	];
+
+	/** @var MessageLocalizer */
+	private $messageLocalizer;
+
+	/** @var ServiceOptions */
+	private $options;
 
 	/** @var UserFactory */
 	private $userFactory;
@@ -13,10 +26,20 @@ class CreateWikiNotificationsManager {
 	private $type;
 
 	/**
-	 * @param Config $config
+	 * @param MessageLocalizer $messageLocalizer
+	 * @param ServiceOptions $options
+	 * @param UserFactory $userFactory
 	 */
-	public function __construct( Config $config, UserFactory $userFactory ) {
-		$this->config = $config;
+	public function __construct(
+		MessageLocalizer $messageLocalizer,
+		ServiceOptions $options,
+		UserFactory $userFactory
+	) {
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
+
+		$this->messageLocalizer = $messageLocalizer;
+
+		$this->options = $options;
 		$this->userFactory = $userFactory;
 	}
 
@@ -25,11 +48,11 @@ class CreateWikiNotificationsManager {
 	 */
 	private function getFromName(): string {
 		if ( $this->type === 'closure' ) {
-			return wfMessage( 'createwiki-close-email-sender' )->text();
+			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )->text();
 		}
 
 		if ( $this->type === 'wiki-creation' ) {
-			return 'CreateWiki on ' . $this->config->get( 'Sitename' );
+			return 'CreateWiki on ' . $this->options->get( 'Sitename' );
 		}
 
 		return 'CreateWiki Notifications';
@@ -76,14 +99,14 @@ class CreateWikiNotificationsManager {
 		$this->type = $data['type'];
 
 		if (
-			$this->config->get( 'CreateWikiUseEchoNotifications' ) &&
+			$this->options->get( 'CreateWikiUseEchoNotifications' ) &&
 			in_array( $this->type, $this->getEchoTypes() )
 		) {
 			$this->sendEchoNotification( $data, $receivers );
 		}
 
 		if (
-			$this->config->get( 'CreateWikiEmailNotifications' ) &&
+			$this->options->get( 'CreateWikiEmailNotifications' ) &&
 			in_array( $this->type, $this->getEmailTypes() )
 		) {
 			$this->sendEmailNotification( $data, $receivers );
@@ -135,10 +158,10 @@ class CreateWikiNotificationsManager {
 			}
 
 			if ( in_array( $this->type, $this->notifyServerAdministratorsTypes() ) ) {
-				$notifyEmails[] = new MailAddress( $this->config->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
+				$notifyEmails[] = new MailAddress( $this->options->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
 			}
 
-			$from = new MailAddress( $this->config->get( 'PasswordSender' ), $this->getFromName() );
+			$from = new MailAddress( $this->options->get( 'PasswordSender' ), $this->getFromName() );
 			UserMailer::send(
 				$notifyEmails,
 				$from,
