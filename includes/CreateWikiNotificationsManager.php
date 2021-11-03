@@ -119,6 +119,12 @@ class CreateWikiNotificationsManager {
 			$notifyEmails = [];
 
 			foreach ( $receivers as $receiver ) {
+				if ( $receiver instanceof MailAddress ) {
+					$notifyEmails[] = $receiver;
+
+					continue;
+				}
+
 				$user = is_object( $receiver ) ? $receiver : $this->userFactory->newFromName( $receiver );
 
 				if ( !$user ) {
@@ -133,7 +139,6 @@ class CreateWikiNotificationsManager {
 			}
 
 			$from = new MailAddress( $this->config->get( 'PasswordSender' ), $this->getFromName() );
-
 			UserMailer::send(
 				$notifyEmails,
 				$from,
