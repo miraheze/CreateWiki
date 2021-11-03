@@ -171,9 +171,9 @@ class ManageInactiveWikis extends Maintenance {
 			]
 		);
 
-		$receivers = [];
+		$emails = [];
 		foreach ( $bureaucrats as $user ) {
-			$receivers[] = new MailAddress( $user->user_email, $user->user_name );
+			$emails[] = new MailAddress( $user->user_email, $user->user_name );
 		}
 
 		$notificationData = [
@@ -183,7 +183,7 @@ class ManageInactiveWikis extends Maintenance {
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, $receivers );
+			->sendNotification( $notificationData, $emails );
 	}
 }
 
