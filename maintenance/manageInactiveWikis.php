@@ -157,18 +157,24 @@ class ManageInactiveWikis extends Maintenance {
 	private function emailBureaucrats( $wikiDb ) {
 		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
-		$ids = $dbr->selectFieldValues(
-			'user_groups',
-			'ug_user',
+		$bureaucrats = $dbr->select(
+			[ 'user', 'user_groups' ],
+			[ 'user_email', 'user_name' ],
 			[ 'ug_group' => 'bureaucrat' ],
 			__METHOD__,
+			[],
 			[
-				'DISTINCT' => true,
-				'ORDER BY' => 'ug_user',
+				'user_groups' => [
+					'INNER JOIN',
+					[ 'user_id=ug_user' ]
+				]
 			]
-		) ?: [];
+		);
 
-		$bureaucrats = UserArray::newFromIDs( $ids );
+		$receivers = [];
+		foreach ( $bureaucrats as $user ) {
+			$receivers[] = new MailAddress( $user->user_email, $user->user_name );
+		}
 
 		$notificationData = [
 			'type' => 'closure',
@@ -177,7 +183,7 @@ class ManageInactiveWikis extends Maintenance {
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, $bureaucrats );
+			->sendNotification( $notificationData, $receivers );
 	}
 }
 
