@@ -89,7 +89,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
-					$this->emailBureaucrats( $dbName, $config );
+					$this->emailBureaucrats( $dbName );
 
 					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
@@ -154,8 +154,8 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	public function emailBureaucrats( $wikiDb, $config ) {
-		$dbr = wfGetDB( DB_REPLICA );
+	private function emailBureaucrats( $wikiDb ) {
+		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
@@ -172,15 +172,18 @@ class ManageInactiveWikis extends Maintenance {
 		);
 
 		$emails = [];
-		foreach ( $bureaucrats as $users ) {
-			$emails[] = new MailAddress( $users->user_email, $users->user_name );
+		foreach ( $bureaucrats as $user ) {
+			$emails[] = new MailAddress( $user->user_email, $user->user_name );
 		}
 
-		$from = new MailAddress( $config->get( 'PasswordSender' ), wfMessage( 'createwiki-close-email-sender' ) );
-		$subject = wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text();
-		$body = wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text();
+		$notificationData = [
+			'type' => 'closure',
+			'subject' => wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text(),
+			'body' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
+		];
 
-		return UserMailer::send( $emails, $from, $subject, $body );
+		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+			->sendNotification( $notificationData, $emails );
 	}
 }
 

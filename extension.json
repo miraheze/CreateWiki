@@ -49,6 +49,7 @@
 		"CreateWikiJob": "includes/CreateWiki/CreateWikiJob.php",
 		"CreateWikiJson": "includes/CreateWikiJson.php",
 		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
+		"CreateWikiNotificationsManager": "includes/CreateWikiNotificationsManager.php",
 		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
 		"DeleteWikis": "maintenance/deleteWikis.php",
 		"EchoCreateWikiPresentationModel": "includes/echo/EchoCreateWikiPresentationModel.php",
@@ -256,6 +257,9 @@
 		"echo-subscriptions-web-wiki-rename": true,
 		"echo-subscriptions-email-wiki-rename": false
 	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
 	"load_composer_autoloader": true,
 	"callback": "CreateWikiHooks::onRegistration",
 	"manifest_version": 2

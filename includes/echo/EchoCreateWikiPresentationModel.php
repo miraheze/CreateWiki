@@ -1,8 +1,7 @@
 <?php
 class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
-		// No icon yet
-		return 'placeholder';
+		return 'global';
 	}
 
 	public function getSubjectMessage() {

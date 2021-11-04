@@ -156,7 +156,21 @@ class WikiManager {
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		$this->notificationsTrigger( 'creation', $wiki, [ 'siteName' => $siteName ], $requester );
+		$notificationData = [
+			'type' => 'wiki-creation',
+			'extra' => [
+				'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+				'sitename' => $siteName,
+			],
+			'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
+			'body' => [
+				'html' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse(),
+				'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
+			],
+		];
+
+		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+			->sendNotification( $notificationData, [ $requester ] );
 
 		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 
@@ -294,74 +308,6 @@ class WikiManager {
 		$logEntry->setParameters( $params );
 		$logID = $logEntry->insert( $logDBConn );
 		$logEntry->publish( $logID );
-	}
-
-	public function notificationsTrigger( string $type, string $wiki, array $specialData, $receivers ) {
-		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
-
-		$echoExtra = [];
-
-		switch ( $type ) {
-			case 'creation':
-				$echoType = 'wiki-creation';
-				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
-					'sitename' => $specialData['siteName'],
-					'notifyAgent' => true
-				];
-				break;
-			case 'rename':
-				$echoType = 'wiki-rename';
-				$echoExtra = [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
-					'sitename' => $specialData['siteName'],
-					'notifyAgent' => true
-				];
-				break;
-			case 'request-declined':
-				$echoType = 'request-declined';
-				$echoExtra = [
-					'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $specialData['id'] )->getFullURL(),
-					'reason' => $specialData['reason'],
-					'notifyAgent' => true
-				];
-				break;
-			default:
-				$echoType = false;
-				break;
-		}
-
-		if ( $this->config->get( 'CreateWikiUseEchoNotifications' ) && $echoType ) {
-			foreach ( (array)$receivers as $receiver ) {
-				EchoEvent::create(
-					[
-						'type' => $echoType,
-						'extra' => $echoExtra,
-						'agent' => $userFactory->newFromName( $receiver )
-					]
-				);
-			}
-		}
-
-		if ( $this->config->get( 'CreateWikiEmailNotifications' ) && $type == 'creation' ) {
-			$notifyEmails = [];
-
-			foreach ( (array)$receivers as $receiver ) {
-				$user = $userFactory->newFromName( $receiver );
-
-				if ( !$user ) {
-					continue;
-				}
-
-				$notifyEmails[] = MailAddress::newFromUser( $user );
-			}
-
-			$from = new MailAddress( $this->config->get( 'PasswordSender' ), 'CreateWiki on ' . $this->config->get( 'Sitename' ) );
-			$subject = wfMessage( 'createwiki-email-subject', $specialData['siteName'] )->inContentLanguage()->text();
-			$body = wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse();
-
-			UserMailer::send( $notifyEmails, $from, $subject, $body );
-		}
 	}
 
 	private function recacheJson( $wiki = null ) {
