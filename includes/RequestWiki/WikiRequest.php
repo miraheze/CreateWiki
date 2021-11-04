@@ -117,7 +117,7 @@ class WikiRequest {
 		];
 
 		// Don't notify the acting user of their action
-		// unset( $this->involvedUsers[$user->getId()] );
+		unset( $this->involvedUsers[$user->getId()] );
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
 			->sendNotification( $notificationData, $this->involvedUsers );
