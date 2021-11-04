@@ -154,7 +154,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	private function emailBureaucrats( $wikiDb ) {
+	public function emailBureaucrats( $wikiDb ) {
 		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
 		$bureaucrats = $dbr->select(
