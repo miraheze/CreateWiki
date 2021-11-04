@@ -163,7 +163,10 @@ class WikiManager {
 				'sitename' => $siteName,
 			],
 			'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
-			'body' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse(),
+			'body' => [
+				'html' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->parse(),
+				'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
+			],
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
