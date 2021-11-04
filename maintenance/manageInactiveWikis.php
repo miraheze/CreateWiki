@@ -155,7 +155,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	private function emailBureaucrats( $wikiDb ) {
-		$dbr = wfGetDB( DB_REPLICA, [], 'cosmoswiki' );
+		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
@@ -178,7 +178,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$notificationData = [
 			'type' => 'closure',
-			'subject' => wfMessage( 'miraheze-close-email-subject', 'cosmoswiki' )->inContentLanguage()->text(),
+			'subject' => wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text(),
 			'body' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
 		];
 
