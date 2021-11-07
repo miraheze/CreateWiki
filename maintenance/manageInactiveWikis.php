@@ -180,7 +180,10 @@ class ManageInactiveWikis extends Maintenance {
 		$notificationData = [
 			'type' => 'closure',
 			'subject' => wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text(),
-			'body' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
+			'body' => [
+				'html' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
+				'text' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
+			],
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
