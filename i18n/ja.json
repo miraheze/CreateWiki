@@ -23,7 +23,7 @@
 	"createwiki-desc": "WikiFarmで新しいWikiを簡単に作成するための拡張機能。",
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "新規 Miraheze Wikiの名称: $1",
-	"createwiki-email-body": "こんにちは。\n\nあなたは最近、MirahezeのWikiをリクエストしました。承認されましたので、お知らせします。\n\nMirahezeはあらゆる面であなたをサポートしますので、遠慮なくお尋ねください。Mirahezeの[[Help center]]では、ManageWikiツールを使ったWikiの管理、画像やテンプレートの使用、タスクのファイリングなど、さまざまなトピックに関する詳しいヘルプをご覧いただけます。\n\nすべてのWikiは、[[Content Policy]]に従わなければ閉鎖される可能性があることを覚えておいてください。また、承認された目的から大きく外れると閉鎖される可能性がありますので、ご注意ください。\n\nMirahezeを選んでいただき、ありがとうございます。あなたの新しいWikiでの冒険が成功することを願っています。",
+	"createwiki-email-body": "こんにちは。\n\nあなたは最近、MirahezeのWikiをリクエストしました。承認されましたので、お知らせします。\n\nMirahezeはあらゆる面であなたをサポートしますので、遠慮なくお尋ねください。Mirahezeの<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">ヘルプセンター</a>では、ManageWikiツールを使ったWikiの管理、画像やテンプレートの使用、タスクのファイリングなど、さまざまなトピックに関する詳しいヘルプをご覧いただけます。\n\nすべてのWikiは、 <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">コンテンツ・ポリシー</a>に従わなければ閉鎖される可能性があることを覚えておいてください。また、承認された目的から大きく外れると閉鎖される可能性がありますので、ご注意ください。\n\nMirahezeを選んでいただき、ありがとうございます。あなたの新しいWikiでの冒険が成功することを願っています。",
 	"createwiki-error-blacklisted": "あなたがリクエストしたサブドメインは作成できません。新しいサブドメインをリクエストするか、システム管理者にお問い合わせください。",
 	"createwiki-error-dbexists": "指定したデータベース名のWikiは既に存在します。",
 	"createwiki-error-requesternonexistent": "申請者はMiraheze Metaに登録されていません。",
