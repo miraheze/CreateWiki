@@ -10,10 +10,7 @@
 	"createwiki-defaultmainpage-summary": "建立首頁",
 	"createwiki-desc": "可以在wiki農場上輕鬆建立新wiki的擴充功能。",
 	"createwiki-email-subject": "您在Miraheze上的新wiki：$1",
-	"createwiki-error-requesternonexistent": "申請者賬號在Miraheze Meta上不存在。",
 	"createwiki-label-reason": "原因：",
 	"createwiki-label-requester": "申請者：",
-	"createwiki-label-sitename": "站點名稱：",
-	"createwiki-label-submit": "提交",
-	"createwiki-legend": "建立wiki"
+	"createwiki-label-sitename": "站點名稱："
 }

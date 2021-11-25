@@ -15,19 +15,10 @@
 	"notification-header-wiki-rename": "Jouw wiki <strong>$1</strong> is hernoemd.",
 	"notification-header-request-comment": "Voor een aanvraag die je volgt is een nieuwe reactie geplaatst:",
 	"notification-header-request-declined": "Je aanvraag is om de volgende reden afgewezen:",
-	"requestwiki-edit-notloggedin": "Je moet je eerst <span class=\"plainlinks\">[$1 aanmelden]</span> voordat je een wiki-aanvraag kunt wijzigen.",
-	"requestwiki-edit-user": "Je hebt niet genoeg rechten om deze wiki-aanvraag te wijzigen. Vergeet niet dat je alleen aanvragen kunt bewerken die je met je huidige account hebt ingestuurd.",
-	"requestwiki-error-csrf": "<strong>Sorry, het verzoek kon niet worden verstuurd omdat de sessiegegevens verloren zijn gegaan.</strong>\nVerstuur het formulier opnieuw. Als dit niet werkt, [[Special:Userlogout|meld je dan af]] en meld je dan weer aan.",
 	"requestwiki-error-invalidcomment": "Je wiki-verzoek bevat een ongeldig teken. Probeer opnieuw aan te vragen, en als het probleem aanhoudt [[Help center|neem dan contact met ons op]].",
-	"requestwiki-error-nodomain": "Je moet een subdomein of eigen domeinnaam opgeven.",
-	"requestwiki-error-notallfilledin": "Je moet de velden voor subdomein, wikinaam en beschrijving invullen.",
-	"requestwiki-error-notime": "Er is een probleem opgetreden bij het verwerken van je verzoek. Dien je verzoek opnieuw in.",
 	"requestwiki-error-patient": "Je hebt al een wiki aangevraagd. Even geduld. Een van onze wiki-makers zou hem binnenkort moeten aanmaken. Als je nog een wiki wilt aanvragen, wacht dan even. Je kunt later nog een aanvraag indienen.",
 	"requestwiki-header": "Bedankt dat je je wiki bij Miraheze wilt hosten. Vul eerst dit formulier in zodat wij jouw aanvraag kunnen beoordelen.\nJe wiki-aanvraag wordt beoordeeld door een vrijwilliger en kan worden gevolgd op de pagina die je te zien krijgt bij het insturen van je verzoek.\n\nAls je een eigen domeinnaam (dus geen subdomein van .miraheze.org) wilt gebruiken, lees dan eerst <span class=\"plainlinks\">[$1 dit]</span> door. Je moet eerst een subdomein kiezen en daarna pas wordt jouw eigen domein ingesteld. \n\nDoor het aanvragen van een wiki bij Miraheze ga je ook akkoord met ons [[Content Policy|inhouds-]] en [[Dormancy Policy|inactiviteitsbeleid]].",
-	"requestwiki-label-comments": "Opmerkingen (leg bijvoorbeeld uit waar jouw wiki voor is, waar het over gaat, en wat er zoal op komt):",
-	"requestwiki-label-customdomain-info": "Je moet hierboven een subdomein opgeven. Als je een aangepast domein wilt voor jouw wiki, geef dat dan hieronder op.",
 	"requestwiki-notloggedin": "Sorry, je moet je eerst <span class=\"plainlinks\">[$1 aanmelden]</span> voordat je een wiki kunt aanvragen.",
 	"requestwiki-success": "Je wiki-aanvraag ($1) is ingestuurd. Je verzoek wordt zo snel mogelijk beoordeeld door een vrijwillige wiki-maker.",
-	"requestwikiqueue-request-info-submission": "Hier kun je de zichtbaarheid van de aanvraag wijzigen, de aanvraag goedkeuren of afwijzen en daarbij aanvullende opmerkingen geven. Als je de wiki als goedgekeurd markeert, wordt die automatisch aangemaakt.",
-	"requestwikiqueue-request-info-decline": "Je kunt bij afwijzing de zichtbaarheid van de aanvraag wijzigen en een reden opgeven. De reden wordt zowel in de aanvraaggeschiedenis zichtbaar gemaakt als direct naar de gebruiker gestuurd."
+	"requestwikiqueue-request-info-submission": "Hier kun je de zichtbaarheid van de aanvraag wijzigen, de aanvraag goedkeuren of afwijzen en daarbij aanvullende opmerkingen geven. Als je de wiki als goedgekeurd markeert, wordt die automatisch aangemaakt."
 }
