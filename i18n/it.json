@@ -58,7 +58,7 @@
 	"notification-createwiki-wiki-rename-subject": "Il tuo wiki $1 è stato rinominato.",
 	"notification-createwiki-visit-request": "Vedi la richiesta",
 	"notification-header-wiki-creation": "Il tuo wiki <strong>$1</strong> è stato creato!",
-	"notification-header-wiki-rename": "Il tuo wiki <strong>$1</strong> è stato rinominato!",
+	"notification-header-wiki-rename": "Il tuo wiki <strong>$1</strong> è stato rinominato.",
 	"notification-header-request-comment": "Una richiesta che segui ha ricevuto un nuovo commento:",
 	"notification-header-request-declined": "La tua richiesta è stata rifiutata per il seguente motivo:",
 	"requestwiki": "Richiedi un wiki",
