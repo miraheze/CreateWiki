@@ -192,7 +192,7 @@ class WikiRequest {
 
 		$this->addComment( $reason, $user, 'declined', [ $this->requester ] );
 
-		$nofifyUsers = $this->involvedUsers;
+		$notifyUsers = $this->involvedUsers;
 		unset(
 			$notifyUsers[$this->requester->getId()],
 			$notifyUsers[$user->getId()]
