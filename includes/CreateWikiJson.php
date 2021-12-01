@@ -158,11 +158,15 @@ class CreateWikiJson {
 			'wiki' => false
 		];
 
-		if ( $this->databaseArray['timestamp'] < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
+		// Under php7.4 trying to access a index when the config is null results in a notice.
+		$databaseTimestamp = $this->databaseArray['timestamp'] ?? null;
+		$wikiTimestamp = $this->wikiArray['timestamp'] ?? null;
+
+		if ( $databaseTimestamp < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['databases'] = true;
 		}
 
-		if ( $this->wikiArray['timestamp'] < ( $this->wikiTimestamp ?: PHP_INT_MAX ) ) {
+		if ( $wikiTimestamp < ( $this->wikiTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['wiki'] = true;
 		}
 
