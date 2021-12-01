@@ -8,8 +8,8 @@ class CreateWikiJson {
 	private $dbr;
 	private $cache;
 	private $wiki;
-	private $databaseArray = [];
-	private $wikiArray = [];
+	private $databaseArray;
+	private $wikiArray;
 	private $cacheDir;
 	private $databaseTimestamp;
 	private $wikiTimestamp;
