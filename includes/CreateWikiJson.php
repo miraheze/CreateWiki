@@ -8,8 +8,8 @@ class CreateWikiJson {
 	private $dbr;
 	private $cache;
 	private $wiki;
-	private $databaseArray;
-	private $wikiArray;
+	private $databaseArray = [];
+	private $wikiArray = [];
 	private $cacheDir;
 	private $databaseTimestamp;
 	private $wikiTimestamp;
@@ -23,9 +23,9 @@ class CreateWikiJson {
 		$this->wiki = $wiki;
 
 		AtEase::suppressWarnings();
-		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
+		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true ) ?? [];
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
-		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true );
+		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true ) ?? [];
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 		AtEase::restoreWarnings();
 
@@ -158,11 +158,11 @@ class CreateWikiJson {
 			'wiki' => false
 		];
 
-		if ( !is_null( $this->databaseArray ) && $this->databaseArray['timestamp'] < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
+		if ( $this->databaseArray['timestamp'] < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['databases'] = true;
 		}
 
-		if ( !is_null( $this->wikiArray ) && $this->wikiArray['timestamp'] < ( $this->wikiTimestamp ?: PHP_INT_MAX ) ) {
+		if ( $this->wikiArray['timestamp'] < ( $this->wikiTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['wiki'] = true;
 		}
 
