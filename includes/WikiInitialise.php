@@ -132,7 +132,7 @@ class WikiInitialise {
 		$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'];
 		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
-		$this->config->settings['cwExperimental'][$this->dbname] = (bool)$cacheArray['states']['experimental'] ?? false;
+		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 
 		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
 		$this->config->siteParamsCallback = static function () use ( $cacheArray ) {
