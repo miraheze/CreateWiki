@@ -144,7 +144,8 @@ class WikiRequest {
 				'creator' => $user->getName(),
 			];
 
-			JobQueueGroup::singleton()->push( new CreateWikiJob( Title::newMainPage(), $jobParams ) );
+			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
+			$jobQueueGroup->push( new CreateWikiJob( Title::newMainPage(), $jobParams ) );
 
 			$this->status = 'approved';
 			$this->save();
@@ -280,7 +281,8 @@ class WikiRequest {
 			return;
 		}
 
-		JobQueueGroup::singleton()->push( new RequestWikiAIJob(
+		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
+		$jobQueueGroup->push( new RequestWikiAIJob(
 			Title::newMainPage(),
 			[
 				'description' => $this->description,
