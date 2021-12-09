@@ -19,7 +19,7 @@
 	"createwiki-error-notalnum": "The database name may not contain non-alphanumeric characters.",
 	"createwiki-error-notlowercase": "The database name may not contain uppercase letters.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
-	"createwiki-help-reason": "Please enter a sufficient summary describing the topic, scope, and purpose of the wiki you're requesting.",
+	"createwiki-help-reason": "Please enter a summary of at least 2-3 sentences describing the topic, scope, and purpose of the wiki you're requesting. If you don't, your request will likely be declined.",
 	"createwiki-label-category": "Category:",
 	"createwiki-label-dbname": "Database name:",
 	"createwiki-label-language": "Language:",
