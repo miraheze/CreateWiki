@@ -90,7 +90,7 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, User $user, string $type = 'comment' ) {
+	public function addComment( string $comment, User $user, string $type = 'comment', array $notifyUsers = [] ) {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
 			return;
@@ -107,6 +107,22 @@ class WikiRequest {
 			__METHOD__
 		);
 
+		// Don't notify the acting user of their action
+		unset( $this->involvedUsers[$user->getId()] );
+
+		if ( !$notifyUsers ) {
+			$notifyUsers = $this->involvedUsers;
+		}
+
+		$this->sendNotification( $comment, $notifyUsers, $type );
+	}
+
+	private function sendNotification( string $comment, array $notifyUsers, string $type = 'comment' ) {
+		// don't send notifications for empty comments
+		if ( !$comment || ctype_space( $comment ) ) {
+			return;
+		}
+
 		$reason = $type === 'declined' ? 'reason' : 'comment';
 		$notificationData = [
 			'type' => "request-{$type}",
@@ -116,11 +132,8 @@ class WikiRequest {
 			],
 		];
 
-		// Don't notify the acting user of their action
-		unset( $this->involvedUsers[$user->getId()] );
-
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, $this->involvedUsers );
+			->sendNotification( $notificationData, $notifyUsers );
 	}
 
 	public function getComments() {
@@ -178,7 +191,18 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 
-		$this->addComment( $reason, $user, 'declined' );
+		$this->addComment( $reason, $user, 'declined', [ $this->requester ] );
+
+		$notifyUsers = $this->involvedUsers;
+		unset(
+			$notifyUsers[$this->requester->getId()],
+			$notifyUsers[$user->getId()]
+		);
+
+		if ( $notifyUsers ) {
+			$this->sendNotification( $reason, $notifyUsers );
+		}
+
 		$this->log( $user, 'requestdecline' );
 
 		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
