@@ -33,7 +33,7 @@
 		"farmer/createwiki": "LogFormatter",
 		"farmer/requestaccept": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
-		"farmer/requestwikiedit": "LogFormatter",
+		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": "CreateWikiLogFormatter"
 	},
 	"MessagesDirs": {
