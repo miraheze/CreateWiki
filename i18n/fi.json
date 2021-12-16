@@ -8,7 +8,8 @@
 			"Nike",
 			"Pyscowicz",
 			"Str4nd",
-			"Valtlait"
+			"Valtlait",
+			"Veikk0.ma"
 		]
 	},
 	"action-createwiki": "luoda wikejä",
@@ -24,6 +25,7 @@
 	"createwiki-error-notalnum": "Tietokannan nimi ei saa sisältää erikoismerkkejä.",
 	"createwiki-error-notlowercase": "Tietokannan nimi ei saa sisältää isoja kirjaimia.",
 	"createwiki-error-notsuffixed": "Tietokannan nimi ei pääty kelvolliseen loppupäätteeseen (esim. 'wiki').",
+	"createwiki-help-reason": "Kirjoita riittävä tiivistelmä joka kuvaa pyytämäsi wikin aihetta, alaa ja tarkoitusta.",
 	"createwiki-label-category": "Luokka:",
 	"createwiki-label-dbname": "Tietokannan nimi:",
 	"createwiki-label-language": "Kieli:",
@@ -57,12 +59,15 @@
 	"notification-header-request-declined": "Sinun pyyntösi on hylätty seuraavista syistä:",
 	"requestwiki": "Pyydä wikiä",
 	"requestwiki-edit-success": "Muutokset pyyntöösi on toimitettu onnistuneesti.",
+	"requestwiki-error-invalidcomment": "Tekstissäsi on virheellinen merkki. Yritä uudelleen ja mikäli ongelma jatkuu, [[Help center|ota meihin yhteyttä]]",
 	"requestwiki-header": "Hienoa, aiot pyytää uutta wikiä Mirahezeen! Sinun pitää täyttää tämä lomake jotta voimme tarkistaa pyyntösi.\nYour wiki request will be reviewed by a volunteer, and it can be tracked at the page that will be given when submitting your request.\n\nIf you want a custom domain for your wiki (i.e. not a standard .miraheze.org subdomain), please read <span class=\"plainlinks\">[$1 this]</span> first. You must first choose a subdomain, and your custom domain will be configured afterwards. \n\nPyytäessäsi wikiä hyväksyt automaattisesti [[Dormancy Policy|käytäntömme wikien epäaktiivisuudesta]].",
+	"requestwiki-label-bio": "Tuleeko tämän wikin pääaiheena tai yhtenä pääaiheista olemaan elossa olevat henkilöt?",
 	"requestwiki-label-language": "Kieli:",
 	"requestwiki-label-private": "Yksityinen wiki (kaikki eivät voi lukea; vain jäsenet tai ylläpitäjät voivat lukea):",
 	"requestwiki-label-purpose": "Tämän wikin tarkoitus on...",
 	"requestwiki-label-sitename": "Wikin nimi:",
 	"requestwiki-label-siteurl": "Alidomain: (subdomain.miraheze.org)",
+	"requestwiki-notloggedin": "Sinun tulee <span class=\"plainlinks\">[$1 kirjautua sisään]</span> pyytääksesi wikiä.",
 	"requestwiki-success": "Wikipyyntösi ($1) on lähetetty onnistuneesti. Vapaaehtoinen wikien luoja tarkastaa pyyntösi mahdollisimman pian.",
 	"requestwiki-unknown": "Tällä ID:llä ei ole pyyntöä.",
 	"requestwikiqueue": "Wikipyyntöjen jono",
