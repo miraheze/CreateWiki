@@ -231,11 +231,16 @@ class WikiRequest {
 	}
 
 	public function reopen( User $user, $log = true ) {
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'inreview';
+		$status = $this->status;
+
+		$this->status = ( $status == 'approved' ) ? 'approved' : 'inreview';
 		$this->save();
 
 		if ( $log ) {
 			$this->addComment( 'Updated request.', $user );
+			if ( $status === 'declined' ) {
+				$this->log( $user, 'requestreopen' );
+			}
 		}
 	}
 
