@@ -7,6 +7,7 @@ class WikiInitialise {
 	public $dbname;
 	public $server;
 	public $sitename;
+	public $realms;
 	public $missing = false;
 	public $wikiDBClusters = [];
 	public $disabledExtensions = [];
@@ -20,10 +21,11 @@ class WikiInitialise {
 		$this->config = new SiteConfiguration;
 	}
 
-	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch ) {
+	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch, array $realms = [] ) {
 		$this->cacheDir = $cacheDir;
 		$this->config->suffixes = $suffixes;
 		$this->hostname = $_SERVER['HTTP_HOST'] ?? 'undefined';
+		$this->realms = $realms;
 
 		// Let's fake a database list - default config should suffice
 		if ( !file_exists( $this->cacheDir . '/databases.json' ) ) {
@@ -135,18 +137,20 @@ class WikiInitialise {
 		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 
 		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
+		$realms = [];
+
+		foreach ( $this->realms as $tag => $realmServer ) {
+			if ( preg_match( '/^(.*).' . $realmServer . '$/', $server ) ) {
+				$realms[] = $tag;
+			}
+		}
 
 		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
-		$this->config->siteParamsCallback = static function () use ( $cacheArray, $server ) {
-			$betaheze = [];
-			if ( preg_match( '/^(.*).betaheze.org$/', $server ) ) {
-				$betaheze = [ 'betaheze' ];
-			}
-
+		$this->config->siteParamsCallback = static function () use ( $cacheArray, $realms ) {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
-				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $betaheze ),
+				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $realms ),
 				'params' => []
 			];
 		};
