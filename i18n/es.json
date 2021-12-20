@@ -54,7 +54,6 @@
 	"logentry-farmer-requestaccept": "$1 aceptó la solicitud de wiki $4",
 	"logentry-farmer-requestdecline": "$1 declinó la solicitud de wiki $4",
 	"logentry-farmer-requestwiki": "$1 solicitó el wiki «$4» (idioma: $5; privado: $6) en $7",
-	"logentry-farmer-requestwikiedit": "$1 editó la solicitud de wiki n.º $4",
 	"log-name-farmer": "Registro de administración de wikis",
 	"notification-createwiki-wiki-creation-email-subject": "Se ha creado tu wiki, $1.",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Visita la wiki",

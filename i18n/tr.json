@@ -46,7 +46,6 @@
 	"logentry-farmer-requestaccept": "$1, $4 viki isteğini kabul etti",
 	"logentry-farmer-requestdecline": "$1, $4 viki isteğini reddetti",
 	"logentry-farmer-requestwiki": "$1, \"$4\" vikisini talep etti (dil: $5; gizlilik: $6), $7.",
-	"logentry-farmer-requestwikiedit": "$1, #$4 viki isteğini düzenledi",
 	"log-name-farmer": "Çiftçi günlüğü",
 	"notification-createwiki-wiki-creation-email-subject": "$1 vikiniz oluşturuldu!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Vikiyi ziyaret et",

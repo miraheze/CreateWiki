@@ -45,7 +45,6 @@
 	"logentry-farmer-requestaccept": "$1 {{GENDER:$1|קיבל|קיבלה}} את בקשת הוויקי $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$1|דחה|דחתה}} את בקשת הוויקי $4",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$1|ביקש|ביקשה}} את אתר הוויקי \"$4\" (שפה: $5; פרטי: $6) ב־$7",
-	"logentry-farmer-requestwikiedit": "$1 {{GENDER:$1|ערך|ערכה}} את בקשת אתר הוויקי #$4",
 	"log-name-farmer": "יומן החוואי",
 	"notification-createwiki-wiki-creation-email-subject": "הוויקי שלך בשם $1 נוצר!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "ביקור בוויקי",

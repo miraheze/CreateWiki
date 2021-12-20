@@ -55,7 +55,6 @@
 	"logentry-farmer-requestaccept": "$1 {{GENDER:$1|одобрил|одобрила}} запрос вики $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$1|отклонил|отклонила}} запрос вики $4",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$1|запросил|запросила}} вики «$4» (язык: $5; скрытый: $6) с $7",
-	"logentry-farmer-requestwikiedit": "$1 {{GENDER:$1|отредактировал|отредактировала}} запрос вики #$4",
 	"log-name-farmer": "Журнал фермы",
 	"notification-createwiki-wiki-creation-email-subject": "Ваша вики $1 была создана!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Посетите вики",

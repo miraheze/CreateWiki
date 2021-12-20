@@ -28,7 +28,6 @@
 	"log-description-farmer": "Este rexistro documenta as creacións de wikis.",
 	"logentry-farmer-createwiki": "$1 creou a wiki «$4»",
 	"logentry-farmer-requestwiki": "$1 solicitou o wiki «$4» (lingua: $5; privado: $6) en $7",
-	"logentry-farmer-requestwikiedit": "$1 editou a petición dunha wiki n.º $4",
 	"log-name-farmer": "Rexistro de wikis",
 	"requestwiki": "Solicitar unha wiki",
 	"requestwiki-edit-success": "Os cambios relativos á petición $1 foron enviados correctamente.",

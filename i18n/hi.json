@@ -39,7 +39,6 @@
 	"logentry-farmer-requestaccept": "$1 ने विकि अनुरोध $4 को स्वीकार किया",
 	"logentry-farmer-requestdecline": "$1 ने विकि अनुरोध $4 को अस्वीकार किया",
 	"logentry-farmer-requestwiki": "$1 ने $7 में विकि \"$4\" का अनुरोध किया (भाषा: $5; व्यक्तिगत: $6)",
-	"logentry-farmer-requestwikiedit": "$1 ने विकि अनुरोध #$4 को संपादित किया",
 	"log-name-farmer": "किसान लोग",
 	"notification-createwiki-wiki-creation-email-subject": "आपके विकि $1 को बना दिया गया है!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "विकि पर जाएँ",

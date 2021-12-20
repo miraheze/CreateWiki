@@ -39,7 +39,6 @@
 	"logentry-farmer-requestaccept": "$1 ha acceptate le requesta de wiki $4",
 	"logentry-farmer-requestdecline": "$1 ha refusate le requesta de wiki $4",
 	"logentry-farmer-requestwiki": "$1 ha requestate le wiki \"$4\" (lingua: $5; private: $6) in $7",
-	"logentry-farmer-requestwikiedit": "$1 ha modificate le requesta wiki #$4",
 	"log-name-farmer": "Registro de administration de wikis",
 	"notification-createwiki-wiki-creation-email-subject": "Tu wiki $1 ha essite create!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Visitar wiki",

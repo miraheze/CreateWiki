@@ -25,7 +25,6 @@
 	"logentry-farmer-createwiki": "$1 نے \"$4\" ویکی کو تخلیق کیا",
 	"logentry-farmer-requestaccept": "$1 نے وکی درخواست $4 کو قبول کیا۔",
 	"logentry-farmer-requestdecline": "$1 نے ویکی درخواست $4 کو رد کیا۔",
-	"logentry-farmer-requestwikiedit": "$1 نے ویکی درخواست #$4 میں ترمیم کی۔",
 	"notification-createwiki-wiki-creation-email-subject": "آپ کی وکی $1 بنائی گئی ہے!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "ویکی پر جائیں",
 	"notification-createwiki-wiki-rename-subject": "آپ کے وکی $1 کا نام تبدیل کر دیا گیا ہے۔",

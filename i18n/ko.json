@@ -35,7 +35,6 @@
 	"logentry-farmer-createwiki": "$1 사용자가 \"$4\" 위키를 만들었습니다",
 	"logentry-farmer-requestdecline": "$1님이 $4 위키 요청을 거부했습니다",
 	"logentry-farmer-requestwiki": "$1님이 $7에 \"$4\" (언어: $5; 비공개: $6) 위키를 요청했습니다",
-	"logentry-farmer-requestwikiedit": "$1님이 #$4 위키 요청을 편집했습니다",
 	"log-name-farmer": "파머 기록",
 	"notification-createwiki-wiki-creation-email-subject": "$1 위키가 생성되었습니다!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "위키 방문",

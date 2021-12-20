@@ -38,7 +38,6 @@
 	"log-description-farmer": "هذا السجل يتتبع إنشاءات الويكيات.",
 	"logentry-farmer-createwiki": "$1 أنشأ الويكي \"$4\"",
 	"logentry-farmer-requestwiki": "$1 طلب الويكي \"$4\" (اللغة: $5، خاص: $6) في $7",
-	"logentry-farmer-requestwikiedit": "تم تحرير $1 لطلب الويكي #$4",
 	"log-name-farmer": "سجل المزارع",
 	"notification-createwiki-wiki-creation-email-subject": "الويكي الخاص بك $1 تم إنشاؤه!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "زيارة الويكي",

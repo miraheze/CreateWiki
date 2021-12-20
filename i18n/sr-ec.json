@@ -27,7 +27,6 @@
 	"log-description-farmer": "Овај дневник прати креирање викија",
 	"logentry-farmer-createwiki": "$1 креирао/ла је вики \"$4\"",
 	"logentry-farmer-requestwiki": "$1 затражио/ла је вики \"$4\" (језик: $5; приватност: $6) у $7",
-	"logentry-farmer-requestwikiedit": "$1 изменио је захтев за вики #$4",
 	"notification-createwiki-wiki-creation-email-subject": "Ваш вики $1 је направљен.",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Посети вики",
 	"notification-createwiki-wiki-rename-subject": "Ваш вики $1 је преименован.",

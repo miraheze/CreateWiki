@@ -40,7 +40,6 @@
 	"logentry-farmer-requestaccept": "$1 godkände wikibegäran $4",
 	"logentry-farmer-requestdecline": "$1 nekade wikibegäran $4",
 	"logentry-farmer-requestwiki": "$1 begärde wikin \"$4\" (språk: $5; privat: $6) på $7",
-	"logentry-farmer-requestwikiedit": "$1 redigerade wikibegäran nummer $4",
 	"log-name-farmer": "Farmer-logg",
 	"notification-createwiki-wiki-creation-email-subject": "Din wiki $1 har skapats!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Besök wiki",

@@ -52,7 +52,6 @@
 	"logentry-farmer-requestaccept": "$1接受了wiki请求$4",
 	"logentry-farmer-requestdecline": "$1拒绝了wiki请求$4",
 	"logentry-farmer-requestwiki": "$1 在 $7 中申请了名为“$4”的wiki（语言：$5；是否私有：$6）",
-	"logentry-farmer-requestwikiedit": "$1编辑了wiki请求#$4",
 	"log-name-farmer": "农场日志",
 	"notification-createwiki-wiki-creation-email-subject": "您的wiki $1 已创建！",
 	"notification-createwiki-wiki-creation-visitwiki-label": "访问该wiki",

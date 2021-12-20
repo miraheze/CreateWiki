@@ -45,7 +45,6 @@
 	"logentry-farmer-requestaccept": "$1 akzeptierte die Wikianfrage $4",
 	"logentry-farmer-requestdecline": "$1 hat die Wikianfrage $4 abgelehnt",
 	"logentry-farmer-requestwiki": "$1 beantragte die Wiki \"$4\" (Sprache: $5; privat: $6) in $7",
-	"logentry-farmer-requestwikiedit": "$1 bearbeitete die Wikianfrage $4",
 	"log-name-farmer": "Farmer log",
 	"notification-createwiki-wiki-creation-email-subject": "Dein Wiki $1 wurde erstellt!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Wiki besuchen",

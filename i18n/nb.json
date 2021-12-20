@@ -40,7 +40,6 @@
 	"logentry-farmer-requestaccept": "$1 godkjente wikiforespørsel $4",
 	"logentry-farmer-requestdecline": "$1 avviste wikiforespørsel $4",
 	"logentry-farmer-requestwiki": "$1 ba om wikien «$4» (språk: $5, privat: $6) i $7",
-	"logentry-farmer-requestwikiedit": "$1 redigerte wikiforespørsel #$4",
 	"log-name-farmer": "Farmerlogg",
 	"notification-createwiki-wiki-creation-email-subject": "Din wiki $1 har blitt opprettet!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Besøk wikien",

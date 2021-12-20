@@ -40,7 +40,6 @@
 	"logentry-farmer-requestaccept": "$1 aceitou o pedido da wiki $4",
 	"logentry-farmer-requestdecline": "$1 recusou o pedido da wiki $4",
 	"logentry-farmer-requestwiki": "$1 solicitou a wiki \"$4\" (língua: $5; privada: $6) em $7",
-	"logentry-farmer-requestwikiedit": "$1 editou o pedido de uma wiki n.º $4",
 	"log-name-farmer": "Registo do sítio de alojamento",
 	"notification-createwiki-wiki-creation-email-subject": "A sua wiki $1 foi criada!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Visitar wiki",

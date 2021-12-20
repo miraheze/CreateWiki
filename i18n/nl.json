@@ -43,7 +43,6 @@
 	"logentry-farmer-requestaccept": "$1 heeft de wiki-aanvraag $4 geaccepteerd",
 	"logentry-farmer-requestdecline": "$1 heeft de wiki-aanvraag $4 afgewezen",
 	"logentry-farmer-requestwiki": "$1 heeft de wiki \"$4\" (taal: $5; privé: $6) aangevraagd in $7",
-	"logentry-farmer-requestwikiedit": "$1 heeft de wiki-aanvraag #$4 gewijzigd",
 	"log-name-farmer": "Farmer-logboek",
 	"notification-createwiki-wiki-creation-email-subject": "Uw wiki $1 is aangemaakt!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "De wiki bezoeken",

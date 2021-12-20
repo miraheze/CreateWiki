@@ -38,7 +38,6 @@
 	"log-description-farmer": "Ten rejestr śledzi operacje tworzenia wiki.",
 	"logentry-farmer-createwiki": "$1 stworzył wiki „$4”",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$1|poprosił|poprosiła}} o wiki „$4” (język: $5; prywatna: $6) $7",
-	"logentry-farmer-requestwikiedit": "$1 {{GENDER:$1|edytował|edytowała}} zgłoszenie #$4",
 	"log-name-farmer": "Rejestr farmy",
 	"notification-createwiki-wiki-creation-email-subject": "Wiki $1 została utworzona!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Odwiedź wiki",
