@@ -134,12 +134,19 @@ class WikiInitialise {
 		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 
+		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
+
 		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
-		$this->config->siteParamsCallback = static function () use ( $cacheArray ) {
+		$this->config->siteParamsCallback = static function () use ( $cacheArray, $server ) {
+			$betaheze = [];
+			if ( preg_match( '/^(.*).betaheze.org$/', $server ) ) {
+				$betaheze = [ 'betaheze' ];
+			}
+
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
-				'tags' => $cacheArray['extensions'] ?? [],
+				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $betaheze ),
 				'params' => []
 			];
 		};
