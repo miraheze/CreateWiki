@@ -139,7 +139,7 @@ class WikiInitialise {
 		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
 		$realms = [];
 
-		foreach ( $this->realms as $tag => $realmServer ) {
+		foreach ( $this->realms as $realmServer => $tag ) {
 			if ( preg_match( '/^(.*).' . $realmServer . '$/', $server ) ) {
 				$realms[] = $tag;
 			}
