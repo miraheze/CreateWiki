@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\Config\ServiceOptions;
+use Wikimedia\Rdbms\LBFactory;
 use MediaWiki\User\UserFactory;
 
 class CreateWikiNotificationsManager {
@@ -12,6 +13,9 @@ class CreateWikiNotificationsManager {
 		'PasswordSender',
 		'Sitename',
 	];
+
+	/** @var LBFactory */
+	private $lbFactory;
 
 	/** @var MessageLocalizer */
 	private $messageLocalizer;
@@ -26,21 +30,54 @@ class CreateWikiNotificationsManager {
 	private $type;
 
 	/**
+	 * @param LBFactory $lbFactory
 	 * @param MessageLocalizer $messageLocalizer
 	 * @param ServiceOptions $options
 	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
+		LBFactory $lbFactory,
 		MessageLocalizer $messageLocalizer,
 		ServiceOptions $options,
 		UserFactory $userFactory
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 
+		$this->lbFactory = $lbFactory;
 		$this->messageLocalizer = $messageLocalizer;
 
 		$this->options = $options;
 		$this->userFactory = $userFactory;
+	}
+
+	/**
+	 * @param string $wiki
+	 * @return array
+	 */
+	private function getBureaucratEmails( string $wiki ): array {
+		$lb = $this->lbFactory->getMainLB( $wiki );
+		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $wiki );
+
+		$bureaucrats = $dbr->select(
+			[ 'user', 'user_groups' ],
+			[ 'user_email', 'user_name' ],
+			[ 'ug_group' => 'bureaucrat' ],
+			__METHOD__,
+			[],
+			[
+				'user_groups' => [
+					'INNER JOIN',
+					[ 'user_id=ug_user' ]
+				]
+			]
+		);
+
+		$emails = [];
+		foreach ( $bureaucrats as $user ) {
+			$emails[] = new MailAddress( $user->user_email, $user->user_name );
+		}
+
+		return $emails;
 	}
 
 	/**
@@ -97,6 +134,10 @@ class CreateWikiNotificationsManager {
 	 */
 	public function sendNotification( array $data, array $receivers = [] ) {
 		$this->type = $data['type'];
+
+		if ( in_array( 'bureaucrats', $receivers ) ) {
+			$receivers += $this->getBureaucratEmails( $data['wiki'] );
+		}
 
 		if (
 			$this->options->get( 'CreateWikiUseEchoNotifications' ) &&
