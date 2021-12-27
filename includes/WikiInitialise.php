@@ -137,20 +137,26 @@ class WikiInitialise {
 		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 
 		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
-		$realms = [];
+		$tags = [];
 
 		foreach ( $this->realms as $realmServer => $tag ) {
 			if ( preg_match( '/^(.*).' . $realmServer . '$/', $server ) ) {
-				$realms[] = $tag;
+				$tags[] = $tag;
+			}
+		}
+
+		foreach ( $cacheArray['states'] as $state => $value ) {
+			if ( $value !== 'exempt' && (bool)$value ) {
+				$tags[] = $state;
 			}
 		}
 
 		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
-		$this->config->siteParamsCallback = static function () use ( $cacheArray, $realms ) {
+		$this->config->siteParamsCallback = static function () use ( $cacheArray, $tags ) {
 			return [
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'],
-				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $realms ),
+				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $tags ),
 				'params' => []
 			];
 		};
