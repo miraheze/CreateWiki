@@ -10,6 +10,7 @@
 	"createwiki-defaultmainpage-summary": "建立首頁",
 	"createwiki-desc": "可以在wiki農場上輕鬆建立新wiki的擴充功能。",
 	"createwiki-email-subject": "您在Miraheze上的新wiki：$1",
+	"createwiki-label-category": "分類：",
 	"createwiki-label-reason": "原因：",
 	"createwiki-label-requester": "申請者：",
 	"createwiki-label-sitename": "站點名稱："
