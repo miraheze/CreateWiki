@@ -27,9 +27,18 @@ class RequestWikiAIJob extends Job {
 
 			$wr->addComment( 'Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
 
-			if ( is_int( $config->get( 'CreateWikiAIThreshold' ) ) && ( (int)round( $approveScore, 2 ) > $config->get( 'CreateWikiAIThreshold' ) ) ) {
+			if ( is_int( $config->get( 'CreateWikiAIThreshold' ) ) && ( (int)round( $approveScore, 2 ) > $config->get( 'CreateWikiAIThreshold' ) ) && $this->canAutoApprove( $config ) ) {
 				$wr->approve( User::newSystemUser( 'CreateWiki Extension' ) );
 			}
+		}
+
+		return true;
+	}
+
+	private function canAutoApprove( $config ) {
+		$descriptionBlacklist = '/^(' . implode( '|', $config->get( 'CreateWikiAutoApprovalBlacklist' ) ) . ')+$/';
+		if ( preg_match( $descriptionBlacklist, strtolower( $this->params['description'] ) ) ) {
+			return false;
 		}
 
 		return true;

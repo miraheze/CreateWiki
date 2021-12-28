@@ -103,6 +103,11 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiAutoApprovalBlacklist": {
+			"description": "Array. Regexes to never auto approve requests if their descriptions match.",
+			"public": true,
+			"value": []
+		},
 		"CreateWikiBlacklistedSubdomains": {
 			"description": "String or array. Regex to match for a blacklisted subdomain.",
 			"public": true,
