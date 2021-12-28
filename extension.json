@@ -103,7 +103,7 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiAutoApproveBlacklist": {
+		"CreateWikiAutoApprovalBlacklist": {
 			"description": "Array. Regexes to never auto approve requests if their descriptions match.",
 			"public": true,
 			"value": []
