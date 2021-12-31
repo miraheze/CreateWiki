@@ -51,35 +51,6 @@ class CreateWikiNotificationsManager {
 	}
 
 	/**
-	 * @param array $data
-	 */
-	public function emailBureaucrats( array $data ) {
-		$lb = $this->lbFactory->getMainLB( $data['wiki'] );
-		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $data['wiki'] );
-
-		$bureaucrats = $dbr->select(
-			[ 'user', 'user_groups' ],
-			[ 'user_email', 'user_name' ],
-			[ 'ug_group' => 'bureaucrat' ],
-			__METHOD__,
-			[],
-			[
-				'user_groups' => [
-					'INNER JOIN',
-					[ 'user_id=ug_user' ]
-				]
-			]
-		);
-
-		$emails = [];
-		foreach ( $bureaucrats as $user ) {
-			$emails[] = new MailAddress( $user->user_email, $user->user_name );
-		}
-
-		$this->sendNotification( $data, $emails );
-	}
-
-	/**
 	 * @return string
 	 */
 	private function getFromName(): string {
@@ -125,6 +96,35 @@ class CreateWikiNotificationsManager {
 			'deletion',
 			'wiki-rename',
 		];
+	}
+
+	/**
+	 * @param array $data
+	 */
+	public function notifyBureaucrats( array $data ) {
+		$lb = $this->lbFactory->getMainLB( $data['wiki'] );
+		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $data['wiki'] );
+
+		$bureaucrats = $dbr->select(
+			[ 'user', 'user_groups' ],
+			[ 'user_email', 'user_name' ],
+			[ 'ug_group' => 'bureaucrat' ],
+			__METHOD__,
+			[],
+			[
+				'user_groups' => [
+					'INNER JOIN',
+					[ 'user_id=ug_user' ]
+				]
+			]
+		);
+
+		$emails = [];
+		foreach ( $bureaucrats as $user ) {
+			$emails[] = new MailAddress( $user->user_email, $user->user_name );
+		}
+
+		$this->sendNotification( $data, $emails );
 	}
 
 	/**
