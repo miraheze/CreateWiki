@@ -1,8 +1,8 @@
 <?php
 
 use MediaWiki\Config\ServiceOptions;
-use Wikimedia\Rdbms\LBFactory;
 use MediaWiki\User\UserFactory;
+use Wikimedia\Rdbms\LBFactory;
 
 class CreateWikiNotificationsManager {
 
