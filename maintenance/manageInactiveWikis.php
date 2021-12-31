@@ -89,7 +89,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
-					$this->sendNotifications( $dbName );
+					$this->notify( $dbName );
 
 					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
@@ -119,7 +119,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
 						$wiki->markClosed();
-						$this->sendNotifications( $dbName );
+						$this->notify( $dbName );
 
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
@@ -155,7 +155,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	private function sendNotifications( $wiki ) {
+	private function notify( $wiki ) {
 		$notificationData = [
 			'type' => 'closure',
 			'wiki' => $wiki,
@@ -167,7 +167,7 @@ class ManageInactiveWikis extends Maintenance {
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, [ 'bureaucrats' ] );
+			->notifyBureaucrats( $notificationData );
 	}
 }
 
