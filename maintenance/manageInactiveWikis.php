@@ -89,7 +89,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
-					$this->emailBureaucrats( $dbName );
+					$this->notify( $dbName );
 
 					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
@@ -119,7 +119,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
 						$wiki->markClosed();
-						$this->emailBureaucrats( $dbName );
+						$this->notify( $dbName );
 
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
@@ -155,31 +155,11 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	private function emailBureaucrats( $wikiDb ) {
-		$dbr = wfGetDB( DB_REPLICA, [], $wikiDb );
-
-		$bureaucrats = $dbr->select(
-			[ 'user', 'user_groups' ],
-			[ 'user_email', 'user_name' ],
-			[ 'ug_group' => 'bureaucrat' ],
-			__METHOD__,
-			[],
-			[
-				'user_groups' => [
-					'INNER JOIN',
-					[ 'user_id=ug_user' ]
-				]
-			]
-		);
-
-		$emails = [];
-		foreach ( $bureaucrats as $user ) {
-			$emails[] = new MailAddress( $user->user_email, $user->user_name );
-		}
-
+	private function notify( $wiki ) {
 		$notificationData = [
 			'type' => 'closure',
-			'subject' => wfMessage( 'miraheze-close-email-subject', $wikiDb )->inContentLanguage()->text(),
+			'wiki' => $wiki,
+			'subject' => wfMessage( 'miraheze-close-email-subject', $wiki )->inContentLanguage()->text(),
 			'body' => [
 				'html' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
 				'text' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
@@ -187,7 +167,7 @@ class ManageInactiveWikis extends Maintenance {
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, $emails );
+			->notifyBureaucrats( $notificationData );
 	}
 }
 

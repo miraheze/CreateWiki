@@ -2,6 +2,7 @@
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\User\UserFactory;
+use Wikimedia\Rdbms\LBFactory;
 
 class CreateWikiNotificationsManager {
 
@@ -12,6 +13,9 @@ class CreateWikiNotificationsManager {
 		'PasswordSender',
 		'Sitename',
 	];
+
+	/** @var LBFactory */
+	private $lbFactory;
 
 	/** @var MessageLocalizer */
 	private $messageLocalizer;
@@ -26,17 +30,20 @@ class CreateWikiNotificationsManager {
 	private $type;
 
 	/**
+	 * @param LBFactory $lbFactory
 	 * @param MessageLocalizer $messageLocalizer
 	 * @param ServiceOptions $options
 	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
+		LBFactory $lbFactory,
 		MessageLocalizer $messageLocalizer,
 		ServiceOptions $options,
 		UserFactory $userFactory
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 
+		$this->lbFactory = $lbFactory;
 		$this->messageLocalizer = $messageLocalizer;
 
 		$this->options = $options;
@@ -89,6 +96,35 @@ class CreateWikiNotificationsManager {
 			'deletion',
 			'wiki-rename',
 		];
+	}
+
+	/**
+	 * @param array $data
+	 */
+	public function notifyBureaucrats( array $data ) {
+		$lb = $this->lbFactory->getMainLB( $data['wiki'] );
+		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $data['wiki'] );
+
+		$bureaucrats = $dbr->select(
+			[ 'user', 'user_groups' ],
+			[ 'user_email', 'user_name' ],
+			[ 'ug_group' => 'bureaucrat' ],
+			__METHOD__,
+			[],
+			[
+				'user_groups' => [
+					'INNER JOIN',
+					[ 'user_id=ug_user' ]
+				]
+			]
+		);
+
+		$emails = [];
+		foreach ( $bureaucrats as $user ) {
+			$emails[] = new MailAddress( $user->user_email, $user->user_name );
+		}
+
+		$this->sendNotification( $data, $emails );
 	}
 
 	/**
