@@ -51,12 +51,11 @@ class CreateWikiNotificationsManager {
 	}
 
 	/**
-	 * @param string $wiki
-	 * @return array
+	 * @param array $data
 	 */
-	private function getBureaucratEmails( string $wiki ): array {
-		$lb = $this->lbFactory->getMainLB( $wiki );
-		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $wiki );
+	public function emailBureaucrats( array $data ) {
+		$lb = $this->lbFactory->getMainLB( $data['wiki'] );
+		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $data['wiki'] );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
@@ -77,7 +76,7 @@ class CreateWikiNotificationsManager {
 			$emails[] = new MailAddress( $user->user_email, $user->user_name );
 		}
 
-		return $emails;
+		$this->sendNotification( $data, $emails );
 	}
 
 	/**
@@ -134,10 +133,6 @@ class CreateWikiNotificationsManager {
 	 */
 	public function sendNotification( array $data, array $receivers = [] ) {
 		$this->type = $data['type'];
-
-		if ( in_array( 'bureaucrats', $receivers ) ) {
-			$receivers += $this->getBureaucratEmails( $data['wiki'] );
-		}
 
 		if (
 			$this->options->get( 'CreateWikiUseEchoNotifications' ) &&
