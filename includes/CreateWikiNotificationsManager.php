@@ -54,7 +54,7 @@ class CreateWikiNotificationsManager {
 	 * @return string
 	 */
 	private function getFromName(): string {
-		if ( $this->type === 'wiki-closure' ) {
+		if ( $this->type === 'closure' ) {
 			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )->inContentLanguage()->text();
 		}
 
@@ -70,8 +70,8 @@ class CreateWikiNotificationsManager {
 	 */
 	private function getEmailTypes(): array {
 		return [
-			'wiki-closure',
-			'wiki-deletion',
+			'closure',
+			'deletion',
 			'wiki-creation',
 			'wiki-rename',
 		];
@@ -93,7 +93,7 @@ class CreateWikiNotificationsManager {
 	 */
 	private function notifyServerAdministratorsTypes(): array {
 		return [
-			'wiki-deletion',
+			'deletion',
 			'wiki-rename',
 		];
 	}
