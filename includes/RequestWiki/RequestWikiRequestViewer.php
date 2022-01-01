@@ -252,7 +252,7 @@ class RequestWikiRequestViewer {
 			];
 
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
-				$formDescriptor['reason']['type'] = 'select';
+				$formDescriptor['reason']['type'] = 'selectorother';
 				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
 			} else {
 				$formDescriptor['reason']['type'] = 'textarea';
