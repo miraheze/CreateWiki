@@ -280,7 +280,7 @@ class WikiInitialise {
 				$this->config->settings[ $ext['var'] ]['default'] = false;
 
 				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
-					!in_array( $ext['name'], $this->disabledExtensions )
+					!in_array( $name, $this->disabledExtensions )
 				) {
 					$path = $list[ $ext['name'] ] ?? false;
 
