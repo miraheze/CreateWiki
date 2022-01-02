@@ -1,5 +1,21 @@
 @import 'mediawiki.mixins';
 
+/* Fix width for the 'reason' selectorother field */
+#mw-input-wpreason {
+	display: inline-flex;
+	width: 100%;
+
+	.oo-ui-dropdownInputWidget {
+		max-width: initial;
+	}
+}
+
+.mw-special-RequestWikiQueue {
+	.oo-ui-menuSelectWidget {
+		top: 0;
+	}
+}
+
 /* Reuses colors from mediawiki.legacy/shared.css */
 .mw-email-not-authenticated .oo-ui-labelWidget,
 .mw-email-none .oo-ui-labelWidget {

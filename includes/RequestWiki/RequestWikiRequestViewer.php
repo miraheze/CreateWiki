@@ -254,6 +254,10 @@ class RequestWikiRequestViewer {
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
 				$formDescriptor['reason']['type'] = 'selectorother';
 				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
+
+				$formDescriptor['reason']['default'] = HTMLFormField::flattenOptions(
+					$this->config->get( 'CreateWikiCannedResponses' )
+				)[0];
 			} else {
 				$formDescriptor['reason']['type'] = 'textarea';
 				$formDescriptor['reason']['rows'] = 4;
