@@ -50,6 +50,7 @@
 	"logentry-farmer-createwiki": "$1 がWiki \"$4\" を作成しました",
 	"logentry-farmer-requestaccept": "$1 がWikiの申請 #$4 を承認しました",
 	"logentry-farmer-requestdecline": "$1 がWikiの申請 #$4 を却下しました",
+	"logentry-farmer-requestreopen": "$1 がWikiの申請 #$4 を再開しました",
 	"logentry-farmer-requestwiki": "$1 が $7 でWiki \"$4\" (言語: $5; 非公開: $6) をリクエストしました",
 	"log-name-farmer": "Farmer記録",
 	"notification-createwiki-wiki-creation-email-subject": "あなたのWiki$1が作成されました！",
