@@ -45,6 +45,8 @@
 	"requestwikiqueue-edit": "درخواست ترمیم کریں",
 	"requestwikiqueue-handle": "درخواست سنبھال لیں",
 	"requestwikiqueue-pager-status-approved": "منظورہ شدہ",
+	"requestwikiqueue-pager-status-declined": "مسترد",
+	"requestwikiqueue-pager-status-inreview": "نظرثانی میں",
 	"requestwikiqueue-request": "درخواست",
 	"requestwikiqueue-request-header-requestercomment": "ویکی درخواست کنندہ کی طرف سے دیا گیا تبصرہ",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "$2 پر $1 نے دیا ہوا تبصرہ",

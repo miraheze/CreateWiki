@@ -38,6 +38,7 @@
 	"logentry-farmer-createwiki": "$1 vytvoril/a wiki\"$4\"",
 	"logentry-farmer-requestaccept": "$1 odsúhlasil/a požiadavku wiki $4",
 	"logentry-farmer-requestdecline": "$1 zamietol/tla požiadavku wiki $4",
+	"logentry-farmer-requestreopen": "$1 zamietol/tla požiadavku wiki $4",
 	"logentry-farmer-requestwiki": "$1 požiadal/a o wiki \"$4\" (jazyk: $5; súkromná: $6) v $7",
 	"log-name-farmer": "Farmárov denník",
 	"notification-createwiki-wiki-creation-email-subject": "Vaša wiki $1 bola vytvorená!",
