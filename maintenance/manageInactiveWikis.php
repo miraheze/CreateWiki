@@ -158,7 +158,6 @@ class ManageInactiveWikis extends Maintenance {
 	private function notify( $wiki ) {
 		$notificationData = [
 			'type' => 'closure',
-			'wiki' => $wiki,
 			'subject' => wfMessage( 'miraheze-close-email-subject', $wiki )->inContentLanguage()->text(),
 			'body' => [
 				'html' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
@@ -167,7 +166,7 @@ class ManageInactiveWikis extends Maintenance {
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->notifyBureaucrats( $notificationData );
+			->notifyBureaucrats( $notificationData, $wiki );
 	}
 }
 

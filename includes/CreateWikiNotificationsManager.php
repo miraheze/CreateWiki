@@ -100,10 +100,11 @@ class CreateWikiNotificationsManager {
 
 	/**
 	 * @param array $data
+	 * @param string $wiki
 	 */
-	public function notifyBureaucrats( array $data ) {
-		$lb = $this->lbFactory->getMainLB( $data['wiki'] );
-		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $data['wiki'] );
+	public function notifyBureaucrats( array $data, string $wiki ) {
+		$lb = $this->lbFactory->getMainLB( $wiki );
+		$dbr = $lb->getConnectionRef( DB_REPLICA, [], $wiki );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
