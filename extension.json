@@ -257,9 +257,7 @@
 		"echo-subscriptions-web-request-declined": true,
 		"echo-subscriptions-email-request-declined": true,
 		"echo-subscriptions-web-wiki-creation": true,
-		"echo-subscriptions-email-wiki-creation": false,
-		"echo-subscriptions-web-wiki-rename": true,
-		"echo-subscriptions-email-wiki-rename": false
+		"echo-subscriptions-email-wiki-creation": false
 	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
