@@ -3,7 +3,8 @@
 		"authors": [
 			"Revi",
 			"Ykhwong",
-			"그냥기여자"
+			"그냥기여자",
+			"렌즈"
 		]
 	},
 	"action-createwiki": "위키 만들기",
@@ -27,9 +28,7 @@
 	"createwiki-label-sitename": "사이트 이름:",
 	"createwiki-success": "이 위키가 성공적으로 생성되었습니다.",
 	"echo-category-title-wiki-creation": "위키 생성",
-	"echo-category-title-wiki-rename": "위키 이름 변경",
 	"echo-category-title-request-declined": "위키 요청이 거부되었습니다",
-	"echo-pref-tooltip-wiki-rename": "내 위키의 이름이 변경되면 내게 알립니다.",
 	"echo-pref-tooltip-wiki-request-declined": "내 위키 요청이 거절되면 내게 알립니다.",
 	"log-description-farmer": "이 기록은 위키의 생성 항목을 추적합니다.",
 	"logentry-farmer-createwiki": "$1 사용자가 \"$4\" 위키를 만들었습니다",
@@ -39,12 +38,10 @@
 	"log-name-farmer": "파머 기록",
 	"notification-createwiki-wiki-creation-email-subject": "$1 위키가 생성되었습니다!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "위키 방문",
-	"notification-createwiki-wiki-rename-subject": "$1 위키의 이름이 변경되었습니다.",
 	"notification-header-wiki-creation": "<strong>$1</strong> 위키가 생성되었습니다!",
-	"notification-header-wiki-rename": "위키 <strong>$1</strong>의 이름이 변경되었습니다.",
 	"notification-header-request-declined": "다음의 이유로 요청이 거부되었습니다:",
 	"requestwiki": "위키 요청하기",
-	"requestwiki-edit-success": "요청 $1의 변경사항을 성공적으로 제출했습니다.",
+	"requestwiki-edit-success": "요청 변경사항을 성공적으로 제출했습니다.",
 	"requestwiki-error-invalidcomment": "위키 요청에 유효하지 않은 문자가 포함되어 있습니다. 요청을 다시 시도해 주시고 문제가 지속될 경우 [[Help center|저희에게 연락해 주십시오]]",
 	"requestwiki-error-patient": "위키를 이미 요청하셨습니다. 잠시 기다려 주시면 위키 생성자 중 한 명이 위키를 곧 생성할 것입니다. 다른 위키를 요청하시려는 경우에는 잠시 기다렸다가 나중에 요청하실 수 있습니다.",
 	"requestwiki-header": "좋아요, Miraheze에 새 위키를 요청하려고 하는군요! 이 양식을 채워야 저희가 요청을 검토할 수 있습니다.\n위키 요청은 자원봉사자에 의해 검토될 것이며 요청을 제출할 때 제공되는 문서에서 추적이 가능합니다.\n\n위키에 사용자 지정 도메인을 원하신다면(예: 표준 .miraheze.org 서브도메인이 아닌 도메인), 먼저 <span class=\"plainlinks\">[$1 여기]를 읽어 주세요</span>. 당신은 먼저 서브 도메인을 골라야 하고, 이후 커스텀 도메인 설정에 들어갈 것입니다.\n\n위키를 요청할 때 당신은 저희 [[Dormancy Policy|비활동 정책]]에 자동으로 동의하게 됩니다.",

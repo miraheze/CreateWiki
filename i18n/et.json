@@ -19,7 +19,6 @@
 	"createwiki-label-reason": "Põhjus:",
 	"createwiki-success": "Viki edukalt loodud.",
 	"echo-pref-tooltip-wiki-creation": "Teavita mind, kui minu viki on loodud.",
-	"echo-pref-tooltip-wiki-rename": "Teavita mind, kui minu viki on ümber nimetatud.",
 	"notification-createwiki-wiki-creation-email-subject": "Sinu viki $1 on loodud!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Külasta vikit",
 	"requestwiki": "Viki taotlemine",
