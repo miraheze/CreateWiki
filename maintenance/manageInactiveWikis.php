@@ -81,6 +81,15 @@ class ManageInactiveWikis extends Maintenance {
 			return true;
 		}
 
+		if ( $timeStamp > date( "YmdHis", strtotime( "-{$closeDays} days" ) ) ) {
+			if ( $canWrite && $wiki->isClosed() ) {
+				$wiki->markActive();
+				$wiki->commit();
+			}
+
+			return true;
+		}
+
 		if ( !$wiki->isClosed() ) {
 			// Wiki is NOT closed yet
 			$closeTime = $inactiveDays + $closeDays;
