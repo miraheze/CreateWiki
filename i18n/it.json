@@ -63,7 +63,7 @@
 	"requestwiki-header": "Grazie di aver scelto Miraheze per ospitare il tuo wiki! Per iniziare, compila questo modulo così che possiamo esaminare la tua richiesta.\nLa richiesta del wiki verrà esaminata da un volontario, e può essere seguita dalla pagina che verrà data quando completi la tua richiesta.\n\nSe vuoi un dominio personalizzato per il tuo wiki (ovvero non un normale sottodominio .miraheze.org), leggi prima <span class=\"plainlinks\">[$1 questo]</span>. Devi prima scegliere un sottodominio, e il tuo dominio personalizzato verrà configurato dopo.\n\nQuando richiedi un wiki, accetti automaticamente le nostre [[Content Policy|Politiche sui Contenuti]] e [[Dormancy Policy|sulla Inattività]].",
 	"requestwiki-label-bio": "Saranno gli argomenti/o di questa Wiki su persone viventi?",
 	"requestwiki-label-language": "Lingua:",
-	"requestwiki-label-private": "Wiki privata (non leggibile da chiunque; solo leggibile da utenti membri del gruppo amministratori):",
+	"requestwiki-label-private": "Wiki privata (non leggibile da chiunque; solo leggibile dagli utenti a cui sono stati assegnati i gruppi membri o amministratori):",
 	"requestwiki-label-purpose": "Lo scopo di questa Wiki è…",
 	"requestwiki-label-sitename": "Nome wiki:",
 	"requestwiki-label-siteurl": "Subdominio: (subdomain.miraheze.org)",

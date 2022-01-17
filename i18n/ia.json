@@ -36,6 +36,7 @@
 	"logentry-farmer-createwiki": "$1 ha create le wiki \"$4\"",
 	"logentry-farmer-requestaccept": "$1 ha acceptate le requesta de wiki $4",
 	"logentry-farmer-requestdecline": "$1 ha refusate le requesta de wiki $4",
+	"logentry-farmer-requestreopen": "$1 ha reaperite le requesta de wiki $4",
 	"logentry-farmer-requestwiki": "$1 ha requestate le wiki \"$4\" (lingua: $5; private: $6) in $7",
 	"log-name-farmer": "Registro de administration de wikis",
 	"notification-createwiki-wiki-creation-email-subject": "Tu wiki $1 ha essite create!",
@@ -51,5 +52,10 @@
 	"requestwiki-header": "Gratias pro haber eligite Miraheze pro albergar tu wiki! Pro comenciar, per favor plena iste formulario a fin que un de nostre voluntarios pote verificar tu requesta. Tu potera sequer le progresso sur le pagina que nos te indicara post le invio de tu requesta.\n\nSi tu vole un dominio personalisate pro tu wiki (i.e. non un subdominio .miraheze.org standard), per favor lege <span class=\"plainlinks\">[$1 isto]</span> primo. Tu debe primo eliger un subdominio, e tu dominio personalisate essera configurate postea.\n\nQuando tu requesta un wiki, tu accepta automaticamente nostre politicas de [[Content Policy|contento]] e de [[Dormancy Policy|inactivitate]].",
 	"requestwiki-label-bio": "Tracta iste wiki principalmente de personas vivente?",
 	"requestwiki-label-language": "Lingua:",
+	"requestwiki-label-private": "Wiki private (non legibile per tote le mundo; legibile solmente pro usatores in le gruppos membros o administratores):",
+	"requestwiki-label-purpose": "Le scopo de iste wiki es…",
+	"requestwiki-label-sitename": "Nomine del wiki:",
+	"requestwiki-label-siteurl": "Subdominio: (subdominio.miraheze.org)",
+	"requestwiki-notloggedin": "Es necessari <span class =\"plainlinks\">[$1 aperir session]</span> pro poter requestar un wiki.",
 	"right-createwiki": "Crear wikis in le ferma de wikis"
 }
