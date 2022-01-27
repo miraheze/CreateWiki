@@ -7,7 +7,8 @@
 			"Reception123",
 			"Revi",
 			"Robby",
-			"Tobi 406"
+			"Tobi 406",
+			"Universal Omega"
 		]
 	},
 	"action-createwiki": "{{doc-action|create wikis}}",
@@ -35,7 +36,7 @@
 	"logentry-farmer-requestwiki": "Used as log message.",
 	"log-name-farmer": "Name of 'Farmer log'",
 	"requestwiki": "Submitting a wiki request.",
-	"requestwiki-error-invalidcomment": "Invalid comment/character based on blacklist error message.",
+	"requestwiki-error-invalidcomment": "Invalid comment/character based on disallowed error message.",
 	"requestwiki-error-patient": "Multiple wiki requests in the same hour error message.\n\nWiki creator is a users with a userright.",
 	"requestwiki-header": "{{doc-important|Do not translate \"Miraheze\"}}\n\nHeader which explains the process of requesting wikis.",
 	"requestwiki-label-language": "Used as a label for 'language'\n{{Identical|Language}}",
