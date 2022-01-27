@@ -102,13 +102,13 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiAutoApprovalBlacklist": {
+		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes to never auto approve requests if their descriptions match.",
 			"public": true,
 			"value": []
 		},
-		"CreateWikiBlacklistedSubdomains": {
-			"description": "String or array. Regex to match for a blacklisted subdomain.",
+		"CreateWikiDisallowedSubdomains": {
+			"description": "String or array. Regex to match for a disallowed subdomains.",
 			"public": true,
 			"value": "/ /"
 		},
