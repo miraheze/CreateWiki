@@ -331,10 +331,10 @@ class WikiRequest {
 	public function parseSubdomain( string $subdomain, string &$err = '' ) {
 		$subdomain = strtolower( $subdomain );
 
-		if ( is_array( $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) ) {
-			$subdomainBlacklist = '/^(' . implode( '|', $this->config->get( 'CreateWikiBlacklistedSubdomains' ) ) . ')+$/';
+		if ( is_array( $this->config->get( 'CreateWikiDisallowedSubdomains' ) ) ) {
+			$disallowedSubdomains = '/^(' . implode( '|', $this->config->get( 'CreateWikiDisallowedSubdomains' ) ) . ')+$/';
 		} else {
-			$subdomainBlacklist = $this->config->get( 'CreateWikiBlacklistedSubdomains' );
+			$disallowedSubdomains = $this->config->get( 'CreateWikiDisallowedSubdomains' );
 		}
 
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
@@ -346,7 +346,7 @@ class WikiRequest {
 			$err = 'notalnum';
 
 			return false;
-		} elseif ( preg_match( $subdomainBlacklist, $subdomain ) ) {
+		} elseif ( preg_match( $disallowedSubdomains, $subdomain ) ) {
 			$err = 'blacklisted';
 
 			return false;
