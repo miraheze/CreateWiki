@@ -36,8 +36,8 @@ class RequestWikiAIJob extends Job {
 	}
 
 	private function canAutoApprove( $config ) {
-		$descriptionBlacklist = '/(' . implode( '|', $config->get( 'CreateWikiAutoApprovalBlacklist' ) ) . ')+/';
-		if ( preg_match( $descriptionBlacklist, strtolower( $this->params['description'] ) ) ) {
+		$descriptionFilter = '/(' . implode( '|', $config->get( 'CreateWikiAutoApprovalFilter' ) ) . ')+/';
+		if ( preg_match( $descriptionFilter, strtolower( $this->params['description'] ) ) ) {
 			return false;
 		}
 
