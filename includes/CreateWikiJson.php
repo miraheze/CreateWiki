@@ -17,7 +17,6 @@ class CreateWikiJson {
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
@@ -29,13 +28,20 @@ class CreateWikiJson {
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 		AtEase::restoreWarnings();
 
-		$this->initTime = $this->dbr->timestamp();
-
+		$this->dbr = null;
 		if ( !$this->databaseTimestamp ) {
+			$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			$this->initTime = $this->dbr->timestamp();
+
 			$this->resetDatabaseList();
 		}
 
 		if ( !$this->wikiTimestamp ) {
+			if ( !$this->dbr ) {
+				$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+				$this->initTime = $this->dbr->timestamp();
+			}
+
 			$this->resetWiki();
 		}
 	}
@@ -58,10 +64,18 @@ class CreateWikiJson {
 		$changes = $this->newChanges();
 
 		if ( $changes['databases'] ) {
+			if ( !$this->dbr ) {
+				$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			}
+
 			$this->generateDatabaseList();
 		}
 
 		if ( $changes['wiki'] ) {
+			if ( !$this->dbr ) {
+				$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			}
+
 			$this->generateWiki();
 		}
 	}
