@@ -28,25 +28,19 @@ class CreateWikiJson {
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 		AtEase::restoreWarnings();
 
-		$this->dbr = null;
 		if ( !$this->databaseTimestamp ) {
-			$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
-			$this->initTime = $this->dbr->timestamp();
-
 			$this->resetDatabaseList();
 		}
 
 		if ( !$this->wikiTimestamp ) {
-			if ( !$this->dbr ) {
-				$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
-				$this->initTime = $this->dbr->timestamp();
-			}
-
 			$this->resetWiki();
 		}
 	}
 
 	public function resetWiki() {
+		$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->initTime ??= $this->dbr->timestamp();
+
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
 
 		// Rather than destroy object, let's fake the cache timestamp
@@ -54,6 +48,9 @@ class CreateWikiJson {
 	}
 
 	public function resetDatabaseList() {
+		$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->initTime ??= $this->dbr->timestamp();
+
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
 		// Rather than destroy object, let's fake the catch timestamp
@@ -64,17 +61,13 @@ class CreateWikiJson {
 		$changes = $this->newChanges();
 
 		if ( $changes['databases'] ) {
-			if ( !$this->dbr ) {
-				$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
-			}
+			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 			$this->generateDatabaseList();
 		}
 
 		if ( $changes['wiki'] ) {
-			if ( !$this->dbr ) {
-				$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
-			}
+			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 			$this->generateWiki();
 		}
