@@ -108,7 +108,7 @@
 			"value": []
 		},
 		"CreateWikiDisallowedSubdomains": {
-			"description": "String or array. Regex to match for a disallowed subdomains.",
+			"description": "String or array. Regex to match for disallowed subdomains.",
 			"public": true,
 			"value": "/ /"
 		},
