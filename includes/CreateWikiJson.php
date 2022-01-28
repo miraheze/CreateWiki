@@ -17,7 +17,6 @@ class CreateWikiJson {
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->dbr = wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
@@ -29,8 +28,6 @@ class CreateWikiJson {
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 		AtEase::restoreWarnings();
 
-		$this->initTime = $this->dbr->timestamp();
-
 		if ( !$this->databaseTimestamp ) {
 			$this->resetDatabaseList();
 		}
@@ -41,6 +38,9 @@ class CreateWikiJson {
 	}
 
 	public function resetWiki() {
+		$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->initTime ??= $this->dbr->timestamp();
+
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
 
 		// Rather than destroy object, let's fake the cache timestamp
@@ -48,6 +48,9 @@ class CreateWikiJson {
 	}
 
 	public function resetDatabaseList() {
+		$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->initTime ??= $this->dbr->timestamp();
+
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
 		// Rather than destroy object, let's fake the catch timestamp
@@ -58,10 +61,14 @@ class CreateWikiJson {
 		$changes = $this->newChanges();
 
 		if ( $changes['databases'] ) {
+			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+
 			$this->generateDatabaseList();
 		}
 
 		if ( $changes['wiki'] ) {
+			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+
 			$this->generateWiki();
 		}
 	}

@@ -11,7 +11,10 @@
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.37.0"
+		"MediaWiki": ">= 1.37.0",
+		"platform": {
+			"php": ">= 7.4"
+		}
 	},
 	"AvailableRights": [
 		"createwiki",
