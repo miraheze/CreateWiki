@@ -142,6 +142,11 @@
 			"public": true,
 			"value": []
 		},
+		"CreateWikiDatabaseSuffix": {
+			"description": "String. Database suffix.",
+			"public": true,
+			"value": "wiki"
+		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
 			"public": true,
