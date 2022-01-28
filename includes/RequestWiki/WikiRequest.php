@@ -351,7 +351,7 @@ class WikiRequest {
 
 			return false;
 		} else {
-			$this->dbname = $subdomain . 'wiki';
+			$this->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
 			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
 
 			return true;
