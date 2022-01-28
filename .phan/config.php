@@ -14,7 +14,8 @@ $cfg['exclude_analysis_directory_list'] = array_merge(
 	]
 );
 
-// We intentionally explicitly specified this so that it picks up on deprecations, etc..
+// We explicitly specify this so that it
+// picks up on deprecations, and other issues
 $cfg['suppress_issue_types'] = [
 	'PhanTypeArraySuspiciousNullable',
 	'SecurityCheck-LikelyFalsePositive',
