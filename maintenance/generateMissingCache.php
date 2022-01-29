@@ -7,6 +7,7 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
+use MediaWiki\Extension\CreateWiki\CreateWikiJson;
 use MediaWiki\MediaWikiServices;
 
 class GenerateMissingCache extends Maintenance {

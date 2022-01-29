@@ -1,7 +1,17 @@
 <?php
 
+namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+
+use Config;
+use FormSpecialPage;
+use Html;
+use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
+use MWException;
+use SpecialPage;
+use TextContent;
+use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -191,3 +201,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return 'wikimanage';
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( SpecialRequestWiki::class, 'SpecialRequestWiki' );

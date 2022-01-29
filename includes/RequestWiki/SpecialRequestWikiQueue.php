@@ -1,5 +1,10 @@
 <?php
 
+namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+
+use HTMLForm;
+use SpecialPage;
+
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function __construct() {
@@ -84,3 +89,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		return 'wikimanage';
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( SpecialRequestWikiQueue::class, 'SpecialRequestWikiQueue' );

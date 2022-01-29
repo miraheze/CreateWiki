@@ -1,4 +1,11 @@
 <?php
+
+namespace MediaWiki\Extension\CreateWiki\Notifications;
+
+use EchoDiscussionParser;
+use EchoEventPresentationModel;
+use RawMessage;
+
 class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
 		return 'request-declined';
@@ -29,3 +36,8 @@ class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 		return [ $visitLink ];
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( EchoRequestDeclinedPresentationModel::class, 'EchoRequestDeclinedPresentationModel' );

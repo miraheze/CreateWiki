@@ -1,6 +1,10 @@
 <?php
 
+namespace MediaWiki\Extension\CreateWiki;
+
 use MediaWiki\MediaWikiServices;
+use MWException;
+use ObjectCache;
 use Wikimedia\AtEase\AtEase;
 
 class CreateWikiJson {
@@ -180,3 +184,8 @@ class CreateWikiJson {
 		return $changes;
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( CreateWikiJson::class, 'CreateWikiJson' );

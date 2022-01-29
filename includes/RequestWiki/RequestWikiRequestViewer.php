@@ -1,6 +1,17 @@
 <?php
 
+namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+
+use Config;
+use Html;
+use HTMLForm;
+use HTMLFormField;
+use IContextSource;
+use Linker;
+use MediaWiki\Extension\CreateWiki\CreateWikiOOUIForm;
+use MediaWiki\Extension\CreateWiki\WikiManager;
 use MediaWiki\MediaWikiServices;
+use MWException;
 
 class RequestWikiRequestViewer {
 
@@ -279,6 +290,11 @@ class RequestWikiRequestViewer {
 		return $formDescriptor;
 	}
 
+	/**
+	 * @param string $id
+	 * @param IContextSource $context
+	 * @param string $formClass
+	 */
 	public function getForm(
 		string $id,
 		IContextSource $context,
@@ -354,3 +370,8 @@ class RequestWikiRequestViewer {
 		return true;
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( RequestWikiRequestViewer::class, 'RequestWikiRequestViewer' );

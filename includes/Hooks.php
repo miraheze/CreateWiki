@@ -1,8 +1,15 @@
 <?php
 
+namespace MediaWiki\Extension\CreateWiki;
+
+use DatabaseUpdater;
+use EchoAttributeManager;
+use MediaWiki\Extension\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
+use MediaWiki\Extension\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
+use MediaWiki\Extension\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 use MediaWiki\MediaWikiServices;
 
-class CreateWikiHooks {
+class Hooks {
 	public static function getConfig( string $var ) {
 		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );
 	}
@@ -226,3 +233,8 @@ class CreateWikiHooks {
 		];
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( Hooks::class, 'CreateWikiHooks' );

@@ -1,6 +1,11 @@
 <?php
 
+namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+
+use Config;
 use MediaWiki\MediaWikiServices;
+use TablePager;
+use Title;
 
 class RequestWikiQueuePager extends TablePager {
 
@@ -136,3 +141,8 @@ class RequestWikiQueuePager extends TablePager {
 		return true;
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( RequestWikiQueuePager::class, 'RequestWikiQueuePager' );
