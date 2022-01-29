@@ -5,8 +5,8 @@ namespace Miraheze\CreateWiki\CreateWiki;
 use Config;
 use FormSpecialPage;
 use Html;
-use Miraheze\CreateWiki\WikiManager;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\WikiManager;
 
 class SpecialCreateWiki extends FormSpecialPage {
 

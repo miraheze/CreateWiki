@@ -3,10 +3,10 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
-use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
-use Miraheze\CreateWiki\WikiManager;
 use MediaWiki\MediaWikiServices;
 use Message;
+use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
+use Miraheze\CreateWiki\WikiManager;
 use MWException;
 use SpecialPage;
 use Title;

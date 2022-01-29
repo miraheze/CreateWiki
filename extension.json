@@ -53,7 +53,8 @@
 		"RenameWiki": "maintenance/renameWiki.php"
 	},
 	"AutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\": "src/"
+		"Miraheze\\CreateWiki\\": "src/",
+		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [

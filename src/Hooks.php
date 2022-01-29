@@ -4,10 +4,10 @@ namespace Miraheze\CreateWiki;
 
 use DatabaseUpdater;
 use EchoAttributeManager;
+use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
-use MediaWiki\MediaWikiServices;
 
 class Hooks {
 	public static function getConfig( string $var ) {

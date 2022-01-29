@@ -1,8 +1,8 @@
 <?php
 
 use MediaWiki\Config\ServiceOptions;
-use Miraheze\CreateWiki\CreateWikiNotificationsManager;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\CreateWikiNotificationsManager;
 
 return [
 	'CreateWiki.NotificationsManager' => static function ( MediaWikiServices $services ): CreateWikiNotificationsManager {

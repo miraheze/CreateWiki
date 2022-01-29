@@ -8,9 +8,9 @@ use HTMLForm;
 use HTMLFormField;
 use IContextSource;
 use Linker;
+use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\WikiManager;
-use MediaWiki\MediaWikiServices;
 use MWException;
 
 class RequestWikiRequestViewer {
