@@ -47,11 +47,6 @@
 	"ExtensionMessagesFiles": {
 		"CreateWikiAliases": "CreateWikiAliases.php"
 	},
-	"AutoloadClasses": {
-		"DeleteWikis": "maintenance/deleteWikis.php",
-		"PopulateMainPage": "maintenance/populateMainPage.php",
-		"RenameWiki": "maintenance/renameWiki.php"
-	},
 	"AutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\": "src/",
 		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
