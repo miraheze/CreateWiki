@@ -22,7 +22,13 @@ class DBListGenerator extends Maintenance {
 
 		$res = $dbr->select(
 			'cw_wikis',
-			'wiki_dbname',
+			[
+				'wiki_closed',
+				'wiki_dbname',
+				'wiki_deleted',
+				'wiki_inactive',
+				'wiki_private',
+			],
 			[],
 			__METHOD__
 		);
@@ -38,22 +44,28 @@ class DBListGenerator extends Maintenance {
 		$deletedWikis = [];
 
 		foreach ( $res as $row ) {
+			$DBname = $row->wiki_dbname;
+			$private = $row->wiki_private;
+			$closed = $row->wiki_closed;
+			$inactive = $row->wiki_inactive;
+			$deleted = $row->wiki_deleted;
+
 			if ( $deleted === "0" ) {
-				$allWikis[] = $row->wiki_dbname;
+				$allWikis[] = $DBname;
 
 				if ( $private === "1" ) {
-					$privateWikis[] = $row->wiki_dbname;
+					$privateWikis[] = $DBname;
 				}
 
 				if ( $closed === "1" ) {
-					$closedWikis[] = $row->wiki_dbname;
+					$closedWikis[] = $DBname;
 				}
 
 				if ( $inactive === "1" ) {
-					$inactiveWikis[] = $row->wiki_dbname;
+					$inactiveWikis[] = $DBname;
 				}
 			} else {
-				$deletedWikis[] = $row->wiki_dbname;
+				$deletedWikis[] = $DBname;
 			}
 		}
 
