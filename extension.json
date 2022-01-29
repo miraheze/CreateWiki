@@ -53,7 +53,7 @@
 		"RenameWiki": "maintenance/renameWiki.php"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\CreateWiki\\": "includes/"
+		"MediaWiki\\Extension\\CreateWiki\\": "src/"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
