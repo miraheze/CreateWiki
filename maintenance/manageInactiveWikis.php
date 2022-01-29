@@ -7,7 +7,7 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
-use MediaWiki\Extension\CreateWiki\RemoteWiki;
+use Miraheze\CreateWiki\RemoteWiki;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 

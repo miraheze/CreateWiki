@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\RequestWiki;
 
 use HTMLForm;
 use SpecialPage;

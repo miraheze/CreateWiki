@@ -7,7 +7,7 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
-use MediaWiki\Extension\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\WikiManager;
 use MediaWiki\MediaWikiServices;
 
 class RenameWiki extends Maintenance {

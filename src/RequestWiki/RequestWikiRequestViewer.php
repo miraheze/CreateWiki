@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\RequestWiki;
 
 use Config;
 use Html;
@@ -8,8 +8,8 @@ use HTMLForm;
 use HTMLFormField;
 use IContextSource;
 use Linker;
-use MediaWiki\Extension\CreateWiki\CreateWikiOOUIForm;
-use MediaWiki\Extension\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\CreateWikiOOUIForm;
+use Miraheze\CreateWiki\WikiManager;
 use MediaWiki\MediaWikiServices;
 use MWException;
 

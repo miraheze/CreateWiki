@@ -1,12 +1,12 @@
 <?php
 
-namespace MediaWiki\Extension\CreateWiki;
+namespace Miraheze\CreateWiki;
 
 use DatabaseUpdater;
 use EchoAttributeManager;
-use MediaWiki\Extension\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
-use MediaWiki\Extension\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
-use MediaWiki\Extension\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 use MediaWiki\MediaWikiServices;
 
 class Hooks {

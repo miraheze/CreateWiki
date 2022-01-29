@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extension\CreateWiki;
+namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
 

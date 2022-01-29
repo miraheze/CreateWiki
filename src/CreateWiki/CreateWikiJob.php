@@ -1,11 +1,11 @@
 <?php
 
-namespace MediaWiki\Extension\CreateWiki\CreateWiki;
+namespace Miraheze\CreateWiki\CreateWiki;
 
 use Exception;
 use Job;
-use MediaWiki\Extension\CreateWiki\RequestWiki\WikiRequest;
-use MediaWiki\Extension\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\RequestWiki\WikiRequest;
+use Miraheze\CreateWiki\WikiManager;
 use Title;
 use User;
 

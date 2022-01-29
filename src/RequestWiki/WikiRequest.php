@@ -1,10 +1,10 @@
 <?php
 
-namespace MediaWiki\Extension\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
-use MediaWiki\Extension\CreateWiki\CreateWiki\CreateWikiJob;
-use MediaWiki\Extension\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
+use Miraheze\CreateWiki\WikiManager;
 use MediaWiki\MediaWikiServices;
 use Message;
 use MWException;

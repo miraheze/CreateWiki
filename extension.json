@@ -21,13 +21,13 @@
 		"requestwiki"
 	],
 	"SpecialPages": {
-		"CreateWiki": "MediaWiki\\Extension\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
-		"RequestWiki": "MediaWiki\\Extension\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
-		"RequestWikiQueue": "MediaWiki\\Extension\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue"
+		"CreateWiki": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
+		"RequestWiki": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+		"RequestWikiQueue": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue"
 	},
 	"JobClasses": {
-		"CreateWikiJob": "MediaWiki\\Extension\\CreateWiki\\CreateWiki\\CreateWikiJob",
-		"RequestWikiAIJob": "MediaWiki\\Extension\\CreateWiki\\RequestWiki\\RequestWikiAIJob"
+		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
+		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob"
 	},
 	"LogTypes": [
 		"farmer"
@@ -37,7 +37,7 @@
 		"farmer/requestaccept": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
-		"farmer/requestwiki": "MediaWiki\\Extension\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
+		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
 	},
 	"MessagesDirs": {
 		"CreateWiki": [
@@ -53,17 +53,17 @@
 		"RenameWiki": "maintenance/renameWiki.php"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\CreateWiki\\": "src/"
+		"Miraheze\\CreateWiki\\": "src/"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
-			"MediaWiki\\Extension\\CreateWiki\\Hooks::onBeforeCreateEchoEvent"
+			"Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent"
 		],
 		"LoadExtensionSchemaUpdates": [
-			"MediaWiki\\Extension\\CreateWiki\\Hooks::fnCreateWikiSchemaUpdates"
+			"Miraheze\\CreateWiki\\Hooks::fnCreateWikiSchemaUpdates"
 		],
 		"SetupAfterCache": [
-			"MediaWiki\\Extension\\CreateWiki\\Hooks::onSetupAfterCache"
+			"Miraheze\\CreateWiki\\Hooks::onSetupAfterCache"
 		]
 	},
 	"ResourceModules": {
@@ -256,6 +256,6 @@
 		"includes/ServiceWiring.php"
 	],
 	"load_composer_autoloader": true,
-	"callback": "MediaWiki\\Extension\\CreateWiki\\Hooks::onRegistration",
+	"callback": "Miraheze\\CreateWiki\\Hooks::onRegistration",
 	"manifest_version": 2
 }

@@ -1,7 +1,7 @@
 <?php
 
 use MediaWiki\Config\ServiceOptions;
-use MediaWiki\Extension\CreateWiki\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\CreateWikiNotificationsManager;
 use MediaWiki\MediaWikiServices;
 
 return [
