@@ -48,8 +48,12 @@
 		"CreateWikiAliases": "CreateWikiAliases.php"
 	},
 	"AutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\": "src/",
-		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
+		"Miraheze\\CreateWiki\\": "src/"
+	},
+	"AutoloadClasses": {
+		"Miraheze\\CreateWiki\\Maintenance\\DeleteWikis": "maintenance/deleteWikis.php",
+		"Miraheze\\CreateWiki\\Maintenance\\PopulateMainPage": "maintenance/populateMainPage.php",
+		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
