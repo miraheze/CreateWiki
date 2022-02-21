@@ -94,6 +94,36 @@ class CreateWikiHooks {
 			'wiki_experimental',
 			__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_experimental.sql'
 		);
+
+		$updater->modifyExtensionField(
+			'cw_wikis',
+			'wiki_closed',
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_closed.sql'
+		);
+
+		$updater->modifyExtensionField(
+			'cw_wikis',
+			'wiki_deleted',
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_deleted.sql'
+		);
+
+		$updater->modifyExtensionField(
+			'cw_wikis',
+			'wiki_inactive',
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_inactive.sql'
+		);
+
+		$updater->modifyExtensionField(
+			'cw_wikis',
+			'wiki_inactive_exempt',
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_inactive_exempt.sql'
+		);
+
+		$updater->modifyExtensionField(
+			'cw_wikis',
+			'wiki_locked',
+			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_locked.sql'
+		);
 	}
 
 	public static function onRegistration() {
