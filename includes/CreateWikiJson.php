@@ -106,14 +106,31 @@ class CreateWikiJson {
 			}
 		}
 
-		file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
-		file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
+		$databaseLists = [
+			'deleted' => [
+				'deleted' => 'databases',
+				'databases' => $deletedList,
+			],
+			'databases' => [
+				'combi' => $combiList,
+			],
+		];
 
-		if ( file_exists( "{$this->cacheDir}/databases.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
-		}
-		if ( file_exists( "{$this->cacheDir}/deleted.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonGenerateDatabaseList', [ &$databaseLists ] );
+
+		foreach ( $databaseLists as $name => $contents ) {
+			$contents = [ 'timestamp' => $this->databaseTimestamp ] + $contents;
+			$contents[$name] ??= 'combi';
+
+			$contents[ $contents[$name] ] ??= [];
+
+			unset( $contents[$name] );
+
+			file_put_contents( "{$this->cacheDir}/{$name}.json.tmp", json_encode( $contents ), LOCK_EX );
+
+			if ( file_exists( "{$this->cacheDir}/{$name}.json.tmp" ) ) {
+				rename( "{$this->cacheDir}/{$name}.json.tmp", "{$this->cacheDir}/{$name}.json" );
+			}
 		}
 	}
 
