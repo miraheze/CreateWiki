@@ -96,7 +96,7 @@
 	"requestwikiqueue-request-label-sitename": "Название сайта",
 	"requestwikiqueue-request-label-status": "Статус",
 	"requestwikiqueue-request-label-url": "URL",
-	"requestwikiqueue-request-label-visibility": "Изменить видимость запроса на…",
+	"requestwikiqueue-request-label-visibility": "Изменить видимость этого запроса на…",
 	"requestwikiqueue-request-label-visibility-all": "Каждый с правом на чтение может посмотреть запрос",
 	"requestwikiqueue-request-label-visibility-delete": "Каждый с правом на удаление может посмотреть запрос",
 	"requestwikiqueue-request-label-visibility-hide": "Каждый с правом на создание вики может посмотреть запрос",

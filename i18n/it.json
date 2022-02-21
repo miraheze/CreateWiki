@@ -92,7 +92,7 @@
 	"requestwikiqueue-request-label-sitename": "Nome del sito",
 	"requestwikiqueue-request-label-status": "Stato",
 	"requestwikiqueue-request-label-url": "URL",
-	"requestwikiqueue-request-label-visibility": "Segna questa visibilità richieste come…",
+	"requestwikiqueue-request-label-visibility": "Segna la visibilità di questa richiesta come…",
 	"requestwikiqueue-request-label-visibility-all": "Tutti con ‘lèggi’ possono vedere la richiesta",
 	"requestwikiqueue-request-label-visibility-delete": "Tutti con permessi ‘cancella’ possono vedere questa richiesta",
 	"requestwikiqueue-request-label-visibility-hide": "Tutti con i permessi ‘crea Wiki’ possono vedere questa richiesta",
