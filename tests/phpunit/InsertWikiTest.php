@@ -2,7 +2,6 @@
 
 /**
  * @group CreateWiki
- * @group Database
  * @group Medium
  */
 class InsertWikiTest extends MediaWikiIntegrationTestCase {
@@ -15,14 +14,6 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBData() {
 		parent::addDBData();
-
-		$this->tablesUsed[] = 'cw_wikis';
-
-		$lbFactory = $this->getServiceContainer()->getDBLoadBalancerFactory();
-		$lb = $lbFactory->newMainLB();
-		$db = $lb->getConnection( DB_PRIMARY );
-
-		MediaWikiIntegrationTestCase::setupDatabaseWithTestPrefix( $db, '' );
 
 		$this->db->insert(
 			'cw_wikis',
@@ -41,8 +32,8 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 				'wiki_inactive_exempt' => (int)0,
 				'wiki_url' => 'http://127.0.0.1:9412'
 			],
-			__METHOD__
-			// [ 'IGNORE' ]
+			__METHOD__,
+			[ 'IGNORE' ]
 		);
 	}
 }
