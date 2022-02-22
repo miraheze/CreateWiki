@@ -81,7 +81,7 @@ class CreateWikiJson {
 				'wiki_dbname',
 				'wiki_deleted',
 				'wiki_url',
-				'wiki_sitename'
+				'wiki_sitename',
 			]
 		);
 
@@ -92,12 +92,12 @@ class CreateWikiJson {
 			if ( $wiki->wiki_deleted == 1 ) {
 				$deletedList[$wiki->wiki_dbname] = [
 					's' => $wiki->wiki_sitename,
-					'c' => $wiki->wiki_dbcluster
+					'c' => $wiki->wiki_dbcluster,
 				];
 			} else {
 				$combiList[$wiki->wiki_dbname] = [
 					's' => $wiki->wiki_sitename,
-					'c' => $wiki->wiki_dbcluster
+					'c' => $wiki->wiki_dbcluster,
 				];
 
 				if ( $wiki->wiki_url !== null ) {
@@ -107,12 +107,12 @@ class CreateWikiJson {
 		}
 
 		$databaseLists = [
+			'databases' => [
+				'combi' => $combiList,
+			],
 			'deleted' => [
 				'deleted' => 'databases',
 				'databases' => $deletedList,
-			],
-			'databases' => [
-				'combi' => $combiList,
 			],
 		];
 
