@@ -8,15 +8,15 @@
 class InsertWikiTest extends MediaWikiIntegrationTestCase {
 	protected $tablesUsed = [ 'cw_wikis' ];
 
-	public const DB_PREFIX = '';
-
 	public function setUp(): void {
 		parent::setUp();
-		$this->addDBData();
 	}
 
-	public function addDBData() {
-		parent::addDBData();
+	public function dbPrefix() {
+		return '';
+	}
+
+	public function addDBDataOnce() {
 		$this->db->insert(
 			'cw_wikis',
 			[
