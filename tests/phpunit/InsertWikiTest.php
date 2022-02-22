@@ -16,6 +16,8 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 	public function addDBData() {
 		parent::addDBData();
 
+		$this->tablesUsed[] = 'cw_wikis';
+
 		$lbFactory = $this->getServiceContainer()->getDBLoadBalancerFactory();
 		$lb = $lbFactory->newMainLB();
 		$db = $lb->getConnection( DB_PRIMARY );
