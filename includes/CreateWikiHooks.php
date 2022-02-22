@@ -137,10 +137,6 @@ class CreateWikiHooks {
 	public static function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		if ( defined( 'MW_UPDATER' ) ) {
-			return;
-		}
-
 		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );
 		$dbName = self::getConfig( 'DBname' );
 
