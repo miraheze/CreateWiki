@@ -24,7 +24,9 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBData() {
 		parent::addDBData();
-		$this->db->insert(
+		$dbw = wfGetDB( DB_PRIMARY );
+
+		$dbw->insert(
 			'cw_wikis',
 			[
 				'wiki_dbname' => 'wikidb',
@@ -32,7 +34,7 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
 				'wiki_private' => (int)0,
-				'wiki_creation' => $this->db->timestamp(),
+				'wiki_creation' => $dbw->timestamp(),
 				'wiki_category' => 'uncategorised',
 				'wiki_closed' => (int)0,
 				'wiki_deleted' => (int)0,
@@ -41,8 +43,8 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 				'wiki_inactive_exempt' => (int)0,
 				'wiki_url' => 'http://127.0.0.1:9412'
 			],
-			__METHOD__,
-			[ 'IGNORE' ]
+			__METHOD__
+			// [ 'IGNORE' ]
 		);
 	}
 }
