@@ -2,6 +2,7 @@
 
 /**
  * @group CreateWiki
+ * @group Database
  * @group Medium
  */
 class InsertWikiTest extends MediaWikiIntegrationTestCase {
