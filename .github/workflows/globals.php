@@ -37,6 +37,10 @@ $wgCreateWikiCacheDirectory = "$IP/cache";
 $wgHooks['MediaWikiServices'][] = 'wfOnMediaWikiServices';
 
 function wfOnMediaWikiServices( MediaWiki\MediaWikiServices $services ) {
+	if ( defined( 'MW_PHPUNIT_TEST' ) ) {
+		return;
+	}
+
 	try {
 		$dbw = wfGetDB( DB_PRIMARY );
 
