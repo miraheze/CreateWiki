@@ -13,6 +13,11 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 		$this->addDBData();
 	}
 
+	public function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+		$this->addDBData();
+	}
+
 	public function dbPrefix() {
 		return '';
 	}
