@@ -200,12 +200,6 @@ jobs:
 
           git -C src/ log -n 1 --format="%H"
 
-      - name: Cache dependencies (composer and npm)
-        uses: actions/cache@v2
-        with:
-          path: /home/runner/cache
-          key: ${{ runner.os }}-${{ env.MEDIAWIKI_VERSION }}-${{ hashFiles('**/*.lock') }}
-
       - name: Setup PHP Action
         if: ${{ matrix.stage == 'phan' }}
         uses: shivammathur/setup-php@v2
