@@ -10,15 +10,19 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
+		$this->addDBData();
 	}
 
-	public static function setUpBeforeClass(): void {
-		parent::setUpBeforeClass();
-		$dbw = wfGetDB( DB_PRIMARY );
+	public function addDBData() {
+		parent::addDBData();
 
-		MediaWikiIntegrationTestCase::setupDatabaseWithTestPrefix( $dbw, '' );
+		$lbFactory = $this->getServiceContainer()->getDBLoadBalancerFactory();
+		$lb = $lbFactory->newMainLB();
+		$db = $lb->getConnection( DB_PRIMARY );
 
-		$dbw->insert(
+		MediaWikiIntegrationTestCase::setupDatabaseWithTestPrefix( $db, '' );
+
+		$this->db->insert(
 			'cw_wikis',
 			[
 				'wiki_dbname' => 'wikidb',
@@ -26,7 +30,7 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
 				'wiki_private' => (int)0,
-				'wiki_creation' => $dbw->timestamp(),
+				'wiki_creation' => $this->db->timestamp(),
 				'wiki_category' => 'uncategorised',
 				'wiki_closed' => (int)0,
 				'wiki_deleted' => (int)0,
