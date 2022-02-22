@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @group CreateWiki
  * @group Database
  * @group Medium
  */
@@ -11,6 +12,7 @@ class InsertWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
+		$this->addDBData();
 	}
 
 	public function addDBData() {
