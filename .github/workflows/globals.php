@@ -34,7 +34,7 @@ $wgCreateWikiGlobalWiki = 'wikidb';
 $wgCreateWikiDatabase = 'wikidb';
 $wgCreateWikiCacheDirectory = "$IP/cache";
 
-// $wgHooks['MediaWikiServices'][] = 'wfOnMediaWikiServices';
+$wgHooks['MediaWikiServices'][] = 'wfOnMediaWikiServices';
 
 function wfOnMediaWikiServices( MediaWiki\MediaWikiServices $services ) {
 	if ( defined( 'MW_PHPUNIT_TEST' ) ) {
