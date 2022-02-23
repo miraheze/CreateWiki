@@ -59,28 +59,28 @@ jobs:
           - mw: 'REL1_37'
             php: 7.4
             php-docker: 74
-            experimental: true
+            experimental: false
             stage: selenium
 
           # Latest MediaWiki master - PHP 7.4 (selenium)
           - mw: 'master'
             php: 7.4
             php-docker: 74
-            experimental: true
+            experimental: false
             stage: selenium
 
           # Latest stable MediaWiki - PHP 7.4 (qunit)
           - mw: 'REL1_37'
             php: 7.4
             php-docker: 74
-            experimental: true
+            experimental: false
             stage: qunit
 
           # Latest MediaWiki master - PHP 7.4 (qunit)
           - mw: 'master'
             php: 7.4
             php-docker: 74
-            experimental: true
+            experimental: false
             stage: qunit
 
           # Latest stable MediaWiki - PHP 7.4 (npm-test)
