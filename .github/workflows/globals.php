@@ -1,8 +1,6 @@
 <?php
 
-if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
-	define( 'MW_DB', 'wikidb' );
-}
+define( 'MW_DB', 'wikidb' );
 
 require_once "$IP/extensions/CreateWiki/includes/WikiInitialise.php";
 $wi = new WikiInitialise();
@@ -29,9 +27,6 @@ $wi->config->settings += [
 	],
 	'cwExperimental' => [
 		'default' => false,
-	],
-	'wgDBname' => [
-		'default' => 'wikidb',
 	],
 ];
 
