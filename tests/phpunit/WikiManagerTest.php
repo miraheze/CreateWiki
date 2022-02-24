@@ -29,15 +29,14 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$p = [
 			'host' => $wgDBserver,
-			// 'host' => '127.0.0.1',
-			// 'serverName' => 'localhost:' . glob( '/tmp/quibble-mysql-*/socket' )[0],
 			'user' => 'root',
 			'dbname' => 'wikidb',
 		];
 
 		$db = Database::factory( 'mysql', $p );
 
-		$db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost'" );
+		$db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost' WITH GRANT OPTION;" );
+		$db->query( "FLUSH PRIVILEGES;" );
 
 		$user = $this->getTestSysop()->getUser();
 
