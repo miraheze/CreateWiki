@@ -27,6 +27,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreate() {
 		$p = [
 			'host' => '127.0.0.1',
+			'serverName' => glob('/tmp/quibble-mysql-*/socket')[0],
 			'user' => 'root',
 			'dbname' => 'wikidb',
 		];
