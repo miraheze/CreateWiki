@@ -30,7 +30,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$p = [
 			'host' => $wgDBserver,
 			'user' => 'root',
-			'dbname' => false,
+			'dbname' => 'wikidb',
 		];
 
 		$db = Database::factory( 'mysql', $p );
