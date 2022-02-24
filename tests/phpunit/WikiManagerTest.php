@@ -13,7 +13,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->tablesUsed[] = 'cw_wikis';
 
 		$conf = new SiteConfiguration();
-		$conf->suffixes = [ '' ];
+		$conf->suffixes = [ 'test' ];
 		$this->setMwGlobals( [
 			'wgConf' => $conf,
 		] );
