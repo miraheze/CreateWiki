@@ -16,9 +16,7 @@ class WikiManager {
 
 	public function __construct( string $dbname ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-
-		$this->cwdb = $lbFactory->getMainLB()->getConnection( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
 			'cw_wikis',
@@ -64,7 +62,7 @@ class WikiManager {
 			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
-			$newDbw = $lbFactory->getMainLB()->getConnection( DB_PRIMARY, [], $dbname );
+			$newDbw = wfGetDB( DB_PRIMARY, [], $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -104,7 +102,7 @@ class WikiManager {
 		if ( $this->lb ) {
 			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
-			$this->dbw->selectDomain( $wiki );
+			$this->dbw = wfGetDB( DB_PRIMARY, [], $wiki );
 		}
 
 		$this->cwdb->insert(
