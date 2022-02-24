@@ -1,6 +1,8 @@
 <?php
 
-define( 'MW_DB', 'wikidb' );
+if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+	define( 'MW_DB', 'wikidb' );
+}
 
 require_once "$IP/extensions/CreateWiki/includes/WikiInitialise.php";
 $wi = new WikiInitialise();
