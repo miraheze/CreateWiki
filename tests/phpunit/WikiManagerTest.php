@@ -60,7 +60,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDelete() {
-		$wikiManager = new WikiManager( 'createwikitest' );
+		$wikiManager = new WikiManager( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( true ) );
 	}
