@@ -10,6 +10,8 @@ use Wikimedia\Rdbms\Database;
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function setUp(): void {
+		global $wgDBserver;
+
 		parent::setUp();
 
 		$this->tablesUsed[] = 'cw_wikis';
@@ -19,13 +21,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( [
 			'wgConf' => $conf,
 		] );
-	}
-
-	/**
-	 * @covers ::create
-	 */
-	public function testCreate() {
-		global $wgDBserver;
 
 		$p = [
 			'host' => $wgDBserver,
@@ -39,7 +34,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER, INDEX, CREATE VIEW, LOCK TABLES ON `createwikitest`.* TO 'wikiuser'@'localhost' WITH GRANT OPTION;", __METHOD__ );
 		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
 		$db->commit( __METHOD__ );
+	}
 
+	/**
+	 * @covers ::create
+	 */
+	public function testCreate() {
 		$user = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( 'createwikitest' );
