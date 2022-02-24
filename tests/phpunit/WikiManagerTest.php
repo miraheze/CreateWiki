@@ -16,6 +16,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$conf->suffixes = [ 'test' ];
 		$this->setMwGlobals( [
 			'wgConf' => $conf,
+			'wgDBuser' => 'root',
 		] );
 	}
 
