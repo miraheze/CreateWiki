@@ -16,7 +16,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$conf->suffixes = [ 'test' ];
 		$this->setMwGlobals( [
 			'wgConf' => $conf,
-			'wgDBuser' => 'root',
 		] );
 	}
 
@@ -24,6 +23,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreate() {
+		$this->db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost'" );
+
 		$user = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( 'createwikitest' );
