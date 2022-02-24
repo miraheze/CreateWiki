@@ -51,8 +51,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRename() {
-		$this->testCreate();
-
 		$wikiManager = new WikiManager( 'createwikitest' );
 
 		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
@@ -62,9 +60,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDelete() {
-		$this->testCreate();
-
-		$wikiManager = new WikiManager( 'createwikitest' );
+		$wikiManager = new WikiManager( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( true ) );
 	}
