@@ -10,8 +10,6 @@ use Wikimedia\Rdbms\Database;
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function setUp(): void {
-		global $wgDBserver;
-
 		parent::setUp();
 
 		$this->tablesUsed[] = 'cw_wikis';
