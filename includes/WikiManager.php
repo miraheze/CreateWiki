@@ -16,7 +16,9 @@ class WikiManager {
 
 	public function __construct( string $dbname ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+
+		$this->cwdb = $lbFactory->getMainLB()->getConnection( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
 			'cw_wikis',
@@ -62,7 +64,7 @@ class WikiManager {
 			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
-			$newDbw = wfGetDB( DB_PRIMARY, [], $dbname );
+			$newDbw = $lbFactory->getMainLB()->getConnection( DB_PRIMARY, [], $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -96,7 +98,7 @@ class WikiManager {
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $wiki );
 			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};" );
 		} catch ( Exception $e ) {
-			throw new FatalError( "Wiki '{$wiki}' already exists. $e" );
+			throw new FatalError( "Wiki '{$wiki}' already exists." );
 		}
 
 		if ( $this->lb ) {
