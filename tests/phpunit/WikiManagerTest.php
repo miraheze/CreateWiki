@@ -22,13 +22,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'wgConf' => $conf,
 		] );
 
-		$p = [
-			'host' => $wgDBserver,
-			'user' => 'root',
-			'dbname' => 'wikidb',
-		];
-
-		$db = Database::factory( 'mysql', $p );
+		$db = Database::factory( 'mysql', [ 'user' => 'root' ] );
 
 		$db->begin( __METHOD__ );
 		$db->query( "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER, INDEX, CREATE VIEW, LOCK TABLES ON `createwikitest`.* TO 'wikiuser'@'localhost' WITH GRANT OPTION;", __METHOD__ );
