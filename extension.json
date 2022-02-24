@@ -71,7 +71,7 @@
 		"WikiRequest": "includes/RequestWiki/WikiRequest.php"
 	},
 	"TestAutoloadClasses": {
-		"InsertWikiTest": "tests/phpunit/InsertWikiTest.php"
+		"WikiManagerTest": "tests/phpunit/WikiManagerTest.php"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
