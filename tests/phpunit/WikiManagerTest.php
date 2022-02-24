@@ -29,4 +29,13 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' ) );
 	}
+
+	public function tearDown(): void {
+		parent::tearDown();
+
+		$wikiManager = new WikiManager( 'createwikitest' );
+		$wikiManager->delete( true );
+
+		$this->db->query( 'DROP DATABASE IF EXISTS `createwikitest`' );
+	}
 }
