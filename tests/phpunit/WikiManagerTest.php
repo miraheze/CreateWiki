@@ -46,4 +46,22 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' ) );
 	}
+
+	/**
+	 * @covers ::rename
+	 */
+	public function testRename() {
+		$wikiManager = new WikiManager( 'createwikitest' );
+
+		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
+	}
+
+	/**
+	 * @covers ::delete
+	 */
+	public function testDelete() {
+		$wikiManager = new WikiManager( 'renamewikitest' );
+
+		$this->assertNull( $wikiManager->delete( true ) );
+	}
 }
