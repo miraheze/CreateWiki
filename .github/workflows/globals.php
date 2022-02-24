@@ -30,6 +30,9 @@ $wi->config->settings += [
 	'cwExperimental' => [
 		'default' => false,
 	],
+	'wgDBname' => [
+		'default' => 'wikidb',
+	],
 ];
 
 $wgCreateWikiGlobalWiki = 'wikidb';
