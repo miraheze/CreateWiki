@@ -11,6 +11,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		parent::setUp();
 
 		$this->tablesUsed[] = 'cw_wikis';
+
+		$conf = new SiteConfiguration();
+		$conf->suffixes = [ '' ];
+		$this->setMwGlobals( [
+			'wgConf' => $conf,
+		] );
 	}
 
 	/**
