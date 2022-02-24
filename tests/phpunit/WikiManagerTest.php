@@ -1,5 +1,7 @@
 <?php
 
+use Wikimedia\Rdbms\Database;
+
 /**
  * @group CreateWiki
  * @group Database
@@ -23,11 +25,16 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreate() {
-		$this->setMwGlobals( [
-			'wgDBuser' => 'root',
-		] );
+		$p = [
+			'host' => 'localhost',
+			'serverName' => 'localdb',
+			'user' => 'root',
+			'dbname' => 'wikidb'
+		];
 
-		$this->db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost'" );
+		$db = Database::factory( 'mysql', $p );
+
+		$db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost'" );
 
 		$user = $this->getTestSysop()->getUser();
 
