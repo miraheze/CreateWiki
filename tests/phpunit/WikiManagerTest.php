@@ -26,10 +26,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testCreate() {
 		$p = [
-			'host' => 'localhost',
+			'host' => '127.0.0.1',
 			'serverName' => 'localdb',
 			'user' => 'root',
-			'dbname' => 'wikidb'
+			'dbname' => 'wikidb',
 		];
 
 		$db = Database::factory( 'mysql', $p );
