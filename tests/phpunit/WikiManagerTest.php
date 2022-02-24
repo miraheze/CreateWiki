@@ -25,7 +25,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db = Database::factory( 'mysql', [ 'host' => $wgDBserver, 'user' => 'root' ] );
 
 		$db->begin( __METHOD__ );
-		$db->query( "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER, INDEX, CREATE VIEW, LOCK TABLES ON `createwikitest`.* TO 'wikiuser'@'localhost' WITH GRANT OPTION;", __METHOD__ );
+		$db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost';", __METHOD__ );
 		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
 		$db->commit( __METHOD__ );
 	}
