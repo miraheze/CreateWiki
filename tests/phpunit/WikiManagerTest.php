@@ -42,12 +42,15 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRename() {
+		// Create new database
 		$user = $this->getTestSysop()->getUser();
 		$wikiManager = new WikiManager( 'renamewikitest' );
 		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' );
 
-		$wikiManager = new WikiManager( 'createwikitest' );
+		// Delete it from cw_wikis to allow for rename
+		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
 
+		$wikiManager = new WikiManager( 'createwikitest' );
 		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
 
 		$this->db->query( 'DROP DATABASE `createwikitest`;' );
