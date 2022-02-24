@@ -20,6 +20,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$user = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( 'createwikitest' );
-		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' );
+
+		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' ) );
 	}
 }
