@@ -27,11 +27,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = new WikiManager( 'createwikitest' );
 
-		$create = null;
-		if ( !$wikiManager->exists ) {
-			$create = $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' );
-		}
-
-		$this->assertNull( $create );
+		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' ) );
 	}
 }
