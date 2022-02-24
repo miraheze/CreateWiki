@@ -27,7 +27,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreate() {
 		$p = [
 			'host' => '127.0.0.1',
-			'serverName' => 'localdb',
 			'user' => 'root',
 			'dbname' => 'wikidb',
 		];
