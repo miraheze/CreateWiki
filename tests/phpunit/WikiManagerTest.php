@@ -24,10 +24,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$db = Database::factory( 'mysql', [ 'host' => $wgDBserver, 'user' => 'root' ] );
 
-		$db->begin( __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON *.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
-		$db->commit( __METHOD__ );
+		$db->begin();
+		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "FLUSH PRIVILEGES;" );
+		$db->commit();
 	}
 
 	/**
