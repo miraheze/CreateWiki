@@ -10,11 +10,7 @@ use Wikimedia\Rdbms\Database;
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function setUp(): void {
-		global $wgDBserver;
-
 		parent::setUp();
-
-		$this->tablesUsed[] = 'cw_wikis';
 
 		$conf = new SiteConfiguration();
 		$conf->suffixes = [ 'test' ];
@@ -22,7 +18,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'wgConf' => $conf,
 		] );
 
-		$db = Database::factory( 'mysql', [ 'host' => $wgDBserver, 'user' => 'root' ] );
+		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
