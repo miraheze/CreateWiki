@@ -10,6 +10,8 @@ use Wikimedia\Rdbms\Database;
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function setUp(): void {
+		global $wgDBserver;
+
 		parent::setUp();
 
 		$this->tablesUsed[] = 'cw_wikis';
@@ -20,7 +22,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'wgConf' => $conf,
 		] );
 
-		$db = Database::factory( 'mysql', [ 'user' => 'root' ] );
+		$db = Database::factory( 'mysql', [ 'host' => $wgDBserver, 'user' => 'root' ] );
 
 		$db->begin( __METHOD__ );
 		$db->query( "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER, INDEX, CREATE VIEW, LOCK TABLES ON `createwikitest`.* TO 'wikiuser'@'localhost' WITH GRANT OPTION;", __METHOD__ );
