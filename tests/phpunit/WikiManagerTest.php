@@ -36,22 +36,25 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = new WikiManager( 'createwikitest' );
 
 		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' ) );
+		$this->assertTrue( $wikiManager->exists );
 	}
 
 	/**
 	 * @covers ::rename
 	 */
 	public function testRename() {
-		// Create new database
-		$user = $this->getTestSysop()->getUser();
-		$wikiManager = new WikiManager( 'renamewikitest' );
-		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' );
+		$wikiManagerOld = new WikiManager( 'createwikitest' );
+		$wikiManagerNew = new WikiManager( 'renamewikitest' );
 
-		// Delete it from cw_wikis to allow for rename
+		$user = $this->getTestSysop()->getUser();
+		$wikiManagerNew->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' );
+
 		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
 
-		$wikiManager = new WikiManager( 'createwikitest' );
-		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
+		$this->assertNull( $wikiManagerOld->rename( 'renamewikitest' ) );
+
+		$this->assertFalse( $wikiManagerOld->exists );
+		$this->assertTrue( $wikiManagerNew->exists );
 
 		$this->db->query( 'DROP DATABASE `createwikitest`;' );
 	}
@@ -63,6 +66,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = new WikiManager( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( true ) );
+		$this->assertFalse( $wikiManager->exists );
 
 		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
 	}
