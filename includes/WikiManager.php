@@ -194,7 +194,7 @@ class WikiManager {
 		$unixDeletion = (int)wfTimestampOrNull( TS_UNIX, $deletionDate );
 		$unixNow = (int)wfTimestamp( TS_UNIX, $this->dbw->timestamp() );
 
-		$deletedWiki = (bool)( $row->wiki_deleted ?? false );
+		$deletedWiki = (bool)$row->wiki_deleted;
 
 		// Return error if: wiki is not deleted, force is not used & wiki
 		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) {
