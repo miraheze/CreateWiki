@@ -48,9 +48,44 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::checkDatabaseName
+	 * @covers ::create
+	 */
+	public function testCreateErrors() {
+		$notsuffixed = wfMessage( 'createwiki-error-notsuffixed' )->parse();
+		$notalnum = wfMessage( 'createwiki-error-notalnum' )->parse();
+		$notlowercase = wfMessage( 'createwiki-error-notlowercase' )->parse();
+
+		$this->assertSame( $notsuffixed, $this->createWiki( 'createwiki' ) );
+		$this->assertSame( $notalnum, $this->createWiki( 'create.wikitest' ) );
+		$this->assertSame( $notlowercase, $this->createWiki( 'Createwikitest' ) );
+	}
+
+	/**
+	 * @covers ::checkDatabaseName
 	 * @covers ::rename
 	 */
-	public function testRename() {
+	public function testRenameErrors() {
+		$wikiManager = new WikiManager( 'createwikitest' );
+
+		$error = 'Can not rename createwikitest to renamewiki because: ';
+		$notsuffixed = $error . wfMessage( 'createwiki-error-notsuffixed' )->parse();
+
+		$error = 'Can not rename createwikitest to rename.wikitest because: ';
+		$notalnum = $error . wfMessage( 'createwiki-error-notalnum' )->parse();
+
+		$error = 'Can not rename createwikitest to Renamewikitest because: ';
+		$notlowercase = $error . wfMessage( 'createwiki-error-notlowercase' )->parse();
+
+		$this->assertSame( $notsuffixed, $wikiManager->rename( 'renamewiki' ) );
+		$this->assertSame( $notalnum, $wikiManager->rename( 'rename.wikitest' ) );
+		$this->assertSame( $notlowercase, $wikiManager->rename( 'Renamewikitest' ) );
+	}
+
+	/**
+	 * @covers ::rename
+	 */
+	public function testRenameSuccess() {
 		$this->createWiki( 'renamewikitest' );
 
 		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
