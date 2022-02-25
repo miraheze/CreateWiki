@@ -71,7 +71,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
 	}
 
-	private static function wikiExists( $dbname ) {
+	/**
+	 * @param string $dbname
+	 * @return bool
+	 */
+	private static function wikiExists( string $dbname ): bool {
 		$wikiManager = new WikiManager( $dbname );
 
 		return $wikiManager->exists;
