@@ -9,7 +9,7 @@ use Wikimedia\Rdbms\Database;
  * @coversDefaultClass WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
-	public function setUp(): void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$conf = new SiteConfiguration();
@@ -175,11 +175,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @return mixed
 	 */
 	private function createWiki( string $dbname ) {
-		$user = $this->getTestSysop()->getUser();
+		$testUser = $this->getTestUser()->getUser();
+		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname );
 
-		return $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user->getName(), 'Test' );
+		return $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 
 	/**
