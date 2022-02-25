@@ -91,7 +91,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
-		$eligibleTimestamp = $remoteWiki->isDeleted() - ( 86400 * 8 );
+		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp( TS_UNIX, $remoteWiki->isDeleted() ) - ( 86400 * 8 ) );
 		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] );
 		self::recache( 'deletewikitest' );
 
