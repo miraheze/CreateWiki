@@ -22,6 +22,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
@@ -31,11 +32,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreate() {
-		$user = $this->getTestSysop()->getUser();
-
-		$wikiManager = new WikiManager( 'createwikitest' );
-
-		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user->getName(), 'Test' ) );
+		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( self::wikiExists( 'createwikitest' ) );
 	}
 
@@ -43,16 +40,13 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRename() {
-		$wikiManagerOld = new WikiManager( 'createwikitest' );
-		$wikiManagerNew = new WikiManager( 'renamewikitest' );
-
-		$user = $this->getTestSysop()->getUser();
-		$wikiManagerNew->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user->getName(), 'Test' );
+		$this->createWiki( 'renamewikitest' );
 
 		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
 
-		$this->assertNull( $wikiManagerOld->rename( 'renamewikitest' ) );
+		$wikiManager = new WikiManager( 'createwikitest' );
 
+		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
 		$this->assertFalse( self::wikiExists( 'createwikitest' ) );
 		$this->assertTrue( self::wikiExists( 'renamewikitest' ) );
 
@@ -62,13 +56,73 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::delete
 	 */
-	public function testDelete() {
+	public function testDeleteForce() {
 		$wikiManager = new WikiManager( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( true ) );
 		$this->assertFalse( self::wikiExists( 'renamewikitest' ) );
 
 		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
+	}
+
+	/**
+	 * @covers ::delete
+	 */
+	public function testDeleteIneligible() {
+		$this->createWiki( 'deletewikitest' );
+
+		$remoteWiki = new RemoteWiki( 'deletewikitest' );
+		$remoteWiki->delete();
+
+		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
+
+		$wikiManager = new WikiManager( 'deletewikitest' );
+
+		$this->assertSame( $wikiManager->delete(), 'Wiki deletewikitest can not be deleted yet.' );
+		$this->assertTrue( self::wikiExists( 'deletewikitest' ) );
+	}
+
+	/**
+	 * @covers ::delete
+	 */
+	public function testDeleteEligible() {
+		$remoteWiki = new RemoteWiki( 'deletewikitest' );
+		$remoteWiki->delete();
+
+		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
+		
+		$eligibleTimestamp = $remoteWiki->isDeleted() - ( 86400 * 8 );
+		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] );
+		self::recache( 'deletewikitest' );
+
+		$wikiManager = new WikiManager( 'deletewikitest' );
+
+		$this->assertNull( $wikiManager->delete() );
+		$this->assertFalse( self::wikiExists( 'deletewikitest' ) );
+
+		$this->db->query( 'DROP DATABASE `deletewikitest`;' );
+	}
+
+	/**
+	 * @param string $dbname
+	 * @return mixed
+	 */
+	private function createWiki( string $dbname ) {
+		$user = $this->getTestSysop()->getUser();
+
+		$wikiManager = new WikiManager( $dbname );
+
+		return $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user->getName(), 'Test' ) );
+	}
+
+	/**
+	 * @param string $dbname
+	 */
+	private static function recache( string $dbname ) {
+		$cWJ = new CreateWikiJson( $dbname );
+
+		$cWJ->resetDatabaseList();
+		$cWJ->resetWiki();
 	}
 
 	/**
