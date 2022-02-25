@@ -1,5 +1,10 @@
 <?php
 
+namespace Miraheze\CreateWiki\Tests;
+
+use MediaWikiIntegrationTestCase;
+use Miraheze\CreateWiki\WikiManager;
+use SiteConfiguration;
 use Wikimedia\Rdbms\Database;
 
 /**
