@@ -31,11 +31,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreate() {
-		$user = $this->getTestSysop()->getUser();
+		$userName = $this->getTestSysop()->getUser()->getName();
 
 		$wikiManager = new WikiManager( 'createwikitest' );
 
-		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' ) );
+		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $userName, $userName, 'Test' ) );
 		$this->assertTrue( self::wikiExists( 'createwikitest' ) );
 	}
 
@@ -46,8 +46,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManagerOld = new WikiManager( 'createwikitest' );
 		$wikiManagerNew = new WikiManager( 'renamewikitest' );
 
-		$user = $this->getTestSysop()->getUser();
-		$wikiManagerNew->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user, 'Test' );
+		$userName = $this->getTestSysop()->getUser()->getName();
+		$wikiManagerNew->create( 'TestWiki', 'en', 0, 'uncategorised', $userName, $userName, 'Test' );
 
 		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
 
