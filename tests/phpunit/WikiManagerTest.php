@@ -23,6 +23,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
@@ -31,9 +32,21 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::create
 	 */
-	public function testCreate() {
+	public function testCreateSuccess() {
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( self::wikiExists( 'createwikitest' ) );
+	}
+
+	/**
+	 * @covers ::create
+	 */
+	public function testCreateExists() {
+		$this->createWiki( 'createwikitest' );
+
+		$this->expectException( FatalError::class );
+		$this->expectExceptionMessage( 'Wiki \'createwikitest\' already exists.' );
+
+		$this->assertFalse( self::wikiExists( 'createwikitest' ) );
 	}
 
 	/**
@@ -93,7 +106,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp( TS_UNIX, $remoteWiki->isDeleted() ) - ( 86400 * 8 ) );
 		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] );
-		self::recache( 'deletewikitest' );
 
 		$wikiManager = new WikiManager( 'deletewikitest' );
 
@@ -101,6 +113,28 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( self::wikiExists( 'deletewikitest' ) );
 
 		$this->db->query( 'DROP DATABASE `deletewikitest`;' );
+	}
+
+	/**
+	 * @covers ::create
+	 * @covers ::delete
+	 */
+	public function testDeleteRecreate() {
+		$this->createWiki( 'recreatewikitest' );
+
+		$wikiManager = new WikiManager( 'recreatewikitest' );
+
+		$this->assertNull( $wikiManager->delete( true ) );
+		$this->assertFalse( self::wikiExists( 'recreatewikitest' ) );
+
+		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+
+		$this->assertNull( $this->createWiki( 'recreatewikitest' ) );
+		$this->assertTrue( self::wikiExists( 'recreatewikitest' ) );
+
+		$wikiManager->delete( true );
+
+		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
 	}
 
 	/**
@@ -113,16 +147,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = new WikiManager( $dbname );
 
 		return $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user->getName(), 'Test' );
-	}
-
-	/**
-	 * @param string $dbname
-	 */
-	private static function recache( string $dbname ) {
-		$cWJ = new CreateWikiJson( $dbname );
-
-		$cWJ->resetDatabaseList();
-		$cWJ->resetWiki();
 	}
 
 	/**
