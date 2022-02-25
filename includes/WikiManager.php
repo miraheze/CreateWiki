@@ -191,7 +191,7 @@ class WikiManager {
 		);
 
 		$deletionDate = $row->wiki_deleted_timestamp;
-		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
+		$unixDeletion = (int)wfTimestampOrNull( TS_UNIX, $deletionDate );
 		$unixNow = (int)wfTimestamp( TS_UNIX, $this->dbw->timestamp() );
 
 		$deletedWiki = (bool)$row->wiki_deleted;
