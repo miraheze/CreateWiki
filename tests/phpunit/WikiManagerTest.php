@@ -74,6 +74,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	private static function wikiExists( $dbname ) {
 		$wikiManager = new WikiManager( $dbname );
 
-		return $wikiManager->exists
+		return $wikiManager->exists;
 	}
 }
