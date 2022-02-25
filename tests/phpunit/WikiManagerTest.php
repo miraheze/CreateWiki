@@ -41,12 +41,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateExists() {
-		$this->createWiki( 'createwikitest' );
-
 		$this->expectException( FatalError::class );
 		$this->expectExceptionMessage( 'Wiki \'createwikitest\' already exists.' );
 
-		$this->assertFalse( self::wikiExists( 'createwikitest' ) );
+		$this->createWiki( 'createwikitest' );
 	}
 
 	/**
