@@ -56,7 +56,7 @@
 		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
 	},
 	"TestAutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\Tests": "tests/phpunit/"
+		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
