@@ -110,7 +110,7 @@ class WikiManager {
 		if ( $this->lb ) {
 			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
-			$this->dbw->selectDomain( $wiki );
+			$this->dbw = wfGetDB( DB_PRIMARY, [], $wiki );
 		}
 
 		$this->cwdb->insert(
@@ -205,7 +205,7 @@ class WikiManager {
 		$deletedWiki = (bool)$row->wiki_deleted;
 
 		// Return error if: wiki is not deleted, force is not used & wiki
-		if ( ( !$deletedWiki || !$force ) && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) {
+		if ( !$force && !$deletedWiki && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
 

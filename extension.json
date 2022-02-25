@@ -55,6 +55,9 @@
 		"Miraheze\\CreateWiki\\Maintenance\\PopulateMainPage": "maintenance/populateMainPage.php",
 		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
 	},
+	"TestAutoloadClasses": {
+		"WikiManagerTest": "tests/phpunit/WikiManagerTest.php"
+	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
 			"Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent"
