@@ -2,7 +2,6 @@
 
 use Wikimedia\Rdbms\Database;
 
-
 /**
  * @group CreateWiki
  * @group Database
