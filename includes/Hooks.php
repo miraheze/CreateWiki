@@ -233,8 +233,3 @@ class Hooks {
 		];
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( Hooks::class, 'CreateWikiHooks' );
