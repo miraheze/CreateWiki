@@ -49,8 +49,3 @@ class RequestWikiAIJob extends Job {
 		return true;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( RequestWikiAIJob::class, 'RequestWikiAIJob' );

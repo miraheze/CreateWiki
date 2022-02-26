@@ -37,8 +37,3 @@ class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 		return [ $visitLink ];
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( EchoCreateWikiPresentationModel::class, 'EchoCreateWikiPresentationModel' );

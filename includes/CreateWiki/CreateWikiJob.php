@@ -48,8 +48,3 @@ class CreateWikiJob extends Job {
 		return true;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( CreateWikiJob::class, 'CreateWikiJob' );

@@ -31,8 +31,3 @@ class CreateWikiLogFormatter extends LogFormatter {
 		return $params;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( CreateWikiLogFormatter::class, 'CreateWikiLogFormatter' );

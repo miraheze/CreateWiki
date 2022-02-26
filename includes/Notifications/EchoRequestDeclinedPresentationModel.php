@@ -36,8 +36,3 @@ class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 		return [ $visitLink ];
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( EchoRequestDeclinedPresentationModel::class, 'EchoRequestDeclinedPresentationModel' );

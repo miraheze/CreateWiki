@@ -370,8 +370,3 @@ class RequestWikiRequestViewer {
 		return true;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( RequestWikiRequestViewer::class, 'RequestWikiRequestViewer' );

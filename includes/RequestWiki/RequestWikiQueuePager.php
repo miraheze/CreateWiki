@@ -141,8 +141,3 @@ class RequestWikiQueuePager extends TablePager {
 		return true;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( RequestWikiQueuePager::class, 'RequestWikiQueuePager' );

@@ -89,8 +89,3 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		return 'wikimanage';
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( SpecialRequestWikiQueue::class, 'SpecialRequestWikiQueue' );

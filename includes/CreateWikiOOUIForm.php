@@ -126,8 +126,3 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		return array_keys( array_filter( $this->mFieldTree, 'is_array' ) );
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( CreateWikiOOUIForm::class, 'CreateWikiOOUIForm' );

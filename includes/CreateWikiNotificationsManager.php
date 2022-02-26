@@ -215,8 +215,3 @@ class CreateWikiNotificationsManager {
 		} );
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( CreateWikiNotificationsManager::class, 'CreateWikiNotificationsManager' );

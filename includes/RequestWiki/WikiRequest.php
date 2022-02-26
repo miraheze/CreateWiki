@@ -369,8 +369,3 @@ class WikiRequest {
 	}
 
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( WikiRequest::class, 'WikiRequest' );
