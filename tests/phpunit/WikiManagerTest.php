@@ -33,6 +33,22 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::__construct
+	 */
+	public function testConstruct() {
+		$this->assertInstanceOf(
+			WikiManager::class,
+			new WikiManager( 'createwikitest' )
+		);
+
+		// Test class alias
+		$this->assertInstanceOf(
+			WikiManager::class,
+			new \WikiManager( 'createwikitest' )
+		);
+	}
+
+	/**
 	 * @covers ::create
 	 */
 	public function testCreate() {
@@ -40,13 +56,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = new WikiManager( 'createwikitest' );
 
-		$this->assertInstanceOf( WikiManager::class, $wikiManager );
 		$this->assertNull( $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $user->getName(), $user->getName(), 'Test' ) );
 		$this->assertTrue( self::wikiExists( 'createwikitest' ) );
-
-		// Test class alias
-		$wikiManager = new \WikiManager( 'createwikitest' );
-		$this->assertInstanceOf( WikiManager::class, $wikiManager );
 	}
 
 	/**
