@@ -1,8 +1,15 @@
 <?php
 
-use MediaWiki\MediaWikiServices;
+namespace Miraheze\CreateWiki;
 
-class CreateWikiHooks {
+use DatabaseUpdater;
+use EchoAttributeManager;
+use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+
+class Hooks {
 	public static function getConfig( string $var ) {
 		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );
 	}

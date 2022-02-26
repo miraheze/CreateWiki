@@ -1,5 +1,10 @@
 <?php
 
+namespace Miraheze\CreateWiki\RequestWiki;
+
+use HTMLForm;
+use SpecialPage;
+
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function __construct() {

@@ -1,5 +1,11 @@
 <?php
 
+namespace Miraheze\CreateWiki;
+
+use Html;
+use OOUIHTMLForm;
+use Xml;
+
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected $mSubSectionBeforeFields = false;
 
@@ -11,7 +17,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 
 	protected function wrapFieldSetSection( $legend, $section, $attributes, $isRoot ) {
 		if ( $isRoot ) {
-			$wrapper = new OOUI\PanelLayout( [
+			$wrapper = new \OOUI\PanelLayout( [
 				'expanded' => false,
 				'scrollable' => true,
 				'framed' => true,
@@ -19,7 +25,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				'classes' => [ 'oo-ui-stackLayout oo-ui-indexLayout-stackLayout' ]
 			] );
 
-			$layout = new OOUI\PanelLayout( [
+			$layout = new \OOUI\PanelLayout( [
 				'expanded' => false,
 				'scrollable' => true,
 				'framed' => true,
@@ -29,7 +35,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 
 			$wrapper->appendContent( $layout );
 		} else {
-			$wrapper = $layout = new OOUI\PanelLayout( [
+			$wrapper = $layout = new \OOUI\PanelLayout( [
 				'expanded' => false,
 				'padded' => true,
 				'framed' => true,
@@ -38,12 +44,12 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		}
 
 		$layout->appendContent(
-			new OOUI\FieldsetLayout( [
+			new \OOUI\FieldsetLayout( [
 				'label' => $legend,
 				'infusable' => false,
 				'items' => [
-					new OOUI\Widget( [
-						'content' => new OOUI\HtmlSnippet( $section )
+					new \OOUI\Widget( [
+						'content' => new \OOUI\HtmlSnippet( $section )
 					] ),
 				],
 			] + $attributes )

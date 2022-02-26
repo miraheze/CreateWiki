@@ -1,6 +1,11 @@
 <?php
 
+namespace Miraheze\CreateWiki\RequestWiki;
+
+use Config;
 use MediaWiki\MediaWikiServices;
+use TablePager;
+use Title;
 
 class RequestWikiQueuePager extends TablePager {
 

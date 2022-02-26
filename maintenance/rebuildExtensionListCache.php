@@ -1,5 +1,7 @@
 <?php
 
+namespace Miraheze\CreateWiki\Maintenance;
+
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -7,6 +9,8 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
+use ExtensionProcessor;
+use Maintenance;
 use MediaWiki\MediaWikiServices;
 
 class RebuildExtensionListCache extends Maintenance {

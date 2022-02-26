@@ -1,5 +1,7 @@
 <?php
 
+namespace Miraheze\CreateWiki\Maintenance;
+
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -7,8 +9,13 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
+use CommentStoreComment;
+use Maintenance;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
+use Title;
+use User;
+use WikitextContent;
 
 class PopulateMainPage extends Maintenance {
 	public function __construct() {
