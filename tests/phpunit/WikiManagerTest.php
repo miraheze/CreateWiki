@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use FatalError;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
