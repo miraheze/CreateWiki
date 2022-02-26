@@ -1,12 +1,17 @@
 <?php
 
+namespace Miraheze\CreateWiki\Tests;
+
+use MediaWikiIntegrationTestCase;
+use Miraheze\CreateWiki\WikiManager;
+use SiteConfiguration;
 use Wikimedia\Rdbms\Database;
 
 /**
  * @group CreateWiki
  * @group Database
  * @group Medium
- * @coversDefaultClass WikiManager
+ * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function setUp(): void {

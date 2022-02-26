@@ -1,5 +1,7 @@
 <?php
 
+namespace Miraheze\CreateWiki;
+
 use MediaWiki\MediaWikiServices;
 
 class RemoteWiki {
@@ -377,3 +379,8 @@ class RemoteWiki {
 		}
 	}
 }
+
+/**
+ * @deprecated since 1.37
+ */
+class_alias( RemoteWiki::class, 'RemoteWiki' );

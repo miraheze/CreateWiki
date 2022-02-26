@@ -1,4 +1,11 @@
 <?php
+
+namespace Miraheze\CreateWiki\Notifications;
+
+use EchoDiscussionParser;
+use EchoEventPresentationModel;
+use RawMessage;
+
 class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
 		return 'request-declined';

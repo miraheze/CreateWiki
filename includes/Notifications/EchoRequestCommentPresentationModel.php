@@ -1,4 +1,11 @@
 <?php
+
+namespace Miraheze\CreateWiki\Notifications;
+
+use EchoDiscussionParser;
+use EchoEventPresentationModel;
+use RawMessage;
+
 class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
 		return 'chat';

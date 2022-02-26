@@ -1,5 +1,14 @@
 <?php
 
+namespace Miraheze\CreateWiki\CreateWiki;
+
+use Exception;
+use Job;
+use Miraheze\CreateWiki\RequestWiki\WikiRequest;
+use Miraheze\CreateWiki\WikiManager;
+use Title;
+use User;
+
 class CreateWikiJob extends Job {
 	public function __construct( Title $title, array $params ) {
 		parent::__construct( 'CreateWikiJob', $params );

@@ -21,13 +21,13 @@
 		"requestwiki"
 	],
 	"SpecialPages": {
-		"CreateWiki": "SpecialCreateWiki",
-		"RequestWiki": "SpecialRequestWiki",
-		"RequestWikiQueue": "SpecialRequestWikiQueue"
+		"CreateWiki": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
+		"RequestWiki": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+		"RequestWikiQueue": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue"
 	},
 	"JobClasses": {
-		"CreateWikiJob": "CreateWikiJob",
-		"RequestWikiAIJob": "RequestWikiAIJob"
+		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
+		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob"
 	},
 	"LogTypes": [
 		"farmer"
@@ -37,7 +37,7 @@
 		"farmer/requestaccept": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
-		"farmer/requestwiki": "CreateWikiLogFormatter"
+		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
 	},
 	"MessagesDirs": {
 		"CreateWiki": [
@@ -45,43 +45,34 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"CreateWikiAliases": "includes/CreateWikiAliases.php"
+		"CreateWikiAliases": "CreateWikiAliases.php"
+	},
+	"AutoloadNamespaces": {
+		"Miraheze\\CreateWiki\\": "includes/"
 	},
 	"AutoloadClasses": {
-		"CreateWikiHooks": "includes/CreateWikiHooks.php",
-		"CreateWikiJob": "includes/CreateWiki/CreateWikiJob.php",
 		"CreateWikiJson": "includes/CreateWikiJson.php",
-		"CreateWikiLogFormatter": "includes/CreateWiki/CreateWikiLogFormatter.php",
-		"CreateWikiNotificationsManager": "includes/CreateWikiNotificationsManager.php",
-		"CreateWikiOOUIForm": "includes/CreateWikiOOUIForm.php",
-		"DeleteWikis": "maintenance/deleteWikis.php",
-		"EchoCreateWikiPresentationModel": "includes/echo/EchoCreateWikiPresentationModel.php",
-		"EchoRequestCommentPresentationModel": "includes/echo/EchoRequestCommentPresentationModel.php",
-		"EchoRequestDeclinedPresentationModel": "includes/echo/EchoRequestDeclinedPresentationModel.php",
-		"PopulateMainPage": "maintenance/populateMainPage.php",
-		"RenameWiki": "maintenance/renameWiki.php",
+		"Miraheze\\CreateWiki\\CreateWikiJson": "includes/CreateWikiJson.php",
 		"RemoteWiki": "includes/RemoteWiki.php",
-		"RequestWikiAIJob": "includes/RequestWiki/RequestWikiAIJob.php",
-		"RequestWikiQueuePager": "includes/RequestWiki/RequestWikiQueuePager.php",
-		"RequestWikiRequestViewer": "includes/RequestWiki/RequestWikiRequestViewer.php",
-		"SpecialCreateWiki": "includes/CreateWiki/SpecialCreateWiki.php",
-		"SpecialRequestWiki": "includes/RequestWiki/SpecialRequestWiki.php",
-		"SpecialRequestWikiQueue": "includes/RequestWiki/SpecialRequestWikiQueue.php",
+		"Miraheze\\CreateWiki\\RemoteWiki": "includes/RemoteWiki.php",
 		"WikiManager": "includes/WikiManager.php",
-		"WikiRequest": "includes/RequestWiki/WikiRequest.php"
+		"Miraheze\\CreateWiki\\WikiManager": "includes/WikiManager.php",
+		"Miraheze\\CreateWiki\\Maintenance\\DeleteWikis": "maintenance/deleteWikis.php",
+		"Miraheze\\CreateWiki\\Maintenance\\PopulateMainPage": "maintenance/populateMainPage.php",
+		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
 	},
-	"TestAutoloadClasses": {
-		"WikiManagerTest": "tests/phpunit/WikiManagerTest.php"
+	"TestAutoloadNamespaces": {
+		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
-			"CreateWikiHooks::onBeforeCreateEchoEvent"
+			"Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent"
 		],
 		"LoadExtensionSchemaUpdates": [
-			"CreateWikiHooks::fnCreateWikiSchemaUpdates"
+			"Miraheze\\CreateWiki\\Hooks::fnCreateWikiSchemaUpdates"
 		],
 		"SetupAfterCache": [
-			"CreateWikiHooks::onSetupAfterCache"
+			"Miraheze\\CreateWiki\\Hooks::onSetupAfterCache"
 		]
 	},
 	"ResourceModules": {
@@ -274,6 +265,6 @@
 		"includes/ServiceWiring.php"
 	],
 	"load_composer_autoloader": true,
-	"callback": "CreateWikiHooks::onRegistration",
+	"callback": "Miraheze\\CreateWiki\\Hooks::onRegistration",
 	"manifest_version": 2
 }

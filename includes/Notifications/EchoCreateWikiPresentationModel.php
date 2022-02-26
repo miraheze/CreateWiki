@@ -1,4 +1,9 @@
 <?php
+
+namespace Miraheze\CreateWiki\Notifications;
+
+use EchoEventPresentationModel;
+
 class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
 		return 'global';
