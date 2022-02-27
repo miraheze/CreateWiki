@@ -55,7 +55,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getLanguage
 	 */
-	public function testGetSitename() {
+	public function testGetLanguage() {
 		$remoteWiki = new RemoteWiki( 'createwikitest' );
 
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
