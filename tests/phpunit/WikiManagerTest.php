@@ -134,6 +134,9 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
 		$this->assertTrue( self::wikiExists( 'deletewikitest' ) );
+
+		$remoteWiki->undelete();
+		$remoteWiki->commit();
 	}
 
 	/**
