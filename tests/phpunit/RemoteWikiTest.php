@@ -80,8 +80,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = new WikiManager( $dbname );
 
-		if ( !$wikiManager->exists ) {
-			$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
-		}
+		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 }
