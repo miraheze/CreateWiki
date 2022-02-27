@@ -27,27 +27,27 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 
-		$this->createWiki( 'createwikitest' );
+		$this->createWiki( 'remotewikitest' );
 	}
 
 	/**
 	 * @covers ::getDBname
 	 */
 	public function testGetDBname() {
-		$remoteWiki = new RemoteWiki( 'createwikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
-		$this->assertSame( 'createwikitest', $remoteWiki->getDBname() );
+		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
 	}
 
 	/**
 	 * @covers ::getSitename
 	 */
 	public function testGetSitename() {
-		$remoteWiki = new RemoteWiki( 'createwikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
 		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 	}
@@ -56,7 +56,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getLanguage
 	 */
 	public function testGetLanguage() {
-		$remoteWiki = new RemoteWiki( 'createwikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
 	}
@@ -65,7 +65,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getCategory
 	 */
 	public function testGetCategory() {
-		$remoteWiki = new RemoteWiki( 'createwikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
 		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
 	}
