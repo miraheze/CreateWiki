@@ -144,7 +144,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$remoteWiki->delete();
 
 		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp( TS_UNIX, $remoteWiki->isDeleted() ) - ( 86400 * 8 ) );
-		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] )
+		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] );
 
 		$wikiManager = new WikiManager( 'deletewikitest' );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
