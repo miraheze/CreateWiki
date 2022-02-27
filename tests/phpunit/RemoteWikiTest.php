@@ -30,14 +30,14 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
-
-		$this->createWiki( 'remotewikitest' );
 	}
 
 	/**
 	 * @covers ::getDBname
 	 */
 	public function testGetDBname() {
+		$this->createWiki( 'remotewikitest' );
+
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
 		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
