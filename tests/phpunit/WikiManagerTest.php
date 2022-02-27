@@ -126,6 +126,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$remoteWiki = new RemoteWiki( 'deletewikitest' );
 		$remoteWiki->delete();
+		$remoteWiki->commit();
 
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
@@ -141,6 +142,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteEligible() {
 		$remoteWiki = new RemoteWiki( 'deletewikitest' );
 		$remoteWiki->delete();
+		$remoteWiki->commit();
 
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
