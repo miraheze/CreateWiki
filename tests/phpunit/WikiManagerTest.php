@@ -143,6 +143,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$remoteWiki = new RemoteWiki( 'deletewikitest' );
 		$remoteWiki->delete();
 
+		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
+
 		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp( TS_UNIX, $remoteWiki->isDeleted() ) - ( 86400 * 8 ) );
 		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] );
 
@@ -150,8 +152,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
 
 		$remoteWiki->commit();
-
-		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
 		$this->assertNull( $wikiManager->delete() );
 		$this->assertFalse( self::wikiExists( 'deletewikitest' ) );
