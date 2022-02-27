@@ -205,8 +205,10 @@ class WikiManager {
 		$deletedWiki = (bool)$row->wiki_deleted;
 
 		// Return error if: wiki is not deleted, force is not used & wiki
-		if ( !$force && ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) || !$deletedWiki ) {
-			return "Wiki {$wiki} can not be deleted yet.";
+		if ( !$force ) {
+			if ( ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) || !$deletedWiki ) {
+				return "Wiki {$wiki} can not be deleted yet.";
+			}
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
