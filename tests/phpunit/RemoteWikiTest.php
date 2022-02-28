@@ -142,6 +142,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testLock() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
+		$this->assertFalse( (bool)$remoteWiki->isLocked() );
+
 		$remoteWiki->lock();
 
 		$this->assertTrue( (bool)$remoteWiki->isLocked() );
