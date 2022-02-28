@@ -70,6 +70,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::isInactive
+	 * @covers ::markActive
 	 * @covers ::markInactive
 	 */
 	public function testMarkInactive() {
@@ -79,6 +80,9 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$remoteWiki->markInactive();
 		$this->assertTrue( (bool)$remoteWiki->isInactive() );
+
+		$remoteWiki->markActive();
+		$this->assertFalse( (bool)$remoteWiki->isInactive() );
 	}
 
 	/**
@@ -102,6 +106,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::isPrivate
 	 * @covers ::markPrivate
+	 * @covers ::markPublic
 	 */
 	public function testMarkPrivate() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
@@ -110,29 +115,48 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$remoteWiki->markPrivate();
 		$this->assertTrue( (bool)$remoteWiki->isPrivate() );
+
+		$remoteWiki->markPublic();
+		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
 	}
 
 	/**
 	 * @covers ::isClosed
+	 * @covers ::markClosed
 	 */
-	public function testIsClosed() {
+	public function testMarkClosed() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
+		$this->assertFalse( (bool)$remoteWiki->isClosed() );
+
+		$remoteWiki->markClosed();
+		$this->assertTrue( (bool)$remoteWiki->isClosed() );
+
+		$remoteWiki->markActive();
 		$this->assertFalse( (bool)$remoteWiki->isClosed() );
 	}
 
 	/**
+	 * @covers ::delete
 	 * @covers ::isDeleted
+	 * @covers ::undelete
 	 */
-	public function testIsDeleted() {
+	public function testDelete() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
+		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
+
+		$remoteWiki->delete();
+		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
+
+		$remoteWiki->undelete();
 		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
 	}
 
 	/**
 	 * @covers ::isLocked
 	 * @covers ::lock
+	 * @covers ::unlock
 	 */
 	public function testLock() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
@@ -141,6 +165,9 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$remoteWiki->lock();
 		$this->assertTrue( (bool)$remoteWiki->isLocked() );
+
+		$remoteWiki->unlock();
+		$this->assertFalse( (bool)$remoteWiki->isLocked() );
 	}
 
 	/**
