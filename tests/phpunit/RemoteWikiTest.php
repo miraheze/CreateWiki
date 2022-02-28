@@ -33,12 +33,21 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::getDBname
+	 * @covers ::getCreationDate
 	 */
-	public function testGetDBname() {
+	public function testGetCreationDate() {
 		$this->createWiki( 'remotewikitest' );
 
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+		$this->assertSame( $this->db->timestamp, $remoteWiki->getCreationDate() );
+	}
+
+	/**
+	 * @covers ::getDBname
+	 */
+	public function testGetDBname() {
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
 		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
 	}
 
@@ -288,7 +297,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
 		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 		$this->assertSame( 'test', $remoteWiki->getCategory() );
-		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
 	}
 
 	/**
