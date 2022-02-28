@@ -36,10 +36,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getCreationDate
 	 */
 	public function testGetCreationDate() {
-		$this->db->begin();
+		$timestamp = $this->db->timestamp();
 		$this->createWiki( 'remotewikitest' );
-		$timestamp = $this->db->trxTimestamp();
-		$this->db->commit();
 
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 		$this->assertSame( $timestamp, $remoteWiki->getCreationDate() );
