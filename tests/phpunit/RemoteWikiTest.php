@@ -38,66 +38,107 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testGetDBname() {
 		$this->createWiki( 'remotewikitest' );
 
-		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+		$this->remoteWiki = new RemoteWiki( 'remotewikitest' );
 
-		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
+		$this->assertSame( 'remotewikitest', $this->remoteWiki->getDBname() );
 	}
 
 	/**
 	 * @covers ::getSitename
 	 */
 	public function testGetSitename() {
-		$remoteWiki = new RemoteWiki( 'remotewikitest' );
-
-		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
-	}
-
-	/**
-	 * @covers ::setSitename
-	 */
-	public function testSetSitename() {
-		$remoteWiki = new RemoteWiki( 'remotewikitest' );
-
-		$remoteWiki->setSitename( 'TestWiki_New' );
-		$remoteWiki->commit();
-
-		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
-
-		$remoteWiki->setSitename( 'TestWiki' );
-		$remoteWiki->commit();
+		$this->assertSame( 'TestWiki', $this->remoteWiki->getSitename() );
 	}
 
 	/**
 	 * @covers ::getLanguage
 	 */
 	public function testGetLanguage() {
-		$remoteWiki = new RemoteWiki( 'remotewikitest' );
-
-		$this->assertSame( 'en', $remoteWiki->getLanguage() );
+		$this->assertSame( 'en', $this->remoteWiki->getLanguage() );
 	}
 
 	/**
-	 * @covers ::setLanguage
+	 * @covers ::isInactive
 	 */
-	public function testSetLanguage() {
-		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+	public function testIsInactive() {
+		$this->assertFalse( (bool)$this->remoteWiki->isInactive() );
+	}
 
-		$remoteWiki->setLanguage( 'es' );
-		$remoteWiki->commit();
+	/**
+	 * @covers ::isInactiveExempt
+	 */
+	public function testIsInactiveExempt() {
+		$this->assertFalse( (bool)$this->remoteWiki->isInactiveExempt() );
+	}
 
-		$this->assertSame( 'es', $remoteWiki->getLanguage() );
+	/**
+	 * @covers ::getInactiveExemptReason
+	 */
+	public function testGetInactiveExemptReason() {
+		$this->assertNull( (bool)$this->remoteWiki->getInactiveExemptReason() );
+	}
 
-		$remoteWiki->setLanguage( 'en' );
-		$remoteWiki->commit();
+	/**
+	 * @covers ::isPrivate
+	 */
+	public function testIsPrivate() {
+		$this->assertFalse( (bool)$this->remoteWiki->isPrivate() );
+	}
+
+	/**
+	 * @covers ::isClosed
+	 */
+	public function testIsClosed() {
+		$this->assertFalse( (bool)$this->remoteWiki->isClosed() );
+	}
+
+	/**
+	 * @covers ::isDeleted
+	 */
+	public function testIsDeleted() {
+		$this->assertFalse( (bool)$this->remoteWiki->isDeleted() );
+	}
+
+	/**
+	 * @covers ::isLocked
+	 */
+	public function testIsLocked() {
+		$this->assertFalse( (bool)$this->remoteWiki->isLocked() );
 	}
 
 	/**
 	 * @covers ::getCategory
 	 */
 	public function testGetCategory() {
+		$this->assertSame( 'uncategorised', $this->remoteWiki->getCategory() );
+	}
+
+	/**
+	 * @covers ::isExperimental
+	 */
+	public function testIsExperimental() {
+		$this->assertFalse( (bool)$this->remoteWiki->isExperimental() );
+	}
+
+	/**
+	 * @covers ::commit
+	 */
+	public function testCommit() {
+		$this->remoteWiki->markInactive();
+		$this->remoteWiki->markPrivate();
+		$this->remoteWiki->setCategory( 'test' );
+		$this->remoteWiki->setLanguage( 'qqx' );
+		$this->remoteWiki->setSitename( 'TestWiki_New' );
+
+		$this->remoteWiki->commit();
+
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
-		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
+		$this->assertTrue( (bool)$remoteWiki->isPrivate() );
+		$this->assertTrue( (bool)$remoteWiki->isInactive() );
+		$this->assertSame( 'test', $remoteWiki->getCategory() );
+		$this->assertSame( 'qqx', $remoteWiki->getLanguage() );
+		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 	}
 
 	/**
