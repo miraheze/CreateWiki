@@ -53,12 +53,42 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::setSitename
+	 */
+	public function testSetSitename() {
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
+		$remoteWiki->setSitename( 'TestWiki_New' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
+
+		$remoteWiki->setSitename( 'TestWiki' );
+		$remoteWiki->commit();
+	}
+
+	/**
 	 * @covers ::getLanguage
 	 */
 	public function testGetLanguage() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
+	}
+
+	/**
+	 * @covers ::setLanguage
+	 */
+	public function testSetLanguage() {
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
+		$remoteWiki->setLanguage( 'es' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'es', $remoteWiki->getLanguage() );
+
+		$remoteWiki->setLanguage( 'en' );
+		$remoteWiki->commit();
 	}
 
 	/**
@@ -72,7 +102,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @param string $dbname
-	 * @return mixed
 	 */
 	private function createWiki( string $dbname ) {
 		$testUser = $this->getTestUser()->getUser();
