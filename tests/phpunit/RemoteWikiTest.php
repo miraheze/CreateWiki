@@ -185,10 +185,18 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::isExperimental
+	 * @covers ::markExperimental
+	 * @covers ::unMarkExperimental
 	 */
-	public function testIsExperimental() {
+	public function testMarkExperimental() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
+		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
+
+		$remoteWiki->markExperimental();
+		$this->assertTrue( (bool)$remoteWiki->isExperimental() );
+
+		$remoteWiki->unMarkExperimental();
 		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
 	}
 
