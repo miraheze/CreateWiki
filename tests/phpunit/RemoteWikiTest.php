@@ -39,7 +39,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->createWiki( 'remotewikitest' );
 
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
-
 		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
 	}
 
@@ -53,7 +52,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 
 		$remoteWiki->setSitename( 'TestWiki_New' );
-
 		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 	}
 
@@ -67,7 +65,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
 
 		$remoteWiki->setLanguage( 'qqx' );
-
 		$this->assertSame( 'qqx', $remoteWiki->getLanguage() );
 	}
 
@@ -81,7 +78,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isInactive() );
 
 		$remoteWiki->markInactive();
-
 		$this->assertTrue( (bool)$remoteWiki->isInactive() );
 	}
 
@@ -113,7 +109,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
 
 		$remoteWiki->markPrivate();
-
 		$this->assertTrue( (bool)$remoteWiki->isPrivate() );
 	}
 
@@ -145,7 +140,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isLocked() );
 
 		$remoteWiki->lock();
-
 		$this->assertTrue( (bool)$remoteWiki->isLocked() );
 	}
 
@@ -179,7 +173,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname );
-
 		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 }
