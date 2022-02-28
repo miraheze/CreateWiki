@@ -39,7 +39,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->createWiki( 'remotewikitest' );
 
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
-		$this->assertSame( $this->db->timestamp, $remoteWiki->getCreationDate() );
+		$this->assertSame( $this->db->timestamp(), $remoteWiki->getCreationDate() );
 	}
 
 	/**
