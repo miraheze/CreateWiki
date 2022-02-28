@@ -92,6 +92,15 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::markActive
+	 * @depends testCommit
+	 * @doesNotPerformAssertions
+	 */
+	public function testMarkActive() {
+		$this->remoteWiki->markActive();
+	}
+
+	/**
 	 * @covers ::isInactiveExempt
 	 */
 	public function testIsInactiveExempt() {
@@ -121,6 +130,15 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::markPublic
+	 * @depends testCommit
+	 * @doesNotPerformAssertions
+	 */
+	public function testMarkPublic() {
+		$this->remoteWiki->markPublic();
+	}
+
+	/**
 	 * @covers ::isClosed
 	 */
 	public function testIsClosed() {
@@ -140,13 +158,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testIsLocked() {
 		$this->assertFalse( (bool)$this->remoteWiki->isLocked() );
 	}
-	/**
 
-	 * @covers ::markPrivate
+	/**
+	 * @covers ::lock
 	 * @doesNotPerformAssertions
 	 */
-	public function testMarkPrivate() {
-		$this->remoteWiki->markPrivate();
+	public function testLock() {
+		$this->remoteWiki->lock();
 	}
 
 	/**
@@ -157,11 +175,11 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::lock
+	 * @covers ::setCategory
 	 * @doesNotPerformAssertions
 	 */
-	public function testLock() {
-		$this->remoteWiki->lock();
+	public function testSetCategory() {
+		$this->remoteWiki->setCategory( 'test' );
 	}
 
 	/**
