@@ -43,7 +43,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testGetDBname() {
 		$this->createWiki( 'remotewikitest' );
 
-		$this->assertSame( 'remotewikitest', $this->remoteWiki->getDBname() );
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
 	}
 
 	/**
@@ -111,7 +112,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getInactiveExemptReason
 	 */
 	public function testGetInactiveExemptReason() {
-		$this->assertNull( (bool)$this->remoteWiki->getInactiveExemptReason() );
+		$this->assertFalse( (bool)$this->remoteWiki->getInactiveExemptReason() );
 	}
 
 	/**
