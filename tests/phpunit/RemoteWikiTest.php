@@ -93,15 +93,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::markActive
-	 * @depends testCommit
-	 * @doesNotPerformAssertions
-	 */
-	public function testMarkActive() {
-		$this->remoteWiki->markActive();
-	}
-
-	/**
 	 * @covers ::isInactiveExempt
 	 */
 	public function testIsInactiveExempt() {
@@ -128,15 +119,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testMarkPrivate() {
 		$this->remoteWiki->markPrivate();
-	}
-
-	/**
-	 * @covers ::markPublic
-	 * @depends testCommit
-	 * @doesNotPerformAssertions
-	 */
-	public function testMarkPublic() {
-		$this->remoteWiki->markPublic();
 	}
 
 	/**
