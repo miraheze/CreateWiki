@@ -52,6 +52,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 
 		$remoteWiki->setSitename( 'TestWiki_New' );
+		$remoteWiki->commit();
+
 		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 	}
 
@@ -65,6 +67,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
 
 		$remoteWiki->setLanguage( 'qqx' );
+		$remoteWiki->commit();
+
 		$this->assertSame( 'qqx', $remoteWiki->getLanguage() );
 	}
 
@@ -79,28 +83,50 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isInactive() );
 
 		$remoteWiki->markInactive();
+		$remoteWiki->commit();
+
 		$this->assertTrue( (bool)$remoteWiki->isInactive() );
 
 		$remoteWiki->markActive();
+		$remoteWiki->commit();
+
 		$this->assertFalse( (bool)$remoteWiki->isInactive() );
 	}
 
 	/**
 	 * @covers ::isInactiveExempt
+	 * @covers ::markExempt
+	 * @covers ::unExempt
 	 */
-	public function testIsInactiveExempt() {
+	public function testMarkExempt() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
+		$this->assertFalse( (bool)$remoteWiki->isInactiveExempt() );
+
+		$remoteWiki->markExempt();
+		$remoteWiki->commit();
+
+		$this->assertTrue( (bool)$remoteWiki->isInactiveExempt() );
+
+		$remoteWiki->unExempt();
+		$remoteWiki->commit();
 
 		$this->assertFalse( (bool)$remoteWiki->isInactiveExempt() );
 	}
 
 	/**
 	 * @covers ::getInactiveExemptReason
+	 * @covers ::setInactiveExemptReason
 	 */
-	public function testGetInactiveExemptReason() {
+	public function testSetInactiveExemptReason() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
-		$this->assertFalse( (bool)$remoteWiki->getInactiveExemptReason() );
+		$this->assertNull( $remoteWiki->getInactiveExemptReason() );
+
+		$remoteWiki->setInactiveExemptReason( 'test' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
 	}
 
 	/**
@@ -114,9 +140,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
 
 		$remoteWiki->markPrivate();
+		$remoteWiki->commit();
+
 		$this->assertTrue( (bool)$remoteWiki->isPrivate() );
 
 		$remoteWiki->markPublic();
+		$remoteWiki->commit();
+
 		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
 	}
 
@@ -130,9 +160,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isClosed() );
 
 		$remoteWiki->markClosed();
+		$remoteWiki->commit();
+
 		$this->assertTrue( (bool)$remoteWiki->isClosed() );
 
 		$remoteWiki->markActive();
+		$remoteWiki->commit();
+
 		$this->assertFalse( (bool)$remoteWiki->isClosed() );
 	}
 
@@ -147,9 +181,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
 
 		$remoteWiki->delete();
+		$remoteWiki->commit();
+
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
 		$remoteWiki->undelete();
+		$remoteWiki->commit();
+
 		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
 	}
 
@@ -164,9 +202,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isLocked() );
 
 		$remoteWiki->lock();
+		$remoteWiki->commit();
+
 		$this->assertTrue( (bool)$remoteWiki->isLocked() );
 
 		$remoteWiki->unlock();
+		$remoteWiki->commit();
+
 		$this->assertFalse( (bool)$remoteWiki->isLocked() );
 	}
 
@@ -180,6 +222,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
 
 		$remoteWiki->setCategory( 'test' );
+		$remoteWiki->commit();
+
 		$this->assertSame( 'test', $remoteWiki->getCategory() );
 	}
 
@@ -194,10 +238,25 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
 
 		$remoteWiki->markExperimental();
+		$remoteWiki->commit();
+
 		$this->assertTrue( (bool)$remoteWiki->isExperimental() );
 
 		$remoteWiki->unMarkExperimental();
+		$remoteWiki->commit();
+
 		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
+	}
+
+	/**
+	 * @covers ::commit
+	 */
+	public function testCommit() {
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
+		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
+		$this->assertSame( 'test', $remoteWiki->getCategory() );
+		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 	}
 
 	/**
