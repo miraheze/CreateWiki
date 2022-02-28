@@ -258,12 +258,12 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testSetDBCluster() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
-		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
+		$this->assertNull( $remoteWiki->getDBCluster() );
 
-		$remoteWiki->setDBCluster( 'c2' );
+		$remoteWiki->setDBCluster( 'c1' );
 		$remoteWiki->commit();
 
-		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
+		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
 	}
 
 	/**
@@ -297,6 +297,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
 		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 		$this->assertSame( 'test', $remoteWiki->getCategory() );
+		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
 	}
 
 	/**
