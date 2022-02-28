@@ -228,6 +228,36 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getServerName
+	 * @covers ::setServerName
+	 */
+	public function testSetServerName() {
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
+		$this->assertNull( $remoteWiki->getServerName() );
+
+		$remoteWiki->setServerName( 'http://127.0.0.1' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'http://127.0.0.1', $remoteWiki->getServerName() );
+	}
+
+	/**
+	 * @covers ::getDBCluster
+	 * @covers ::setDBCluster
+	 */
+	public function testSetDBCluster() {
+		$remoteWiki = new RemoteWiki( 'remotewikitest' );
+
+		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
+
+		$remoteWiki->setDBCluster( 'c2' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
+	}
+
+	/**
 	 * @covers ::isExperimental
 	 * @covers ::markExperimental
 	 * @covers ::unMarkExperimental
@@ -254,9 +284,11 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testCommit() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest' );
 
+		$this->assertSame( 'http://127.0.0.1', $remoteWiki->getServerName() );
 		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
-		$this->assertSame( 'test', $remoteWiki->getCategory() );
 		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
+		$this->assertSame( 'test', $remoteWiki->getCategory() );
+		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
 	}
 
 	/**
