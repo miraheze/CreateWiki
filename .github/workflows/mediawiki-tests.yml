@@ -214,7 +214,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.MEDIAWIKI_VERSION }}-${{ hashFiles('**/*.lock') }}
 
       - name: Setup PHP Action
-        if: ${{ matrix.stage == 'coverage' || matrix.stage == 'phan' }}
+        if: ${{ matrix.stage == 'phan' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
