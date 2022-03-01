@@ -184,8 +184,3 @@ class CreateWikiJson {
 		return $changes;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( CreateWikiJson::class, 'CreateWikiJson' );
