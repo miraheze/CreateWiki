@@ -100,7 +100,7 @@ jobs:
           # Latest MediaWiki master - PHP 7.4 (coverage)
           - mw: 'master'
             php: 7.4
-            php-docker: 74
+            php-docker: 73
             experimental: false
             stage: coverage
 
