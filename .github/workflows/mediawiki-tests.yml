@@ -100,7 +100,7 @@ jobs:
           # Latest MediaWiki master - PHP 7.4 (coverage)
           - mw: 'master'
             php: 7.4
-            php-docker: 74
+            php-docker: 73
             experimental: false
             stage: coverage
 
@@ -110,7 +110,7 @@ jobs:
       DOCKER_REGISTRY: docker-registry.wikimedia.org
       DOCKER_ORG: releng
       QUIBBLE_DOCKER_IMAGE: quibble-buster-php${{ matrix.php-docker }}
-      COVERAGE_DOCKER_IMAGE: quibble-buster-php${{ matrix.php-docker }}
+      COVERAGE_DOCKER_IMAGE: quibble-buster-php${{ matrix.php-docker }}-coverage
       PHAN_DOCKER_IMAGE: mediawiki-phan-php${{ matrix.php-docker }}
 
     steps:
@@ -219,6 +219,10 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2
+
+      - name: Use PHP ${{ matrix.php }}
+        run: |
+          sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
 
       - name: Composer install
         if: ${{ matrix.stage == 'phan' }}
