@@ -97,6 +97,13 @@ jobs:
             experimental: false
             stage: composer-test
 
+          # Latest MediaWiki master - PHP 7.4 (coverage)
+          - mw: 'master'
+            php: 7.4
+            php-docker: 74
+            experimental: false
+            stage: coverage
+
     runs-on: ubuntu-latest
 
     env:
@@ -307,6 +314,12 @@ jobs:
           mkdir -p docker-images
           docker save -o "$(pwd)/docker-images/${DOCKER_IMAGE}" \
             "${DOCKER_REGISTRY}/${DOCKER_ORG}/${DOCKER_IMAGE}:${DOCKER_LATEST_TAG}"
+
+      - name: Upload coverage to Codecov
+        if: ${{ matrix.stage == 'coverage' }}
+        uses: codecov/codecov-action@v2
+        with:
+          directory: /home/runner/cover
 
   notify-irc:
     needs: test
