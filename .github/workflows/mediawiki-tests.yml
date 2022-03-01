@@ -110,7 +110,7 @@ jobs:
       DOCKER_REGISTRY: docker-registry.wikimedia.org
       DOCKER_ORG: releng
       QUIBBLE_DOCKER_IMAGE: quibble-buster-php${{ matrix.php-docker }}
-      COVERAGE_DOCKER_IMAGE: quibble-coverage
+      COVERAGE_DOCKER_IMAGE: quibble-buster-php${{ matrix.php-docker }}
       PHAN_DOCKER_IMAGE: mediawiki-phan-php${{ matrix.php-docker }}
 
     steps:
