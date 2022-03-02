@@ -5,8 +5,9 @@ namespace Miraheze\CreateWiki\Hooks;
 interface CreateWikiRenameHook {
 	/**
 	 * @param \Wikimedia\Rdbms\DBConnRef $cwdb
-	 * @param string $wiki dbname
+	 * @param string $old dbname
+	 * @param string $new dbname
 	 * @return void
 	 */
-	public function onCreateWikiRename( $cwdb, $wiki ): void;
+	public function onCreateWikiRename( $cwdb, $old, $new ): void;
 }

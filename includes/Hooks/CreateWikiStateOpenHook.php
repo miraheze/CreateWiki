@@ -5,7 +5,7 @@ namespace Miraheze\CreateWiki\Hooks;
 interface CreateWikiStateOpenHook {
 	/**
 	 * @param string $dbname
-	 * @return bool void
+	 * @return void
 	 */
 	public function onCreateWikiStateOpen( $dbname ): void;
 }

@@ -4,7 +4,7 @@ namespace Miraheze\CreateWiki\Hooks;
 
 interface CreateWikiTablesHook {
 	/**
-	 * @param array $cwdb
+	 * @param array $cTables
 	 * @return void
 	 */
 	public function onCreateWikiTables( $cTables ): void;

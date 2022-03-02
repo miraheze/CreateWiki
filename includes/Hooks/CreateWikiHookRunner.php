@@ -52,10 +52,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiRename( $cwdb, $wiki ): void {
+	public function onCreateWikiRename( $cwdb, $old, $new ): void {
 		$this->container->run(
 			'CreateWikiRename',
-			[ $cwdb, $wiki ]
+			[ $cwdb, $old, $new ]
 		);
 	}
 
