@@ -64,15 +64,20 @@
 	"TestAutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\StructuredDiscussions\\Hooks"
+		}
+	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
 			"Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent"
 		],
 		"LoadExtensionSchemaUpdates": [
-			"Miraheze\\CreateWiki\\Hooks::fnCreateWikiSchemaUpdates"
+			"main"
 		],
 		"SetupAfterCache": [
-			"Miraheze\\CreateWiki\\Hooks::onSetupAfterCache"
+			"main"
 		]
 	},
 	"ResourceModules": {

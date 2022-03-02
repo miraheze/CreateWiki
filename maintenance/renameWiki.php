@@ -11,6 +11,7 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 
 class RenameWiki extends Maintenance {
@@ -51,7 +52,8 @@ class RenameWiki extends Maintenance {
 
 			$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
 
-			MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
+			$hookRunner = new CreateWikiHookRunner( MediaWikiServices::getInstance()->getHookContainer() );
+			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
 			$renamedWiki[] = $oldwiki;
 			$renamedWiki[] = $newwiki;

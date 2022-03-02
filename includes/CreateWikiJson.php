@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
 use ObjectCache;
 use Wikimedia\AtEase\AtEase;
@@ -18,6 +19,8 @@ class CreateWikiJson {
 	private $databaseTimestamp;
 	private $wikiTimestamp;
 	private $initTime;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
@@ -39,6 +42,7 @@ class CreateWikiJson {
 		if ( !$this->wikiTimestamp ) {
 			$this->resetWiki();
 		}
+		$this->hookRunner = new CreateWikiHookRunner( MediaWikiServices::getInstance()->getHookContainer() );
 	}
 
 	public function resetWiki() {
@@ -153,7 +157,7 @@ class CreateWikiJson {
 			]
 		];
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
+		$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );

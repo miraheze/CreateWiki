@@ -2,19 +2,22 @@
 
 namespace Miraheze\CreateWiki;
 
-use DatabaseUpdater;
 use EchoAttributeManager;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 
-class Hooks {
+class Hooks implements
+	\MediaWiki\Hook\SetupAfterCacheHook,
+	\MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook
+{
 	public static function getConfig( string $var ) {
 		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );
 	}
 
-	public static function fnCreateWikiSchemaUpdates( DatabaseUpdater $updater ) {
+	/** @inheritDoc */
+	public function onLoadExtensionSchemaUpdates( $updater ) {
 		$updater->addExtensionTable(
 			'cw_requests',
 			__DIR__ . '/../sql/cw_requests.sql'
@@ -141,7 +144,8 @@ class Hooks {
 		}
 	}
 
-	public static function onSetupAfterCache() {
+	/** @inheritDoc */
+	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
 		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );

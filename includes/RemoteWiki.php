@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class RemoteWiki {
 	public $changes = [];
@@ -28,6 +29,8 @@ class RemoteWiki {
 	private $dbcluster;
 	private $category;
 	private $experimental;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
@@ -59,6 +62,7 @@ class RemoteWiki {
 		$this->dbcluster = $wikiRow->wiki_dbcluster;
 		$this->category = $wikiRow->wiki_category;
 		$this->experimental = $wikiRow->wiki_experimental;
+		$this->hookRunner = new CreateWikiHookRunner( MediaWikiServices::getInstance()->getHookContainer() );
 	}
 
 	public function getCreationDate() {
@@ -361,7 +365,22 @@ class RemoteWiki {
 			}
 
 			foreach ( $this->hooks as $hook ) {
-				MediaWikiServices::getInstance()->getHookContainer()->run( $hook, [ $this->dbname ] );
+				switch ( $hook ) {
+					case 'CreateWikiStateOpen':
+						$this->hookRunner->onCreateWikiStateOpen( $this->dbname );
+						break;
+					case 'CreateWikiStateClosed':
+						$this->hookRunner->onCreateWikiStateClosed( $this->dbname );
+						break;
+					case 'CreateWikiStatePublic':
+						$this->hookRunner->onCreateWikiStatePublic( $this->dbname );
+						break;
+					case 'CreateWikiStatePrivate':
+						$this->hookRunner->onCreateWikiStatePrivate( $this->dbname );
+						break;
+					default:
+						// TODO: throw exception
+				}
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
