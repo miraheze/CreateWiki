@@ -62,12 +62,8 @@
 		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
 	},
 	"TestAutoloadNamespaces": {
+		"Miraheze\\CreateWiki\\Tests\\Unit": "tests/phpunit/unit",
 		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
-	},
-	"HookHandlers": {
-		"main": {
-			"class": "Miraheze\\CreateWiki\\Hooks"
-		}
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
@@ -79,6 +75,11 @@
 		"SetupAfterCache": [
 			"main"
 		]
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "Miraheze\\CreateWiki\\Hooks"
+		}
 	},
 	"ResourceModules": {
 		"ext.createwiki.oouiform": {

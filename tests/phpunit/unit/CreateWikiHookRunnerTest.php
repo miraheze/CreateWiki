@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests;
+namespace Miraheze\CreateWiki\Tests\Unit;
 
 use MediaWiki\Tests\HookContainer\HookRunnerTestBase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
