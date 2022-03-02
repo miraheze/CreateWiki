@@ -5,9 +5,8 @@ namespace Miraheze\CreateWiki\Hooks;
 interface CreateWikiDeletionHook {
 	/**
 	 * @param \Wikimedia\Rdbms\DBConnRef $cwdb
-	 * @param string $old dbname
-	 * @param string $new dbname
+	 * @param string $wiki dbname
 	 * @return void
 	 */
-	public function onCreateWikiDeletion( $cwdb, $old, $new ): void;
+	public function onCreateWikiDeletion( $cwdb, $wiki ): void;
 }

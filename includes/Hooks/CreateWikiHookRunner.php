@@ -36,10 +36,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiDeletion( $cwdb, $old, $new ): void {
+	public function onCreateWikiDeletion( $cwdb, $wiki ): void {
 		$this->container->run(
 			'CreateWikiDeletion',
-			[ $cwdb, $old, $new ]
+			[ $cwdb, $wiki ]
 		);
 	}
 
