@@ -67,8 +67,12 @@
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": "Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent",
-		"LoadExtensionSchemaUpdates": "default",
-		"SetupAfterCache": "Installer"
+		"LoadExtensionSchemaUpdates": {
+			"handler": "default"
+		},
+		"SetupAfterCache": {
+			"handler": "Installer"
+		}
 	},
 	"HookHandlers": {
 		"default": {
