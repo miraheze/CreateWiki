@@ -7,10 +7,12 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 
 class Hooks implements
-	\MediaWiki\Hook\SetupAfterCacheHook,
-	\MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook
+	SetupAfterCacheHook,
+	LoadExtensionSchemaUpdatesHook
 {
 	public static function getConfig( string $var ) {
 		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );

@@ -2,10 +2,12 @@
 
 namespace Miraheze\CreateWiki\Hooks;
 
+use Wikimedia\Rdbms\DBConnRef;
+
 interface CreateWikiJsonBuilderHook {
 	/**
 	 * @param string $wiki
-	 * @param \Wikimedia\Rdbms\DBConnRef $dbr
+	 * @param DBConnRef $dbr
 	 * @param array &$jsonArray
 	 * @return void
 	 */

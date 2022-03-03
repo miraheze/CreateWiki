@@ -2,9 +2,11 @@
 
 namespace Miraheze\CreateWiki\Hooks;
 
+use Wikimedia\Rdbms\DBConnRef;
+
 interface CreateWikiDeletionHook {
 	/**
-	 * @param \Wikimedia\Rdbms\DBConnRef $cwdb
+	 * @param DBConnRef $cwdb
 	 * @param string $wiki dbname
 	 * @return void
 	 */
