@@ -4,11 +4,11 @@ namespace Miraheze\CreateWiki;
 
 use Config;
 use EchoAttributeManager;
+use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
-use MediaWiki\Hook\SetupAfterCacheHook;
-use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 
 class Hooks implements
 	SetupAfterCacheHook,
