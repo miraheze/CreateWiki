@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki;
 
+use Config;
 use EchoAttributeManager;
-use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
@@ -14,8 +14,14 @@ class Hooks implements
 	SetupAfterCacheHook,
 	LoadExtensionSchemaUpdatesHook
 {
-	public static function getConfig( string $var ) {
-		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );
+	/** @var Config */
+	private $config;
+
+	/**
+	 * @param Config $config
+	 */
+	public function __construct( Config $config ) {
+		$this->config = $config;
 	}
 
 	/** @inheritDoc */
@@ -150,8 +156,8 @@ class Hooks implements
 	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );
-		$dbName = self::getConfig( 'DBname' );
+		$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+		$dbName = $this->config->get( 'DBname' );
 
 		$cWJ = new CreateWikiJson( $dbName );
 		$cWJ->update();

@@ -78,7 +78,8 @@
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "Miraheze\\CreateWiki\\Hooks"
+			"class": "Miraheze\\CreateWiki\\Hooks",
+			"services": [ "MainConfig" ]
 		}
 	},
 	"ResourceModules": {
