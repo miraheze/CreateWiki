@@ -3,6 +3,7 @@
 		"authors": [
 			"HendSalah16",
 			"Meno25",
+			"NancyMilad",
 			"OsamaK",
 			"Tala Ali",
 			"ديفيد",
@@ -73,7 +74,7 @@
 	"requestwikiqueue-request-label-sitename": "اسم الموقع",
 	"requestwikiqueue-request-label-status": "الحالة",
 	"requestwikiqueue-request-label-url": "مسار",
-	"requestwikiqueue-request-label-visibility": "تعليم مستوى رؤية هذه الطلبات كـ...",
+	"requestwikiqueue-request-label-visibility": "ضع علامة رؤية الطلبات ك",
 	"requestwikiqueue-request-label-visibility-all": "يمكن لكل من لديه \"قراءة\" مشاهدة هذا الطلب",
 	"requestwikiqueue-request-label-visibility-delete": "يمكن لكل شخص لديه صلاحيات \"حذف\" عرض هذا الطلب",
 	"requestwikiqueue-request-label-visibility-hide": "يمكن لكل شخص لديه صلاحيات \"إنشاء ويكي\" عرض هذا الطلب",
