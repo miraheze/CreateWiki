@@ -39,6 +39,7 @@ $wgHooks['MediaWikiServices'][] = 'wfOnMediaWikiServices';
 function wfOnMediaWikiServices( MediaWiki\MediaWikiServices $services ) {
 	try {
 		$dbw = wfGetDB( DB_PRIMARY );
+
 		$dbw->insert(
 			'cw_wikis',
 			[
