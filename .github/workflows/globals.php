@@ -58,7 +58,7 @@ function wfOnMediaWikiServices( MediaWiki\MediaWikiServices $services ) {
 				'wiki_url' => 'http://127.0.0.1:9412'
 			]
 		);
-	} catch ( Wikimedia\Rdbms\DBQueryError $e ) {
+	} catch ( Throwable $e ) {
 		return;
 	}
 }
