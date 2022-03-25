@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use Job;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Phpml\ModelManager;
 use Title;
 use User;
@@ -41,7 +42,10 @@ class RequestWikiAIJob extends Job {
 	}
 
 	private function canAutoApprove( $config ) {
-		$descriptionFilter = '/(' . implode( '|', $config->get( 'CreateWikiAutoApprovalFilter' ) ) . ')+/';
+		$descriptionFilter = CreateWikiRegexConstraint::regexFromArray(
+			'/(', $config->get( 'CreateWikiAutoApprovalFilter' ), ')+/'
+		);
+
 		if ( preg_match( $descriptionFilter, strtolower( $this->params['description'] ) ) ) {
 			return false;
 		}
