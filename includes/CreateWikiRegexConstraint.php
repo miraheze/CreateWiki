@@ -37,8 +37,7 @@ class CreateWikiRegexConstraint {
 	 * @return array
 	 */
 	private static function regexesFromText( $lines ) {
-		$lines = self::cleanLines( $lines );
-		$regexes = explode( "\n", $lines );
+		$regexes = self::cleanLines( $lines );
 
 		if ( self::validateRegexes( $regexes ) ) {
 			return $regexes;
@@ -55,7 +54,7 @@ class CreateWikiRegexConstraint {
 		$message = wfMessage( $key )->inContentLanguage();
 
 		if ( !$message->isDisabled() ) {
-			return self::regexesFromText( $message->plain() );
+			return self::regexesFromText( explode( "\n", $message->plain() ) );
 		}
 
 		return [];
