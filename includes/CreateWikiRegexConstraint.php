@@ -114,7 +114,7 @@ class CreateWikiRegexConstraint {
 		$message = wfMessage( $key )->inContentLanguage();
 
 		if ( !$message->isDisabled() ) {
-			return self::regexesFromText( explode( "\n", $message->plain() ) );
+			return self::regexesFromText( $message->plain() );
 		}
 
 		return [];
