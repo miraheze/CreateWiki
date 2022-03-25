@@ -21,6 +21,19 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
+	 * @param array &$regexes
+	 */
+	private static function filterInvalidRegexes( &$regexes ) {
+		foreach ( $regexes as $regex ) {
+			if ( !StringUtils::isValidPCRERegex( $regex ) ) {
+				wfWarn( 'Contains invalid regex.' );
+
+				unset( $regexes[$regex] );
+			}
+		}
+	}
+
+	/**
 	 * @param array $lines
 	 * @return array
 	 */
@@ -33,17 +46,44 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
-	 * @param array $lines
+	 * @param string $text
 	 * @return array
 	 */
-	private static function regexesFromText( $lines ) {
+	private static function regexesFromText( $text ) {
+		$lines = explode( "\n", $text );
 		$regexes = self::cleanLines( $lines );
 
-		if ( self::validateRegexes( $regexes ) ) {
-			return $regexes;
+		if ( !self::validateRegexes( $regexes ) ) {
+			wfWarn( 'Contains invalid regex.' );
 		}
 
-		return [];
+		return $regexes;
+	}
+
+	/**
+	 * @param array $regexes
+	 * @param string $start
+	 * @param string $end
+	 * @return string
+	 */
+	public static function regexFromArray( $regexes, $start, $end ) {
+		if ( empty( $regexes ) ) {
+			return '';
+		}
+
+		self::filterInvalidRegexes( $regexes );
+
+		if ( !empty( $regexes ) ) {
+			$regex = $start . implode( '|', $regexes ) . $end;
+
+			if ( self::validateRegexes( [ $regex ] ) ) {
+				return $regex;
+			}
+		}
+
+		wfWarn( 'Contains invalid regex.' );
+
+		return '';
 	}
 
 	/**
