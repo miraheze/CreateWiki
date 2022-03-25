@@ -19,6 +19,7 @@ class CreateWikiRegexConstraint {
 
 		return true;
 	}
+
 	/**
 	 * @param array $lines
 	 * @return array
