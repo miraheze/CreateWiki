@@ -87,6 +87,26 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
+	 * @param array|string $regex
+	 * @param string $start
+	 * @param string $end
+	 * @return string
+	 */
+	public static function regexFromArrayOrString( $regex, $start = '', $end = '' ) {
+		if ( is_array( $regex ) ) {
+			return self::regexFromArray( $regex, $start, $end );
+		} else {
+			if ( self::validateRegexes( [ $regex ] ) ) {
+				return $regex;
+			}
+		}
+
+		wfWarn( 'Contains invalid regex.' );
+
+		return '';
+	}
+
+	/**
 	 * @param string $key
 	 * @return array
 	 */
