@@ -25,6 +25,7 @@ class CreateWikiRegexConstraint {
 	 * @param string $name name of regex caller (config or message) for logging
 	 * @param string $start
 	 * @param string $end
+	 * @return void
 	 */
 	private static function filterInvalidRegexes( &$regexes, $name = '', $start = '', $end = '' ) {
 		$regexes = array_filter( $regexes, static function ( $regex ) use ( $name, $start, $end ) {
