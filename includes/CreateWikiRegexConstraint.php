@@ -23,10 +23,12 @@ class CreateWikiRegexConstraint {
 	/**
 	 * @param array &$regexes
 	 * @param string $name name of regex caller (config or message) for logging
+	 * @param string $start
+	 * @param string $end
 	 */
-	private static function filterInvalidRegexes( &$regexes, $name = '' ) {
-		$regexes = array_filter( $regexes, static function ( $regex ) use ( $name ) {
-			if ( !StringUtils::isValidPCRERegex( $regex ) ) {
+	private static function filterInvalidRegexes( &$regexes, $name = '', $start = '', $end = '' ) {
+		$regexes = array_filter( $regexes, static function ( $regex ) use ( $name, $start, $end ) {
+			if ( !StringUtils::isValidPCRERegex( $start . $regex . $end ) ) {
 				if ( $name ) {
 					self::logInvalidRegex( $regex, $name );
 				}
@@ -78,7 +80,7 @@ class CreateWikiRegexConstraint {
 			return '';
 		}
 
-		self::filterInvalidRegexes( $regexes, $name );
+		self::filterInvalidRegexes( $regexes, $name, $start, $end );
 
 		if ( !empty( $regexes ) ) {
 			$regex = $start . implode( '|', $regexes ) . $end;
