@@ -101,9 +101,9 @@ class CreateWikiRegexConstraint {
 			if ( self::validateRegexes( [ $regex ] ) ) {
 				return $regex;
 			}
-		}
 
-		wfWarn( 'Contains invalid regex.' );
+			wfWarn( 'Contains invalid regex.' );
+		}
 
 		return '';
 	}
