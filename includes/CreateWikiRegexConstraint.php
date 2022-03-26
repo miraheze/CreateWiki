@@ -21,12 +21,11 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
-	 * @param array $regexes
+	 * @param array &$regexes
 	 * @param string $name name of regex caller (config or message) for logging
-	 * @return bool
 	 */
-	private static function validateRegexes( $regexes, $name = '' ) {
-		foreach ( $regexes as $regex ) {
+	private static function filterInvalidRegexes( &$regexes, $name = '' ) {
+		$regexes = array_filter( $regexes, static function ( $regex ) use ( $name ) {
 			if ( !StringUtils::isValidPCRERegex( $regex ) ) {
 				if ( $name ) {
 					self::logInvalidRegex( $regex, $name );
@@ -34,25 +33,9 @@ class CreateWikiRegexConstraint {
 
 				return false;
 			}
-		}
 
-		return true;
-	}
-
-	/**
-	 * @param array &$regexes
-	 * @param string $name name of regex caller (config or message) for logging
-	 */
-	private static function filterInvalidRegexes( &$regexes, $name = '' ) {
-		foreach ( $regexes as $key => $regex ) {
-			if ( !StringUtils::isValidPCRERegex( $regex ) ) {
-				if ( $name ) {
-					self::logInvalidRegex( $regex, $name );
-				}
-
-				unset( $regexes[$key] );
-			}
-		}
+			return true;
+		} );
 	}
 
 	/**
@@ -78,7 +61,7 @@ class CreateWikiRegexConstraint {
 		$lines = explode( "\n", $text );
 		$regexes = self::cleanLines( $lines );
 
-		self::validateRegexes( $regexes, $name );
+		self::filterInvalidRegexes( $regexes, $name );
 
 		return $regexes;
 	}
@@ -100,7 +83,7 @@ class CreateWikiRegexConstraint {
 		if ( !empty( $regexes ) ) {
 			$regex = $start . implode( '|', $regexes ) . $end;
 
-			if ( self::validateRegexes( [ $regex ] ) ) {
+			if ( StringUtils::isValidPCRERegex( $regex ) ) {
 				return $regex;
 			}
 
@@ -121,9 +104,9 @@ class CreateWikiRegexConstraint {
 	 */
 	public static function regexFromArrayOrString( $regex, $start = '', $end = '', $name = '' ) {
 		if ( is_array( $regex ) ) {
-			return self::regexFromArray( $regex, $start, $end );
+			return self::regexFromArray( $regex, $start, $end, $name );
 		} else {
-			if ( self::validateRegexes( [ $regex ] ) ) {
+			if ( StringUtils::isValidPCRERegex( $regex ) ) {
 				return $regex;
 			}
 
