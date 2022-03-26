@@ -24,11 +24,11 @@ class CreateWikiRegexConstraint {
 	 * @param array &$regexes
 	 */
 	private static function filterInvalidRegexes( &$regexes ) {
-		foreach ( $regexes as $regex ) {
+		foreach ( $regexes as $key => $regex ) {
 			if ( !StringUtils::isValidPCRERegex( $regex ) ) {
 				wfWarn( 'Contains invalid regex.' );
 
-				unset( $regexes[$regex] );
+				unset( $regexes[$key] );
 			}
 		}
 	}
