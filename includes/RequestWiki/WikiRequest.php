@@ -343,7 +343,8 @@ class WikiRequest {
 		$subdomain = strtolower( $subdomain );
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
-			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/'
+			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			'CreateWikiDisallowedSubdomains'
 		);
 
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
