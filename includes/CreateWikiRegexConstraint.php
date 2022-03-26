@@ -34,6 +34,8 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
+	 * Strip comments and whitespace, and remove blank lines
+	 *
 	 * @param array $lines
 	 * @return array
 	 */
@@ -61,9 +63,9 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
-	 * @param array $regexes
-	 * @param string $start
-	 * @param string $end
+	 * @param array $regexes array of regexes to use for making into a string
+	 * @param string $start prepend to the beginning of the regex
+	 * @param string $end append to the end of the regex
 	 * @return string
 	 */
 	public static function regexFromArray( $regexes, $start, $end ) {
