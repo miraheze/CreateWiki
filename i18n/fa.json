@@ -2,15 +2,16 @@
 	"@metadata": {
 		"authors": [
 			"Alireza Ivaz",
+			"Beginneruser",
 			"FarsiNevis",
 			"Huji",
 			"Stewie"
 		]
 	},
-	"action-createwiki": "ساختن ویکی",
+	"action-createwiki": "ایجاد ویکی‌ها",
 	"action-requestwiki": "درخواست ویکی‌ها",
-	"createwiki": "ساختن یک ویکی",
-	"createwiki-desc": "یک افزونه برای ساختن آسان ویکی‌ها به‌روی یک مزرعهٔ ویکی.",
+	"createwiki": "ایجاد یک ویکی",
+	"createwiki-desc": "یک افزونه برای ایجاد آسان ویکی‌ها‌ی تازه در یک مزرعهٔ ویکی.",
 	"createwiki-close-email-sender": "میراژز",
 	"createwiki-email-subject": "ویکی میراژز تازهٔ شما: $1",
 	"createwiki-label-category": "رده:",
@@ -49,5 +50,5 @@
 	"requestwikiqueue-request-label-status": "وضعیت",
 	"requestwikiqueue-request-label-url": "نشانی",
 	"right-requestwiki": "درخواست ویکی‌ها",
-	"right-createwiki": "ساختن ویکی‌ها"
+	"right-createwiki": "ایجاد ویکی‌ها"
 }
