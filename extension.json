@@ -51,12 +51,6 @@
 		"Miraheze\\CreateWiki\\": "includes/"
 	},
 	"AutoloadClasses": {
-		"CreateWikiJson": "includes/CreateWikiJson.php",
-		"Miraheze\\CreateWiki\\CreateWikiJson": "includes/CreateWikiJson.php",
-		"RemoteWiki": "includes/RemoteWiki.php",
-		"Miraheze\\CreateWiki\\RemoteWiki": "includes/RemoteWiki.php",
-		"WikiManager": "includes/WikiManager.php",
-		"Miraheze\\CreateWiki\\WikiManager": "includes/WikiManager.php",
 		"Miraheze\\CreateWiki\\Maintenance\\DeleteWikis": "maintenance/deleteWikis.php",
 		"Miraheze\\CreateWiki\\Maintenance\\PopulateMainPage": "maintenance/populateMainPage.php",
 		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
