@@ -8,7 +8,7 @@ use StringUtils;
 class CreateWikiRegexConstraint {
 	/**
 	 * @param string $regex invalid regex to log for
-	 * @param string $name name of regex caller (config or message) to log for
+	 * @param string $name name of regex caller (config or message key) to log for
 	 */
 	private static function logInvalidRegex( $regex, $name ) {
 		LoggerFactory::getInstance( 'CreateWiki' )->info(
@@ -22,7 +22,7 @@ class CreateWikiRegexConstraint {
 
 	/**
 	 * @param array &$regexes
-	 * @param string $name name of regex caller (config or message) for logging
+	 * @param string $name name of regex caller (config or message key) for logging
 	 * @param string $start
 	 * @param string $end
 	 * @return void
@@ -57,14 +57,16 @@ class CreateWikiRegexConstraint {
 
 	/**
 	 * @param string $text
-	 * @param string $name name of regex caller (config or message) for logging
+	 * @param string $start
+	 * @param string $end
+	 * @param string $name name of regex caller (config or message key) for logging
 	 * @return array
 	 */
-	private static function regexesFromText( $text, $name = '' ) {
+	private static function regexesFromText( $text, $start = '', $end = '', $name = '' ) {
 		$lines = explode( "\n", $text );
 		$regexes = self::cleanLines( $lines );
 
-		self::filterInvalidRegexes( $regexes, $name );
+		self::filterInvalidRegexes( $regexes, $name, $start, $end );
 
 		return $regexes;
 	}
@@ -73,7 +75,7 @@ class CreateWikiRegexConstraint {
 	 * @param array $regexes array of regexes to use for making into a string
 	 * @param string $start prepend to the beginning of the regex
 	 * @param string $end append to the end of the regex
-	 * @param string $name name of regex caller (config or message) for logging
+	 * @param string $name name of regex caller (config or message key) for logging
 	 * @return string
 	 */
 	public static function regexFromArray( $regexes, $start, $end, $name = '' ) {
@@ -123,13 +125,15 @@ class CreateWikiRegexConstraint {
 
 	/**
 	 * @param string $key
+	 * @param string $start prepend to the beginning of each regex line; used only for validation
+	 * @param string $end append to the end of each regex line; used only for validation
 	 * @return array
 	 */
-	public static function regexesFromMessage( $key ) {
+	public static function regexesFromMessage( $key, $start = '/', $end = '/i' ) {
 		$message = wfMessage( $key )->inContentLanguage();
 
 		if ( !$message->isDisabled() ) {
-			return self::regexesFromText( $message->plain(), "MediaWiki:{$key}" );
+			return self::regexesFromText( $message->plain(), $start, $end, "MediaWiki:{$key}" );
 		}
 
 		return [];
