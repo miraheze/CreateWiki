@@ -174,7 +174,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			CreateWikiRegexConstraint::regexesFromMessage( 'CreateWiki-blacklist' );
 
 		foreach ( $regexes as $regex ) {
-			preg_match( "/" . $regex . "/i", $reason, $output );
+			preg_match( '/' . $regex . '/i', $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
 				return $this->msg( 'requestwiki-error-invalidcomment' )->escaped();
