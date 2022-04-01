@@ -104,7 +104,7 @@ class CreateWikiRegexConstraint {
 	 * @param array|string $regex
 	 * @param string $start
 	 * @param string $end
-	 * @param string $name name of regex caller (config or message) for logging
+	 * @param string $name name of regex caller (config or message key) for logging
 	 * @return string
 	 */
 	public static function regexFromArrayOrString( $regex, $start = '', $end = '', $name = '' ) {
