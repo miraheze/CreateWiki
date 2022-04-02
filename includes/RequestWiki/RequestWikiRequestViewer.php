@@ -331,9 +331,14 @@ class RequestWikiRequestViewer {
 		WikiRequest $request
 	) {
 		$out = $form->getContext()->getOutput();
+		$user = $form->getUser();
 
-		if ( isset( $formData['submit-comment'] ) ) {
-			$request->addComment( $formData['comment'], $form->getUser() );
+		if ( $user->isAnon() ) {
+			$out->addHTML( Html::errorBox( wfMessage( 'exception-nologin-text' )->parse() ) );
+			
+			return false;
+		} elseif ( isset( $formData['submit-comment'] ) ) {
+			$request->addComment( $formData['comment'], $user );
 		} elseif ( isset( $formData['submit-edit'] ) ) {
 			$subdomain = $formData['edit-url'];
 			$err = '';
@@ -359,9 +364,9 @@ class RequestWikiRequestViewer {
 			$request->visibility = $formData['visibility'];
 
 			if ( $formData['submission-action'] == 'approve' ) {
-				$request->approve( $form->getUser(), $formData['reason'] );
+				$request->approve( $user, $formData['reason'] );
 			} else {
-				$request->decline( $formData['reason'], $form->getUser() );
+				$request->decline( $formData['reason'], $user );
 			}
 		}
 
