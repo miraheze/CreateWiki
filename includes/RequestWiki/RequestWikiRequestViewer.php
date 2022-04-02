@@ -333,9 +333,9 @@ class RequestWikiRequestViewer {
 		$out = $form->getContext()->getOutput();
 		$user = $form->getUser();
 
-		if ( $user->isAnon() ) {
+		if ( !$user->isRegistered() ) {
 			$out->addHTML( Html::errorBox( wfMessage( 'exception-nologin-text' )->parse() ) );
-			
+
 			return false;
 		} elseif ( isset( $formData['submit-comment'] ) ) {
 			$request->addComment( $formData['comment'], $user );
