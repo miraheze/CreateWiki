@@ -328,8 +328,3 @@ class WikiManager {
 		$cWJ->update();
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( WikiManager::class, 'WikiManager' );

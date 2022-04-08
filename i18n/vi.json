@@ -1,0 +1,39 @@
+{
+	"@metadata": {
+		"authors": [
+			"Minh Nguyen",
+			"NguyenHung"
+		]
+	},
+	"createwiki": "Tạo một wiki",
+	"createwiki-defaultmainpage-summary": "Tạo trang chính",
+	"createwiki-desc": "Một tiện ích để dễ dàng tạo những wiki mới trên một nông trại wiki.",
+	"createwiki-email-subject": "Wiki Miraheze mới của bạn: $1",
+	"createwiki-label-category": "Thể loại:",
+	"createwiki-label-language": "Ngôn ngữ:",
+	"createwiki-label-reason": "Lý do:",
+	"createwiki-label-requester": "Người yêu cầu:",
+	"createwiki-success": "Wiki đã được tạo thành công.",
+	"echo-category-title-request-comment": "Bình luận đã được thêm vào yêu cầu wiki",
+	"echo-category-title-request-declined": "Yêu cầu wiki đã từ chối",
+	"echo-pref-tooltip-wiki-creation": "Hãy nhắc tôi khi wiki của tôi đã được tạo.",
+	"logentry-farmer-createwiki": "$1 đã tạo wiki \"$4\"",
+	"logentry-farmer-requestaccept": "$1 đã chấp nhận yêu cầu wiki $4",
+	"logentry-farmer-requestdecline": "$1 đã từ chối yêu cầu wiki của $4",
+	"logentry-farmer-requestreopen": "$1 đã mở lại yêu cầu wiki $4",
+	"logentry-farmer-requestwiki": "$1 đã yêu cầu wiki \"$4\" (ngôn ngữ: $5; riêng tư: $6) trong $7",
+	"notification-createwiki-wiki-creation-email-subject": "Wiki của bạn $1 đã được tạo!",
+	"notification-header-wiki-creation": "Wiki của bạn <strong>$1</strong> đã được tạo ra!",
+	"requestwiki": "Yêu cầu một wiki",
+	"requestwiki-label-language": "Ngôn ngữ:",
+	"requestwiki-label-private": "Wiki riêng tư (không thể đọc được bởi tất cả thành viên; chỉ đọc được bởi những thành viên đã cho nhóm thành viên hoặc bảo quản viên)",
+	"requestwiki-label-purpose": "Mục đích của wiki này là...",
+	"requestwiki-label-sitename": "Tên wiki:",
+	"requestwiki-notloggedin": "Xin lỗi, bạn cần phải <span class=\"plainlinks\">[$1 đăng nhập]</span> trước khi bạn có thể yêu cầu một wiki.",
+	"requestwikiqueue-approve": "Chấp nhận",
+	"requestwikiqueue-comments": "Bình luận yêu cầu",
+	"requestwikiqueue-decline": "Từ chối",
+	"requestwikiqueue-edit": "Yêu cầu sửa đổi",
+	"requestwikiqueue-request": "Yêu cầu",
+	"right-createwiki": "Tạo wiki trong nông trại wiki"
+}

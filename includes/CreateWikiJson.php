@@ -89,7 +89,7 @@ class CreateWikiJson {
 				'wiki_dbname',
 				'wiki_deleted',
 				'wiki_url',
-				'wiki_sitename'
+				'wiki_sitename',
 			]
 		);
 
@@ -100,12 +100,12 @@ class CreateWikiJson {
 			if ( $wiki->wiki_deleted == 1 ) {
 				$deletedList[$wiki->wiki_dbname] = [
 					's' => $wiki->wiki_sitename,
-					'c' => $wiki->wiki_dbcluster
+					'c' => $wiki->wiki_dbcluster,
 				];
 			} else {
 				$combiList[$wiki->wiki_dbname] = [
 					's' => $wiki->wiki_sitename,
-					'c' => $wiki->wiki_dbcluster
+					'c' => $wiki->wiki_dbcluster,
 				];
 
 				if ( $wiki->wiki_url !== null ) {
@@ -114,14 +114,31 @@ class CreateWikiJson {
 			}
 		}
 
-		file_put_contents( "{$this->cacheDir}/databases.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'combi' => $combiList ] ), LOCK_EX );
-		file_put_contents( "{$this->cacheDir}/deleted.json.tmp", json_encode( [ 'timestamp' => $this->databaseTimestamp, 'databases' => $deletedList ] ), LOCK_EX );
+		$databaseLists = [
+			'databases' => [
+				'combi' => $combiList,
+			],
+			'deleted' => [
+				'deleted' => 'databases',
+				'databases' => $deletedList,
+			],
+		];
 
-		if ( file_exists( "{$this->cacheDir}/databases.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/databases.json.tmp", "{$this->cacheDir}/databases.json" );
-		}
-		if ( file_exists( "{$this->cacheDir}/deleted.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/deleted.json.tmp", "{$this->cacheDir}/deleted.json" );
+		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonGenerateDatabaseList', [ &$databaseLists ] );
+
+		foreach ( $databaseLists as $name => $contents ) {
+			$contents = [ 'timestamp' => $this->databaseTimestamp ] + $contents;
+			$contents[$name] ??= 'combi';
+
+			$contents[ $contents[$name] ] ??= [];
+
+			unset( $contents[$name] );
+
+			file_put_contents( "{$this->cacheDir}/{$name}.json.tmp", json_encode( $contents ), LOCK_EX );
+
+			if ( file_exists( "{$this->cacheDir}/{$name}.json.tmp" ) ) {
+				rename( "{$this->cacheDir}/{$name}.json.tmp", "{$this->cacheDir}/{$name}.json" );
+			}
 		}
 	}
 
@@ -188,8 +205,3 @@ class CreateWikiJson {
 		return $changes;
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( CreateWikiJson::class, 'CreateWikiJson' );

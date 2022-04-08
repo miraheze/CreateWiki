@@ -398,8 +398,3 @@ class RemoteWiki {
 		}
 	}
 }
-
-/**
- * @deprecated since 1.37
- */
-class_alias( RemoteWiki::class, 'RemoteWiki' );

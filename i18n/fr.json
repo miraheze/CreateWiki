@@ -69,7 +69,7 @@
 	"requestwiki-label-bio": "Les sujets principaux de ce wiki seront-ils des personnes vivantes ?",
 	"requestwiki-label-language": "Langue :",
 	"requestwiki-label-private": "Wiki privé (non lisible par tout le monde ; lisible seulement par les utilisateurs des groupes membre ou sysop) :",
-	"requestwiki-label-purpose": "Le but de ce wiki est...",
+	"requestwiki-label-purpose": "L’objectif de ce wiki est...",
 	"requestwiki-label-sitename": "Nom du wiki :",
 	"requestwiki-label-siteurl": "Sous-domaine : (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "Désolé mais vous devez <span class=\"plainlinks\">[$1 vous connecter]</span> avant de pouvoir demander un wiki.",
