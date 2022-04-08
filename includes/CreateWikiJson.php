@@ -22,9 +22,10 @@ class CreateWikiJson {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( string $wiki ) {
+	public function __construct( CreateWikiHookRunner $hookRunner, string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+
+		$this->hookRunner = $hookRunner;
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;

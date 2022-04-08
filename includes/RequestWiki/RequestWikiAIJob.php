@@ -16,8 +16,9 @@ class RequestWikiAIJob extends Job {
 	public function run() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$modelFile = $config->get( 'CreateWikiPersistentModelFile' );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
-		$wr = new WikiRequest( $this->params['id'] );
+		$wr = new WikiRequest( $hookRunner, $this->params['id'] );
 
 		if ( file_exists( $modelFile ) ) {
 			$modelManager = new ModelManager();

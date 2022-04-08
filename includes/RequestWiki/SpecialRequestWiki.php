@@ -8,6 +8,7 @@ use Html;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
 use SpecialPage;
 use TextContent;
@@ -17,11 +18,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/** @var Config */
 	private $config;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct() {
+	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner;
 	}
 
 	public function execute( $par ) {
@@ -116,7 +120,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$request = new WikiRequest();
+		$request = new WikiRequest( $this->hookRunner );
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
 		$err = '';

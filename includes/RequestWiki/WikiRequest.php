@@ -6,6 +6,7 @@ use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use MWException;
 use SpecialPage;
@@ -32,9 +33,12 @@ class WikiRequest {
 	private $status = 'inreview';
 	private $comments = [];
 	private $involvedUsers = [];
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct( int $id = null ) {
+	public function __construct( CreateWikiHookRunner $hookRunner, int $id = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner;
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
@@ -180,7 +184,7 @@ class WikiRequest {
 			}
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$wm = new WikiManager( $this->dbname );
+			$wm = new WikiManager( $this->hookRunner, $this->dbname );
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
 

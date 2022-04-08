@@ -3,12 +3,18 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use HTMLForm;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use SpecialPage;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
-	public function __construct() {
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
+
+	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+
+		$this->hookRunner = $hookRunner;
 	}
 
 	public function execute( $par ) {
@@ -68,7 +74,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$out->addModules( 'ext.createwiki.oouiform' );
 
-		$requestViewer = new RequestWikiRequestViewer();
+		$requestViewer = new RequestWikiRequestViewer( $this->hookRunner );
 		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );
 		$sectionTitles = $htmlForm->getFormSections();
 

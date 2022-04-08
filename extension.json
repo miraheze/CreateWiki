@@ -21,9 +21,24 @@
 		"requestwiki"
 	],
 	"SpecialPages": {
-		"CreateWiki": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
-		"RequestWiki": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
-		"RequestWikiQueue": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue"
+		"CreateWiki": {
+			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
+			"services": [
+				"CreateWikiHookRunner"
+			]
+		},
+		"RequestWiki": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+			"services": [
+				"CreateWikiHookRunner"
+			]
+		},
+		"RequestWikiQueue": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
+			"services": [
+				"CreateWikiHookRunner"
+			]
+		}
 	},
 	"JobClasses": {
 		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
@@ -71,7 +86,10 @@
 	"HookHandlers": {
 		"default": {
 			"class": "Miraheze\\CreateWiki\\Hooks",
-			"services": [ "MainConfig" ]
+			"services": [
+				"MainConfig",
+				"CreateWikiHookRunner"
+			]
 		},
 		"Installer": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"

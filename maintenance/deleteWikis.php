@@ -27,6 +27,7 @@ class DeleteWikis extends Maintenance {
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
 		$dbr = wfGetDB( DB_REPLICA, [], $config->get( 'CreateWikiDatabase' ) );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
 		$res = $dbr->select(
 			'cw_wikis',
@@ -44,7 +45,7 @@ class DeleteWikis extends Maintenance {
 
 			if ( $this->hasOption( 'delete' ) ) {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$wm = new WikiManager( $wiki );
+				$wm = new WikiManager( $hookRunner, $wiki );
 
 				$delete = $wm->delete();
 

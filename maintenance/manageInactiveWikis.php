@@ -27,6 +27,7 @@ class ManageInactiveWikis extends Maintenance {
 
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
 		$dbr = wfGetDB( DB_REPLICA, [], $config->get( 'CreateWikiDatabase' ) );
 
@@ -42,7 +43,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$dbName = $row->wiki_dbname;
-			$wiki = new RemoteWiki( $dbName );
+			$wiki = new RemoteWiki( $hookRunner, $dbName );
 			$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {

@@ -10,6 +10,7 @@ use IContextSource;
 use Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use MWException;
 
@@ -17,9 +18,12 @@ class RequestWikiRequestViewer {
 
 	/** @var Config */
 	private $config;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct() {
+	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner;
 	}
 
 	public function getFormDescriptor(
@@ -221,7 +225,7 @@ class RequestWikiRequestViewer {
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$wm = new WikiManager( $request->dbname );
+			$wm = new WikiManager( $this->hookRunner, $request->dbname );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname );
 
@@ -303,7 +307,7 @@ class RequestWikiRequestViewer {
 		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
 
 		try {
-			$request = new WikiRequest( (int)$id );
+			$request = new WikiRequest( $this->hookRunner, (int)$id );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 

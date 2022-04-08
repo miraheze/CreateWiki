@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki;
 use Config;
 use EchoAttributeManager;
 use MediaWiki\Hook\SetupAfterCacheHook;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
@@ -15,11 +16,16 @@ class Hooks implements
 	/** @var Config */
 	private $config;
 
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
+
 	/**
 	 * @param Config $config
+	 * @param CreateWikiHookRunner $hookRunner
 	 */
-	public function __construct( Config $config ) {
+	public function __construct( Config $config, CreateWikiHookRunner $hookRunner ) {
 		$this->config = $config;
+		$this->hookRunner = $hookRunner;
 	}
 
 	public static function onRegistration() {
@@ -37,14 +43,14 @@ class Hooks implements
 		$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$dbName = $this->config->get( 'DBname' );
 
-		$cWJ = new CreateWikiJson( $dbName );
+		$cWJ = new CreateWikiJson( $this->hookRunner, $dbName );
 		$cWJ->update();
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
-			$remoteWiki = new RemoteWiki( $dbName );
+			$remoteWiki = new RemoteWiki( $this->hookRunner, $dbName );
 			$isPrivate = $remoteWiki->isPrivate();
 		}
 
