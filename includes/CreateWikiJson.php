@@ -24,6 +24,7 @@ class CreateWikiJson {
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = new CreateWikiHookRunner( MediaWikiServices::getInstance()->getHookContainer() );
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
@@ -42,7 +43,6 @@ class CreateWikiJson {
 		if ( !$this->wikiTimestamp ) {
 			$this->resetWiki();
 		}
-		$this->hookRunner = new CreateWikiHookRunner( MediaWikiServices::getInstance()->getHookContainer() );
 	}
 
 	public function resetWiki() {
