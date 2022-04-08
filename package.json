@@ -13,7 +13,8 @@
 		"grunt-banana-checker": "0.9.0",
 		"stylelint-config-idiomatic-order": "8.1.0",
 		"stylelint-config-wikimedia": "0.12.2",
-		"wdio-mediawiki": "^2.0.0"
+		"wdio-mediawiki": "^2.0.0",
+		"eslint-plugin-node": "^11.1.0"
 	},
 	"peerDependencies": {
 		"postcss-less": "6.0.0"
