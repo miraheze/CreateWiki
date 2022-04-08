@@ -79,7 +79,7 @@ class WikiManager {
 		$this->dbname = $dbname;
 		$this->dbw = $newDbw;
 		$this->exists = (bool)$check;
-		$this->hookRunner = new CreateWikiHookRunner( MediaWikiServices::getInstance()->getHookContainer() );
+		$this->hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );;
 	}
 
 	public function create(
