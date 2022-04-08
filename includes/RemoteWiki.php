@@ -34,7 +34,7 @@ class RemoteWiki {
 
 	public function __construct( string $wiki ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );;
+		$this->hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
