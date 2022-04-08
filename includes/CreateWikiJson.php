@@ -124,7 +124,7 @@ class CreateWikiJson {
 			],
 		];
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonGenerateDatabaseList', [ &$databaseLists ] );
+		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
 
 		foreach ( $databaseLists as $name => $contents ) {
 			$contents = [ 'timestamp' => $this->databaseTimestamp ] + $contents;
