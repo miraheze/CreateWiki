@@ -87,6 +87,9 @@
 	"requestwikiqueue-request-label-status": "מצב",
 	"requestwikiqueue-request-label-url": "כתובת URL",
 	"requestwikiqueue-request-label-visibility": "לסמן את נראות הבקשה הזאת בתור...",
+	"requestwikiqueue-request-label-visibility-all": "כל בעלי הרשאת \"read\" יכולים לצפות בבקשה הזאת",
+	"requestwikiqueue-request-label-visibility-delete": "כל בעלי הרשאת \"delete\" יכולים לצפות בבקשה הזאת",
+	"requestwikiqueue-request-label-visibility-hide": "כל בעלי הרשאת \"createwiki\" יכולים לצפות בבקשה הזאת",
 	"right-requestwiki": "בקשת אתרי ויקי",
 	"right-createwiki": "יצירת אתרי ויקי בחוות הוויקי"
 }
