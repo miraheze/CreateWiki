@@ -11,7 +11,7 @@ class CreateWikiRegexConstraint {
 	 * @param string $name name of regex caller (config or message key) to log for
 	 */
 	private static function logInvalidRegex( $regex, $name ) {
-		LoggerFactory::getInstance( 'CreateWiki' )->warn(
+		LoggerFactory::getInstance( 'CreateWiki' )->warning(
 			'{name} contains invalid regex',
 			[
 				'name' => $name,
