@@ -7,10 +7,9 @@ use FormSpecialPage;
 use Html;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Revision\RevisionRecord;
+use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use MWException;
 use SpecialPage;
-use TextContent;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
@@ -171,15 +170,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function isValidReason( $reason, $allData ) {
-		$title = Title::newFromText( 'MediaWiki:CreateWiki-blacklist' );
-		$wikiPageContent = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getContent( RevisionRecord::RAW );
-		$content = ( $wikiPageContent instanceof TextContent ) ? $wikiPageContent->getText() : '';
-
-		$regexes = explode( PHP_EOL, $content );
-		unset( $regexes[0] );
+		$regexes = CreateWikiRegexConstraint::regexesFromMessage( 'CreateWiki-disallowlist' ) ?:
+			CreateWikiRegexConstraint::regexesFromMessage( 'CreateWiki-blacklist' );
 
 		foreach ( $regexes as $regex ) {
-			preg_match( "/" . $regex . "/i", $reason, $output );
+			preg_match( '/' . $regex . '/i', $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
 				return $this->msg( 'requestwiki-error-invalidcomment' )->escaped();

@@ -6,6 +6,7 @@ use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
+use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\WikiManager;
 use MWException;
 use SpecialPage;
@@ -341,11 +342,10 @@ class WikiRequest {
 	public function parseSubdomain( string $subdomain, string &$err = '' ) {
 		$subdomain = strtolower( $subdomain );
 
-		if ( is_array( $this->config->get( 'CreateWikiDisallowedSubdomains' ) ) ) {
-			$disallowedSubdomains = '/^(' . implode( '|', $this->config->get( 'CreateWikiDisallowedSubdomains' ) ) . ')+$/';
-		} else {
-			$disallowedSubdomains = $this->config->get( 'CreateWikiDisallowedSubdomains' );
-		}
+		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
+			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			'CreateWikiDisallowedSubdomains'
+		);
 
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
 			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
