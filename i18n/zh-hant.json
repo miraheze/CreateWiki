@@ -21,7 +21,7 @@
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "您在Miraheze上的新wiki：$1",
 	"createwiki-email-body": "您好！\n\n您最近在 Miraheze 上面申請了一個新 wiki。我們很高興地告訴您：您的申請已通過！\n\nMiraheze 會在此協助您每一個步驟，不要害怕發問！請查看我們的<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">幫助中心</a>來了解各領域範圍的詳細說明，例如像如何使用我們的 ManageWiki 工具來管理您的 wiki、使用圖片與模板、歸檔任務、和其他更多！\n\t\n請記得，所有的 wiki 都必須遵守<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">內容方針</a>，不然會被關閉。也請記得您的 Wiki 不能偏離當初被核准的使用目的，否則也有可能會被關閉。\n\t\n感謝您選擇 Miraheze！我們祝您在新的 wiki 上使用愉快。",
-	"createwiki-error-blacklisted": "您所申請的子域名無法使用，請申請新的子域名或聯絡系統管理員以尋求幫助。",
+	"createwiki-error-disallowed": "您所申請的子域名無法使用，請申請新的子域名或聯絡系統管理員以尋求幫助。",
 	"createwiki-error-dbexists": "資料庫名稱已被其他 wiki 使用。",
 	"createwiki-error-notalnum": "資料庫名稱不能包含字母和數字以外的字元。",
 	"createwiki-error-notlowercase": "資料庫名稱不能包含大寫字母。",
