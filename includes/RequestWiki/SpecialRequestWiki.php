@@ -170,8 +170,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function isValidReason( $reason, $allData ) {
-		$regexes = CreateWikiRegexConstraint::regexesFromMessage( 'CreateWiki-disallowlist' ) ?:
-			CreateWikiRegexConstraint::regexesFromMessage( 'CreateWiki-blacklist' );
+		$regexes = CreateWikiRegexConstraint::regexesFromMessage( 'CreateWiki-disallowlist' );
 
 		foreach ( $regexes as $regex ) {
 			preg_match( '/' . $regex . '/i', $reason, $output );
