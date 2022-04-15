@@ -357,7 +357,7 @@ class WikiRequest {
 
 			return false;
 		} elseif ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			$err = 'blacklisted';
+			$err = 'disallowed';
 
 			return false;
 		} else {
