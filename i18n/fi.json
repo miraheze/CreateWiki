@@ -21,7 +21,7 @@
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "Sinun uusi Miraheze-wikisi: $1",
 	"createwiki-email-body": "Hei!\n\nPyysit äskettäin wikiä Mirahezessa. Meillä on ilo ilmoittaa sinulle, että pyyntösi on hyväksytty!\n\nMiraheze on valmis autttamaan sinua matkasi jokaisella askeleella, joten älä epäröi kysyä! Voit käydä <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">Apukeskuksessamme</a>, mistä löydät yksityiskohtaista apua erilaisiin aiheisiin, kuten wikin hallinnointiin ManageWiki-työkalun avulla, kuvien ja mallineiden käyttöön ja moneen muuhun.\n\nOtathan huomioon, että kaikkien wikien täytyy noudattaa <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">isisältökäytäntöä</a> tai ne voidaan sulkea. Wikisi ei myöskään saa poiketa liiaksi sen alkuperäisestä käyttötarkoituksesta, tai se voidaan sulkea.\n\nKiitos kun valitsit Mirahezen! Toivomme wikiseikkailuillesi kaikkea hyvää!",
-	"createwiki-error-blacklisted": "Pyytämääsi aliverkkotunnusta ei voida luoda. Pyydä joko uutta tai ota yhteyttä ylläpitäjiin saadaksesi apua.",
+	"createwiki-error-disallowed": "Pyytämääsi aliverkkotunnusta ei voida luoda. Pyydä joko uutta tai ota yhteyttä ylläpitäjiin saadaksesi apua.",
 	"createwiki-error-dbexists": "Tällä tietokantanimellä on jo wiki.",
 	"createwiki-error-notalnum": "Tietokannan nimi ei saa sisältää erikoismerkkejä.",
 	"createwiki-error-notlowercase": "Tietokannan nimi ei saa sisältää isoja kirjaimia.",
