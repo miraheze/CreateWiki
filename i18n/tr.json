@@ -19,7 +19,7 @@
 	"createwiki-desc": "Bir viki çiftliğinde kolayca yeni viki oluşturmak için bir uzantı.",
 	"createwiki-email-subject": "Yeni Miraheze vikiniz: $1",
 	"createwiki-email-body": "Merhaba!\n\nYakın zamanda Miraheze'de bir viki istediniz. Onaylandığını size bildirmekten mutluluk duyuyoruz!\n\nMiraheze yolun her adımında size yardımcı olmak için burada, sormaktan korkmayın! Vikinizi ManageWiki aracımızı kullanarak yönetme, görselleri ve şablonları kullanma, dosyalama görevleri ve daha fazlası gibi bir dizi konuda ayrıntılı yardım için <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center/tr\">Yardım merkezimizi</a> ziyaret edin!\n\nLütfen tüm vikilerin <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">İçerik Politikası</a>'na uyması gerektiğini, aksi takdirde kapatılabileceğini unutmayın. Vikinizin onaylanan amacından çok fazla sapamayacağını veya kapalı olabileceğini unutmayın.\n\nMiraheze'yi seçtiğiniz için teşekkür ederiz! Yeni viki maceranızda hepinize en iyisini diliyoruz.",
-	"createwiki-error-blacklisted": "İstediğiniz alt alan adı oluşturulamıyor. Lütfen yeni bir alt alan adı isteyin veya yardım için sistem hizmetlilerine başvurun.",
+	"createwiki-error-disallowed": "İstediğiniz alt alan adı oluşturulamıyor. Lütfen yeni bir alt alan adı isteyin veya yardım için sistem hizmetlilerine başvurun.",
 	"createwiki-error-dbexists": "Bu veritabanı adıyla bir viki mevcut.",
 	"createwiki-error-notalnum": "Veritabanı adı alfasayısal olmayan karakterler içermiyor olabilir.",
 	"createwiki-error-notlowercase": "Veritabanı adı büyük harf içermiyor olabilir.",
