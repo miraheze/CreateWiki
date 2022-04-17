@@ -14,7 +14,7 @@
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "A sua wiki Miraheze nova: $1",
 	"createwiki-email-body": "Olá, pediu recentemente uma wiki nova no Miraheze e apraz-nos dizer-lhe que ela já foi criada por um dos nossos voluntários.\n\nObrigado por ter escolhido o Miraheze. Desejamos-lhe boa sorte com a sua wiki nova!",
-	"createwiki-error-blacklisted": "O subdomínio que pediu não pode ser criado. Peça um novo subdomínio ou contacte os administradores do sistema para obter ajuda, por favor.",
+	"createwiki-error-disallowed": "O subdomínio que pediu não pode ser criado. Peça um novo subdomínio ou contacte os administradores do sistema para obter ajuda, por favor.",
 	"createwiki-error-dbexists": "Já existe uma wiki com esse nome de base de dados.",
 	"createwiki-error-notalnum": "O nome da base de dados não pode conter caracteres que não sejam alfanuméricos.",
 	"createwiki-error-notlowercase": "O nome da base de dados não pode conter letras maiúsculas.",

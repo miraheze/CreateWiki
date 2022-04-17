@@ -47,6 +47,23 @@
 	"LogTypes": [
 		"farmer"
 	],
+	"ActionFilteredLogs": {
+		"farmer": {
+			"createwiki": [
+				"createwiki"
+			],
+			"requestaccept": [
+				"requestaccept"
+			],
+			"requestdecline": [
+				"requestdecline"
+			],
+			"requestwiki": [
+				"requestreopen",
+				"requestwiki"
+			]
+		}
+	},
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
 		"farmer/requestaccept": "LogFormatter",

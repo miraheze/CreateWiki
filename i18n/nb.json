@@ -14,7 +14,7 @@
 	"createwiki-desc": "En utvidelse for å enkelt opprette nye wikier på en wikifarm.",
 	"createwiki-email-subject": "Din nye Miraheze-wiki: $1",
 	"createwiki-email-body": "Hei, du har nylig bedt om en wiki på Miraheze, og vi kan med glede meddele at den nå har blitt opprettet av en av våre frivillige.\n\nTakk for at du valgte Miraheze, vi ønsker deg lykke til med din nye wiki!",
-	"createwiki-error-blacklisted": "Underdomenet du har bedt om kan ikke opprettes. Enten be om et nytt underdomene, eller kontakt systemadministratorene for hjelp.",
+	"createwiki-error-disallowed": "Underdomenet du har bedt om kan ikke opprettes. Enten be om et nytt underdomene, eller kontakt systemadministratorene for hjelp.",
 	"createwiki-error-dbexists": "En wiki med det databasenavnet finnes allerede.",
 	"createwiki-error-notalnum": "Databasenavnet kan ikke inneholde ikke-alfanumeriske tegn.",
 	"createwiki-error-notlowercase": "Databasenavnet kan ikke inneholde store bokstaver.",

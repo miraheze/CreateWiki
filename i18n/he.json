@@ -18,7 +18,7 @@
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "אתר הוויקי החדש שלך ב־Miraheze:&rlm; $1",
 	"createwiki-email-body": "שלום,\n\nביקשת לאחרונה אתר ויקי ב־Miraheze. אנחנו שמחים להודיע לך שהוא אושר!\n\nשירות Miraheze כאן כדי לעזור לך בכל צעד בדרכך, אז לא צריך לפחד לבקש! בקר ב<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">מרכז העזרה</a> לעזרה מפורטת במגוון נושאים, כגוi ניהול הוויקי שלך בכלי ה־ManageWiki שלנו, שימוש בתמונות ובתבניות, יצירת משימות, ועוד!\n\nנא לזכור שכל אתרי הוויקי צריכים לפעול בהתאם ל<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">מדיניות התוכן</a>, אחרת הם יכולים להיסגר. נא לזכור גם שהוויקי שלך לא יכול לסטות רחוק מדי מהמטרה שלשמה הוא אושר, כי גם במקרה הזה הוא יכול להיסגר.\n\nתודה שבחרת ב־Miraheze! אנו מאחלים לך שיהיה לך כיף בהרפתקת הוויקי החדשה שלך.",
-	"createwiki-error-blacklisted": "התת־מתחם שביקשת לא היה יכול להיווצר. נא לבקש תת־מתחם חדש או ליצור קשר עם מנהלי מערכת לעזרה.",
+	"createwiki-error-disallowed": "התת־מתחם שביקשת לא היה יכול להיווצר. נא לבקש תת־מתחם חדש או ליצור קשר עם מנהלי מערכת לעזרה.",
 	"createwiki-error-dbexists": "אתר ויקי עם שם בסיס הנתונים הזה כבר קיים.",
 	"createwiki-error-notalnum": "שם בסיס הנתונים לא יכול להכיל תווים שאינם אותיות או מספרים.",
 	"createwiki-error-notlowercase": "שם בסיס הנתונים לא יכול להכיל אותיות רישיות.",
@@ -87,6 +87,9 @@
 	"requestwikiqueue-request-label-status": "מצב",
 	"requestwikiqueue-request-label-url": "כתובת URL",
 	"requestwikiqueue-request-label-visibility": "לסמן את נראות הבקשה הזאת בתור...",
+	"requestwikiqueue-request-label-visibility-all": "כל בעלי הרשאת \"read\" יכולים לצפות בבקשה הזאת",
+	"requestwikiqueue-request-label-visibility-delete": "כל בעלי הרשאת \"delete\" יכולים לצפות בבקשה הזאת",
+	"requestwikiqueue-request-label-visibility-hide": "כל בעלי הרשאת \"createwiki\" יכולים לצפות בבקשה הזאת",
 	"right-requestwiki": "בקשת אתרי ויקי",
 	"right-createwiki": "יצירת אתרי ויקי בחוות הוויקי"
 }
