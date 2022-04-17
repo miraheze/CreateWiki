@@ -45,7 +45,7 @@ class DeleteWikis extends Maintenance {
 
 			if ( $this->hasOption( 'delete' ) ) {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$wm = new WikiManager( $hookRunner, $wiki );
+				$wm = new WikiManager( $wiki, $hookRunner );
 
 				$delete = $wm->delete();
 

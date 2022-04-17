@@ -36,9 +36,9 @@ class WikiRequest {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( CreateWikiHookRunner $hookRunner, int $id = null ) {
+	public function __construct( int $id = null, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->hookRunner = $hookRunner;
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
@@ -184,7 +184,7 @@ class WikiRequest {
 			}
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$wm = new WikiManager( $this->hookRunner, $this->dbname );
+			$wm = new WikiManager( $this->dbname, $this->hookRunner );
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
 

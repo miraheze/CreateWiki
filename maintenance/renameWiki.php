@@ -40,7 +40,7 @@ class RenameWiki extends Maintenance {
 			$this->countDown( 10 );
 
 			$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-			$wm = new WikiManager( $hookRunner, $oldwiki );
+			$wm = new WikiManager( $oldwiki, $hookRunner );
 
 			$rename = $wm->rename( $newwiki );
 

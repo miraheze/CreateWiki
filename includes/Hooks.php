@@ -43,14 +43,14 @@ class Hooks implements
 		$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$dbName = $this->config->get( 'DBname' );
 
-		$cWJ = new CreateWikiJson( $this->hookRunner, $dbName );
+		$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
 		$cWJ->update();
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
-			$remoteWiki = new RemoteWiki( $this->hookRunner, $dbName );
+			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
 			$isPrivate = $remoteWiki->isPrivate();
 		}
 

@@ -25,9 +25,9 @@ class WikiManager {
 
 	public $exists;
 
-	public function __construct( CreateWikiHookRunner $hookRunner, string $dbname ) {
+	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->hookRunner = $hookRunner;
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
@@ -223,7 +223,7 @@ class WikiManager {
 		}
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $this->hookRunner, $wiki );
+		$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
 
 		$cWJ->resetWiki();
 
@@ -258,7 +258,7 @@ class WikiManager {
 		}
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $this->hookRunner, $old );
+		$cWJ = new CreateWikiJson( $old, $this->hookRunner );
 
 		$cWJ->resetWiki();
 
@@ -323,7 +323,7 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-		$cWJ = new CreateWikiJson( $this->hookRunner, $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}

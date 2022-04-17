@@ -47,7 +47,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$timestamp = $this->db->timestamp();
 		$this->createWiki( 'remotewikitest' );
 
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 		$this->assertSame( $timestamp, $remoteWiki->getCreationDate() );
 	}
 
@@ -55,7 +55,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getDBname
 	 */
 	public function testGetDBname() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
 	}
@@ -65,7 +65,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setSitename
 	 */
 	public function testSetSitename() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 
@@ -80,7 +80,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setLanguage
 	 */
 	public function testSetLanguage() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
 
@@ -96,7 +96,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::markInactive
 	 */
 	public function testMarkInactive() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isInactive() );
 
@@ -117,7 +117,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::unExempt
 	 */
 	public function testMarkExempt() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isInactiveExempt() );
 
@@ -137,7 +137,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setInactiveExemptReason
 	 */
 	public function testSetInactiveExemptReason() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $remoteWiki->getInactiveExemptReason() );
 
@@ -153,7 +153,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::markPublic
 	 */
 	public function testMarkPrivate() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
 
@@ -173,7 +173,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::markClosed
 	 */
 	public function testMarkClosed() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isClosed() );
 
@@ -194,7 +194,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::undelete
 	 */
 	public function testDelete() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
 
@@ -215,7 +215,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::unlock
 	 */
 	public function testLock() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isLocked() );
 
@@ -235,7 +235,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setCategory
 	 */
 	public function testSetCategory() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
 
@@ -250,7 +250,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setServerName
 	 */
 	public function testSetServerName() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $remoteWiki->getServerName() );
 
@@ -265,7 +265,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setDBCluster
 	 */
 	public function testSetDBCluster() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $remoteWiki->getDBCluster() );
 
@@ -281,7 +281,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::unMarkExperimental
 	 */
 	public function testMarkExperimental() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
 
@@ -300,7 +300,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::commit
 	 */
 	public function testCommit() {
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'remotewikitest' );
+		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'http://127.0.0.1', $remoteWiki->getServerName() );
 		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
@@ -317,7 +317,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), $dbname );
+		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
 		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 }

@@ -17,8 +17,8 @@ class CreateWikiJob extends Job {
 
 	public function run() {
 		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$wm = new WikiManager( $hookRunner, $this->params['dbname'] );
-		$wr = new WikiRequest( $hookRunner, $this->params['id'] );
+		$wm = new WikiManager( $this->params['dbname'], $hookRunner );
+		$wr = new WikiRequest( $this->params['id'], $hookRunner );
 
 		$notValid = $wm->checkDatabaseName( $this->params['dbname'] );
 

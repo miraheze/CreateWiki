@@ -96,7 +96,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$category = 'uncategorised';
 		}
 
-		$wm = new WikiManager( $this->hookRunner, $formData['dbname'] );
+		$wm = new WikiManager( $formData['dbname'], $this->hookRunner );
 
 		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
@@ -110,7 +110,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			return true;
 		}
 
-		$wm = new WikiManager( $this->hookRunner, $DBname );
+		$wm = new WikiManager( $DBname, $this->hookRunner );
 
 		$check = $wm->checkDatabaseName( $DBname );
 

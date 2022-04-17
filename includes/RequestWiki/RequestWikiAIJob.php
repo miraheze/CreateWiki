@@ -18,7 +18,7 @@ class RequestWikiAIJob extends Job {
 		$modelFile = $config->get( 'CreateWikiPersistentModelFile' );
 		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
-		$wr = new WikiRequest( $hookRunner, $this->params['id'] );
+		$wr = new WikiRequest( $this->params['id'], $hookRunner );
 
 		if ( file_exists( $modelFile ) ) {
 			$modelManager = new ModelManager();

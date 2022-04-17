@@ -43,7 +43,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$dbName = $row->wiki_dbname;
-			$wiki = new RemoteWiki( $hookRunner, $dbName );
+			$wiki = new RemoteWiki( $dbName, $hookRunner );
 			$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {

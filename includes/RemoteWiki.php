@@ -32,9 +32,10 @@ class RemoteWiki {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( CreateWikiHookRunner $hookRunner, string $wiki ) {
+	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->hookRunner = $hookRunner;
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
@@ -384,7 +385,7 @@ class RemoteWiki {
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWJ = new CreateWikiJson( $this->hookRunner, $this->dbname );
+			$cWJ = new CreateWikiJson( $this->dbname, $this->hookRunner );
 
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();

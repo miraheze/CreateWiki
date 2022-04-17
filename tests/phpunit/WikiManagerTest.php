@@ -81,7 +81,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRenameErrors() {
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), 'createwikitest' );
+		$wikiManager = new WikiManager( 'createwikitest', $this->getMockCreateWikiHookRunner() );
 
 		$error = 'Can not rename createwikitest to renamewiki because: ';
 		$notsuffixed = $error . wfMessage( 'createwiki-error-notsuffixed' )->parse();
@@ -105,7 +105,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
 
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), 'createwikitest' );
+		$wikiManager = new WikiManager( 'createwikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
 		$this->assertFalse( $this->wikiExists( 'createwikitest' ) );
@@ -118,7 +118,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteForce() {
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), 'renamewikitest' );
+		$wikiManager = new WikiManager( 'renamewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $wikiManager->delete( true ) );
 		$this->assertFalse( $this->wikiExists( 'renamewikitest' ) );
@@ -132,13 +132,13 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteIneligible() {
 		$this->createWiki( 'deletewikitest' );
 
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'deletewikitest' );
+		$remoteWiki = new RemoteWiki( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), 'deletewikitest' );
+		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
 		$this->assertTrue( $this->wikiExists( 'deletewikitest' ) );
@@ -151,10 +151,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteEligible() {
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), 'deletewikitest' );
+		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
 
-		$remoteWiki = new RemoteWiki( $this->getMockCreateWikiHookRunner(), 'deletewikitest' );
+		$remoteWiki = new RemoteWiki( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
@@ -176,7 +176,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteRecreate() {
 		$this->createWiki( 'recreatewikitest' );
 
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), 'recreatewikitest' );
+		$wikiManager = new WikiManager( 'recreatewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $wikiManager->delete( true ) );
 		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
@@ -199,7 +199,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), $dbname );
+		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
 
 		return $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
@@ -209,7 +209,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @return bool
 	 */
 	private function wikiExists( string $dbname ): bool {
-		$wikiManager = new WikiManager( $this->getMockCreateWikiHookRunner(), $dbname );
+		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
 
 		return $wikiManager->exists;
 	}

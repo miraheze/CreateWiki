@@ -21,9 +21,9 @@ class RequestWikiRequestViewer {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
-		$this->hookRunner = $hookRunner;
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 	}
 
 	public function getFormDescriptor(
@@ -225,7 +225,7 @@ class RequestWikiRequestViewer {
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$wm = new WikiManager( $this->hookRunner, $request->dbname );
+			$wm = new WikiManager( $request->dbname, $this->hookRunner );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname );
 
@@ -307,7 +307,7 @@ class RequestWikiRequestViewer {
 		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
 
 		try {
-			$request = new WikiRequest( $this->hookRunner, (int)$id );
+			$request = new WikiRequest( (int)$id, $this->hookRunner );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 

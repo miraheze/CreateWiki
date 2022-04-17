@@ -34,7 +34,7 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$wiki = new RemoteWiki( $hookRunner, $config->get( 'DBname' ) );
+			$wiki = new RemoteWiki( $config->get( 'DBname' ), $hookRunner );
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 
@@ -48,7 +48,7 @@ class ChangeDBCluster extends Maintenance {
 				continue;
 			}
 
-			$wiki = new RemoteWiki( $hookRunner, $line );
+			$wiki = new RemoteWiki( $line, $hookRunner );
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 		}
