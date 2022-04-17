@@ -119,7 +119,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$request = new WikiRequest( $this->hookRunner );
+		$request = new WikiRequest( null, $this->hookRunner );
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
 		$err = '';
