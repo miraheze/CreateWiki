@@ -8,6 +8,7 @@
 			"Laundry Machine",
 			"Liuxinyu970226",
 			"Mark85296341",
+			"Winston Sung",
 			"列维劳德",
 			"铁桶"
 		]
@@ -90,7 +91,7 @@
 	"requestwikiqueue-request-label-sitename": "站點名",
 	"requestwikiqueue-request-label-status": "狀態",
 	"requestwikiqueue-request-label-url": "URL",
-	"requestwikiqueue-request-label-visibility": "標記此請求的能見度為…",
+	"requestwikiqueue-request-label-visibility": "將此申請的可見狀態標記為…",
 	"requestwikiqueue-request-label-visibility-all": "有「read」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-delete": "有「delete」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-hide": "有「createwiki」權限的任何人都可檢視此請求",
