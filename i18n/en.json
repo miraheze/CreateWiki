@@ -72,6 +72,8 @@
 	"requestwikiqueue-decline": "Decline",
 	"requestwikiqueue-edit": "Edit request",
 	"requestwikiqueue-handle": "Handle request",
+	"requestwikiqueue-inreview": "In review",
+	"requestwikiqueue-onhold": "On hold",
 	"requestwikiqueue-pager-status-approved": "approved",
 	"requestwikiqueue-pager-status-declined": "declined",
 	"requestwikiqueue-pager-status-inreview": "in review",
