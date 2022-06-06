@@ -101,6 +101,6 @@
 	"requestwikiqueue-request-label-visibility-delete": "有「delete」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-hide": "有「createwiki」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-oversight": "有「suppressrevision」權限的任何人都可檢視此請求",
-	"right-requestwiki": "請求 wiki",
+	"right-requestwiki": "申請 wiki",
 	"right-createwiki": "建立 wiki"
 }
