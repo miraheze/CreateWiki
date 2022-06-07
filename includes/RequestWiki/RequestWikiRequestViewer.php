@@ -300,7 +300,7 @@ class RequestWikiRequestViewer {
 		IContextSource $context,
 		$formClass = CreateWikiOOUIForm::class
 	) {
-		$context->getOutput()->addModules( 'ext.createwiki.oouiform' );
+		$context->getOutput()->addModules( [ 'ext.createwiki.oouiform' ] );
 
 		try {
 			$request = new WikiRequest( (int)$id );
