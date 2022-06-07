@@ -151,7 +151,6 @@ class WikiInitialise {
 			}
 		}
 
-		// @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
 		$this->config->siteParamsCallback = static function () use ( $cacheArray, $tags ) {
 			return [
 				'suffix' => null,
