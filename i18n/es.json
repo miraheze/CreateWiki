@@ -92,7 +92,7 @@
 	"requestwikiqueue-request": "Solicitud",
 	"requestwikiqueue-request-header-requestercomment": "Comentarios del solicitante de la wiki",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "Comentarios realizados por $1 a $2",
-	"requestwikiqueue-request-info-submission": "Aquí puedes modificar la visibilidad de la solicitud, aprobar o declinar la solicitud así como proporcionar comentaros adiciones. Si marcas la wiki como aprobada, será creada automáticamente.",
+	"requestwikiqueue-request-info-submission": "Aquí puedes modificar la visibilidad de la solicitud, aprobar o declinar la solicitud así como proporcionar comentarios adicionales. Si marcas la wiki como aprobada, será creada automáticamente.",
 	"requestwikiqueue-request-label-action": "Marca esta acción de solicitud como...",
 	"requestwikiqueue-request-label-comment": "Comentario:",
 	"requestwikiqueue-request-label-edit-wiki": "Editar solicitud de wiki",
