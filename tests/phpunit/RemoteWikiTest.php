@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
 use Wikimedia\Rdbms\Database;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /**
  * @group CreateWiki
@@ -44,6 +45,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getCreationDate
 	 */
 	public function testGetCreationDate() {
+		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
+
 		$timestamp = $this->db->timestamp();
 		$this->createWiki( 'remotewikitest' );
 

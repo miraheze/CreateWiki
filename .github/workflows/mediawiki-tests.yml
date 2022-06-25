@@ -14,17 +14,10 @@ jobs:
       matrix:
         include:
           # Latest stable MediaWiki - PHP 7.4 (phan)
-          - mw: 'REL1_37'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: phan
-
-          # Latest MediaWiki release branch - PHP 7.4 (phan)
           - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
-            experimental: true
+            experimental: false
             stage: phan
 
           # Latest MediaWiki master - PHP 7.4 (phan)
@@ -35,13 +28,6 @@ jobs:
             stage: phan
 
           # Latest stable MediaWiki - PHP 7.4 (phpunit-unit)
-          - mw: 'REL1_37'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: phpunit-unit
-
-          # Latest MediaWiki release branch - PHP 7.4 (phpunit-unit)
           - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
@@ -56,13 +42,6 @@ jobs:
             stage: phpunit-unit
 
           # Latest stable MediaWiki - PHP 7.4 (phpunit)
-          - mw: 'REL1_37'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: phpunit
-
-          # Latest MediaWiki release branch - PHP 7.4 (phpunit)
           - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
@@ -77,13 +56,6 @@ jobs:
             stage: phpunit
 
           # Latest stable MediaWiki - PHP 7.4 (selenium)
-          - mw: 'REL1_37'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: selenium
-
-          # Latest MediaWiki release branch - PHP 7.4 (selenium)
           - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
@@ -94,17 +66,10 @@ jobs:
           - mw: 'master'
             php: 7.4
             php-docker: 74
-            experimental: false
+            experimental: true
             stage: selenium
 
           # Latest stable MediaWiki - PHP 7.4 (qunit)
-          - mw: 'REL1_37'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: qunit
-
-          # Latest MediaWiki release branch - PHP 7.4 (qunit)
           - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
@@ -119,14 +84,14 @@ jobs:
             stage: qunit
 
           # Latest stable MediaWiki - PHP 7.4 (npm-test)
-          - mw: 'REL1_37'
+          - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
             experimental: false
             stage: npm-test
   
           # Latest stable MediaWiki - PHP 7.4 (composer-test)
-          - mw: 'REL1_37'
+          - mw: 'REL1_38'
             php: 7.4
             php-docker: 74
             experimental: false
@@ -188,7 +153,7 @@ jobs:
           fi
 
       - name: Cache docker image
-        uses: actions/cache@v3
+        uses: actions/cache@v3.0.4
         with:
           path: /home/runner/docker-images/${{ env.DOCKER_IMAGE }}
           key: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_LATEST_TAG }}
@@ -200,7 +165,7 @@ jobs:
 
       - name: Cache quibble docker image
         if: ${{ matrix.stage == 'coverage' || matrix.stage == 'phan' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v3.0.4
         with:
           path: /home/runner/docker-images/${{ env.QUIBBLE_DOCKER_IMAGE }}
           key: ${{ env.QUIBBLE_DOCKER_IMAGE }}:${{ env.QUIBBLE_DOCKER_LATEST_TAG }}
@@ -229,6 +194,14 @@ jobs:
             done
           fi
 
+          echo '?>' >> src/includes/DevelopmentSettings.php
+
+          if [ -d src/extensions/CreateWiki ] || [ "${{ github.event.repository.name }}" == 'CreateWiki' ]; then
+            curl -sL https://raw.githubusercontent.com/Universal-Omega/scripts/master/mediawiki/globals/setup-CreateWiki.php >> src/includes/DevelopmentSettings.php
+          fi
+
+          echo '<?php' >> src/includes/DevelopmentSettings.php
+
           if [ -e "$GITHUB_WORKSPACE"/.github/workflows/globals.php ]; then
             echo 'require_once __DIR__ . "/../extensions/${{ github.event.repository.name }}/.github/workflows/globals.php";' >> src/includes/DevelopmentSettings.php
           fi
@@ -236,7 +209,7 @@ jobs:
           git -C src/ log -n 1 --format="%H"
 
       - name: Cache dependencies (composer and npm)
-        uses: actions/cache@v3
+        uses: actions/cache@v3.0.4
         with:
           path: /home/runner/cache
           key: ${{ runner.os }}-${{ env.MEDIAWIKI_VERSION }}-${{ hashFiles('**/*.lock') }}
@@ -351,7 +324,7 @@ jobs:
     if: ${{ always() && github.repository_owner == 'miraheze' && ( github.ref == 'refs/heads/master' || github.event_name == 'pull_request' ) }}
     steps:
       - name: succeeded
-        uses: technote-space/workflow-conclusion-action@v2
+        uses: technote-space/workflow-conclusion-action@v3
       - uses: rectalogic/notify-irc@v2
         if: env.WORKFLOW_CONCLUSION == 'success'
         with:
@@ -362,7 +335,7 @@ jobs:
           sasl_password: ${{ secrets.IRC_MIRAHEZEBOTS }}
 
       - name: failed
-        uses: technote-space/workflow-conclusion-action@v2
+        uses: technote-space/workflow-conclusion-action@v3
       - uses: rectalogic/notify-irc@v2
         if: env.WORKFLOW_CONCLUSION == 'failure'
         with:

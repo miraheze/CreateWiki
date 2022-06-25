@@ -7,13 +7,14 @@
 			"Reception123",
 			"Revi",
 			"Robby",
+			"Shirayuki",
 			"Tobi 406",
 			"Universal Omega"
 		]
 	},
-	"action-createwiki": "{{doc-action|create wikis}}",
-	"action-requestwiki": "{{doc-action|request wikis}}",
-	"createwiki": "{{doc-action|Create a wiki}}",
+	"action-createwiki": "{{doc-action|createwiki}}",
+	"action-requestwiki": "{{doc-action|requestwiki}}",
+	"createwiki": "",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
 	"createwiki-close-email-sender": "Miraheze",

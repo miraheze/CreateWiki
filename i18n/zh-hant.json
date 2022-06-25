@@ -8,6 +8,7 @@
 			"Laundry Machine",
 			"Liuxinyu970226",
 			"Mark85296341",
+			"Winston Sung",
 			"列维劳德",
 			"铁桶"
 		]
@@ -21,8 +22,8 @@
 	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-email-subject": "您在Miraheze上的新wiki：$1",
 	"createwiki-email-body": "您好！\n\n您最近在 Miraheze 上面申請了一個新 wiki。我們很高興地告訴您：您的申請已通過！\n\nMiraheze 會在此協助您每一個步驟，不要害怕發問！請查看我們的<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">幫助中心</a>來了解各領域範圍的詳細說明，例如像如何使用我們的 ManageWiki 工具來管理您的 wiki、使用圖片與模板、歸檔任務、和其他更多！\n\t\n請記得，所有的 wiki 都必須遵守<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">內容方針</a>，不然會被關閉。也請記得您的 Wiki 不能偏離當初被核准的使用目的，否則也有可能會被關閉。\n\t\n感謝您選擇 Miraheze！我們祝您在新的 wiki 上使用愉快。",
-	"createwiki-error-disallowed": "您所申請的子域名無法使用，請申請新的子域名或聯絡系統管理員以尋求幫助。",
 	"createwiki-error-dbexists": "資料庫名稱已被其他 wiki 使用。",
+	"createwiki-error-disallowed": "您所申請的子域名無法使用，請申請新的子域名或聯絡系統管理員以尋求幫助。",
 	"createwiki-error-notalnum": "資料庫名稱不能包含字母和數字以外的字元。",
 	"createwiki-error-notlowercase": "資料庫名稱不能包含大寫字母。",
 	"createwiki-error-notsuffixed": "資料庫名稱未能以合法的字尾結束（例如應當以「wiki」結尾）。",
@@ -42,6 +43,11 @@
 	"echo-pref-tooltip-wiki-request-comment": "當 wiki 請求有評論時通知我。",
 	"echo-pref-tooltip-wiki-request-declined": "當我的 wiki 請求被拒絕時通知我。",
 	"log-description-farmer": "此日誌追蹤 wiki 建立相關的記錄。",
+	"log-action-filter-farmer": "操作類型：",
+	"log-action-filter-farmer-createwiki": "已建立wiki",
+	"log-action-filter-farmer-requestaccept": "已接受 wiki 申請",
+	"log-action-filter-farmer-requestdecline": "已拒絕 wiki 申請",
+	"log-action-filter-farmer-requestwiki": "已重開 wiki 申請",
 	"logentry-farmer-createwiki": "$1 建立了名為「$4」的 Wiki",
 	"logentry-farmer-requestaccept": "$1接受了 wiki 請求$4",
 	"logentry-farmer-requestdecline": "$1拒絕了 wiki 請求$4",
@@ -90,11 +96,11 @@
 	"requestwikiqueue-request-label-sitename": "站點名",
 	"requestwikiqueue-request-label-status": "狀態",
 	"requestwikiqueue-request-label-url": "URL",
-	"requestwikiqueue-request-label-visibility": "標記此請求能見度為…",
+	"requestwikiqueue-request-label-visibility": "將此申請的可見狀態標記為…",
 	"requestwikiqueue-request-label-visibility-all": "有「read」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-delete": "有「delete」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-hide": "有「createwiki」權限的任何人都可檢視此請求",
 	"requestwikiqueue-request-label-visibility-oversight": "有「suppressrevision」權限的任何人都可檢視此請求",
-	"right-requestwiki": "請求 wiki",
+	"right-requestwiki": "申請 wiki",
 	"right-createwiki": "建立 wiki"
 }
