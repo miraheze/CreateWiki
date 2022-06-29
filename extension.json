@@ -11,7 +11,7 @@
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.37.0",
+		"MediaWiki": ">= 1.38.0",
 		"platform": {
 			"php": ">= 7.4"
 		}
@@ -88,16 +88,16 @@
 	},
 	"ResourceModules": {
 		"ext.createwiki.oouiform": {
-			"scripts": [
-				"ext.createwiki.oouiform.edit.ooui.js",
-				"ext.createwiki.oouiform.ooui.js"
-			],
-			"styles": "ext.createwiki.oouiform.ooui.less",
+			"scripts": "ext.createwiki.oouiform.ooui.js",
+			"targets": [ "desktop", "mobile" ],
 			"dependencies": [
-				"oojs-ui",
-				"mediawiki.editfont.styles"
-			],
-			"targets": [ "desktop", "mobile" ]
+				"mediawiki.storage",
+				"oojs-ui-widgets"
+			]
+		},
+		"ext.createwiki.oouiform.styles": {
+			"targets": [ "desktop", "mobile" ],
+			"styles": "ext.createwiki.oouiform.ooui.less"
 		}
 	},
 	"ResourceFileModulePaths": {
