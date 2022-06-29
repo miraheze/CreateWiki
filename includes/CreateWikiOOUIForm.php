@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki;
 
-use Html;
 use OOUI\FieldsetLayout;
 use OOUI\HtmlSnippet;
 use OOUI\IndexLayout;
