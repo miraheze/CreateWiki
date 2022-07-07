@@ -24,16 +24,10 @@ class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 	}
 
 	public function getPrimaryLink() {
-		return false;
-	}
-
-	public function getSecondaryLinks() {
-		$visitLink = [
+		return [
 			'url' => $this->event->getExtraParam( 'wiki-url', 0 ),
 			'label' => $this->msg( 'notification-createwiki-wiki-creation-visitwiki-label' )->text(),
 			'prioritized' => true,
 		];
-
-		return [ $visitLink ];
 	}
 }
