@@ -23,16 +23,10 @@ class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 	}
 
 	public function getPrimaryLink() {
-		return false;
-	}
-
-	public function getSecondaryLinks() {
-		$visitLink = [
+		return [
 			'url' => $this->event->getExtraParam( 'request-url', 0 ),
 			'label' => $this->msg( 'notification-createwiki-visit-request' )->text(),
 			'prioritized' => true,
 		];
-
-		return [ $visitLink ];
 	}
 }
