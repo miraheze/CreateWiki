@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"0x010C",
+			"Cigaryno",
 			"Gomoko",
 			"HeartsDo",
 			"Jul545454",
@@ -68,7 +69,7 @@
 	"notification-header-request-declined": "Votre requête a été refusée pour le motif suivant :",
 	"requestwiki": "Demander un wiki",
 	"requestwiki-edit-success": "Les modifications relatives à la demande ont été transmises avec succès.",
-	"requestwiki-error-invalidcomment": "Votre requête wiki contient un caractère non valide. Veuillez la reformuler et, si le problème persiste, [[Help center|nous contacter]].",
+	"requestwiki-error-invalidcomment": "Votre requête wiki contient un caractère non valide. Veuillez la reformuler et, si le problème persiste, [[Help center|merci de nous contacter]].",
 	"requestwiki-error-patient": "Vous avez déjà demandé un wiki. Veuillez patienter, un de nos créateurs de wiki devrait le créer sous peu. Si vous devez demander un autre wiki, veuillez attendre avant de pouvoir renouveler votre demande.",
 	"requestwiki-header": "Merci d’avoir choisi Miraheze pour héberger votre wiki ! Pour commencer, veuillez remplir ce formulaire, afin que nous puissions analyser votre demande.\nVotre demande de wiki va être vérifiée par un volontaire et vous pouvez suivre son évolution sur la page dont le lien vous a été donné lorsque vous avez envoyé de votre demande.\n\nSi vous désirez un nom personnalisé pour le domaine de votre wiki (c’est-à-dire pas un sous-domaine standard de .miraheze.org), veuillez d’abord lire <span class=\"plainlinks\">[$1 ceci]</span>. Vous devez d’abord choisir un sous-domaine et votre domaine personnalisé sera configuré ensuite.\n\nLorsque vous soumettez une demande de wiki, vous acceptez automatiquement nos politiques de [[Content Policy|contenu]] et [[Dormancy Policy|d’inactivité]].",
 	"requestwiki-label-bio": "Les sujets principaux de ce wiki seront-ils des personnes vivantes ?",
@@ -103,10 +104,10 @@
 	"requestwikiqueue-request-label-status": "État",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Marquer la visibilité de cette demande comme...",
-	"requestwikiqueue-request-label-visibility-all": "Tout utilisateur ayant les droits de « lire » peut voir cette demande",
-	"requestwikiqueue-request-label-visibility-delete": "Tout utilisateur ayant les droits de « supprimer » peut voir cette demande",
-	"requestwikiqueue-request-label-visibility-hide": "Tout utilisateur ayant les droits de « créer un wiki » peut voir cette demande",
-	"requestwikiqueue-request-label-visibility-oversight": "Tout utilisateur ayant les droits de « supprimer une révision » peut voir cette demande",
+	"requestwikiqueue-request-label-visibility-all": "Toute personne disposant des permissions « read » (lecture) peut voir cette demande",
+	"requestwikiqueue-request-label-visibility-delete": "Toute personne disposant des permissions « delete » (supprimer) peut voir cette demande",
+	"requestwikiqueue-request-label-visibility-hide": "Toute personne disposant des permissions « createwiki » (créer un wiki) peut voir cette demande",
+	"requestwikiqueue-request-label-visibility-oversight": "Toute personne disposant des permissions « suppressrevision » (masquer les modifications) peut voir cette demande",
 	"right-requestwiki": "Demander des wikis",
 	"right-createwiki": "Créer des wikis"
 }
