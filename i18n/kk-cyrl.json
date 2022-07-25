@@ -76,6 +76,7 @@
 	"requestwikiqueue-request": "Сұраныс",
 	"requestwikiqueue-request-header-requestercomment": "Уики сұраушы берген түсініктеме",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "$1 $2 берген түсініктеме",
+	"requestwikiqueue-request-info-submission": "Мұнда сұраудың көрінуін өзгертуге, сұрауды мақұлдауға немесе бас тартуға, сондай-ақ бұл әрекетті орындау кезінде қосымша түсініктемелер беруге болады. Уикині мақұлданған деп белгілесеңіз, ол автоматты түрде жасалады.",
 	"requestwikiqueue-request-label-action": "Бұл сұрау әрекетін ... ретінде белгілеу",
 	"requestwikiqueue-request-label-comment": "Пікір:",
 	"requestwikiqueue-request-label-edit-wiki": "Уики сұрауын өңдеу",
@@ -85,6 +86,7 @@
 	"requestwikiqueue-request-label-sitename": "Сайт атауы:",
 	"requestwikiqueue-request-label-status": "Күйі",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-visibility": "Бұл сұраудың көріну мүмкіндігін осылай белгілеу...",
 	"right-requestwiki": "Уики сұрау",
 	"right-createwiki": "Уики бастау"
 }
