@@ -12,8 +12,6 @@ class CreateWikiJson {
 	private $dbr;
 	private $cache;
 	private $wiki;
-	private $databaseArray;
-	private $wikiArray;
 	private $cacheDir;
 	private $databaseTimestamp;
 	private $wikiTimestamp;
@@ -26,9 +24,7 @@ class CreateWikiJson {
 		$this->wiki = $wiki;
 
 		AtEase::suppressWarnings();
-		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
-		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true );
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 		AtEase::restoreWarnings();
 
@@ -186,9 +182,13 @@ class CreateWikiJson {
 			'wiki' => false
 		];
 
-		// Under php7.4 trying to access a index when the config is null results in a notice.
-		$databaseTimestamp = $this->databaseArray['timestamp'] ?? null;
-		$wikiTimestamp = $this->wikiArray['timestamp'] ?? null;
+		AtEase::suppressWarnings();
+		$databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
+		$wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->wiki . '.json' ), true );
+		AtEase::restoreWarnings();
+
+		$databaseTimestamp = $databaseArray['timestamp'] ?? 0;
+		$wikiTimestamp = $wikiArray['timestamp'] ?? 0;
 
 		if ( $databaseTimestamp < ( $this->databaseTimestamp ?: PHP_INT_MAX ) ) {
 			$changes['databases'] = true;
