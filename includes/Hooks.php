@@ -147,6 +147,7 @@ class Hooks {
 		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );
 		$dbName = self::getConfig( 'DBname' );
 
+		// TODO: is this still needed?
 		$cWJ = new CreateWikiJson( $dbName );
 		$cWJ->update();
 
