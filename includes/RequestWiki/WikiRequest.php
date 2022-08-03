@@ -180,7 +180,6 @@ class WikiRequest {
 				$this->tryAutoCreate();
 			}
 		} else {
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $this->dbname );
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
