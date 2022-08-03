@@ -220,7 +220,6 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $request->dbname );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname );
