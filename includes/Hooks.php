@@ -156,7 +156,6 @@ class Hooks {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
-
 			$remoteWiki = new RemoteWiki( $dbName );
 			$isPrivate = $remoteWiki->isPrivate();
 		}
