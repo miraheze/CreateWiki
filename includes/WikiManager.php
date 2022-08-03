@@ -126,7 +126,6 @@ class WikiManager {
 			]
 		);
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$this->recacheJson();
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
@@ -219,7 +218,6 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$this->recacheJson();
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
@@ -250,7 +248,6 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$this->recacheJson();
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
@@ -312,10 +309,13 @@ class WikiManager {
 	}
 
 	private function recacheJson() {
-		$cWJ = new CreateWikiJson( $this->dbname );
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
+		$cWJ = new CreateWikiJson( $this->exists ?
+			$this->dbname :
+			$this->config->get( 'CreateWikiGlobalWiki' )
+		);
+
 		$cWJ->resetDatabaseList();
-		if ( $this->exists ) {
-			$cWJ->resetWiki();
-		}
+		$cWJ->resetWiki();
 	}
 }
