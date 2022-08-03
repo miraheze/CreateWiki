@@ -126,7 +126,8 @@ class WikiManager {
 			]
 		);
 
-		$this->recacheJson();
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
+		$this->recacheJson( $wiki );
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
@@ -313,9 +314,6 @@ class WikiManager {
 	private function recacheJson( $wiki = null ) {
 		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$cWJ->resetDatabaseList();
-
-		if ( $wiki ) {
-			$cWJ->resetWiki();
-		}
+		$cWJ->resetWiki();
 	}
 }
