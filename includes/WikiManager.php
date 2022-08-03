@@ -218,6 +218,10 @@ class WikiManager {
 			);
 		}
 
+		if ( file_exists( $this->config->get( 'CreateWikiCacheDirectory' ) . "/{$wiki}.json" ) ) {
+			unlink( $this->config->get( 'CreateWikiCacheDirectory' ) . "/{$wiki}.json" );
+		}
+
 		$this->exists = false;
 		$this->recacheJson();
 
@@ -247,6 +251,10 @@ class WikiManager {
 					$selector => $old
 				]
 			);
+		}
+
+		if ( file_exists( $this->config->get( 'CreateWikiCacheDirectory' ) . "/{$old}.json" ) ) {
+			unlink( $this->config->get( 'CreateWikiCacheDirectory' ) . "/{$old}.json" );
 		}
 
 		$this->dbname = $new;
