@@ -66,7 +66,8 @@ class CreateWikiJson {
 	}
 
 	public function update() {
-		$changes = $this->newChanges();
+		static $changes = null;
+		$changes ??= $this->newChanges();
 
 		if ( $changes['databases'] ) {
 			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
