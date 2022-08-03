@@ -75,7 +75,7 @@ class CreateWikiJson {
 			$this->generateDatabaseList();
 		}
 
-		if ( $changes['wiki'] ) {
+		if ( $this->wikiArray && $changes['wiki'] ) {
 			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 			$this->generateWiki();
