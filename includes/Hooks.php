@@ -147,14 +147,16 @@ class Hooks {
 		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );
 		$dbName = self::getConfig( 'DBname' );
 
-		// TODO: is this still needed?
-		$cWJ = new CreateWikiJson( $dbName );
-		$cWJ->update();
+		if ( !file_exists( "{$cacheDir}/{$dbName}.json" ) ) {
+			$cWJ = new CreateWikiJson( $dbName );
+			$cWJ->resetWiki();
+		}
 
-		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
+		if ( file_exists( "{$cacheDir}/{$dbName}.json" ) ) {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
+
 			$remoteWiki = new RemoteWiki( $dbName );
 			$isPrivate = $remoteWiki->isPrivate();
 		}
