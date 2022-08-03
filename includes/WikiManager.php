@@ -218,11 +218,6 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $wiki );
-
-		$cWJ->resetWiki();
-
 		$this->recacheJson();
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
@@ -252,11 +247,6 @@ class WikiManager {
 				]
 			);
 		}
-
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $old );
-
-		$cWJ->resetWiki();
 
 		$this->recacheJson();
 
@@ -321,6 +311,6 @@ class WikiManager {
 	private function recacheJson( $wiki = null ) {
 		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$cWJ->resetDatabaseList();
-		$cWJ->update();
+		$cWJ->resetWiki();
 	}
 }
