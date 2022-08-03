@@ -43,7 +43,6 @@ class DeleteWikis extends Maintenance {
 			$wiki = $row->wiki_dbname;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
 				$wm = new WikiManager( $wiki );
 
 				$delete = $wm->delete();
