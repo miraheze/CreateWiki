@@ -218,6 +218,7 @@ class WikiManager {
 			);
 		}
 
+		$this->exists = false;
 		$this->recacheJson();
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
@@ -248,6 +249,7 @@ class WikiManager {
 			);
 		}
 
+		$this->dbname = $new;
 		$this->recacheJson();
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
