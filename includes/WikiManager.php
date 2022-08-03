@@ -126,7 +126,7 @@ class WikiManager {
 			]
 		);
 
-		$this->recacheJson();
+		$this->recacheJson( $wiki );
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
@@ -218,7 +218,7 @@ class WikiManager {
 			);
 		}
 
-		$this->recacheJson();
+		$this->recacheJson( $wiki );
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
 
@@ -248,7 +248,7 @@ class WikiManager {
 			);
 		}
 
-		$this->recacheJson();
+		$this->recacheJson( $old );
 
 		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
 
