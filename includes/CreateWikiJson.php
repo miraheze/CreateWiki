@@ -49,6 +49,8 @@ class CreateWikiJson {
 
 		// Rather than destroy object, let's fake the cache timestamp
 		$this->wikiTimestamp = $this->initTime;
+
+		$this->update();
 	}
 
 	public function resetDatabaseList() {
@@ -59,6 +61,8 @@ class CreateWikiJson {
 
 		// Rather than destroy object, let's fake the catch timestamp
 		$this->databaseTimestamp = $this->initTime;
+
+		$this->update();
 	}
 
 	public function update() {
