@@ -58,7 +58,7 @@ class WikiManager {
 			$this->cluster = $candidateArray[$rand];
 			$this->lb = $lbs[$this->cluster];
 
-			$newDbw = $this->lb->getConnection( DB_PRIMARY );
+			$newDbw = $this->lb->getMaintenanceConnectionRef( DB_PRIMARY );
 		} elseif ( !$check && !$this->config->get( 'CreateWikiDatabaseClusters' ) ) {
 			// DB doesn't exist and we don't have clusters
 			$newDbw = $this->cwdb;
