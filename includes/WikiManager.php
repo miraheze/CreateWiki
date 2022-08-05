@@ -54,17 +54,11 @@ class WikiManager {
 
 			$candidateArray = array_keys( $clusterSize, min( $clusterSize ) );
 			$rand = rand( 0, count( $candidateArray ) - 1 );
-			$this->cluster = $candidateArray[$rand];
-			$clusterDB = $this->cwdb->selectRow(
-				'cw_wikis',
-				'wiki_dbname',
-				[
-					'wiki_dbcluster' => $this->cluster
-				]
-			)->wiki_dbname;
-			$this->lb = $lbs[$this->cluster];
-			$newDbw = $lbs[$this->cluster]->getConnection( DB_PRIMARY, [], $clusterDB );
 
+			$this->cluster = $candidateArray[$rand];
+			$this->lb = $lbs[$this->cluster];
+
+			$newDbw = $this->lb->getConnection( DB_PRIMARY );
 		} elseif ( !$check && !$this->config->get( 'CreateWikiDatabaseClusters' ) ) {
 			// DB doesn't exist and we don't have clusters
 			$newDbw = $this->cwdb;
