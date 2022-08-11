@@ -72,6 +72,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	private function lookupRequest( $par ) {
 		$out = $this->getOutput();
 
+		$out->addModules( [ 'ext.createwiki.oouiform' ] );
+
 		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
