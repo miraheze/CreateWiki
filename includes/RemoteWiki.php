@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class RemoteWiki {
 	public $changes = [];
@@ -28,9 +29,13 @@ class RemoteWiki {
 	private $dbcluster;
 	private $category;
 	private $experimental;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct( string $wiki ) {
+	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
@@ -361,11 +366,26 @@ class RemoteWiki {
 			}
 
 			foreach ( $this->hooks as $hook ) {
-				MediaWikiServices::getInstance()->getHookContainer()->run( $hook, [ $this->dbname ] );
+				switch ( $hook ) {
+					case 'CreateWikiStateOpen':
+						$this->hookRunner->onCreateWikiStateOpen( $this->dbname );
+						break;
+					case 'CreateWikiStateClosed':
+						$this->hookRunner->onCreateWikiStateClosed( $this->dbname );
+						break;
+					case 'CreateWikiStatePublic':
+						$this->hookRunner->onCreateWikiStatePublic( $this->dbname );
+						break;
+					case 'CreateWikiStatePrivate':
+						$this->hookRunner->onCreateWikiStatePrivate( $this->dbname );
+						break;
+					default:
+						// TODO: throw exception
+				}
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWJ = new CreateWikiJson( $this->dbname );
+			$cWJ = new CreateWikiJson( $this->dbname, $this->hookRunner );
 
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
