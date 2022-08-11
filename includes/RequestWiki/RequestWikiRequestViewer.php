@@ -50,8 +50,6 @@ class RequestWikiRequestViewer {
 			return [];
 		}
 
-		$status = ( $request->getStatus() === 'inreview' ) ? 'In review' : ucfirst( $request->getStatus() );
-
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
@@ -93,7 +91,7 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$status,
+				'default' => wfMessage( 'requestwikiqueue-' . $request->getStatus() )->text(),
 			],
 			'description' => [
 				'type' => 'textarea',
@@ -238,9 +236,10 @@ class RequestWikiRequestViewer {
 				'submission-action' => [
 					'type' => 'select',
 					'label-message' => 'requestwikiqueue-request-label-action',
-					'options' => [
-						wfMessage( 'requestwikiqueue-approve' )->text() => 'approve',
-						wfMessage( 'requestwikiqueue-decline' )->text() => 'decline',
+					'options-messages' => [
+						'requestwikiqueue-approve' => 'approve',
+						'requestwikiqueue-decline' => 'decline',
+						'requestwikiqueue-onhold' => 'onhold',
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
@@ -368,7 +367,10 @@ class RequestWikiRequestViewer {
 			$request->category = $formData['edit-category'];
 			$request->private = $formData['edit-private'];
 			$request->bio = $formData['edit-bio'];
-			$request->reopen( $form->getUser() );
+
+			if ( $request->getStatus() === 'declined' ) {
+				$request->reopen( $form->getUser() );
+			}
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 
