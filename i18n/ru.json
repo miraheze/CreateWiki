@@ -50,6 +50,8 @@
 	"echo-pref-tooltip-wiki-request-comment": "Уведомить меня, когда к запросу вики появится комментарий.",
 	"echo-pref-tooltip-wiki-request-declined": "Уведомить меня, если мой запрос вики отклонят.",
 	"log-description-farmer": "Этот журнал отслеживает создание вики.",
+	"log-action-filter-farmer": "Тип действия:",
+	"log-action-filter-farmer-createwiki": "Вики создана",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$1|создал|создала}} вики «$4»",
 	"logentry-farmer-requestaccept": "$1 {{GENDER:$1|одобрил|одобрила}} запрос вики $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$1|отклонил|отклонила}} запрос вики $4",

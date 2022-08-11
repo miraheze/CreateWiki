@@ -72,21 +72,11 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	private function lookupRequest( $par ) {
 		$out = $this->getOutput();
 
-		$out->addModules( [ 'ext.createwiki.oouiform' ] );
+		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
+		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
 		$requestViewer = new RequestWikiRequestViewer( $this->hookRunner );
 		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );
-		$sectionTitles = $htmlForm->getFormSections();
-
-		$sectTabs = [];
-		foreach ( $sectionTitles as $key ) {
-			$sectTabs[] = [
-				'name' => $key,
-				'label' => $htmlForm->getLegend( $key ),
-			];
-		}
-
-		$out->addJsConfigVars( 'wgCreateWikiOOUIFormTabs', $sectTabs );
 
 		$htmlForm->show();
 	}

@@ -304,7 +304,12 @@ class RequestWikiRequestViewer {
 		IContextSource $context,
 		$formClass = CreateWikiOOUIForm::class
 	) {
-		$context->getOutput()->addModules( [ 'ext.createwiki.oouiform' ] );
+		$out = $context->getOutput();
+
+		$out->addModules( [ 'ext.createwiki.oouiform' ] );
+
+		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
+		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
 		try {
 			$request = new WikiRequest( (int)$id, $this->hookRunner );
@@ -318,7 +323,7 @@ class RequestWikiRequestViewer {
 
 		$htmlForm = new $formClass( $formDescriptor, $context, 'requestwikiqueue' );
 
-		$htmlForm->setId( 'mw-baseform-requestviewer' );
+		$htmlForm->setId( 'createwiki-form' );
 		$htmlForm->suppressDefaultSubmit();
 		$htmlForm->setSubmitCallback(
 			function ( array $formData, HTMLForm $form ) use ( $request ) {

@@ -3,6 +3,7 @@
 		"authors": [
 			"A2y4",
 			"Aefgh39622",
+			"Funa-enpitu",
 			"HappyLeLeBoss",
 			"Kkairri",
 			"Omotecho",
@@ -47,7 +48,10 @@
 	"echo-pref-tooltip-wiki-request-declined": "Wikiの申請が却下されたときに通知する。",
 	"log-description-farmer": "これはWiki作成の追跡ログです。",
 	"log-action-filter-farmer": "操作の種類:",
+	"log-action-filter-farmer-createwiki": "ウィキを作成",
 	"log-action-filter-farmer-requestaccept": "Wikiのリクエストは拒否されました。",
+	"log-action-filter-farmer-requestdecline": "ウィキのリクエストは却下します。",
+	"log-action-filter-farmer-requestwiki": "ウィキリクエストの開始・再開",
 	"logentry-farmer-createwiki": "$1 がWiki \"$4\" を作成しました",
 	"logentry-farmer-requestaccept": "$1 がWikiの申請 #$4 を承認しました",
 	"logentry-farmer-requestdecline": "$1 がWikiの申請 #$4 を却下しました",
