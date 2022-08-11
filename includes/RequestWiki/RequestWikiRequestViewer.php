@@ -377,7 +377,7 @@ class RequestWikiRequestViewer {
 			if ( $formData['submission-action'] == 'approve' ) {
 				$request->approve( $user, $formData['reason'] );
 			} elseif ( $formData['submission-action'] == 'onhold' ) {
-				$request->hold( $formData['reason'], $user );
+				$request->onhold( $formData['reason'], $user );
 			} else {
 				$request->decline( $formData['reason'], $user );
 			}
