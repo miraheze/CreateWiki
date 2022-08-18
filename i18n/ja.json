@@ -88,6 +88,7 @@
 	"requestwikiqueue-edit": "編集をリクエスト",
 	"requestwikiqueue-handle": "要求を処理",
 	"requestwikiqueue-inreview": "審査中",
+	"requestwikiqueue-onhold": "保留中",
 	"requestwikiqueue-pager-status-approved": "承認済",
 	"requestwikiqueue-pager-status-declined": "却下",
 	"requestwikiqueue-pager-status-inreview": "審査中",
