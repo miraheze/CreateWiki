@@ -327,7 +327,7 @@ class WikiManager {
 		$cWJ = new CreateWikiJson( $this->exists ?
 			$this->dbname :
 			$this->config->get( 'CreateWikiGlobalWiki' ),
-      $this->hookRunner
+			$this->hookRunner
 		);
 
 		$cWJ->resetDatabaseList();
