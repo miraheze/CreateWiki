@@ -10,6 +10,7 @@ use IContextSource;
 use Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use MWException;
 
@@ -17,9 +18,12 @@ class RequestWikiRequestViewer {
 
 	/** @var Config */
 	private $config;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct() {
+	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 	}
 
 	public function getFormDescriptor(
@@ -45,8 +49,6 @@ class RequestWikiRequestViewer {
 
 			return [];
 		}
-
-		$status = ( $request->getStatus() === 'inreview' ) ? 'In review' : ucfirst( $request->getStatus() );
 
 		$formDescriptor = [
 			'sitename' => [
@@ -89,7 +91,7 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => (string)$status,
+				'default' => wfMessage( 'requestwikiqueue-' . $request->getStatus() )->text(),
 			],
 			'description' => [
 				'type' => 'textarea',
@@ -221,7 +223,7 @@ class RequestWikiRequestViewer {
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$wm = new WikiManager( $request->dbname );
+			$wm = new WikiManager( $request->dbname, $this->hookRunner );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname );
 
@@ -234,9 +236,10 @@ class RequestWikiRequestViewer {
 				'submission-action' => [
 					'type' => 'select',
 					'label-message' => 'requestwikiqueue-request-label-action',
-					'options' => [
-						wfMessage( 'requestwikiqueue-approve' )->text() => 'approve',
-						wfMessage( 'requestwikiqueue-decline' )->text() => 'decline',
+					'options-messages' => [
+						'requestwikiqueue-approve' => 'approve',
+						'requestwikiqueue-decline' => 'decline',
+						'requestwikiqueue-onhold' => 'onhold',
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
@@ -308,7 +311,7 @@ class RequestWikiRequestViewer {
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
 		try {
-			$request = new WikiRequest( (int)$id );
+			$request = new WikiRequest( (int)$id, $this->hookRunner );
 		} catch ( MWException $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
@@ -364,12 +367,17 @@ class RequestWikiRequestViewer {
 			$request->category = $formData['edit-category'];
 			$request->private = $formData['edit-private'];
 			$request->bio = $formData['edit-bio'];
-			$request->reopen( $form->getUser() );
+
+			if ( $request->getStatus() === 'declined' ) {
+				$request->reopen( $form->getUser() );
+			}
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 
 			if ( $formData['submission-action'] == 'approve' ) {
 				$request->approve( $user, $formData['reason'] );
+			} elseif ( $formData['submission-action'] == 'onhold' ) {
+				$request->onhold( $formData['reason'], $user );
 			} else {
 				$request->decline( $formData['reason'], $user );
 			}

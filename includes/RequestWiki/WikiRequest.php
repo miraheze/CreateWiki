@@ -7,6 +7,7 @@ use MediaWiki\MediaWikiServices;
 use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use MWException;
 use SpecialPage;
@@ -33,9 +34,12 @@ class WikiRequest {
 	private $status = 'inreview';
 	private $comments = [];
 	private $involvedUsers = [];
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct( int $id = null ) {
+	public function __construct( int $id = null, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
@@ -181,7 +185,7 @@ class WikiRequest {
 			}
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$wm = new WikiManager( $this->dbname );
+			$wm = new WikiManager( $this->dbname, $this->hookRunner );
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
@@ -218,6 +222,23 @@ class WikiRequest {
 
 		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
+		}
+	}
+
+	public function onhold( string $reason, User $user ) {
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'onhold';
+		$this->save();
+
+		$this->addComment( $reason, $user, 'comment', [ $this->requester ] );
+
+		$notifyUsers = $this->involvedUsers;
+		unset(
+			$notifyUsers[$this->requester->getId()],
+			$notifyUsers[$user->getId()]
+		);
+
+		if ( $notifyUsers ) {
+			$this->sendNotification( $reason, $notifyUsers );
 		}
 	}
 

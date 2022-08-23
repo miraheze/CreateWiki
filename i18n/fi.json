@@ -3,6 +3,7 @@
 		"authors": [
 			"01miki10",
 			"Antsa",
+			"Kyykaarme",
 			"MITO",
 			"Moj",
 			"Nike",
@@ -40,7 +41,7 @@
 	"echo-category-title-request-declined": "Wikin pyynnöt vähentynyt",
 	"echo-pref-tooltip-wiki-creation": "Ilmoita minulle sitten, kun wikini on luotu.",
 	"echo-pref-tooltip-wiki-request-comment": "Ilmoita minulle, kun wikipyyntöä kommentoidaan",
-	"echo-pref-tooltip-wiki-request-declined": "Ilmoita minulle minun wikin pyynnön vähentymisestä.",
+	"echo-pref-tooltip-wiki-request-declined": "Ilmoita minulle, jos pyyntöni wikistä on hylätty.",
 	"log-description-farmer": "Tämä logi seuraa wikin luomisia.",
 	"logentry-farmer-createwiki": "$1 loi wikin ”$4”",
 	"logentry-farmer-requestaccept": "$1 hyväksyi wikipyynnön $4",

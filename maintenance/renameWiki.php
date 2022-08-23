@@ -39,7 +39,8 @@ class RenameWiki extends Maintenance {
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$wm = new WikiManager( $oldwiki );
+			$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+			$wm = new WikiManager( $oldwiki, $hookRunner );
 
 			$rename = $wm->rename( $newwiki );
 
@@ -51,7 +52,7 @@ class RenameWiki extends Maintenance {
 
 			$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
 
-			MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $dbw, $oldwiki, $newwiki ] );
+			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
 			$renamedWiki[] = $oldwiki;
 			$renamedWiki[] = $newwiki;
