@@ -1,0 +1,30 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ajeje Brazorf"
+		]
+	},
+	"action-createwiki": "criari wiki",
+	"createwiki": "Crea nu wiki",
+	"createwiki-defaultmainpage-summary": "Crea pàggina principali",
+	"createwiki-email-subject": "Lu tò wiki novu di Miraheze: $1",
+	"createwiki-label-category": "Catigurìa:",
+	"createwiki-label-dbname": "Nomu dû databbasi:",
+	"createwiki-label-language": "Lingua:",
+	"createwiki-label-reason": "Mutivu:",
+	"createwiki-label-sitename": "Nomu dû situ:",
+	"echo-category-title-wiki-creation": "Criazzioni dû wiki",
+	"log-action-filter-farmer": "Tipu d'azzioni:",
+	"notification-createwiki-wiki-creation-visitwiki-label": "Talìa lu wiki",
+	"requestwiki-label-language": "Lingua:",
+	"requestwiki-label-sitename": "Nomu dû wiki:",
+	"requestwiki-label-siteurl": "Suttadumuniu: (suttadumuniu.miraheze.org)",
+	"requestwikiqueue-pager-status-approved": "appruvata",
+	"requestwikiqueue-request": "Richiesta",
+	"requestwikiqueue-request-label-comment": "Cummentu:",
+	"requestwikiqueue-request-label-language": "Lingua",
+	"requestwikiqueue-request-label-sitename": "Nomu dû situ",
+	"requestwikiqueue-request-label-status": "Statu",
+	"requestwikiqueue-request-label-url": "URL",
+	"right-createwiki": "Crea wiki"
+}

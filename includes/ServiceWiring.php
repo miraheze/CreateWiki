@@ -3,6 +3,7 @@
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 return [
 	'CreateWiki.NotificationsManager' => static function ( MediaWikiServices $services ): CreateWikiNotificationsManager {
@@ -15,5 +16,8 @@ return [
 			),
 			$services->getUserFactory()
 		);
+	},
+	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
+		return new CreateWikiHookRunner( $services->getHookContainer() );
 	},
 ];

@@ -6,17 +6,21 @@ use Config;
 use FormSpecialPage;
 use Html;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
 	/** @var Config */
 	private $config;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct() {
+	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner;
 	}
 
 	protected function getFormFields() {
@@ -92,7 +96,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$category = 'uncategorised';
 		}
 
-		$wm = new WikiManager( $formData['dbname'] );
+		$wm = new WikiManager( $formData['dbname'], $this->hookRunner );
 
 		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
@@ -106,7 +110,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			return true;
 		}
 
-		$wm = new WikiManager( $DBname );
+		$wm = new WikiManager( $DBname, $this->hookRunner );
 
 		$check = $wm->checkDatabaseName( $DBname );
 

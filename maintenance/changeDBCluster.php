@@ -25,6 +25,7 @@ class ChangeDBCluster extends Maintenance {
 
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
 		if ( (bool)$this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
@@ -33,7 +34,7 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$wiki = new RemoteWiki( $config->get( 'DBname' ) );
+			$wiki = new RemoteWiki( $config->get( 'DBname' ), $hookRunner );
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 
@@ -47,7 +48,7 @@ class ChangeDBCluster extends Maintenance {
 				continue;
 			}
 
-			$wiki = new RemoteWiki( $line );
+			$wiki = new RemoteWiki( $line, $hookRunner );
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 		}

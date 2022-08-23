@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\CreateWiki;
 
 use Exception;
 use Job;
+use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\RequestWiki\WikiRequest;
 use Miraheze\CreateWiki\WikiManager;
 use Title;
@@ -15,8 +16,9 @@ class CreateWikiJob extends Job {
 	}
 
 	public function run() {
-		$wm = new WikiManager( $this->params['dbname'] );
-		$wr = new WikiRequest( $this->params['id'] );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$wm = new WikiManager( $this->params['dbname'], $hookRunner );
+		$wr = new WikiRequest( $this->params['id'], $hookRunner );
 
 		$notValid = $wm->checkDatabaseName( $this->params['dbname'] );
 
