@@ -22,7 +22,7 @@ class RequestWikiRequestViewer {
 	private $hookRunner;
 
 	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 	}
 

@@ -27,7 +27,7 @@ class CreatePersistentModel extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$dbr = wfGetDB( DB_REPLICA, [], $config->get( 'CreateWikiGlobalWiki' ) );
 
 		$res = $dbr->select(

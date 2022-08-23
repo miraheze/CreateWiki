@@ -22,7 +22,7 @@ class RebuildExtensionListCache extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
 		$queue = array_fill_keys( array_merge(
 				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
