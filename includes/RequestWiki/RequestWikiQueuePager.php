@@ -24,7 +24,7 @@ class RequestWikiQueuePager extends TablePager {
 	public function __construct( $page, $requester, $dbname, $status ) {
 		parent::__construct( $page->getContext(), $page->getLinkRenderer() );
 
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->mDb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )->getConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$this->requester = $requester;
 		$this->dbname = $dbname;
