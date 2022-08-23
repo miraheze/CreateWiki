@@ -28,7 +28,7 @@ class PopulateMainPage extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$language = $this->getOption( 'lang', $config->get( 'LanguageCode' ) );
 
 		$mainPageName = wfMessage( 'mainpage' )->inLanguage( $language )->plain();

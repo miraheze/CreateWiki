@@ -288,7 +288,7 @@
 		}
 	},
 	"ConfigRegistry": {
-		"createwiki": "GlobalVarConfig::newInstance"
+		"CreateWiki": "GlobalVarConfig::newInstance"
 	},
 	"DefaultUserOptions": {
 		"echo-subscriptions-web-request-comment": true,
