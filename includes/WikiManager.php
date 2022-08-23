@@ -9,6 +9,7 @@ use GlobalVarConfig;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Title;
 
 class WikiManager {
@@ -19,11 +20,14 @@ class WikiManager {
 	private $cwdb;
 	private $lb = false;
 	private $tables = [];
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
 	public $exists;
 
-	public function __construct( string $dbname ) {
+	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
@@ -132,7 +136,7 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiCreation', [ $wiki, $private ] );
+		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		$blankConfig = new GlobalVarConfig( '' );
 
@@ -219,13 +223,13 @@ class WikiManager {
 		}
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $wiki );
+		$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
 
 		$cWJ->resetWiki();
 
 		$this->recacheJson();
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiDeletion', [ $this->cwdb, $wiki ] );
+		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $wiki );
 
 		return null;
 	}
@@ -254,13 +258,13 @@ class WikiManager {
 		}
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $old );
+		$cWJ = new CreateWikiJson( $old, $this->hookRunner );
 
 		$cWJ->resetWiki();
 
 		$this->recacheJson();
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiRename', [ $this->cwdb, $old, $new ] );
+		$this->hookRunner->onCreateWikiRename( $this->cwdb, $old, $new );
 
 		return null;
 	}
@@ -268,7 +272,7 @@ class WikiManager {
 	private function compileTables() {
 		$cTables = [];
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiTables', [ &$cTables ] );
+		$this->hookRunner->onCreateWikiTables( $cTables );
 
 		$cTables['cw_wikis'] = 'wiki_dbname';
 
@@ -319,7 +323,7 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}

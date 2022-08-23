@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
 use ObjectCache;
 use Wikimedia\AtEase\AtEase;
@@ -16,9 +17,13 @@ class CreateWikiJson {
 	private $databaseTimestamp;
 	private $wikiTimestamp;
 	private $initTime;
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-	public function __construct( string $wiki ) {
+	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+
+		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
@@ -116,7 +121,7 @@ class CreateWikiJson {
 			],
 		];
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonGenerateDatabaseList', [ &$databaseLists ] );
+		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
 
 		foreach ( $databaseLists as $name => $contents ) {
 			$contents = [ 'timestamp' => $this->databaseTimestamp ] + $contents;
@@ -166,7 +171,7 @@ class CreateWikiJson {
 			]
 		];
 
-		MediaWikiServices::getInstance()->getHookContainer()->run( 'CreateWikiJsonBuilder', [ $this->wiki, $this->dbr, &$jsonArray ] );
+		$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );

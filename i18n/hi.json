@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Abijeet Patro",
 			"Saurmandal",
 			"ThisIsACreeper0101"
 		]
@@ -67,6 +68,7 @@
 	"requestwiki-unknown": "इस ID से कोई भी अनुरोध मौजूद नहीं है।",
 	"requestwikiqueue": "विकि अनुरोधों की सूची",
 	"requestwikiqueue-approve": "स्वीकार करें",
+	"requestwikiqueue-approved": "स्वीकृत",
 	"requestwikiqueue-comments": "अनुरोध की टिप्पणियाँ",
 	"requestwikiqueue-decline": "अस्वीकार करें",
 	"requestwikiqueue-edit": "अनुरोध को संपादित करें",

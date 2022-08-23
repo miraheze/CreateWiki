@@ -2,135 +2,30 @@
 
 namespace Miraheze\CreateWiki;
 
-use DatabaseUpdater;
+use Config;
 use EchoAttributeManager;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Hook\SetupAfterCacheHook;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 
-class Hooks {
-	public static function getConfig( string $var ) {
-		return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' )->get( $var );
-	}
+class Hooks implements
+	SetupAfterCacheHook
+{
+	/** @var Config */
+	private $config;
 
-	public static function fnCreateWikiSchemaUpdates( DatabaseUpdater $updater ) {
-		$updater->addExtensionTable(
-			'cw_requests',
-			__DIR__ . '/../sql/cw_requests.sql'
-		);
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
-		$updater->addExtensionTable(
-			'cw_comments',
-			__DIR__ . '/../sql/cw_comments.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_comments',
-			'cw_comment_user',
-			__DIR__ . '/../sql/patches/patch-cw_comments-int.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_requests',
-			'cw_user',
-			__DIR__ . '/../sql/patches/patch-cw_requests-int.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_comments',
-			'cw_comment_user',
-			__DIR__ . '/../sql/patches/patch-cw_comments-blob.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_requests',
-			'cw_bio',
-			__DIR__ . '/../sql/patches/patch-cw_requests-add-cw_bio.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_inactive_exempt_reason',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_inactive_exempt_reason.sql'
-		);
-
-		$updater->addExtensionTable(
-			'cw_wikis',
-			__DIR__ . '/../sql/cw_wikis.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_deleted',
-			__DIR__ . '/../sql/patches/patch-deleted-wiki.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_deleted_timestamp',
-			__DIR__ . '/../sql/patches/patch-deleted-wiki.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_inactive_exempt',
-			__DIR__ . '/../sql/patches/patch-inactive-exempt.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_locked',
-			__DIR__ . '/../sql/patches/patch-locked-wiki.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_url',
-			__DIR__ . '/../sql/patches/patch-domain-cols.sql'
-		);
-
-		$updater->addExtensionIndex(
-			'cw_wikis',
-			'wiki_dbname',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-indexes.sql'
-		);
-
-		$updater->addExtensionField(
-			'cw_wikis',
-			'wiki_experimental',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-wiki_experimental.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_wikis',
-			'wiki_closed',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_closed.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_wikis',
-			'wiki_deleted',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_deleted.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_wikis',
-			'wiki_inactive',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_inactive.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_wikis',
-			'wiki_inactive_exempt',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_inactive_exempt.sql'
-		);
-
-		$updater->modifyExtensionField(
-			'cw_wikis',
-			'wiki_locked',
-			__DIR__ . '/../sql/patches/patch-cw_wikis-add-default-to-wiki_locked.sql'
-		);
+	/**
+	 * @param Config $config
+	 * @param CreateWikiHookRunner $hookRunner
+	 */
+	public function __construct( Config $config, CreateWikiHookRunner $hookRunner ) {
+		$this->config = $config;
+		$this->hookRunner = $hookRunner;
 	}
 
 	public static function onRegistration() {
@@ -141,20 +36,21 @@ class Hooks {
 		}
 	}
 
-	public static function onSetupAfterCache() {
+	/** @inheritDoc */
+	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		$cacheDir = self::getConfig( 'CreateWikiCacheDirectory' );
-		$dbName = self::getConfig( 'DBname' );
+		$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+		$dbName = $this->config->get( 'DBname' );
 
-		$cWJ = new CreateWikiJson( $dbName );
+		$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
 		$cWJ->update();
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
-			$remoteWiki = new RemoteWiki( $dbName );
+			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
 			$isPrivate = $remoteWiki->isPrivate();
 		}
 

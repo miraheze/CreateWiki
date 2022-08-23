@@ -21,9 +21,24 @@
 		"requestwiki"
 	],
 	"SpecialPages": {
-		"CreateWiki": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
-		"RequestWiki": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
-		"RequestWikiQueue": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue"
+		"CreateWiki": {
+			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
+			"services": [
+				"CreateWikiHookRunner"
+			]
+		},
+		"RequestWiki": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+			"services": [
+				"CreateWikiHookRunner"
+			]
+		},
+		"RequestWikiQueue": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
+			"services": [
+				"CreateWikiHookRunner"
+			]
+		}
 	},
 	"JobClasses": {
 		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
@@ -73,18 +88,29 @@
 		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
 	},
 	"TestAutoloadNamespaces": {
+		"Miraheze\\CreateWiki\\Tests\\Unit\\": "tests/phpunit/unit/",
 		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
 	"Hooks": {
-		"BeforeCreateEchoEvent": [
-			"Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent"
-		],
-		"LoadExtensionSchemaUpdates": [
-			"Miraheze\\CreateWiki\\Hooks::fnCreateWikiSchemaUpdates"
-		],
-		"SetupAfterCache": [
-			"Miraheze\\CreateWiki\\Hooks::onSetupAfterCache"
-		]
+		"BeforeCreateEchoEvent": "Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent",
+		"LoadExtensionSchemaUpdates": {
+			"handler": "Installer"
+		},
+		"SetupAfterCache": {
+			"handler": "default"
+		}
+	},
+	"HookHandlers": {
+		"default": {
+			"class": "Miraheze\\CreateWiki\\Hooks",
+			"services": [
+				"MainConfig",
+				"CreateWikiHookRunner"
+			]
+		},
+		"Installer": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"
+		}
 	},
 	"ResourceModules": {
 		"ext.createwiki.oouiform": {

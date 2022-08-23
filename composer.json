@@ -1,6 +1,29 @@
 {
-	"name": "miraheze/createwiki",
+	"name": "miraheze/create-wiki",
+	"type": "mediawiki-extension",
+	"description": "A MediaWiki extension to easily create new wikis on a wiki farm.",
+	"homepage": "https://www.mediawiki.org/wiki/Extension:CreateWiki",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Southparkfan"
+		},
+		{
+			"name": "John Lewis"
+		},
+		{
+			"name": "Paladox"
+		},
+		{
+			"name": "Universal Omega"
+		}
+	],
+	"support": {
+		"issues": "https://phabricator.miraheze.org/tag/createwiki/",
+		"wiki": "https://www.mediawiki.org/wiki/Extension:CreateWiki"
+	},
 	"require": {
+		"composer/installers": ">=1.0.1",
 		"php-ai/php-ml": "*"
 	},
 	"require-dev": {
@@ -23,6 +46,11 @@
 		"phan": "phan -d . --long-progress-bar",
 		"phpcs": "phpcs -sp --cache"
 	},
-	"prepend-autoloader": false,
-	"optimize-autoloader": true
+	"config": {
+		"prepend-autoloader": false,
+		"optimize-autoloader": true,
+		"allow-plugins": {
+			"composer/installers": true
+		}
+	}
 }

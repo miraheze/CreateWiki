@@ -23,13 +23,14 @@ class GenerateMissingCache extends Maintenance {
 
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
 		foreach ( $config->get( 'LocalDatabases' ) as $db ) {
 			if ( file_exists( $config->get( 'CreateWikiCacheDirectory' ) . '/' . $db . '.json' ) ) {
 				continue;
 			}
 
-			$cWJ = new CreateWikiJson( $db );
+			$cWJ = new CreateWikiJson( $db, $hookRunner );
 			$cWJ->update();
 
 			$this->output( "Cache generated for {$db}\n" );
