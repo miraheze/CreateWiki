@@ -27,7 +27,7 @@ class RenameWiki extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$oldwiki = $this->getArg( 0 );
 		$newwiki = $this->getArg( 1 );
 

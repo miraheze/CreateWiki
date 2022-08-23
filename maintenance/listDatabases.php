@@ -21,7 +21,7 @@ class ListDatabases extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
 		foreach ( $config->get( 'LocalDatabases' ) as $db ) {
 			$this->output( "$db\n" );

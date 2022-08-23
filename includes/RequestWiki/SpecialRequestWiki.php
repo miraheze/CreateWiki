@@ -23,7 +23,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'createwiki' );
+		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
 	}
 

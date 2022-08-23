@@ -12,7 +12,7 @@ return [
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'createwiki' )
+				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
 			),
 			$services->getUserFactory()
 		);
