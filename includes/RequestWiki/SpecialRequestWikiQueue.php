@@ -54,6 +54,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'Unreviewed' => 'inreview',
 					'Approved' => 'approved',
 					'Declined' => 'declined',
+					'On hold' => 'onhold',
 					'All' => '*',
 				],
 				'default' => $status ?: 'inreview',
