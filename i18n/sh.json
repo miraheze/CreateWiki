@@ -33,6 +33,10 @@
 	"requestwikiqueue-request-label-sitename": "Naziv sajta",
 	"requestwikiqueue-request-label-status": "Stanje",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-visibility-all": "Svi s 'read' mogu vidjeti ovaj zahtjev",
+	"requestwikiqueue-request-label-visibility-delete": "Svi s 'delete' mogu vidjeti ovaj zahtjev",
+	"requestwikiqueue-request-label-visibility-hide": "Svi s 'createwiki' mogu vidjeti ovaj zahtjev",
+	"requestwikiqueue-request-label-visibility-oversight": "Svi s 'suppressrevision' mogu vidjeti ovaj zahtjev",
 	"right-requestwiki": "Zahtijevanje wikija",
 	"right-createwiki": "Pravljenje wikija"
 }
