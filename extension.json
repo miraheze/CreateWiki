@@ -68,6 +68,7 @@
 		"farmer/createwiki": "LogFormatter",
 		"farmer/requestaccept": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
+		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
 	},
