@@ -240,6 +240,7 @@ class WikiRequest {
 		if ( $notifyUsers ) {
 			$this->sendNotification( $reason, $notifyUsers );
 		}
+		$this->log( $user, 'requestonhold' );
 	}
 
 	private function log( User $user, string $log ) {
