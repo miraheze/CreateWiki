@@ -43,6 +43,7 @@
 	"logentry-farmer-createwiki": "$1 created the wiki \"$4\"",
 	"logentry-farmer-requestaccept": "$1 accepted the wiki request $4",
 	"logentry-farmer-requestdecline": "$1 declined the wiki request $4",
+	"logentry-farmer-requestonhold": "$1 placed wiki request $4 on hold",
 	"logentry-farmer-requestreopen": "$1 reopened the wiki request $4",
 	"logentry-farmer-requestwiki": "$1 requested the wiki \"$4\" (language: $5; private: $6) in $7",
 	"log-name-farmer": "Farmer log",
