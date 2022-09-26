@@ -15,7 +15,7 @@ class CheckLastWikiActivity extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->mDescription = 'Calculates the timestamp of the last meaningful contribution to the wiki.';
+		$this->addDescription( 'Calculates the timestamp of the last meaningful contribution to the wiki.' );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
