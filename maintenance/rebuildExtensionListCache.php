@@ -17,7 +17,7 @@ class RebuildExtensionListCache extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->mDescription = 'Rebuild or generate extension-list.json cache file.';
+		$this->addDescription( 'Rebuild or generate extension-list.json cache file.' );
 		$this->requireExtension( 'CreateWiki' );
 	}
 

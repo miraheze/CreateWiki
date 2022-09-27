@@ -17,7 +17,7 @@ class GenerateMissingCache extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->mDescription = 'Generates CreateWiki cache files for all wikis that are currently missing one.';
+		$this->addDescription( 'Generates CreateWiki cache files for all wikis that are currently missing one.' );
 		$this->requireExtension( 'CreateWiki' );
 	}
 

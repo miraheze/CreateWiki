@@ -20,7 +20,7 @@ class ManageInactiveWikis extends Maintenance {
 		parent::__construct();
 
 		$this->addOption( 'write', 'Actually make changes to wikis which are considered for the next stage in dormancy', false, false );
-		$this->mDescription = 'A script to find inactive wikis in a farm.';
+		$this->addDescription( 'A script to find inactive wikis in a farm.' );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
