@@ -58,6 +58,7 @@
 	"logentry-farmer-createwiki": "$1 a crée le wiki « $4 »",
 	"logentry-farmer-requestaccept": "$1 a accepté la demande du wiki $4",
 	"logentry-farmer-requestdecline": "$1 a rejeté la demande du wiki $4",
+	"logentry-farmer-requestonhold": "$1 a placé la requête $4 du wiki en attente",
 	"logentry-farmer-requestreopen": "$1 a rouvert la demande du wiki $4",
 	"logentry-farmer-requestwiki": "$1 a demandé le wiki « $4 » (langue : $5; privé : $6) sur $7",
 	"log-name-farmer": "Journal de la ferme de wikis",
