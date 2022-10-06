@@ -20,7 +20,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function execute() {
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = $this->getDB( DB_REPLICA );
 
 		$row = $dbr->selectRow(
 			'recentchanges',
