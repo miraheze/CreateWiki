@@ -214,6 +214,7 @@ class WikiManager {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
+			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->delete(
 				$table,
 				[
@@ -246,6 +247,7 @@ class WikiManager {
 		}
 
 		foreach ( (array)$this->tables as $table => $selector ) {
+			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->update(
 				$table,
 				[
