@@ -51,7 +51,7 @@ class RenameWiki extends Maintenance {
 				return;
 			}
 
-			$dbw = wfGetDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
+			$dbw = $this->getDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
 
 			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
