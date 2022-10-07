@@ -39,7 +39,7 @@ class PopulateWikiCreation extends Maintenance {
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
 
-			$dbw->selectDB( $config->get( 'CreateWikiGlobalWiki' ) );
+			$dbw->selectDomain( $config->get( 'CreateWikiGlobalWiki' ) );
 
 			$res = $dbw->selectRow(
 				'logging',
@@ -54,7 +54,7 @@ class PopulateWikiCreation extends Maintenance {
 				]
 			);
 
-			$dbw->selectDB( $config->get( 'CreateWikiDatabase' ) );
+			$dbw->selectDomain( $config->get( 'CreateWikiDatabase' ) );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
 				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );
