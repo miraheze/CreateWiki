@@ -370,7 +370,6 @@ class RequestWikiRequestViewer {
 			$request->getStatus() === 'declined' ?
 				$request->reopen( $form->getUser() ) :
 				$request->save();
-;
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 
