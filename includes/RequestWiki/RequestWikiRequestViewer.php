@@ -367,9 +367,7 @@ class RequestWikiRequestViewer {
 			$request->private = $formData['edit-private'];
 			$request->bio = $formData['edit-bio'];
 
-			$request->getStatus() === 'declined' ?
-				$request->reopen( $form->getUser() ) :
-				$request->save();
+			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 
