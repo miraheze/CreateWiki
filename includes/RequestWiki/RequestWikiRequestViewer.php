@@ -284,8 +284,8 @@ class RequestWikiRequestViewer {
 					'raw' => true,
 				];
 
-				$formDescriptor['submission-action']['default'] = 'decline';
-				$formDescriptor['submission-action']['disabled'] = true;
+				// We don't want to be able to approve it if the database is not valid
+				unset( $formDescriptor['submission-action']['options-messages']['requestwikiqueue-approve'] );
 			}
 		}
 
