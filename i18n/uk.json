@@ -52,6 +52,7 @@
 	"logentry-farmer-createwiki": "$1 створив вікі «$4»",
 	"logentry-farmer-requestaccept": "$1 прийняв запит у вікі $4",
 	"logentry-farmer-requestdecline": "$1 відхилив запит у вікі $4",
+	"logentry-farmer-requestonhold": "$1 розмістив вікі-запит $4 на утриманні",
 	"logentry-farmer-requestreopen": "$1 перевідкрито вікі за запитом $4",
 	"logentry-farmer-requestwiki": "$1 подав запит на вікі «$4» (мова: $5; приватна: $6) у $7",
 	"log-name-farmer": "Журнал фермерів",
