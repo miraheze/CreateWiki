@@ -24,6 +24,7 @@ class RequestWikiAIJob extends Job {
 		$pipeline = '';
 		$hookRunner->onCreateWikiReadPersistentModel( $pipeline );
 
+		// @phan-suppress-next-line PhanImpossibleCondition
 		if ( $pipeline || ( $modelFile && file_exists( $modelFile ) ) ) {
 			if ( !$pipeline ) {
 				$modelManager = new ModelManager();
