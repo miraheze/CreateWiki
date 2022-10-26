@@ -22,7 +22,7 @@ class RequestWikiAIJob extends Job {
 		$wr = new WikiRequest( $this->params['id'], $hookRunner );
 
 		$pipeline = '';
-		$hookRunner->onCreateWikiReadPersistentModel( &$pipeline );
+		$hookRunner->onCreateWikiReadPersistentModel( $pipeline );
 
 		if ( $pipeline || ( $modelFile && file_exists( $modelFile ) ) ) {
 			if ( !$pipeline ) {
