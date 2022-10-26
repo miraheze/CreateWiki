@@ -336,12 +336,6 @@ class WikiRequest {
 	}
 
 	public function tryAutoCreate() {
-		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
-
-		if ( !$modelFile ) {
-			return;
-		}
-
 		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
 		$jobQueueGroup->push( new RequestWikiAIJob(
 			Title::newMainPage(),
