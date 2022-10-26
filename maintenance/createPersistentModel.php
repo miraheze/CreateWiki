@@ -82,8 +82,11 @@ class CreatePersistentModel extends Maintenance {
 
 		$pipeline->train( $comments, $status );
 
-		$modelManager = new ModelManager();
-		$modelManager->saveToFile( $pipeline, $config->get( 'CreateWikiPersistentModelFile' ) );
+		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		if ( !$hookRunner->onCreateWikiWritePersistentModel( serialize( $pipeline ) ) ) {
+			$modelManager = new ModelManager();
+			$modelManager->saveToFile( $pipeline, $config->get( 'CreateWikiPersistentModelFile' ) );
+		}
 	}
 }
 

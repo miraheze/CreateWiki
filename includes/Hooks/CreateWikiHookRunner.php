@@ -9,12 +9,14 @@ class CreateWikiHookRunner implements
 	CreateWikiDeletionHook,
 	CreateWikiJsonBuilderHook,
 	CreateWikiJsonGenerateDatabaseListHook,
+	CreateWikiReadPersistentModelHook,
 	CreateWikiRenameHook,
 	CreateWikiStateClosedHook,
 	CreateWikiStateOpenHook,
 	CreateWikiStatePrivateHook,
 	CreateWikiStatePublicHook,
-	CreateWikiTablesHook
+	CreateWikiTablesHook,
+	CreateWikiWritePersistentModelHook
 {
 	/**
 	 * @var HookContainer
@@ -57,6 +59,14 @@ class CreateWikiHookRunner implements
 		$this->container->run(
 			'CreateWikiJsonGenerateDatabaseList',
 			[ &$databaseLists ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiReadPersistentModel( &$pipeline ): void {
+		$this->container->run(
+			'CreateWikiReadPersistentModel',
+			[ &$pipeline ]
 		);
 	}
 
@@ -105,6 +115,14 @@ class CreateWikiHookRunner implements
 		$this->container->run(
 			'CreateWikiTables',
 			[ &$cTables ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiWritePersistentModel( $pipeline ): bool {
+		return $this->container->run(
+			'CreateWikiWritePersistentModel',
+			[ $pipeline ]
 		);
 	}
 }
