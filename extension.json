@@ -272,6 +272,11 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiUseSecureContainers": {
+			"description": "Boolean. Whether to use secure containers for file backend. If enabled, deleted and temp containers are always secure, and all contaners are secure for private wikis.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
 			"public": true,
