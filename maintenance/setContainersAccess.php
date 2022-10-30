@@ -42,15 +42,15 @@ class SetContainersAccess extends Maintenance {
 			$this->prepareDirectory( $backend, $dir, $secure );
 		}
 
-		if ( $config->get( 'CreateWikiExtraSecuredContainers' ) ) {
+		if ( $config->get( 'CreateWikiUseSecureContainers' ) && $config->get( 'CreateWikiExtraSecuredContainers' ) ) {
 			foreach ( $config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
 				$dir = $backend->getContainerStoragePath( $container );
 
-				$secure = ( $config->get( 'CreateWikiUseSecureContainers' ) &&
-					( $zone === 'deleted' || $zone === 'temp' || $isPrivate )
-				) ? [ 'noAccess' => true, 'noListing' => true ] : [];
+				$secure = $isPrivate ? [ 'noAccess' => true, 'noListing' => true ] : [];
 
-				$this->prepareDirectory( $backend, $dir, $secure );
+				if ( $isPrivate || $backend->directoryExists( [ 'dir' => $dir ] ) ) {
+					$this->prepareDirectory( $backend, $dir, $secure );
+				}
 			}
 		}
 	}
@@ -61,7 +61,7 @@ class SetContainersAccess extends Maintenance {
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		// Make sure zone has the right ACLs...
-		if ( count( $secure ) ) {
+		if ( $secure ) {
 			// private
 			$this->output( "making '$dir' private..." );
 			$status->merge( $backend->secure( [ 'dir' => $dir ] + $secure ) );
