@@ -63,7 +63,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testLocalZoneCreated() {
-		$repo = $this->createMock( LocalRepo::class );
+		$repo = new LocalRepo( [
+			'name' => 'local',
+			'backend' => 'local-backend',
+		] );
+
 		$zonePath = $repo->getZonePath( 'public' );
 		$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
 	}
