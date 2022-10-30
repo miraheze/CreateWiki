@@ -55,6 +55,9 @@
 			"requestaccept": [
 				"requestaccept"
 			],
+			"requestonhold": [
+				"requestonhold"
+			],
 			"requestdecline": [
 				"requestdecline"
 			],
