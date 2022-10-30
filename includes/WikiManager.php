@@ -138,6 +138,25 @@ class WikiManager {
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
+		// Make sure all of the file repo zones are setup
+		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+		$backend = $repo->getBackend();
+		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+			$dir = $repo->getZonePath( $zone );
+			$secure = ( $zone === 'deleted' || $zone === 'temp' || $private )
+				? [ 'noAccess' => true, 'noListing' => true ]
+				: [];
+
+			$backend->prepare( [ 'dir' => $dir ] + $secure );
+
+			if ( $secure ) {
+				$backend->secure( [ 'dir' => $dir ] + $secure );
+				continue;
+			}
+
+			$backend->publish( [ 'dir' => $dir, 'access' => true ] );
+		}
+
 		$blankConfig = new GlobalVarConfig( '' );
 
 		Shell::makeScriptCommand(
