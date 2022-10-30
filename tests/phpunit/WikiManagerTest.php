@@ -65,7 +65,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::create
 	 */
-	public function testLocalZoneCreated() {
+	public function testLocalZonesCreated() {
 		$repo = new LocalRepo( [
 			'name' => 'local',
 			'backend' => 'local-backend',
