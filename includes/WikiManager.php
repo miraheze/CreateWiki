@@ -144,8 +144,8 @@ class WikiManager {
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 			$dir = $repo->getZonePath( $zone );
 			$secure = ( $this->config->get( 'CreateWikiUseSecureContainers' ) &&
-					( $zone === 'deleted' || $zone === 'temp' || $private )
-				) ? [ 'noAccess' => true, 'noListing' => true ] : [];
+				( $zone === 'deleted' || $zone === 'temp' || $private )
+			) ? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$backend->prepare( [ 'dir' => $dir ] + $secure );
 
