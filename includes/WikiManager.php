@@ -141,7 +141,7 @@ class WikiManager {
 		// Make sure all of the file repo zones are setup
 		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
-		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+		foreach ( [ 'public', 'thumbs', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 			$dir = $repo->getZonePath( $zone );
 			$secure = ( $this->config->get( 'CreateWikiUseSecureContainers' ) &&
 				( $zone === 'deleted' || $zone === 'temp' || $private )
