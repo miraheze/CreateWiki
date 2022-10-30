@@ -42,11 +42,15 @@ class SetContainersAccess extends Maintenance {
 			$this->prepareDirectory( $backend, $dir, $secure );
 		}
 
-		if ( $isPrivate && $config->get( 'CreateWikiExtraSecuredContainers' ) ) {
+		if ( $config->get( 'CreateWikiExtraSecuredContainers' ) ) {
 			foreach ( $config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
 				$dir = $backend->getContainerStoragePath( $container );
 
-				$this->prepareDirectory( $backend, $dir, [ 'noAccess' => true, 'noListing' => true ] );
+				$secure = ( $config->get( 'CreateWikiUseSecureContainers' ) &&
+					( $zone === 'deleted' || $zone === 'temp' || $isPrivate )
+				) ? [ 'noAccess' => true, 'noListing' => true ] : [];
+
+				$this->prepareDirectory( $backend, $dir, $secure );
 			}
 		}
 	}
