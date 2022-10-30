@@ -200,7 +200,7 @@ class RemoteWiki {
 
 			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
 				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-					$dir = $repo->getContainerStoragePath( $container );
+					$dir = $backend->getContainerStoragePath( $container );
 					$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 					$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 				}
@@ -229,7 +229,7 @@ class RemoteWiki {
 
 			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
 				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-					$dir = $repo->getContainerStoragePath( $container );
+					$dir = $backend->getContainerStoragePath( $container );
 					$backend->publish( [ 'dir' => $dir, 'access' => true ] );
 				}
 			}
