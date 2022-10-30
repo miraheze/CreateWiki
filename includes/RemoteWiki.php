@@ -195,12 +195,15 @@ class RemoteWiki {
 			$backend = $repo->getBackend();
 			foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 				$dir = $repo->getZonePath( $zone );
+				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+			}
 
-				$backend->secure( [
-					'dir' => $dir,
-					'noAccess' => true,
-					'noListing' => true,
-				] );
+			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
+				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
+					$dir = $repo->getContainerStoragePath( $container );
+					$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+					$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+				}
 			}
 		}
 
@@ -221,11 +224,14 @@ class RemoteWiki {
 			$backend = $repo->getBackend();
 			foreach ( [ 'public', 'thumb', 'transcoded' ] as $zone ) {
 				$dir = $repo->getZonePath( $zone );
+				$backend->publish( [ 'dir' => $dir, 'access' => true ] );
+			}
 
-				$backend->publish( [
-					'dir' => $dir,
-					'access' => true,
-				] );
+			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
+				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
+					$dir = $repo->getContainerStoragePath( $container );
+					$backend->publish( [ 'dir' => $dir, 'access' => true ] );
+				}
 			}
 		}
 
