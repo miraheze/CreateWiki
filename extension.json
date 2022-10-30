@@ -273,7 +273,7 @@
 			"value": false
 		},
 		"CreateWikiUseSecureContainers": {
-			"description": "Boolean. Whether to use secure containers for file backend. If enabled, deleted and temp containers are always secure, and all contaners are secure for private wikis.",
+			"description": "Boolean. Whether to use secure containers for file backend. If enabled, deleted and temp containers are always secure, and all default (core) local contaners are secure for private wikis. Additional containers can be secured with $wgCreateWikiExtraSecuredContainers.",
 			"public": true,
 			"value": false
 		},
