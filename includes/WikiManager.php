@@ -157,6 +157,15 @@ class WikiManager {
 			$backend->publish( [ 'dir' => $dir, 'access' => true ] );
 		}
 
+		if ( $private && $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
+			foreach ( $this->config->get( 'CreateWikiExtraContainers' ) as $container ) {
+				$dir = $repo->getContainerStoragePath( $container );
+
+				$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+			}
+		}
+
 		$blankConfig = new GlobalVarConfig( '' );
 
 		Shell::makeScriptCommand(
