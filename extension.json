@@ -272,6 +272,16 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiUseSecureContainers": {
+			"description": "Boolean. Whether to use secure containers for file backend. If enabled, deleted and temp containers are always secure, and all default (core) local contaners are secure for private wikis. Additional containers can be secured with $wgCreateWikiExtraSecuredContainers.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiExtraSecuredContainers": {
+			"description": "Array. List of extra local containers to secure for private wikis if $wgCreateWikiUseSecureContainers is enabled.",
+			"public": true,
+			"value": []
+		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
 			"public": true,

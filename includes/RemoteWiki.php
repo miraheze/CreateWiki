@@ -189,6 +189,24 @@ class RemoteWiki {
 			'new' => 1
 		];
 
+		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
+			// Make sure all of the file repo zones are secured
+			$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+			$backend = $repo->getBackend();
+			foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+				$dir = $repo->getZonePath( $zone );
+				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+			}
+
+			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
+				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
+					$dir = $backend->getContainerStoragePath( $container );
+					$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+					$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
+				}
+			}
+		}
+
 		$this->hooks[] = 'CreateWikiStatePrivate';
 		$this->private = true;
 		$this->newRows['wiki_private'] = true;
@@ -199,6 +217,23 @@ class RemoteWiki {
 			'old' => 0,
 			'new' => 1
 		];
+
+		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
+			// Make sure all of the file repo zones are marked public except for the deleted and temp zones
+			$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+			$backend = $repo->getBackend();
+			foreach ( [ 'public', 'thumb', 'transcoded' ] as $zone ) {
+				$dir = $repo->getZonePath( $zone );
+				$backend->publish( [ 'dir' => $dir, 'access' => true ] );
+			}
+
+			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
+				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
+					$dir = $backend->getContainerStoragePath( $container );
+					$backend->publish( [ 'dir' => $dir, 'access' => true ] );
+				}
+			}
+		}
 
 		$this->hooks[] = 'CreateWikiStatePublic';
 		$this->private = false;

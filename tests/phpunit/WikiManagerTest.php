@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
+use LocalRepo;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -22,14 +23,15 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$conf = new SiteConfiguration();
 		$conf->suffixes = [ 'test' ];
-		$this->setMwGlobals( [
-			'wgConf' => $conf,
-		] );
+
+		$this->setMwGlobals( 'wgConf', $conf );
+		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
@@ -50,6 +52,29 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreateSuccess() {
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
+	}
+
+	/**
+	 * @covers ::create
+	 */
+	public function testCreatePrivate() {
+		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
+		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
+	}
+
+	/**
+	 * @covers ::create
+	 */
+	public function testLocalZonesCreated() {
+		$repo = new LocalRepo( [
+			'name' => 'local',
+			'backend' => 'local-backend',
+		] );
+
+		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+			$zonePath = $repo->getZonePath( $zone );
+			$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
+		}
 	}
 
 	/**
@@ -193,15 +218,16 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @param string $dbname
+	 * @param bool $private
 	 * @return mixed
 	 */
-	private function createWiki( string $dbname ) {
+	private function createWiki( string $dbname, bool $private = false ) {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
 
-		return $wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 
 	/**
