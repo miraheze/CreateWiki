@@ -62,6 +62,9 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
 	}
 
+	/**
+	 * @covers ::create
+	 */
 	public function testLocalZoneCreated() {
 		$repo = new LocalRepo( [
 			'name' => 'local',
