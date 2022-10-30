@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
+use LocalRepo;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -59,6 +60,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreatePrivate() {
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
+	}
+
+	public function testLocalZoneCreated() {
+		$repo = $this->createMock( LocalRepo::class );
+		$zonePath = $repo->getZonePath( 'public' );
+		$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) )
 	}
 
 	/**
