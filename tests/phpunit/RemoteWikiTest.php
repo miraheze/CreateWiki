@@ -22,9 +22,9 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$conf = new SiteConfiguration();
 		$conf->suffixes = [ 'test' ];
-		$this->setMwGlobals( [
-			'wgConf' => $conf,
-		] );
+
+		$this->setMwGlobals( 'wgConf', $conf );
+		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
