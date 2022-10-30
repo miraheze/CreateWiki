@@ -202,6 +202,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @param string $dbname
+	 * @param bool $private
 	 * @return mixed
 	 */
 	private function createWiki( string $dbname, bool $private = false ) {
