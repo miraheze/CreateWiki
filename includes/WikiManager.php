@@ -163,7 +163,7 @@ class WikiManager {
 			$this->config->get( 'CreateWikiExtraSecuredContainers' )
 		) {
 			foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-				$dir = $repo->getContainerStoragePath( $container );
+				$dir = $backend->getContainerStoragePath( $container );
 				$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 			}
