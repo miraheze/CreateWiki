@@ -157,10 +157,13 @@ class WikiManager {
 			$backend->publish( [ 'dir' => $dir, 'access' => true ] );
 		}
 
-		if ( $private && $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
-			foreach ( $this->config->get( 'CreateWikiExtraContainers' ) as $container ) {
+		if (
+			$private &&
+			$this->config->get( 'CreateWikiUseSecureContainers' ) &&
+			$this->config->get( 'CreateWikiExtraSecuredContainers' )
+		) {
+			foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
 				$dir = $repo->getContainerStoragePath( $container );
-
 				$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 			}
