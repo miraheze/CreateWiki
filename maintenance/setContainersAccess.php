@@ -66,25 +66,17 @@ class SetContainersAccess extends Maintenance {
 		// Make sure zone has the right ACLs...
 		if ( $secure ) {
 			// private
-			$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
-				'making private...' :
-				"failed..."
-			);
-
+			$this->output( 'making private...' );
 			$status->merge( $backend->secure( [ 'dir' => $dir ] + $secure ) );
 		} else {
 			// public
-			$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
-				'making public...' :
-				"failed..."
-			);
-
+			$this->output( 'making public...' );
 			$status->merge( $backend->publish( [ 'dir' => $dir, 'access' => true ] ) );
 		}
 
 		$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
 			"done.\n" :
-			"failed...\n"
+			"failed, container not created...\n"
 		);
 
 		if ( !$status->isOK() ) {
