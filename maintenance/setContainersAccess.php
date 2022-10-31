@@ -75,12 +75,6 @@ class SetContainersAccess extends Maintenance {
 			$status->merge( $backend->publish( [ 'dir' => $dir, 'access' => true ] ) );
 		}
 
-		if ( !$status->isOK() ) {
-			$this->output( "done.\n" );
-		} else {
-			$this->output( "done.\n" );
-		}
-
 		if ( $status->isOK() ) {
 			$this->output( "done.\n" );
 		} else {
