@@ -10,7 +10,6 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
-use SpecialPage;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
