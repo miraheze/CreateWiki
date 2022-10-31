@@ -85,7 +85,7 @@ class SetContainersAccess extends Maintenance {
 
 		$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
 			"done.\n" :
-			"failed...\n"
+			"failed.\n"
 		);
 
 		if ( !$status->isOK() ) {
