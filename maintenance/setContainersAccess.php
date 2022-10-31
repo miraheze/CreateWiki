@@ -56,13 +56,12 @@ class SetContainersAccess extends Maintenance {
 	}
 
 	protected function prepareDirectory( FileBackend $backend, $dir, array $secure ) {
-		if ( !$backend->directoryExists( [ 'dir' => $dir ] ) ) {
-			// Create zone if it doesn't exist...
-			$this->output( "$dir doesn't exist, creating..." );
-			$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
-		} else {
-			$this->output( "$dir already exists..." );
-		}
+		$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
+			"$dir already exists..." :
+			"$dir doesn't exist, creating..."
+		);
+
+		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		// Make sure zone has the right ACLs...
 		if ( $secure ) {
