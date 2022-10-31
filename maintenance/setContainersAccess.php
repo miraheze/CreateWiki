@@ -68,7 +68,7 @@ class SetContainersAccess extends Maintenance {
 		if ( !$exists ) {
 			$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
 				'created...' :
-				'failed...'
+				'creating...failed...'
 			);
 		}
 
