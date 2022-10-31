@@ -57,8 +57,8 @@ class SetContainersAccess extends Maintenance {
 
 	protected function prepareDirectory( FileBackend $backend, $dir, array $secure ) {
 		$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
-			"$dir already exists..." :
-			"$dir doesn't exist, creating..."
+			"'$dir' already exists..." :
+			"'$dir' doesn't exist, creating..."
 		);
 
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
@@ -66,11 +66,11 @@ class SetContainersAccess extends Maintenance {
 		// Make sure zone has the right ACLs...
 		if ( $secure ) {
 			// private
-			$this->output( "making '$dir' private..." );
+			$this->output( 'making private...' );
 			$status->merge( $backend->secure( [ 'dir' => $dir ] + $secure ) );
 		} else {
 			// public
-			$this->output( "making '$dir' public..." );
+			$this->output( 'making public...' );
 			$status->merge( $backend->publish( [ 'dir' => $dir, 'access' => true ] ) );
 		}
 
