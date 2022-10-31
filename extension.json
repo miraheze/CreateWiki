@@ -97,6 +97,7 @@
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
 		},
+		"LoginFormValidErrorMessages": "Miraheze\\CreateWiki\\Hooks::onLoginFormValidErrorMessages",
 		"SetupAfterCache": {
 			"handler": "default"
 		}
