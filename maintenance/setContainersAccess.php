@@ -63,6 +63,11 @@ class SetContainersAccess extends Maintenance {
 
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
+		$this->output( $backend->directoryExists( [ 'dir' => $dir ] ) ?
+			'created...' :
+			'failed...'
+		);
+
 		// Make sure zone has the right ACLs...
 		if ( $secure ) {
 			// private
