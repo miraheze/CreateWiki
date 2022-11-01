@@ -190,21 +190,10 @@ class RemoteWiki {
 		];
 
 		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
-			// Make sure all of the file repo zones are secured
-			$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
-			$backend = $repo->getBackend();
-			foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
-				$dir = $repo->getZonePath( $zone );
-				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
-			}
-
-			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
-				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-					$dir = $backend->getContainerStoragePath( $container );
-					$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
-					$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
-				}
-			}
+			$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+			$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+				new SetContainersAccessJob( [ 'private' => true ] )
+			);
 		}
 
 		$this->hooks[] = 'CreateWikiStatePrivate';
@@ -219,20 +208,10 @@ class RemoteWiki {
 		];
 
 		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
-			// Make sure all of the file repo zones are marked public except for the deleted and temp zones
-			$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
-			$backend = $repo->getBackend();
-			foreach ( [ 'public', 'thumb', 'transcoded' ] as $zone ) {
-				$dir = $repo->getZonePath( $zone );
-				$backend->publish( [ 'dir' => $dir, 'access' => true ] );
-			}
-
-			if ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) ) {
-				foreach ( $this->config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-					$dir = $backend->getContainerStoragePath( $container );
-					$backend->publish( [ 'dir' => $dir, 'access' => true ] );
-				}
-			}
+			$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+			$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+				new SetContainersAccessJob( [ 'private' => false ] )
+			);
 		}
 
 		$this->hooks[] = 'CreateWikiStatePublic';
