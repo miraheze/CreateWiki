@@ -75,7 +75,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 			$zonePath = $repo->getZonePath( $zone );
-			$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
+			$this->assertTrue( $repo->getBackend()->fileExists( [ 'src' => $zonePath ] ) );
 		}
 	}
 
