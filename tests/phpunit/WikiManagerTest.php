@@ -18,7 +18,6 @@ use Wikimedia\Rdbms\Database;
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
-
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -71,7 +70,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'name' => 'local',
 			'backend' => 'local-backend',
 			'wiki' => 'createwikiprivatetest',
-		] )
+		] );
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 			$zonePath = $repo->getZonePath( $zone );
