@@ -3,14 +3,11 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use DatabaseTestHelper;
-use DeferredUpdates;
 use FatalError;
 use LocalRepo;
-use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
-use Miraheze\CreateWiki\SetContainersAccessJob;
 use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
 use Wikimedia\Rdbms\Database;
@@ -76,23 +73,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateContainers() {
-		global $IP;
-
-		$this->setMwGlobals( 'wgUploadDirectory', "{$IP}/images/createwikiprivatetest" );
-
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
 
-		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
-		$jobQueueGroupFactory->makeJobQueueGroup( 'createwikiprivatetest' )->push(
-			new SetContainersAccessJob( [ 'private' => true ] )
-		);
-
 		$oldDomain = $this->databaseTestHelper->getDomainID();
 		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
-
-		$this->runJobs( [ 'minJobs' => 0 ] );
-		DeferredUpdates::doUpdates();
 
 		$repo = new LocalRepo( [
 			'name' => 'local',
