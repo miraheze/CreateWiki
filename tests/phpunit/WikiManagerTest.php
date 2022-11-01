@@ -79,6 +79,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$oldDomain = $this->databaseTestHelper->getDomainID();
 		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
 
+		// Run the job
+		$this->runJobs( [], [
+			'type' => 'SetContainersAccessJob',
+		] );
+
 		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
