@@ -70,6 +70,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'name' => 'local',
 			'backend' => 'local-backend',
 			'wiki' => 'createwikiprivatetest',
+			'hasSharedCache' => false,
 		] );
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
