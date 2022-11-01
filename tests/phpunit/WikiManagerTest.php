@@ -21,7 +21,7 @@ use Wikimedia\Rdbms\Database;
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 	/** @var DatabaseTestHelper */
-	private $db;
+	protected $db;
 
 	protected function setUp(): void {
 		parent::setUp();
