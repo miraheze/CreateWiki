@@ -30,6 +30,7 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 				( $zone === 'deleted' || $zone === 'temp' || $this->isPrivate )
 			) ? [ 'noAccess' => true, 'noListing' => true ] : [];
 
+			$backend->clearCache( [ $dir ] );
 			$backend->prepare( [ 'dir' => $dir ] + $secure );
 
 			if ( $secure ) {
