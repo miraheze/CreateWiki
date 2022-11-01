@@ -21,7 +21,7 @@ use Wikimedia\Rdbms\Database;
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 	/** @var DatabaseTestHelper */
-	protected $db;
+	private $databaseTestHelper;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -43,7 +43,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 
-		$this->db = new DatabaseTestHelper( __CLASS__ . '::' . $this->getName() );
+		$this->databaseTestHelper = new DatabaseTestHelper( __CLASS__ . '::' . $this->getName() );
 	}
 
 	/**
@@ -73,8 +73,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testLocalZonesCreated() {
-		$oldDomain = $this->db->getDomainID();
-		$this->db->selectDomain( 'createwikiprivatetest' );
+		$oldDomain = $this->databaseTestHelper->getDomainID();
+		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
 
 		$repo = new LocalRepo( [
 			'name' => 'local',
@@ -86,7 +86,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
 		}
 
-		$this->db->selectDomain( $oldDomain );
+		$this->databaseTestHelper->selectDomain( $oldDomain );
 	}
 
 	/**
