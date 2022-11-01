@@ -4,7 +4,7 @@ namespace Miraheze\CreateWiki\Tests;
 
 use DatabaseTestHelper;
 use FatalError;
-use LocalRepo;
+use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -79,10 +79,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$oldDomain = $this->databaseTestHelper->getDomainID();
 		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
 
-		$repo = new LocalRepo( [
-			'name' => 'local',
-			'backend' => 'local-backend',
-		] );
+		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 			$zonePath = $repo->getZonePath( $zone );
