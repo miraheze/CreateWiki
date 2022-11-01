@@ -6,9 +6,11 @@ use DatabaseTestHelper;
 use DeferredUpdates;
 use FatalError;
 use LocalRepo;
+use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
+use Miraheze\CreateWiki\SetContainersAccessJob;
 use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
 use Wikimedia\Rdbms\Database;
@@ -75,11 +77,18 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testCreateContainers() {
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
-
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
+
+		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+		$jobQueueGroupFactory->makeJobQueueGroup( 'createwikiprivatetest' )->push(
+			new SetContainersAccessJob( [ 'private' => true ] )
+		);
 
 		$oldDomain = $this->databaseTestHelper->getDomainID();
 		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
+
+		$this->runJobs( [ 'minJobs' => 0 ] );
+		DeferredUpdates::doUpdates();
 
 		$repo = new LocalRepo( [
 			'name' => 'local',
@@ -244,17 +253,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
 
-		$create = $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
-
-		$oldDomain = $this->databaseTestHelper->getDomainID();
-		$this->databaseTestHelper->selectDomain( $dbname );
-
-		$this->runJobs( [ 'minJobs' => 0 ] );
-		DeferredUpdates::doUpdates();
-
-		$this->databaseTestHelper->selectDomain( $oldDomain );
-
-		return $create;
+		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 
 	/**
