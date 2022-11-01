@@ -246,7 +246,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$create = $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 
-
 		$oldDomain = $this->databaseTestHelper->getDomainID();
 		$this->databaseTestHelper->selectDomain( $dbname );
 
