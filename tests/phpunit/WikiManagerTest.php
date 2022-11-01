@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use DatabaseTestHelper;
+use DeferredUpdates;
 use FatalError;
 use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
@@ -79,11 +80,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$oldDomain = $this->databaseTestHelper->getDomainID();
 		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
-
-		// Run the job
-		$this->runJobs( [ 'minJobs' => 0 ], [
-			'type' => 'SetContainersAccessJob',
-		] );
 
 		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 
@@ -245,7 +241,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
 
-		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		$create = $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+
+		$this->runJobs();
+		DeferredUpdates::doUpdates();
+
+		return $create;
 	}
 
 	/**
