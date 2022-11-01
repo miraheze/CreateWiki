@@ -75,10 +75,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreateContainers() {
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 
-		$this->runJobs( [], [
-			'type' => 'SetContainersAccessJob',
-		] );
-
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
 
 		$oldDomain = $this->databaseTestHelper->getDomainID();
