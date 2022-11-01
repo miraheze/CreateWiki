@@ -73,10 +73,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'hasSharedCache' => false,
 		] );
 
-		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
-			$zonePath = $repo->getZonePath( $zone );
-			$this->assertTrue( $repo->getBackend()->fileExists( [ 'src' => $zonePath ] ) );
-		}
+		$backend = $repo->getBackend();
+		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'public' ) ] ) );
+		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'thumb' ) ] ) );
+		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'transcoded' ) ] ) );
+		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'temp' ) ] ) );
+		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'deleted' ) ] ) );
 	}
 
 	/**
