@@ -2,8 +2,9 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use DatabaseTestHelper;
 use FatalError;
-use ForeignDBViaLBRepo;
+use LocalRepo;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -18,6 +19,10 @@ use Wikimedia\Rdbms\Database;
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
+
+	/** @var DatabaseTestHelper */
+	private $databaseTestHelper;
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -37,6 +42,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
+
+		$this->databaseTestHelper = new DatabaseTestHelper( __CLASS__ . '::' . $this->getName() );
 	}
 
 	/**
@@ -57,28 +64,24 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::create
 	 */
-	public function testCreatePrivate() {
+	public function testCreateContainers() {
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
-	}
 
-	/**
-	 * @covers ::create
-	 */
-	public function testLocalZonesCreated() {
-		$repo = new ForeignDBViaLBRepo( [
+		$oldDomain = $this->databaseTestHelper->getDomainID();
+		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
+
+		$repo = new LocalRepo( [
 			'name' => 'local',
 			'backend' => 'local-backend',
-			'wiki' => 'createwikiprivatetest',
-			'hasSharedCache' => false,
 		] );
 
-		$backend = $repo->getBackend();
-		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'public' ) ] ) );
-		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'thumb' ) ] ) );
-		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'transcoded' ) ] ) );
-		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'temp' ) ] ) );
-		$this->assertTrue( $backend->fileExists( [ 'src' => $repo->getZonePath( 'deleted' ) ] ) );
+		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+			$zonePath = $repo->getZonePath( $zone );
+			$this->assertTrue( $repo->getBackend()->fileExists( [ 'src' => $zonePath ] ) );
+		}
+
+		$this->databaseTestHelper->selectDomain( $oldDomain );
 	}
 
 	/**
