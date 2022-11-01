@@ -76,6 +76,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateContainers() {
+		global $IP;
+
+		$this->setMwGlobals( 'wgUploadDirectory', "{$IP}/images/createwikiprivatetest" );
+
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
 
