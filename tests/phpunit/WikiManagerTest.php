@@ -2,9 +2,8 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
-use DatabaseTestHelper;
 use FatalError;
-use LocalRepo;
+use ForeignDBViaLBRepo;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -19,9 +18,6 @@ use Wikimedia\Rdbms\Database;
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
-
-	/** @var DatabaseTestHelper */
-	private $databaseTestHelper;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -42,8 +38,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
-
-		$this->databaseTestHelper = new DatabaseTestHelper( __CLASS__ . '::' . $this->getName() );
 	}
 
 	/**
@@ -73,20 +67,16 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testLocalZonesCreated() {
-		$oldDomain = $this->databaseTestHelper->getDomainID();
-		$this->databaseTestHelper->selectDomain( 'createwikiprivatetest' );
-
-		$repo = new LocalRepo( [
+		$repo = new ForeignDBViaLBRepo( [
 			'name' => 'local',
 			'backend' => 'local-backend',
-		] );
+			'wiki' => 'createwikiprivatetest',
+		] )
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
 			$zonePath = $repo->getZonePath( $zone );
 			$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
 		}
-
-		$this->databaseTestHelper->selectDomain( $oldDomain );
 	}
 
 	/**
