@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use DatabaseTestHelper;
 use FatalError;
 use LocalRepo;
 use MediaWikiIntegrationTestCase;
@@ -18,6 +19,10 @@ use Wikimedia\Rdbms\Database;
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
+
+	/** @var DatabaseTestHelper */
+	private $db;
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -37,6 +42,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
+
+		$this->db = new DatabaseTestHelper( __CLASS__ . '::' . $this->getName() );
 	}
 
 	/**
@@ -66,6 +73,9 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testLocalZonesCreated() {
+		$oldDomain = $this->db->getDomainID();
+		$this->db->selectDomain( 'createwikiprivatetest' );
+
 		$repo = new LocalRepo( [
 			'name' => 'local',
 			'backend' => 'local-backend',
@@ -75,6 +85,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			$zonePath = $repo->getZonePath( $zone );
 			$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
 		}
+
+		$this->db->selectDomain( $oldDomain );
 	}
 
 	/**
