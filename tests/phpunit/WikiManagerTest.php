@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
-use LocalRepo;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
