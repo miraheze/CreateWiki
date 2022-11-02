@@ -42,7 +42,8 @@
 	},
 	"JobClasses": {
 		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
-		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob"
+		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
+		"SetContainersAccessJob": "Miraheze\\CreateWiki\\SetContainersAccessJob"
 	},
 	"LogTypes": [
 		"farmer"
