@@ -40,6 +40,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			'renamewikitest',
 		] );
 
+		foreach ( $GLOBALS['wgLocalDatabases'] as $database ) {
+			$GLOBALS['wgConf']->settings['wgUploadDirectory'][$database] = $GLOBALS['IP'] . '/images/' . $database;
+		}
+
+		$GLOBALS['wgConf']->extractAllGlobals( $GLOBALS['wgDBname'] );
+
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
@@ -82,6 +88,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$repo = new LocalRepo( [
 			'name' => 'local',
 			'backend' => 'local-backend',
+			'directory' => $GLOBALS['IP'] . '/images/createwikiprivatetest/',
 		] );
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
