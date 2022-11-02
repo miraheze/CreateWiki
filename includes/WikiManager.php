@@ -138,12 +138,14 @@ class WikiManager {
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
-		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
-		$jobQueueGroupFactory->makeJobQueueGroup( $wiki )->push(
-			new SetContainersAccessJob( [ 'private' => $private ] )
-		);
-
 		$blankConfig = new GlobalVarConfig( '' );
+
+		Shell::makeScriptCommand(
+			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+			[
+				'--wiki', $wiki
+			]
+		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 		Shell::makeScriptCommand(
 			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/populateMainPage.php',
