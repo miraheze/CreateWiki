@@ -32,20 +32,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgConf', $conf );
 		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
 
-		$this->setMwGlobals( 'wgLocalDatabases', [
-			'createwikitest',
-			'createwikiprivatetest',
-			'deletewikitest',
-			'recreatewikitest',
-			'renamewikitest',
-		] );
-
-		foreach ( $GLOBALS['wgLocalDatabases'] as $database ) {
-			$GLOBALS['wgConf']->settings['wgUploadDirectory'][$database] = $GLOBALS['IP'] . '/images/' . $database;
-		}
-
-		$GLOBALS['wgConf']->extractAllGlobals( $GLOBALS['wgDBname'] );
-
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
@@ -88,7 +74,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$repo = new LocalRepo( [
 			'name' => 'local',
 			'backend' => 'local-backend',
-			'directory' => $GLOBALS['IP'] . '/images/createwikiprivatetest/',
 		] );
 
 		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
@@ -248,6 +233,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
+
+		$this->setMwGlobals( 'wgLocalDatabases', array_merge(
+			[ $dbname ], $GLOBALS['wgLocalDatabases']
+		) );
 
 		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}
