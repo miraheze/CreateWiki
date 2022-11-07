@@ -98,6 +98,6 @@
 	"requestwikiqueue-request-label-visibility-delete": "'हटाएँ' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
 	"requestwikiqueue-request-label-visibility-hide": "'createwiki' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
 	"requestwikiqueue-request-label-visibility-oversight": "'suppressrevision' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
-	"right-requestwiki": "विकियों का अनुरोध करें",
-	"right-createwiki": "विकियाँ बनाएँ"
+	"right-requestwiki": "विकियों का अनुरोध करना",
+	"right-createwiki": "विकियाँ बनाना"
 }
