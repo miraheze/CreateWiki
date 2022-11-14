@@ -20,6 +20,7 @@
 	"createwiki-label-reason": "Razlog:",
 	"createwiki-label-requester": "Zatražitelj:",
 	"createwiki-label-sitename": "Naziv sajta:",
+	"createwiki-success": "Wiki je uspješno napravljen.",
 	"echo-category-title-wiki-creation": "Pravljenje wikija",
 	"log-description-farmer": "Ova evidencija prati pravljenje wikija.",
 	"log-action-filter-farmer": "Vrsta radnje:",
