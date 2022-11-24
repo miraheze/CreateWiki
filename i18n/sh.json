@@ -25,6 +25,7 @@
 	"log-description-farmer": "Ova evidencija prati pravljenje wikija.",
 	"log-action-filter-farmer": "Vrsta radnje:",
 	"log-action-filter-farmer-createwiki": "Napravljeni wiki",
+	"logentry-farmer-createwiki": "$1 napravio je wiki \"$4\"",
 	"notification-header-request-comment": "Zahtjev koji slijedite dobio je novi komentar:",
 	"notification-header-request-declined": "Vaš zahtjev je odbijen iz sljedećeg razloga:",
 	"requestwiki": "Zatraži wiki",
