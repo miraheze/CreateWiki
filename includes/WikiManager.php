@@ -25,7 +25,7 @@ class WikiManager {
 
 	public $exists;
 
-	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null, ?string $cluster = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
@@ -58,7 +58,7 @@ class WikiManager {
 
 			$candidateArray = array_keys( $clusterSize, min( $clusterSize ) );
 			$rand = rand( 0, count( $candidateArray ) - 1 );
-			$this->cluster = $candidateArray[$rand];
+			$this->cluster = $cluster ?? $candidateArray[$rand];
 			$clusterDB = $this->cwdb->selectRow(
 				'cw_wikis',
 				'wiki_dbname',
