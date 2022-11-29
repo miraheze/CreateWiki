@@ -21,6 +21,7 @@
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
 	"createwiki-help-reason": "Please enter a sufficient summary describing the topic, scope, and purpose of the wiki you're requesting.",
 	"createwiki-label-category": "Category:",
+	"createwiki-label-dbcluster": "Database Cluster",
 	"createwiki-label-dbname": "Database name:",
 	"createwiki-label-language": "Language:",
 	"createwiki-label-private": "Mark this wiki as private",
