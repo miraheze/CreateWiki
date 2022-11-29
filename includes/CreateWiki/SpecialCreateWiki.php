@@ -27,14 +27,28 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$par = $this->par;
 		$request = $this->getRequest();
 
-		$formDescriptor = [
-			'dbname' => [
-				'label-message' => 'createwiki-label-dbname',
-				'type' => 'text',
-				'default' => $request->getVal( 'wpdbname' ) ?: $par,
-				'required' => true,
-				'validation-callback' => [ $this, 'validateDBname' ],
-			],
+		$formDescriptor['dbname'] = [
+			'label-message' => 'createwiki-label-dbname',
+			'type' => 'text',
+			'default' => $request->getVal( 'wpdbname' ) ?: $par,
+			'required' => true,
+			'validation-callback' => [ $this, 'validateDBname' ],
+		];
+
+		if ( $this->config->get( 'CreateWikiDatabaseClusters' ) ) {
+			$clusterList = (array)$this->config->get( 'CreateWikiDatabaseClusters' );
+			$formDescriptor['dbcluster'] = [
+				'type' => 'select',
+				'label-message' => 'createwiki-label-dbcluster',
+				'options' => [ 'auto' => null ] + array_combine( $clusterList, $clusterList ),
+				'default' => $request->getVal( 'wpdbcluster' ),
+				'disabled' => !$permissionManager->userHasRight( $context->getUser(), 'managewiki-restricted' ),
+				'cssclass' => 'managewiki-infuse',
+				'section' => 'main'
+			];
+		}
+
+		$formDescriptor += [
 			'requester' => [
 				'label-message' => 'createwiki-label-requester',
 				'type' => 'user',
