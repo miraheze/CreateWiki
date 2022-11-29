@@ -27,6 +27,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$par = $this->par;
 		$request = $this->getRequest();
 
+		$formDescriptor = [];
+
 		$formDescriptor['dbname'] = [
 			'label-message' => 'createwiki-label-dbname',
 			'type' => 'text',
@@ -42,9 +44,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-dbcluster',
 				'options' => [ 'auto' => null ] + array_combine( $clusterList, $clusterList ),
 				'default' => $request->getVal( 'wpdbcluster' ),
-				'disabled' => !$permissionManager->userHasRight( $context->getUser(), 'managewiki-restricted' ),
-				'cssclass' => 'managewiki-infuse',
-				'section' => 'main'
 			];
 		}
 
