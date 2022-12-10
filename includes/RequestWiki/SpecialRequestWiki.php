@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
 use SpecialPage;
 use Title;
+use UserBlockedError;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -40,6 +41,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
 
 			return false;
+		}
+
+		$block = $this->getUser()->getBlock();
+		if ( $block && $block->appliesToRight( 'requestwiki' ) ) {
+			throw new UserBlockedError( $block );
 		}
 
 		$this->checkExecutePermissions( $this->getUser() );
