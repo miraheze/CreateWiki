@@ -4,13 +4,16 @@ namespace Miraheze\CreateWiki;
 
 use Config;
 use EchoAttributeManager;
+use MediaWiki\Block\Hook\GetAllBlockActionsHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use WikiMap;
 
 class Hooks implements
+	GetAllBlockActionsHook,
 	SetupAfterCacheHook
 {
 	/** @var Config */
@@ -61,6 +64,17 @@ class Hooks implements
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
 		}
+	}
+
+	/**
+	 * @param array &$actions
+	 */
+	public function onGetAllBlockActions( &$actions ) {
+		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
+			return;
+		}
+
+		$actions[ 'requestwiki' ] = 300;
 	}
 
 	/**
