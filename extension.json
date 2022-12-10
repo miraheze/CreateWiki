@@ -95,11 +95,14 @@
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": "Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent",
-		"LoadExtensionSchemaUpdates": {
-			"handler": "Installer"
+		"GetAllBlockActions": {
+			"handler": "default"
 		},
 		"SetupAfterCache": {
 			"handler": "default"
+		},
+		"LoadExtensionSchemaUpdates": {
+			"handler": "Installer"
 		}
 	},
 	"HookHandlers": {
