@@ -34,6 +34,7 @@
 	"echo-pref-tooltip-wiki-creation": "Notify me when my wiki has been created.",
 	"echo-pref-tooltip-wiki-request-comment": "Notify me when there is a comment on a wiki request.",
 	"echo-pref-tooltip-wiki-request-declined": "Notify me if my wiki request is declined.",
+	"ipb-action-requestwiki": "Requesting wikis",
 	"log-description-farmer": "This log tracks wiki creations.",
 	"log-action-filter-farmer": "Type of action:",
 	"log-action-filter-farmer-createwiki": "Wiki created",
