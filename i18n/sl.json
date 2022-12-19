@@ -45,7 +45,7 @@
 	"notification-header-request-declined": "Vaša prošnja je bila zavrnjena zaradi naslednjega razloga:",
 	"requestwiki": "Zaprosi za viki",
 	"requestwiki-edit-success": "Spremembe prošnje so bile uspešno prenesene.",
-	"requestwiki-error-invalidcomment": "Vaša prošnja za viki vsebuje neveljaven znak. Poskusite jo objaviti še enkrat, in če se težava ponovi, [[Center za pomoč|se obrnite na nas]]",
+	"requestwiki-error-invalidcomment": "Vaša prošnja za viki vsebuje neveljaven znak. Poskusite jo objaviti še enkrat, in če se težava ponovi, [[Help center|se obrnite na nas]].",
 	"requestwiki-error-patient": "Za viki ste že zaprosili. Bodite potrpežljivi in eden od naših ustvarjalcev vikijev bi ga moral kmalu ustvariti. Če želite zaprositi še za en viki, počakajte in boste lahko zaprosili pozneje.",
 	"requestwiki-label-language": "Jezik:",
 	"requestwiki-label-private": "Zasebni viki (ni berljiv za vse; berejo ga lahko le uporabniki iz skupine članov ali administratorjev):",
