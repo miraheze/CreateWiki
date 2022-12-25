@@ -27,16 +27,18 @@ class Hooks implements
 		$this->config = $config;
 		$this->hookRunner = $hookRunner;
 	}
-	public static function onLoginFormValidErrorMessages( &$messages ) {
-		$messages[] = 'requestwiki-notloggedin';
-		return true;
-	}
+
 	public static function onRegistration() {
 		global $wgLogTypes;
 
 		if ( !in_array( 'farmer', $wgLogTypes ) ) {
 			$wgLogTypes[] = 'farmer';
 		}
+	}
+
+	/** @inheritDoc */
+	public static function onLoginFormValidErrorMessages( array &$messages ) {
+		$messages[] = 'requestwiki-notloggedin';
 	}
 
 	/** @inheritDoc */
