@@ -36,6 +36,7 @@
 	"log-description-farmer": "Description of farmer log",
 	"log-action-filter-farmer": "{{Identical|Type of action}}",
 	"logentry-farmer-createwiki": "Used as log message.",
+	"logentry-farmer-requestonhold": "{{logentry}}",
 	"logentry-farmer-requestwiki": "Used as log message.",
 	"log-name-farmer": "Name of 'Farmer log'",
 	"requestwiki": "Submitting a wiki request.",
