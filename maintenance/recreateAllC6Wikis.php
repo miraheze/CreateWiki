@@ -64,7 +64,7 @@ class RecreateAllC6Wikis extends Maintenance {
 				// list current settings
 				$currentSettings = $manageWikiSettings->list();
 
-				// list current extensions 
+				// list current extensions
 				$currentExtensions = $manageWikiExtensions->list();
 
 				// delete the rows from the cw_wikis, localnames, localuser, mw_settings, and matomo tables
