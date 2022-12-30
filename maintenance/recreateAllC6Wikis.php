@@ -103,6 +103,7 @@ class RecreateAllC6Wikis extends Maintenance {
 				exit( 2 );
 			}
 
+			exec( 'logsalmsg "Deleting and recreating ' . $wikiDBname . ' using data from cw_requests (old db141/c6 wiki that can not be restored since it was created after November 16)"' );
 			if ( !$dryRun ) {
 				// create a new instance of the ManageWikiSettings class
 				$manageWikiSettings = new ManageWikiSettings( $wikiDBname );
