@@ -81,6 +81,18 @@ class RecreateAllC6Wikis extends Maintenance {
 				[ 'ORDER BY' => 'cw_id DESC' ]
 			);
 
+			if ( !readline( 'Confirm: ' .
+				"(sitename: $request->cw_sitename)" .
+				"(language: $request->cw_language)" .
+				"(private: $request->cw_private)" .
+				"(category: $request->cw_category)" .
+				'(requester: ' . User::newFromId( $request->cw_user )->getName() . ')' .
+				'(actor: ' . $this->getOption( 'actor' ) . ')' .
+				"(reason: $request->cw_comment)"
+			) ) {
+				exit( 2 );
+			}
+
 			if ( !$dryRun ) {
 				// create a new instance of the ManageWikiSettings class
 				$manageWikiSettings = new ManageWikiSettings( $wikiDBname );
