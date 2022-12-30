@@ -39,7 +39,7 @@ class RecreateAllC6Wikis extends Maintenance {
 		// select all wikis in the c6 cluster from the cw_wikis table
 		$res = $dbw->select(
 			'cw_wikis',
-			[ 'wiki_dbname' ],
+			[ '*' ],
 			[ 'wiki_dbcluster' => 'c6' ]
 		);
 
