@@ -25,6 +25,7 @@ class RecreateAllC6Wikis extends Maintenance {
 
 	public function execute() {
 		$dryRun = $this->getOption( 'dry-run', false );
+		$actor = $this->getOption( 'actor' );
 
 		// get the main load balancer
 		$lb = MediaWikiServices::getInstance()->getDBLoadBalancer();
@@ -81,14 +82,23 @@ class RecreateAllC6Wikis extends Maintenance {
 				[ 'ORDER BY' => 'cw_id DESC' ]
 			);
 
+			$requester = User::newFromId( $request->cw_user )->getName();
+
+			$comment = explode( "\n", $request->cw_comment, 2 );
+			$purposeCheck = explode( ':', $comment[0], 2 );
+
+			$reason = $purposeCheck[0] == 'Purpose' ?
+				$comment[1] :
+				$request->cw_comment;
+
 			if ( !readline( 'Confirm: ' .
-				"(sitename: $request->cw_sitename)" .
-				"(language: $request->cw_language)" .
-				"(private: $request->cw_private)" .
-				"(category: $request->cw_category)" .
-				'(requester: ' . User::newFromId( $request->cw_user )->getName() . ')' .
-				'(actor: ' . $this->getOption( 'actor' ) . ')' .
-				"(reason: $request->cw_comment)"
+				"(sitename: $request->cw_sitename)\n" .
+				"(language: $request->cw_language)\n" .
+				"(private: $request->cw_private)\n" .
+				"(category: $request->cw_category)\n" .
+				"(requester: $requester)\n" .
+				"(actor: $actor)\n" .
+				"(reason: $reason)\n"
 			) ) {
 				exit( 2 );
 			}
@@ -146,9 +156,9 @@ class RecreateAllC6Wikis extends Maintenance {
 					$request->cw_language,
 					$request->cw_private,
 					$request->cw_category,
-					User::newFromId( $request->cw_user )->getName(),
-					$this->getOption( 'actor' ),
-					$request->cw_comment
+					$requester,
+					$actor,
+					$reason
 				);
 
 				// create a new instance of the ManageWikiSettings class
