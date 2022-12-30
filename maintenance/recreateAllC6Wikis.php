@@ -45,6 +45,33 @@ class RecreateAllC6Wikis extends Maintenance {
 		foreach ( $res as $row ) {
 			$wikiDBname = $row->wiki_dbname;
 
+			// exclude original db141 wikis that had some corruption
+			$excluded = [
+				'academiadesusarduwiki',
+				'agalaxytolookuponwiki',
+				'angrybirdswiki',
+				'chakuwikiwiki',
+				'famedatawiki',
+				'galadiawiki',
+				'homevideowiki',
+				'lamostwiki',
+				'mockelectionswiki',
+				'pokeclickerwiki',
+				'polcompballanarchywiki',
+				'polandballwiki',
+				'reversecrappygameswiki',
+				'romancewikiwiki',
+				'saramorawiki',
+				'stampencyclopediawiki',
+				'thecaserewiki',
+				'webkinzguidewiki',
+				'xomniwiki',
+			];
+
+			if ( in_array( $wikiDBname, $excluded ) ) {
+				continue;
+			}
+
 			// get the most recent request for this wiki from the cw_requests table
 			$request = $dbr->selectRow(
 				'cw_requests',
