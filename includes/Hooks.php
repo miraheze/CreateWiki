@@ -39,6 +39,11 @@ class Hooks implements
 	}
 
 	/** @inheritDoc */
+	public function onLoginFormValidErrorMessages( array &$messages ) {
+		$messages[] = 'requestwiki-notloggedin';
+	}
+
+	/** @inheritDoc */
 	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
@@ -63,11 +68,6 @@ class Hooks implements
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
 		}
-	}
-
-	/** @inheritDoc */
-	public function onLoginFormValidErrorMessages( array &$messages ) {
-		$messages[] = 'requestwiki-notloggedin';
 	}
 
 	/**
