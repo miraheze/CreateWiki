@@ -39,7 +39,7 @@ class Hooks implements
 	}
 
 	/** @inheritDoc */
-	public static function onLoginFormValidErrorMessages( array &$messages ) {
+	public function onLoginFormValidErrorMessages( array &$messages ) {
 		$messages[] = 'requestwiki-notloggedin';
 	}
 
