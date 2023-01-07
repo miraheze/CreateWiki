@@ -40,7 +40,7 @@
 	"echo-category-title-request-comment": "Kommentar zur Wiki-Anfrage hinzugefügt",
 	"echo-category-title-request-declined": "Wiki-Anfrage abgelehnt",
 	"echo-pref-tooltip-wiki-creation": "Benachrichtige mich, wenn mein Wiki erstellt wurde.",
-	"echo-pref-tooltip-wiki-request-comment": "Benachrichtige mich, wenn es einen Kommentar zu einer Wiki-Anfrage gibt.",
+	"echo-pref-tooltip-wiki-request-comment": "Benachrichtige mich, wenn ein Kommentar zu einer Wiki-Anfrage existiert.",
 	"echo-pref-tooltip-wiki-request-declined": "Benachrichtige mich, falls meine Wiki-Anfrage abgelehnt wird.",
 	"log-description-farmer": "Dieses Logbuch zeichnet Erstellungen von Wikis auf.",
 	"log-action-filter-farmer": "Typ der Aktion:",

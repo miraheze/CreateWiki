@@ -98,6 +98,9 @@
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
 		},
+		"LoginFormValidErrorMessages": {
+			"handler": "default"
+		},
 		"SetupAfterCache": {
 			"handler": "default"
 		}
@@ -229,7 +232,7 @@
 			"value": false
 		},
 		"CreateWikiSubdomain": {
-			"description": "String. The master part of subdomains, e.g. wiki.miraheze.org, miraheze.org is the master part.",
+			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
 			"public": true,
 			"value": ""
 		},
