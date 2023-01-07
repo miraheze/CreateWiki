@@ -52,7 +52,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor = [
 			'subdomain' => [
 				'type' => 'text',
-				'label-message' => 'requestwiki-label-siteurl',
+				'label-message' => [ 'requestwiki-label-siteurl', $this->config->get( 'CreateWikiSubdomain' ) ],
 				'required' => true,
 			],
 			'sitename' => [
