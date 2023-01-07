@@ -10,7 +10,6 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
-use SpecialPage;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
@@ -31,16 +30,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request = $this->getRequest();
 		$out = $this->getOutput();
 
+		$this->requireLogin( 'requestwiki-notloggedin' );
 		$this->setParameter( $par );
 		$this->setHeaders();
-
-		if ( !$this->getUser()->isRegistered() ) {
-			$loginurl = SpecialPage::getTitleFor( 'Userlogin' )->getFullURL( [ 'returnto' => $this->getPageTitle()->getPrefixedText() ] );
-
-			$out->addWikiMsg( 'requestwiki-notloggedin', $loginurl );
-
-			return false;
-		}
 
 		$this->checkExecutePermissions( $this->getUser() );
 

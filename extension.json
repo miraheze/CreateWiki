@@ -98,6 +98,9 @@
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
 		},
+		"LoginFormValidErrorMessages": {
+			"handler": "default"
+		},
 		"SetupAfterCache": {
 			"handler": "default"
 		}
