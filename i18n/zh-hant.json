@@ -10,6 +10,7 @@
 			"Mark85296341",
 			"Winston Sung",
 			"列维劳德",
+			"捍粵者",
 			"铁桶"
 		]
 	},
@@ -68,7 +69,7 @@
 	"requestwiki-label-bio": "此 Wiki 的主題是否與在世人物相關？",
 	"requestwiki-label-language": "語言：",
 	"requestwiki-label-private": "私人 Wiki（只有指定成員或是 sysop 群組的使用者才能讀取）：",
-	"requestwiki-label-purpose": "此 Wiki 的目的是…",
+	"requestwiki-label-purpose": "此Wiki目的為…",
 	"requestwiki-label-sitename": "Wiki 名稱：",
 	"requestwiki-label-siteurl": "子網域：（subdomain.miraheze.org）",
 	"requestwiki-notloggedin": "抱歉，您需要<span class=\"plainlinks\">[$1 登入]</span>之後才能申請新 Wiki。",

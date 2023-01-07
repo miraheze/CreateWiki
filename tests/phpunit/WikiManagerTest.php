@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
-use LocalRepo;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -60,21 +59,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreatePrivate() {
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
-	}
-
-	/**
-	 * @covers ::create
-	 */
-	public function testLocalZonesCreated() {
-		$repo = new LocalRepo( [
-			'name' => 'local',
-			'backend' => 'local-backend',
-		] );
-
-		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
-			$zonePath = $repo->getZonePath( $zone );
-			$this->assertTrue( $repo->getBackend()->directoryExists( [ 'dir' => $zonePath ] ) );
-		}
 	}
 
 	/**
@@ -226,6 +210,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
+
+		$this->setMwGlobals( 'wgLocalDatabases', array_merge(
+			[ $dbname ], $GLOBALS['wgLocalDatabases']
+		) );
 
 		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
 	}

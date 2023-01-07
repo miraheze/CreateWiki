@@ -42,6 +42,7 @@
 	"logentry-farmer-createwiki": "$1 го создаде викито „$4“",
 	"logentry-farmer-requestaccept": "$1 го прифати викибарањето $4",
 	"logentry-farmer-requestdecline": "$1 го одби викибарањето $4",
+	"logentry-farmer-requestonhold": "$1 го стави барањето за вики $4 на чекање",
 	"logentry-farmer-requestreopen": "$1 го преотвори викибарањето $4",
 	"logentry-farmer-requestwiki": "$1 го побара викито „$4“ (јазик: $5; скриено: $6) во $7",
 	"log-name-farmer": "Фармерски дневник",
