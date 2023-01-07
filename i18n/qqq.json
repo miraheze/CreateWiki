@@ -18,7 +18,7 @@
 	"createwiki": "",
 	"createwiki-defaultmainpage": "Default Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
-	"createwiki-close-email-sender": "",
+	"createwiki-close-email-sender": "noreply",
 	"createwiki-email-subject": "Email subject (if wiki requester has a registered email).",
 	"createwiki-email-body": "Email body (if wiki requester has a registered email).",
 	"createwiki-error-dbexists": "Used as error message when the database being created already exists.",
