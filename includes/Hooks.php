@@ -5,13 +5,15 @@ namespace Miraheze\CreateWiki;
 use Config;
 use EchoAttributeManager;
 use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 
 class Hooks implements
-	SetupAfterCacheHook
+	SetupAfterCacheHook,
+	LoginFormValidErrorMessagesHook
 {
 	/** @var Config */
 	private $config;
