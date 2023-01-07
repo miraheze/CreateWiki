@@ -4,16 +4,16 @@ namespace Miraheze\CreateWiki;
 
 use Config;
 use EchoAttributeManager;
-use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
+use MediaWiki\Hook\SetupAfterCacheHook;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 
 class Hooks implements
-	SetupAfterCacheHook,
-	LoginFormValidErrorMessagesHook
+	LoginFormValidErrorMessagesHook,
+	SetupAfterCacheHook
 {
 	/** @var Config */
 	private $config;
@@ -36,11 +36,6 @@ class Hooks implements
 		if ( !in_array( 'farmer', $wgLogTypes ) ) {
 			$wgLogTypes[] = 'farmer';
 		}
-	}
-
-	/** @inheritDoc */
-	public function onLoginFormValidErrorMessages( array &$messages ) {
-		$messages[] = 'requestwiki-notloggedin';
 	}
 
 	/** @inheritDoc */
@@ -68,6 +63,11 @@ class Hooks implements
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
 		}
+	}
+
+	/** @inheritDoc */
+	public function onLoginFormValidErrorMessages( array &$messages ) {
+		$messages[] = 'requestwiki-notloggedin';
 	}
 
 	/**
