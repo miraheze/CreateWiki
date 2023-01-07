@@ -63,7 +63,7 @@
 	"requestwiki-label-private": "Private wiki (not readable by everyone; only readable by users given the member or sysop groups):",
 	"requestwiki-label-purpose": "The purpose of this wiki is...",
 	"requestwiki-label-sitename": "Wiki name:",
-	"requestwiki-label-siteurl": "Subdomain: (subdomain.miraheze.org)",
+	"requestwiki-label-siteurl": "Subdomain: (subdomain.$1)",
 	"requestwiki-notloggedin": "Please log in to request a wiki.",
 	"requestwiki-success": "Your wiki request ($1) was successfully submitted. Your request will be reviewed by a volunteer wiki creator as soon as possible.",
 	"requestwiki-unknown": "No request exists with this ID.",
