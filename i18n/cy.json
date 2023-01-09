@@ -27,7 +27,7 @@
 	"requestwiki-label-language": "Iaith:",
 	"requestwiki-label-private": "Wici preifat (nid darllenadwy gan bawb):",
 	"requestwiki-label-sitename": "Enw Wici:",
-	"requestwiki-label-siteurl": "Is-barth: (isbarth.miraheze.org)",
+	"requestwiki-label-siteurl": "Is-barth: (isbarth.$1)",
 	"requestwiki-notloggedin": "Mae'n ddrwg gennym, yn gyntaf bydd angen i <span class=\"plainlinks\">[$1 mewngofnodi]</span> cyn i chi ofyn am wiki.",
 	"requestwiki-success": "Mae eich cais wici ($1) wedi ei gyflwyno yn llwyddiannus.",
 	"requestwikiqueue": "Ceisiadau Wici ciw",

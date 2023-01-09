@@ -45,6 +45,7 @@
 	"logentry-farmer-createwiki": "$1 heeft de wiki \"$4\" aangemaakt",
 	"logentry-farmer-requestaccept": "$1 heeft de wiki-aanvraag $4 geaccepteerd",
 	"logentry-farmer-requestdecline": "$1 heeft de wiki-aanvraag $4 afgewezen",
+	"logentry-farmer-requestonhold": "$1 heeft het wiki-verzoek $4 in de wacht geplaatst",
 	"logentry-farmer-requestreopen": "$1 heeft de wiki-aanvraag $4 heropend",
 	"logentry-farmer-requestwiki": "$1 heeft de wiki \"$4\" (taal: $5; privé: $6) aangevraagd in $7",
 	"log-name-farmer": "Farmer-logboek",
