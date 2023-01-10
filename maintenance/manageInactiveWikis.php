@@ -14,6 +14,7 @@ use Maintenance;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use Miraheze\CreateWiki\RemoteWiki;
+use SiteStats;
 
 class ManageInactiveWikis extends Maintenance {
 	public function __construct() {
