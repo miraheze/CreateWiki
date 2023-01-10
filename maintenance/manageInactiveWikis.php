@@ -53,6 +53,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function checkLastActivity( $dbName, $wiki, $config ) {
+		$warnDays = (int)( $config->get( 'CreateWikiStateDays' )['warn'] ?? 0 );
 		$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
 		$closeDays = (int)$config->get( 'CreateWikiStateDays' )['closed'];
 		$removeDays = (int)$config->get( 'CreateWikiStateDays' )['removed'];
@@ -72,6 +73,13 @@ class ManageInactiveWikis extends Maintenance {
 
 		// If for some reason $timeStamp returns a non-zero exit code, bail out.
 		if ( $timeStamp->getExitCode() !== 0 || !is_numeric( $timeStamp->getStdout() ) ) {
+			return true;
+		}
+
+		// Wiki has no edits since creation
+		if ( $canWrite && $warnDays && $wiki->getCreationDate() <= date( "YmdHis", strtotime( "-{$warnDays} days" ) ) && !( SiteStats::edits() > 1 ) ) {
+			$this->notify( $dbName, 'warn' );
+
 			return true;
 		}
 
@@ -95,7 +103,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
-					$this->notify( $dbName );
+					$this->notify( $dbName, 'close' );
 
 					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
@@ -125,7 +133,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
 						$wiki->markClosed();
-						$this->notify( $dbName );
+						$this->notify( $dbName, 'close' );
 
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
@@ -161,13 +169,13 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	private function notify( $wiki ) {
+	private function notify( $wiki, $type ) {
 		$notificationData = [
-			'type' => 'closure',
-			'subject' => wfMessage( 'miraheze-close-email-subject', $wiki )->inContentLanguage()->text(),
+			'type' => $type,
+			'subject' => wfMessage( 'miraheze-' . $type . '-email-subject', $wiki )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
-				'text' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
+				'html' => wfMessage( 'miraheze-' . $type . '-email-body' )->inContentLanguage()->text(),
+				'text' => wfMessage( 'miraheze-' . $type . '-email-body' )->inContentLanguage()->text(),
 			],
 		];
 
