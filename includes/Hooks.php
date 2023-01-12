@@ -54,8 +54,8 @@ class Hooks implements
 		$cWJ->update();
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
-			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
-			$isPrivate = (bool)$cacheArray['states']['private'] ?? false;
+			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
+			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
 			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
 			$isPrivate = $remoteWiki->isPrivate();
