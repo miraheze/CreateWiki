@@ -267,7 +267,7 @@ class WikiInitialise {
 			foreach ( $queue as $path => $mtime ) {
 				$json = file_get_contents( $path );
 				$info = json_decode( $json, true );
-				$version = $info['manifest_version'];
+				$version = $info['manifest_version'] ?? 2;
 
 				$processor->extractInfo( $path, $info, $version );
 			}
