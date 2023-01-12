@@ -128,7 +128,7 @@ class WikiInitialise {
 			return;
 		}
 
-		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
+		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true ) ?? [];
 
 		// Assign top level variables first
 		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'] ?? $this->config->settings['wgSitename']['default'];
@@ -138,9 +138,9 @@ class WikiInitialise {
 		}
 
 		// Assign states
-		$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'] ?? false;
-		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'] ?? false;
-		$this->config->settings['cwInactive'][$this->dbname] = ( ( $cacheArray['states']['inactive'] ?? false ) == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'] ?? false;
+		$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'];
+		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
+		$this->config->settings['cwInactive'][$this->dbname] = ( ( $cacheArray['states']['inactive'] ?? false ) == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 
 		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
