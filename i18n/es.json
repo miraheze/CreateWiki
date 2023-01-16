@@ -77,7 +77,7 @@
 	"requestwiki-label-private": "Wiki privada (no legible por cualquiera; solo por usuarios en los grupos de miembros o sysop):",
 	"requestwiki-label-purpose": "El propósito de esta wiki es...",
 	"requestwiki-label-sitename": "Nombre de la wiki:",
-	"requestwiki-label-siteurl": "Subdominio (subdominio.miraheze.org):",
+	"requestwiki-label-siteurl": "Subdominio: (subdominio.$1)",
 	"requestwiki-notloggedin": "Es necesario <span class=\"plainlinks\">[$1 acceder a una cuenta]</span> antes de solicitar una wiki.",
 	"requestwiki-success": "Tu solicitud de wiki ($1) se envió exitosamente. Un voluntario creador de wikis revisará la solicitud tan pronto como sea posible.",
 	"requestwiki-unknown": "No existe una petición con este ID.",
