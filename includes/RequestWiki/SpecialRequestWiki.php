@@ -29,6 +29,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function execute( $par ) {
 		$request = $this->getRequest();
 		$out = $this->getOutput();
+		$this->checkReadOnly();
 
 		$this->requireLogin( 'requestwiki-notloggedin' );
 		$this->setParameter( $par );
