@@ -26,6 +26,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	protected function getFormFields() {
 		$par = $this->par;
 		$request = $this->getRequest();
+		$this->checkReadOnly();
 
 		$formDescriptor = [
 			'dbname' => [
