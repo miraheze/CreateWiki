@@ -33,9 +33,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->requireLogin( 'requestwiki-notloggedin' );
 		$this->setParameter( $par );
 		$this->setHeaders();
-		$this->checkReadOnly();
 
 		$this->checkExecutePermissions( $this->getUser() );
+		$this->checkReadOnly();
 
 		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
 			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
