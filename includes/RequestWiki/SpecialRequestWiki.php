@@ -34,8 +34,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setParameter( $par );
 		$this->setHeaders();
 
-		$this->checkExecutePermissions( $this->getUser() );
 		$this->checkReadOnly();
+		$this->checkExecutePermissions( $this->getUser() );
 
 		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
 			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
