@@ -81,7 +81,7 @@
 	"requestwiki-label-purpose": "このWikiの目的は…",
 	"requestwiki-label-sitename": "Wikiの名前:",
 	"requestwiki-label-siteurl": "サブドメイン: (subdomain.$1)",
-	"requestwiki-notloggedin": "お手数ですが<span class =\"plainlinks\">[$1 ログイン]</span>してからウィキを申請してください。",
+	"requestwiki-notloggedin": "<span class =\"plainlinks\">[$1 ログイン]</span>をしてからウィキを申請してください。",
 	"requestwiki-success": "あなたのWikiの申請 ($1) は正常に受理されました。申請はボランティアのWiki作成者によって可能な限り速やかに審査されます。",
 	"requestwiki-unknown": "このIDの申請は存在しません。",
 	"requestwikiqueue": "Wiki申請の待ち",
