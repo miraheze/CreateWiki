@@ -123,6 +123,8 @@ class WikiManager {
 				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
 
+		$this->cwdb->begin( __METHOD__ );
+
 		$this->cwdb->insert(
 			'cw_wikis',
 			[
@@ -133,8 +135,12 @@ class WikiManager {
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category
-			]
+			],
+			[],
+			__METHOD__
 		);
+
+		$this->cwdb->commit( __METHOD__ );
 
 		$this->recacheJson();
 
