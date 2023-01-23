@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use CentralAuthTestUser;
 use FatalError;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -10,6 +11,7 @@ use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
 use UserRightsProxy;
 use Wikimedia\Rdbms\Database;
+use WikiMap;
 
 /**
  * @group CreateWiki
@@ -34,6 +36,15 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			$GLOBALS['IP'] . '/extensions/CheckUser/schema/mysql/tables-generated.sql',
 			$GLOBALS['IP'] . '/extensions/Echo/sql/mysql/tables-generated.sql',
 		] );
+
+		$testUser = $this->getTestUser()->getUser();
+		$testUser = new CentralAuthTestUser(
+			$testUser->getName(),
+			bin2hex( random_bytes( 6 ) ),
+			[],
+			[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
+		);
+		$testUser->save( $this->db );
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
