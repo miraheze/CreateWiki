@@ -123,6 +123,8 @@ class WikiManager {
 				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
 
+		define( 'CW_CREATION_IN_PROGRESS', $wiki );
+
 		$this->cwdb->insert(
 			'cw_wikis',
 			[
@@ -136,7 +138,7 @@ class WikiManager {
 			]
 		);
 
-		$this->recacheJson();
+		$this->recacheJson( $wiki );
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
