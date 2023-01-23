@@ -33,18 +33,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testExecuteNotLoggedIn() {
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-
-		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			new SpecialRequestWiki( $hookRunner )
-		);
-
-		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
-
-		$anon = $this->createMock( User::class );
-		$anon->method( 'isRegistered' )->willReturn( false );
-
-		$testContext->setUser( $anon );
-		$specialRequestWiki->setContext( $testContext );
+		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
 
 		$this->expectException( UserNotLoggedIn::class );
 		$specialRequestWiki->execute( '' );
