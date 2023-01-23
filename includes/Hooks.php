@@ -50,8 +50,16 @@ class Hooks implements
 		$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$dbName = $this->config->get( 'DBname' );
 
-		$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
-		$cWJ->update();
+		if (
+			!defined( 'CW_CREATION_IN_PROGRESS' ) ||
+			(
+				defined( 'CW_CREATION_IN_PROGRESS' ) &&
+				CW_CREATION_IN_PROGRESS !== $dbName
+			)
+		) {
+			$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
+			$cWJ->update();
+		}
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
