@@ -10,8 +10,8 @@ use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
 use UserRightsProxy;
-use Wikimedia\Rdbms\Database;
 use WikiMap;
+use Wikimedia\Rdbms\Database;
 
 /**
  * @group CreateWiki
