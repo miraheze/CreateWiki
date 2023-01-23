@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
+			"Afalau",
 			"John Lewis"
 		]
 	},
 	"createwiki": "Creu wiki",
-	"createwiki-defaultmainpage": "__NOTOC__\n== Croeso yn {{SITENAME}}! ==\nhwn Brif Dudalen ei greu'n awtomatig gan grëwr wiki (gwirfoddolwr a greodd y wici hwn fesul cais), ac mae'n ymddangos nad yw'n cael ei ddisodli eto.\n\n === Ar gyfer y biwrocrat (au) o'r wici hwn === \nHelo, a chroeso yn eich wiki newydd! Diolch am ddewis Miraheze ar gyfer cynnal eich wiki, ac rydym yn gobeithio y byddwch yn mwynhau ein hosting.\n\nGallwch ddechrau gweithio ar eich wiki, pryd bynnag y byddwch ei eisiau ar unwaith.\n\nAngen cymorth? Dim problem! Byddwn yn eich helpu gyda'ch wiki yn ôl yr angen. I ddechrau rydym wedi ychwanegu ychydig o gysylltiadau am weithio gyda MediaWici:\n* <span class=\"plainlinks\">[https://www.mediawiki.org/wiki/Help:Contents Canllaw MediaWici (ee mordwyo, golygu, dileu tudalennau, defnyddwyr blocio)]</span>\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/FAQ Miraheze Cwestiynau Cyffredin]</span>\n\n==== Ond Miraheze, yr wyf yn dal ddim yn deall X! ====\nWel, dyw hynny ddim yn broblem. Hyd yn oed os nad yw rhywbeth yn cael ei egluro yn y ddogfennaeth / Cwestiynau Cyffredin, rydym yn dal yn hapus i helpu chi. Gallwch ddod o hyd i ni yma:\n* <span class=\"plainlinks\">[https://meta.miraheze.org/wiki/Help_center Ar ein wiki Miraheze hunain]</span>\n* Ar IRC yn #miraheze ar irc.libera.chat ([irc://irc.libera.chat/%23miraheze cyswllt uniongyrchol];\n\n=== Ar gyfer ymwelydd o wici hwn ===\nHelo, 'r ball Brif Dudalen y wici hwn (mae hyn yn y diofyn Main Page) wedi cael ei ddisodli gan y biwrocrat (au) o'r wici hwn eto. Efallai y bydd y biwrocrat (au) yn dal i fod yn gweithio ar y Brif Dudalen, felly gwiriwch y dudalen hon eto yn nes ymlaen!",
+	"createwiki-defaultmainpage": "__NOTOC__\n== Croeso i {{SITENAME}}! ==\nCrëwyd y Brif Dudalen hon yn awtomatig, ac mae'n ymddangos nad yw'n cael ei disodli eto.\n\n=== At sylw biwrocratiau'r wici hwn === \nHelo, a chroeso i'ch wici newydd! Diolch am ddewis Miraheze i gynnal eich wici, gobeithio y byddwch yn mwynhau defnyddio ein gwasanaethau.\n\nGallwch ddechrau gweithio ar eich wici unrhyw bryd.\n\nAngen cymorth? Dim problem! Rydym yn barod i'ch helpu chi yn ôl yr angen. I ddechrau, tarwch olwg ar y dolenni isod:\n* [[mw:Special:MyLanguage/Help:Contents|Canllaw MediaWiki]] (e.e. chwilio, golygu, dileu tudalennau, blocio defnyddiwr)\n* [[meta:Special:MyLanguage/FAQ|Cwestiynau Cyffredin Miraheze]]\n* [[meta:Special:MyLanguage/Request features|Gwneud cais i newid gosodiadau ar eich wici]]. (Dylai gwneud newidiadau i Ychwanegynnau, Gwedd a Logo/Favicon trwy [[Special:ManageWiki]] ar eich wici, gweler [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] am fwy o wybodaeth.)\n\n==== Dw i dal ddim yn deall X! ====\nPaid â phoeni o gwbl. Hyd yn oed os nad yw rhywbeth yn cael ei egluro yn y ddogfennaeth / cwestiynau cyffredin, rydym yn dal yn hapus i'ch helpu. Gallwch gysylltu â ni yma:\n\n* [[meta:Special:MyLanguage/Help center|Wici Miraheze]]\n* Ar [[phab:|Phabricator]]\n* Ar [https://miraheze.org/discord Discord]\n* Ar IRC yn #miraheze ar irc.libera.chat ([irc://irc.libera.chat/%23miraheze dolen uniongyrchol]; [https://web.libera.chat/?channel=#miraheze webchat])\n\n=== At sylw ymwelwyr y wici hwn ===\nHelo, nad yw'r Brif Dudalen rhagosodedig y wici hwn (y dudalen hon) wedi cael ei disodli eto gan fiwrocrat(iau)'r wici hwn. Mae'n bosib bod y biwrocrat(iau) yn dal i weithio ar Brif Dudalen, felly dewch nôl nes ymlaen!",
 	"createwiki-desc": "Mae estyniad defnyddiol ar gyfer creu wikis mewn fferm wiki.",
 	"createwiki-error-dbexists": "Mae wiki gyda'r enw cronfa ddata eisoes yn bodoli.",
 	"createwiki-error-notalnum": "Ni all yr enw cronfa ddata cymeriadau nad ydynt yn alffaniwmerig.",
@@ -17,16 +18,16 @@
 	"createwiki-label-requester": "Requester:",
 	"createwiki-label-sitename": "Enw'r safle:",
 	"createwiki-success": "Roedd y wiki 'yn llwyddiannus.",
-	"log-description-farmer": "Mae'r log traciau ceisiadau wiki, creadigaethau wici ac yn gysylltiedig ag ef bopeth.",
+	"log-description-farmer": "Mae'r log hwn yn tracio creadigaethau wiki.",
 	"logentry-farmer-createwiki": "$1 greodd y wici \"$4\"",
 	"logentry-farmer-requestwiki": "$1 gofynnodd y wici \"$4\" (iaith: $5; preifat: $6) yn $7",
 	"log-name-farmer": "Farmer log",
 	"requestwiki": "Cais am wiki",
-	"requestwiki-header": "Rydych yn mynd i ofyn am wiki newydd yn Miraheze, gwych! Mae angen i chi lenwi'r ffurflen hon, cyn y gallwn adolygu eich cais.\n\nOs ydych am parth arfer ar gyfer eich wiki (hy nid yn is-barth .miraheze.org safonol), darllenwch <span class=\"plainlinks\">[$1 Mae'r]</span> gyntaf.",
+	"requestwiki-header": "Diolch am ddewis Miraheze i gynnal eich wici! I ddechrau, llenwch y ffurflen isod er mwyn inni adolygu eich cais.\n\nBydd eich cais wici yn cael ei adolygu gan wirfoddolwr, a gellir ei dracio ar y dudalen a roddir wrth ichi gyflwyno'r cais.\n\nOs ydych chi eisiau parth arbennig ar gyfer eich wici (h.y. nid is-barth fel .miraheze.org), darllenwch y dudalen <span class=\"plainlinks\">[$1 hon]</span> yn gyntaf. Rhaid ichi ddewis is-barth yn gyntaf, a ffurfweddir eich parth arbennig wedyn.\n\nPan fyddwch yn gwneud cais am wici, rydych chi'n cytuno'n awtomatig i'n polisïau [[Content Policy|Cynnwys]] a [[Dormancy Policy|Segurdeb]].",
 	"requestwiki-label-language": "Iaith:",
 	"requestwiki-label-private": "Wici preifat (nid darllenadwy gan bawb):",
 	"requestwiki-label-sitename": "Enw Wici:",
-	"requestwiki-label-siteurl": "is-barth:",
+	"requestwiki-label-siteurl": "Is-barth: (isbarth.$1)",
 	"requestwiki-notloggedin": "Mae'n ddrwg gennym, yn gyntaf bydd angen i <span class=\"plainlinks\">[$1 mewngofnodi]</span> cyn i chi ofyn am wiki.",
 	"requestwiki-success": "Mae eich cais wici ($1) wedi ei gyflwyno yn llwyddiannus.",
 	"requestwikiqueue": "Ceisiadau Wici ciw",

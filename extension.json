@@ -42,7 +42,8 @@
 	},
 	"JobClasses": {
 		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
-		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob"
+		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
+		"SetContainersAccessJob": "Miraheze\\CreateWiki\\SetContainersAccessJob"
 	},
 	"LogTypes": [
 		"farmer"
@@ -68,6 +69,7 @@
 		"farmer/createwiki": "LogFormatter",
 		"farmer/requestaccept": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
+		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
 	},
@@ -95,6 +97,9 @@
 		"BeforeCreateEchoEvent": "Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent",
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
+		},
+		"LoginFormValidErrorMessages": {
+			"handler": "default"
 		},
 		"SetupAfterCache": {
 			"handler": "default"
@@ -227,7 +232,7 @@
 			"value": false
 		},
 		"CreateWikiSubdomain": {
-			"description": "String. The master part of subdomains, e.g. wiki.miraheze.org, miraheze.org is the master part.",
+			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
 			"public": true,
 			"value": ""
 		},
@@ -270,6 +275,16 @@
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
 			"public": true,
 			"value": false
+		},
+		"CreateWikiUseSecureContainers": {
+			"description": "Boolean. Whether to use secure containers for file backend. If enabled, deleted and temp containers are always secure, and all default (core) local contaners are secure for private wikis. Additional containers can be secured with $wgCreateWikiExtraSecuredContainers.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiExtraSecuredContainers": {
+			"description": "Array. List of extra local containers to secure for private wikis if $wgCreateWikiUseSecureContainers is enabled.",
+			"public": true,
+			"value": []
 		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",

@@ -15,12 +15,12 @@ class CheckLastWikiActivity extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->mDescription = 'Calculates the timestamp of the last meaningful contribution to the wiki.';
+		$this->addDescription( 'Calculates the timestamp of the last meaningful contribution to the wiki.' );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = $this->getDB( DB_REPLICA );
 
 		$row = $dbr->selectRow(
 			'recentchanges',

@@ -16,7 +16,7 @@ class ListDatabases extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->mDescription = 'Lists all databases known by the wiki farm.';
+		$this->addDescription( 'Lists all databases known by the wiki farm.' );
 		$this->requireExtension( 'CreateWiki' );
 	}
 

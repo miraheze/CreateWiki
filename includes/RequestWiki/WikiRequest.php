@@ -40,7 +40,10 @@ class WikiRequest {
 	public function __construct( int $id = null, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+
+		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 
@@ -184,7 +187,6 @@ class WikiRequest {
 				$this->tryAutoCreate();
 			}
 		} else {
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $this->dbname, $this->hookRunner );
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
@@ -240,6 +242,7 @@ class WikiRequest {
 		if ( $notifyUsers ) {
 			$this->sendNotification( $reason, $notifyUsers );
 		}
+		$this->log( $user, 'requestonhold' );
 	}
 
 	private function log( User $user, string $log ) {
@@ -336,12 +339,6 @@ class WikiRequest {
 	}
 
 	public function tryAutoCreate() {
-		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
-
-		if ( !$modelFile ) {
-			return;
-		}
-
 		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
 		$jobQueueGroup->push( new RequestWikiAIJob(
 			Title::newMainPage(),

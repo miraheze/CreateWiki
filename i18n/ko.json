@@ -50,7 +50,7 @@
 	"requestwiki-label-private": "비공개 위키 (공개적으로 읽을 수 없음):",
 	"requestwiki-label-purpose": "이 위키의 목적은...",
 	"requestwiki-label-sitename": "위키 이름:",
-	"requestwiki-label-siteurl": "서브도메인: (subdomain.miraheze.org)",
+	"requestwiki-label-siteurl": "서브도메인: (subdomain.$1)",
 	"requestwiki-notloggedin": "<span class=\"plainlinks\">[$1 로그인]</span>한 후에 위키를 요청할 수 있습니다.",
 	"requestwiki-success": "위키 요청($1)이 성공적으로 제출되었습니다. 요청은 자원봉사자가 가능한 조속히 검토할 것입니다.",
 	"requestwiki-unknown": "이 ID의 요청이 존재하지 않습니다.",

@@ -14,7 +14,7 @@ jobs:
       matrix:
         include:
           # Latest stable MediaWiki - PHP 7.4 (phan)
-          - mw: 'REL1_38'
+          - mw: 'REL1_39'
             php: 7.4
             php-docker: 74
             experimental: false
@@ -27,22 +27,8 @@ jobs:
             experimental: true
             stage: phan
 
-          # Latest stable MediaWiki - PHP 7.4 (phpunit-unit)
-          - mw: 'REL1_38'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: phpunit-unit
-
-          # Latest MediaWiki master - PHP 7.4 (phpunit-unit)
-          - mw: 'master'
-            php: 7.4
-            php-docker: 74
-            experimental: false
-            stage: phpunit-unit
-
           # Latest stable MediaWiki - PHP 7.4 (phpunit)
-          - mw: 'REL1_38'
+          - mw: 'REL1_39'
             php: 7.4
             php-docker: 74
             experimental: false
@@ -55,8 +41,15 @@ jobs:
             experimental: false
             stage: phpunit
 
+          # Latest MediaWiki master - PHP 8.1 (phpunit)
+          - mw: 'master'
+            php: 8.1
+            php-docker: 81
+            experimental: false
+            stage: phpunit
+
           # Latest stable MediaWiki - PHP 7.4 (selenium)
-          - mw: 'REL1_38'
+          - mw: 'REL1_39'
             php: 7.4
             php-docker: 74
             experimental: false
@@ -70,7 +63,7 @@ jobs:
             stage: selenium
 
           # Latest stable MediaWiki - PHP 7.4 (qunit)
-          - mw: 'REL1_38'
+          - mw: 'REL1_39'
             php: 7.4
             php-docker: 74
             experimental: false
@@ -84,14 +77,14 @@ jobs:
             stage: qunit
 
           # Latest stable MediaWiki - PHP 7.4 (npm-test)
-          - mw: 'REL1_38'
+          - mw: 'REL1_39'
             php: 7.4
             php-docker: 74
             experimental: false
             stage: npm-test
   
           # Latest stable MediaWiki - PHP 7.4 (composer-test)
-          - mw: 'REL1_38'
+          - mw: 'REL1_39'
             php: 7.4
             php-docker: 74
             experimental: false
@@ -108,7 +101,7 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.10.0
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
 
@@ -153,7 +146,7 @@ jobs:
           fi
 
       - name: Cache docker image
-        uses: actions/cache@v3.0.8
+        uses: actions/cache@v3.2.3
         with:
           path: /home/runner/docker-images/${{ env.DOCKER_IMAGE }}
           key: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_LATEST_TAG }}
@@ -165,7 +158,7 @@ jobs:
 
       - name: Cache quibble docker image
         if: ${{ matrix.stage == 'coverage' || matrix.stage == 'phan' }}
-        uses: actions/cache@v3.0.8
+        uses: actions/cache@v3.2.3
         with:
           path: /home/runner/docker-images/${{ env.QUIBBLE_DOCKER_IMAGE }}
           key: ${{ env.QUIBBLE_DOCKER_IMAGE }}:${{ env.QUIBBLE_DOCKER_LATEST_TAG }}
@@ -209,7 +202,7 @@ jobs:
           git -C src/ log -n 1 --format="%H"
 
       - name: Cache dependencies (composer and npm)
-        uses: actions/cache@v3.0.8
+        uses: actions/cache@v3.2.3
         with:
           path: /home/runner/cache
           key: ${{ runner.os }}-${{ env.MEDIAWIKI_VERSION }}-${{ hashFiles('**/*.lock') }}

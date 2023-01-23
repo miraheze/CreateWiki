@@ -222,7 +222,6 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
 			}
 
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$wm = new WikiManager( $request->dbname, $this->hookRunner );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname );
@@ -285,8 +284,8 @@ class RequestWikiRequestViewer {
 					'raw' => true,
 				];
 
-				$formDescriptor['submission-action']['default'] = 'decline';
-				$formDescriptor['submission-action']['disabled'] = true;
+				// We don't want to be able to approve it if the database is not valid
+				unset( $formDescriptor['submission-action']['options-messages']['requestwikiqueue-approve'] );
 			}
 		}
 
@@ -368,9 +367,7 @@ class RequestWikiRequestViewer {
 			$request->private = $formData['edit-private'];
 			$request->bio = $formData['edit-bio'];
 
-			if ( $request->getStatus() === 'declined' ) {
-				$request->reopen( $form->getUser() );
-			}
+			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 

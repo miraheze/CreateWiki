@@ -34,7 +34,10 @@ class WikiInitialise {
 				'combi' => []
 			];
 		} else {
-			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
+			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true ) ?: [
+				'timestamp' => 0,
+				'combi' => []
+			];
 		}
 
 		if ( !file_exists( $this->cacheDir . '/deleted.json' ) ) {
@@ -42,7 +45,9 @@ class WikiInitialise {
 				'databases' => []
 			];
 		} else {
-			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true );
+			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true ) ?: [
+				'databases' => []
+			];
 		}
 
 		// Assign all known wikis
@@ -80,6 +85,8 @@ class WikiInitialise {
 		// Let's found out what the database name is!
 		if ( defined( 'MW_DB' ) ) {
 			$this->dbname = MW_DB;
+		} elseif ( defined( 'CW_DB' ) ) {
+			$this->dbname = CW_DB;
 		} elseif ( isset( array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname] ) ) {
 			$this->dbname = array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname];
 		} else {
@@ -121,19 +128,19 @@ class WikiInitialise {
 			return;
 		}
 
-		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
+		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true ) ?? [];
 
 		// Assign top level variables first
-		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'];
-		$this->config->settings['wgLanguageCode'][$this->dbname] = $cacheArray['core']['wgLanguageCode'];
-		if ( $cacheArray['url'] ) {
+		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'] ?? $this->config->settings['wgSitename']['default'];
+		$this->config->settings['wgLanguageCode'][$this->dbname] = $cacheArray['core']['wgLanguageCode'] ?? 'en';
+		if ( isset( $cacheArray['url'] ) && $cacheArray['url'] ) {
 			$this->config->settings['wgServer'][$this->dbname] = $cacheArray['url'];
 		}
 
 		// Assign states
 		$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'];
 		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
-		$this->config->settings['cwInactive'][$this->dbname] = ( $cacheArray['states']['inactive'] == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
+		$this->config->settings['cwInactive'][$this->dbname] = ( ( $cacheArray['states']['inactive'] ?? false ) == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 
 		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
@@ -145,7 +152,7 @@ class WikiInitialise {
 			}
 		}
 
-		foreach ( $cacheArray['states'] as $state => $value ) {
+		foreach ( ( $cacheArray['states'] ?? [] ) as $state => $value ) {
 			if ( $value !== 'exempt' && (bool)$value ) {
 				$tags[] = $state;
 			}
@@ -154,7 +161,7 @@ class WikiInitialise {
 		$this->config->siteParamsCallback = static function () use ( $cacheArray, $tags ) {
 			return [
 				'suffix' => null,
-				'lang' => $cacheArray['core']['wgLanguageCode'],
+				'lang' => $cacheArray['core']['wgLanguageCode'] ?? 'en',
 				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $tags ),
 				'params' => []
 			];
@@ -260,7 +267,7 @@ class WikiInitialise {
 			foreach ( $queue as $path => $mtime ) {
 				$json = file_get_contents( $path );
 				$info = json_decode( $json, true );
-				$version = $info['manifest_version'];
+				$version = $info['manifest_version'] ?? 2;
 
 				$processor->extractInfo( $path, $info, $version );
 			}

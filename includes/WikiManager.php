@@ -14,6 +14,7 @@ use Title;
 
 class WikiManager {
 	private $config;
+	private $lbFactory;
 	private $cluster;
 	private $dbname;
 	private $dbw;
@@ -28,7 +29,10 @@ class WikiManager {
 	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+
+		$this->cwdb = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
 			'cw_wikis',
@@ -74,7 +78,8 @@ class WikiManager {
 			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
-			$newDbw = wfGetDB( DB_PRIMARY, [], $dbname );
+			$newDbw = $this->lbFactory->getMainLB( $dbname )
+				->getMaintenanceConnectionRef( DB_PRIMARY, [], $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -114,7 +119,8 @@ class WikiManager {
 		if ( $this->lb ) {
 			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
-			$this->dbw = wfGetDB( DB_PRIMARY, [], $wiki );
+			$this->dbw = $this->lbFactory->getMainLB( $wiki )
+				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
 
 		$this->cwdb->insert(
@@ -139,6 +145,13 @@ class WikiManager {
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		$blankConfig = new GlobalVarConfig( '' );
+
+		Shell::makeScriptCommand(
+			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+			[
+				'--wiki', $wiki
+			]
+		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 		Shell::makeScriptCommand(
 			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/populateMainPage.php',
@@ -214,6 +227,7 @@ class WikiManager {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
+			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->delete(
 				$table,
 				[
@@ -246,6 +260,7 @@ class WikiManager {
 		}
 
 		foreach ( (array)$this->tables as $table => $selector ) {
+			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->update(
 				$table,
 				[
@@ -311,7 +326,8 @@ class WikiManager {
 			return;
 		}
 
-		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$logDBConn = $this->lbFactory->getMainLB( $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) )
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );

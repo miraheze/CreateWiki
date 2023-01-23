@@ -21,7 +21,7 @@ class PopulateMainPage extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->mDescription = 'Populates the Main Page of a new wiki.';
+		$this->addDescription( 'Populates the Main Page of a new wiki.' );
 		$this->addOption( 'lang', 'Language of the Main Page, otherwise defaults to the wiki\'s language.', false );
 
 		$this->requireExtension( 'CreateWiki' );

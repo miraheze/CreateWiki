@@ -21,9 +21,16 @@ class RequestWikiAIJob extends Job {
 
 		$wr = new WikiRequest( $this->params['id'], $hookRunner );
 
-		if ( file_exists( $modelFile ) ) {
-			$modelManager = new ModelManager();
-			$pipeline = $modelManager->restoreFromFile( $modelFile );
+		$pipeline = '';
+		$hookRunner->onCreateWikiReadPersistentModel( $pipeline );
+
+		// @phan-suppress-next-line PhanImpossibleCondition
+		if ( $pipeline || ( $modelFile && file_exists( $modelFile ) ) ) {
+			if ( !$pipeline ) {
+				$modelManager = new ModelManager();
+				$pipeline = $modelManager->restoreFromFile( $modelFile );
+			}
+
 			$tokenDescription = (array)strtolower( $this->params['description'] );
 
 			// @phan-suppress-next-line PhanUndeclaredMethod

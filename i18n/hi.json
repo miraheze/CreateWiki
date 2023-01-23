@@ -43,6 +43,7 @@
 	"logentry-farmer-createwiki": "$1 ने विकि \"$4\" बनाया",
 	"logentry-farmer-requestaccept": "$1 ने विकि अनुरोध $4 को स्वीकार किया",
 	"logentry-farmer-requestdecline": "$1 ने विकि अनुरोध $4 को अस्वीकार किया",
+	"logentry-farmer-requestonhold": "$1 ने विकि अनुरोध $4 को लंबित किया",
 	"logentry-farmer-requestreopen": "$1 ने विकि अनुरोध $4 खोला",
 	"logentry-farmer-requestwiki": "$1 ने $7 में विकि \"$4\" का अनुरोध किया (भाषा: $5; व्यक्तिगत: $6)",
 	"log-name-farmer": "किसान लॉग",
@@ -62,7 +63,7 @@
 	"requestwiki-label-private": "व्यक्तिगत विकि (कोई पढ़ नहीं सकता; सिर्फ सदस्य या प्रबंधक अधिकार वाले सदस्य ही पढ़ सकते हैं):",
 	"requestwiki-label-purpose": "विकि का लक्ष्य है...",
 	"requestwiki-label-sitename": "विकि का नाम:",
-	"requestwiki-label-siteurl": "सबडोमेन: (सबडोमेन.miraheze.org)",
+	"requestwiki-label-siteurl": "सबडोमेन: (सबडोमेन.$1)",
 	"requestwiki-notloggedin": "क्षमा करें, विकि का अनुरोध करने से पहले आपको <span class=\"plainlinks\">[$1 लॉग-इन]</span> करना होगा।",
 	"requestwiki-success": "आपके अनुरोध ($1) को सफलतापूर्वक भेज दिया गया है। आपके अनुरोध को जल्द ही एक स्वयंसेवक विकि निर्माता जाँचेंगे।",
 	"requestwiki-unknown": "इस ID से कोई भी अनुरोध मौजूद नहीं है।",
@@ -71,8 +72,11 @@
 	"requestwikiqueue-approved": "स्वीकृत",
 	"requestwikiqueue-comments": "अनुरोध की टिप्पणियाँ",
 	"requestwikiqueue-decline": "अस्वीकार करें",
+	"requestwikiqueue-declined": "अस्वीकृत",
 	"requestwikiqueue-edit": "अनुरोध को संपादित करें",
 	"requestwikiqueue-handle": "अनुरोध को जाँचें",
+	"requestwikiqueue-inreview": "निरीक्षण में",
+	"requestwikiqueue-onhold": "लंबित",
 	"requestwikiqueue-pager-status-approved": "स्वीकृत",
 	"requestwikiqueue-pager-status-declined": "अस्वीकृत",
 	"requestwikiqueue-pager-status-inreview": "अवलोकन में है",
@@ -94,6 +98,6 @@
 	"requestwikiqueue-request-label-visibility-delete": "'हटाएँ' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
 	"requestwikiqueue-request-label-visibility-hide": "'createwiki' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
 	"requestwikiqueue-request-label-visibility-oversight": "'suppressrevision' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
-	"right-requestwiki": "विकियों का अनुरोध करें",
-	"right-createwiki": "विकियाँ बनाएँ"
+	"right-requestwiki": "विकियों का अनुरोध करना",
+	"right-createwiki": "विकियाँ बनाना"
 }

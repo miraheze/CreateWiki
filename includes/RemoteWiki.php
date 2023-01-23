@@ -36,7 +36,10 @@ class RemoteWiki {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
-		$this->dbw = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
 			'*',
@@ -189,6 +192,13 @@ class RemoteWiki {
 			'new' => 1
 		];
 
+		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
+			$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+			$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+				new SetContainersAccessJob( [ 'private' => true ] )
+			);
+		}
+
 		$this->hooks[] = 'CreateWikiStatePrivate';
 		$this->private = true;
 		$this->newRows['wiki_private'] = true;
@@ -199,6 +209,13 @@ class RemoteWiki {
 			'old' => 0,
 			'new' => 1
 		];
+
+		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
+			$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+			$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+				new SetContainersAccessJob( [ 'private' => false ] )
+			);
+		}
 
 		$this->hooks[] = 'CreateWikiStatePublic';
 		$this->private = false;

@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki;
 
 use Config;
 use EchoAttributeManager;
+use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
@@ -11,6 +12,7 @@ use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 
 class Hooks implements
+	LoginFormValidErrorMessagesHook,
 	SetupAfterCacheHook
 {
 	/** @var Config */
@@ -37,6 +39,11 @@ class Hooks implements
 	}
 
 	/** @inheritDoc */
+	public function onLoginFormValidErrorMessages( array &$messages ) {
+		$messages[] = 'requestwiki-notloggedin';
+	}
+
+	/** @inheritDoc */
 	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
@@ -49,7 +56,7 @@ class Hooks implements
 		}
 
 		if ( file_exists( "{$cacheDir}/{$dbName}.json" ) ) {
-			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
+			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
 			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
