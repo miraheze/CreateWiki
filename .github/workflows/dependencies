@@ -1,3 +1,6 @@
+MirahezeMagic:
+  branch: master
+  repo: https://github.com/miraheze/MirahezeMagic
 Echo:
   branch: auto
   repo: auto
