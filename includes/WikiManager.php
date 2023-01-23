@@ -136,7 +136,7 @@ class WikiManager {
 			]
 		);
 
-		$this->recacheJson();
+		$this->recacheJson( $wiki );
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
