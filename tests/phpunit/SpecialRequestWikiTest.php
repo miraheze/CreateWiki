@@ -54,6 +54,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::execute
 	 */
 	public function testExecuteLoggedIn() {
+		$this->setGroupPermissions( 'user', 'requestwiki', true );
+
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
 
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
