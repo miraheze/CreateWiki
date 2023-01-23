@@ -6,7 +6,6 @@ use DerivativeContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
-use User;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 
