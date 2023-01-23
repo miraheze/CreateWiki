@@ -25,6 +25,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->setMwGlobals( 'wgConf', $conf );
 		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
+		$this->setMwGlobals( 'wgCreateWikiUseJobQueue', true );
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
