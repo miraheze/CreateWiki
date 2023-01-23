@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests;
 use CentralAuthTestUser;
 use FatalError;
 use MediaWikiIntegrationTestCase;
+use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
@@ -41,13 +42,15 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		if ( !self::$testUser ) {
-			self::$testUser = new CentralAuthTestUser(
+			$caTestUser = new CentralAuthTestUser(
 				'CentralAuthTestUser',
 				bin2hex( random_bytes( 6 ) ),
 				[],
 				[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
 			);
-			self::$testUser->save( $this->db );
+			$caTestUser->save( $this->db );
+
+			self::$testUser = CentralAuthUser::getInstanceByName( 'CentralAuthTestUser' );
 		}
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
