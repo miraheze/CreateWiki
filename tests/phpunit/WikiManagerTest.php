@@ -27,6 +27,14 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgConf', $conf );
 		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
 
+		$this->setMwGlobals( 'wgCreateWikiSQLfiles', [
+			$GLOBALS['IP'] . '/maintenance/tables-generated.sql',
+			$GLOBALS['IP'] . '/extensions/AbuseFilter/db_patches/mysql/tables-generated.sql',
+			$GLOBALS['IP'] . '/extensions/AntiSpoof/sql/mysql/tables-generated.sql',
+			$GLOBALS['IP'] . '/extensions/CheckUser/schema/mysql/tables-generated.sql',
+			$GLOBALS['IP'] . '/extensions/Echo/sql/mysql/tables-generated.sql',
+		] );
+
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
