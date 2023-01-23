@@ -23,7 +23,15 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testConstructor() {
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
+		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
 
+		$this->assertInstanceOf( SpecialRequestWiki::class, $specialRequestWiki );
+	}
+
+	/**
+	 * @covers ::execute
+	 */
+	public function testExecuteNotLoggedIn() {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
 			new SpecialRequestWiki( $hookRunner )
 		);
@@ -37,13 +45,13 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		$specialRequestWiki->setContext( $testContext );
 
 		$this->expectException( UserNotLoggedIn::class );
-		$specialRequestWiki->execute( null );
+		$specialRequestWiki->execute( '' );
 	}
 
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecute() {
+	public function testExecuteLoggedIn() {
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
 
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
@@ -51,7 +59,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
-		$testContext->setUser( $user );
+		$testContext->setUser( $this->getTestUser()->getUser() );
 
 		$this->assertNull( $specialRequestWiki->execute( '' ) );
 	}
