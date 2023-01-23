@@ -136,7 +136,6 @@ class WikiManager {
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category
 			],
-			[],
 			__METHOD__
 		);
 
