@@ -32,6 +32,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$this->setMwGlobals( 'wgConf', $conf );
 		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
+		$this->setMwGlobals( 'wgCentralAuthDatabase', 'wikidb' );
+		$this->setMwGlobals( 'wgCentralAuthAutoCreateWikis', [ 'wikidb' ] );
 
 		$this->setMwGlobals( 'wgCreateWikiSQLfiles', [
 			$GLOBALS['IP'] . '/maintenance/tables-generated.sql',
