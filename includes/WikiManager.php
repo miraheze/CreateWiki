@@ -123,7 +123,9 @@ class WikiManager {
 				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
 
-		define( 'CW_CREATION_IN_PROGRESS', $wiki );
+		if ( !defined( 'CW_CREATION_IN_PROGRESS' ) ) {
+			define( 'CW_CREATION_IN_PROGRESS', $wiki );
+		}
 
 		$this->cwdb->insert(
 			'cw_wikis',
