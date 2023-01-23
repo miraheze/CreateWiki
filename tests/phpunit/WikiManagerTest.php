@@ -77,7 +77,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
 
-		$userRightsProxy = UserRightsProxy::newFromName( 'createwikitest', self::$testUser->getName() );
+		$userRightsProxy = UserRightsProxy::newFromName( 'createwikitest', self::$testUser->getName(), true );
 
 		$groups = $userRightsProxy->getGroupMemberships();
 		$this->assertArrayHasKey( 'bureaucrat', $groups );
