@@ -20,6 +20,9 @@ use Wikimedia\Rdbms\Database;
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
+
+	private static $testUser = null;
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -37,14 +40,16 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			$GLOBALS['IP'] . '/extensions/Echo/sql/mysql/tables-generated.sql',
 		] );
 
-		$testUser = $this->getTestUser()->getUser();
-		$testUser = new CentralAuthTestUser(
-			$testUser->getName(),
-			bin2hex( random_bytes( 6 ) ),
-			[],
-			[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
-		);
-		$testUser->save( $this->db );
+		if ( !self::$testUser ) {
+			self::$testUser = $this->getTestUser()->getUser();
+			$caTestUser = new CentralAuthTestUser(
+				self::$testUser->getName(),
+				bin2hex( random_bytes( 6 ) ),
+				[],
+				[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
+			);
+			$caTestUser->save( $this->db );
+		}
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
@@ -72,7 +77,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
 
-		$userRightsProxy = UserRightsProxy::newFromName( 'createwikitest', $this->getTestUser()->getUser()->getName() );
+		$userRightsProxy = UserRightsProxy::newFromName( 'createwikitest', self::$testUser->getName() );
 
 		$groups = $userRightsProxy->getGroupMemberships();
 		$this->assertArrayHasKey( 'bureaucrat', $groups );
@@ -232,7 +237,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @return mixed
 	 */
 	private function createWiki( string $dbname, bool $private = false ) {
-		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
@@ -241,7 +245,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			[ $dbname ], $GLOBALS['wgLocalDatabases']
 		) );
 
-		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', self::$testUser->getName(), $testSysop->getName(), 'Test' );
 	}
 
 	/**
