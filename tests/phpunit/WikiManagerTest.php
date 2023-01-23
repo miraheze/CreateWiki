@@ -78,6 +78,18 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateSuccess() {
+		if ( !self::$testUser ) {
+			$caTestUser = new CentralAuthTestUser(
+				'CentralAuthTestUser',
+				bin2hex( random_bytes( 6 ) ),
+				[],
+				[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
+			);
+			$caTestUser->save( $this->db );
+
+			self::$testUser = CentralAuthUser::getInstanceByName( 'CentralAuthTestUser' );
+		}
+
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
 
