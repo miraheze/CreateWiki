@@ -2,9 +2,13 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use DerivativeContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
+use User;
+use UserNotLoggedIn;
+use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group CreateWiki
@@ -19,9 +23,21 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testConstructor() {
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
 
-		$this->assertInstanceOf( SpecialRequestWiki::class, $specialRequestWiki );
+		$specialRequestWiki = TestingAccessWrapper::newFromObject(
+			new SpecialRequestWiki( $hookRunner )
+		);
+
+		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
+
+		$anon = $this->createMock( User::class );
+		$anon->method( 'isRegistered' )->willReturn( false );
+
+		$testContext->setUser( $anon );
+		$specialRequestWiki->setContext( $testContext );
+
+		$this->expectException( UserNotLoggedIn::class );
+		$specialRequestWiki->execute( null );
 	}
 
 	/**
@@ -29,7 +45,13 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testExecute() {
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
+
+		$specialRequestWiki = TestingAccessWrapper::newFromObject(
+			new SpecialRequestWiki( $hookRunner )
+		);
+
+		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
+		$testContext->setUser( $user );
 
 		$this->assertNull( $specialRequestWiki->execute( '' ) );
 	}
@@ -39,7 +61,10 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetFormFields() {
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
+
+		$specialRequestWiki = TestingAccessWrapper::newFromObject(
+			new SpecialRequestWiki( $hookRunner )
+		);
 
 		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
