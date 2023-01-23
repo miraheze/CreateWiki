@@ -6,6 +6,7 @@ use DerivativeContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
+use SpecialPage;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 
@@ -53,6 +54,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
 
 		$testContext->setUser( $this->getTestUser()->getUser() );
+		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
+
 		$specialRequestWiki->setContext( $testContext );
 
 		$this->assertNull( $specialRequestWiki->execute( '' ) );
