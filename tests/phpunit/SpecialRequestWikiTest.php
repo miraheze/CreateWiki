@@ -32,6 +32,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::execute
 	 */
 	public function testExecuteNotLoggedIn() {
+		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
+
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
 			new SpecialRequestWiki( $hookRunner )
 		);
@@ -59,7 +61,9 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
+
 		$testContext->setUser( $this->getTestUser()->getUser() );
+		$specialRequestWiki->setContext( $testContext );
 
 		$this->assertNull( $specialRequestWiki->execute( '' ) );
 	}
@@ -116,6 +120,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 * @param bool $expected
 	 */
 	public function testOnSubmit( $formData, $expected ) {
+		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'miraheze.org' );
+
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
 		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
 
