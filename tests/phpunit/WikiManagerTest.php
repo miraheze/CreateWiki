@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
+use UserRightsProxy;
 use Wikimedia\Rdbms\Database;
 
 /**
@@ -51,6 +52,12 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testCreateSuccess() {
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
+
+		$userRightsProxy = UserRightsProxy::newFromName( 'createwikitest', $this->getTestUser()->getName() );
+
+		$groups = $userRightsProxy->getGroupMemberships();
+		$this->assertArrayHasKey( 'bureaucrat', $groups );
+		$this->assertArrayHasKey( 'sysop', $groups );
 	}
 
 	/**
