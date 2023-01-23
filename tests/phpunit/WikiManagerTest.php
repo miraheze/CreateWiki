@@ -4,8 +4,8 @@ namespace Miraheze\CreateWiki\Tests;
 
 use CentralAuthTestUser;
 use FatalError;
-use MediaWikiIntegrationTestCase;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
+use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
