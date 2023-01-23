@@ -41,14 +41,13 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		if ( !self::$testUser ) {
-			self::$testUser = $this->getTestUser()->getUser();
-			$caTestUser = new CentralAuthTestUser(
-				self::$testUser->getName(),
+			self::$testUser = new CentralAuthTestUser(
+				'CentralAuthTestUser',
 				bin2hex( random_bytes( 6 ) ),
 				[],
 				[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
 			);
-			$caTestUser->save( $this->db );
+			self::$testUser->save( $this->db );
 		}
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
