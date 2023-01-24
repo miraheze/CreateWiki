@@ -53,6 +53,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			$caTestUser->save( $this->db );
 
 			self::$testUser = CentralAuthUser::getInstanceByName( 'CentralAuthTestUser' );
+			self::$testUser->attach( 'wikidb' );
 		}
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
