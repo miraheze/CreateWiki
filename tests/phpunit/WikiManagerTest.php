@@ -43,19 +43,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			$GLOBALS['IP'] . '/extensions/Echo/sql/mysql/tables-generated.sql',
 		] );
 
-		if ( !self::$testUser ) {
-			$caTestUser = new CentralAuthTestUser(
-				'CentralAuthTestUser',
-				bin2hex( random_bytes( 6 ) ),
-				[],
-				[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
-			);
-			$caTestUser->save( $this->db );
-
-			self::$testUser = CentralAuthUser::getInstanceByName( 'CentralAuthTestUser' );
-			self::$testUser->attach( 'wikidb' );
-		}
-
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 
 		$db->begin();
@@ -242,6 +229,19 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @return mixed
 	 */
 	private function createWiki( string $dbname, bool $private = false ) {
+		if ( !self::$testUser ) {
+			$caTestUser = new CentralAuthTestUser(
+				'CentralAuthTestUser',
+				bin2hex( random_bytes( 6 ) ),
+				[],
+				[ [ WikiMap::getCurrentWikiId(), 'primary' ] ]
+			);
+			$caTestUser->save( $this->db );
+
+			self::$testUser = CentralAuthUser::getInstanceByName( 'CentralAuthTestUser' );
+			self::$testUser->attach( 'wikidb' );
+		}
+
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
