@@ -339,7 +339,7 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner );
+		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner, $wiki ? null : $this->cwdb );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}

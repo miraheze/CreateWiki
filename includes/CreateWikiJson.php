@@ -22,13 +22,14 @@ class CreateWikiJson {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null, $dbr = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->cache = ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
+		$this->dbr = $dbr;
 
 		AtEase::suppressWarnings();
 		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
