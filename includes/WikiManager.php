@@ -5,7 +5,6 @@ namespace Miraheze\CreateWiki;
 use Exception;
 use ExtensionRegistry;
 use FatalError;
-use GlobalVarConfig;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
@@ -144,17 +143,15 @@ class WikiManager {
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
-		$blankConfig = new GlobalVarConfig( '' );
-
 		Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 			[
 				'--wiki', $wiki
 			]
 		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 		Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/populateMainPage.php',
+			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
 			[
 				'--wiki', $wiki
 			]
@@ -162,7 +159,7 @@ class WikiManager {
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
 			Shell::makeScriptCommand(
-				$blankConfig->get( 'IP' ) . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+				MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
 				[
 					$requester,
 					'--wiki', $wiki
@@ -171,7 +168,7 @@ class WikiManager {
 		}
 
 		Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/maintenance/createAndPromote.php',
+			MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
 			[
 				$requester,
 				'--bureaucrat',
