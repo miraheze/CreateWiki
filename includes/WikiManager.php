@@ -13,7 +13,6 @@ use Title;
 
 class WikiManager {
 	private $config;
-	private $lbFactory;
 	private $cluster;
 	private $dbname;
 	private $dbw;
@@ -28,10 +27,7 @@ class WikiManager {
 	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$this->lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-
-		$this->cwdb = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->cwdb = wfGetDB( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 		$check = $this->cwdb->selectRow(
 			'cw_wikis',
@@ -77,8 +73,7 @@ class WikiManager {
 			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
-			$newDbw = $this->lbFactory->getMainLB( $dbname )
-				->getMaintenanceConnectionRef( DB_PRIMARY, [], $dbname );
+			$newDbw = wfGetDB( DB_PRIMARY, [], $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -118,8 +113,7 @@ class WikiManager {
 		if ( $this->lb ) {
 			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
-			$this->dbw = $this->lbFactory->getMainLB( $wiki )
-				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
+			$this->dbw = wfGetDB( DB_PRIMARY, [], $wiki );
 		}
 
 		$this->cwdb->insert(
@@ -323,8 +317,7 @@ class WikiManager {
 			return;
 		}
 
-		$logDBConn = $this->lbFactory->getMainLB( $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$logDBConn = wfGetDB( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );

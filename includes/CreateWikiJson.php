@@ -47,10 +47,7 @@ class CreateWikiJson {
 	}
 
 	public function resetWiki() {
-		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
-
+		$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$this->initTime ??= $this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
@@ -60,10 +57,7 @@ class CreateWikiJson {
 	}
 
 	public function resetDatabaseList() {
-		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
-
+		$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 		$this->initTime ??= $this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
@@ -76,17 +70,13 @@ class CreateWikiJson {
 		$changes = $this->newChanges();
 
 		if ( $changes['databases'] ) {
-			$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 			$this->generateDatabaseList();
 		}
 
 		if ( $changes['wiki'] ) {
-			$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			$this->dbr ??= wfGetDB( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 			$this->generateWiki();
 		}
