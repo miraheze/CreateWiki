@@ -335,7 +335,7 @@ class WikiManager {
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( Title::newFromID( 1 ) );
+		$logEntry->setTarget( Title::newMainPage() );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
 		$logID = $logEntry->insert( $logDBConn );
