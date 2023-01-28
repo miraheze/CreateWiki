@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki;
 
+use DeferredUpdates;
 use Exception;
 use ExtensionRegistry;
 use FatalError;
@@ -143,40 +144,46 @@ class WikiManager {
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
-		Shell::makeScriptCommand(
-			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
-			[
-				'--wiki', $wiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+		DeferredUpdates::addCallableUpdate(
+			function() use ($wiki, $requester) {
+				Shell::makeScriptCommand(
+					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+					[
+						'--wiki', $wiki
+					]
+				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		Shell::makeScriptCommand(
-			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
-			[
-				'--wiki', $wiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				Shell::makeScriptCommand(
+					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
+					[
+						'--wiki', $wiki
+					]
+				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
-			Shell::makeScriptCommand(
-				MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
-				[
-					$requester,
-					'--wiki', $wiki
-				]
-			)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
-		}
+				if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+					Shell::makeScriptCommand(
+						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+						[
+							$requester,
+							'--wiki', $wiki
+						]
+					)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				}
 
-		Shell::makeScriptCommand(
-			MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
-			[
-				$requester,
-				'--bureaucrat',
-				'--sysop',
-				'--force',
-				'--wiki', $wiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				Shell::makeScriptCommand(
+					MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
+					[
+						$requester,
+						'--bureaucrat',
+						'--sysop',
+						'--force',
+						'--wiki', $wiki
+					]
+				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+			},
+			DeferredUpdates::POSTSEND,
+			$this->cwdb
+		);
 
 		$notificationData = [
 			'type' => 'wiki-creation',
