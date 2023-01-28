@@ -322,7 +322,7 @@ class WikiManager {
 		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->parse() : false;
 	}
 
-	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
+	private function logEntry( string $log, string $action, string $actor, string $reason, array $params ) {
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 		$user = $userFactory->newFromName( $actor );
 
@@ -330,8 +330,8 @@ class WikiManager {
 			return;
 		}
 
-		$logDBConn = $this->lbFactory->getMainLB( $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$logDBConn = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
