@@ -136,8 +136,6 @@ class WikiManager {
 			]
 		);
 
-		$this->recacheJson();
-
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
 		}
@@ -146,6 +144,8 @@ class WikiManager {
 
 		DeferredUpdates::addCallableUpdate(
 			static function () use ( $wiki, $requester ) {
+				$this->recacheJson();
+				
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
