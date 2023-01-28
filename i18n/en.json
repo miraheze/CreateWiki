@@ -9,6 +9,7 @@
 	"action-createwiki": "create wikis",
 	"action-requestwiki": "request wikis",
 	"createwiki": "Create a wiki",
+	"createwiki-defaultmainpage": "__NOTOC__ Welcome to your new wiki! You may find the following link useful: [https://www.mediawiki.org/wiki/Help:Contents Help:Contents] on mediawiki.org",
 	"createwiki-defaultmainpage-summary": "Create main page",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
 	"createwiki-close-email-sender": "noreply",
