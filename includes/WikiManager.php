@@ -143,9 +143,9 @@ class WikiManager {
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		DeferredUpdates::addCallableUpdate(
-			static function () use ( $wiki, $requester ) {
+			function () use ( $wiki, $requester ) {
 				$this->recacheJson();
-				
+
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
