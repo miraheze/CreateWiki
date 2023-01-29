@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki;
 
+use BagOStuff;
 use Config;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -27,9 +28,9 @@ class CreateWikiJson {
 	private $dbr;
 
 	/**
-	 * The object cache object.
+	 * The cache object.
 	 *
-	 * @var ObjectCache
+	 * @var BagOStuff
 	 */
 	private $cache;
 
