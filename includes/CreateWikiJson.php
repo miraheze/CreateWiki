@@ -89,7 +89,6 @@ class CreateWikiJson {
 	 */
 	private $hookRunner;
 
-
 	/**
 	 * CreateWikiJson constructor.
 	 *
@@ -320,8 +319,8 @@ class CreateWikiJson {
 
 	/**
 	 * Determine if the information on databases or a specific wiki has changed.
-	 * 
-	 * @return array $changes An array with two keys, 'databases' and 'wiki', both are set to either `true` or `false` 
+	 *
+	 * @return array $changes An array with two keys, 'databases' and 'wiki', both are set to either `true` or `false`
 	 * indicating if the information has changed. If either key is set to `true`, then new data needs to be generated,
 	 * if it is set to `false`, then the information is up to date and no new data needs to be generated.
 	 */
