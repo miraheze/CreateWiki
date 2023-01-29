@@ -2,26 +2,100 @@
 
 namespace Miraheze\CreateWiki;
 
+use Config;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
 use ObjectCache;
 use Wikimedia\AtEase\AtEase;
+use Wikimedia\Rdbms\DBConnRef;
 
 class CreateWikiJson {
+
+	/**
+	 * The configuration object.
+	 *
+	 * @var Config
+	 */
 	private $config;
+
+	/**
+	 * The database connection reference object.
+	 *
+	 * @var DBConnRef
+	 */
 	private $dbr;
+
+	/**
+	 * The object cache object.
+	 *
+	 * @var ObjectCache
+	 */
 	private $cache;
+
+	/**
+	 * The wiki database name.
+	 *
+	 * @var string
+	 */
 	private $wiki;
+
+	/**
+	 * The database array information for the wiki.
+	 *
+	 * @var array
+	 */
 	private $databaseArray;
+
+	/**
+	 * The wiki information array.
+	 *
+	 * @var array
+	 */
 	private $wikiArray;
+
+	/**
+	 * The directory path for cache files.
+	 *
+	 * @var string
+	 */
 	private $cacheDir;
+
+	/**
+	 * The timestamp for the database information.
+	 *
+	 * @var int
+	 */
 	private $databaseTimestamp;
+
+	/**
+	 * The timestamp for the wiki information.
+	 *
+	 * @var int
+	 */
 	private $wikiTimestamp;
+
+	/**
+	 * The time the object was initialised.
+	 *
+	 * @var int
+	 */
 	private $initTime;
-	/** @var CreateWikiHookRunner */
+
+	/**
+	 * The CreateWiki hook runner object.
+	 *
+	 * @var CreateWikiHookRunner
+	 */
 	private $hookRunner;
 
+
+	/**
+	 * CreateWikiJson constructor.
+	 *
+	 * @param string $wiki
+	 * @param CreateWikiHookRunner|null $hookRunner
+	 */
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
@@ -46,6 +120,12 @@ class CreateWikiJson {
 		}
 	}
 
+	/**
+	 * Generates a new JSON file for the current wiki.
+	 *
+	 * This method resets the current wiki by getting a new timestamp from the database
+	 * and updates the cache with the new information.
+	 */
 	public function resetWiki() {
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
@@ -59,6 +139,13 @@ class CreateWikiJson {
 		$this->wikiTimestamp = $this->initTime;
 	}
 
+	/**
+	 * Resets the database list.
+	 *
+	 * This method resets the database list by using the database load balancer
+	 * to get the current time and store it in the cache. The timestamp is then
+	 * updated for the current database list.
+	 */
 	public function resetDatabaseList() {
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
@@ -68,10 +155,16 @@ class CreateWikiJson {
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
-		// Rather than destroy object, let's fake the catch timestamp
+		// Rather than destroy object, let's fake the cache timestamp
 		$this->databaseTimestamp = $this->initTime;
 	}
 
+	/**
+	 * Updates the wiki and database lists if there are any changes.
+	 *
+	 * This method updates the wiki and database lists if there are any changes and generates new JSON files
+	 * for the updated information and stores it in the cache directory specified in the config.
+	 */
 	public function update() {
 		$changes = $this->newChanges();
 
@@ -92,6 +185,19 @@ class CreateWikiJson {
 		}
 	}
 
+	/**
+	 * Generates the database list.
+	 *
+	 * This method retrieves information from the database about all wikis,
+	 * separates deleted and non-deleted wikis, and writes the data to a file.
+	 *
+	 * The data for each wiki includes its database name, database cluster,
+	 * site name, and URL (if applicable). The resulting data is saved in two
+	 * separate files: one for non-deleted wikis (combi) and one for deleted wikis.
+	 *
+	 * The method also triggers the CreateWikiJsonGenerateDatabaseList hook that
+	 * allows extensions to modify the data before it is written to a file.
+	 */
 	private function generateDatabaseList() {
 		$allWikis = $this->dbr->select(
 			'cw_wikis',
@@ -153,6 +259,24 @@ class CreateWikiJson {
 		}
 	}
 
+	/**
+	 * Generates data related to a wiki and stores it in a JSON file.
+	 *
+	 * The data generated includes:
+	 * - timestamp: Unix timestamp of the last modification of the JSON file. If file doesn't exist, set to 0.
+	 * - database: database name of the wiki.
+	 * - created: creation date of the wiki.
+	 * - dbcluster: database cluster of the wiki.
+	 * - category: category of the wiki.
+	 * - url: URL of the wiki.
+	 * - core: contains core information of the wiki, including its name and language code.
+	 * - states: contains information about the state of the wiki, including privacy, closure, activity and experimental status.
+	 *
+	 * The generated data is stored in a JSON file with the same name as the database of the wiki.
+	 * The method also triggers the CreateWikiJsonBuilder hook to allow extensions to add more data to the JSON file.
+	 *
+	 * @throws MWException If the wiki specified by $this->wiki cannot be found.
+	 */
 	private function generateWiki() {
 		$wikiObject = $this->dbr->selectRow(
 			'cw_wikis',
@@ -194,13 +318,19 @@ class CreateWikiJson {
 		}
 	}
 
+	/**
+	 * Determine if the information on databases or a specific wiki has changed.
+	 * 
+	 * @return array $changes An array with two keys, 'databases' and 'wiki', both are set to either `true` or `false` 
+	 * indicating if the information has changed. If either key is set to `true`, then new data needs to be generated,
+	 * if it is set to `false`, then the information is up to date and no new data needs to be generated.
+	 */
 	private function newChanges() {
 		$changes = [
 			'databases' => false,
 			'wiki' => false
 		];
 
-		// Under php7.4 trying to access a index when the config is null results in a notice.
 		$databaseTimestamp = $this->databaseArray['timestamp'] ?? null;
 		$wikiTimestamp = $this->wikiArray['timestamp'] ?? null;
 
