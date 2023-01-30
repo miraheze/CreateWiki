@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"1108-Kiju",
 			"A2y4",
 			"Aefgh39622",
 			"Buehl",
@@ -60,7 +61,7 @@
 	"logentry-farmer-createwiki": "$1 がWiki \"$4\" を作成しました。",
 	"logentry-farmer-requestaccept": "$1 がWikiの申請 $4 を承認しました",
 	"logentry-farmer-requestdecline": "$1 がWikiの申請 $4 を却下しました",
-	"logentry-farmer-requestonhold": "$1によりあなたのウィキのリクエスト$4が保留に設定されました",
+	"logentry-farmer-requestonhold": "$1 がWikiの申請 $4 を保留に設定しました",
 	"logentry-farmer-requestreopen": "$1 がWikiの申請 $4 を再開しました",
 	"logentry-farmer-requestwiki": "$1 が $7 でWiki \"$4\" (言語: $5; 非公開: $6) をリクエストしました",
 	"log-name-farmer": "Farmer記録",
@@ -90,7 +91,7 @@
 	"requestwikiqueue-comments": "リクエストコメント",
 	"requestwikiqueue-decline": "拒否",
 	"requestwikiqueue-declined": "拒否",
-	"requestwikiqueue-edit": "編集をリクエスト",
+	"requestwikiqueue-edit": "リクエストを編集",
 	"requestwikiqueue-handle": "要求を処理",
 	"requestwikiqueue-inreview": "審査中",
 	"requestwikiqueue-onhold": "保留中",
