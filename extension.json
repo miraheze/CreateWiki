@@ -132,6 +132,17 @@
 		"localBasePath": "modules",
 		"remoteExtPath": "CreateWiki/modules"
 	},
+	"QUnitTestModule": {
+		"localBasePath": "",
+		"remoteExtPath": "CreateWiki",
+		"scripts": [
+			"tests/qunit/ext.createwiki.oouiform.test.js"
+		],
+		"dependencies": [
+			"mediawiki.storage",
+			"oojs-ui-widgets"
+		]
+	},
 	"config": {
 		"CreateWikiAIThreshold": {
 			"description": "Integer. Minimum percentage points for a request to be created when acceptable.",
