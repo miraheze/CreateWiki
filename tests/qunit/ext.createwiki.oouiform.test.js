@@ -59,7 +59,7 @@ QUnit.test( 'detectHash', function ( assert ) {
 } );
 
 QUnit.test( 'Restore previous tab', function ( assert ) {
-	var tabs, previousTab, switchingNoHash, tab, activeTab;
+	var tabs, previousTab, tab, activeTab;
 
 	// Set up tabs
 	tabs = OO.ui.infuse( $( '.createwiki-tabs' ) );
