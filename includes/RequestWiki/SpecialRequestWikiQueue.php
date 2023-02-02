@@ -23,18 +23,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		if ( $par === null || $par === '' ) {
 			$this->doPagerStuff();
 		} else {
+			$this->getOutput()->addBacklinkSubtitle( $this->getPageTitle() );
+
 			$this->lookupRequest( $par );
-
-			$this->getOutput()->setPageTitle( $this->msg( 'requestwikiqueue-request-view' )->text() );
-
-			$link = $this->getLinkRenderer()->makeKnownLink(
-				static::getSafeTitleFor( 'RequestWikiQueue' ),
-				$this->msg( 'requestwikiqueue' )->text()
-			);
-
-			$this->getOutput()->addSubtitle( "&lt; $link" );
-
-		}
+			}
 	}
 
 	private function doPagerStuff() {
