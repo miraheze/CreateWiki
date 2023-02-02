@@ -24,6 +24,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->doPagerStuff();
 		} else {
 			$this->lookupRequest( $par );
+
+			$link = $this->getLinkRenderer()->makeKnownLink(
+				static::getSafeTitleFor( 'RequestWikiQueue' ),
+				$this->msg( 'requestwikiqueue' )->text()
+			);
+
+			$this->getOutput()->addSubtitle( "&lt; $link" );
+
 		}
 	}
 
