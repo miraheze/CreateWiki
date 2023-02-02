@@ -26,7 +26,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->getOutput()->addBacklinkSubtitle( $this->getPageTitle() );
 
 			$this->lookupRequest( $par );
-			}
+		}
 	}
 
 	private function doPagerStuff() {
