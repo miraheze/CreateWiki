@@ -181,7 +181,7 @@ class WikiRequest {
 			$this->status = 'approved';
 			$this->save();
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
-			$this->log( $user, 'requestaccept' );
+			$this->log( $user, 'requestapprove' );
 
 			if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 				$this->tryAutoCreate();
