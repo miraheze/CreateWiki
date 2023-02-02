@@ -98,7 +98,6 @@
 	"requestwikiqueue-request-label-visibility-delete": "Everyone with 'delete' permissions can view this request",
 	"requestwikiqueue-request-label-visibility-hide": "Everyone with 'createwiki' permissions can view this request",
 	"requestwikiqueue-request-label-visibility-oversight": "Everyone with 'suppressrevision' permissions can view this request",
-	"requestwikiqueue-request-view": "View a wiki request",
 	"right-requestwiki": "Request wikis",
 	"right-createwiki": "Create wikis"
 }
