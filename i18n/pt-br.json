@@ -63,7 +63,7 @@
 	"requestwiki-label-private": "Wiki privada (não pode ser lido por todos; só pode ser lido por usuários, dado o membro ou grupos sysop):",
 	"requestwiki-label-purpose": "O objetivo dessa wiki é...",
 	"requestwiki-label-sitename": "Nome da wiki:",
-	"requestwiki-label-siteurl": "Subdomínio: (subdomain.miraheze.org)",
+	"requestwiki-label-siteurl": "Subdomínio: (subdomain.$1)",
 	"requestwiki-notloggedin": "Desculpe, tem de <span class=\"plainlinks\">[$1 iniciar sessão]</span> antes de pedir uma wiki.",
 	"requestwiki-success": "O seu pedido de uma wiki ($1) foi enviado. O pedido será revisto por um voluntário de criação de wiki logo que possível.",
 	"requestwiki-unknown": "Não existe nenhum pedido com este ID.",
