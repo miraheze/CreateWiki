@@ -25,6 +25,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		} else {
 			$this->lookupRequest( $par );
 
+			$this->getOutput()->setPageTitle( $this->msg( 'createwiki-viewrequest' )->text() );
+
 			$link = $this->getLinkRenderer()->makeKnownLink(
 				static::getSafeTitleFor( 'RequestWikiQueue' ),
 				$this->msg( 'requestwikiqueue' )->text()
