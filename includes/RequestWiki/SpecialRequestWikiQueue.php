@@ -23,6 +23,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		if ( $par === null || $par === '' ) {
 			$this->doPagerStuff();
 		} else {
+			$this->getOutput()->addBacklinkSubtitle( $this->getPageTitle() );
+
 			$this->lookupRequest( $par );
 		}
 	}
