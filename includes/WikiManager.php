@@ -299,19 +299,10 @@ class WikiManager {
 	}
 
 	public function checkDatabaseName( string $dbname, bool $rename = false ) {
-		$suffixed = false;
-		foreach ( $this->config->get( 'Conf' )->suffixes as $suffix ) {
-			if ( substr( $dbname, -strlen( $suffix ) ) === $suffix ) {
-				$suffixed = true;
-				break;
-			}
-		}
 
 		$error = false;
 
-		if ( !$suffixed ) {
-			$error = 'notsuffixed';
-		} elseif ( !$rename && $this->exists ) {
+		if ( !$rename && $this->exists ) {
 			$error = 'dbexists';
 		} elseif ( !ctype_alnum( $dbname ) ) {
 			$error = 'notalnum';
