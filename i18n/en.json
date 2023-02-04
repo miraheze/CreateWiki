@@ -18,7 +18,6 @@
 	"createwiki-error-disallowed": "The subdomain you have requested can not be created. Please either request a new subdomain or contact system administrators for help.",
 	"createwiki-error-notalnum": "The database name may not contain non-alphanumeric characters.",
 	"createwiki-error-notlowercase": "The database name may not contain uppercase letters.",
-	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
 	"createwiki-help-reason": "Please enter a sufficient summary describing the topic, scope, and purpose of the wiki you're requesting.",
 	"createwiki-label-category": "Category:",
 	"createwiki-label-dbname": "Database name:",
