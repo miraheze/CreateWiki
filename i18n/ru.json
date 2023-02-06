@@ -53,7 +53,6 @@
 	"log-action-filter-farmer": "Тип действия:",
 	"log-action-filter-farmer-createwiki": "Вики создана",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$1|создал|создала}} вики «$4»",
-	"logentry-farmer-requestaccept": "$1 {{GENDER:$1|одобрил|одобрила}} запрос вики $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$1|отклонил|отклонила}} запрос вики $4",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$1|запросил|запросила}} вики «$4» (язык: $5; скрытый: $6) с $7",
 	"log-name-farmer": "Журнал фермы",

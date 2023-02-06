@@ -41,7 +41,6 @@
 	"echo-pref-tooltip-wiki-request-declined": "Notifique-me se minha solicitação da wiki for recusada.",
 	"log-description-farmer": "Este registro rastreia as criações da wiki.",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|}} criou a wiki \"$4\"",
-	"logentry-farmer-requestaccept": "$1 {{GENDER:$2|}} aceitou o pedido da wiki $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|}} recusou o pedido da wiki $4",
 	"logentry-farmer-requestonhold": "$1 {{GENDER:$2|}} colocou o pedido wiki $4 em espera",
 	"logentry-farmer-requestreopen": "$1 {{GENDER:$2|}} reabriu o pedido wiki $4",

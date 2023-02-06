@@ -25,7 +25,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "Обавести ме ако је мој захтев за вики одбијен.",
 	"log-description-farmer": "Овај дневник прати креирање викија",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|направио|направила}} је вики „$4”",
-	"logentry-farmer-requestwiki": "$1 затражио/ла је вики \"$4\" (језик: $5; приватност: $6) у $7",
+	"logentry-farmer-requestwiki": "$1 {{GENDER:$2|затражио|затражила}} је вики „$4” (језик: $5; приватност: $6) у $7",
 	"notification-createwiki-wiki-creation-email-subject": "Ваш вики $1 је направљен.",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Посети вики",
 	"notification-createwiki-visit-request": "Посети захтев",
