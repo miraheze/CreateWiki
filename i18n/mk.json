@@ -40,6 +40,7 @@
 	"log-action-filter-farmer-requestdecline": "Брањето за вики е одбиено",
 	"log-action-filter-farmer-requestwiki": "Отворено/преотворено барање за вики",
 	"logentry-farmer-createwiki": "$1 го {{GENDER:$2|создаде}} викито „$4“",
+	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|го одобри}} барањето за вики $4",
 	"logentry-farmer-requestdecline": "$1 го {{GENDER:$2|одби}} викибарањето $4",
 	"logentry-farmer-requestonhold": "$1 го {{GENDER:$2|стави}} барањето за вики $4 на чекање",
 	"logentry-farmer-requestreopen": "$1 го {{GENDER:$2|преотвори}} викибарањето $4",

@@ -25,7 +25,7 @@
 	"log-description-farmer": "Nhật trình này theo dõi những wiki được tạo.",
 	"log-action-filter-farmer": "Kiểu tác vụ:",
 	"log-action-filter-farmer-createwiki": "Wiki đã được tạo",
-	"log-action-filter-farmer-requestapprove": "Yêu cầu wiki đã chấp nhận",
+	"log-action-filter-farmer-requestapprove": "Yêu cầu wiki đã phê duyệt",
 	"log-action-filter-farmer-requestdecline": "Yêu cầu wiki đã từ chối",
 	"log-action-filter-farmer-requestwiki": "Yêu cầu wiki đã mở/mở lại",
 	"logentry-farmer-createwiki": "$1 đã tạo wiki “$4”",
