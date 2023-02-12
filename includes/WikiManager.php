@@ -193,7 +193,7 @@ class WikiManager {
 			],
 			'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
+				'html' => nl2br( wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() ),
 				'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
 			],
 		];
