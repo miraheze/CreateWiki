@@ -39,7 +39,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "내 위키 요청이 거절되면 내게 알립니다.",
 	"log-description-farmer": "이 기록은 위키의 생성 항목을 추적합니다.",
 	"log-action-filter-farmer-createwiki": "위키가 생성됨",
-	"log-action-filter-farmer-requestapprove": "위키 요청이 수락됨",
+	"log-action-filter-farmer-requestapprove": "위키 요청이 승인됨",
 	"log-action-filter-farmer-requestdecline": "위키 요청이 거부됨",
 	"log-action-filter-farmer-requestwiki": "위키 요청 열림/재열림",
 	"logentry-farmer-createwiki": "$1 사용자가 \"$4\" 위키를 만들었습니다",
