@@ -36,7 +36,6 @@
 	"echo-pref-tooltip-wiki-request-declined": "Underrätta mig om min wikibegäran nekas.",
 	"log-description-farmer": "Denna logg spårar skapade wikier.",
 	"logentry-farmer-createwiki": "$1 skapade wikin \"$4\"",
-	"logentry-farmer-requestaccept": "$1 godkände wikibegäran $4",
 	"logentry-farmer-requestdecline": "$1 nekade wikibegäran $4",
 	"logentry-farmer-requestreopen": "$1 återöppnade wikibegäran $4",
 	"logentry-farmer-requestwiki": "$1 begärde wikin \"$4\" (språk: $5; privat: $6) på $7",

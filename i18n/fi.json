@@ -45,7 +45,6 @@
 	"echo-pref-tooltip-wiki-request-declined": "Ilmoita minulle, jos pyyntöni wikistä on hylätty.",
 	"log-description-farmer": "Tämä logi seuraa wikin luomisia.",
 	"logentry-farmer-createwiki": "$1 loi wikin ”$4”",
-	"logentry-farmer-requestaccept": "$1 hyväksyi wikipyynnön $4",
 	"logentry-farmer-requestdecline": "$1 hylkäsi wikipyynnön $4",
 	"logentry-farmer-requestreopen": "$1 avasi wikipyynnön $4 uudestaan",
 	"logentry-farmer-requestwiki": "$1 pyysi wikiä $4 (kieli: $5; yksityinen: $6); pyyntö $7",

@@ -9,7 +9,6 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
-use GlobalVarConfig;
 use Maintenance;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
@@ -61,10 +60,8 @@ class ManageInactiveWikis extends Maintenance {
 
 		$canWrite = $this->hasOption( 'write' );
 
-		$blankConfig = new GlobalVarConfig( '' );
-
 		$timeStamp = Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php',
+			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php',
 			[
 				'--wiki', $dbName
 			]
