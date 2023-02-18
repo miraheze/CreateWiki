@@ -37,7 +37,7 @@ class Hooks implements
 	public function __construct(
 		Config $config,
 		CreateWikiHookRunner $hookRunner,
-		ILBFactory $dbLoadBalancerFactory,
+		ILBFactory $dbLoadBalancerFactory
 	) {
 		$this->config = $config;
 		$this->hookRunner = $hookRunner;
