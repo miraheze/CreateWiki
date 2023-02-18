@@ -95,7 +95,13 @@
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
 		},
+		"GetMagicVariableIDs": {
+			"handler": "default"
+		},
 		"LoginFormValidErrorMessages": {
+			"handler": "default"
+		},
+		"ParserGetVariableValueSwitch": {
 			"handler": "default"
 		},
 		"SetupAfterCache": {
@@ -107,7 +113,8 @@
 			"class": "Miraheze\\CreateWiki\\Hooks",
 			"services": [
 				"MainConfig",
-				"CreateWikiHookRunner"
+				"CreateWikiHookRunner",
+				"DBLoadBalancerFactory"
 			]
 		},
 		"Installer": {
