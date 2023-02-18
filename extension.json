@@ -76,7 +76,8 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"CreateWikiAliases": "CreateWikiAliases.php"
+		"CreateWikiAliases": "CreateWikiAliases.php",
+		"CreateWikiMagic": "CreateWikiMagic.php"
 	},
 	"AutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\": "includes/"
