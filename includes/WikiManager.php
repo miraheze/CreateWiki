@@ -10,7 +10,7 @@ use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Title;
+use SpecialPage;
 
 class WikiManager {
 	private $config;
@@ -335,7 +335,7 @@ class WikiManager {
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( Title::newMainPage() );
+		$logEntry->setTarget( SpecialPage::getTitleValueFor( 'CreateWiki' ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
 		$logID = $logEntry->insert( $logDBConn );
