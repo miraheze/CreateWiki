@@ -79,7 +79,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		// Wiki has no edits since creation
 		if ( $canWrite && $warnDays && $wiki->getCreationDate() <= date( "YmdHis", strtotime( "-{$warnDays} days" ) ) && !( SiteStats::edits() > 1 ) ) {
-			$this->notify( $dbName, 'warn' );
+			$this->notify( $dbName, 'warning' );
 
 			return true;
 		}
@@ -104,7 +104,7 @@ class ManageInactiveWikis extends Maintenance {
 				// Last RC entry older than allowed time
 				if ( $canWrite ) {
 					$wiki->markClosed();
-					$this->notify( $dbName, 'close' );
+					$this->notify( $dbName, 'closure' );
 
 					$this->output( "{$dbName} was eligible for closing and has been closed now. Last activity was at {$timeStamp}\n" );
 				} else {
@@ -134,7 +134,7 @@ class ManageInactiveWikis extends Maintenance {
 					// Wiki already warned, eligible for closure
 					if ( $canWrite ) {
 						$wiki->markClosed();
-						$this->notify( $dbName, 'close' );
+						$this->notify( $dbName, 'closure' );
 
 						$this->output( "{$dbName} does not seem to contain recentchanges entries after {$closeDays}+ days warning, therefore closing.\n" );
 					} else {
@@ -175,8 +175,8 @@ class ManageInactiveWikis extends Maintenance {
 			'type' => $type,
 			'subject' => wfMessage( 'miraheze-' . $type . '-email-subject', $wiki )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'miraheze-' . $type . '-email-body' )->inContentLanguage()->text(),
-				'text' => wfMessage( 'miraheze-' . $type . '-email-body' )->inContentLanguage()->text(),
+				'html' => wfMessage( 'miraheze-' . ( $type === 'closure' ? 'close' : $type ) . '-email-body' )->inContentLanguage()->text(),
+				'text' => wfMessage( 'miraheze-' . ( $type === 'closure' ? 'close' : $type ) . '-email-body' )->inContentLanguage()->text(),
 			],
 		];
 
