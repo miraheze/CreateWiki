@@ -62,7 +62,7 @@ class CreateWikiNotificationsManager {
 	 */
 	private function getFromName(): string {
 		// TODO: use a constant for these types
-		if ( $this->type === 'close' || $this->type === 'warn' ) {
+		if ( $this->type === 'closure' || $this->type === 'warning' ) {
 			// TODO: rename message to createwiki-email-sender
 			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )->inContentLanguage()->text();
 		}
@@ -79,8 +79,9 @@ class CreateWikiNotificationsManager {
 	 */
 	private function getEmailTypes(): array {
 		return [
-			'close',
+			'closure',
 			'deletion',
+			'warning',
 			'wiki-creation',
 			'wiki-rename',
 		];
