@@ -173,7 +173,7 @@ class ManageInactiveWikis extends Maintenance {
 	private function notify( $wiki, $type ) {
 		$notificationData = [
 			'type' => $type,
-			'subject' => wfMessage( 'miraheze-' . $type . '-email-subject', $wiki )->inContentLanguage()->text(),
+			'subject' => wfMessage( 'miraheze-' . ( $type === 'closure' ? 'close' : $type ) . '-email-subject', $wiki )->inContentLanguage()->text(),
 			'body' => [
 				'html' => wfMessage( 'miraheze-' . ( $type === 'closure' ? 'close' : $type ) . '-email-body' )->inContentLanguage()->text(),
 				'text' => wfMessage( 'miraheze-' . ( $type === 'closure' ? 'close' : $type ) . '-email-body' )->inContentLanguage()->text(),
