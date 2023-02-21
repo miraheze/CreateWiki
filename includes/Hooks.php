@@ -76,12 +76,12 @@ class Hooks implements
 		}
 
 		// Safety Catch!
-		if ( $isPrivate ) {
+		/* if ( $isPrivate ) {
 			$wgGroupPermissions['*']['read'] = false;
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
-		}
+		} */
 	}
 
 	/** @inheritDoc */
