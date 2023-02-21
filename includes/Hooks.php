@@ -71,8 +71,8 @@ class Hooks implements
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
-			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
-			$isPrivate = $remoteWiki->isPrivate();
+			// $remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
+			// $isPrivate = $remoteWiki->isPrivate();
 		}
 
 		// Safety Catch!
