@@ -59,24 +59,24 @@ class Hooks implements
 
 	/** @inheritDoc */
 	public function onSetupAfterCache() {
-		global $wgGroupPermissions;
+		/* global $wgGroupPermissions;
 
 		$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$dbName = $this->config->get( 'DBname' );
 
-		// $cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
-		// $cWJ->update();
+		$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
+		$cWJ->update();
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
 			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
-			// $remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
-			// $isPrivate = $remoteWiki->isPrivate();
+			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
+			$isPrivate = $remoteWiki->isPrivate();
 		}
 
 		// Safety Catch!
-		/* if ( $isPrivate ) {
+		if ( $isPrivate ) {
 			$wgGroupPermissions['*']['read'] = false;
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
