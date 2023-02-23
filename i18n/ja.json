@@ -59,6 +59,7 @@
 	"log-action-filter-farmer-requestdecline": "Wikiのリクエストは拒否されました。",
 	"log-action-filter-farmer-requestwiki": "ウィキリクエストの開始・再開",
 	"logentry-farmer-createwiki": "$1 が「$4」ウィキを{{GENDER:$2|作成しました}}",
+	"logentry-farmer-requestapprove": "$1が$4のウィキリクエストを{{GENDER:$2|承認}}しました。",
 	"logentry-farmer-requestdecline": "$1 がWikiの申請 $4 を{{GENDER:$2|却下}}しました",
 	"logentry-farmer-requestonhold": "$1 がWikiの申請 $4 を{{GENDER:$2|保留}}に設定しました",
 	"logentry-farmer-requestreopen": "$1 がWikiの申請 $4 を{{GENDER:$2|再開}}しました",
