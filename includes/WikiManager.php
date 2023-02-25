@@ -140,7 +140,7 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		$this->hookRunner->onCreateWikiCreation( $wiki, $this->cwdb, $private );
+		$this->hookRunner->onCreateWikiCreation( $this->cwdb, $wiki, $private );
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $wiki, $requester ) {
