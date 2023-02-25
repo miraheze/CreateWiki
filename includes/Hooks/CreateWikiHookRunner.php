@@ -31,10 +31,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiCreation( $wiki, $private ): void {
+	public function onCreateWikiCreation( $cwdb, $wiki, $private ): void {
 		$this->container->run(
 			'CreateWikiCreation',
-			[ $wiki, $private ]
+			[ $cwdb, $wiki, $private ]
 		);
 	}
 
