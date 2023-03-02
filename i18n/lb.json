@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Les Meloures",
-			"Robby"
+			"Robby",
+			"Volvox"
 		]
 	},
 	"createwiki-close-email-sender": "Miraheze",
@@ -16,6 +17,7 @@
 	"createwiki-success": "D'Wiki gouf ugeluecht.",
 	"requestwiki": "Eng Wiki ufroen",
 	"requestwiki-label-language": "Sprooch:",
+	"requestwiki-label-purpose": "Den Zweck vun dëser Wiki ass...",
 	"requestwiki-label-sitename": "Numm vun der Wiki:",
 	"requestwikiqueue-approve": "Zoustëmmen",
 	"requestwikiqueue-decline": "Refuséieren",
