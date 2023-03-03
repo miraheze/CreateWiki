@@ -38,7 +38,14 @@ jobs:
           - mw: 'master'
             php: 7.4
             php-docker: 74
-            experimental: false
+            experimental: true
+            stage: phpunit
+
+          # Latest MediaWiki master - PHP 8.1 (phpunit)
+          - mw: 'master'
+            php: 8.1
+            php-docker: 81
+            experimental: true
             stage: phpunit
 
           # Latest stable MediaWiki - PHP 7.4 (selenium)
@@ -139,7 +146,7 @@ jobs:
           fi
 
       - name: Cache docker image
-        uses: actions/cache@v3.2.2
+        uses: actions/cache@v3.2.6
         with:
           path: /home/runner/docker-images/${{ env.DOCKER_IMAGE }}
           key: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_LATEST_TAG }}
@@ -151,7 +158,7 @@ jobs:
 
       - name: Cache quibble docker image
         if: ${{ matrix.stage == 'coverage' || matrix.stage == 'phan' }}
-        uses: actions/cache@v3.2.2
+        uses: actions/cache@v3.2.6
         with:
           path: /home/runner/docker-images/${{ env.QUIBBLE_DOCKER_IMAGE }}
           key: ${{ env.QUIBBLE_DOCKER_IMAGE }}:${{ env.QUIBBLE_DOCKER_LATEST_TAG }}
@@ -195,7 +202,7 @@ jobs:
           git -C src/ log -n 1 --format="%H"
 
       - name: Cache dependencies (composer and npm)
-        uses: actions/cache@v3.2.2
+        uses: actions/cache@v3.2.6
         with:
           path: /home/runner/cache
           key: ${{ runner.os }}-${{ env.MEDIAWIKI_VERSION }}-${{ hashFiles('**/*.lock') }}

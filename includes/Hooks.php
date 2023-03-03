@@ -4,15 +4,20 @@ namespace Miraheze\CreateWiki;
 
 use Config;
 use EchoAttributeManager;
+use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
+use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use Wikimedia\Rdbms\ILBFactory;
 
 class Hooks implements
+	GetMagicVariableIDsHook,
 	LoginFormValidErrorMessagesHook,
+	ParserGetVariableValueSwitchHook,
 	SetupAfterCacheHook
 {
 	/** @var Config */
@@ -21,13 +26,22 @@ class Hooks implements
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
+	/** @var ILBFactory */
+	private $dbLoadBalancerFactory;
+
 	/**
 	 * @param Config $config
 	 * @param CreateWikiHookRunner $hookRunner
+	 * @param ILBFactory $dbLoadBalancerFactory
 	 */
-	public function __construct( Config $config, CreateWikiHookRunner $hookRunner ) {
+	public function __construct(
+		Config $config,
+		CreateWikiHookRunner $hookRunner,
+		ILBFactory $dbLoadBalancerFactory
+	) {
 		$this->config = $config;
 		$this->hookRunner = $hookRunner;
+		$this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
 	}
 
 	public static function onRegistration() {
@@ -54,7 +68,7 @@ class Hooks implements
 		$cWJ->update();
 
 		if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
-			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true );
+			$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
 			$isPrivate = (bool)$cacheArray['states']['private'];
 		} else {
 			$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
@@ -68,6 +82,27 @@ class Hooks implements
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
 		}
+	}
+
+	/** @inheritDoc */
+	public function onParserGetVariableValueSwitch(
+		$parser,
+		&$variableCache,
+		$magicWordId,
+		&$ret,
+		$frame
+	) {
+		if ( $magicWordId === 'numberofwikirequests' ) {
+			$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
+				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+
+			$ret = $variableCache[$magicWordId] = $dbr->selectRowCount( 'cw_requests', '*' );
+		}
+	}
+
+	/** @inheritDoc */
+	public function onGetMagicVariableIDs( &$variableIDs ) {
+		$variableIDs[] = 'numberofwikirequests';
 	}
 
 	/**

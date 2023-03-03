@@ -2,15 +2,15 @@
 
 namespace Miraheze\CreateWiki;
 
+use DeferredUpdates;
 use Exception;
 use ExtensionRegistry;
 use FatalError;
-use GlobalVarConfig;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Title;
+use SpecialPage;
 
 class WikiManager {
 	private $config;
@@ -136,50 +136,54 @@ class WikiManager {
 			]
 		);
 
-		$this->recacheJson();
-
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
-		$blankConfig = new GlobalVarConfig( '' );
+		DeferredUpdates::addCallableUpdate(
+			function () use ( $wiki, $requester ) {
+				$this->recacheJson();
 
-		Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
-			[
-				'--wiki', $wiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				Shell::makeScriptCommand(
+					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+					[
+						'--wiki', $wiki
+					]
+				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/extensions/CreateWiki/maintenance/populateMainPage.php',
-			[
-				'--wiki', $wiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				Shell::makeScriptCommand(
+					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
+					[
+						'--wiki', $wiki
+					]
+				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
-			Shell::makeScriptCommand(
-				$blankConfig->get( 'IP' ) . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
-				[
-					$requester,
-					'--wiki', $wiki
-				]
-			)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
-		}
+				if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+					Shell::makeScriptCommand(
+						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+						[
+							$requester,
+							'--wiki', $wiki
+						]
+					)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				}
 
-		Shell::makeScriptCommand(
-			$blankConfig->get( 'IP' ) . '/maintenance/createAndPromote.php',
-			[
-				$requester,
-				'--bureaucrat',
-				'--sysop',
-				'--force',
-				'--wiki', $wiki
-			]
-		)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				Shell::makeScriptCommand(
+					MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
+					[
+						$requester,
+						'--bureaucrat',
+						'--sysop',
+						'--force',
+						'--wiki', $wiki
+					]
+				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+			},
+			DeferredUpdates::POSTSEND,
+			$this->cwdb
+		);
 
 		$notificationData = [
 			'type' => 'wiki-creation',
@@ -189,7 +193,7 @@ class WikiManager {
 			],
 			'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
+				'html' => nl2br( wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() ),
 				'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
 			],
 		];
@@ -318,7 +322,7 @@ class WikiManager {
 		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->parse() : false;
 	}
 
-	private function logEntry( string $log, string $action, string $actor, string $reason, array $params, string $loggingWiki = null ) {
+	private function logEntry( string $log, string $action, string $actor, string $reason, array $params ) {
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 		$user = $userFactory->newFromName( $actor );
 
@@ -326,12 +330,12 @@ class WikiManager {
 			return;
 		}
 
-		$logDBConn = $this->lbFactory->getMainLB( $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $loggingWiki ?? $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$logDBConn = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( Title::newFromID( 1 ) );
+		$logEntry->setTarget( SpecialPage::getTitleValueFor( 'CreateWiki' ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
 		$logID = $logEntry->insert( $logDBConn );

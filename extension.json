@@ -11,10 +11,7 @@
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.38.0",
-		"platform": {
-			"php": ">= 7.4"
-		}
+		"MediaWiki": ">= 1.39.0"
 	},
 	"AvailableRights": [
 		"createwiki",
@@ -53,8 +50,8 @@
 			"createwiki": [
 				"createwiki"
 			],
-			"requestaccept": [
-				"requestaccept"
+			"requestapprove": [
+				"requestapprove"
 			],
 			"requestdecline": [
 				"requestdecline"
@@ -67,7 +64,7 @@
 	},
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
-		"farmer/requestaccept": "LogFormatter",
+		"farmer/requestapprove": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
 		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
@@ -79,7 +76,8 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"CreateWikiAliases": "CreateWikiAliases.php"
+		"CreateWikiAliases": "CreateWikiAliases.php",
+		"CreateWikiMagic": "CreateWikiMagic.php"
 	},
 	"AutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\": "includes/"
@@ -98,7 +96,13 @@
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
 		},
+		"GetMagicVariableIDs": {
+			"handler": "default"
+		},
 		"LoginFormValidErrorMessages": {
+			"handler": "default"
+		},
+		"ParserGetVariableValueSwitch": {
 			"handler": "default"
 		},
 		"SetupAfterCache": {
@@ -110,7 +114,8 @@
 			"class": "Miraheze\\CreateWiki\\Hooks",
 			"services": [
 				"MainConfig",
-				"CreateWikiHookRunner"
+				"CreateWikiHookRunner",
+				"DBLoadBalancerFactory"
 			]
 		},
 		"Installer": {

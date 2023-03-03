@@ -25,7 +25,6 @@
 	"echo-pref-tooltip-wiki-request-declined": "میری ویکی درخواست رد ہونے پر مجھے مطلع کریں۔",
 	"log-description-farmer": "یہ نوشتہ ویکی تخلیقات دکھاتا ہیں۔",
 	"logentry-farmer-createwiki": "$1 نے \"$4\" ویکی کو تخلیق کیا",
-	"logentry-farmer-requestaccept": "$1 نے ویکی درخواست $4 کو قبول کیا",
 	"logentry-farmer-requestdecline": "$1 نے ویکی درخواست $4 کو رد کیا",
 	"logentry-farmer-requestreopen": "$1 نے ویکی درخواست $4 کو دوبارہ کھولا",
 	"logentry-farmer-requestwiki": "$1 نے $7 ميں \"$4\" ویکی درخواست کئ (زبان: $5؛ نجی: $6)",
