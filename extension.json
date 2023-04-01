@@ -131,6 +131,18 @@
 				"oojs-ui-widgets"
 			]
 		},
+		"ext.createwiki.oouiform.wikiTags": {
+			"targets": [ "desktop", "mobile" ],
+			"scripts": [
+				"ext.createwiki.oouiform.wikiTags.js"
+			],
+			"messages": [
+				"createwiki-label-wiki-tags"
+			],
+			"dependencies": [
+				"oojs-ui-widgets"
+			]
+		},
 		"ext.createwiki.oouiform.styles": {
 			"targets": [ "desktop", "mobile" ],
 			"styles": "ext.createwiki.oouiform.ooui.less"

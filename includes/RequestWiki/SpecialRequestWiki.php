@@ -36,6 +36,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
+		$out->addModules( [ 'ext.createwiki.oouiform.wikiTags' ] );
+				
+		$out->addJsConfigVars( [
+			'wgCreateWikiAvailableTags' => $this->config->get( 'CreateWikiAvailableTags' ) 
+		] );
+
 		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
 			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
 
@@ -73,6 +79,15 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-category',
 				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
+			];
+		}
+
+		if ( $this->config->get( 'CreateWikiUseWikiTags' ) ) {
+			$formDescriptor['wikitags'] = [
+				'type' => 'text',
+				'label-message' => 'createwiki-label-wiki-tags',
+				'cssclass' => 'createwiki-wikitags',
+				'disabled' => true
 			];
 		}
 
