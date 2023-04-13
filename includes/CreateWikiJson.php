@@ -199,8 +199,11 @@ class CreateWikiJson {
 	 * allows extensions to modify the data before it is written to a file.
 	 */
 	private function generateDatabaseList() {
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
 		$allWikis = $this->dbr->select(
-			'cw_wikis',
+			$table,
 			[
 				'wiki_dbcluster',
 				'wiki_dbname',
@@ -278,8 +281,11 @@ class CreateWikiJson {
 	 * @throws MWException If the wiki specified by $this->wiki cannot be found.
 	 */
 	private function generateWiki() {
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
 		$wikiObject = $this->dbr->selectRow(
-			'cw_wikis',
+			$table,
 			'*',
 			[
 				'wiki_dbname' => $this->wiki
