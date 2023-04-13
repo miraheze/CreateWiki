@@ -30,8 +30,11 @@ class DeleteWikis extends Maintenance {
 		$dbr = $this->getDB( DB_REPLICA, [], $config->get( 'CreateWikiDatabase' ) );
 		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
+		$table = 'cw_wikis';
+		$hookRunner->onCreateWikiGetDatabaseTable( $table );
+
 		$res = $dbr->select(
-			'cw_wikis',
+			$table,
 			'*',
 			[
 				'wiki_deleted' => 1
