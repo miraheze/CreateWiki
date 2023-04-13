@@ -7,6 +7,7 @@ use MediaWiki\HookContainer\HookContainer;
 class CreateWikiHookRunner implements
 	CreateWikiCreationHook,
 	CreateWikiDeletionHook,
+	CreateWikiGetDatabaseTableHook,
 	CreateWikiJsonBuilderHook,
 	CreateWikiJsonGenerateDatabaseListHook,
 	CreateWikiReadPersistentModelHook,
@@ -43,6 +44,14 @@ class CreateWikiHookRunner implements
 		$this->container->run(
 			'CreateWikiDeletion',
 			[ $cwdb, $wiki ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiGetDatabaseTable( &$table ): void {
+		$this->container->run(
+			'CreateWikiGetDatabaseTable',
+			[ &$table ]
 		);
 	}
 
