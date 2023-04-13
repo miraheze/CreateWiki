@@ -29,7 +29,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		if ( $config->get( 'CreateWikiDisableManageInactiveWikis' ) ) {
 			$this->fatalError(
-				'This script has been disabled via $wgCreateWikiDisableManageInactiveWikis. ' . 
+				'This script has been disabled because $wgCreateWikiDisableManageInactiveWikis is set. ' . 
 				'Please disable that configuration in order to run this script.'
 			);
 		}
