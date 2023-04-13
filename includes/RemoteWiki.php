@@ -63,13 +63,13 @@ class RemoteWiki {
 		$this->url = $wikiRow->wiki_url;
 		$this->closed = $wikiRow->wiki_closed_timestamp ?? 0;
 		$this->inactive = $wikiRow->wiki_inactive_timestamp ?? 0;
-		$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
+		$this->inactiveExempt = $wikiRow->wiki_inactive_exempt ?? 0;
 		$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
 		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? 0;
 		$this->locked = $wikiRow->wiki_locked;
 		$this->dbcluster = $wikiRow->wiki_dbcluster;
 		$this->category = $wikiRow->wiki_category;
-		$this->experimental = $wikiRow->wiki_experimental;
+		$this->experimental = $wikiRow->wiki_experimental ?? 0;
 	}
 
 	public function getCreationDate() {
