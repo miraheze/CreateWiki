@@ -34,8 +34,11 @@ class WikiManager {
 		$this->cwdb = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
 		$check = $this->cwdb->selectRow(
-			'cw_wikis',
+			$table,
 			'wiki_dbname',
 			[
 				'wiki_dbname' => $dbname
@@ -50,7 +53,7 @@ class WikiManager {
 			$clusterSize = [];
 			foreach ( $this->config->get( 'CreateWikiDatabaseClusters' ) as $cluster ) {
 				$count = $this->cwdb->selectRowCount(
-					'cw_wikis',
+					$table,
 					'*',
 					[
 						'wiki_dbcluster' => $cluster
@@ -64,7 +67,7 @@ class WikiManager {
 			$rand = rand( 0, count( $candidateArray ) - 1 );
 			$this->cluster = $candidateArray[$rand];
 			$clusterDB = $this->cwdb->selectRow(
-				'cw_wikis',
+				$table,
 				'wiki_dbname',
 				[
 					'wiki_dbcluster' => $this->cluster
@@ -123,18 +126,23 @@ class WikiManager {
 				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
 
-		$this->cwdb->insert(
-			'cw_wikis',
-			[
-				'wiki_dbname' => $wiki,
-				'wiki_dbcluster' => $this->cluster,
-				'wiki_sitename' => $siteName,
-				'wiki_language' => $language,
-				'wiki_private' => (int)$private,
-				'wiki_creation' => $this->dbw->timestamp(),
-				'wiki_category' => $category
-			]
-		);
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
+		if ( $table === 'cw_wikis' ) {
+			$this->cwdb->insert(
+				'cw_wikis',
+				[
+					'wiki_dbname' => $wiki,
+					'wiki_dbcluster' => $this->cluster,
+					'wiki_sitename' => $siteName,
+					'wiki_language' => $language,
+					'wiki_private' => (int)$private,
+					'wiki_creation' => $this->dbw->timestamp(),
+					'wiki_category' => $category
+				]
+			);
+		}
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
@@ -211,8 +219,10 @@ class WikiManager {
 
 		$wiki = $this->dbname;
 
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
 		$row = $this->cwdb->selectRow(
-			'cw_wikis',
+			$table,
 			'*',
 			[
 				'wiki_dbname' => $wiki
@@ -293,7 +303,12 @@ class WikiManager {
 
 		$this->hookRunner->onCreateWikiTables( $cTables );
 
-		$cTables['cw_wikis'] = 'wiki_dbname';
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
+		if ( $table === 'cw_wikis' ) {
+			$cTables['cw_wikis'] = 'wiki_dbname';
+		}
 
 		$this->tables = $cTables;
 	}
