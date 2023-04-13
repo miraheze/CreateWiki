@@ -40,8 +40,11 @@ class RemoteWiki {
 		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
 
+		$table = 'cw_wikis';
+		$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
 		$wikiRow = $this->dbw->selectRow(
-			'cw_wikis',
+			$table,
 			'*',
 			[
 				'wiki_dbname' => $wiki
@@ -373,8 +376,11 @@ class RemoteWiki {
 	public function commit() {
 		if ( !empty( $this->changes ) ) {
 			if ( $this->newRows ) {
+				$table = 'cw_wikis';
+				$this->hookRunner->onCreateWikiGetDatabaseTable( $table );
+
 				$this->dbw->update(
-					'cw_wikis',
+					$table,
 					$this->newRows,
 					[
 						'wiki_dbname' => $this->dbname
