@@ -206,6 +206,11 @@
 				"deleted": 7
 			}
 		},
+		"CreateWikiDisableManageInactiveWikis": {
+			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be disabled? Can be used to prevent accidental running of that script.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
 			"public": true,
