@@ -24,6 +24,10 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$conf->suffixes = [ 'test' ];
 
 		$this->setMwGlobals( 'wgConf', $conf );
+		$this->setMwGlobals( 'wgCreateWikiUseClosedWikis', true );
+		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
+		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
+		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
 
 		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
