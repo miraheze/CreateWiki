@@ -132,7 +132,7 @@ class WikiManager {
 		$this->cwdb->insert(
 			'cw_wikis',
 			[
-				'wiki_dbname' => $wiki,
+				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
@@ -142,7 +142,7 @@ class WikiManager {
 			]
 		);
 
-		$this->doAfterCreate( $sitename, $private, $requester, $actor, $reason, true );
+		$this->doAfterCreate( $siteName, $private, $requester, $actor, $reason, true );
 
 		return null;
 	}
