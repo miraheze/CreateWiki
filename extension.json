@@ -206,8 +206,8 @@
 				"deleted": 7
 			}
 		},
-		"CreateWikiDisableManageInactiveWikis": {
-			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be disabled? Can be used to prevent accidental running of that script.",
+		"CreateWikiEnableManageInactiveWikis": {
+			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
 			"public": true,
 			"value": false
 		},
