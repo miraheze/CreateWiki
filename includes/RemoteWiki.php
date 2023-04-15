@@ -55,18 +55,30 @@ class RemoteWiki {
 		$this->dbname = $wikiRow->wiki_dbname;
 		$this->sitename = $wikiRow->wiki_sitename;
 		$this->language = $wikiRow->wiki_language;
-		$this->private = $wikiRow->wiki_private;
 		$this->creation = $wikiRow->wiki_creation;
 		$this->url = $wikiRow->wiki_url;
-		$this->closed = $wikiRow->wiki_closed_timestamp ?? 0;
-		$this->inactive = $wikiRow->wiki_inactive_timestamp ?? 0;
-		$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
-		$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
 		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? 0;
 		$this->locked = $wikiRow->wiki_locked;
 		$this->dbcluster = $wikiRow->wiki_dbcluster;
 		$this->category = $wikiRow->wiki_category;
-		$this->experimental = $wikiRow->wiki_experimental;
+
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+			$this->private = $wikiRow->wiki_private;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
+			$this->closed = $wikiRow->wiki_closed_timestamp ?? 0;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
+			$this->inactive = $wikiRow->wiki_inactive_timestamp ?? 0;
+			$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
+			$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
+			$this->experimental = $wikiRow->wiki_experimental;
+		}
 	}
 
 	public function getCreationDate() {
