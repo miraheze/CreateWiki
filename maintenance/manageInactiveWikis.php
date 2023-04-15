@@ -27,10 +27,9 @@ class ManageInactiveWikis extends Maintenance {
 	public function execute() {
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
-		if ( $config->get( 'CreateWikiDisableManageInactiveWikis' ) ) {
+		if ( !$config->get( 'CreateWikiEnableManageInactiveWikis' ) ) {
 			$this->fatalError(
-				'This script has been disabled because $wgCreateWikiDisableManageInactiveWikis is set. ' . 
-				'Please disable that configuration in order to run this script.'
+				'This script can not be run because it has not yet been enabled. You can enable $wgCreateWikiEnableManageInactiveWikis in order to run this script.'
 			);
 		}
 
