@@ -206,6 +206,11 @@
 				"deleted": 7
 			}
 		},
+		"CreateWikiEnableManageInactiveWikis": {
+			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
 			"public": true,
