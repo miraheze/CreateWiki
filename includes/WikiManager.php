@@ -147,7 +147,7 @@ class WikiManager {
 		return null;
 	}
 
-	public function doAfterCreate( 
+	public function doAfterCreate(
 		string $siteName,
 		bool $private,
 		string $requester,
