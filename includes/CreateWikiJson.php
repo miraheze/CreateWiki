@@ -290,6 +290,24 @@ class CreateWikiJson {
 			throw new MWException( "Wiki '{$this->wiki}' can not be found." );
 		}
 
+		$states = [];
+
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+			$states['private'] = (bool)$wikiObject->wiki_private;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
+			$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
+			$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
+		}
+
+		if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
+			$states['experimental'] = (bool)$wikiObject->wiki_experimental;
+		}
+
 		$jsonArray = [
 			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
 			'database' => $wikiObject->wiki_dbname,
@@ -301,12 +319,7 @@ class CreateWikiJson {
 				'wgSitename' => $wikiObject->wiki_sitename,
 				'wgLanguageCode' => $wikiObject->wiki_language
 			],
-			'states' => [
-				'private' => (bool)$wikiObject->wiki_private,
-				'closed' => $wikiObject->wiki_closed_timestamp ?? false,
-				'inactive' => ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false ),
-				'experimental' => (bool)$wikiObject->wiki_experimental
-			]
+			'states' => $states
 		];
 
 		$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );

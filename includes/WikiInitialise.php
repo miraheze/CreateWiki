@@ -138,10 +138,21 @@ class WikiInitialise {
 		}
 
 		// Assign states
-		$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'];
-		$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
-		$this->config->settings['cwInactive'][$this->dbname] = ( ( $cacheArray['states']['inactive'] ?? false ) == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
-		$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
+		if ( isset( $cacheArray['states']['private'] ) ) {
+			$this->config->settings['cwPrivate'][$this->dbname] = (bool)$cacheArray['states']['private'];
+		}
+
+		if ( isset( $cacheArray['states']['closed'] ) ) {
+			$this->config->settings['cwClosed'][$this->dbname] = (bool)$cacheArray['states']['closed'];
+		}
+
+		if ( isset( $cacheArray['states']['inactive'] ) ) {
+			$this->config->settings['cwInactive'][$this->dbname] = ( ( $cacheArray['states']['inactive'] ?? false ) == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
+		}
+
+		if ( isset( $cacheArray['states']['experimental'] ) ) {
+			$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
+		}
 
 		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
 		$tags = [];
