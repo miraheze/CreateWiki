@@ -15,7 +15,6 @@ use SpecialPage;
 class WikiManager {
 	private $config;
 	private $lbFactory;
-	private $cluster;
 	private $dbname;
 	private $dbw;
 	private $cwdb;
@@ -24,6 +23,7 @@ class WikiManager {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
+	public $cluster;
 	public $exists;
 
 	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
@@ -87,15 +87,7 @@ class WikiManager {
 		$this->exists = (bool)$check;
 	}
 
-	public function create(
-		string $siteName,
-		string $language,
-		bool $private,
-		string $category,
-		string $requester,
-		string $actor,
-		string $reason
-	) {
+	public function doCreateDatabase() {
 		$wiki = $this->dbname;
 
 		if ( $this->exists ) {
@@ -122,11 +114,25 @@ class WikiManager {
 			$this->dbw = $this->lbFactory->getMainLB( $wiki )
 				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
+	}
+
+	public function create(
+		string $siteName,
+		string $language,
+		bool $private,
+		string $category,
+		string $requester,
+		string $actor,
+		string $reason
+	) {
+		if ( $this->doCreateDatabase() ) {
+			return $this->doCreateDatabase();
+		}
 
 		$this->cwdb->insert(
 			'cw_wikis',
 			[
-				'wiki_dbname' => $wiki,
+				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
@@ -135,6 +141,21 @@ class WikiManager {
 				'wiki_category' => $category
 			]
 		);
+
+		$this->doAfterCreate( $siteName, $private, $requester, $actor, $reason, true );
+
+		return null;
+	}
+
+	public function doAfterCreate( 
+		string $siteName,
+		bool $private,
+		string $requester,
+		string $actor,
+		string $reason,
+		bool $notify
+	) {
+		$wiki = $this->dbname;
 
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
@@ -185,25 +206,25 @@ class WikiManager {
 			$this->cwdb
 		);
 
-		$notificationData = [
-			'type' => 'wiki-creation',
-			'extra' => [
-				'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
-				'sitename' => $siteName,
-			],
-			'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
-			'body' => [
-				'html' => nl2br( wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() ),
-				'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
-			],
-		];
+		if ( $notify ) {
+			$notificationData = [
+				'type' => 'wiki-creation',
+				'extra' => [
+					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'sitename' => $siteName,
+				],
+				'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
+				'body' => [
+					'html' => nl2br( wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() ),
+					'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
+				],
+			];
 
-		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, [ $requester ] );
+			MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+				->sendNotification( $notificationData, [ $requester ] );
 
-		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
-
-		return null;
+			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
+		}
 	}
 
 	public function delete( bool $force = false ) {
