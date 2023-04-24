@@ -66,7 +66,7 @@
 	"requestwiki-edit-success": "成功更改已提交的請求。",
 	"requestwiki-error-invalidcomment": "您的wiki申請包含無效字符。請重新嘗試申請，如果問題仍然存在，[[Help center|請聯繫我們]]。",
 	"requestwiki-error-patient": "您已經申請了一個wiki。請耐心等候，我們的wiki建立員會盡速為您建立。如果您希望申請另一個wiki，也請您稍等，稍後您就能再度提出升級。",
-	"requestwiki-header": "感謝您選擇 Miraheze 來託管您的 Wiki！。開始之前，需要您來填寫下面的申請表格，來讓我們在審核您的請求。\n您的申請將由我們的志工審核。當您提交請求之後，您可以透過系統給出的連結跟蹤請求進度。\n\n如果您想使用自訂網域（即並非以「.miraheze.org」子網域作為結尾），請先閱讀<span class=\"plainlinks\">[$1 此頁面]</span>。您必須先挑選子網域，然後再設定您的自訂網域。\n\n當您申請新 Wiki，意味著您已經自動同意我們的[[Content Policy|內容]]與[[Dormancy Policy|休眠方針]]。",
+	"requestwiki-header": "感謝您選擇 Miraheze 來託管您的 Wiki！。開始之前，需要您來填寫下面的申請表單，來讓我們在審核您的請求。\n您的申請將由我們的志工審核。當您提交請求之後，您可以透過系統給出的連結跟蹤請求進度。\n\n如果您想使用自訂網域（即並非以「.miraheze.org」子網域作為結尾），請先閱讀<span class=\"plainlinks\">[$1 此頁面]</span>。您必須先挑選子網域，然後再設定您的自訂網域。\n\n當您申請新 Wiki，意味著您已經自動同意我們的[[Content Policy|內容]]與[[Dormancy Policy|休眠方針]]。",
 	"requestwiki-label-bio": "此 Wiki 的主題是否與在世人物相關？",
 	"requestwiki-label-language": "語言：",
 	"requestwiki-label-private": "私人 Wiki（只有指定成員或是 sysop 群組的使用者才能讀取）：",
