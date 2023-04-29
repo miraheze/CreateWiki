@@ -85,6 +85,11 @@
 			var hash = location.hash;
 			if ( hash.match( /^#mw-[\w-]+/ ) ) {
 				detectHash();
+			/*
+			 * The next comment makes eslint ignore possible timing attacks when checking if the hash is an empty string
+			 * as this is not something you need a constant-time comparison for
+			*/
+			// eslint-ignore-next-line security/detect-possible-timing-attacks
 			} else if ( hash === '' ) {
 				switchCreateWikiTab( $( '[id*=mw-section-]' ).attr( 'id' ), true );
 			}
