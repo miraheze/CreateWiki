@@ -9,9 +9,9 @@ class RemoteWiki {
 	public $changes = [];
 	public $log;
 	public $logParams = [];
+	public $newRows = [];
 
 	private $hooks = [];
-	private $newRows = [];
 	private $config;
 	private $dbw;
 	private $dbname;
