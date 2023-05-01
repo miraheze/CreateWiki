@@ -7,11 +7,11 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class RemoteWiki {
 	public $changes = [];
-	public $hooks = [];
 	public $log;
 	public $logParams = [];
 	public $newRows = [];
 
+	private $hooks = [];
 	private $config;
 	private $dbw;
 	private $dbname;
