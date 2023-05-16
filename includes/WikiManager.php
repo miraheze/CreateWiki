@@ -196,6 +196,7 @@ class WikiManager {
 					[
 						$requester,
 						'--bureaucrat',
+						'--interface-admin',
 						'--sysop',
 						'--force',
 						'--wiki', $wiki
