@@ -153,7 +153,8 @@ class WikiManager {
 		string $requester,
 		string $actor,
 		string $reason,
-		bool $notify
+		bool $notify,
+		string $defaultPrivateGroup = ''
 	) {
 		$wiki = $this->dbname;
 
@@ -161,7 +162,14 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
+		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
+			$this->dbw->sourceFile( $sqlfile );
+		}
+
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
+		if ( $defaultPrivateGroup ) {
+			$this->hookRunner->onCreateWikiCreationPrivate( $wiki, $private, $defaultPrivateGroup );
+		}
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $wiki, $requester ) {
