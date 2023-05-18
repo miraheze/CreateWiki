@@ -169,14 +169,14 @@ class RemoteWiki {
 		];
 		$this->changes['inactive-exempt-granter'] = [
 			'old' => null,
-			'new' => $user->getUser()
+			'new' => $user->getId()
 		];
 
 		$this->inactiveExempt = true;
 		$this->inactiveExemptTimestamp = $this->dbw->timestamp();
 		$this->newRows += [
 			'wiki_inactive_exempt' => 1,
-			'wiki_inactive_exempt_granter' => $user->getUser(),
+			'wiki_inactive_exempt_granter' => $user->getId(),
 			'wiki_inactive_exempt_timestamp' => $this->inactiveExemptTimestamp
 		];
 	}
