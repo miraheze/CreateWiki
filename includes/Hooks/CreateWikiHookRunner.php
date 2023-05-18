@@ -6,6 +6,7 @@ use MediaWiki\HookContainer\HookContainer;
 
 class CreateWikiHookRunner implements
 	CreateWikiCreationHook,
+	CreateWikiCreationPrivateHook,
 	CreateWikiDeletionHook,
 	CreateWikiJsonBuilderHook,
 	CreateWikiJsonGenerateDatabaseListHook,
@@ -35,6 +36,14 @@ class CreateWikiHookRunner implements
 		$this->container->run(
 			'CreateWikiCreation',
 			[ $wiki, $private ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiCreationPrivate( $wiki, $private, $defaultPrivateGroup ): void {
+		$this->container->run(
+			'CreateWikiCreationPrivate',
+			[ $wiki, $private, $defaultPrivateGroup ]
 		);
 	}
 
