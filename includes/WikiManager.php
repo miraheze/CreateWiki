@@ -162,10 +162,6 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
-			$this->dbw->sourceFile( $sqlfile );
-		}
-
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 		if ( $defaultPrivateGroup ) {
 			$this->hookRunner->onCreateWikiCreationPrivate( $wiki, $private, $defaultPrivateGroup );
