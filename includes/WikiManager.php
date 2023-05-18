@@ -163,7 +163,7 @@ class WikiManager {
 		}
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
-		if ( $defaultPrivateGroup ) {
+		if ( $private && $defaultPrivateGroup ) {
 			$this->hookRunner->onCreateWikiCreationPrivate( $wiki, $private, $defaultPrivateGroup );
 		}
 
