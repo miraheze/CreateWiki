@@ -194,7 +194,7 @@ class RemoteWiki {
 		];
 
 		$this->inactiveExemptReason = null;
-		$this->inactivityExemptTimestamp = false;
+		$this->inactiveExemptTimestamp = false;
 
 		$this->newRows += [
 			'wiki_inactive_exempt_reason' => null,
