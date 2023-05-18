@@ -168,7 +168,7 @@ class RemoteWiki {
 			'old' => null,
 			'new' => $user->getUser()
 		];
-		
+
 		$this->inactiveExempt = true;
 		$this->inactiveExemptTimestamp = $this->dbw->timestamp();
 		$this->newRows += [
