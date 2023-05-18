@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use User;
 
 class RemoteWiki {
 	public $changes = [];
@@ -160,6 +161,8 @@ class RemoteWiki {
 	}
 
 	public function markExempt() {
+		$user = new User;
+
 		$this->changes['inactive-exempt'] = [
 			'old' => 0,
 			'new' => 1
