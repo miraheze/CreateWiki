@@ -26,7 +26,8 @@ class CheckLastWikiActivity extends Maintenance {
 			'recentchanges',
 			'rc_timestamp',
 			[
-				"rc_log_action != 'renameuser'"
+				"rc_log_action != 'renameuser'",
+				"rc_log_action != 'newusers'"
 			],
 			__METHOD__,
 			[
