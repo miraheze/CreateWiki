@@ -142,7 +142,7 @@ class WikiManager {
 			]
 		);
 
-		$this->doAfterCreate( $siteName, $private, $requester, $actor, $reason, true );
+		$this->doAfterCreate( $siteName, $private, $requester, $actor, $reason );
 
 		return null;
 	}
@@ -153,7 +153,8 @@ class WikiManager {
 		string $requester,
 		string $actor,
 		string $reason,
-		bool $notify
+		bool $notify = true,
+		bool $centralAuth = true
 	) {
 		$wiki = $this->dbname;
 
@@ -164,7 +165,7 @@ class WikiManager {
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $wiki, $requester ) {
+			function () use ( $wiki, $requester, $centralAuth ) {
 				$this->recacheJson();
 
 				Shell::makeScriptCommand(
@@ -181,27 +182,29 @@ class WikiManager {
 					]
 				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
-				if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+				if ( $centralAuth ) {
+					if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+						Shell::makeScriptCommand(
+							MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+							[
+								$requester,
+								'--wiki', $wiki
+							]
+						)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+					}
+
 					Shell::makeScriptCommand(
-						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+						MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
 						[
 							$requester,
+							'--bureaucrat',
+							'--interface-admin',
+							'--sysop',
+							'--force',
 							'--wiki', $wiki
 						]
 					)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 				}
-
-				Shell::makeScriptCommand(
-					MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
-					[
-						$requester,
-						'--bureaucrat',
-						'--interface-admin',
-						'--sysop',
-						'--force',
-						'--wiki', $wiki
-					]
-				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 			},
 			DeferredUpdates::POSTSEND,
 			$this->cwdb
