@@ -33,7 +33,21 @@ class CreateWikiLogFormatter extends LogFormatter {
 					Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[6] )->getPrefixedText()
 				);
 			}
-		}
+		} else {
+                        $params[3] = str_replace( '#', '', $params[3] );
+
+                        if ( !$this->plaintext ) {
+                                // @phan-suppress-next-line SecurityCheck-DoubleEscaped
+                                $params[3] = Message::rawParam( $linkRenderer->makeKnownLink(
+                                        Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[3] ),
+                                        '#' . $params[3]
+                                ) );
+                        } else {
+                                $params[3] = Message::rawParam(
+                                        Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[3] )->getPrefixedText()
+                                );
+                        }
+                }
 
 		return $params;
 	}
