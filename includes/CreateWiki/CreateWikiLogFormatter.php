@@ -29,7 +29,7 @@ class CreateWikiLogFormatter extends LogFormatter {
 					'#' . $params[6]
 				) );
 			} else {
-				$target = Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[6] ) . '#' . $params[6]
+				$target = Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[6] ) . '#' . $params[6];
 				$params[6] = Message::rawParam(
 					$target->getPrefixedText()
 				);
