@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
+use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -251,7 +252,12 @@ class WikiRequest {
 
 		$logEntry->setParameters(
 			[
-				'4::id' => '#' . $this->id,
+				'4::id' => Message::rawParam(
+					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
+						'#' . $this->id
+					)
+				),
 			]
 		);
 
