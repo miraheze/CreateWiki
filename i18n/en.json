@@ -45,7 +45,7 @@
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|declined}} the wiki request $4",
 	"logentry-farmer-requestonhold": "$1 {{GENDER:$2|placed}} wiki request $4 on hold",
 	"logentry-farmer-requestreopen": "$1 {{GENDER:$2|reopened}} the wiki request $4",
-	"logentry-farmer-requestwiki": "$1 {{GENDER:$2|requested}} the wiki \"$4\" (language: $5; private: $6) in $7",
+	"logentry-farmer-requestwiki": "$1 {{GENDER:$2|requested}} the wiki \"$4\" (language: $5; private: $6) in $3",
 	"log-name-farmer": "Farmer log",
 	"notification-createwiki-wiki-creation-email-subject": "Your wiki $1 has been created!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Visit wiki",
