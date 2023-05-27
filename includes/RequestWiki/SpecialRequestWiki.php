@@ -163,7 +163,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$out->addHTML( Html::successBox( $this->msg( 'requestwiki-success', $idlink )->plain() ) );
+		$out->addHTML(
+			Html::successBox(
+				$this->msg( 'requestwiki-success' )->rawParams( $requestLink )->escaped()
+			)
+		);
 
 		return true;
 	}
