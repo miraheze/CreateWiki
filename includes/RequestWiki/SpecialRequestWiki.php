@@ -137,7 +137,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->bio = $formData['bio'] ?? 0;
 
 		try {
-			$requestID = $request->save();
+			$requestID = (string)$request->save();
 		} catch ( MWException $e ) {
 			$out->addHTML( Html::errorBox( $this->msg( 'requestwiki-error-patient' )->plain() ) );
 
