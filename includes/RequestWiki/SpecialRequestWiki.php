@@ -7,9 +7,11 @@ use FormSpecialPage;
 use Html;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
+use Message;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
+use SpecialPage;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
@@ -142,18 +144,19 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return false;
 		}
 
-		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
+		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', $requestID );
+		$requestLink = $this->getLinkRenderer()->makeLink( $requestQueueLink, "#{$requestID}" );
 
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
-		$farmerLogEntry->setTarget( $this->getPageTitle() );
+		$farmerLogEntry->setTarget( $requestQueueLink );
 		$farmerLogEntry->setComment( $formData['reason'] );
 		$farmerLogEntry->setParameters(
 			[
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
 				'6::private' => (int)( $formData['private'] ?? 0 ),
-				'7::id' => "#{$requestID}",
+				'7::requestLink' => Message::rawParam( $requestLink ),
 			]
 		);
 
