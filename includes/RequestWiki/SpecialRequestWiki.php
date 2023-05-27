@@ -7,7 +7,6 @@ use FormSpecialPage;
 use Html;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
-use Message;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
@@ -156,9 +155,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'4::sitename' => $formData['sitename'],
 				'5::language' => $formData['language'],
 				'6::private' => (int)( $formData['private'] ?? 0 ),
-				// TODO: remove — only kept for other languages until all
-				// are updated to use target ($3), which should respect plantext
-				'7::requestLink' => Message::rawParam( $requestLink ),
 			]
 		);
 
