@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"1233qwer1234qwer4",
+			"AppData 174",
 			"DDPAT",
 			"Diman Russkov",
 			"EdwardGeneralov",
@@ -85,6 +86,7 @@
 	"requestwikiqueue-edit": "Редактировать запрос",
 	"requestwikiqueue-handle": "Обработать запрос",
 	"requestwikiqueue-inreview": "На рассмотрении",
+	"requestwikiqueue-onhold": "На удерживании",
 	"requestwikiqueue-pager-status-approved": "одобрен",
 	"requestwikiqueue-pager-status-declined": "отклонен",
 	"requestwikiqueue-pager-status-inreview": "рассматривается",
