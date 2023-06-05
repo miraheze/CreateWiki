@@ -116,7 +116,7 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) || $userR->getId() == $request->requester->getId() ) {
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() || $userR->getId() == $request->requester->getId() ) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
@@ -208,7 +208,7 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
+		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() ) {
 			$visibilityOptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
 				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text(),
