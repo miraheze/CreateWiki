@@ -51,7 +51,7 @@
 	"notification-header-request-declined": "Yêu cầu của bạn đã bị từ chối với lý do:",
 	"requestwiki": "Yêu cầu một wiki",
 	"requestwiki-edit-success": "Các thay đổi đối với yêu cầu đã được gửi thành công.",
-	"requestwiki-error-invalidcomment": "Yêu cầu wiki của bạn chứa một ký tự không hợp lệ. Vui lòng thử yêu cầu lại và nếu sự cố vẫn tiếp diễn [[Trung tâm trợ giúp|vui lòng liên hệ với chúng tôi]]",
+	"requestwiki-error-invalidcomment": "Yêu cầu wiki của bạn chứa một ký tự không hợp lệ. Vui lòng thử yêu cầu lại, và nếu sự cố vẫn tiếp diễn [[Help center|vui lòng liên hệ chúng tôi]]",
 	"requestwiki-error-patient": "Bạn đã yêu cầu một wiki. Hãy kiên nhẫn và một trong những người sáng tạo wiki của chúng tôi sẽ sớm tạo ra nó. Nếu bạn cần yêu cầu một wiki khác, vui lòng đợi và bạn sẽ có thể yêu cầu sau.",
 	"requestwiki-header": "Cảm ơn bạn đã chọn Miraheze để lưu trữ wiki của mình! Để bắt đầu, vui lòng điền vào biểu mẫu này để chúng tôi có thể xem xét yêu cầu của bạn.\nYêu cầu wiki của bạn sẽ được một tình nguyện viên xem xét và nó có thể được theo dõi tại trang sẽ được đưa ra khi bạn gửi yêu cầu.\n\nNếu bạn muốn có miền tùy chỉnh cho wiki của mình (nghĩa là không phải miền phụ .miraheze.org tiêu chuẩn), vui lòng đọc <span class=\"plainlinks\">[$1 cái này]</span> trước. Trước tiên, bạn phải chọn một tên miền phụ và tên miền tùy chỉnh của bạn sẽ được định cấu hình sau đó. \n\nKhi bạn yêu cầu một wiki, bạn mặc nhiên đồng ý với [[Chính sách nội dung|Nội dung]] và [[Chính sách không hoạt động]] của chúng tôi.",
 	"requestwiki-label-bio": "(Các) chủ đề chính của wiki này sẽ là về người sống chứ?",
