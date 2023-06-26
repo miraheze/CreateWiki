@@ -183,7 +183,7 @@ class WikiRequest {
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
 			$this->log( $user, 'requestapprove' );
 
-			if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
+			if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 				$this->tryAutoCreate();
 			}
 		} else {
@@ -222,7 +222,7 @@ class WikiRequest {
 
 		$this->log( $user, 'requestdecline' );
 
-		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
+		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
 		}
 	}
