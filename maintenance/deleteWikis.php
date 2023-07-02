@@ -43,6 +43,7 @@ class DeleteWikis extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$wiki = $row->wiki_dbname;
+			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
@@ -55,10 +56,10 @@ class DeleteWikis extends Maintenance {
 					continue;
 				}
 
-				$this->output( "DROP DATABASE {$wiki};\n" );
+				$this->output( "$dbCluster: DROP DATABASE {$wiki};\n" );
 				$deletedWikis[] = $wiki;
 			} else {
-				$this->output( "$wiki\n" );
+				$this->output( "$wiki: $dbCluster\n" );
 			}
 		}
 
