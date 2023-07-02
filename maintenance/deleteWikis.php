@@ -55,10 +55,10 @@ class DeleteWikis extends Maintenance {
 					continue;
 				}
 
-				$this->output( "DROP DATABASE {$wiki};\n" );
+				$this->output( "${row->wiki_dbcluster}: DROP DATABASE {$wiki};\n" );
 				$deletedWikis[] = $wiki;
 			} else {
-				$this->output( "$wiki\n" );
+				$this->output( "$wiki: ${$row->wiki_dbcluster}\n" );
 			}
 		}
 
