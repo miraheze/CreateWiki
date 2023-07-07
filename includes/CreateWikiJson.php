@@ -255,12 +255,12 @@ class CreateWikiJson {
 
 			if ( $tmpFile ) {
 				if ( file_put_contents( $tmpFile, json_encode( $contents ) ) ) {
-					if ( rename( $tmpFile, "{$this->cacheDir}/{$name}.json" ) ) {
-						return;
+					if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.json" ) ) {
+						unlink( $tmpFile );
 					}
+				} else {
+					unlink( $tmpFile );
 				}
-
-				unlink( $tmpFile );
 			}
 		}
 	}
@@ -333,12 +333,12 @@ class CreateWikiJson {
 		$tmpFile = tempnam( '/tmp/', $this->wiki );
 		if ( $tmpFile ) {
 			if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
-				if ( rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
-					return;
+				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
+					unlink( $tmpFile );
 				}
+			} else {
+				unlink( $tmpFile );
 			}
-
-			unlink( $tmpFile );
 		}
 	}
 
