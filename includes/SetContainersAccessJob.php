@@ -48,6 +48,7 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 		) {
 			foreach ( $config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
 				$dir = $backend->getContainerStoragePath( $container );
+				$backend->clearCache( [ $dir ] );
 				$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
 			}
