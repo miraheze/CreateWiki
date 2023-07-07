@@ -46,7 +46,6 @@ class DeleteWikis extends Maintenance {
 			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
 				$wm = new WikiManager( $wiki, $hookRunner );
 
 				$delete = $wm->delete();
