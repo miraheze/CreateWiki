@@ -330,10 +330,15 @@ class CreateWikiJson {
 
 		$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
 
-		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
+		$tmpFile = tempnam( '/tmp/', $name );
+		if ( $tmpFile ) {
+			if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
+				if ( rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
+					return;
+				}
+			}
 
-		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/{$this->wiki}.json.tmp", "{$this->cacheDir}/{$this->wiki}.json" );
+			unlink( $tmpFile );
 		}
 	}
 
