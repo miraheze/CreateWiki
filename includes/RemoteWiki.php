@@ -413,7 +413,6 @@ class RemoteWiki {
 				}
 			}
 
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $this->dbname, $this->hookRunner );
 
 			$cWJ->resetDatabaseList();
