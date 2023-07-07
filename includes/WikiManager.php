@@ -265,7 +265,6 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
 
 		$cWJ->resetWiki();
@@ -301,7 +300,6 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cWJ = new CreateWikiJson( $old, $this->hookRunner );
 
 		$cWJ->resetWiki();
