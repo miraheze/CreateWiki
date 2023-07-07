@@ -252,14 +252,14 @@ class CreateWikiJson {
 			unset( $contents[$name] );
 
 			$tmpFile = tempnam( '/tmp/', $name );
-	
+
 			if ( $tmpFile ) {
 				if ( file_put_contents( $tmpFile, json_encode( $contents ) ) ) {
-					if ( rename( $tmpFile, "{$this->cacheDir}/{$name}.json") ) {
+					if ( rename( $tmpFile, "{$this->cacheDir}/{$name}.json" ) ) {
 						return;
 					}
 				}
-	
+
 				unlink( $tmpFile );
 			}
 		}
