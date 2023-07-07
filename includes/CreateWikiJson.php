@@ -251,10 +251,16 @@ class CreateWikiJson {
 
 			unset( $contents[$name] );
 
-			file_put_contents( "{$this->cacheDir}/{$name}.json.tmp", json_encode( $contents ), LOCK_EX );
+			$tmpFile = tempnam( '/tmp/', $name );
 
-			if ( file_exists( "{$this->cacheDir}/{$name}.json.tmp" ) ) {
-				rename( "{$this->cacheDir}/{$name}.json.tmp", "{$this->cacheDir}/{$name}.json" );
+			if ( $tmpFile ) {
+				if ( file_put_contents( $tmpFile, json_encode( $contents ) ) ) {
+					if ( rename( $tmpFile, "{$this->cacheDir}/{$name}.json" ) ) {
+						return;
+					}
+				}
+
+				unlink( $tmpFile );
 			}
 		}
 	}
@@ -324,10 +330,15 @@ class CreateWikiJson {
 
 		$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
 
-		file_put_contents( "{$this->cacheDir}/{$this->wiki}.json.tmp", json_encode( $jsonArray ), LOCK_EX );
+		$tmpFile = tempnam( '/tmp/', $this->wiki );
+		if ( $tmpFile ) {
+			if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
+				if ( rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
+					return;
+				}
+			}
 
-		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.json.tmp" ) ) {
-			rename( "{$this->cacheDir}/{$this->wiki}.json.tmp", "{$this->cacheDir}/{$this->wiki}.json" );
+			unlink( $tmpFile );
 		}
 	}
 
