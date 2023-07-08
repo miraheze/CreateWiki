@@ -289,13 +289,13 @@
 		"CreateWikieContainers": {
 			"description": "Array. List of local containers to create. Format: <container> => private (true or false). Defaults to MW default containers with most public apart from deleted and temp.",
 			"public": true,
-			"value": [
+			"value": {
 				"public" => false,
 				"thumb" => false,
 				"transcoded" => false,
 				"temp" => true,
 				"deleted" => true
-			]
+			}
 		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
