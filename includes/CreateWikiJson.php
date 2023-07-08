@@ -202,7 +202,7 @@ class CreateWikiJson {
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
 
-		if ( !empty( $databaseLists ?? [] ) ) {
+		if ( !empty( $databaseLists ) ) {
 			$this->generateDatabasesJsonFile( $databaseLists );
 			return;
 		}
