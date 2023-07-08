@@ -24,7 +24,7 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 
 		$backend = $repo->getBackend();
-		foreach ( $config->get( 'CreateWikieContainers' ) as $zone => $private ) {
+		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $private ) {
 			$dir = $repo->getZonePath( $zone );
 			$secure = ( $private || $this->isPrivate )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
