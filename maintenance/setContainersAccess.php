@@ -35,7 +35,9 @@ class SetContainersAccess extends Maintenance {
 
 		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
-			$secure = ( $status['private'] || $status['public-private'] && $isPrivate )
+			$private = isset( $status['private'] ) && $status['private'];
+			$publicPrivate = isset( $status['public-private'] ) && $status['public-private'];
+			$secure = ( $private || $publicPrivate && $isPrivate )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$this->prepareDirectory( $backend, $dir, $secure );
