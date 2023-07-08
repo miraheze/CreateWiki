@@ -199,7 +199,6 @@ class CreateWikiJson {
 	 * allows extensions to modify the data before it is written to a file.
 	 */
 	private function generateDatabaseList() {
-
 		$deletedList = [];
 		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
 
