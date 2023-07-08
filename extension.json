@@ -294,7 +294,7 @@
 				"thumb": "public-private",
 				"transcoded": "public-private",
 				"temp": "private",
-				"deleted": "private",
+				"deleted": "private"
 			}
 		},
 		"CreateWikiCollation": {
