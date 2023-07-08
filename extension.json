@@ -287,14 +287,14 @@
 			"value": false
 		},
 		"CreateWikieContainers": {
-			"description": "Array. List of local containers to create. Format: <container> => private (true or false). Defaults to MW default containers with most public apart from deleted and temp.",
+			"description": "Array. List of local containers to create. Format: <container>: private (true or false). Defaults to MW default containers with most public apart from deleted and temp.",
 			"public": true,
 			"value": {
-				"public" => false,
-				"thumb" => false,
-				"transcoded" => false,
-				"temp" => true,
-				"deleted" => true
+				"public": false,
+				"thumb": false,
+				"transcoded": false,
+				"temp": true,
+				"deleted": true
 			}
 		},
 		"CreateWikiCollation": {
