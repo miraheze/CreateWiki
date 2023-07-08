@@ -33,25 +33,12 @@ class SetContainersAccess extends Maintenance {
 		$wiki = new RemoteWiki( $config->get( 'DBname' ) );
 		$isPrivate = $wiki->isPrivate();
 
-		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+		foreach ( $config->get( 'CreateWikieContainers' ) as $zone => $private ) {
 			$dir = $repo->getZonePath( $zone );
-			$secure = ( $config->get( 'CreateWikiUseSecureContainers' ) &&
-				( $zone === 'deleted' || $zone === 'temp' || $isPrivate )
-			) ? [ 'noAccess' => true, 'noListing' => true ] : [];
+			$secure = ( $private || $isPrivate )
+				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$this->prepareDirectory( $backend, $dir, $secure );
-		}
-
-		if ( $config->get( 'CreateWikiUseSecureContainers' ) && $config->get( 'CreateWikiExtraSecuredContainers' ) ) {
-			foreach ( $config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-				$dir = $backend->getContainerStoragePath( $container );
-
-				$secure = $isPrivate ? [ 'noAccess' => true, 'noListing' => true ] : [];
-
-				if ( $isPrivate || $backend->directoryExists( [ 'dir' => $dir ] ) ) {
-					$this->prepareDirectory( $backend, $dir, $secure );
-				}
-			}
 		}
 	}
 
