@@ -286,7 +286,7 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikieContainers": {
+		"CreateWikiContainers": {
 			"description": "Array. List of local containers to create. Format: <container>: private (true or false). Defaults to MW default containers with most public apart from deleted and temp.",
 			"public": true,
 			"value": {
