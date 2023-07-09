@@ -33,31 +33,21 @@ class SetContainersAccess extends Maintenance {
 		$wiki = new RemoteWiki( $config->get( 'DBname' ) );
 		$isPrivate = $wiki->isPrivate();
 
-		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
-			$secure = ( $config->get( 'CreateWikiUseSecureContainers' ) &&
-				( $zone === 'deleted' || $zone === 'temp' || $isPrivate )
-			) ? [ 'noAccess' => true, 'noListing' => true ] : [];
+			$private = $status === 'private';
+			$publicPrivate = $status === 'public-private';
+			$secure = ( $private || $publicPrivate && $isPrivate )
+				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$this->prepareDirectory( $backend, $dir, $secure );
-		}
-
-		if ( $config->get( 'CreateWikiUseSecureContainers' ) && $config->get( 'CreateWikiExtraSecuredContainers' ) ) {
-			foreach ( $config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-				$dir = $backend->getContainerStoragePath( $container );
-
-				$secure = $isPrivate ? [ 'noAccess' => true, 'noListing' => true ] : [];
-
-				if ( $isPrivate || $backend->directoryExists( [ 'dir' => $dir ] ) ) {
-					$this->prepareDirectory( $backend, $dir, $secure );
-				}
-			}
 		}
 	}
 
 	protected function prepareDirectory( FileBackend $backend, $dir, array $secure ) {
 		// Create zone if it doesn't exist...
 		$this->output( "Making sure '$dir' exists..." );
+		$backend->clearCache( [ $dir ] );
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		if ( !$status->isOK() ) {

@@ -286,15 +286,16 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiUseSecureContainers": {
-			"description": "Boolean. Whether to use secure containers for file backend. If enabled, deleted and temp containers are always secure, and all default (core) local contaners are secure for private wikis. Additional containers can be secured with $wgCreateWikiExtraSecuredContainers.",
+		"CreateWikiContainers": {
+			"description": "Array. List of local containers to create. Format: <container>: <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MW default containers with most public apart from deleted and temp.",
 			"public": true,
-			"value": false
-		},
-		"CreateWikiExtraSecuredContainers": {
-			"description": "Array. List of extra local containers to secure for private wikis if $wgCreateWikiUseSecureContainers is enabled.",
-			"public": true,
-			"value": []
+			"value": {
+				"public": "public-private",
+				"thumb": "public-private",
+				"transcoded": "public-private",
+				"temp": "private",
+				"deleted": "private"
+			}
 		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",

@@ -24,11 +24,12 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 
 		$backend = $repo->getBackend();
-		foreach ( [ 'public', 'thumb', 'transcoded', 'temp', 'deleted' ] as $zone ) {
+		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
-			$secure = ( $config->get( 'CreateWikiUseSecureContainers' ) &&
-				( $zone === 'deleted' || $zone === 'temp' || $this->isPrivate )
-			) ? [ 'noAccess' => true, 'noListing' => true ] : [];
+			$private = $status === 'private';
+			$publicPrivate = $status === 'public-private';
+			$secure = ( $private || $publicPrivate && $this->isPrivate )
+				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$backend->clearCache( [ $dir ] );
 			$backend->prepare( [ 'dir' => $dir ] + $secure );
@@ -39,18 +40,6 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 			}
 
 			$backend->publish( [ 'dir' => $dir, 'access' => true ] );
-		}
-
-		if (
-			$this->isPrivate &&
-			$config->get( 'CreateWikiUseSecureContainers' ) &&
-			$config->get( 'CreateWikiExtraSecuredContainers' )
-		) {
-			foreach ( $config->get( 'CreateWikiExtraSecuredContainers' ) as $container ) {
-				$dir = $backend->getContainerStoragePath( $container );
-				$backend->prepare( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
-				$backend->secure( [ 'dir' => $dir, 'noAccess' => true, 'noListing' => true ] );
-			}
 		}
 
 		return true;
