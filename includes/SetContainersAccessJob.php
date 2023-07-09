@@ -26,8 +26,8 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 		$backend = $repo->getBackend();
 		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
-			$private = isset( $status['private'] ) && $status['private'];
-			$publicPrivate = isset( $status['public-private'] ) && $status['public-private'];
+			$private = $status === 'private';
+			$publicPrivate = $status === 'public-private';
 			$secure = ( $private || $publicPrivate && $this->isPrivate )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
