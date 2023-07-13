@@ -204,12 +204,10 @@ class RemoteWiki {
 			'new' => 1
 		];
 
-		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
-			$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
-			$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
-				new SetContainersAccessJob( [ 'private' => true ] )
-			);
-		}
+		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+		$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+			new SetContainersAccessJob( [ 'private' => true ] )
+		);
 
 		$this->hooks[] = 'CreateWikiStatePrivate';
 		$this->private = true;
@@ -222,12 +220,10 @@ class RemoteWiki {
 			'new' => 1
 		];
 
-		if ( $this->config->get( 'CreateWikiUseSecureContainers' ) ) {
-			$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
-			$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
-				new SetContainersAccessJob( [ 'private' => false ] )
-			);
-		}
+		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
+		$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+			new SetContainersAccessJob( [ 'private' => false ] )
+		);
 
 		$this->hooks[] = 'CreateWikiStatePublic';
 		$this->private = false;
