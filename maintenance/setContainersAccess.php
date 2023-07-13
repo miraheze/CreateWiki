@@ -18,8 +18,8 @@ class SetContainersAccess extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->addDescription( 'Secure containers for wiki if $wgCreateWikiUseSecureContainers is enabled,' .
-			' or makes them public if not. Always secures deleted and temp containers. Also creates containers that don\'t exist.' );
+		$this->addDescription( 'Secure containers for wiki as defined in $wgCreateWikiContainers.' .
+			' Also creates containers that don\'t exist.' );
 
 		$this->requireExtension( 'CreateWiki' );
 	}

@@ -24,7 +24,6 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$conf->suffixes = [ 'test' ];
 
 		$this->setMwGlobals( 'wgConf', $conf );
-		$this->setMwGlobals( 'wgCreateWikiUseSecureContainers', true );
 
 		$this->setMwGlobals( 'wgCreateWikiSQLfiles', [
 			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
