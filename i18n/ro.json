@@ -31,15 +31,10 @@
 	"requestwiki-label-siteurl": "Subdomeniu: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "Trebuie să <span class=\"plainlinks\">[$1 vă logați]</span> înainte să cereți un wiki.",
 	"requestwiki-success": "Cererea ($1) a fost trimisă.",
-	"requestwikiqueue": "Wiki requests queue",
 	"requestwikiqueue-pager-status-approved": "aprobat",
 	"requestwikiqueue-pager-status-declined": "refuzat",
 	"requestwikiqueue-pager-status-inreview": "in așteptare",
-	"requestwikiqueue-request-header-requestercomment": "Comment given by the wiki requester",
 	"requestwikiqueue-request-label-comment": "Commentariu:",
-	"requestwikiqueue-request-label-language": "Language",
-	"requestwikiqueue-request-label-requester": "Requester",
-	"requestwikiqueue-request-label-sitename": "Sitename",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-url": "URL"
 }
