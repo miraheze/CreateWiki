@@ -43,6 +43,8 @@
 	"log-action-filter-farmer": "Tipo de ação:",
 	"log-action-filter-farmer-createwiki": "Wiki criada",
 	"log-action-filter-farmer-requestapprove": "Pedido de Wiki approvado",
+	"log-action-filter-farmer-requestdecline": "Solicitação da Wiki recusado",
+	"log-action-filter-farmer-requestwiki": "Pedido de wiki aberto ou reaberto",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|}} criou a wiki \"$4\"",
 	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|}} aprovou o pedido da wiki $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|}} recusou o pedido da wiki $4",
