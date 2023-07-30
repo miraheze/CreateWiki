@@ -361,11 +361,11 @@ class RequestWikiRequestViewer {
 
 			$request->sitename = $formData['edit-sitename'];
 			$request->language = $formData['edit-language'];
-			$request->purpose = $formData['edit-purpose'];
+			$request->purpose = $formData['edit-purpose'] ?? '';
 			$request->description = $formData['edit-description'];
-			$request->category = $formData['edit-category'];
-			$request->private = $formData['edit-private'];
-			$request->bio = $formData['edit-bio'];
+			$request->category = $formData['edit-category'] ?? '';
+			$request->private = $formData['edit-private'] ?? 0;
+			$request->bio = $formData['edit-bio'] ?? 0;
 
 			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
