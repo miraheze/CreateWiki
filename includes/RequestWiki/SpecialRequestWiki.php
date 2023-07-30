@@ -130,7 +130,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->language = $formData['language'];
 		$request->private = $formData['private'] ?? 0;
 		$request->requester = $this->getUser();
-		$request->category = $formData['category'];
+		$request->category = $formData['category'] ?? '';
 		$request->purpose = $formData['purpose'] ?? '';
 		$request->bio = $formData['bio'] ?? 0;
 
