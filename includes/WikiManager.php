@@ -167,7 +167,7 @@ class WikiManager {
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $wiki, $requester, $centralAuth ) {
+			static function () use ( $wiki, $requester, $centralAuth ) {
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
