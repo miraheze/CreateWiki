@@ -162,8 +162,6 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		$this->recacheJson();
-
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		DeferredUpdates::addCallableUpdate(
