@@ -162,12 +162,12 @@ class WikiManager {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
+		$this->recacheJson();
+
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
 
 		DeferredUpdates::addCallableUpdate(
 			static function () use ( $wiki, $requester, $centralAuth ) {
-				$this->recacheJson();
-
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
