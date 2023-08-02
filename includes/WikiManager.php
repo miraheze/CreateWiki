@@ -166,6 +166,8 @@ class WikiManager {
 
 		DeferredUpdates::addCallableUpdate(
 			static function () use ( $wiki, $requester, $centralAuth ) {
+				$this->recacheJson();
+
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
