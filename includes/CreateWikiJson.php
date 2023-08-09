@@ -9,12 +9,10 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
 use ObjectCache;
 use Wikimedia\AtEase\AtEase;
+use Wikimedia\LightweightObjectStore\ExpirationAwareness;
 use Wikimedia\Rdbms\DBConnRef;
 
-class CreateWikiJson {
-
-	/** 24H cache expiry */
-	private const CACHE_EXPIRY = 86400;
+class CreateWikiJson implements ExpirationAwareness {
 
 	/**
 	 * The configuration object.
@@ -136,7 +134,7 @@ class CreateWikiJson {
 
 		$this->initTime ??= $this->dbr->timestamp();
 
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime, self::CACHE_EXPIRY );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime, self::TTL_HOUR * );
 
 		// Rather than destroy object, let's fake the cache timestamp
 		$this->wikiTimestamp = $this->initTime;
@@ -156,7 +154,7 @@ class CreateWikiJson {
 
 		$this->initTime ??= $this->dbr->timestamp();
 
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime, self::CACHE_EXPIRY );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime, self::TTL_HOUR * );
 
 		// Rather than destroy object, let's fake the cache timestamp
 		$this->databaseTimestamp = $this->initTime;
