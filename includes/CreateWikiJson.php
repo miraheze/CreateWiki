@@ -134,7 +134,7 @@ class CreateWikiJson implements ExpirationAwareness {
 
 		$this->initTime ??= $this->dbr->timestamp();
 
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime, self::TTL_HOUR * 24 );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime, self::TTL_DAY );
 
 		// Rather than destroy object, let's fake the cache timestamp
 		$this->wikiTimestamp = $this->initTime;
@@ -154,7 +154,7 @@ class CreateWikiJson implements ExpirationAwareness {
 
 		$this->initTime ??= $this->dbr->timestamp();
 
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime, self::TTL_HOUR * 24 );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime, self::TTL_DAY );
 
 		// Rather than destroy object, let's fake the cache timestamp
 		$this->databaseTimestamp = $this->initTime;
