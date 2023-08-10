@@ -174,7 +174,6 @@ class CreateWikiJson {
 				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-
 			$this->generateDatabaseList();
 		}
 
@@ -205,7 +204,7 @@ class CreateWikiJson {
 			function () use () {
 				$databaseLists = [];
 				$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
-		
+
 				if ( !empty( $databaseLists ) ) {
 					$this->generateDatabasesJsonFile( $databaseLists );
 					return;
@@ -221,10 +220,10 @@ class CreateWikiJson {
 						'wiki_sitename',
 					]
 				);
-		
+
 				$combiList = [];
 				$deletedList = [];
-		
+
 				foreach ( $allWikis as $wiki ) {
 					if ( $wiki->wiki_deleted == 1 ) {
 						$deletedList[$wiki->wiki_dbname] = [
@@ -236,13 +235,13 @@ class CreateWikiJson {
 							's' => $wiki->wiki_sitename,
 							'c' => $wiki->wiki_dbcluster,
 						];
-		
+
 						if ( $wiki->wiki_url !== null ) {
 							$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
 						}
 					}
 				}
-		
+
 				$databaseLists = [
 					'databases' => [
 						'combi' => $combiList,
@@ -252,7 +251,7 @@ class CreateWikiJson {
 						'databases' => $deletedList,
 					],
 				];
-		
+
 				$this->generateDatabasesJsonFile( $databaseLists );
 			},
 			DeferredUpdates::POSTSEND
@@ -310,29 +309,29 @@ class CreateWikiJson {
 						'wiki_dbname' => $this->wiki
 					]
 				);
-		
+
 				if ( !$wikiObject ) {
 					throw new MWException( "Wiki '{$this->wiki}' can not be found." );
 				}
-		
+
 				$states = [];
-		
+
 				if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 					$states['private'] = (bool)$wikiObject->wiki_private;
 				}
-		
+
 				if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
 					$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
 				}
-		
+
 				if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
 					$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
 				}
-		
+
 				if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
 					$states['experimental'] = (bool)$wikiObject->wiki_experimental;
 				}
-		
+
 				$jsonArray = [
 					'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
 					'database' => $wikiObject->wiki_dbname,
@@ -346,9 +345,9 @@ class CreateWikiJson {
 					],
 					'states' => $states
 				];
-		
+
 				$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
-		
+
 				$tmpFile = tempnam( '/tmp/', $this->wiki );
 				if ( $tmpFile ) {
 					if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
