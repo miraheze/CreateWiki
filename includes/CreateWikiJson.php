@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki;
 
 use BagOStuff;
 use Config;
+use DeferredUpdates;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MWException;
@@ -173,12 +174,8 @@ class CreateWikiJson {
 				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-			DeferredUpdates::addCallableUpdate(
-				function () use () {
-					$this->generateDatabaseList( $dbw );
-				},
-				DeferredUpdates::POSTSEND,
-				
+
+			$this->generateDatabaseList( $dbw );
 		}
 
 		if ( $changes['wiki'] ) {
