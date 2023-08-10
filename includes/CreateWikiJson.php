@@ -175,7 +175,7 @@ class CreateWikiJson {
 				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
 
-			$this->generateDatabaseList( $dbw );
+			$this->generateDatabaseList();
 		}
 
 		if ( $changes['wiki'] ) {
