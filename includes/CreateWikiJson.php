@@ -200,62 +200,59 @@ class CreateWikiJson {
 	 * allows extensions to modify the data before it is written to a file.
 	 */
 	private function generateDatabaseList() {
-		DeferredUpdates::addCallableUpdate(
-			function () use () {
-				$databaseLists = [];
-				$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
+		DeferredUpdates::addCallableUpdate( function () {
+			$databaseLists = [];
+			$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
 
-				if ( !empty( $databaseLists ) ) {
-					$this->generateDatabasesJsonFile( $databaseLists );
-					return;
-				}
+			if ( !empty( $databaseLists ) ) {
+				$this->generateDatabasesJsonFile( $databaseLists );
+				return;
+			}
 
-				$allWikis = $this->dbr->select(
-					'cw_wikis',
-					[
-						'wiki_dbcluster',
-						'wiki_dbname',
-						'wiki_deleted',
-						'wiki_url',
-						'wiki_sitename',
-					]
-				);
+			$allWikis = $this->dbr->select(
+				'cw_wikis',
+				[
+					'wiki_dbcluster',
+					'wiki_dbname',
+					'wiki_deleted',
+					'wiki_url',
+					'wiki_sitename',
+				]
+			);
 
-				$combiList = [];
-				$deletedList = [];
+			$combiList = [];
+			$deletedList = [];
 
-				foreach ( $allWikis as $wiki ) {
-					if ( $wiki->wiki_deleted == 1 ) {
-						$deletedList[$wiki->wiki_dbname] = [
-							's' => $wiki->wiki_sitename,
-							'c' => $wiki->wiki_dbcluster,
-						];
-					} else {
-						$combiList[$wiki->wiki_dbname] = [
-							's' => $wiki->wiki_sitename,
-							'c' => $wiki->wiki_dbcluster,
-						];
+			foreach ( $allWikis as $wiki ) {
+				if ( $wiki->wiki_deleted == 1 ) {
+					$deletedList[$wiki->wiki_dbname] = [
+						's' => $wiki->wiki_sitename,
+						'c' => $wiki->wiki_dbcluster,
+					];
+				} else {
+					$combiList[$wiki->wiki_dbname] = [
+						's' => $wiki->wiki_sitename,
+						'c' => $wiki->wiki_dbcluster,
+					];
 
-						if ( $wiki->wiki_url !== null ) {
-							$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
-						}
+					if ( $wiki->wiki_url !== null ) {
+						$combiList[$wiki->wiki_dbname]['u'] = $wiki->wiki_url;
 					}
 				}
+			}
 
-				$databaseLists = [
-					'databases' => [
-						'combi' => $combiList,
-					],
-					'deleted' => [
-						'deleted' => 'databases',
-						'databases' => $deletedList,
-					],
-				];
+			$databaseLists = [
+				'databases' => [
+					'combi' => $combiList,
+				],
+				'deleted' => [
+					'deleted' => 'databases',
+					'databases' => $deletedList,
+				],
+			];
 
-				$this->generateDatabasesJsonFile( $databaseLists );
-			},
-			DeferredUpdates::POSTSEND
-		);
+			$this->generateDatabasesJsonFile( $databaseLists );
+		}, DeferredUpdates::POSTSEND );
 	}
 
 	private function generateDatabasesJsonFile( array $databaseLists ) {
@@ -300,67 +297,64 @@ class CreateWikiJson {
 	 * @throws MWException If the wiki specified by $this->wiki cannot be found.
 	 */
 	private function generateWiki() {
-		DeferredUpdates::addCallableUpdate(
-			function () use () {
-				$wikiObject = $this->dbr->selectRow(
-					'cw_wikis',
-					'*',
-					[
-						'wiki_dbname' => $this->wiki
-					]
-				);
+		DeferredUpdates::addCallableUpdate( function () {
+			$wikiObject = $this->dbr->selectRow(
+				'cw_wikis',
+				'*',
+				[
+					'wiki_dbname' => $this->wiki
+				]
+			);
 
-				if ( !$wikiObject ) {
-					throw new MWException( "Wiki '{$this->wiki}' can not be found." );
-				}
+			if ( !$wikiObject ) {
+				throw new MWException( "Wiki '{$this->wiki}' can not be found." );
+			}
 
-				$states = [];
+			$states = [];
 
-				if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-					$states['private'] = (bool)$wikiObject->wiki_private;
-				}
+			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+				$states['private'] = (bool)$wikiObject->wiki_private;
+			}
 
-				if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
-					$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
-				}
+			if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
+				$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
+			}
 
-				if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
-					$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
-				}
+			if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
+				$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
+			}
 
-				if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
-					$states['experimental'] = (bool)$wikiObject->wiki_experimental;
-				}
+			if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
+				$states['experimental'] = (bool)$wikiObject->wiki_experimental;
+			}
 
-				$jsonArray = [
-					'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
-					'database' => $wikiObject->wiki_dbname,
-					'created' => $wikiObject->wiki_creation,
-					'dbcluster' => $wikiObject->wiki_dbcluster,
-					'category' => $wikiObject->wiki_category,
-					'url' => $wikiObject->wiki_url ?? false,
-					'core' => [
-						'wgSitename' => $wikiObject->wiki_sitename,
-						'wgLanguageCode' => $wikiObject->wiki_language
-					],
-					'states' => $states
-				];
+			$jsonArray = [
+				'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
+				'database' => $wikiObject->wiki_dbname,
+				'created' => $wikiObject->wiki_creation,
+				'dbcluster' => $wikiObject->wiki_dbcluster,
+				'category' => $wikiObject->wiki_category,
+				'url' => $wikiObject->wiki_url ?? false,
+				'core' => [
+					'wgSitename' => $wikiObject->wiki_sitename,
+					'wgLanguageCode' => $wikiObject->wiki_language
+				],
+				'states' => $states
+			];
 
-				$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
+			$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
 
-				$tmpFile = tempnam( '/tmp/', $this->wiki );
-				if ( $tmpFile ) {
-					if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
-						if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
-							unlink( $tmpFile );
-						}
-					} else {
+			$tmpFile = tempnam( '/tmp/', $this->wiki );
+			if ( $tmpFile ) {
+				if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
+					if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
 						unlink( $tmpFile );
 					}
+				} else {
+					unlink( $tmpFile );
 				}
-			},
-			DeferredUpdates::POSTSEND
-		);
+			}
+		}, DeferredUpdates::POSTSEND );
 	}
 
 	/**
