@@ -64,10 +64,10 @@
 	},
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
-		"farmer/requestapprove": "LogFormatter",
-		"farmer/requestdecline": "LogFormatter",
-		"farmer/requestonhold": "LogFormatter",
-		"farmer/requestreopen": "LogFormatter",
+		"farmer/requestapprove": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+		"farmer/requestdecline": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+		"farmer/requestonhold": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+		"farmer/requestreopen": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
 		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
 	},
 	"MessagesDirs": {
