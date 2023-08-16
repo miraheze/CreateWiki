@@ -105,9 +105,11 @@ class CreateWikiJson {
 		$this->wiki = $wiki;
 
 		AtEase::suppressWarnings();
-		$this->databaseArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true );
+		$databaseFile = file_get_contents( $this->cacheDir . '/databases.json' );
+		$this->databaseArray = json_decode( $databaseFile, true );
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
-		$this->wikiArray = json_decode( file_get_contents( $this->cacheDir . '/' . $wiki . '.json' ), true );
+		$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $wiki . '.json' );
+		$this->wikiArray = json_decode( $wikiDatabaseFile, true );
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 		AtEase::restoreWarnings();
 
