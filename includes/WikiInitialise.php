@@ -34,7 +34,8 @@ class WikiInitialise {
 				'combi' => []
 			];
 		} else {
-			$databasesArray = json_decode( file_get_contents( $this->cacheDir . '/databases.json' ), true ) ?: [
+			$databaseJsonFile = file_get_contents( $this->cacheDir . '/databases.json' );
+			$databasesArray = json_decode( $databaseJsonFile, true ) ?: [
 				'timestamp' => 0,
 				'combi' => []
 			];
@@ -45,7 +46,8 @@ class WikiInitialise {
 				'databases' => []
 			];
 		} else {
-			$deletedDatabases = json_decode( file_get_contents( $this->cacheDir . '/deleted.json' ), true ) ?: [
+			$databaseDeletedFile = file_get_contents( $this->cacheDir . '/deleted.json' );
+			$deletedDatabases = json_decode( $databaseDeletedFile, true ) ?: [
 				'databases' => []
 			];
 		}
@@ -128,7 +130,8 @@ class WikiInitialise {
 			return;
 		}
 
-		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true ) ?? [];
+		$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' );
+		$cacheArray = json_decode( $wikiDatabaseFile, true ) ?? [];
 
 		// Assign top level variables first
 		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'] ?? $this->config->settings['wgSitename']['default'];
@@ -262,7 +265,8 @@ class WikiInitialise {
 			return;
 		}
 
-		$cacheArray = json_decode( file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' ), true );
+		$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' );
+		$cacheArray = json_decode( $wikiDatabaseFile, true );
 
 		$config = new GlobalVarConfig( 'wg' );
 
@@ -289,7 +293,8 @@ class WikiInitialise {
 
 			file_put_contents( "{$this->cacheDir}/extension-list.json", json_encode( $list ), LOCK_EX );
 		} else {
-			$list = json_decode( file_get_contents( "{$this->cacheDir}/extension-list.json" ), true );
+			$extensionList = file_get_contents( "{$this->cacheDir}/extension-list.json" );
+			$list = json_decode( $extensionList, true );
 		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
