@@ -26,8 +26,7 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 		$backend = $repo->getBackend();
 		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
-			if ( !$dir )
-			{
+			if ( !$dir ) {
 				continue; // Skip invalid or empty path
 			}
 			$private = $status === 'private';

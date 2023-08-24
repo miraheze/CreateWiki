@@ -35,8 +35,7 @@ class SetContainersAccess extends Maintenance {
 
 		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
-			if ( !$dir )
-			{
+			if ( !$dir ) {
 				$this->output( "No zone path found for zone '$zone'! Skipping..." );
 				continue;
 			}
