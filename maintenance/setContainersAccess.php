@@ -35,6 +35,11 @@ class SetContainersAccess extends Maintenance {
 
 		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $repo->getZonePath( $zone );
+			if ( !$dir )
+			{
+				$this->output( "No zone path found for zone '$zone'! Skipping..." );
+				continue;
+			}
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';
 			$secure = ( $private || $publicPrivate && $isPrivate )
