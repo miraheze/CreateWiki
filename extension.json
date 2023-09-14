@@ -290,11 +290,11 @@
 			"description": "Array. List of local containers to create. Format: <container>: <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MW default containers with most public apart from deleted and temp.",
 			"public": true,
 			"value": {
-				"public": "public-private",
-				"thumb": "public-private",
-				"transcoded": "public-private",
-				"temp": "private",
-				"deleted": "private"
+				"local-public": "public-private",
+				"local-thumb": "public-private",
+				"local-transcoded": "public-private",
+				"local-temp": "private",
+				"local-deleted": "private"
 			}
 		},
 		"CreateWikiCollation": {
