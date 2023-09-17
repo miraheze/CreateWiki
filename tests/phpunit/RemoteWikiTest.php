@@ -66,7 +66,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 				'user' => 'root',
 			] );
 		} else {
-			$db = Wikimedia\Rdbms\Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
+			$db = \Wikimedia\Rdbms\Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
 		}
 
 		$db->begin();
