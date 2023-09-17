@@ -8,9 +8,10 @@ use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
-use MWException;
+use RuntimeException;
 use SpecialPage;
 use Title;
+use UnexpectedValueException;
 use User;
 
 class WikiRequest {
@@ -103,7 +104,7 @@ class WikiRequest {
 				$this->involvedUsers[$comment->cw_comment_user] = $userObj;
 			}
 		} elseif ( $id ) {
-			throw new MWException( 'Unknown Request ID' );
+			throw new RuntimeException( 'Unknown Request ID' );
 		}
 	}
 
@@ -193,7 +194,7 @@ class WikiRequest {
 			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
-				throw new MWException( $notCreated ?? $validName );
+				throw new RuntimeException( $notCreated ?? $validName );
 			} else {
 				$this->status = 'approved';
 				$this->save();
@@ -294,7 +295,7 @@ class WikiRequest {
 				|| $this->dbname == $row->cw_dbname
 				|| $this->description == $row->cw_comment )
 			) {
-				throw new MWException( 'Request too similar to an existing open request!' );
+				throw new UnexpectedValueException( 'Request too similar to an existing open request!' );
 			}
 		}
 
