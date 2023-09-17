@@ -3,13 +3,13 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use Config;
+use Exception;
 use FormSpecialPage;
 use Html;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use MWException;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
@@ -136,7 +136,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		try {
 			$requestID = $request->save();
-		} catch ( MWException $e ) {
+		} catch ( Exception $e ) {
 			$out->addHTML( Html::errorBox( $this->msg( 'requestwiki-error-patient' )->plain() ) );
 
 			return false;
