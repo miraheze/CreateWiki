@@ -86,7 +86,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 			[
 				[
 					'reason' => 'Test onSubmit()',
-					'subdomain' => 'example.org',
+					'subdomain' => 'example',
 					'sitename' => 'Example Wiki',
 					'language' => 'en',
 					'category' => 'uncategorised',
@@ -96,7 +96,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 			[
 				[
 					'reason' => 'Test onSubmit()',
-					'subdomain' => 'example.org',
+					'subdomain' => 'example',
 					'sitename' => 'Example Wiki',
 					'language' => 'en',
 					'category' => 'uncategorised',
