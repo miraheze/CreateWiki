@@ -29,10 +29,14 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
 		] );
 
-		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS['wgDBserver'],
-			'user' => 'root',
-		] );
+		if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
+			$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+				'host' => $GLOBALS['wgDBserver'],
+				'user' => 'root',
+			] );
+		} else {
+			$db = Wikimedia\Rdbms\Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
+		}
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
