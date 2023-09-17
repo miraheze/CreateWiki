@@ -11,7 +11,7 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use MediaWiki\MediaWikiServices;
-use MWException;
+use UnexpectedValueException;
 
 class PopulateWikiCreation extends Maintenance {
 	public function __construct() {
@@ -33,7 +33,7 @@ class PopulateWikiCreation extends Maintenance {
 		);
 
 		if ( !$res || !is_object( $res ) ) {
-			throw new MWException( '$res was not set to a valid array.' );
+			throw new UnexpectedValueException( '$res was not set to a valid array.' );
 		}
 
 		foreach ( $res as $row ) {
