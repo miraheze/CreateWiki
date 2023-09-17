@@ -35,7 +35,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 				$dbw = MediaWikiServices::getInstance()
 					->getDBLoadBalancer()
 					->getMaintenanceConnectionRef( DB_PRIMARY );
-	
+
 				$dbw->insert(
 					'cw_wikis',
 					[
@@ -56,7 +56,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 					__METHOD__,
 					[ 'IGNORE' ]
 				);
-	
+
 			} catch ( DBQueryError $e ) {
 				// Do nothing
 			}
