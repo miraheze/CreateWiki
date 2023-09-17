@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use Config;
+use Exception;
 use Html;
 use HTMLForm;
 use HTMLFormField;
@@ -12,7 +13,6 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
-use MWException;
 
 class RequestWikiRequestViewer {
 
@@ -311,7 +311,7 @@ class RequestWikiRequestViewer {
 
 		try {
 			$request = new WikiRequest( (int)$id, $this->hookRunner );
-		} catch ( MWException $e ) {
+		} catch ( Exception $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
 			return;
