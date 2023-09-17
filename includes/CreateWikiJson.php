@@ -292,8 +292,6 @@ class CreateWikiJson {
 	 *
 	 * The generated data is stored in a JSON file with the same name as the database of the wiki.
 	 * The method also triggers the CreateWikiJsonBuilder hook to allow extensions to add more data to the JSON file.
-	 *
-	 * @throws MWException If the wiki specified by $this->wiki cannot be found.
 	 */
 	private function generateWiki() {
 		$wikiObject = $this->dbr->selectRow(
@@ -305,7 +303,7 @@ class CreateWikiJson {
 		);
 
 		if ( !$wikiObject ) {
-			throw new MWException( "Wiki '{$this->wiki}' can not be found." );
+			throw new UnexpectedValueException( "Wiki '{$this->wiki}' can not be found." );
 		}
 
 		$states = [];
