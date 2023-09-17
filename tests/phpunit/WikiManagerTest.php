@@ -3,12 +3,12 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
+use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
 use SiteConfiguration;
-use Wikimedia\Rdbms\Database;
 
 /**
  * @group CreateWiki
@@ -29,7 +29,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
 		] );
 
-		$db = Database::factory( 'mysql', [ 'host' => $GLOBALS['wgDBserver'], 'user' => 'root' ] );
+		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+			'host' => $GLOBALS['wgDBserver'],
+			'user' => 'root',
+		] );
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
