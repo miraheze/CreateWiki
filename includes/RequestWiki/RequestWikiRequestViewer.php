@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use Config;
+use Exception;
 use Html;
 use HTMLForm;
 use HTMLFormField;
