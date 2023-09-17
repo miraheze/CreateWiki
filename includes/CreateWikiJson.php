@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\DBConnRef;
+use UnexpectedValueException;
 
 class CreateWikiJson {
 
