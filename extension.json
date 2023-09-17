@@ -6,7 +6,7 @@
 		"Paladox",
 		"Universal Omega"
 	],
-	"url": "https://github.com/miraheze/CreateWiki",
+	"url": "https://github.com/miraheze/CreateWikis",
 	"descriptionmsg": "createwiki-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
