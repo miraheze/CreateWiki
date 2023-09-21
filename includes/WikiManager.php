@@ -168,18 +168,25 @@ class WikiManager {
 			function () use ( $wiki, $requester, $centralAuth ) {
 				$this->recacheJson();
 
+				$scriptOptions = [];
+				if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
+					$scriptOptions = [ 'wrapper' => MW_INSTALL_PATH . '/maintenance/run.php' ];
+				}
+
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
 						'--wiki', $wiki
-					]
+					],
+					$scriptOptions
 				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
 					[
 						'--wiki', $wiki
-					]
+					],
+					$scriptOptions
 				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 
 				if ( $centralAuth ) {
@@ -189,7 +196,8 @@ class WikiManager {
 							[
 								$requester,
 								'--wiki', $wiki
-							]
+							],
+							$scriptOptions
 						)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 					}
 
@@ -202,7 +210,8 @@ class WikiManager {
 							'--sysop',
 							'--force',
 							'--wiki', $wiki
-						]
+						],
+						$scriptOptions
 					)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
 				}
 			},

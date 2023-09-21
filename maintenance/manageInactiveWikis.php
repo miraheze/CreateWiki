@@ -65,11 +65,17 @@ class ManageInactiveWikis extends Maintenance {
 
 		$canWrite = $this->hasOption( 'write' );
 
+		$scriptOptions = [];
+		if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
+			$scriptOptions = [ 'wrapper' => MW_INSTALL_PATH . '/maintenance/run.php' ];
+		}
+
 		$timeStamp = Shell::makeScriptCommand(
 			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php',
 			[
 				'--wiki', $dbName
-			]
+			],
+			$scriptOptions
 		)
 			->limits( [ 'filesize' => 0, 'memory' => 0, 'time' => 0, 'walltime' => 0 ] )
 			->execute();
