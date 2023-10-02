@@ -52,7 +52,7 @@
 	"log-description-farmer": "本日志追踪创建wiki的操作。",
 	"log-action-filter-farmer": "操作类型：",
 	"log-action-filter-farmer-createwiki": "wiki已创建",
-	"log-action-filter-farmer-requestapprove": "已批准 Wiki 请求",
+	"log-action-filter-farmer-requestapprove": "批准wiki申请",
 	"log-action-filter-farmer-requestdecline": "创建wiki请求被拒绝",
 	"log-action-filter-farmer-requestwiki": "Wiki请求重新打开",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|建立了}}名为“$4”的wiki",
