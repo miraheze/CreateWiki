@@ -90,6 +90,25 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
+		$formDescriptor['migration'] = [
+			'type' => 'check',
+			'label-message' => 'requestwiki-label-migration',
+			'default' => $request->migration,
+		];
+
+		$formDescriptor['migration-source'] = [
+			'type' => 'text',
+			'label-message' => 'requestwiki-label-migration-users',
+			'default' => $request->migrationusers,
+		];
+
+		$formDescriptor['migration-link'] = [
+			'type' => 'text',
+			'label-message' => 'requestwiki-label-migration-link',
+			'default' => $request->migrationlink,
+		];
+
+
 		if ( $this->config->get( 'CreateWikiPurposes' ) ) {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
@@ -133,6 +152,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->category = $formData['category'] ?? '';
 		$request->purpose = $formData['purpose'] ?? '';
 		$request->bio = $formData['bio'] ?? 0;
+		$request->migration = $formData['migration'] ?? 0;
+		$request->migrationusers = $formData['migration-users'] ?? '';
+		$request->migrationlink = $formData['migration-link'] ?? '';
+
 
 		try {
 			$requestID = $request->save();
