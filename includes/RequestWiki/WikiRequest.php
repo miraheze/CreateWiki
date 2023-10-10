@@ -28,7 +28,7 @@ class WikiRequest {
 	public $bio;
 	public $migration;
 	public $migrationusers;
-	public $migrationlink;
+	public $migrationsource;
 
 	public $purpose;
 
@@ -75,7 +75,7 @@ class WikiRequest {
 			$this->bio = $dbRequest->cw_bio;
 			$this->migration = $dbRequest->cw_migration;
 			$this->migrationusers = $dbRequest->cw_musers;
-			$this->migrationlink = $dbRequest->cw_mlink;
+			$this->migrationsource = $dbRequest->cw_msource;
 
 
 			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
@@ -324,7 +324,7 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 			'cw_migration' => $this->migration,
 			'cw_musers' => $this->migrationusers,
-			'cw_mlink' => $this->migrationlink,
+			'cw_msource' => $this->migrationsource,
 
 		];
 
