@@ -190,6 +190,25 @@ class RequestWikiRequestViewer {
 				];
 			}
 
+			$formDescriptor['edit-migration'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-migration',
+				'default' => $request->migration,
+			];
+
+			$formDescriptor['edit-migration-users'] = [
+				'type' => 'text',
+				'label-message' => 'requestwiki-label-migration-source',
+				'default' => $request->migrationusers,
+			];
+
+			$formDescriptor['edit-migration-link'] = [
+				'type' => 'text',
+				'label-message' => 'requestwiki-label-migration-link',
+				'default' => $request->migrationlink,
+			];
+
+
 			if ( $this->config->get( 'CreateWikiPurposes' ) ) {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
