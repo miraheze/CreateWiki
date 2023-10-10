@@ -102,10 +102,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'default' => $request->migrationusers,
 		];
 
-		$formDescriptor['migration-link'] = [
+		$formDescriptor['migration-source'] = [
 			'type' => 'text',
-			'label-message' => 'requestwiki-label-migration-link',
-			'default' => $request->migrationlink,
+			'label-message' => 'requestwiki-label-migration-source',
+			'default' => $request->migrationsource,
 		];
 
 
@@ -154,7 +154,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$request->bio = $formData['bio'] ?? 0;
 		$request->migration = $formData['migration'] ?? 0;
 		$request->migrationusers = $formData['migration-users'] ?? '';
-		$request->migrationlink = $formData['migration-link'] ?? '';
+		$request->migrationsource = $formData['migration-source'] ?? '';
 
 
 		try {
