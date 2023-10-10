@@ -96,8 +96,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'default' => $request->migration,
 		];
 
-		$formDescriptor['migration-source'] = [
-			'type' => 'text',
+		$formDescriptor['migration-users'] = [
+			'type' => 'int',
 			'label-message' => 'requestwiki-label-migration-users',
 			'default' => $request->migrationusers,
 		];
