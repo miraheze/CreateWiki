@@ -198,14 +198,14 @@ class RequestWikiRequestViewer {
 
 			$formDescriptor['edit-migration-users'] = [
 				'type' => 'int',
-				'label-message' => 'requestwiki-label-migration-source',
+				'label-message' => 'requestwiki-label-migration-users',
 				'default' => $request->migrationusers,
 			];
 
-			$formDescriptor['edit-migration-link'] = [
+			$formDescriptor['edit-migration-source'] = [
 				'type' => 'text',
-				'label-message' => 'requestwiki-label-migration-link',
-				'default' => $request->migrationlink,
+				'label-message' => 'requestwiki-label-migration-source',
+				'default' => $request->migrationsource,
 			];
 
 
