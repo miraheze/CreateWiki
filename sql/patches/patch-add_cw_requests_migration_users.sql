@@ -1,0 +1,2 @@
+ALTER TABLE cw_requests
+  ADD COLUMN cw_musers INT(10) DEFAULT NULL;

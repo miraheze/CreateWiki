@@ -1,0 +1,2 @@
+ALTER TABLE cw_requests
+    ADD COLUMN cw_migration SMALLINT DEFAULT NULL;

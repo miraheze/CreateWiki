@@ -1,0 +1,2 @@
+ALTER TABLE cw_requests
+  ADD COLUMN cw_msource VARCHAR(96) DEFAULT NULL;

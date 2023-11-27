@@ -126,5 +126,23 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			'wiki_locked',
 			"$dir/patches/patch-cw_wikis-add-default-to-wiki_locked.sql"
 		);
+
+        $updater->modifyExtensionField(
+            'cw_requests',
+            'cw_migration',
+            "$dir/patches/patch-add_cw_requests_add_migration.sql"
+        );
+
+        $updater->modifyExtensionField(
+            'cw_requests',
+            'cw_msource',
+            "$dir/patches/patch-add_cw_requests_migration_source"
+        );
+
+        $updater->modifyExtensionField(
+            'cw_requests',
+            'cw_musers',
+            "$dir/patches/patch-add_cw_requests_migration_users"
+        );
 	}
 }
