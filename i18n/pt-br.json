@@ -7,7 +7,8 @@
 			"Felipe L. Ewald",
 			"Leonardo9387",
 			"McDutchie",
-			"Re demz"
+			"Re demz",
+			"YuriNikolai"
 		]
 	},
 	"action-createwiki": "criar wikis",
@@ -93,7 +94,7 @@
 	"requestwikiqueue-request-label-sitename": "Nome do site",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-url": "URL",
-	"requestwikiqueue-request-label-visibility": "Marque esta solicitação de visibilidade como...",
+	"requestwikiqueue-request-label-visibility": "Marque a visibilidade desta solicitação como...",
 	"requestwikiqueue-request-label-visibility-all": "Todos com 'read' podem ver este pedido",
 	"requestwikiqueue-request-label-visibility-delete": "Todos com permissões \"delete\" podem visualizar essa solicitação",
 	"requestwikiqueue-request-label-visibility-hide": "Todos com permissões 'createwiki' podem ver este pedido",
