@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki;
 
 use BagOStuff;
 use Config;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
@@ -268,11 +269,23 @@ class CreateWikiJson {
 			if ( $tmpFile ) {
 				if ( file_put_contents( $tmpFile, json_encode( $contents ) ) ) {
 					if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.json" ) ) {
-						unlink( $tmpFile );
+						LoggerFactory::getInstance( 'CreateWiki' )->error(
+							'Database cache failure: failure to rename {name} temp fle on disk.',
+							[
+								'name' => $tmpFile
+							]
+						);
 					}
 				} else {
-					unlink( $tmpFile );
+					LoggerFactory::getInstance( 'CreateWiki' )->error(
+						'Database cache failure: failure to write cache to disk at {name}.',
+						[
+							'name' => "{$this->cacheDir}/{$name}.json"
+						]
+					);
 				}
+
+				unlink( $tmpFile );
 			}
 		}
 	}
@@ -344,11 +357,23 @@ class CreateWikiJson {
 		if ( $tmpFile ) {
 			if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
 				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
-					unlink( $tmpFile );
+					LoggerFactory::getInstance( 'CreateWiki' )->error(
+						'Wiki cache failure: failure to rename {name} temp fle on disk.',
+						[
+							'name' => $tmpFile
+						]
+					);
 				}
 			} else {
-				unlink( $tmpFile );
+				LoggerFactory::getInstance( 'CreateWiki' )->error(
+					'Database cache failure: failure to write cache to disk at {name}.',
+					[
+						'name' => "{$this->cacheDir}/{$this->wiki}.json"
+					]
+				);
 			}
+
+			unlink( $tmpFile );
 		}
 	}
 
