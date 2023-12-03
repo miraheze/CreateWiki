@@ -270,10 +270,10 @@ class CreateWikiJson {
 				if ( file_put_contents( $tmpFile, json_encode( $contents ) ) ) {
 					if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.json" ) ) {
 						LoggerFactory::getInstance( 'CreateWiki' )->error(
-							'Database cache failure: failure to rename {name} to {rename} on disk.',
+							'Database cache failure: failure to rename {name} to {newName} on disk.',
 							[
 								'name' => $tmpFile,
-								'rename' => "{$this->cacheDir}/{$name}.json"
+								'newName' => "{$this->cacheDir}/{$name}.json"
 							]
 						);
 					}
@@ -359,10 +359,10 @@ class CreateWikiJson {
 			if ( file_put_contents( $tmpFile, json_encode( $jsonArray ) ) ) {
 				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.json" ) ) {
 					LoggerFactory::getInstance( 'CreateWiki' )->error(
-						'Wiki cache failure: failure to rename {name} to {rename} on disk.',
+						'Wiki cache failure: failure to rename {name} to {newName} on disk.',
 						[
 							'name' => $tmpFile,
-							'rename' => "{$this->cacheDir}/{$this->wiki}.json"
+							'newName' => "{$this->cacheDir}/{$this->wiki}.json"
 						]
 					);
 				}
