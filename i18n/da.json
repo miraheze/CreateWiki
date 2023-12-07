@@ -1,11 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
-			"Saederup92"
+			"Saederup92",
+			"Zakawer2"
 		]
 	},
 	"action-createwiki": "opret wikier",
+	"action-requestwiki": "anmode om wikier",
 	"createwiki": "Opret en wiki",
+	"createwiki-defaultmainpage": "__NOTOC__\n==Velkommen til {{SITENAME}}!==\nDenne hovedside blev automatisk skabt, og det ser ud til at den ikke er blevet erstattet endnu.\n\n===Til bureaukrate(r/ne) på denne her wiki===\nHej og velkommen til din/jeres nye wiki! Tak for at have valgt Miraheze som vært for din/jeres wiki. Vi håber at du/I vil nyde vores hosting.\n\nDu/I kan begynde at arbejde på din/jeres wiki med det samme, eller når som helt du/I vil.\n\nHar du/I brug for hjælp? Intet problem! Vi hjælper dig/jer med din/jeres wiki efter behov. For at begynde, prøv at tjekke disse nyttige links:\n*[[mw:Special:MyLanguage/Help:Contents|MediaWiki-guide]] (f.eks. navigation, redigering, sletning af sider, blokering af brugere)\n* [[meta:Special:MyLanguage/FAQ|Ofte stillede spørgsmål om Miraheze]]\n* [[meta:Special:MyLanguage/Request features|Anmod om ændringer af indstillinger på din wiki]]. (Udvidelser, udseendog Logo/Favicon ændringer skal foretages gennem [[Special:ManageWiki]] på din wiki. Se [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] for mere information.)\n\n====Jeg forstår stadigvæk ikke X!====\nNå, det' intet problem. Selv hvis noget ikke er forklaret i dokumentationen og/eller de ofte stillede spørgsmål, er vi stadig glade for at hjælpe dig. Du kan finde os her:\n*[[meta:Special:MyLanguage/Help center|På vores egen Miraheze-wiki]]\n*På [[phab:|Phabricator]]\n*På [https://miraheze.org/discord Discord]\n*På IRC i #miraheze på irc.libera.chat ([irc://irc.libera.chat/%23miraheze direkte link]; [https://web.libera. chat/?channel=#miraheze webchat])\n\n===For besøgende på denne her wiki===\nHej, standardhovedsiden for denne wiki (denne her side) er endnu ikke blevet erstattet af bureaukrate(n/rne) på denne wiki. Bureaukrate(n/rne) arbejder muligvis stadig på en hovedside, så tjek venligst igen senere!",
+	"createwiki-defaultmainpage-summary": "Opret hovedside",
+	"createwiki-desc": "En udvidelse til at nemt oprette nye wikier på en wikifarm.",
+	"createwiki-email-subject": "Din nye Miraheze-wiki: $1",
+	"createwiki-email-body": "Halløjsa!\n\nDu har for nyligt anmodet om en wiki på Miraheze. Vi er glade for at kunne informere dig om, at den er blevet godkendt!\n\nMiraheze er her for at hjælpe dig hele vejen igennem, så ikk' vær bange for at spørge! Besøg vores <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">hjælpecenter</a> for detaljeret hjælp om en række emner, såsom administration af din wiki ved hjælp af vores ManageWiki-værktøj, brug af billeder og skabeloner, arkiveringsopgaver og mere!\n\nHusk venligst at alle wikier skal overholde <a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">indholdspolitikken</a>, ellers kan vi muligvis lukke dem ned. Husk at din wiki ikke kan afvige for meget fra dets godkendte formål, ellers den kan også blive lukket ned.\n\nMange tak fordi du valgte Miraheze! Vi ønsker dig alt det bedste på dit nye wiki-eventyr.",
+	"createwiki-error-dbexists": "Der findes allerede en wiki med det databasenavn.",
 	"createwiki-label-category": "Kategori:",
 	"createwiki-label-dbname": "Databasenavn:",
 	"createwiki-label-language": "Sprog:",
