@@ -47,8 +47,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 	protected function getFormFields() {
 		$formDescriptor = [
 			'subdomain' => [
-				'type' => 'text',
-				'label-message' => [ 'requestwiki-label-siteurl', $this->config->get( 'CreateWikiSubdomain' ) ],
+				'type' => 'textwithbutton',
+				'buttontype' => 'button',
+				'buttonflags' => [],
+				'buttonid' => 'inline-subdomain',
+				'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
+				'label-message' => 'requestwiki-label-siteurl',
+				'placeholder-message' => 'requestwiki-placeholder-subdomain',
+				'help-message' => 'requestwiki-help-subdomain',
 				'required' => true,
 			],
 			'sitename' => [
