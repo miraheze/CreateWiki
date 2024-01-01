@@ -36,11 +36,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
-			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
-
-			$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
-		}
+		$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
 
 		$form = $this->getForm();
 		if ( $form->show() ) {
@@ -119,7 +115,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$status = $request->parseSubdomain( $subdomain, $err );
 		if ( $status === false ) {
 			if ( $err !== '' ) {
-				$out->addHTML( Html::errorBox( $this->msg( 'createwiki-error-' . $err )->parse() ) );
+				$out->addHTML(
+					Html::warningBox(
+						Html::rawElement(
+							'p',
+							[],
+							$this->msg( 'createwiki-error-' . $err )->parse()
+						),
+						'mw-notify-error'
+					)
+				);
 			}
 
 			return false;
@@ -137,7 +142,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 		try {
 			$requestID = $request->save();
 		} catch ( Exception $e ) {
-			$out->addHTML( Html::errorBox( $this->msg( 'requestwiki-error-patient' )->plain() ) );
+			$out->addHTML(
+				Html::warningBox(
+					Html::element(
+						'p',
+						[],
+						$this->msg( 'requestwiki-error-patient' )->plain()
+					),
+					'mw-notify-error'
+				)
+			);
 
 			return false;
 		}
