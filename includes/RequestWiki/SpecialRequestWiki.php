@@ -36,7 +36,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
+		$out->addWikiMsg( 'requestwiki-header' );
 
 		$form = $this->getForm();
 		if ( $form->show() ) {
