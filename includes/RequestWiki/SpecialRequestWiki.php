@@ -160,7 +160,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$out->addHTML( Html::successBox( $this->msg( 'requestwiki-success', $idlink )->plain() ) );
+		// On successful request, redirect them to their request
+		header( 'Location: ' . FormSpecialPage::getTitleFor( 'RequestWikiQueue' )->getFullURL() . '/' . $requestID );
 
 		return true;
 	}
