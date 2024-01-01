@@ -210,21 +210,25 @@ class RequestWikiRequestViewer {
 
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() ) {
 			$visibilityOptions = [
-				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->text(),
-				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->text(),
+				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
+				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->escaped(),
 			];
 
 			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
-				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->text();
+				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
 			}
 
 			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
-				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->text();
+				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->escaped();
 			}
 
 			$wm = new WikiManager( $request->dbname, $this->hookRunner );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname );
+
+			if ( $wmError ) {
+				$context->getOutput()->addHTML( Html::errorBox( $wmError ) );
+			}
 
 			$formDescriptor += [
 				'info-submission' => [
