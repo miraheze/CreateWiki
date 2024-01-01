@@ -230,10 +230,10 @@ class RequestWikiRequestViewer {
 				'info-submission' => [
 					'type' => 'info',
 					'default' => wfMessage( 'requestwikiqueue-request-info-submission' )->text(),
-					'section' => 'handle',
+					'section' => 'review',
 				],
 				'submission-action' => [
-					'type' => 'select',
+					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options-messages' => [
 						'requestwikiqueue-approve' => 'approve',
@@ -242,20 +242,28 @@ class RequestWikiRequestViewer {
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
+					'section' => 'review',
+					],
+				'reason' => [
+					'label-message' => 'createwiki-label-statuschangecomment',
+					'cssclass' => 'createwiki-infuse',
+					'section' => 'review',
 				],
 				'visibility' => [
-					'type' => 'select',
-					'label-message' => 'requestwikiqueue-request-label-visibility',
+					'type' => 'check',
+					'label-message' => 'revdelete-legend',
+					'default' => ( $request->visibility != 0 ) ? 1 : 0,
+					'cssclass' => 'createwiki-infuse',
+					'section' => 'review',
+				],
+				'visibility-options' => [
+					'type' => 'radio',
+					'label-message' => 'revdelete-suppress-text',
+					'hide-if' => [ '!==', 'wpvisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
 					'default' => $request->visibility,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
-				],
-				'reason' => [
-					'label-message' => 'createwiki-label-reason',
-					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
+					'section' => 'review',
 				],
 				'submit-handle' => [
 					'type' => 'submit',
@@ -341,7 +349,16 @@ class RequestWikiRequestViewer {
 		$user = $form->getUser();
 
 		if ( !$user->isRegistered() ) {
-			$out->addHTML( Html::errorBox( wfMessage( 'exception-nologin-text' )->parse() ) );
+			$out->addHTML(
+				Html::warningBox(
+					Html::rawElement(
+						'p',
+						[],
+						wfMessage( 'exception-nologin-text' )->parse()
+					),
+					'mw-notify-error'
+				)
+			);
 
 			return false;
 		} elseif ( isset( $formData['submit-comment'] ) ) {
@@ -353,7 +370,16 @@ class RequestWikiRequestViewer {
 
 			if ( $status === false ) {
 				if ( $err !== '' ) {
-					$out->addHTML( Html::errorBox( wfMessage( 'createwiki-error-' . $err )->parse() ) );
+					$out->addHTML(
+						Html::warningBox(
+							Html::rawElement(
+								'p',
+								[],
+								wfMessage( 'createwiki-error-' . $err )->parse()
+							),
+							'mw-notify-error'
+						)
+					);
 				}
 
 				return false;
@@ -380,7 +406,16 @@ class RequestWikiRequestViewer {
 			}
 		}
 
-		$out->addHTML( Html::successBox( wfMessage( 'requestwiki-edit-success' )->escaped() ) );
+		$out->addHTML(
+			Html::successBox(
+				Html::element(
+					'p',
+					[],
+					wfMessage( 'requestwiki-edit-success' )->plain()
+				),
+				'mw-notify-success'
+			)
+		);
 
 		return true;
 	}
