@@ -36,6 +36,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
+		$out->addModules( [ 'mediawiki.special.userrights' ] );
+		$out->addModuleStyles( 'mediawiki.notification.convertmessagebox.styles' );
+
 		$out->addWikiMsg( 'requestwiki-header' );
 
 		$form = $this->getForm();

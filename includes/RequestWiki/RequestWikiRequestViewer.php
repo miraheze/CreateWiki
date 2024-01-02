@@ -414,6 +414,6 @@ class RequestWikiRequestViewer {
 			)
 		);
 
-		return true;
+		return false;
 	}
 }
