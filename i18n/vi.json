@@ -64,7 +64,7 @@
 	"requestwiki-label-private": "Wiki riêng tư (không thể đọc được bởi tất cả thành viên; chỉ đọc được bởi những thành viên đã cho nhóm thành viên hoặc bảo quản viên):",
 	"requestwiki-label-purpose": "Mục đích của wiki này là…",
 	"requestwiki-label-sitename": "Tên wiki:",
-	"requestwiki-label-subdomain": "Tên miền phụ: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Tên miền phụ: ",
 	"requestwiki-notloggedin": "Vui lòng đăng nhập để yêu cầu một wiki.",
 	"requestwiki-success": "Yêu cầu wiki của bạn ($1) đã được gửi thành công. Yêu cầu của bạn sẽ được một người tạo wiki tình nguyện xem xét trong thời gian sớm nhất có thể.",
 	"requestwiki-unknown": "Không có yêu cầu nào tồn tại với ID này.",

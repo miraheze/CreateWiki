@@ -25,7 +25,7 @@
 	"requestwiki-label-language": "Γλώσσα:",
 	"requestwiki-label-private": "Ιδιωτικό βίκι (μη αναγνώσιμο από τον καθένα):",
 	"requestwiki-label-sitename": "Όνομα βίκι:",
-	"requestwiki-label-subdomain": "Υποτομέας: (subdomain.miraheze.org)",
+	"requestwiki-label-subdomain": "Υποτομέας: ",
 	"requestwiki-notloggedin": "Συγγνώμη, πρέπει να <span class=\"plainlinks\">[$1 συνδεθείτε]</span> πριν μπορέσετε να ζητήσετε ένα βίκι.",
 	"requestwiki-success": "Το αίτημα βίκι σας ($1) υποβλήθηκε με επιτυχία. Το αίτημα σας θα επιθεωρηθεί από έναν εθελοντή όσο το δυνατόν συντομότερα.",
 	"requestwikiqueue": "Ουρά αιτημάτων βίκι",

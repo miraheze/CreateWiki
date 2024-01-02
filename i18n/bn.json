@@ -40,7 +40,7 @@
 	"requestwiki": "একটি উইকির অনুরোধ করুন",
 	"requestwiki-label-language": "ভাষা:",
 	"requestwiki-label-sitename": "উইকি নাম:",
-	"requestwiki-label-subdomain": "উপডোমেইন: (subdomain.$1)",
+	"requestwiki-label-subdomain": "উপডোমেইন: ",
 	"requestwikiqueue-approve": "অনুমোদন করুন",
 	"requestwikiqueue-approved": "অনুমোদিত",
 	"requestwikiqueue-decline": "প্রত্যাখ্যান করুন",
