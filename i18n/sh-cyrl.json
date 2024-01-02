@@ -59,7 +59,7 @@
 	"requestwiki-label-private": "Приватни вики (није читљив од свих; само за кориснике који имају права члана или администратора):",
 	"requestwiki-label-purpose": "Сврха овог викија је...",
 	"requestwiki-label-sitename": "Име викија:",
-	"requestwiki-label-siteurl": "Поддомена: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Поддомена: (subdomain.$1)",
 	"requestwiki-notloggedin": "Молимо пријавите се да бисте затражили вики.",
 	"requestwiki-success": "Захтјев ($1) је успешно послан. Ваш захтјев ће прегледати волонтерски викикреатор што је прије могуће.",
 	"requestwiki-unknown": "Не постоји захтјев с овом назнаком",

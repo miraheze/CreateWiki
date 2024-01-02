@@ -62,7 +62,7 @@
 	"requestwiki-label-private": "व्यक्तिगत विकि (कोई पढ़ नहीं सकता; सिर्फ सदस्य या प्रबंधक अधिकार वाले सदस्य ही पढ़ सकते हैं):",
 	"requestwiki-label-purpose": "विकि का लक्ष्य है...",
 	"requestwiki-label-sitename": "विकि का नाम:",
-	"requestwiki-label-siteurl": "सबडोमेन: (सबडोमेन.$1)",
+	"requestwiki-label-subdomain": "सबडोमेन: (सबडोमेन.$1)",
 	"requestwiki-notloggedin": "क्षमा करें, विकि का अनुरोध करने से पहले आपको <span class=\"plainlinks\">[$1 लॉग-इन]</span> करना होगा।",
 	"requestwiki-success": "आपके अनुरोध ($1) को सफलतापूर्वक भेज दिया गया है। आपके अनुरोध को जल्द ही एक स्वयंसेवक विकि निर्माता जाँचेंगे।",
 	"requestwiki-unknown": "इस ID से कोई भी अनुरोध मौजूद नहीं है।",

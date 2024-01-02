@@ -67,7 +67,7 @@
 	"requestwiki-label-private": "Wiki privata (non leggibile da chiunque; solo leggibile dagli utenti a cui sono stati assegnati i gruppi membri o amministratori):",
 	"requestwiki-label-purpose": "Lo scopo di questa Wiki è…",
 	"requestwiki-label-sitename": "Nome wiki:",
-	"requestwiki-label-siteurl": "Subdominio: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Subdominio: (subdomain.$1)",
 	"requestwiki-notloggedin": "Accedi per richiedere un wiki.",
 	"requestwiki-success": "La tua richiesta di una Wiki ($1) è stata spedita con successo. La tua richiesta sarà rivista da volontari Wiki creatori il prima possibile.",
 	"requestwiki-unknown": "Nessuna richiesta esiste con questo ID.",

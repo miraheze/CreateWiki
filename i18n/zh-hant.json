@@ -71,7 +71,7 @@
 	"requestwiki-label-private": "私人 Wiki（只有指定成員或是 sysop 群組的使用者才能讀取）：",
 	"requestwiki-label-purpose": "此Wiki目的為…",
 	"requestwiki-label-sitename": "Wiki 名稱：",
-	"requestwiki-label-siteurl": "子網域：（subdomain.$1）",
+	"requestwiki-label-subdomain": "子網域：（subdomain.$1）",
 	"requestwiki-notloggedin": "請登入來請求一個 wiki。",
 	"requestwiki-success": "您的請求（$1）已經成功提交。志工 Wiki 創建者們會儘快審核您的請求。",
 	"requestwiki-unknown": "不存在帶有此 ID 的請求。",

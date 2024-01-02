@@ -55,7 +55,7 @@
 	"requestwiki-label-private": "Privat wiki (inte läsbar av alla: kan bara läsas av användare i gruppen medlemmar eller systemadministratörer):",
 	"requestwiki-label-purpose": "Den här wikins syfte är...",
 	"requestwiki-label-sitename": "Wikinamn:",
-	"requestwiki-label-siteurl": "Underdomän: (underdomän.miraheze.org)",
+	"requestwiki-label-subdomain": "Underdomän: (underdomän.miraheze.org)",
 	"requestwiki-notloggedin": "Tyvärr, du måste <span class=\"plainlinks\">[$1 logga in]</span> innan du kan begära en wiki.",
 	"requestwiki-success": "Din wikibegäran ($1) skickades in. Din begäran kommer att granskas av en frivillig wikiskapare så snart som möjligt.",
 	"requestwiki-unknown": "Ingen begäran finns med det här ID:t.",

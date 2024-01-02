@@ -62,7 +62,7 @@
 	"requestwiki-label-private": "Privatni viki (ne mogu čitati svi; samo za korisnike s obzirom na grupe member ili sysop):",
 	"requestwiki-label-purpose": "Svrha ovog vikija je...",
 	"requestwiki-label-sitename": "Ime vikija:",
-	"requestwiki-label-siteurl": "Poddomena: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Poddomena: (subdomain.$1)",
 	"requestwiki-notloggedin": "Molimo prijavite se da biste zatražili viki.",
 	"requestwiki-success": "Zahtjev ($1) je uspješno poslan. Vaš zahtjev će pregledati volonterski vikikreator što je prije moguće.",
 	"requestwiki-unknown": "Ne postoji zahtjev s ovom naznakom",

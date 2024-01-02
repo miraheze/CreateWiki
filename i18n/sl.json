@@ -62,7 +62,7 @@
 	"requestwiki-label-private": "Zasebni viki (ni berljiv za vse; berejo ga lahko le uporabniki iz skupine članov ali administratorjev):",
 	"requestwiki-label-purpose": "Namen tega vikija je ...",
 	"requestwiki-label-sitename": "Ime vikija:",
-	"requestwiki-label-siteurl": "Poddomena: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Poddomena: (subdomain.$1)",
 	"requestwiki-notloggedin": "Za predložitev prošnje za viki se prijavite.",
 	"requestwiki-success": "Vaša prošnja za viki ($1) je bila uspešno predložena. Vašo prošnjo bo v najkrajšem možnem času pregledal prostovoljni ustvarjalec vikijev.",
 	"requestwiki-unknown": "Ne obstaja nobena prošnja s tem ID-jem.",

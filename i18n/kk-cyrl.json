@@ -62,7 +62,7 @@
 	"requestwiki-label-private": "Жеке уики (барлығы оқи алмайды, тек мүше немесе sysop топталардағы берілген пайдаланушылар оқи алады):",
 	"requestwiki-label-purpose": "Бұл уикинің мақсаты...",
 	"requestwiki-label-sitename": "Уики аты:",
-	"requestwiki-label-siteurl": "Субдомен: (subdomen.$1)",
+	"requestwiki-label-subdomain": "Субдомен: (subdomen.$1)",
 	"requestwiki-notloggedin": "Уики сұрау үшін жүйеге кіріңізші.",
 	"requestwiki-success": "Сіздің уики сұрауыңыз ($1) сәтті жіберілді. Сіздің өтінішіңізді ерікті уики жасаушы мүмкіндігінше тезірек қарайды.",
 	"requestwiki-unknown": "Бұл идентификатормен еш сұрау жоқ.",

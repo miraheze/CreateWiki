@@ -44,7 +44,7 @@
 	"requestwiki-label-language": "Lingua:",
 	"requestwiki-label-private": "Wiki privado (non lexible por calquera):",
 	"requestwiki-label-sitename": "Nome da wiki:",
-	"requestwiki-label-siteurl": "Subdominio:",
+	"requestwiki-label-subdomain": "Subdominio:",
 	"requestwiki-notloggedin": "Sentímolo, é preciso <span class=\"plainlinks\">[$1 acceder a unha conta]</span> antes de solicitar unha wiki.",
 	"requestwiki-success": "Enviouse a súa solicitude de wiki ($1) correctamente. Un voluntario revisará a solicitude tan pronto como sexa posible.",
 	"requestwikiqueue": "Cola de solicitudes de wikis",

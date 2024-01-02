@@ -70,7 +70,7 @@
 	"requestwiki-label-private": "Yksityinen wiki (kaikki eivät voi lukea; vain jäsenet tai ylläpitäjät voivat lukea):",
 	"requestwiki-label-purpose": "Tämän wikin tarkoitus on...",
 	"requestwiki-label-sitename": "Wikin nimi:",
-	"requestwiki-label-siteurl": "Alidomain: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Alidomain: (subdomain.$1)",
 	"requestwiki-notloggedin": "Kirjaudu sisään pyytääksesi wikiä.",
 	"requestwiki-success": "Wikipyyntösi ($1) on lähetetty onnistuneesti. Vapaaehtoinen wikien luoja tarkastaa pyyntösi mahdollisimman pian.",
 	"requestwiki-unknown": "Tällä ID:llä ei ole pyyntöä.",

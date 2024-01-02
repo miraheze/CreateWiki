@@ -52,7 +52,7 @@
 	"requestwiki-label-language": "Język:",
 	"requestwiki-label-private": "Prywatna wiki (nie jest widoczna dla wszystkich):",
 	"requestwiki-label-sitename": "Nazwa wiki:",
-	"requestwiki-label-siteurl": "Subdomena: (subdomena.$1)",
+	"requestwiki-label-subdomain": "Subdomena: (subdomena.$1)",
 	"requestwiki-notloggedin": "Zaloguj się, aby złożyć prośbę o wiki.",
 	"requestwiki-success": "Twoje zgłoszenie ($1) zostało pomyślnie przesłane i zostanie sprawdzone przez wolontariusza najszybciej jak to możliwe.",
 	"requestwikiqueue": "Kolejka zgłoszeń",

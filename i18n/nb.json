@@ -61,7 +61,7 @@
 	"requestwiki-label-private": "Privat wiki (ikke leselig for alle):",
 	"requestwiki-label-purpose": "Formålet til denne wikien er …",
 	"requestwiki-label-sitename": "Wikiens navn:",
-	"requestwiki-label-siteurl": "Underdomene: (underdomene.$1)",
+	"requestwiki-label-subdomain": "Underdomene: (underdomene.$1)",
 	"requestwiki-notloggedin": "Beklager, du må <span class=\"plainlinks\">[$1 logge inn]</span> før du kan be om en wiki.",
 	"requestwiki-success": "Wikiforespørselen ($1) ble sendt inn. Forespørselen vil gås gjennom av en frivillig så snart som mulig.",
 	"requestwiki-unknown": "Ingen forespørsel finnes med denne ID-en.",

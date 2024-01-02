@@ -65,7 +65,7 @@
 	"requestwiki-label-private": "Privéwiki (niet leesbaar voor iedereen; alleen leesbaar voor gebruikers in de leden- of sysop-groepen):",
 	"requestwiki-label-purpose": "Het doel van deze wiki is…",
 	"requestwiki-label-sitename": "Wikinaam:",
-	"requestwiki-label-siteurl": "Subdomein: (subdomein.$1)",
+	"requestwiki-label-subdomain": "Subdomein: (subdomein.$1)",
 	"requestwiki-notloggedin": "Log in om een wiki aan te vragen.",
 	"requestwiki-success": "Uw wiki-aanvraag ($1) is ingediend. Uw verzoek wordt zo snel mogelijk beoordeeld door een vrijwillige wiki-maker.",
 	"requestwiki-unknown": "Er is geen aanvraag met deze ID.",

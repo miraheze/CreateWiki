@@ -18,7 +18,7 @@
 	"notification-createwiki-wiki-creation-visitwiki-label": "Talìa lu wiki",
 	"requestwiki-label-language": "Lingua:",
 	"requestwiki-label-sitename": "Nomu dû wiki:",
-	"requestwiki-label-siteurl": "Suttadumuniu: (suttadumuniu.miraheze.org)",
+	"requestwiki-label-subdomain": "Suttadumuniu: (suttadumuniu.miraheze.org)",
 	"requestwikiqueue-pager-status-approved": "appruvata",
 	"requestwikiqueue-request": "Richiesta",
 	"requestwikiqueue-request-label-comment": "Cummentu:",

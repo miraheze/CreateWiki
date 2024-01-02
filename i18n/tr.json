@@ -67,7 +67,7 @@
 	"requestwiki-label-private": "Özel viki (herkes tarafından okunamaz; yalnızca üye veya sistem grubu verilen kullanıcılar tarafından okunabilir):",
 	"requestwiki-label-purpose": "Bu vikinin amacı...",
 	"requestwiki-label-sitename": "Viki adı:",
-	"requestwiki-label-siteurl": "Alt domain: (subdomain.miraheze.org)",
+	"requestwiki-label-subdomain": "Alt domain: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "Üzgünüz, bir viki isteğini talep etmek için önce <span class=\"plainlinks\">[$1 oturum açmanız]</span> gerekiyor.",
 	"requestwiki-success": "Viki talebiniz ($1) başarıyla gönderildi. İsteğiniz en kısa sürede gönüllü bir viki oluşturucu tarafından incelenecektir.",
 	"requestwiki-unknown": "Bu kimlikle hiçbir istek yok.",

@@ -34,7 +34,7 @@
 	"requestwiki-label-language": "زبان:",
 	"requestwiki-label-private": "ویکی خصوصی (توسط کسی خوانده نمی‌شود)",
 	"requestwiki-label-sitename": "نام ویکی:",
-	"requestwiki-label-siteurl": "زیردامنه: (subdomain.miraheze.org)",
+	"requestwiki-label-subdomain": "زیردامنه: (subdomain.miraheze.org)",
 	"requestwiki-notloggedin": "متأسفیم، شما نیاز دارید که به سامانهٔ میراژز، پیش‌از این‌که بتوانید یک ویکی درخواست کنید، <span class=\"plainlinks\">[$1 وارد]</span> شوید.",
 	"requestwikiqueue": "صف درخواست ویکی",
 	"requestwikiqueue-comments": "یادداشت‌های درخواست",

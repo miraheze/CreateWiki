@@ -46,7 +46,7 @@
 	"requestwiki-label-language": "Used as a label for 'language'\n{{Identical|Language}}",
 	"requestwiki-label-private": "Used as a label for 'private'",
 	"requestwiki-label-sitename": "Used as a label for 'sitename'",
-	"requestwiki-label-siteurl": "Used as a label for 'subdomain'",
+	"requestwiki-label-subdomain": "Used as a label for 'subdomain'",
 	"requestwiki-notloggedin": "Error message if user tries to request a wiki while not being logged in.",
 	"requestwiki-success": "Message after a wiki request has been sent successfully.",
 	"requestwikiqueue": "Queue for wiki requests",
