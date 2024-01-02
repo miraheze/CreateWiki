@@ -53,8 +53,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'buttonid' => 'inline-subdomain',
 				'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
 				'label-message' => 'requestwiki-label-siteurl',
-				'placeholder-message' => 'requestwiki-placeholder-subdomain',
-				'help-message' => 'requestwiki-help-subdomain',
+				'placeholder-message' => 'requestwiki-placeholder-siteurl',
+				'help-message' => 'requestwiki-help-siteurl',
 				'required' => true,
 			],
 			'sitename' => [
