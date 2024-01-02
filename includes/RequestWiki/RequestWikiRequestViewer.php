@@ -234,7 +234,7 @@ class RequestWikiRequestViewer {
 				'info-submission' => [
 					'type' => 'info',
 					'default' => wfMessage( 'requestwikiqueue-request-info-submission' )->text(),
-					'section' => 'review',
+					'section' => 'handle',
 				],
 				'submission-action' => [
 					'type' => 'radio',
@@ -246,19 +246,19 @@ class RequestWikiRequestViewer {
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'review',
+					'section' => 'handle',
 					],
 				'reason' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'review',
+					'section' => 'handle',
 				],
 				'visibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
 					'default' => ( $request->visibility != 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'review',
+					'section' => 'handle',
 				],
 				'visibility-options' => [
 					'type' => 'radio',
@@ -267,7 +267,7 @@ class RequestWikiRequestViewer {
 					'options' => array_flip( $visibilityOptions ),
 					'default' => $request->visibility,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'review',
+					'section' => 'handle',
 				],
 				'submit-handle' => [
 					'type' => 'submit',
