@@ -60,6 +60,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
+				'help-message' => 'requestwiki-help-sitename',
 				'required' => true,
 			],
 			'language' => [
@@ -82,6 +83,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
+				'help-message' => 'requestwiki-help-private',
 			];
 		}
 
@@ -89,6 +91,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
+				'help-message' => 'requestwiki-help-bio',
 			];
 		}
 
