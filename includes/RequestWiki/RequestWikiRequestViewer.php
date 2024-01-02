@@ -289,13 +289,6 @@ class RequestWikiRequestViewer {
 			}
 
 			if ( $wmError ) {
-				$formDescriptor['submit-error-info'] = [
-					'type' => 'info',
-					'section' => 'handle',
-					'default' => $wmError,
-					'raw' => true,
-				];
-
 				// We don't want to be able to approve it if the database is not valid
 				unset( $formDescriptor['submission-action']['options-messages']['requestwikiqueue-approve'] );
 			}
