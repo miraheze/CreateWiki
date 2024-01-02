@@ -78,7 +78,7 @@
 	"requestwiki-label-private": "私有wiki（并非所有人都能看到页面内容；仅授予成员或sysop用户组的用户可以看到页面内容）：",
 	"requestwiki-label-purpose": "这个wiki的用意是……",
 	"requestwiki-label-sitename": "wiki名称：",
-	"requestwiki-label-siteurl": "子域名：（subdomain.$1）",
+	"requestwiki-label-subdomain": "子域名：（subdomain.$1）",
 	"requestwiki-notloggedin": "请登录以请申请wiki。",
 	"requestwiki-success": "您的申请（$1）已经成功提交。志愿者们将会尽快处理您的申请。",
 	"requestwiki-unknown": "该ID没有请求。",

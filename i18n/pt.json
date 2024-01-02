@@ -62,7 +62,7 @@
 	"requestwiki-label-private": "Wiki privada (não pode ser lida por todos; só pode ser lida por utilizadores dos grupos membro ou ''sysop''):",
 	"requestwiki-label-purpose": "O propósito desta wiki é...",
 	"requestwiki-label-sitename": "Nome da wiki:",
-	"requestwiki-label-siteurl": "Subdomínio: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Subdomínio: ",
 	"requestwiki-notloggedin": "Para pedir uma wiki inicie primeiro uma sessão, por favor.",
 	"requestwiki-success": "O seu pedido de uma wiki ($1) foi submetido. O pedido será revisto por um criador de wikis voluntário logo que possível.",
 	"requestwiki-unknown": "Não existe nenhum pedido com este identificador.",

@@ -80,7 +80,7 @@
 	"requestwiki-label-private": "Закрытая вики (доступна не всем для чтения; может быть прочтена только пользователями с ролью участника или администратора):",
 	"requestwiki-label-purpose": "Цель этой вики…",
 	"requestwiki-label-sitename": "Название вики:",
-	"requestwiki-label-siteurl": "Поддомен: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Поддомен: ",
 	"requestwiki-notloggedin": "Войдите, чтоб запросить вики.",
 	"requestwiki-success": "Ваш запрос вики ($1) был успешно отправлен. Ваш запрос будет рассмотрен добровольцем-создателем вики как можно скорее.",
 	"requestwiki-unknown": "Запрос с таким ID не существует.",

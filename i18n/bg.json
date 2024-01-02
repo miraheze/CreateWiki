@@ -25,7 +25,7 @@
 	"requestwiki-label-language": "Език:",
 	"requestwiki-label-private": "Скрито уики (не е достъпно за всеки); може да се чете само от потребители с групови права member или sysop:",
 	"requestwiki-label-sitename": "Име на уикито:",
-	"requestwiki-label-siteurl": "Поддомейн: (поддомейн.$1)",
+	"requestwiki-label-subdomain": "Поддомейн: (поддомейн.$1)",
 	"requestwiki-success": "Вашата уики заявка ($1) е успешно изпратена. Тя ще бъде разгледана от уики-доброволец в най-скоро време.",
 	"requestwikiqueue-pager-status-approved": "одобрено",
 	"requestwikiqueue-pager-status-declined": "отхвърлено",

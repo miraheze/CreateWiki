@@ -66,7 +66,7 @@
 	"requestwiki-label-private": "ויקי פרטי (שאינו ניתן לקריאה על־ידי כולם; קריא רק על־ידי משתמשים בקבוצות member או sysop):",
 	"requestwiki-label-purpose": "מטרת הוויקי הזה היא…",
 	"requestwiki-label-sitename": "שם אתר הוויקי:",
-	"requestwiki-label-siteurl": "תת־תחום: (subdomain.$1)",
+	"requestwiki-label-subdomain": "תת־תחום: ",
 	"requestwiki-notloggedin": "נא להיכנס לחשבון כדי לבקש ויקי.",
 	"requestwiki-success": "בקשת אתר הוויקי שלך ($1) נשלחה בהצלחה. הבקשה תיבדק על־ידי אחד המתנדבים שיוצרים אתרי ויקי בהקדם האפשרי.",
 	"requestwiki-unknown": "לא קיימת בקשה עם מזהה כזה.",

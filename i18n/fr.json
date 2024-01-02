@@ -77,7 +77,7 @@
 	"requestwiki-label-private": "Wiki privé (non lisible par tout le monde ; lisible seulement par les utilisateurs des groupes membre ou sysop) :",
 	"requestwiki-label-purpose": "L’objectif de ce wiki est...",
 	"requestwiki-label-sitename": "Nom du wiki :",
-	"requestwiki-label-siteurl": "Sous-domaine : (subdomain.$1)",
+	"requestwiki-label-subdomain": "Sous-domaine : ",
 	"requestwiki-notloggedin": "Veuillez vous connecter pour demander un wiki.",
 	"requestwiki-success": "Votre demande au wiki ($1) a bien été soumise. Elle va être vérifiée par un créateur bénévole du wiki dès que possible.",
 	"requestwiki-unknown": "Aucune demande n’existe avec cet identifiant.",
