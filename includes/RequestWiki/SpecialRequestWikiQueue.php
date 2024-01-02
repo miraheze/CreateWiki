@@ -79,6 +79,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
+		$out->addModules( [ 'mediawiki.special.userrights' ] );
 
 		$requestViewer = new RequestWikiRequestViewer( $this->hookRunner );
 		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );
