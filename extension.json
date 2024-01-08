@@ -311,6 +311,11 @@
 			"description": "Boolean. Whether to implement front end logic for marking wikis as experimental.",
 			"public": true,
 			"value": false
+		},
+		"RequestWikiMinimumLength": {
+			"description": "Int. Minimum length of wiki requests.",
+			"public": true,
+			"value": false
 		}
 	},
 	"ConfigRegistry": {
