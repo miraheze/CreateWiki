@@ -39,7 +39,7 @@
 	"requestwiki": "Demandar (kreo di) wiki",
 	"requestwiki-label-language": "Linguo:",
 	"requestwiki-label-sitename": "Wiki-nomo:",
-	"requestwiki-label-subdomain": "Subdomeno: ",
+	"requestwiki-label-subdomain": "Subdomeno:",
 	"requestwiki-notloggedin": "Pardonez, vu bezonas <span class=\"plainlinks\">[$1 facar ''log in'']</span> ante ke vu demandez nova wiki.",
 	"requestwiki-success": "Vua demando ($1) pri kreo di wiki sucesoze sendesis. Vua demando analizesos da voluntario tam balde kam posibla.",
 	"requestwiki-unknown": "Nula demando existas kun ca ID.",

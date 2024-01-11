@@ -21,7 +21,8 @@
 			"TMNBFF",
 			"Yusuke1109",
 			"しぃ",
-			"そらたこ"
+			"そらたこ",
+			"翻訳者a"
 		]
 	},
 	"action-createwiki": "ウィキの作成",
@@ -81,7 +82,7 @@
 	"requestwiki-label-private": "非公開のウィキ (不特定多数の利用者から閲覧不可; メンバー・管理者グループが割り当てられた利用者だけが閲覧できます):",
 	"requestwiki-label-purpose": "このウィキの目的は…",
 	"requestwiki-label-sitename": "ウィキの名前:",
-	"requestwiki-label-subdomain": "サブドメイン: ",
+	"requestwiki-label-subdomain": "あなたのウィキにサブドメインを選択します。",
 	"requestwiki-notloggedin": "ログインしてウィキを申請してください。",
 	"requestwiki-success": "あなたのウィキの申請 ($1) は正常に受理されました。申請はボランティアのウィキ作成者によって可能な限り速やかに審査されます。",
 	"requestwiki-unknown": "このIDの申請は存在しません。",
