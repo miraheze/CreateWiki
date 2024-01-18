@@ -62,6 +62,7 @@
 	"notification-header-request-declined": "Your request has been declined for the following reason:",
 	"requestwiki": "Request a wiki",
 	"requestwiki-edit-success": "Your changes to this wiki request have been successfully saved.",
+	"requestwiki-error-emailnotconfirmed": "Your email is not confirmed. To request wikis, please [[Special:ChangeEmail|confirm an email]] first.",
 	"requestwiki-error-invalidcomment": "Your wiki request contains an invalid character. Correct that and try again. If you need help, [[Help center|contact us]].",
 	"requestwiki-error-patient": "You have already requested a wiki! Please be patient, your request is being reviewed. If you need to request another wiki, try again later.",
 	"requestwiki-header": "Thank you for choosing Miraheze to host your wiki! To get started, please fill out this form so we can review your request.\nYour wiki request will be reviewed by a volunteer, and it can be tracked at the page that will be given when submitting your request.\n\nIf you want a custom domain for your wiki (i.e. not a standard .miraheze.org subdomain), please read [[Custom domains|this]] first. You must first choose a subdomain, and your custom domain will be configured afterwards. \n\nWhen you request a wiki, you automatically agree to our [[Content Policy|Content]] and [[Dormancy Policy]].",
