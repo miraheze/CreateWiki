@@ -89,7 +89,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 
 		$specialRequestWiki->execute( '' );
 	}
-	
+
 	/**
 	 * @covers ::getFormFields
 	 */
