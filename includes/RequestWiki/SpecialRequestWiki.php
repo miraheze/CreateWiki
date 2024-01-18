@@ -36,6 +36,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
+		if ( !$this->getUser()->isEmailConfirmed() && !$this->config->get( 'RequestWikiRequireEmail' ) ) {
+			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
+		}
+
 		$out->addModules( [ 'mediawiki.special.userrights' ] );
 		$out->addModuleStyles( 'mediawiki.notification.convertmessagebox.styles' );
 
@@ -109,11 +113,33 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 4,
+			'minlength' => $this->config->get( 'RequestWikiMinimumLength' ) ?? false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'validation-callback' => [ $this, 'isValidReason' ],
 		];
+
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->config->get( 'WikiDiscoverUseDescriptions' ) && $this->config->get( 'RequestWikiUseDescriptions' ) ) {
+			$formDescriptor['public-description'] = [
+				'type' => 'textarea',
+				'rows' => 2,
+				'maxlength' => $this->config->get( 'WikiDiscoverDescriptionMaxLength' ) ?? false,
+				'label-message' => 'requestwiki-label-public-description',
+				'help-message' => 'requestwiki-help-public-description',
+				'required' => true,
+				'validation-callback' => [ $this, 'isValidReason' ],
+			];
+		}
+
+		if ( $this->config->get( 'RequestWikiConfirmAgreement' ) ) {
+			$formDescriptor['agreement'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-agreement',
+				'help-message' => 'requestwiki-help-agreement',
+				'required' => true,
+			];
+		}
 
 		return $formDescriptor;
 	}
