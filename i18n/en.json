@@ -20,7 +20,7 @@
 	"createwiki-error-notalnum": "The subdomain selected contains non-alphanumeric characters. Please try again.",
 	"createwiki-error-notlowercase": "The subdomain may not contain uppercase letters. Please try again.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix (e.g. 'wiki').",
-	"createwiki-error-subdomaintaken": "The subdomain you requested is already taken. There might already be a wiki covering your topic; if that's the case, contribute to that wiki instead (wiki's on the same topic are prohibited and deleted upon detection). Select another subdomain and try again.",
+	"createwiki-error-subdomaintaken": "The subdomain you requested is already taken. There might already be a wiki covering your topic; if that's the case, contribute to that wiki instead (wikis on the same topic are prohibited and deleted upon detection). Select another subdomain and try again.",
 	"createwiki-help-bio": "Make sure to follow this farm's policy on covering people.",
 	"createwiki-help-private": "Only administrators and those you allow will be able to view its contents.",
 	"createwiki-help-reason": "Please enter a sufficient summary describing the topic, scope, and purpose of the wiki you're requesting.",
