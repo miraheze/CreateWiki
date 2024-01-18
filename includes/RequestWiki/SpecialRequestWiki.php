@@ -38,7 +38,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( !$this->getUser()->isEmailConfirmed() && !$this->config->get( 'RequestWikiConfirmEmail' ) ) {
+		if ( !$this->getUser()->isEmailConfirmed() && $this->config->get( 'RequestWikiConfirmEmail' ) ) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
