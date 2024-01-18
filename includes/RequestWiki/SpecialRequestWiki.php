@@ -3,7 +3,9 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use Config;
+use ErrorPageError;
 use Exception;
+use ExtensionRegistry;
 use FormSpecialPage;
 use Html;
 use ManualLogEntry;
