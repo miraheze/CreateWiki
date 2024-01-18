@@ -318,6 +318,16 @@
 			"public": true,
 			"value": true
 		},
+		"RequestWikiConfirmAgreement": {
+			"description": "Boolean. Require users to confirm they will abide by farm policies.",
+			"public": true,
+			"value": false
+		},
+		"RequestWikiConfirmEmail": {
+			"description": "Boolean. Require users to confirm emails before being able to request wikis.",
+			"public": true,
+			"value": true
+		},
 		"RequestWikiMinimumLength": {
 			"description": "Int. Minimum length of wiki requests.",
 			"public": true,
