@@ -143,7 +143,7 @@
 	},
 	"config": {
 		"CreateWikiAIThreshold": {
-			"description": "Integer. Minimum percentage points for a request to be created when acceptable.",
+			"description": "Integer. Minimum percentage point threshold for a request to be automatically created when acceptable.",
 			"public": true,
 			"value": false
 		},
