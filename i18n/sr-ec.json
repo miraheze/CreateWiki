@@ -18,6 +18,7 @@
 	"createwiki-label-reason": "Опишите фокус или сврху овог викија:",
 	"createwiki-label-requester": "Подносилац:",
 	"createwiki-label-sitename": "Назив сајта:",
+	"createwiki-label-statuschangecomment": "Разлог:",
 	"createwiki-success": "Вики је направљен.",
 	"echo-category-title-wiki-creation": "Прављење викија",
 	"echo-category-title-request-declined": "Захтев викија је одбијен",

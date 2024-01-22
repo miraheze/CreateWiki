@@ -31,7 +31,7 @@
 	"createwiki-label-reason": "Opišite fokus ali namen tega vikija:",
 	"createwiki-label-requester": "Prosilec:",
 	"createwiki-label-sitename": "Ime mesta:",
-	"createwiki-label-statuschangecomment": "Razlog za ta ukrep:",
+	"createwiki-label-statuschangecomment": "Razlog za to dejanje:",
 	"createwiki-success": "Viki je bil uspešno ustvarjen.",
 	"echo-category-title-wiki-creation": "Ustvarjanje vikija",
 	"echo-category-title-request-comment": "K prošnji za viki je bil dodan komentar",
