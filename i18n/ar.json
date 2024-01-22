@@ -52,7 +52,7 @@
 	"requestwiki-label-language": "اللغة:",
 	"requestwiki-label-private": "ويكي خاص (غير قابل للقراءة من قبل الجميع):",
 	"requestwiki-label-sitename": "اسم الويكي:",
-	"requestwiki-label-subdomain": "النطاق الفرعي: ",
+	"requestwiki-label-subdomain": "النطاق الفرعي:",
 	"requestwiki-notloggedin": "عذرا، يجب <span class=\"plainlinks\">[$1 سجيل الدخول]</span> قبل أن تتمكن من طلب ويكي.",
 	"requestwiki-success": "تم إرسال طلب الويكي الخاص بك ($1) بنجاح، ستتم مراجعة طلبك من قبل متطوع في أقرب وقت ممكن.",
 	"requestwikiqueue": "طابور طلبات الويكي",
