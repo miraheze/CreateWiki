@@ -148,7 +148,7 @@
 			"value": false
 		},
 		"CreateWikiAutoApprovalFilter": {
-			"description": "Array. Regexes to never auto approve requests if their descriptions match.",
+			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
 			"public": true,
 			"value": []
 		},
