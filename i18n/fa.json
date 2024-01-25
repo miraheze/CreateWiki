@@ -5,6 +5,7 @@
 			"Beginneruser",
 			"FarsiNevis",
 			"Huji",
+			"Jeeputer",
 			"Mohammad ebz",
 			"Mskf1383",
 			"Stewie"
@@ -23,6 +24,7 @@
 	"createwiki-label-reason": "دلیل:",
 	"createwiki-label-requester": "درخواست‌کننده:",
 	"createwiki-label-sitename": "نام وبگاه:",
+	"createwiki-label-statuschangecomment": "دلیل این عمل:",
 	"createwiki-success": "ویکی با موفقیت ساخته شد.",
 	"echo-category-title-wiki-creation": "ساختن ویکی",
 	"echo-pref-tooltip-wiki-creation": "هنگامی‌که ویکی ساخته شد، مرا آگاه کن.",

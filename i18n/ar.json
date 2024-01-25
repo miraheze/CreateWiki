@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ahmed Alyamoor",
 			"HendSalah16",
 			"Meno25",
 			"NancyMilad",
@@ -49,8 +50,10 @@
 	"requestwiki-error-invalidcomment": "يحتوي طلب الويكي على حرف غير صالح; الرجاء المحاولة مرة أخرى، وإذا استمرت المشكلة [[Help center|يُرجَى الاتصال بنا]]",
 	"requestwiki-error-patient": "لقد طلبت ويكي بالفعل، يُرجَى التحلي بالصبر ويجب على أحد منشئي محتوى الويكي إنشاؤه قريبا، إذا كنت بحاجة إلى طلب ويكي آخر، يُرجَى الانتظار وسوف تكون قادرا على الطلب في وقت لاحق.",
 	"requestwiki-header": "شكرًا لاختيارك Miraheze لاستضافة موقع wiki الخاص بك! للبدء ، يرجى ملء هذا النموذج حتى نتمكن من مراجعة طلبك.\nسيتم مراجعة طلب wiki الخاص بك بواسطة أحد المتطوعين ، ويمكن تتبعه في الصفحة التي سيتم تقديمها عند تقديم طلبك.\n\nإذا كنت تريد مجالًا مخصصًا لموقع wiki الخاص بك (أي ليس نطاقًا فرعيًا قياسيًا .miraheze.org) ، يرجى قراءة <span class=\"plainlinks\">[ $1 this]</span> أولاً. يجب عليك أولاً اختيار مجال فرعي ، وسيتم تكوين المجال المخصص الخاص بك بعد ذلك.\n\nعندما تطلب موقع wiki ، فإنك توافق تلقائيًا على [[Content Policy|المحتوى]] و [[Dormancy Policy]].",
+	"requestwiki-label-agreement": "أوافق على [[Project:Privacy Policy|privacy policy]] و[[Project:Terms of Service|Terms of service]] لهذه الخدمة.",
 	"requestwiki-label-language": "اللغة:",
 	"requestwiki-label-private": "ويكي خاص (غير قابل للقراءة من قبل الجميع):",
+	"requestwiki-label-public-description": "قم بوصف الويكي الخاص بك للعامة:",
 	"requestwiki-label-sitename": "اسم الويكي:",
 	"requestwiki-label-subdomain": "النطاق الفرعي:",
 	"requestwiki-notloggedin": "عذرا، يجب <span class=\"plainlinks\">[$1 سجيل الدخول]</span> قبل أن تتمكن من طلب ويكي.",
