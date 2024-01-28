@@ -354,14 +354,15 @@ class WikiRequest {
 	 * Extract database name from subdomain and automatically configure url and dbname
 	 *
 	 * @param string $subdomain subdomain
+	 * @param string $url subdomain
 	 * @param string &$err optional error string for reported errors
 	 *
 	 * @return boolean true subdomain is valid and accepted, false otherwise
 	 */
-	public function parseSubdomain( string $subdomain, string &$err = '' ) {
+	public function parseSubdomain( string $subdomain, string $url, string &$err = '' ) {
 		$subdomain = strtolower( $subdomain );
-		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
-			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
+		if ( strpos( $subdomain, $url ?: $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
+			$subdomain = str_replace( '.' . $url ?: $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
 		}
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
@@ -385,7 +386,7 @@ class WikiRequest {
 			return false;
 		} else {
 			$this->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
-			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
+			$this->url = $subdomain . '.' . $url ?: $this->config->get( 'CreateWikiSubdomain' );
 
 			return true;
 		}
