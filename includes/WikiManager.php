@@ -117,6 +117,7 @@ class WikiManager {
 	}
 
 	public function create(
+		string $url,
 		string $siteName,
 		string $language,
 		bool $private,
@@ -134,6 +135,7 @@ class WikiManager {
 			[
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
+				'wiki_url' => $url,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,
