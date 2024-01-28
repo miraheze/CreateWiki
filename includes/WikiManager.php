@@ -142,7 +142,7 @@ class WikiManager {
 		if ( str_starts_with( $url, '//' ) ) {
 			$url = 'https:' . $url;
 		}
-		
+
 		if ( str_starts_with( $url, '://' ) ) {
 			$url = 'https' . $url;
 		}
