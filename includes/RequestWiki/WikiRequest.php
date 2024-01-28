@@ -168,6 +168,7 @@ class WikiRequest {
 			$jobParams = [
 				'id' => $this->id,
 				'dbname' => $this->dbname,
+				'url' => $this->url,
 				'sitename' => $this->sitename,
 				'language' => $this->language,
 				'private' => $this->private,
@@ -192,7 +193,7 @@ class WikiRequest {
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
-			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
+			$notCreated = $wm->create( $this->url, $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
 				throw new RuntimeException( $notCreated ?? $validName );
