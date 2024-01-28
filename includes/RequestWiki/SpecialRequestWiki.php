@@ -63,9 +63,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 					'help-message' => 'requestwiki-help-subdomain',
 					'required' => true,
 				],
-				'url' => [
+				'domain' => [
 					'type' => 'select',
-					'options' => $this->config->get( 'CreateWikiAdditionalSubdomains' ),
+					'options' => $this->config->get( 'CreateWikiDomainOptions' ),
 					'required' => true,
 				],
 			];
@@ -172,7 +172,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$out = $this->getOutput();
 		$err = '';
 
-		$status = $request->parseSubdomain( $subdomain, $formData['url'] ?? '', $err );
+		$status = $request->parseSubdomain( $subdomain, $formData['domain'] ?? '', $err );
 		if ( $status === false ) {
 			if ( $err !== '' ) {
 				$out->addHTML(
