@@ -130,6 +130,27 @@ class WikiManager {
 			return $this->doCreateDatabase();
 		}
 
+		// This is probably some of the worst code I have ever written
+		// Definitely needs to be done better
+
+		$url = strtolower( $url );
+
+		if ( str_starts_with( $url, 'http://' ) ) {
+			$url = str_replace( 'http://', 'https://', $url );
+		}
+
+		if ( str_starts_with( $url, '//' ) ) {
+			$url = 'https:' . $url;
+		}
+		
+		if ( str_starts_with( $url, '://' ) ) {
+			$url = 'https' . $url;
+		}
+
+		if ( !str_starts_with( $url, 'https://' ) ) {
+			$url = 'https://' . $url;
+		}
+
 		$this->cwdb->insert(
 			'cw_wikis',
 			[
