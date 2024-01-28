@@ -132,23 +132,24 @@ class WikiManager {
 
 		// This is probably some of the worst code I have ever written
 		// Definitely needs to be done better
+		if ( $url ) {
+			$url = strtolower( $url );
 
-		$url = strtolower( $url );
+			if ( str_starts_with( $url, 'http://' ) ) {
+				$url = str_replace( 'http://', 'https://', $url );
+			}
 
-		if ( str_starts_with( $url, 'http://' ) ) {
-			$url = str_replace( 'http://', 'https://', $url );
-		}
+			if ( str_starts_with( $url, '//' ) ) {
+				$url = 'https:' . $url;
+			}
 
-		if ( str_starts_with( $url, '//' ) ) {
-			$url = 'https:' . $url;
-		}
+			if ( str_starts_with( $url, '://' ) ) {
+				$url = 'https' . $url;
+			}
 
-		if ( str_starts_with( $url, '://' ) ) {
-			$url = 'https' . $url;
-		}
-
-		if ( !str_starts_with( $url, 'https://' ) ) {
-			$url = 'https://' . $url;
+			if ( !str_starts_with( $url, 'https://' ) ) {
+				$url = 'https://' . $url;
+			}
 		}
 
 		$this->cwdb->insert(
