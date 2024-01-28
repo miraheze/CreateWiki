@@ -147,6 +147,11 @@
 			"public": true,
 			"value": false
 		},
+		"CreateWikiAllowedDomains": {
+			"description": "Array. Domain options to allow. The first value will be the default domain. If used, $wgCreateWikiSubdomain is not.",
+			"public": true,
+			"value": []
+		},
 		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
 			"public": true,
