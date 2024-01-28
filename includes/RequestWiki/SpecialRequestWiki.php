@@ -54,7 +54,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	protected function getFormFields() {
-		if ( $this->config->get( 'CreateWikiAdditionalSubdomains' ) ) {
+		if ( $this->config->get( 'CreateWikiDomainOptions' ) ) {
 			$subdomain = [
 				'subdomain' => [
 					'type' => 'text',
