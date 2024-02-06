@@ -342,7 +342,7 @@ class WikiRequest {
 					'cw_id' => $this->id,
 				],
 				__METHOD__
-			)
+			);
 		}
 
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
