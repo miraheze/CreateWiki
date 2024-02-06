@@ -322,15 +322,27 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 		];
 
-		$this->dbw->upsert(
-			'cw_requests',
-			[
-				'cw_id' => $this->id,
-			] + $rows,
-			'cw_id',
-			$rows,
-			__METHOD__
-		);
+		if ( !$this->id ) {
+			// New wiki request
+			$this->dbw->insert(
+				'cw_requests',
+				[
+					$rows,
+				],
+				__METHOD__
+			);
+		} else {
+			// Updating an existing request
+			$this->dbw->update(
+				'cw_requests',
+				[
+					$rows,
+				],
+				[
+					'cw_id' => $this->id,
+				],
+				__METHOD__
+		}
 
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
