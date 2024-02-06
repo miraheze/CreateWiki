@@ -335,9 +335,7 @@ class WikiRequest {
 			// Updating an existing request
 			$this->dbw->update(
 				'cw_requests',
-				[
-					$rows,
-				],
+				$rows,
 				[
 					'cw_id' => $this->id,
 				],
