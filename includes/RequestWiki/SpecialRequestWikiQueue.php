@@ -52,12 +52,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'type' => 'select',
 				'name' => 'status',
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'options-messages' => [
-					'requestwikiqueue-inreview' => 'inreview',
-					'requestwikiqueue-approved' => 'approved',
-					'requestwikiqueue-declined' => 'declined',
-					'requestwikiqueue-onhold' => 'onhold',
-					'requestwikiqueue-all' => '*',
+				'options' => [
+					'Unreviewed' => 'inreview',
+					'Approved' => 'approved',
+					'Declined' => 'declined',
+					'On hold' => 'onhold',
+					'All' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],

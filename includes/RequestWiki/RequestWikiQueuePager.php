@@ -75,7 +75,7 @@ class RequestWikiQueuePager extends TablePager {
 				$formatted = $row->cw_url;
 				break;
 			case 'cw_status':
-				$formatted = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( "Special:RequestWikiQueue/{$row->cw_id}" ), $this->msg( 'requestwikiqueue-' . $row->cw_status )->text() );
+				$formatted = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( "Special:RequestWikiQueue/{$row->cw_id}" ), $row->cw_status );
 				break;
 			case 'cw_language':
 				$formatted = $row->cw_language;
