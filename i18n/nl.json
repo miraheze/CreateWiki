@@ -3,6 +3,7 @@
 		"authors": [
 			"Mainframe98",
 			"McDutchie",
+			"Mitsjol",
 			"SPQRobin",
 			"Siebrand",
 			"Southparkfan"
@@ -34,7 +35,7 @@
 	"createwiki-label-reason": "Beschrijf de focus of het doel van deze wiki:",
 	"createwiki-label-requester": "Aanvrager:",
 	"createwiki-label-sitename": "Sitenaam:",
-	"createwiki-label-statuschangecomment": "Reden van geven voor deze actie:",
+	"createwiki-label-statuschangecomment": "Reden voor deze actie:",
 	"createwiki-success": "De wiki is aangemaakt.",
 	"echo-category-title-wiki-creation": "Wiki-aanmaak",
 	"echo-category-title-request-comment": "Commentaar aan wiki-aanvraag toegevoegd",
