@@ -337,11 +337,6 @@
 			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not.",
 			"public": true,
 			"value": false
-		},
-		"RequestWikiMinimumLength": {
-			"description": "Int. Minimum length of wiki requests.",
-			"public": true,
-			"value": false
 		}
 	},
 	"ConfigRegistry": {
