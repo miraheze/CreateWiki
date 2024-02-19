@@ -87,6 +87,7 @@
 	"requestwikiqueue-declined": "Declined",
 	"requestwikiqueue-edit": "Edit request",
 	"requestwikiqueue-handle": "Handle request",
+	"requestwikiqueue-info": "You can use this form to search for wiki requests and sort by status.",
 	"requestwikiqueue-inreview": "In review",
 	"requestwikiqueue-onhold": "On hold",
 	"requestwikiqueue-pager-status-approved": "approved",
@@ -110,6 +111,7 @@
 	"requestwikiqueue-request-label-visibility-delete": "Users with 'delete' permissions can view",
 	"requestwikiqueue-request-label-visibility-hide": "Users with 'createwiki' permissions can view",
 	"requestwikiqueue-request-label-visibility-oversight": "Users with 'suppressrevision' permissions can view",
+	"requestwikiqueue-search-header": "Search wiki requests",
 	"right-requestwiki": "Request wikis",
 	"right-createwiki": "Create wikis"
 }
