@@ -108,8 +108,8 @@
 	"requestwikiqueue-request-label-visibility": "Đánh dấu khả năng hiển thị của yêu cầu này là...",
 	"requestwikiqueue-request-label-visibility-all": "Mọi người có quyền 'đọc' đều có thể xem yêu cầu này",
 	"requestwikiqueue-request-label-visibility-delete": "Mọi người có quyền 'xóa' đều có thể xem yêu cầu này",
-	"requestwikiqueue-request-label-visibility-hide": "Mọi người có quyền 'tạo wiki' đều có thể xem yêu cầu này",
-	"requestwikiqueue-request-label-visibility-oversight": "Bất cứ ai có quyền 'suppressrevision' có thể xem yêu cầu này",
+	"requestwikiqueue-request-label-visibility-hide": "Thành viên có quyền 'tạo wiki' đều có thể xem yêu cầu này",
+	"requestwikiqueue-request-label-visibility-oversight": "Thành viên có quyền 'giám sát phiên bản' có thể xem yêu cầu này",
 	"right-requestwiki": "Yêu cầu wiki",
-	"right-createwiki": "Tạo wiki mới trong nông trại wiki"
+	"right-createwiki": "Tạo wiki mới"
 }

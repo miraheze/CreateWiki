@@ -17,6 +17,7 @@
 	"createwiki-error-notalnum": "Le subdominio eligite contine characteres non alphanumeric. Per favor tenta lo de novo.",
 	"createwiki-error-notlowercase": "Le subdominio non pote continer majusculas. Per favor tenta lo de novo.",
 	"createwiki-error-notsuffixed": "Le nomine del base de datos non fini con un suffixo valide (p.ex. 'wiki').",
+	"createwiki-error-subdomaintaken": "Le subdominio que tu ha requestate es ja prendite. Pote esser que existe ja un wiki que tracta tu thema; si tal es le caso, contribue a iste wiki in loco de crear le tue (wikis sur le mesme thema es prohibite e delite si tosto que detegite). Elige un altere subdominio e tenta lo de novo.",
 	"createwiki-help-reason": "Scribe un summario describente breve- e clarmente le thema, portata e objectivo del wiki que tu requesta.",
 	"createwiki-label-category": "Categoria:",
 	"createwiki-label-dbname": "Nomine del base de datos:",
