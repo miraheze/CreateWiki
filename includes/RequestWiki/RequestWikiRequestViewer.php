@@ -208,6 +208,21 @@ class RequestWikiRequestViewer {
 			];
 		}
 
+		return $formDescriptor;
+	}
+
+	public function getStatusDescriptor(
+		WikiRequest $request,
+		IContextSource $context
+	) {
+
+		// Gets user from request
+		$userR = $context->getUser();
+
+		// if request isn't found, it doesn't exist
+		// but if we can't view the request, it also doesn't exist
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() ) {
 			$visibilityOptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
@@ -230,7 +245,7 @@ class RequestWikiRequestViewer {
 				$context->getOutput()->addHTML( Html::errorBox( $wmError ) );
 			}
 
-			$formDescriptor += [
+			$statusDescriptor += [
 				'info-submission' => [
 					'type' => 'info',
 					'default' => wfMessage( 'requestwikiqueue-request-info-submission' )->text(),
@@ -277,24 +292,55 @@ class RequestWikiRequestViewer {
 			];
 
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
-				$formDescriptor['reason']['type'] = 'selectorother';
-				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
+				$statusDescriptor['reason']['type'] = 'selectorother';
+				$statusDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
 
-				$formDescriptor['reason']['default'] = HTMLFormField::flattenOptions(
+				$statusDescriptor['reason']['default'] = HTMLFormField::flattenOptions(
 					$this->config->get( 'CreateWikiCannedResponses' )
 				)[0];
 			} else {
-				$formDescriptor['reason']['type'] = 'textarea';
-				$formDescriptor['reason']['rows'] = 4;
+				$statusDescriptor['reason']['type'] = 'textarea';
+				$statusDescriptor['reason']['rows'] = 4;
 			}
 
 			if ( $wmError ) {
 				// We don't want to be able to approve it if the database is not valid
-				unset( $formDescriptor['submission-action']['options-messages']['requestwikiqueue-approve'] );
+				unset( $statusDescriptor['submission-action']['options-messages']['requestwikiqueue-approve'] );
+			}
+		} elseif ( $userR->getId() == $request->requester->getId() ) {
+			if ( $request->getStatus() == 'approve' ) {
+				$statusDescriptor += [
+					'info' => [
+						'type' => 'info',
+						'default' => wfMessage( 'requestwikiqueue-status-approved' )->text(),
+					],
+				];
+			} elseif ( $request->getStatus() = 'declined' ) {
+				$statusDescriptor += [
+					'info' => [
+						'type' => 'info',
+						'default' => wfMessage( 'requestwikiqueue-status-approved' )->text(),
+					],
+				];
+			} elseif ( $request->getStatus() = 'onhold' ) {
+				$statusDescriptor += [
+					'info' => [
+						'type' => 'info',
+						'default' => wfMessage( 'requestwikiqueue-status-approved' )->text(),
+					],
+				];
+			} else {
+				$statusDescriptor += [
+					'info' => [
+						'type' => 'info',
+						'default' => wfMessage( 'unknown' )->text(),
+					],
+				];
 			}
 		}
+	
 
-		return $formDescriptor;
+		return $statusDescriptor;
 	}
 
 	/**
@@ -321,6 +367,16 @@ class RequestWikiRequestViewer {
 
 			return;
 		}
+
+		$statusDescriptor = $this->getStatusDescriptor( $request, $context );
+
+		$htmlStatusForm = new HTMLForm::factory( $statusDescriptor, $context, 'requestwikiqueue' );
+
+		$statusForm = HTMLForm::factory( 'ooui', $statusDescriptor, $this->getContext() );
+		$statusForm->setWrapperLegendMsg( 'managewiki-core-header' );
+		$statusForm->setMethod( 'post' )
+			->prepareForm()
+			->show();
 
 		$formDescriptor = $this->getFormDescriptor( $request, $context );
 
