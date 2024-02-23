@@ -200,7 +200,7 @@ class CreateWikiJson {
 	 * The method also triggers the CreateWikiJsonGenerateDatabaseList hook that
 	 * allows extensions to modify the data before it is written to a file.
 	 */
-	private function generateDatabaseList() {		
+	private function generateDatabaseList() {
 		$this->dbr->selectDomain( $this->config->get( 'CreateWikiDatabase' ) );
 
 		$databaseLists = [];
