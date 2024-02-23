@@ -17,7 +17,7 @@ jobs:
             php: 8.1
             php-docker: 81
             composer-test: true
-            experimental: false
+            experimental: true
 
           # Latest MediaWiki release branch - PHP 8.1
           - mw: 'REL1_41'
