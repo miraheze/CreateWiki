@@ -202,7 +202,7 @@ class CreateWikiJson {
 	 */
 	private function generateDatabaseList() {
 		$this->dbr = wfInitDBConnection();
-		$this->dbr->selectDomain( 'wikidb' );
+		$this->dbr->selectDomain( $this->config->get( 'CreateWikiDatabase' ) );
 
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
