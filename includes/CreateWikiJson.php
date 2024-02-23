@@ -8,7 +8,7 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use UnexpectedValueException;
-use Wikimedia\AtEase\AtEase;
+// use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\DBConnRef;
 
 class CreateWikiJson {
@@ -106,14 +106,14 @@ class CreateWikiJson {
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
 
-		AtEase::suppressWarnings();
+		// AtEase::suppressWarnings();
 		$databaseFile = file_get_contents( $this->cacheDir . '/databases.json' );
 		$this->databaseArray = json_decode( $databaseFile, true );
 		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
 		$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $wiki . '.json' );
 		$this->wikiArray = json_decode( $wikiDatabaseFile, true );
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
-		AtEase::restoreWarnings();
+		// AtEase::restoreWarnings();
 
 		if ( !$this->databaseTimestamp ) {
 			$this->resetDatabaseList();
