@@ -201,8 +201,8 @@ class CreateWikiJson {
 	 * allows extensions to modify the data before it is written to a file.
 	 */
 	private function generateDatabaseList() {
-		$db = wfInitDBConnection();
-		$db->selectDomain( 'wikidb' );
+		$this->dbr = wfInitDBConnection();
+		$this->dbr->selectDomain( 'wikidb' );
 
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
