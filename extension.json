@@ -163,7 +163,7 @@
 			"value": ""
 		},
 		"CreateWikiCacheType": {
-			"description": "Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType",
+			"description": "Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
 			"public": true,
 			"value": false
 		},
