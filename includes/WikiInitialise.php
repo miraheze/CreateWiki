@@ -22,7 +22,7 @@ class WikiInitialise {
 	}
 
 	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch, array $realms = [] ) {
-		$this->cacheDir = $cacheDir;
+		$this->cacheDir = MW_INSTALL_PATH . '/cache';
 		$this->config->suffixes = $suffixes;
 		$this->hostname = $_SERVER['HTTP_HOST'] ?? 'undefined';
 		$this->realms = $realms;
@@ -77,9 +77,9 @@ class WikiInitialise {
 		}
 
 		// We need the CLI to be able to access 'deleted' wikis
-		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
+		// if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
-		}
+		// }
 
 		// Now let's formalise our database list to the world
 		$this->config->settings['wgLocalDatabases']['default'] = $this->config->wikis;
