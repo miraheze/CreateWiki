@@ -38,7 +38,10 @@ class RemoteWiki {
 
 		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getConnection( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+
+		$this->dbw = wfInitDBConnection();
+		$this->dbw->selectDomain( 'wikidb' );
 
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
