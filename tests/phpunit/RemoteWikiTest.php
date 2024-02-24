@@ -7,7 +7,7 @@ use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
-use SiteConfiguration;
+use WikiInitialise;
 use Wikimedia\Rdbms\DBQueryError;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -25,10 +25,35 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$conf = new SiteConfiguration();
-		$conf->suffixes = [ 'test' ];
+		$wi = new WikiInitialise();
+		$wi->setVariables(
+			MW_INSTALL_PATH . '/cache',
+			[
+				'test'
+			],
+			[
+				'127.0.0.1' => 'test'
+			]
+		);
 
-		$this->setMwGlobals( 'wgConf', $conf );
+		$wi->config->settings += [
+			'cwClosed' => [
+				'default' => false,
+			],
+			'cwInactive' => [
+				'default' => false,
+			],
+			'cwPrivate' => [
+				'default' => false,
+			],
+			'cwExperimental' => [
+				'default' => false,
+			],
+		];
+		$wi->readCache();
+		$wi->config->extractAllGlobals( $wi->dbname );
+
+		$this->setMwGlobals( 'wgConf', $wi->config );
 		$this->setMwGlobals( 'wgCreateWikiUseClosedWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
@@ -63,17 +88,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		} catch ( DBQueryError $e ) {
 			// Do nothing
 		}
-
-		$wi = new WikiInitialise();
-		$wi->setVariables(
-			MW_INSTALL_PATH . '/cache',
-			[
-				'test'
-			],
-			[
-				'127.0.0.1' => 'test'
-			]
-		);
 
 		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $GLOBALS['wgDBserver'],
