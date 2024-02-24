@@ -29,6 +29,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
+		$this->setMwGlobals( 'wgCreateWikiCacheDirectory', MW_INSTALL_PATH . '/cache' );
 
 		try {
 			$dbw = MediaWikiServices::getInstance()
