@@ -29,7 +29,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
-		$this->setMwGlobals( 'wgCreateWikiCacheDirectory', MW_INSTALL_PATH . '/cache' );
 
 		try {
 			$dbw = MediaWikiServices::getInstance()
@@ -137,6 +136,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::markInactive
 	 */
 	public function testMarkInactive() {
+		global $wgLocalDatabases;
+		var_dump( $wgLocalDatabases );
 		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertFalse( (bool)$remoteWiki->isInactive() );
