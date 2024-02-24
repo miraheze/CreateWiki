@@ -11,6 +11,10 @@ use SiteConfiguration;
 use Wikimedia\Rdbms\DBQueryError;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
+define( 'CW_DB', 'wikidb' );
+
+require_once "$IP/extensions/CreateWiki/includes/WikiInitialise.php";
+
 /**
  * @group CreateWiki
  * @group Database
@@ -59,6 +63,17 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		} catch ( DBQueryError $e ) {
 			// Do nothing
 		}
+
+		$wi = new WikiInitialise();
+		$wi->setVariables(
+			MW_INSTALL_PATH . '/cache',
+			[
+				'test'
+			],
+			[
+				'127.0.0.1' => 'test'
+			]
+		);
 
 		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $GLOBALS['wgDBserver'],
