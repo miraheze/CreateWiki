@@ -101,7 +101,7 @@ class CreateWikiJson {
 
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 		$this->cache = ObjectCache::getLocalClusterInstance();
-		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' ) ?: MW_INSTALL_PATH . '/cache';
 		$this->wiki = $wiki;
 
 		AtEase::suppressWarnings();
