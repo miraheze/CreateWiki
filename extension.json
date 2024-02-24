@@ -162,6 +162,11 @@
 			"public": true,
 			"value": ""
 		},
+		"CreateWikiCacheType": {
+			"description": "Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiCannedResponses": {
 			"description": "Boolean. Array of default responses to give. If this is enabled, free-text options are removed.",
 			"public": true,
