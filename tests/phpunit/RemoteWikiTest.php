@@ -170,7 +170,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::markInactive
 	 */
 	public function testMarkInactive() {
-		$this->createWiki( 'remotewikitest' );
 		global $wgLocalDatabases;
 		var_dump( $wgLocalDatabases );
 		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
