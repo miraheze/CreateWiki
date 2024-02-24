@@ -2,15 +2,6 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
-use MediaWiki\MediaWikiServices;
-use MediaWikiIntegrationTestCase;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RemoteWiki;
-use Miraheze\CreateWiki\WikiManager;
-use WikiInitialise;
-use Wikimedia\Rdbms\DBQueryError;
-use Wikimedia\Timestamp\ConvertibleTimestamp;
-
 define( 'CW_DB', 'wikidb' );
 
 $IP = getenv( 'MW_INSTALL_PATH' );
@@ -19,6 +10,15 @@ if ( $IP === false ) {
 }
 
 require_once "$IP/extensions/CreateWiki/includes/WikiInitialise.php";
+
+use MediaWiki\MediaWikiServices;
+use MediaWikiIntegrationTestCase;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RemoteWiki;
+use Miraheze\CreateWiki\WikiManager;
+use WikiInitialise;
+use Wikimedia\Rdbms\DBQueryError;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /**
  * @group CreateWiki
@@ -170,6 +170,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::markInactive
 	 */
 	public function testMarkInactive() {
+		$this->createWiki( 'remotewikitest' );
 		global $wgLocalDatabases;
 		var_dump( $wgLocalDatabases );
 		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
