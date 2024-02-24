@@ -41,7 +41,7 @@
 	"requestwiki-label-private": "نجی ویکی (سبھی نہیں پڑھ سکتے؛ خالی رکن یا منتظم حق والے صارف ہی پڑھ سکتے ہیں):",
 	"requestwiki-label-purpose": "اس ویکی کا مقصد ہے۔۔۔",
 	"requestwiki-label-sitename": "ویکی کا نام:",
-	"requestwiki-label-siteurl": "سبڈومین: (subdomain.miraheze.org)",
+	"requestwiki-label-subdomain": "سبڈومین:",
 	"requestwiki-notloggedin": "معذرت، آپ کو ویکی کی درخواست کرنے سے پہلے <span class=\"plainlinks\">[$1 داخل ہونے]</span> کی ضرورت ہے۔",
 	"requestwiki-success": "آپ کی ویکی درخواست ($1) کامیابی کے ساتھ جمع ہو گئی ہے۔ آپ کی درخواست کا جلد از جلد ایک رضاکار ویکی تخلیق کار جائزہ لے گا۔",
 	"requestwiki-unknown": "اس ای ڈی (ID) سے کوئی بھی درخواست موجود نہیں ہے۔",

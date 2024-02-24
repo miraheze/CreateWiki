@@ -39,7 +39,7 @@
 	"requestwiki-label-language": "语言：",
 	"requestwiki-label-private": "私人 Wiki（并非所有人都能看到页面内容）：",
 	"requestwiki-label-sitename": "Wiki 名称：",
-	"requestwiki-label-siteurl": "子域名：",
+	"requestwiki-label-subdomain": "子域名：",
 	"requestwiki-notloggedin": "抱歉，您需要<span class=\"plainlinks\">[$1 登录]</span>之后才能申请新 Wiki。",
 	"requestwiki-submit": "提交",
 	"requestwiki-success": "您的请求（$1）已经成功提交。志愿者们将会尽快处理您的请求。",

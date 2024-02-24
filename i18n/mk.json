@@ -61,7 +61,7 @@
 	"requestwiki-label-private": "Приватно вики (не е секому достапно за читање; само за корисници со право на член или адмиинстратор):",
 	"requestwiki-label-purpose": "Целта на ова вики е...",
 	"requestwiki-label-sitename": "Назив на викито:",
-	"requestwiki-label-siteurl": "Поддомен: (subdomain.$1)",
+	"requestwiki-label-subdomain": "Поддомен:",
 	"requestwiki-notloggedin": "Најавете се за да побарате вики.",
 	"requestwiki-success": "Барањето ($1) е успешно поднесено. Вашето барање ќе биде разгледано од доброволец-викисоздавач во најбрзо време.",
 	"requestwiki-unknown": "Не постои барање со таа назнака",

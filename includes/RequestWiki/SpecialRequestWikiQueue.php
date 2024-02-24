@@ -35,6 +35,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$dbname = $this->getRequest()->getText( 'dbname' );
 
 		$formDescriptor = [
+			'intro' => [
+				'type' => 'info',
+				'default' => $this->msg( 'requestwikiqueue-info' )->text(),
+			],
 			'dbname' => [
 				'type' => 'text',
 				'name' => 'dbname',
@@ -64,6 +68,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
+		$htmlForm->setWrapperLegendMsg( 'requestwikiqueue-search-header' );
 		$htmlForm->setMethod( 'get' )->prepareForm()->displayForm( false );
 
 		$pager = new RequestWikiQueuePager( $this, $requester, $dbname, $status );
@@ -79,6 +84,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
+		$out->addModules( [ 'mediawiki.special.userrights' ] );
 
 		$requestViewer = new RequestWikiRequestViewer( $this->hookRunner );
 		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );

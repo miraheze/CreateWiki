@@ -223,7 +223,7 @@ class WikiManager {
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $siteName,
 				],
 				'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
@@ -257,7 +257,7 @@ class WikiManager {
 		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
 		$unixNow = (int)wfTimestamp( TS_UNIX, $this->dbw->timestamp() );
 
-		$deletedWiki = (bool)$row->wiki_deleted;
+		$deletedWiki = (bool)$row->wiki_deleted && (bool)$row->wiki_deleted_timestamp;
 
 		// Return error if: wiki is not deleted, force is not used & wiki
 		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) ) {

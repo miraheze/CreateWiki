@@ -4,14 +4,15 @@
 		"Southparkfan",
 		"John Lewis",
 		"Paladox",
-		"Universal Omega"
+		"Universal Omega",
+		"Agent Isai"
 	],
 	"url": "https://github.com/miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.39.0"
+		"MediaWiki": ">= 1.40.0"
 	},
 	"AvailableRights": [
 		"createwiki",
@@ -64,10 +65,10 @@
 	},
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
-		"farmer/requestapprove": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
-		"farmer/requestdecline": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
-		"farmer/requestonhold": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
-		"farmer/requestreopen": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+		"farmer/requestapprove": "LogFormatter",
+		"farmer/requestdecline": "LogFormatter",
+		"farmer/requestonhold": "LogFormatter",
+		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
 	},
 	"MessagesDirs": {
@@ -142,12 +143,12 @@
 	},
 	"config": {
 		"CreateWikiAIThreshold": {
-			"description": "Integer. Minimum percentage points for a request to be created when acceptable.",
+			"description": "Integer. Minimum percentage point threshold for a request to be automatically created when acceptable.",
 			"public": true,
 			"value": false
 		},
 		"CreateWikiAutoApprovalFilter": {
-			"description": "Array. Regexes to never auto approve requests if their descriptions match.",
+			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
 			"public": true,
 			"value": []
 		},
@@ -155,6 +156,11 @@
 			"description": "String or array. Regex to match for disallowed subdomains.",
 			"public": true,
 			"value": "/ /"
+		},
+		"CreateWikiCacheDirectory": {
+			"description": "String. The path to store CreateWiki cache files at.",
+			"public": true,
+			"value": ""
 		},
 		"CreateWikiCannedResponses": {
 			"description": "Boolean. Array of default responses to give. If this is enabled, free-text options are removed.",
@@ -165,6 +171,22 @@
 			"description": "Array. An array of categories used for wiki categorisaion.",
 			"public": true,
 			"value": []
+		},
+		"CreateWikiCollation": {
+			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
+			"public": true,
+			"value": ""
+		},
+		"CreateWikiContainers": {
+			"description": "Array. List of local containers to create. Format: <container>: <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MW default containers with most public apart from deleted and temp.",
+			"public": true,
+			"value": {
+				"local-public": "public-private",
+				"local-thumb": "public-private",
+				"local-transcoded": "public-private",
+				"local-temp": "private",
+				"local-deleted": "private"
+			}
 		},
 		"CreateWikiCustomDomainPage": {
 			"description": "String. Page name to link to for more information on custom domains.",
@@ -191,8 +213,48 @@
 			"public": true,
 			"value": "wiki"
 		},
+		"CreateWikiEmailNotifications": {
+			"description": "Boolean. Whether to send emails for new wiki creations.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiEnableManageInactiveWikis": {
+			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiGlobalWiki": {
+			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
+			"public": true,
+			"value": ""
+		},
+		"CreateWikiNotificationEmail": {
+			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications!",
+			"public": true,
+			"value": "root@localhost"
+		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
+			"public": true,
+			"value": ""
+		},
+		"CreateWikiPurposes": {
+			"description": "Array. List of identified purposes to show when requesting a wiki.",
+			"public": true,
+			"value": []
+		},
+		"CreateWikiShowBiographicalOption": {
+			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiSQLfiles": {
+			"description": "Array. All SQLs to be loaded into every wiki by default.",
+			"public": true,
+			"value": []
+		},
+		"CreateWikiSubdomain": {
+			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
 			"public": true,
 			"value": ""
 		},
@@ -205,46 +267,6 @@
 				"removed": 120,
 				"deleted": 7
 			}
-		},
-		"CreateWikiEnableManageInactiveWikis": {
-			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiGlobalWiki": {
-			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
-			"public": true,
-			"value": ""
-		},
-		"CreateWikiEmailNotifications": {
-			"description": "Boolean. Whether to send emails for new wiki creations.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiNotificationEmail": {
-			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications!",
-			"public": true,
-			"value": "root@localhost"
-		},
-		"CreateWikiPurposes": {
-			"description": "Array. List of identified purposes to show when requesting a wiki.",
-			"public": true,
-			"value": []
-		},
-		"CreateWikiSQLfiles": {
-			"description": "Array. All SQLs to be loaded into every wiki by default.",
-			"public": true,
-			"value": []
-		},
-		"CreateWikiShowBiographicalOption": {
-			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiSubdomain": {
-			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
-			"public": true,
-			"value": ""
 		},
 		"CreateWikiUseCategories": {
 			"description": "Boolean. Whether to use categories to categorise wikis.",
@@ -286,29 +308,33 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiContainers": {
-			"description": "Array. List of local containers to create. Format: <container>: <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MW default containers with most public apart from deleted and temp.",
-			"public": true,
-			"value": {
-				"local-public": "public-private",
-				"local-thumb": "public-private",
-				"local-transcoded": "public-private",
-				"local-temp": "private",
-				"local-deleted": "private"
-			}
-		},
-		"CreateWikiCollation": {
-			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
-			"public": true,
-			"value": ""
-		},
-		"CreateWikiCacheDirectory": {
-			"description": "String. The path to store CreateWiki cache files at.",
-			"public": true,
-			"value": ""
-		},
 		"CreateWikiUseExperimental": {
-			"description": "Boolean. Whether to implement front end logic for marking wikis as experimental.",
+			"description": "Boolean. Whether to implement front-end logic for marking wikis as experimental.",
+			"public": true,
+			"value": false
+		},
+		"RequestWiki": {
+			"description": "Boolean. Whether RequestWiki should be enabled or not.",
+			"public": true,
+			"value": true
+		},
+		"RequestWikiConfirmAgreement": {
+			"description": "Boolean. Require users to confirm they will abide by farm policies.",
+			"public": true,
+			"value": false
+		},
+		"RequestWikiConfirmEmail": {
+			"description": "Boolean. Require users to confirm emails before being able to request wikis.",
+			"public": true,
+			"value": true
+		},
+		"RequestWikiMinimumLength": {
+			"description": "Int. Minimum length of wiki requests.",
+			"public": true,
+			"value": false
+		},
+		"RequestWikiUseDescriptions": {
+			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not.",
 			"public": true,
 			"value": false
 		}

@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
+use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -252,7 +253,12 @@ class WikiRequest {
 
 		$logEntry->setParameters(
 			[
-				'4::id' => '#' . $this->id,
+				'4::id' => Message::rawParam(
+					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
+						'#' . $this->id
+					)
+				),
 			]
 		);
 
@@ -316,15 +322,26 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 		];
 
-		$this->dbw->upsert(
-			'cw_requests',
-			[
-				'cw_id' => $this->id,
-			] + $rows,
-			'cw_id',
-			$rows,
-			__METHOD__
-		);
+		if ( !$this->id ) {
+			// New wiki request
+			$this->dbw->insert(
+				'cw_requests',
+				[
+					$rows,
+				],
+				__METHOD__
+			);
+		} else {
+			// Updating an existing request
+			$this->dbw->update(
+				'cw_requests',
+				$rows,
+				[
+					'cw_id' => $this->id,
+				],
+				__METHOD__
+			);
+		}
 
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
@@ -354,18 +371,22 @@ class WikiRequest {
 	 */
 	public function parseSubdomain( string $subdomain, string &$err = '' ) {
 		$subdomain = strtolower( $subdomain );
+		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
+			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
+		}
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
 			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
 			'CreateWikiDisallowedSubdomains'
 		);
 
-		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
-			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
-		}
-
 		// Make the subdomain a dbname
-		if ( !ctype_alnum( $subdomain ) ) {
+		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
+		if ( in_array( $database, $this->config->get( 'LocalDatabases' ) ) ) {
+			$err = 'subdomaintaken';
+
+			return false;
+		} elseif ( !ctype_alnum( $subdomain ) ) {
 			$err = 'notalnum';
 
 			return false;
@@ -380,5 +401,4 @@ class WikiRequest {
 			return true;
 		}
 	}
-
 }

@@ -3,7 +3,9 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use Config;
+use ErrorPageError;
 use Exception;
+use ExtensionRegistry;
 use FormSpecialPage;
 use Html;
 use ManualLogEntry;
@@ -36,11 +38,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( !$request->wasPosted() && $this->config->get( 'CreateWikiCustomDomainPage' ) ) {
-			$customdomainurl = Title::newFromText( $this->config->get( 'CreateWikiCustomDomainPage' ) )->getFullURL();
-
-			$out->addWikiMsg( 'requestwiki-header', $customdomainurl );
+		if ( !$this->getUser()->isEmailConfirmed() && $this->config->get( 'RequestWikiConfirmEmail' ) ) {
+			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
+
+		$out->addModules( [ 'mediawiki.special.userrights' ] );
+		$out->addModuleStyles( 'mediawiki.notification.convertmessagebox.styles' );
+
+		$out->addWikiMsg( 'requestwiki-header' );
 
 		$form = $this->getForm();
 		if ( $form->show() ) {
@@ -51,13 +56,20 @@ class SpecialRequestWiki extends FormSpecialPage {
 	protected function getFormFields() {
 		$formDescriptor = [
 			'subdomain' => [
-				'type' => 'text',
-				'label-message' => [ 'requestwiki-label-siteurl', $this->config->get( 'CreateWikiSubdomain' ) ],
+				'type' => 'textwithbutton',
+				'buttontype' => 'button',
+				'buttonflags' => [],
+				'buttonid' => 'inline-subdomain',
+				'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
+				'label-message' => 'requestwiki-label-subdomain',
+				'placeholder-message' => 'requestwiki-placeholder-subdomain',
+				'help-message' => 'requestwiki-help-subdomain',
 				'required' => true,
 			],
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
+				'help-message' => 'requestwiki-help-sitename',
 				'required' => true,
 			],
 			'language' => [
@@ -80,6 +92,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
+				'help-message' => 'requestwiki-help-private',
 			];
 		}
 
@@ -87,6 +100,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
+				'help-message' => 'requestwiki-help-bio',
 			];
 		}
 
@@ -101,11 +115,33 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 4,
+			'minlength' => $this->config->get( 'RequestWikiMinimumLength' ) ?? false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'validation-callback' => [ $this, 'isValidReason' ],
 		];
+
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->config->get( 'WikiDiscoverUseDescriptions' ) && $this->config->get( 'RequestWikiUseDescriptions' ) ) {
+			$formDescriptor['public-description'] = [
+				'type' => 'textarea',
+				'rows' => 2,
+				'maxlength' => $this->config->get( 'WikiDiscoverDescriptionMaxLength' ) ?? false,
+				'label-message' => 'requestwiki-label-public-description',
+				'help-message' => 'requestwiki-help-public-description',
+				'required' => true,
+				'validation-callback' => [ $this, 'isValidReason' ],
+			];
+		}
+
+		if ( $this->config->get( 'RequestWikiConfirmAgreement' ) ) {
+			$formDescriptor['agreement'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-agreement',
+				'help-message' => 'requestwiki-help-agreement',
+				'required' => true,
+			];
+		}
 
 		return $formDescriptor;
 	}
@@ -119,7 +155,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$status = $request->parseSubdomain( $subdomain, $err );
 		if ( $status === false ) {
 			if ( $err !== '' ) {
-				$out->addHTML( Html::errorBox( $this->msg( 'createwiki-error-' . $err )->parse() ) );
+				$out->addHTML(
+					Html::warningBox(
+						Html::rawElement(
+							'p',
+							[],
+							$this->msg( 'createwiki-error-' . $err )->parse()
+						),
+						'mw-notify-error'
+					)
+				);
 			}
 
 			return false;
@@ -137,7 +182,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 		try {
 			$requestID = $request->save();
 		} catch ( Exception $e ) {
-			$out->addHTML( Html::errorBox( $this->msg( 'requestwiki-error-patient' )->plain() ) );
+			$out->addHTML(
+				Html::warningBox(
+					Html::element(
+						'p',
+						[],
+						$this->msg( 'requestwiki-error-patient' )->plain()
+					),
+					'mw-notify-error'
+				)
+			);
 
 			return false;
 		}
@@ -160,7 +214,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$farmerLogID = $farmerLogEntry->insert();
 		$farmerLogEntry->publish( $farmerLogID );
 
-		$out->addHTML( Html::successBox( $this->msg( 'requestwiki-success', $idlink )->plain() ) );
+		// On successful request, redirect them to their request
+		header( 'Location: ' . FormSpecialPage::getTitleFor( 'RequestWikiQueue' )->getFullURL() . '/' . $requestID );
 
 		return true;
 	}

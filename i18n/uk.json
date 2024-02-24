@@ -71,7 +71,7 @@
 	"requestwiki-label-private": "Приватна вікі (недоступна для публічного перегляду; доступна лише читачам, які належать до груп членів чи адміністраторів):",
 	"requestwiki-label-purpose": "Мета цієї вікі…",
 	"requestwiki-label-sitename": "Назва вікі:",
-	"requestwiki-label-siteurl": "Піддомен: (піддомен.miraheze.org)",
+	"requestwiki-label-subdomain": "Піддомен: (піддомен.miraheze.org)",
 	"requestwiki-notloggedin": "Вибачте, Вам треба <span class=\"plainlinks\">[$1 увійти в систему]</span>, перш ніж надсилати запит на вікі.",
 	"requestwiki-success": "Ваш запит на вікі ($1) успішно надіслано. Ваш запит найближчим часом розгляне хтось із волонтерів-створювачів вікі.",
 	"requestwiki-unknown": "Жодного запиту з цим ідентифікатором не існує.",

@@ -20,7 +20,7 @@
 	"requestwiki": "وکی دی ارداس کرو",
 	"requestwiki-label-language": "زبان:",
 	"requestwiki-label-sitename": "وکی دا ناں:",
-	"requestwiki-label-siteurl": "ذیلی ڈومین:(subdomain.$1)",
+	"requestwiki-label-subdomain": "آپݨی وکی کیتے ذیلی ڈومین چݨو:",
 	"requestwikiqueue-approve": "منظور",
 	"requestwikiqueue-approved": "منظور تھی ڳیا",
 	"requestwikiqueue-decline": "انکار",

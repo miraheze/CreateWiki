@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use DerivativeContext;
+use ErrorPageError;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
@@ -42,7 +43,33 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteLoggedIn() {
+	public function testExecuteLoggedInEmailConfirmed() {
+		$this->setGroupPermissions( 'user', 'requestwiki', true );
+
+		$user = $this->getTestUser()->getUser();
+		$user->setEmail( 'test@example.com' );
+		$user->setEmailAuthenticationTimestamp( wfTimestamp() );
+
+		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
+
+		$specialRequestWiki = TestingAccessWrapper::newFromObject(
+			new SpecialRequestWiki( $hookRunner )
+		);
+
+		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
+
+		$testContext->setUser( $user );
+		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
+
+		$specialRequestWiki->setContext( $testContext );
+
+		$this->assertNull( $specialRequestWiki->execute( '' ) );
+	}
+
+	/**
+	 * @covers ::execute
+	 */
+	public function testExecuteLoggedInEmailNotConfirmed() {
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
@@ -57,8 +84,10 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
 
 		$specialRequestWiki->setContext( $testContext );
+		$this->expectException( ErrorPageError::class );
+		$this->expectExceptionMessageMatches( '/Your email is not confirmed. To request wikis, please \[\[Special:ChangeEmail\|confirm an email\]\] first./' );
 
-		$this->assertNull( $specialRequestWiki->execute( '' ) );
+		$specialRequestWiki->execute( '' );
 	}
 
 	/**

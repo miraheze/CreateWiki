@@ -59,7 +59,7 @@
 	"requestwiki-label-private": "Súkromná wiki (nie je prístupná pre každého; čítať ju môžu len pridelení používatelia alebo používatelia skupiny sysop):",
 	"requestwiki-label-purpose": "Účel tejto wiki je...",
 	"requestwiki-label-sitename": "Názov wiki:",
-	"requestwiki-label-siteurl": "Pod doména: (poddoména.miraheze.org)",
+	"requestwiki-label-subdomain": "Pod doména: (poddoména.miraheze.org)",
 	"requestwiki-notloggedin": "Prepáčte, pred požiadaním wiki sa musíte <span class=\"plainlinks\">[$1 prihlásiť]</span>.",
 	"requestwiki-success": "Vaša žiadosť o wiki ($1) bola úspešne odoslaná. Vašu žiadosť skontroluje dobrovoľný tvorca wiki, hneď ako to bude možné.",
 	"requestwiki-unknown": "Pre toto ID neexistuje žiadna žiadosť.",
