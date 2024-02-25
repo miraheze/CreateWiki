@@ -327,7 +327,7 @@ class CreateWikiJson {
 		}
 
 		$jsonArray = [
-			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
+			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : (int)$this->dbr->timestamp(),
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,
