@@ -135,7 +135,7 @@ class CreateWikiJson {
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-		$this->initTime ??= $this->dbr->timestamp();
+		$this->initTime = (int)$this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
 
@@ -155,7 +155,7 @@ class CreateWikiJson {
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-		$this->initTime ??= $this->dbr->timestamp();
+		$this->initTime = (int)$this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
