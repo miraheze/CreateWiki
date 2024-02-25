@@ -58,7 +58,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$wi->readCache();
 		$wi->config->extractAllGlobals( $wi->dbname );
 
-		$this->setMwGlobals( 'wgConf', $wi->config );
+		// $this->setMwGlobals( 'wgConf', $wi->config );
 		$this->setMwGlobals( 'wgLocalDatabases', [ 'remotewikitest', 'wikidb' ] );
 		$this->setMwGlobals( 'wgCreateWikiUseClosedWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
