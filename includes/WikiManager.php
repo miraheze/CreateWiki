@@ -163,6 +163,7 @@ class WikiManager {
 		}
 
 		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
+		$this->recacheJson();
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $wiki, $requester, $centralAuth ) {
