@@ -223,7 +223,7 @@ class WikiManager {
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $siteName,
 				],
 				'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),

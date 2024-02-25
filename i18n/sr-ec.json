@@ -35,6 +35,8 @@
 	"notification-header-wiki-creation": "Ваш вики <strong>$1</strong> је направљен.",
 	"notification-header-request-declined": "Ваш захтев је одбијен из следећег разлога:",
 	"requestwiki": "Затражи вики",
+	"requestwiki-label-agreement": "Прихватам [[Project:Privacy Policy|политику приватности]] и [[Project:Terms of Service|услове коришћења]] овог сервиса.",
+	"requestwiki-label-public-description": "Опис викија:",
 	"requestwiki-label-sitename": "Како ће се звати овај вики?",
 	"requestwikiqueue-comments": "Коментари захтева",
 	"requestwikiqueue-handle": "Захтев за руковање",

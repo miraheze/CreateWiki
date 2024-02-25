@@ -31,7 +31,7 @@
 	"createwiki-error-notsuffixed": "Il nome non finisce con un suffisso valido (es. 'wiki').",
 	"createwiki-help-reason": "Prego inserisci un sufficiente sommario, descrivendo il soggetto, scopo e ragione della Wiki tu stai richiedendo.",
 	"createwiki-label-category": "Categoria:",
-	"createwiki-label-dbname": "Nome del database:",
+	"createwiki-label-dbname": "Nome database:",
 	"createwiki-label-language": "Lingua:",
 	"createwiki-label-private": "Marcare questo wiki come privato",
 	"createwiki-label-reason": "Descrivi il focus o lo scopo di questo wiki:",

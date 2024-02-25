@@ -89,6 +89,7 @@
 	"requestwikiqueue-declined": "נדחה",
 	"requestwikiqueue-edit": "עריכת בקשה",
 	"requestwikiqueue-handle": "טיפול בבקשה",
+	"requestwikiqueue-info": "באפשרותך להשתמש בטופס הזה כדי לחפש בקשות ויקי ולמיין לפי מצב.",
 	"requestwikiqueue-inreview": "בבדיקה",
 	"requestwikiqueue-onhold": "בהמתנה",
 	"requestwikiqueue-pager-status-approved": "אושר",
@@ -112,6 +113,7 @@
 	"requestwikiqueue-request-label-visibility-delete": "משתמשים עם הרשאת \"delete\" יכולים לצפות",
 	"requestwikiqueue-request-label-visibility-hide": "משתמשים עם הרשאת \"createwiki\" יכולים לצפות",
 	"requestwikiqueue-request-label-visibility-oversight": "משתמשים עם הרשאת \"suppressrevision\" יכולים לצפות",
+	"requestwikiqueue-search-header": "חיפוש בקשות ויקי",
 	"right-requestwiki": "בקשת אתרי ויקי",
 	"right-createwiki": "יצירת אתרי ויקי בחוות הוויקי"
 }
