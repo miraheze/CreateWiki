@@ -152,8 +152,8 @@ class CreateWikiJson {
 	 */
 	public function resetDatabaseList() {
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' )
+			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' );
 
 		$this->initTime ??= $this->dbr->timestamp();
 
@@ -174,16 +174,16 @@ class CreateWikiJson {
 
 		if ( $changes['databases'] ) {
 			$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' )
+				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' );
 
 			$this->generateDatabaseList();
 		}
 
 		if ( $changes['wiki'] ) {
 			$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+				->getMainLB( $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' )
+				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' );
 
 			$this->generateWiki();
 		}
