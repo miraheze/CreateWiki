@@ -103,7 +103,7 @@ class CreateWikiJson {
 		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
 			ObjectCache::getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
 			ObjectCache::getLocalClusterInstance();
-		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' ) ?: MW_INSTALL_PATH . '/cache';
 		$this->wiki = $wiki;
 
 		AtEase::suppressWarnings();
@@ -132,8 +132,8 @@ class CreateWikiJson {
 	 */
 	public function resetWiki() {
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' )
+			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) ?: 'wikidb' );
 
 		$this->initTime ??= $this->dbr->timestamp();
 
