@@ -414,6 +414,7 @@ class RemoteWiki {
 
 			$cWJ->resetDatabaseList();
 			$cWJ->resetWiki();
+			$cWJ->update();
 
 			if ( $this->log === null ) {
 				$this->log = 'settings';
