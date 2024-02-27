@@ -69,6 +69,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$activity->setOption( 'wiki', $dbName );
 		$activity->setOption( 'quiet', true );
+		$activity->setDB( $this->getDB( DB_REPLICA, [], $dbName ) );
 		$ok = $activity->execute();
 
 		$timeStamp = $activity->timestamp;
