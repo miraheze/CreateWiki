@@ -34,7 +34,7 @@ class CheckLastWikiActivity extends Maintenance {
 			);
 			$rebuildRC->setDB( $this->getDB( DB_PRIMARY ) );
 			$rebuildRC->execute();
-			$this->->setDB( $this->getDB( DB_REPLICA ) );
+			$this->setDB( $this->getDB( DB_REPLICA ) );
 			$timestamp = $this->getTimestamp();
 		}
 		$this->timestamp = $timestamp;
