@@ -10,7 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\MainConfigNames;
 
 class ListDatabases extends Maintenance {
 	public function __construct() {
@@ -21,9 +21,7 @@ class ListDatabases extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-
-		foreach ( $config->get( 'LocalDatabases' ) as $db ) {
+		foreach ( $this->getConfig()->get( MainConfigNames::LocalDatabases ) as $db ) {
 			$this->output( "$db\n" );
 		}
 	}
