@@ -67,10 +67,9 @@ class ManageInactiveWikis extends Maintenance {
 			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php'
 		);
 
-		$activity->setOption( 'wiki', $dbName );
-		$activity->setOption( 'quiet', true );
+		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
 		$activity->setDB( $this->getDB( DB_REPLICA, [], $dbName ) );
-		$ok = $activity->execute();
+		$activity->execute();
 
 		$timeStamp = $activity->timestamp;
 
