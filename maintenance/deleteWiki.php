@@ -1,0 +1,43 @@
+<?php
+
+namespace Miraheze\CreateWiki\Maintenance;
+
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+
+require_once "$IP/maintenance/Maintenance.php";
+
+use Maintenance;
+use Miraheze\CreateWiki\WikiManager;
+
+class DeleteWiki extends Maintenance {
+	public function __construct() {
+		parent::__construct();
+
+		$this->addDescription( 'Deletes a single wiki. Does not drop databases.' );
+
+		$this->addOption( 'deletewiki', 'Specify the database name to delete.', false, true );
+		$this->addOption( 'delete', 'Actually performs deletion and not outputs the wiki to be deleted.', false );
+	}
+
+	public function execute() {
+		$dbname = $this->getOption( 'deletewiki' );
+
+		if ( !$dbname ) {
+			$this->fatalError( "Please specify the database to delete using the --deletewiki option.\n" );
+		}
+
+		if ( $this->hasOption( 'delete' ) ) {
+			$wm = new WikiManager( $dbname );
+			$wm->delete( true );
+			$this->output( "Wiki $dbname deleted.\n" );
+		} else {
+			$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
+		}
+	}
+}
+
+$maintClass = DeleteWiki::class;
+require_once RUN_MAINTENANCE_IF_MAIN;
