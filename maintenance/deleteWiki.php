@@ -15,7 +15,9 @@ use Miraheze\CreateWiki\WikiManager;
 class DeleteWiki extends Maintenance {
 	public function __construct() {
 		parent::__construct();
-		$this->mDescription = 'Deletes a single wiki. Does not drop databases';
+
+		$this->addDescription( 'Deletes a single wiki. Does not drop databases.' );
+
 		$this->addOption( 'deletewiki', 'Specify the database name to delete', false, true );
 		$this->addOption( 'delete', 'Actually performs deletions and not outputs the wiki to be deleted', false );
 	}
@@ -23,19 +25,19 @@ class DeleteWiki extends Maintenance {
 	public function execute() {
 		$dbname = $this->getOption( 'deletewiki' );
 
-		if ( empty( $dbname ) ) {
-			$this->output( "Please specify the database to delete using the --deletewiki option.\n" );
-			return;
+		if ( !$dbname ) {
+			$this->fatalError( "Please specify the database to delete using the --deletewiki option.\n" );
 		}
 
 		if ( $this->hasOption( 'delete' ) ) {
 			$wm = new WikiManager( $dbname );
 			$wm->delete( true );
 			$this->output( "Wiki $dbname deleted.\n" );
+		} else {
+			$this->output( "Wiki $dbname would be deleted. Use --delete to actually run deletion. \n" );
 		}
 	}
 }
 
-// Run the maintenance script
 $maintClass = DeleteWiki::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
