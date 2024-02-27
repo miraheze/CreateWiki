@@ -69,7 +69,7 @@ class ManageInactiveWikis extends Maintenance {
 		'@phan-var CheckLastWikiActivity $activity';
 
 		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
-		$activity->setDB( $this->getDB( DB_REPLICA, [], $dbName ) );
+		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbName ) );
 		$activity->execute();
 
 		$timeStamp = $activity->timestamp;
