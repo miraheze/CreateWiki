@@ -10,7 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\CreateWikiJson;
 
 class GenerateMissingCache extends Maintenance {
@@ -22,15 +22,16 @@ class GenerateMissingCache extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-
-		foreach ( $config->get( 'LocalDatabases' ) as $db ) {
-			if ( file_exists( $config->get( 'CreateWikiCacheDirectory' ) . '/' . $db . '.json' ) ) {
+		foreach ( $this->getConfig()->get( MainConfigNames::LocalDatabases ) as $db ) {
+			if ( file_exists( $this->getConfig()->get( 'CreateWikiCacheDirectory' ) . '/' . $db . '.json' ) ) {
 				continue;
 			}
 
-			$cWJ = new CreateWikiJson( $db, $hookRunner );
+			$cWJ = new CreateWikiJson(
+				$db,
+				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+			);
+
 			$cWJ->update();
 
 			$this->output( "Cache generated for {$db}\n" );
