@@ -11,7 +11,6 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use MediaWiki\SiteStats\SiteStats;
-use RebuildRecentchanges;
 
 class CheckLastWikiActivity extends Maintenance {
 
@@ -30,7 +29,7 @@ class CheckLastWikiActivity extends Maintenance {
 			/* $rebuildRC = $maintenance->runChild(
 				RebuildRecentchanges::class,
 				MW_INSTALL_PATH . '/maintenance/rebuildrecentchanges.php'
-			) */;
+			) */
 			// $rebuildRC->execute();
 			$timestamp = $this->getTimestamp();
 		}
