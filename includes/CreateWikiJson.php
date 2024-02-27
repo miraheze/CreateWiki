@@ -135,7 +135,7 @@ class CreateWikiJson {
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-		$this->initTime ??= $this->dbr->timestamp();
+		$this->initTime = (int)$this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
 
@@ -155,7 +155,7 @@ class CreateWikiJson {
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-		$this->initTime ??= $this->dbr->timestamp();
+		$this->initTime = (int)$this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
@@ -327,7 +327,7 @@ class CreateWikiJson {
 		}
 
 		$jsonArray = [
-			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
+			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : (int)$this->dbr->timestamp(),
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,

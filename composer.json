@@ -19,7 +19,7 @@
 		}
 	],
 	"support": {
-		"issues": "https://phabricator.miraheze.org/tag/createwiki/",
+		"issues": "https://issue-tracker.miraheze.org/tag/createwiki/",
 		"wiki": "https://www.mediawiki.org/wiki/Extension:CreateWiki"
 	},
 	"require": {

@@ -10,7 +10,7 @@
 	"action-createwiki": "tạo các wiki",
 	"action-requestwiki": "yêu cầu các wiki",
 	"createwiki": "Tạo một wiki",
-	"createwiki-defaultmainpage": "__NOTOC__\n== Chào mừng bạn đến {{SITENAME}}! ==\nTrang Chính này được tạo tự động và có vẻ như nó chưa được thay thế.\n\n=== Dành cho (các) hành chính viên của wiki này ===\nXin chào và chào mừng bạn đến với wiki mới của bạn! Cảm ơn bạn đã chọn Miraheze làm nơi lưu trữ wiki cho riêng bạn!\n\nBạn có thể bắt đầu làm việc trên wiki của mình ngay lập tức hoặc bất cứ khi nào bạn muốn.\n\nCần giúp đỡ? Chúng tôi sẽ giúp bạn với wiki của bạn khi cần thiết. Để bắt đầu, hãy thử xem các liên kết hữu ích sau:\n\n*[[mw:Special:MyLanguage/Help:Contents|Hướng dẫn MediaWiki]] (e.g. điều hướng, chỉnh sửa, xóa trang, chặn người dùng)\n* [[meta:Special:MyLanguage/FAQ|FAQ]]\n* [[meta:Special:MyLanguage/Request features|Yêu cầu thay đổi tính năng cho wiki]]. (Tiện ích mở rộng, giao diện và logo nên được thay đổi bằng [[Special:ManageWiki]] trên wiki của bạn, xem [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] để biết thêm thông tin.)\n\n==== Tôi vẫn không hiểu! ====\nVâng, không vấn đề gì. Ngay cả khi có điều gì đó không được giải thích trong Tài liệu/Câu hỏi thường gặp, chúng tôi vẫn sẵn lòng trợ giúp bạn. Bạn có thể tìm chúng tôi ở đây:\n* [[meta:Special:MyLanguage/Help center|Trên Meta-Wiki]]\n* Trên [[phab:|Phabricator]]\n* Trên máy chủ [https://miraheze.org/discord Discord]\n* Trên IRC dưới kênh #miraheze trên irc.libera.chat ([irc://irc.libera.chat/%23miraheze link trực tiếp]; [https://web.libera.chat/?channel=#miraheze webchat])\n\n===Dành cho khách truy cập wiki này ===\nXin chào, Trang Chính mặc định của wiki này (trang này) vẫn chưa được thay thế bởi (các) thành viên của wiki này. (Các) quản trị có thể vẫn đang thay đổi Trang Chính, vì vậy vui lòng quay lại sau!",
+	"createwiki-defaultmainpage": "__NOTOC__\n== Chào mừng bạn đến {{SITENAME}}! ==\nTrang Chính này được tạo tự động và có vẻ như nó chưa được thay thế.\n\n=== Dành cho (các) hành chính viên của wiki này ===\nXin chào và chào mừng bạn đến với wiki mới của bạn! Cảm ơn bạn đã chọn Miraheze làm nơi lưu trữ wiki cho riêng bạn!\n\nBạn có thể bắt đầu làm việc trên wiki của mình ngay lập tức hoặc bất cứ khi nào bạn muốn.\n\nCần giúp đỡ? Chúng tôi sẽ giúp bạn với wiki của bạn khi cần thiết. Để bắt đầu, hãy thử xem các liên kết hữu ích sau:\n\n*[[mw:Special:MyLanguage/Help:Contents|Hướng dẫn MediaWiki]] (e.g. điều hướng, chỉnh sửa, xóa trang, chặn người dùng)\n* [[meta:Special:MyLanguage/FAQ|FAQ]]\n* [[meta:Special:MyLanguage/Request features|Yêu cầu thay đổi tính năng cho wiki]]. (Tiện ích mở rộng, giao diện và logo nên được thay đổi bằng [[Special:ManageWiki]] trên wiki của bạn, xem [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] để biết thêm thông tin.)\n\n==== Tôi vẫn không hiểu! ====\nVâng, không vấn đề gì. Ngay cả khi có điều gì đó không được giải thích trong Tài liệu/Câu hỏi thường gặp, chúng tôi vẫn sẵn lòng trợ giúp bạn. Bạn có thể tìm chúng tôi ở đây:\n* [[meta:Special:MyLanguage/Help center|Trên Meta-Wiki]]\n* Trên [[phorge:|Phorge]]\n* Trên máy chủ [https://miraheze.org/discord Discord]\n* Trên IRC dưới kênh #miraheze trên irc.libera.chat ([irc://irc.libera.chat/%23miraheze link trực tiếp]; [https://web.libera.chat/?channel=#miraheze webchat])\n\n===Dành cho khách truy cập wiki này ===\nXin chào, Trang Chính mặc định của wiki này (trang này) vẫn chưa được thay thế bởi (các) thành viên của wiki này. (Các) quản trị có thể vẫn đang thay đổi Trang Chính, vì vậy vui lòng quay lại sau!",
 	"createwiki-defaultmainpage-summary": "Chào mừng đến với Miraheze!",
 	"createwiki-desc": "Một tiện ích để dễ dàng tạo mới những wiki  trên một nông trại wiki.",
 	"createwiki-email-subject": "Wiki Miraheze mới của bạn ($1) đã được tạo",
@@ -87,6 +87,7 @@
 	"requestwikiqueue-declined": "Đã bị từ chối",
 	"requestwikiqueue-edit": "Yêu cầu sửa đổi",
 	"requestwikiqueue-handle": "Xử lý yêu cầu",
+	"requestwikiqueue-info": "Bạn có thể sử dụng biểu mẫu này để tìm kiếm các yêu cầu wiki và sắp xếp theo trạng thái.",
 	"requestwikiqueue-inreview": "Đang xem xét",
 	"requestwikiqueue-onhold": "Đang chờ",
 	"requestwikiqueue-pager-status-approved": "Chấp nhận",
@@ -110,6 +111,7 @@
 	"requestwikiqueue-request-label-visibility-delete": "Mọi người có quyền 'xóa' đều có thể xem yêu cầu này",
 	"requestwikiqueue-request-label-visibility-hide": "Thành viên có quyền 'tạo wiki' đều có thể xem yêu cầu này",
 	"requestwikiqueue-request-label-visibility-oversight": "Thành viên có quyền 'giám sát phiên bản' có thể xem yêu cầu này",
+	"requestwikiqueue-search-header": "Tìm yêu cầu wiki",
 	"right-requestwiki": "Yêu cầu wiki",
 	"right-createwiki": "Tạo wiki mới"
 }
