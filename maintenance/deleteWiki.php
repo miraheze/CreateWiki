@@ -20,6 +20,8 @@ class DeleteWiki extends Maintenance {
 
 		$this->addOption( 'deletewiki', 'Specify the database name to delete.', false, true );
 		$this->addOption( 'delete', 'Actually performs deletion and not outputs the wiki to be deleted.', false );
+
+		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute() {
