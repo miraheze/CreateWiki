@@ -10,7 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
 use Phpml\Classification\SVC;
 use Phpml\FeatureExtraction\StopWords\English;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
@@ -27,8 +26,7 @@ class CreatePersistentModel extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$dbr = $this->getDB( DB_REPLICA, [], $config->get( 'CreateWikiGlobalWiki' ) );
+		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiGlobalWiki' ) );
 
 		$res = $dbr->select(
 			'cw_requests',
@@ -82,10 +80,10 @@ class CreatePersistentModel extends Maintenance {
 
 		$pipeline->train( $comments, $status );
 
-		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
 		if ( !$hookRunner->onCreateWikiWritePersistentModel( serialize( $pipeline ) ) ) {
 			$modelManager = new ModelManager();
-			$modelManager->saveToFile( $pipeline, $config->get( 'CreateWikiPersistentModelFile' ) );
+			$modelManager->saveToFile( $pipeline, $this->getConfig()->get( 'CreateWikiPersistentModelFile' ) );
 		}
 	}
 }
