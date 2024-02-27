@@ -26,7 +26,7 @@ class CheckLastWikiActivity extends Maintenance {
 
 	public function execute() {
 		$timestamp = $this->getTimestamp();
-		if ( $timestamp === 0 && SiteStats::edits() >= 2 ) 
+		if ( $timestamp === 0 && SiteStats::edits() >= 2 ) {
 			$rebuildRC = $this->runChild(
 				RebuildRecentchanges::class,
 				MW_INSTALL_PATH . '/maintenance/rebuildrecentchanges.php'
