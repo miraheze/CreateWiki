@@ -79,10 +79,6 @@ class ManageInactiveWikis extends Maintenance {
 			return true;
 		}
 
-		if ( $timeStamp === 0 ) {
-			$this->output( '(WARNING) RCMAXAGE: ' . $this->getConfig()->get( 'RCMaxAge' ) );
-		}
-
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 			if ( $canWrite && $wiki->isInactive() ) {
