@@ -36,7 +36,9 @@ class CheckLastWikiActivity extends Maintenance {
 		}
 		$this->timestamp = $timestamp;
 
-		$this->output( (string)$this->timestamp );
+		if ( !$this->isQuiet() ) {
+			$this->output( (string)$this->timestamp );
+		}
 	}
 
 	private function getTimestamp(): int {
