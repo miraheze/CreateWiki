@@ -38,10 +38,8 @@ class RenameWiki extends Maintenance {
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$wm = new WikiManager(
-				$oldwiki,
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
-			);
+			$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
+			$wm = new WikiManager( $oldwiki, $hookRunner );
 
 			$rename = $wm->rename( $newwiki );
 
