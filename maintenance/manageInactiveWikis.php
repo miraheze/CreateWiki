@@ -61,6 +61,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$canWrite = $this->hasOption( 'write' );
 
+		/** @var CheckLastWikiActivity $activity */
 		$activity = $this->runChild(
 			CheckLastWikiActivity::class,
 			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php'
@@ -72,8 +73,8 @@ class ManageInactiveWikis extends Maintenance {
 
 		$timeStamp = $activity->timestamp;
 
-		// If for some reason $timeStamp returns a non-zero exit code, bail out.
-		if ( !$ok || !is_numeric( $timeStamp ) ) {
+		// If for some reason $timeStamp returns a non-numeric value, bail out.
+		if ( !is_numeric( $timeStamp ) ) {
 			return true;
 		}
 
