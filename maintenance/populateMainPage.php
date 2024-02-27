@@ -9,8 +9,8 @@ if ( $IP === false ) {
 
 require_once "$IP/maintenance/Maintenance.php";
 
-use CommentStoreComment;
 use Maintenance;
+use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Title\Title;
