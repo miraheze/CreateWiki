@@ -18,8 +18,8 @@ class DeleteWiki extends Maintenance {
 
 		$this->addDescription( 'Deletes a single wiki. Does not drop databases.' );
 
-		$this->addOption( 'deletewiki', 'Specify the database name to delete', false, true );
-		$this->addOption( 'delete', 'Actually performs deletions and not outputs the wiki to be deleted', false );
+		$this->addOption( 'deletewiki', 'Specify the database name to delete.', false, true );
+		$this->addOption( 'delete', 'Actually performs deletion and not outputs the wiki to be deleted.', false );
 	}
 
 	public function execute() {
@@ -34,7 +34,7 @@ class DeleteWiki extends Maintenance {
 			$wm->delete( true );
 			$this->output( "Wiki $dbname deleted.\n" );
 		} else {
-			$this->output( "Wiki $dbname would be deleted. Use --delete to actually run deletion. \n" );
+			$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
 		}
 	}
 }
