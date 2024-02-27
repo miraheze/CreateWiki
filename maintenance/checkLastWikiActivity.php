@@ -12,6 +12,9 @@ require_once "$IP/maintenance/Maintenance.php";
 use Maintenance;
 
 class CheckLastWikiActivity extends Maintenance {
+
+	public $timestamp;
+
 	public function __construct() {
 		parent::__construct();
 
@@ -35,9 +38,10 @@ class CheckLastWikiActivity extends Maintenance {
 			]
 		);
 
-		$timeStamp = $row ? $row->rc_timestamp : 0;
+		$timestamp = $row ? $row->rc_timestamp : 0;
+		$this->timestamp = $timestamp;
 
-		$this->output( (string)$timeStamp );
+		$this->output( (string)$timestamp );
 	}
 }
 
