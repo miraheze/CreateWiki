@@ -28,7 +28,11 @@ class SetContainersAccess extends Maintenance {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
-		$wiki = new RemoteWiki( $this->getConfig()->get( MainConfigNames::DBname ) );
+		$wiki = new RemoteWiki(
+			$this->getConfig()->get( MainConfigNames::DBname ),
+			$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+		);
+
 		$isPrivate = $wiki->isPrivate();
 
 		foreach ( $this->getConfig()->get( 'CreateWikiContainers' ) as $zone => $status ) {
