@@ -28,11 +28,14 @@ class DeleteWiki extends Maintenance {
 		$dbname = $this->getOption( 'deletewiki' );
 
 		if ( !$dbname ) {
-			$this->fatalError( "Please specify the database to delete using the --deletewiki option.\n" );
+			$this->fatalError( 'Please specify the database to delete using the --deletewiki option.' );
 		}
 
 		if ( $this->hasOption( 'delete' ) ) {
-			$wm = new WikiManager( $dbname );
+			$wm = new WikiManager(
+				$dbname,
+				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+			);
 			$wm->delete( true );
 			$this->output( "Wiki $dbname deleted.\n" );
 		} else {

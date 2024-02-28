@@ -10,8 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
-use MediaWiki\Shell\Shell;
 use Miraheze\CreateWiki\RemoteWiki;
 
 class ManageInactiveWikis extends Maintenance {
@@ -25,17 +23,15 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-
-		if ( !$config->get( 'CreateWikiEnableManageInactiveWikis' ) ) {
+		if ( !$this->getConfig()->get( 'CreateWikiEnableManageInactiveWikis' ) ) {
 			$this->fatalError(
 				'This script can not be run because it has not yet been enabled. You may enable $wgCreateWikiEnableManageInactiveWikis in order to run this script.'
 			);
 		}
 
-		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
 
-		$dbr = $this->getDB( DB_REPLICA, [], $config->get( 'CreateWikiDatabase' ) );
+		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbr->select(
 			'cw_wikis',
@@ -50,42 +46,38 @@ class ManageInactiveWikis extends Maintenance {
 		foreach ( $res as $row ) {
 			$dbName = $row->wiki_dbname;
 			$wiki = new RemoteWiki( $dbName, $hookRunner );
-			$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
+			$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
-				$this->checkLastActivity( $dbName, $wiki, $config );
+				$this->checkLastActivity( $dbName, $wiki );
 			}
 		}
 	}
 
-	public function checkLastActivity( $dbName, $wiki, $config ) {
-		$inactiveDays = (int)$config->get( 'CreateWikiStateDays' )['inactive'];
-		$closeDays = (int)$config->get( 'CreateWikiStateDays' )['closed'];
-		$removeDays = (int)$config->get( 'CreateWikiStateDays' )['removed'];
+	private function checkLastActivity( $dbName, $wiki ) {
+		$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
+		$closeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['closed'];
+		$removeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['removed'];
 
 		$canWrite = $this->hasOption( 'write' );
 
-		$scriptOptions = [];
-		if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
-			$scriptOptions = [ 'wrapper' => MW_INSTALL_PATH . '/maintenance/run.php' ];
-		}
+		/** @var CheckLastWikiActivity $activity */
+		$activity = $this->runChild(
+			CheckLastWikiActivity::class,
+			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php'
+		);
+		'@phan-var CheckLastWikiActivity $activity';
 
-		$timeStamp = Shell::makeScriptCommand(
-			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php',
-			[
-				'--wiki', $dbName
-			],
-			$scriptOptions
-		)
-			->limits( [ 'filesize' => 0, 'memory' => 0, 'time' => 0, 'walltime' => 0 ] )
-			->execute();
+		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
+		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbName ) );
+		$activity->execute();
 
-		// If for some reason $timeStamp returns a non-zero exit code, bail out.
-		if ( $timeStamp->getExitCode() !== 0 || !is_numeric( $timeStamp->getStdout() ) ) {
+		$timeStamp = $activity->timestamp;
+
+		// If for some reason $timeStamp returns a non-numeric value, bail out.
+		if ( !is_numeric( $timeStamp ) ) {
 			return true;
 		}
-
-		$timeStamp = $timeStamp->getStdout();
 
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
@@ -181,7 +173,7 @@ class ManageInactiveWikis extends Maintenance {
 			],
 		];
 
-		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
 			->notifyBureaucrats( $notificationData, $wiki );
 	}
 }

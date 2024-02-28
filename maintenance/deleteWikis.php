@@ -10,7 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\WikiManager;
 
 class DeleteWikis extends Maintenance {
@@ -26,9 +25,7 @@ class DeleteWikis extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$dbr = $this->getDB( DB_REPLICA, [], $config->get( 'CreateWikiDatabase' ) );
-		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbr->select(
 			'cw_wikis',
@@ -47,7 +44,10 @@ class DeleteWikis extends Maintenance {
 
 			if ( $this->hasOption( 'delete' ) ) {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$wm = new WikiManager( $wiki, $hookRunner );
+				$wm = new WikiManager(
+					$wiki,
+					$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+				);
 
 				$delete = $wm->delete();
 
@@ -74,7 +74,7 @@ class DeleteWikis extends Maintenance {
 			'body' => "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$user} has deleted the following wikis from the CreateWiki and associated extensions:\n{$deletedWikis}",
 		];
 
-		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
 			->sendNotification( $notificationData );
 	}
 }

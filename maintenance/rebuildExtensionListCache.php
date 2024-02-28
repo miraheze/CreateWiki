@@ -11,7 +11,7 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use ExtensionProcessor;
 use Maintenance;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\MainConfigNames;
 
 class RebuildExtensionListCache extends Maintenance {
 	public function __construct() {
@@ -24,11 +24,9 @@ class RebuildExtensionListCache extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-
 		$queue = array_fill_keys( array_merge(
-				glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
-				glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
+				glob( $this->getConfig()->get( MainConfigNames::ExtensionDirectory ) . '/*/extension*.json' ),
+				glob( $this->getConfig()->get( MainConfigNames::StyleDirectory ) . '/*/skin.json' )
 			),
 		true );
 
@@ -46,7 +44,7 @@ class RebuildExtensionListCache extends Maintenance {
 
 		$list = array_column( $data['credits'], 'path', 'name' );
 
-		$cacheDir = $this->getOption( 'cachedir', $config->get( 'CreateWikiCacheDirectory' ) );
+		$cacheDir = $this->getOption( 'cachedir', $this->getConfig()->get( 'CreateWikiCacheDirectory' ) );
 		file_put_contents( "{$cacheDir}/extension-list.json", json_encode( $list ), LOCK_EX );
 	}
 }

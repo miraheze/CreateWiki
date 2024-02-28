@@ -10,7 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\WikiManager;
 
 class RenameWiki extends Maintenance {
@@ -28,7 +27,6 @@ class RenameWiki extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$oldwiki = $this->getArg( 0 );
 		$newwiki = $this->getArg( 1 );
 
@@ -40,18 +38,16 @@ class RenameWiki extends Maintenance {
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+			$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
 			$wm = new WikiManager( $oldwiki, $hookRunner );
 
 			$rename = $wm->rename( $newwiki );
 
 			if ( $rename ) {
-				$this->output( "{$rename}" );
-
-				return;
+				$this->fatalError( $rename );
 			}
 
-			$dbw = $this->getDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
+			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
@@ -73,7 +69,7 @@ class RenameWiki extends Maintenance {
 				'body' => "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$user} has renamed the following wiki from CreateWiki and associated extensions - From {$wikiRename}.",
 			];
 
-			MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
+			$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
 				->sendNotification( $notificationData );
 		}
 	}
