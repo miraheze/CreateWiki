@@ -253,6 +253,10 @@ class WikiManager {
 			]
 		);
 
+		if ( !$row ) {
+			throw new FatalError( "Wiki '{$wiki}' does not exist!" );
+		}
+
 		$deletionDate = $row->wiki_deleted_timestamp;
 		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
 		$unixNow = (int)wfTimestamp( TS_UNIX, $this->dbw->timestamp() );
@@ -261,7 +265,7 @@ class WikiManager {
 
 		// Return error if: wiki is not deleted, force is not used & wiki
 		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) ) {
-			return "Wiki {$wiki} can not be deleted yet.";
+			throw new FatalError( "Wiki '{$wiki}' cannot be deleted yet." );
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
