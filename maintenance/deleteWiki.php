@@ -40,7 +40,7 @@ class DeleteWiki extends Maintenance {
 			$delete = $wm->delete( true );
 
 			if ( $delete ) {
-				$this->fatalError( "{$dbname}: {$delete}\n" );
+				$this->fatalError( $delete );
 			}
 
 			$this->output( "Wiki $dbname deleted.\n" );
