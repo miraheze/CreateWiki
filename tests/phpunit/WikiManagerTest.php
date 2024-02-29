@@ -155,7 +155,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 
-		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
+		$this->expectException( FatalError::class );
 		$this->assertTrue( $this->wikiExists( 'deletewikitest' ) );
 
 		$remoteWiki->undelete();
@@ -167,7 +167,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testDeleteEligible() {
 		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
-		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
+		$this->expectException( FatalError::class );
 
 		$remoteWiki = new RemoteWiki( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 		$remoteWiki->delete();
