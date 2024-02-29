@@ -14,9 +14,9 @@
 			"铁桶"
 		]
 	},
-	"action-createwiki": "建立wiki",
-	"action-requestwiki": "申請wiki",
-	"createwiki": "建立wiki",
+	"action-createwiki": "建立 wiki",
+	"action-requestwiki": "申請 wiki",
+	"createwiki": "建立 wiki",
 	"createwiki-defaultmainpage": "__NOTOC__\n== 歡迎來到 {{SITENAME}}！ ==\n此首頁是自動建立的，內容尚未被替換。\n\n=== 如果您是此 wiki 的行政員 ===\n您好，歡迎來到您的新 wiki！感謝您選擇 Miraheze 來託管您的 wiki 平台，我們真誠地希望您能夠享受我們的服務。\n\n您可以立刻或隨時開始在您的 wiki 上作業。\n\n有需要幫助的地方？沒問題！如有需要，我們樂於效勞。另外在開始之前，您可以先查看以下有幫助的連結：\n* [[mw:Special:MyLanguage/Help:Contents|MediaWiki 手冊]]（例如瀏覽、編輯、刪除頁面、封鎖使用者等）\n* [[meta:Special:MyLanguage/FAQ|Miraheze 常見問題]]\n* [[meta:Special:MyLanguage/Request features|請求在您的 wiki 上設定變更。]]（加入擴充套件、變更外觀、修改標誌/網頁圖示可透過您 wiki 上的 [[Special:ManageWiki]] 來完成，見[[meta:Special:MyLanguage/ManageWiki|管理此wiki的設定]]了解更多資訊。）\n\n==== 有些地方我仍然不懂！ ====\n那也沒關係，即使文件或常見問題上面沒寫，我們也願意提供幫助。您可以透過以下方式聯絡我們：\n* [[meta:Special:MyLanguage/Help center|我們的 Miraheze wiki]]\n* 在 [[phorge:|Phorge]]\n* 在 [https://miraheze.org/discord Discord]\n* 在 irc.libera.chat 裡的 IRC 頻道 #miraheze（[irc://irc.libera.chat/%23miraheze 直接連結]、[https://web.libera.chat/?channel=#miraheze 網路聊天]）\n\n=== 如果您是訪客 ===\n您好，此 wiki 的預設頁面（此頁面）目前尚未被此 wiki 行政員修改。他們可能正在努力製作首頁，所以請您稍後再來！",
 	"createwiki-defaultmainpage-summary": "歡迎來到 Miraheze！",
 	"createwiki-desc": "可以在wiki農場上輕鬆建立新wiki的擴充功能。",

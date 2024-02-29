@@ -5,6 +5,7 @@
 			"A2y4",
 			"Aefgh39622",
 			"Buehl",
+			"Chqaz",
 			"Funa-enpitu",
 			"HappyLeLeBoss",
 			"IAX86",
@@ -128,6 +129,7 @@
 	"requestwikiqueue-request-label-visibility-delete": "'delete'権限をもつ利用者が閲覧できるようにする",
 	"requestwikiqueue-request-label-visibility-hide": "'createwiki'権限をもつ利用者が閲覧できるようにする",
 	"requestwikiqueue-request-label-visibility-oversight": "'suppressrevision'権限をもつ利用者が閲覧できるようにする",
+	"requestwikiqueue-search-header": "ウィキリクエストの検索",
 	"right-requestwiki": "ウィキを申請",
 	"right-createwiki": "ウィキを作成"
 }
