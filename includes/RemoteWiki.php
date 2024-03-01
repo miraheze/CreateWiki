@@ -2,8 +2,10 @@
 
 namespace Miraheze\CreateWiki;
 
+use MediaWiki\Config\ConfigFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Wikimedia\Rdbms\ILBFactory;
 
 class RemoteWiki {
 	public $changes = [];
@@ -32,14 +34,20 @@ class RemoteWiki {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
+	public function __construct(
+		ConfigFactory $configFactory,
+		CreateWikiHookRunner $hookRunner,
+		ILBFactory $dbLoadBalancerFactory
+	) {
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+
 		$this->hookRunner = $hookRunner;
 
-		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
+		$this->dbw = $dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
+	}
 
+	public function newFromWiki( string $wiki ) {
 		$wikiRow = $this->dbw->selectRow(
 			'cw_wikis',
 			'*',
