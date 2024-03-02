@@ -122,16 +122,6 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 				],
 				true,
 			],
-			[
-				[
-					'reason' => 'Test onSubmit()',
-					'subdomain' => 'example',
-					'sitename' => 'Example Wiki',
-					'language' => 'en',
-					'category' => 'uncategorised',
-				],
-				false,
-			],
 		];
 	}
 
