@@ -36,7 +36,13 @@ class DeleteWiki extends Maintenance {
 				$dbname,
 				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
 			);
-			$wm->delete( true );
+
+			$delete = $wm->delete( true );
+
+			if ( $delete ) {
+				$this->fatalError( $delete );
+			}
+
 			$this->output( "Wiki $dbname deleted.\n" );
 		} else {
 			$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
