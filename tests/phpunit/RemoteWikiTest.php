@@ -30,36 +30,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
 
-		try {
-			$dbw = MediaWikiServices::getInstance()
-				->getDBLoadBalancer()
-				->getMaintenanceConnectionRef( DB_PRIMARY );
-
-			$dbw->insert(
-				'cw_wikis',
-				[
-					'wiki_dbname' => 'wikidb',
-					'wiki_dbcluster' => 'c1',
-					'wiki_sitename' => 'TestWiki',
-					'wiki_language' => 'en',
-					'wiki_private' => (int)0,
-					'wiki_creation' => $dbw->timestamp(),
-					'wiki_category' => 'uncategorised',
-					'wiki_closed' => (int)0,
-					'wiki_deleted' => (int)0,
-					'wiki_locked' => (int)0,
-					'wiki_inactive' => (int)0,
-					'wiki_inactive_exempt' => (int)0,
-					'wiki_url' => 'http://127.0.0.1:9412'
-				],
-				__METHOD__,
-				[ 'IGNORE' ]
-			);
-
-		} catch ( DBQueryError $e ) {
-			// Do nothing
-		}
-
 		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $GLOBALS['wgDBserver'],
 			'user' => 'root',
@@ -67,16 +37,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitimestamptest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
-
-		/*if ( version_compare( MW_VERSION, '1.42', '>=' ) ) {
-			// cw_wikis is cleared on each run but DB is not
-			// dropped so we need to drop it manually
-			$dbw->query( 'DROP DATABASE IF EXISTS remotewikitest;' );
-			$this->createWiki( 'remotewikitest' );
-		}*/
 	}
 
 	public function addDBDataOnce(): void {
