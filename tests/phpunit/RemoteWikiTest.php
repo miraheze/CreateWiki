@@ -30,6 +30,18 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
 
+		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+			'host' => $GLOBALS['wgDBserver'],
+			'user' => 'root',
+		] );
+
+		$db->begin();
+		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "FLUSH PRIVILEGES;" );
+		$db->commit();
+	}
+
+	public function addDBDataOnce(): void {
 		try {
 			$dbw = MediaWikiServices::getInstance()
 				->getDBLoadBalancer()
@@ -59,16 +71,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		} catch ( DBQueryError $e ) {
 			// Do nothing
 		}
-
-		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS['wgDBserver'],
-			'user' => 'root',
-		] );
-
-		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "FLUSH PRIVILEGES;" );
-		$db->commit();
 	}
 
 	/**
