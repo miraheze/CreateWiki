@@ -67,10 +67,14 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitimestamptest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 
 		if ( version_compare( MW_VERSION, '1.42', '>=' ) ) {
+			// cw_wikis is cleared on each run but DB is not
+			// dropped so we need to drop it manually
+			$dbw->query( 'DROP DATABASE remotewikitest;' );
 			$this->createWiki( 'remotewikitest' );
 		}
 	}
@@ -89,9 +93,9 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
 
 		$timestamp = $this->db->timestamp();
-		$this->createWiki( 'remotewikitest' );
+		$this->createWiki( 'remotewikitimestamptest' );
 
-		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
+		$remoteWiki = new RemoteWiki( 'remotewikitimestamptest', $this->getMockCreateWikiHookRunner() );
 		$this->assertSame( $timestamp, $remoteWiki->getCreationDate() );
 	}
 
@@ -99,6 +103,10 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getDBname
 	 */
 	public function testGetDBname() {
+		if ( version_compare( MW_VERSION, '1.42', '<' ) ) {
+			$this->createWiki( 'remotewikitest' );
+		}
+
 		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
