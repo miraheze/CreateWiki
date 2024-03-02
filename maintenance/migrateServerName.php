@@ -10,7 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
 
 class MigrateServerName extends Maintenance {
 	public function __construct() {
@@ -20,8 +19,7 @@ class MigrateServerName extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$dbw = $this->getDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
+		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbw->select(
 			'cw_wikis',

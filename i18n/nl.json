@@ -3,6 +3,7 @@
 		"authors": [
 			"Mainframe98",
 			"McDutchie",
+			"Mitsjol",
 			"SPQRobin",
 			"Siebrand",
 			"Southparkfan"
@@ -11,7 +12,7 @@
 	"action-createwiki": "wiki's aan te maken",
 	"action-requestwiki": "wiki's aan te vragen",
 	"createwiki": "Een wiki aanmaken",
-	"createwiki-defaultmainpage": "__NOTOC__\n== Welkom op {{SITENAME}}! ==\nDeze hoofdpagina is automatisch aangemaakt en is blijkbaar nog niet vervangen.\n\n=== Voor de bureaucraat/-aten van deze wiki ===\nHallo, en welkom op uw nieuwe wiki! Bedankt dat u voor Miraheze hebt gekozen. Wij hopen dat u het bij ons naar de zin hebt.\n\nU kunt op ieder gewenst moment beginnen met het werken aan uw wiki.\n\nHulp nodig? Geen probleem! Waar nodig helpen wij u met uw wiki. Kijk om te beginnen eens naar deze handige pagina's:\n* [[mw:Special:MyLanguage/Help:Contents|MediaWiki gids]] (bijv. navigeren, bewerken, pagina's verwijderen, gebruikers blokkeren)\n* [[meta:Special:MyLanguage/FAQ|Veelgestelde vragen over Miraheze]]\n* [[meta:Special:MyLanguage/Request features|Vraag instellingen aan op uw wiki]]. (Wijzigingen aan extensies, uiterlijk/vormgeving en logo/favicon moeten worden gedaan via [[Special:ManageWiki]] op uw wiki. Zie [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] voor meer informatie.)\n\n==== Ik begrijp X nog steeds niet! ====\nGeen probleem. Ook als iets niet wordt uitgelegd in de documentatie/FAQ helpen wij u graag. U kunt ons hier vinden:\n* [[meta:Special:MyLanguage/Help center|Op onze eigen Miraheze-wiki]]\n* Op [[phab:|Phabricator]]\n* Op [https://miraheze.org/discord Discord]\n* Op IRC in #miraheze op irc.libera.chat ([irc:// irc.libera.chat/%23miraheze directe link]; [https://web.libera.chat/?channel=#miraheze webchat])\n\n=== Voor bezoekers van deze wiki ===\nHallo, the standaardhoofdpagina van deze wiki (deze pagina) is nog niet vervangen door de bureaucraat/-aten. Best mogelijk dat ze nog druk bezig zijn met het maken van een hoofdpagina, dus kom later terug!",
+	"createwiki-defaultmainpage": "__NOTOC__\n== Welkom op {{SITENAME}}! ==\nDeze hoofdpagina is automatisch aangemaakt en is blijkbaar nog niet vervangen.\n\n=== Voor de bureaucraat/-aten van deze wiki ===\nHallo, en welkom op uw nieuwe wiki! Bedankt dat u voor Miraheze hebt gekozen. Wij hopen dat u het bij ons naar de zin hebt.\n\nU kunt op ieder gewenst moment beginnen met het werken aan uw wiki.\n\nHulp nodig? Geen probleem! Waar nodig helpen wij u met uw wiki. Kijk om te beginnen eens naar deze handige pagina's:\n* [[mw:Special:MyLanguage/Help:Contents|MediaWiki gids]] (bijv. navigeren, bewerken, pagina's verwijderen, gebruikers blokkeren)\n* [[meta:Special:MyLanguage/FAQ|Veelgestelde vragen over Miraheze]]\n* [[meta:Special:MyLanguage/Request features|Vraag instellingen aan op uw wiki]]. (Wijzigingen aan extensies, uiterlijk/vormgeving en logo/favicon moeten worden gedaan via [[Special:ManageWiki]] op uw wiki. Zie [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] voor meer informatie.)\n\n==== Ik begrijp X nog steeds niet! ====\nGeen probleem. Ook als iets niet wordt uitgelegd in de documentatie/FAQ helpen wij u graag. U kunt ons hier vinden:\n* [[meta:Special:MyLanguage/Help center|Op onze eigen Miraheze-wiki]]\n* Op [[phorge:|Phorge]]\n* Op [https://miraheze.org/discord Discord]\n* Op IRC in #miraheze op irc.libera.chat ([irc:// irc.libera.chat/%23miraheze directe link]; [https://web.libera.chat/?channel=#miraheze webchat])\n\n=== Voor bezoekers van deze wiki ===\nHallo, the standaardhoofdpagina van deze wiki (deze pagina) is nog niet vervangen door de bureaucraat/-aten. Best mogelijk dat ze nog druk bezig zijn met het maken van een hoofdpagina, dus kom later terug!",
 	"createwiki-defaultmainpage-summary": "Welkom bij Miraheze!",
 	"createwiki-desc": "Een uitbreiding voor het eenvoudig aanmaken van wiki’s in een wikifarm.",
 	"createwiki-email-subject": "Uw nieuwe Miraheze-wiki ($1) is aangemaakt",
@@ -34,7 +35,7 @@
 	"createwiki-label-reason": "Beschrijf de focus of het doel van deze wiki:",
 	"createwiki-label-requester": "Aanvrager:",
 	"createwiki-label-sitename": "Sitenaam:",
-	"createwiki-label-statuschangecomment": "Reden van geven voor deze actie:",
+	"createwiki-label-statuschangecomment": "Reden voor deze actie:",
 	"createwiki-success": "De wiki is aangemaakt.",
 	"echo-category-title-wiki-creation": "Wiki-aanmaak",
 	"echo-category-title-request-comment": "Commentaar aan wiki-aanvraag toegevoegd",

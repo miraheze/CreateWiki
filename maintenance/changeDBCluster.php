@@ -10,7 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\RemoteWiki;
 
 class ChangeDBCluster extends Maintenance {
@@ -24,9 +24,6 @@ class ChangeDBCluster extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-
 		if ( (bool)$this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
 
@@ -34,7 +31,11 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$wiki = new RemoteWiki( $config->get( 'DBname' ), $hookRunner );
+			$wiki = new RemoteWiki(
+				$this->getConfig()->get( MainConfigNames::DBname ),
+				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+			);
+
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 
@@ -48,7 +49,11 @@ class ChangeDBCluster extends Maintenance {
 				continue;
 			}
 
-			$wiki = new RemoteWiki( $line, $hookRunner );
+			$wiki = new RemoteWiki(
+				$line,
+				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+			);
+
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
 		}

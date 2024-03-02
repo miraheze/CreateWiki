@@ -10,8 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\MediaWikiServices;
-use UnexpectedValueException;
 
 class PopulateWikiCreation extends Maintenance {
 	public function __construct() {
@@ -22,8 +20,7 @@ class PopulateWikiCreation extends Maintenance {
 	}
 
 	public function execute() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$dbw = $this->getDB( DB_PRIMARY, [], $config->get( 'CreateWikiDatabase' ) );
+		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbw->select(
 			'cw_wikis',
@@ -33,13 +30,13 @@ class PopulateWikiCreation extends Maintenance {
 		);
 
 		if ( !$res || !is_object( $res ) ) {
-			throw new UnexpectedValueException( '$res was not set to a valid array.' );
+			$this->fatalError( '$res was not set to a valid array.' );
 		}
 
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
 
-			$dbw->selectDomain( $config->get( 'CreateWikiGlobalWiki' ) );
+			$dbw->selectDomain( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) );
 
 			$res = $dbw->selectRow(
 				'logging',
@@ -54,7 +51,7 @@ class PopulateWikiCreation extends Maintenance {
 				]
 			);
 
-			$dbw->selectDomain( $config->get( 'CreateWikiDatabase' ) );
+			$dbw->selectDomain( $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
 				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );

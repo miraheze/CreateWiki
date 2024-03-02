@@ -12,7 +12,7 @@
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.40.0"
+		"MediaWiki": ">= 1.41.0"
 	},
 	"AvailableRights": [
 		"createwiki",
@@ -166,6 +166,11 @@
 			"description": "String. The path to store CreateWiki cache files at.",
 			"public": true,
 			"value": ""
+		},
+		"CreateWikiCacheType": {
+			"description": "Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
+			"public": true,
+			"value": false
 		},
 		"CreateWikiCannedResponses": {
 			"description": "Boolean. Array of default responses to give. If this is enabled, free-text options are removed.",
