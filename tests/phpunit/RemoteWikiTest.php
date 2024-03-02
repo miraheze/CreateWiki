@@ -74,7 +74,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		if ( version_compare( MW_VERSION, '1.42', '>=' ) ) {
 			// cw_wikis is cleared on each run but DB is not
 			// dropped so we need to drop it manually
-			$dbw->query( 'DROP DATABASE remotewikitest;' );
+			$dbw->query( 'DROP DATABASE IF EXISTS remotewikitest;' );
 			$this->createWiki( 'remotewikitest' );
 		}
 	}
