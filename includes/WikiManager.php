@@ -129,18 +129,19 @@ class WikiManager {
 			return $this->doCreateDatabase();
 		}
 
-		$this->cwdb->insert(
-			'cw_wikis',
-			[
+		$this->cwdb->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->rows( [
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
-				'wiki_category' => $category
-			]
-		);
+				'wiki_category' => $category,
+			] )
+			->caller( __METHOD__ )
+			->execute();
 
 		$this->doAfterCreate( $siteName, $private, $requester, $actor, $reason );
 
