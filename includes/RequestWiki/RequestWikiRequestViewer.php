@@ -240,9 +240,9 @@ class RequestWikiRequestViewer {
 					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options-messages' => [
+						'requestwikiqueue-onhold' => 'onhold',
 						'requestwikiqueue-approve' => 'approve',
 						'requestwikiqueue-decline' => 'decline',
-						'requestwikiqueue-onhold' => 'onhold',
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
