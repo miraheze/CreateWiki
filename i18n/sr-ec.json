@@ -51,10 +51,10 @@
 	"requestwikiqueue-request-label-status": "Статус",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Означи видљивост ових захтева као…",
-	"requestwikiqueue-request-label-visibility-all": "Сви који имају дозволу за читање могу да виде овај захтев",
-	"requestwikiqueue-request-label-visibility-delete": "Сви који имају дозволу за брисање могу да виде овај захтев",
-	"requestwikiqueue-request-label-visibility-hide": "Сви који имају дозволу за прављење викија могу да виде овај захтев",
-	"requestwikiqueue-request-label-visibility-oversight": "Сви који имају дозволу за скривање измена могу да виде овај захтев",
+	"requestwikiqueue-request-label-visibility-all": "Корисници који имају дозволу за читање могу да виде овај захтев",
+	"requestwikiqueue-request-label-visibility-delete": "Корисници који имају дозволу за брисање могу да виде овај захтев",
+	"requestwikiqueue-request-label-visibility-hide": "Корисници који имају дозволу за прављење викија могу да виде овај захтев",
+	"requestwikiqueue-request-label-visibility-oversight": "Корисници који имају дозволу скривања измена могу да виде овај захтев",
 	"right-requestwiki": "Затражи викије",
 	"right-createwiki": "прављење викија на фарми"
 }
