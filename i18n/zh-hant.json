@@ -22,7 +22,7 @@
 	"createwiki-desc": "可以在wiki農場上輕鬆建立新wiki的擴充功能。",
 	"createwiki-email-subject": "您的新Miraheze wiki（$1）已建立",
 	"createwiki-email-body": "您好！\n\n您最近在 Miraheze 上面申請了一個新 wiki。我們很高興地告訴您：您的申請已通過！\n\nMiraheze 會在此協助您每一個步驟，不要害怕發問！請查看我們的<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Help_center\">幫助中心</a>來了解各領域範圍的詳細說明，例如像如何使用我們的 ManageWiki 工具來管理您的 wiki、使用圖片與模板、歸檔任務、和其他更多！\n\t\n請記得，所有的 wiki 都必須遵守<a href=\"https://meta.miraheze.org/wiki/Special:MyLanguage/Content_Policy\">內容方針</a>，不然會被關閉。也請記得您的 Wiki 不能偏離當初被核准的使用目的，否則也有可能會被關閉。\n\t\n感謝您選擇 Miraheze！我們祝您在新的 wiki 上使用愉快。",
-	"createwiki-error-dbexists": "'''注意'''：已存在具有此子網域的 wiki。",
+	"createwiki-error-dbexists": "'''注意'''：已存在具有此子網域的wiki。",
 	"createwiki-error-disallowed": "您所申請的子網域無法使用，請選擇別的子網域。",
 	"createwiki-error-notalnum": "所選的子網域包含非字母或數字的字元。請再試一次。",
 	"createwiki-error-notlowercase": "子網域不能包含大寫字母。請再試一次。",
