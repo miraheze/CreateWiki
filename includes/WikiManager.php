@@ -117,6 +117,7 @@ class WikiManager {
 	}
 
 	public function create(
+		string $url,
 		string $siteName,
 		string $language,
 		bool $private,
@@ -129,11 +130,34 @@ class WikiManager {
 			return $this->doCreateDatabase();
 		}
 
+		// This is probably some of the worst code I have ever written
+		// Definitely needs to be done better
+		if ( $url ) {
+			$url = strtolower( $url );
+
+			if ( str_starts_with( $url, 'http://' ) ) {
+				$url = str_replace( 'http://', 'https://', $url );
+			}
+
+			if ( str_starts_with( $url, '//' ) ) {
+				$url = 'https:' . $url;
+			}
+
+			if ( str_starts_with( $url, '://' ) ) {
+				$url = 'https' . $url;
+			}
+
+			if ( !str_starts_with( $url, 'https://' ) ) {
+				$url = 'https://' . $url;
+			}
+		}
+
 		$this->cwdb->insert(
 			'cw_wikis',
 			[
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
+				'wiki_url' => $url,
 				'wiki_sitename' => $siteName,
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,

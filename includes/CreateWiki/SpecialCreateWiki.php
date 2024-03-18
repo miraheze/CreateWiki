@@ -98,7 +98,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$wm = new WikiManager( $formData['dbname'], $this->hookRunner );
 
-		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
+		$wm->create( '', $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
 
 		$this->getOutput()->addHTML( Html::successBox( $this->msg( 'createwiki-success' )->escaped() ) );
 

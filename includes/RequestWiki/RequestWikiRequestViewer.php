@@ -363,7 +363,7 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-edit'] ) ) {
 			$subdomain = $formData['edit-url'];
 			$err = '';
-			$status = $request->parseSubdomain( $subdomain, $err );
+			$status = $request->parseSubdomain( $subdomain, '', $err );
 
 			if ( $status === false ) {
 				if ( $err !== '' ) {

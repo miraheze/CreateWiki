@@ -54,18 +54,38 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	protected function getFormFields() {
-		$formDescriptor = [
-			'subdomain' => [
-				'type' => 'textwithbutton',
-				'buttontype' => 'button',
-				'buttonflags' => [],
-				'buttonid' => 'inline-subdomain',
-				'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
-				'label-message' => 'requestwiki-label-subdomain',
-				'placeholder-message' => 'requestwiki-placeholder-subdomain',
-				'help-message' => 'requestwiki-help-subdomain',
-				'required' => true,
-			],
+		if ( $this->config->get( 'CreateWikiDomainOptions' ) ) {
+			$subdomain = [
+				'subdomain' => [
+					'type' => 'text',
+					'label-message' => 'requestwiki-label-subdomain',
+					'placeholder-message' => 'requestwiki-placeholder-subdomain',
+					'help-message' => 'requestwiki-help-subdomain',
+					'required' => true,
+				],
+				'domain' => [
+					'type' => 'select',
+					'options' => $this->config->get( 'CreateWikiDomainOptions' ),
+					'required' => true,
+				],
+			];
+		} else {
+			$subdomain = [
+				'subdomain' => [
+					'type' => 'textwithbutton',
+					'buttontype' => 'button',
+					'buttonflags' => [],
+					'buttonid' => 'inline-subdomain',
+					'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
+					'label-message' => 'requestwiki-label-subdomain',
+					'placeholder-message' => 'requestwiki-placeholder-subdomain',
+					'help-message' => 'requestwiki-help-subdomain',
+					'required' => true,
+				],
+			];
+		}
+
+		$formDescriptor = $subdomain + [
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
@@ -152,7 +172,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$out = $this->getOutput();
 		$err = '';
 
-		$status = $request->parseSubdomain( $subdomain, $err );
+		$status = $request->parseSubdomain( $subdomain, $formData['domain'] ?? '', $err );
 		if ( $status === false ) {
 			if ( $err !== '' ) {
 				$out->addHTML(

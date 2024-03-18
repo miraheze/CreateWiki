@@ -157,6 +157,11 @@
 			"public": true,
 			"value": "/ /"
 		},
+		"CreateWikiDomainOptions": {
+			"description": "Array. Domain options to allow. The first value will be the default domain. If used, $wgCreateWikiSubdomain is not used.",
+			"public": true,
+			"value": []
+		},
 		"CreateWikiCacheDirectory": {
 			"description": "String. The path to store CreateWiki cache files at.",
 			"public": true,

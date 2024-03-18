@@ -30,6 +30,7 @@ class CreateWikiJob extends Job {
 
 		try {
 			$wm->create(
+				$this->params['url'],
 				$this->params['sitename'],
 				$this->params['language'],
 				$this->params['private'],

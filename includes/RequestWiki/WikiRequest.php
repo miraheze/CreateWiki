@@ -168,6 +168,7 @@ class WikiRequest {
 			$jobParams = [
 				'id' => $this->id,
 				'dbname' => $this->dbname,
+				'url' => $this->url,
 				'sitename' => $this->sitename,
 				'language' => $this->language,
 				'private' => $this->private,
@@ -192,7 +193,7 @@ class WikiRequest {
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
-			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
+			$notCreated = $wm->create( $this->url, $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
 				throw new RuntimeException( $notCreated ?? $validName );
@@ -365,14 +366,15 @@ class WikiRequest {
 	 * Extract database name from subdomain and automatically configure url and dbname
 	 *
 	 * @param string $subdomain subdomain
+	 * @param string $domain domain
 	 * @param string &$err optional error string for reported errors
 	 *
 	 * @return boolean true subdomain is valid and accepted, false otherwise
 	 */
-	public function parseSubdomain( string $subdomain, string &$err = '' ) {
+	public function parseSubdomain( string $subdomain, string $domain, string &$err = '' ) {
 		$subdomain = strtolower( $subdomain );
-		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
-			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
+		if ( strpos( $subdomain, $domain ?: $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
+			$subdomain = str_replace( '.' . $domain ?: $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
 		}
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
@@ -396,7 +398,7 @@ class WikiRequest {
 			return false;
 		} else {
 			$this->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
-			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
+			$this->url = $subdomain . '.' . $domain ?: $this->config->get( 'CreateWikiSubdomain' );
 
 			return true;
 		}
