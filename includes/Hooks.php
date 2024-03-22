@@ -109,9 +109,9 @@ class Hooks implements
 	public function onResourceLoaderGetConfigVars(
 		array &$vars,
 		$skin,
-		Config $config
+		MediaWiki\Config\Config $config
 	) {
-		$vars['CreateWikiCannedResponses'] = $config->get( 'CreateWikiCannedResponses' );
+		$vars['CreateWikiCannedResponses'] = $this->config->get( 'CreateWikiCannedResponses' );
 	}
 
 	/** @inheritDoc */
