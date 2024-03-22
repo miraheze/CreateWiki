@@ -110,7 +110,7 @@ class Hooks implements
 		array &$vars,
 		$skin,
 		\MediaWiki\Config\Config $config
-	) {
+	): void {
 		$vars['CreateWikiCannedResponses'] = $this->config->get( 'CreateWikiCannedResponses' );
 	}
 
