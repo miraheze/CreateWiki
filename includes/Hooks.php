@@ -100,6 +100,7 @@ class Hooks implements
 		if ( $magicWordId === 'numberofwikirequests' ) {
 			$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
 				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+
 			$ret = $variableCache[$magicWordId] = $dbr->selectRowCount( 'cw_requests', '*' );
 		}
 	}
