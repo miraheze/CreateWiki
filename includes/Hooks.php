@@ -112,7 +112,6 @@ class Hooks implements
 		$config
 	) {
 		$vars['CreateWikiCannedResponses'] = $config->get( 'CreateWikiCannedResponses' );
-		return true;
 	}
 
 	/** @inheritDoc */
