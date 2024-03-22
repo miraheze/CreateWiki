@@ -107,9 +107,9 @@ class Hooks implements
 
 	/** @inheritDoc */
 	public function onResourceLoaderGetConfigVars(
-		&$vars,
+		array &$vars,
 		$skin,
-		$config
+		Config $config
 	) {
 		$vars['CreateWikiCannedResponses'] = $config->get( 'CreateWikiCannedResponses' );
 	}
