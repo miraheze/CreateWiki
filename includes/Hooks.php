@@ -8,6 +8,7 @@ use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\ResourceLoader\Hook\ResourceLoaderGetConfigVarsHook;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
@@ -18,6 +19,7 @@ class Hooks implements
 	GetMagicVariableIDsHook,
 	LoginFormValidErrorMessagesHook,
 	ParserGetVariableValueSwitchHook,
+	ResourceLoaderGetConfigVarsHook,
 	SetupAfterCacheHook
 {
 	/** @var Config */
@@ -98,9 +100,18 @@ class Hooks implements
 		if ( $magicWordId === 'numberofwikirequests' ) {
 			$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
 				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
-
 			$ret = $variableCache[$magicWordId] = $dbr->selectRowCount( 'cw_requests', '*' );
 		}
+	}
+
+	/** @inheritDoc */
+	public function onResourceLoaderGetConfigVars(
+		&$vars,
+		$skin,
+		$config
+	) {
+		$vars['CreateWikiCannedResponses'] = $config->get( 'CreateWikiCannedResponses' );
+		return true;
 	}
 
 	/** @inheritDoc */

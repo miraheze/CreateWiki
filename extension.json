@@ -106,6 +106,9 @@
 		"ParserGetVariableValueSwitch": {
 			"handler": "default"
 		},
+		"ResourceLoaderGetConfigVars": {
+			"handler": "default"
+		},
 		"SetupAfterCache": {
 			"handler": "default"
 		}
