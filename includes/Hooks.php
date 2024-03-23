@@ -111,7 +111,7 @@ class Hooks implements
 		&$vars,
 		$out
 	): void {
-		if ( $out->getTitle()->isSubpageOf( Title::newFromText( "Special:" ) ) ) {
+		if ( $out->getTitle()->isSubpageOf( Title::newFromText( "Special:RequestWikiQueue" ) ) ) {
 			$vars['CreateWikiCannedResponses'] = $this->config->get( 'CreateWikiCannedResponses' );
 		}
 	}
