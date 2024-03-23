@@ -103,10 +103,10 @@
 		"LoginFormValidErrorMessages": {
 			"handler": "default"
 		},
-		"ParserGetVariableValueSwitch": {
+		"MakeGlobalVariablesScript": {
 			"handler": "default"
 		},
-		"ResourceLoaderGetConfigVars": {
+		"ParserGetVariableValueSwitch": {
 			"handler": "default"
 		},
 		"SetupAfterCache": {
