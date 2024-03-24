@@ -8,7 +8,7 @@ use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
-use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
+use MediaWiki\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
