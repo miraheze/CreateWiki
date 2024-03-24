@@ -103,6 +103,9 @@
 		"LoginFormValidErrorMessages": {
 			"handler": "default"
 		},
+		"MakeGlobalVariablesScript": {
+			"handler": "default"
+		},
 		"ParserGetVariableValueSwitch": {
 			"handler": "default"
 		},
