@@ -80,9 +80,9 @@ class QueryWikiRequest extends SimpleHandler {
 			$wikiRequestComments = [];
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
-					'comment' => $wikiRequestCwComments->cw_comment,
-					'timestamp' => $wikiRequestCwComments->cw_comment_timestamp,
-					'user' => $this->userFactory->newFromId( $wikiRequestCwComments->cw_comment_user )->getName(),
+					'comment' => $comment->cw_comment,
+					'timestamp' => $comment->cw_comment_timestamp,
+					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
 
