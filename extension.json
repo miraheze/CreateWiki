@@ -92,6 +92,16 @@
 		"Miraheze\\CreateWiki\\Tests\\Unit\\": "tests/phpunit/unit/",
 		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
+	"RestRoutes": [
+		{
+			"path": "/createwiki/v0/query_wiki_request/{id}"
+			"method": "GET",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\QueryWikiRequest",
+			"services": [
+				"DBLoadBalancerFactory"
+			]
+		}
+	],
 	"Hooks": {
 		"BeforeCreateEchoEvent": "Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent",
 		"LoadExtensionSchemaUpdates": {
