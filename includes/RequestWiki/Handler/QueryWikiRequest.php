@@ -4,8 +4,8 @@ namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
 use Config;
 use MediaWiki\Config\ConfigFactory;
-use MediaWiki\User\UserFactory;
 use MediaWiki\Rest\SimpleHandler;
+use MediaWiki\User\UserFactory;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\ILBFactory;
 
