@@ -52,7 +52,7 @@ class QueryWikiRequest extends SimpleHandler {
 				'cw_id' => $requestID,
 			],
 			__METHOD__
-		)
+		);
 		if ( $wikiRequest ) {
 			$response = [
 				'comment' => $wikiRequest->cw_comment,
@@ -76,7 +76,7 @@ class QueryWikiRequest extends SimpleHandler {
 				[
 					'cw_comment_timestamp DESC',
 				]
-			)
+			);
 			$wikiRequestComments = [];
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
