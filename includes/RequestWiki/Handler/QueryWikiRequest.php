@@ -45,7 +45,7 @@ class QueryWikiRequest extends SimpleHandler {
 		$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$wikiRequest = $dbr->selectRow(
-			'cw_requests'
+			'cw_requests',
 			'*',
 			[
 				'cw_visibility' => 0,
