@@ -94,11 +94,13 @@
 	},
 	"RestRoutes": [
 		{
-			"path": "/createwiki/v0/query_wiki_request/{id}"
+			"path": "/createwiki/v0/query_wiki_request/{id}",
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\QueryWikiRequest",
 			"services": [
-				"DBLoadBalancerFactory"
+				"ConfigFactory",
+				"DBLoadBalancerFactory",
+				"UserFactory"
 			]
 		}
 	],

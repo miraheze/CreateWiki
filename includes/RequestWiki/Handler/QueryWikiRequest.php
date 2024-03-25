@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
 use Config;
+use MediaWiki\Config\ConfigFactory;
 use MediaWiki\User\UserFactory;
 use MediaWiki\Rest\SimpleHandler;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -13,7 +14,7 @@ use Wikimedia\Rdbms\ILBFactory;
  * Only publicly accessible wiki requests can be queried through this API
  * GET /createwiki/v0/query_wiki_request/{id}
  */
-class QueryWikiRequest  extends SimpleHandler {
+class QueryWikiRequest extends SimpleHandler {
 
 	/** @var Config */
 	private $config;
@@ -24,14 +25,19 @@ class QueryWikiRequest  extends SimpleHandler {
 	/** @var UserFactory */
 	private $userFactory;
 
+	/**
+	 * @param ConfigFactory $configFactory
+	 * @param ILBFactory $dbLoadBalancerFactory
+	 * @param UserFactory $userFactory
+	 */
 	public function __construct(
-		Config $config,
+		ConfigFactory $configFactory,
 		ILBFactory $dbLoadBalancerFactory,
 		UserFactory $userFactory
 	) {
-		$this->config = $config
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
-		$this->userFactory = $userFactory
+		$this->userFactory = $userFactory;
 	}
 
 	public function run( $id ) {
