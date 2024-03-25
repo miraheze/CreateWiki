@@ -85,12 +85,12 @@ class QueryWikiRequest extends SimpleHandler {
 					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
-
 			// We now have all the data we need, add the comments to $response and return
-
 			$response['comments'] = $wikiRequestComments;
-			return $response;
+			return $this->getResponseFactory()->createJson( $response );
 		}
+		// Request does not exist, or has been suppressed
+		return $this->getResponseFactory()->createHttpError( 400, ['message' => 'Invalid request ID'] );
 	}
 
 	public function needsWriteAccess() {
