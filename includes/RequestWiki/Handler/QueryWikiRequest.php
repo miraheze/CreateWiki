@@ -62,7 +62,7 @@ class QueryWikiRequest extends SimpleHandler {
 				'status' => $wikiRequest->cw_status,
 				'timestamp' => $wikiRequest->cw_timestamp,
 				'url' => $wikiRequest->cw_url,
-				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName,
+				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
 				'category' => $wikiRequest->cw_category,
 				'bio' => $wikiRequest->cw_bio,
 			];
