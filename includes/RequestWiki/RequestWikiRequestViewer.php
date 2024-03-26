@@ -394,7 +394,7 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 			if ( isset( $formData['visibility-options'] ) ) {
-			    $request->visibility = $formData['visibility-options'];
+				$request->visibility = $formData['visibility-options'];
 			}
 
 			if ( $formData['submission-action'] == 'approve' ) {
