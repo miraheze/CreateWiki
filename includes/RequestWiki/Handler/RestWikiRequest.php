@@ -11,10 +11,11 @@ use Wikimedia\Rdbms\ILBFactory;
 
 /**
  * Returns all information related to a wiki request
+ * TODO: Ability to handle, post comments, and file new wiki requests
  * Only publicly accessible wiki requests can be queried through this API
- * GET /createwiki/v0/query_wiki_request/{id}
+ * GET /createwiki/v0/wiki_request/{id}
  */
-class QueryWikiRequest extends SimpleHandler {
+class RestWikiRequest extends SimpleHandler {
 
 	/** @var Config */
 	private $config;

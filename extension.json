@@ -94,9 +94,9 @@
 	},
 	"RestRoutes": [
 		{
-			"path": "/createwiki/v0/query_wiki_request/{id}",
+			"path": "/createwiki/v0/wiki_request/{id}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\QueryWikiRequest",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
 			"services": [
 				"ConfigFactory",
 				"DBLoadBalancerFactory",
