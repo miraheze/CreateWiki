@@ -91,7 +91,6 @@ class RestWikiRequest extends SimpleHandler {
 			return $this->getResponseFactory()->createJson( $response );
 		}
 		// Request does not exist, or has been suppressed
-		// phpcs:ignore MediaWiki.WhiteSpace.SpaceyParenthesis.SingleSpaceBeforeCloseParenthesis
 		return $this->getResponseFactory()->createHttpError( 400, ['message' => 'Invalid request ID'] );
 	}
 
