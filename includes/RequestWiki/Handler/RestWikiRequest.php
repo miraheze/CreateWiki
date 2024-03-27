@@ -68,7 +68,7 @@ class RestWikiRequest extends SimpleHandler {
 			 * being revealed to local suppressors/sysops
 			 */
 
-			if ( $wikiRequestVisibility !== 'read' && $this->getAuthority()->isAllowed( 'read' ) ) {
+			if ( $wikiRequestVisibility !== 'read' ) {
 				if ( !$this->getAuthority()->isAllowedAll( 'createwiki', $wikiRequestVisibility ) ) {
 					// User does not have permission to view this request
 					return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
