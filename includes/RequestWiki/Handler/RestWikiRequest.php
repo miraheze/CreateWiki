@@ -43,29 +43,41 @@ class RestWikiRequest extends SimpleHandler {
 
 	public function run( $id ) {
 		$requestID = (int)$id;
+		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
+		$visibilityConds = [
+			0 => 'read',
+			1 => 'createwiki',
+			2 => 'delete',
+			3 => 'suppressrevision',
+		];
 		$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
 		$wikiRequest = $dbr->selectRow(
 			'cw_requests',
 			'*',
 			[
-				'cw_visibility' => 0,
 				'cw_id' => $requestID,
 			],
 			__METHOD__
 		);
 		if ( $wikiRequest ) {
+			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
+			if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
+				// User does not have permission to view this wiki request
+				return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+			}
 			$response = [
 				'comment' => $wikiRequest->cw_comment,
 				'dbname' => $wikiRequest->cw_dbname,
 				'language' => $wikiRequest->cw_language,
 				'sitename' => $wikiRequest->cw_sitename,
 				'status' => $wikiRequest->cw_status,
-				'timestamp' => $wikiRequest->cw_timestamp,
+				'timestamp' => wfTimestamp( TS_RFC2822, $wikiRequest->cw_timestamp ),
 				'url' => $wikiRequest->cw_url,
 				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
 				'category' => $wikiRequest->cw_category,
 				'bio' => $wikiRequest->cw_bio,
+				'visibility' => $wikiRequestVisibility,
 			];
 			$wikiRequestCwComments = $dbr->select(
 				'cw_comments',
@@ -82,7 +94,7 @@ class RestWikiRequest extends SimpleHandler {
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
 					'comment' => $comment->cw_comment,
-					'timestamp' => $comment->cw_comment_timestamp,
+					'timestamp' => wfTimestamp( TS_RFC2822, $comment->cw_comment_timestamp),
 					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
@@ -91,7 +103,7 @@ class RestWikiRequest extends SimpleHandler {
 			return $this->getResponseFactory()->createJson( $response );
 		}
 		// Request does not exist, or has been suppressed
-		return $this->getResponseFactory()->createHttpError( 400, ['message' => 'Invalid request ID'] );
+		return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
 	}
 
 	public function needsWriteAccess() {
