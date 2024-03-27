@@ -60,9 +60,19 @@ class RestWikiRequest extends SimpleHandler {
 		);
 		if ( $wikiRequest ) {
 			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
-			if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
-				// User does not have permission to view this wiki request
-				return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+
+			/*
+			 * CreateWiki is enabled globally on all wikis in the farm.
+			 *
+			 * Require both (createwiki) and the required permission to prevent suppressed requests from
+			 * being revealed to local suppressors/sysops
+			 */
+
+			if ( $wikiRequestVisibility !== 'read' ) {
+				if ( !$this->getAuthority()->isAllowedAll( 'createwiki', $wikiRequestVisibility ) ) {
+					// User does not have permission to view this request
+					return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+				}
 			}
 			$response = [
 				'comment' => $wikiRequest->cw_comment,
