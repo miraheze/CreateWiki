@@ -70,7 +70,7 @@ class RestWikiRequest extends SimpleHandler {
 				'language' => $wikiRequest->cw_language,
 				'sitename' => $wikiRequest->cw_sitename,
 				'status' => $wikiRequest->cw_status,
-				'timestamp' => wfTimestamp( TS_RFC2822, $wikiRequest->cw_timestamp ),
+				'timestamp' => wfTimestamp( TS_ISO_8601, $wikiRequest->cw_timestamp ),
 				'url' => $wikiRequest->cw_url,
 				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
 				'category' => $wikiRequest->cw_category,
@@ -92,7 +92,7 @@ class RestWikiRequest extends SimpleHandler {
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
 					'comment' => $comment->cw_comment,
-					'timestamp' => wfTimestamp( TS_RFC2822, $comment->cw_comment_timestamp ),
+					'timestamp' => wfTimestamp( TS_ISO_8601, $comment->cw_comment_timestamp ),
 					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
