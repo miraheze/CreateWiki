@@ -10,9 +10,7 @@ use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\ILBFactory;
 
 /**
- * Returns all information related to a wiki request
- * TODO: Ability to handle, post comments, and file new wiki requests
- * Only publicly accessible wiki requests can be queried through this API
+ * Returns information related to a wiki request
  * GET /createwiki/v0/wiki_request/{id}
  */
 class RestWikiRequest extends SimpleHandler {
@@ -94,7 +92,7 @@ class RestWikiRequest extends SimpleHandler {
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
 					'comment' => $comment->cw_comment,
-					'timestamp' => wfTimestamp( TS_RFC2822, $comment->cw_comment_timestamp),
+					'timestamp' => wfTimestamp( TS_RFC2822, $comment->cw_comment_timestamp ),
 					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
