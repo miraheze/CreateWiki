@@ -44,7 +44,7 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
-		if ( $visibilityConds[$request->visibility] !== 'read' && $permissionManager->userHasRight( $userR, 'read' ) ) {
+		if ( $visibilityConds[$request->visibility] !== 'read' ) {
 			if ( !$permissionManager->userHasAllRights( $userR, 'createwiki', $visibilityConds[$request->visibility] ) ) {
 				$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
