@@ -245,7 +245,7 @@ class WikiRequest {
 		}
 		$this->log( $user, 'requestonhold' );
 	}
-	
+
 	public function moredetails( string $reason, User $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
 		$this->save();
