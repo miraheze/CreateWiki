@@ -63,6 +63,7 @@
 	"notification-header-wiki-creation": "Your wiki <strong>$1</strong> has been created!",
 	"notification-header-request-comment": "A request you are following has received a new comment:",
 	"notification-header-request-declined": "Your request has been declined for the following reason:",
+	"notification-header-request-moredetails": "Your request requires more details before a decision is made:",
 	"requestwiki": "Request a wiki",
 	"requestwiki-edit-success": "Your changes to this wiki request have been successfully saved.",
 	"requestwiki-error-emailnotconfirmed": "Your email is not confirmed. To request wikis, please [[Special:ChangeEmail|confirm an email]] first.",

@@ -67,6 +67,7 @@
 		"farmer/createwiki": "LogFormatter",
 		"farmer/requestapprove": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
+		"farmer/requestmoredetails": "LogFormatter",
 		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
@@ -367,6 +368,8 @@
 		"echo-subscriptions-email-request-comment": false,
 		"echo-subscriptions-web-request-declined": true,
 		"echo-subscriptions-email-request-declined": true,
+		"echo-subscriptions-web-request-moredetails": true,
+		"echo-subscriptions-email-request-moredetails": true,
 		"echo-subscriptions-web-wiki-creation": true,
 		"echo-subscriptions-email-wiki-creation": false
 	},
