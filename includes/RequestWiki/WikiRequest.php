@@ -245,6 +245,24 @@ class WikiRequest {
 		}
 		$this->log( $user, 'requestonhold' );
 	}
+	
+	public function moredetails( string $reason, User $user ) {
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
+		$this->save();
+
+		$this->addComment( $reason, $user, 'comment', [ $this->requester ] );
+
+		$notifyUsers = $this->involvedUsers;
+		unset(
+			$notifyUsers[$this->requester->getId()],
+			$notifyUsers[$user->getId()]
+		);
+
+		if ( $notifyUsers ) {
+			$this->sendNotification( $reason, $notifyUsers );
+		}
+		$this->log( $user, 'moredetails' );
+	}
 
 	private function log( User $user, string $log ) {
 		$logEntry = new ManualLogEntry( 'farmer', $log );

@@ -6,7 +6,7 @@ use EchoDiscussionParser;
 use EchoEventPresentationModel;
 use RawMessage;
 
-class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
+class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
 		return 'request-moredetails';
 	}
