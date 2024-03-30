@@ -91,7 +91,7 @@ class CreateWikiNotificationsManager {
 		return [
 			'request-comment',
 			'request-declined',
-			'reques-moredetails',
+			'request-moredetails',
 			'wiki-creation',
 		];
 	}
