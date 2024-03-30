@@ -14,6 +14,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
 use Wikimedia\Rdbms\ILBFactory;
 
 class Hooks implements
@@ -139,6 +140,11 @@ class Hooks implements
 		$notificationCategories['request-declined'] = [
 			'priority' => 3,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
+		];
+		
+		$notificationCategories['request-moredetails'] = [
+			'priority' => 3,
+			'tooltip' => 'echo-pref-tooltip-wiki-request-moredetails'
 		];
 
 		$notificationCategories['request-comment'] = [

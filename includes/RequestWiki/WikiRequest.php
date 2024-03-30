@@ -142,7 +142,7 @@ class WikiRequest {
 			return;
 		}
 
-		$reason = $type === 'declined' ? 'reason' : 'comment';
+		$reason = ($type === 'declined' || $type === 'moredetails') ? 'reason' : 'comment';
 		$notificationData = [
 			'type' => "request-{$type}",
 			'extra' => [
