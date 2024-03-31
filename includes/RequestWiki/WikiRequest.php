@@ -250,7 +250,7 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
 		$this->save();
 
-		$this->addComment( $reason, $user, 'comment', [ $this->requester ] );
+		$this->addComment( $reason, $user, 'moredetails', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
 		unset(
