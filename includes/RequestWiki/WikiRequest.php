@@ -261,7 +261,7 @@ class WikiRequest {
 		if ( $notifyUsers ) {
 			$this->sendNotification( $reason, $notifyUsers );
 		}
-		$this->log( $user, 'moredetails' );
+		$this->log( $user, 'requestmoredetails' );
 	}
 
 	private function log( User $user, string $log ) {
