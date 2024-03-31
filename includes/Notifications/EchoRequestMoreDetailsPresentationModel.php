@@ -8,7 +8,7 @@ use RawMessage;
 
 class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
-		return 'request-moredetails';
+		return 'global';
 	}
 
 	public function getHeaderMessage() {
