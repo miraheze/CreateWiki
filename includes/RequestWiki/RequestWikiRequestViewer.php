@@ -245,6 +245,7 @@ class RequestWikiRequestViewer {
 						'requestwikiqueue-onhold' => 'onhold',
 						'requestwikiqueue-approve' => 'approve',
 						'requestwikiqueue-decline' => 'decline',
+						'requestwikiqueue-moredetails' => 'moredetails',
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
@@ -403,6 +404,8 @@ class RequestWikiRequestViewer {
 				$request->approve( $user, $formData['reason'] );
 			} elseif ( $formData['submission-action'] == 'onhold' ) {
 				$request->onhold( $formData['reason'], $user );
+			} elseif ( $formData['submission-action'] == 'moredetails' ) {
+				$request->moredetails( $formData['reason'], $user );
 			} else {
 				$request->decline( $formData['reason'], $user );
 			}

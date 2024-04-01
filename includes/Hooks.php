@@ -141,6 +141,11 @@ class Hooks implements
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
 		];
 
+		$notificationCategories['request-moredetails'] = [
+			'priority' => 3,
+			'tooltip' => 'echo-pref-tooltip-wiki-request-moredetails'
+		];
+
 		$notificationCategories['request-comment'] = [
 			'priority' => 3,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-comment'
