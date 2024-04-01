@@ -49,6 +49,7 @@
 	"log-action-filter-farmer-requestapprove": "Wiki request approved",
 	"log-action-filter-farmer-requestdecline": "Wiki request declined",
 	"log-action-filter-farmer-requestwiki": "Wiki request (re)opened",
+	"log-action-filter-farmer-requestmoredetails": "More details requested",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|created}} the wiki \"$4\"",
 	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|approved}} wiki request $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|declined}} wiki request $4",
