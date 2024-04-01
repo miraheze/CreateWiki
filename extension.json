@@ -57,6 +57,9 @@
 			"requestdecline": [
 				"requestdecline"
 			],
+			"requestmoredetails": [
+				"requestmoredetails"
+			],
 			"requestwiki": [
 				"requestreopen",
 				"requestwiki"
