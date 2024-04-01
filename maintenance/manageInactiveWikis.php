@@ -146,11 +146,11 @@ class ManageInactiveWikis extends Maintenance {
 					// $wiki->delete();
 
 					// $this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
-					$this->output( "Wiki is eligible for deletion, but deletion is currently disabled until we make sure closure is happening as it should. Wiki is eligible but no action taken.\n" );
+					$this->output( "Wiki is eligible for deletion, but deletion is currently disabled until we make sure closure is happening as it should.\n" );
 
 				} else {
 					// $this->output( "{$dbName} is eligible for public removal, was closed on {$wiki->isClosed()}.\n" );
-					$this->output( "Wiki is eligible for deletion, and would've been deleted if this script was run with --write, but deletion is currently disabled until we make sure closure is happening as it should. Wiki is eligible but no action taken.\n" );
+					$this->output( "Wiki is eligible for deletion, and would've been deleted if this script was run with --write, but deletion is currently disabled until we make sure closure is happening as it should.\n" );
 				}
 			} elseif ( $wiki->isClosed() && $wiki->isClosed() > date( "YmdHis", strtotime( "-{$removeDays} days" ) ) ) {
 				// Wiki closed but not yet eligible for removal
