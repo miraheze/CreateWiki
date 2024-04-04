@@ -16,6 +16,8 @@
 	},
 	"AvailableRights": [
 		"createwiki",
+		"createwiki-deleterequest",
+		"createwiki-suppressrequest",
 		"requestwiki"
 	],
 	"SpecialPages": {

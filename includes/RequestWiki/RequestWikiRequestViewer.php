@@ -31,10 +31,8 @@ class RequestWikiRequestViewer {
 		IContextSource $context
 	) {
 		$visibilityConds = [
-			0 => 'read',
-			1 => 'createwiki',
-			2 => 'delete',
-			3 => 'suppressrevision',
+			1 => 'createwiki-deleterequest',
+			2 => 'createwiki-suppressrequest',
 		];
 
 		// Gets user from request
@@ -44,8 +42,16 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
-		if ( $visibilityConds[$request->visibility] !== 'read' ) {
-			if ( !$permissionManager->userHasAllRights( $userR, 'createwiki', $visibilityConds[$request->visibility] ) ) {
+		// T12010: 3 is a legacy suppression level, treat it as a suppressed request regardless
+
+		if ( $request->visibility >= 3 ) {
+			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
+
+			return [];
+		}
+
+		if ( $request->visibility > 0 ) {
+			if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility] ) ) {
 				$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
 				return [];
