@@ -43,7 +43,7 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
-		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hiden from everyone
+		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
 		if ( $request->visibility >= 3 ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
