@@ -225,7 +225,7 @@ class RequestWikiRequestViewer {
 			];
 
 			if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
-				$visibilityOptions[1] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped()
+				$visibilityOptions[1] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
 			}
 
 			if ( $permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' ) ) {
