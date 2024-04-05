@@ -113,11 +113,12 @@
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Mark this request's visibility as...",
-	"requestwikiqueue-request-label-visibility-all": "Users with 'read' can view",
-	"requestwikiqueue-request-label-visibility-delete": "Users with 'delete' permissions can view",
-	"requestwikiqueue-request-label-visibility-hide": "Users with 'createwiki' permissions can view",
-	"requestwikiqueue-request-label-visibility-oversight": "Users with 'suppressrevision' permissions can view",
+	"requestwikiqueue-request-label-visibility-all": "Publicly viewable",
+	"requestwikiqueue-request-label-visibility-delete": "Users with 'createwiki-deleterequest' permissions can view",
+	"requestwikiqueue-request-label-visibility-suppress": "Users with 'createwiki-suppressrequest' permissions can view",
 	"requestwikiqueue-search-header": "Search wiki requests",
 	"right-requestwiki": "Request wikis",
-	"right-createwiki": "Create wikis"
+	"right-createwiki": "Create wikis",
+	"right-createwiki-deleterequest": "Delete wiki requests",
+	"right-createwiki-suppressrequest": "Hide wiki requests from everyone"
 }
