@@ -8,7 +8,7 @@
 	},
 	"action-createwiki": "create wikis",
 	"action-createwiki-deleterequest": "delete wiki requests",
-	"action-createwiki-suppressionlog"; "view the wiki request suppression log",
+	"action-createwiki-suppressionlog": "view the wiki request suppression log",
 	"action-createwiki-suppressrequest": "suppress wiki requests",
 	"action-requestwiki": "request wikis",
 	"createwiki": "Create a wiki",
