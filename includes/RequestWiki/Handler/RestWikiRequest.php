@@ -43,6 +43,7 @@ class RestWikiRequest extends SimpleHandler {
 		$requestID = (int)$id;
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
+			0 => 'public',
 			1 => 'createwiki-deleterequest',
 			2 => 'createwiki-suppressrequest',
 		];
@@ -59,18 +60,11 @@ class RestWikiRequest extends SimpleHandler {
 		if ( $wikiRequest ) {
 
 			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
-
 			if ( $wikiRequest->cw_visibility >= 3 ) {
 				return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
 			}
 
-			$wikiRequestVisibility = '';
-
-			if ( $wikiRequest->cw_visibility === 0 ) {
-				$wikiRequestVisibility = 'public';
-			} else {
-				$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
-			}
+			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
 
 			if ( $wikiRequestVisibility !== 'public' ) {
 				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
