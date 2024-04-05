@@ -17,6 +17,7 @@
 	"AvailableRights": [
 		"createwiki",
 		"createwiki-deleterequest",
+		"createwiki-suppressionlog",
 		"createwiki-suppressrequest",
 		"requestwiki"
 	],
@@ -46,8 +47,12 @@
 		"SetContainersAccessJob": "Miraheze\\CreateWiki\\SetContainersAccessJob"
 	},
 	"LogTypes": [
-		"farmer"
+		"farmer",
+		"farmersuppression"
 	],
+	"LogRestrictions": {
+		"farmersuppression": "createwiki-suppressionlog"
+	},
 	"ActionFilteredLogs": {
 		"farmer": {
 			"createwiki": [

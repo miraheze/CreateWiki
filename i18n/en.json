@@ -8,6 +8,7 @@
 	},
 	"action-createwiki": "create wikis",
 	"action-createwiki-deleterequest": "delete wiki requests",
+	"action-createwiki-suppressionlog"; "view the wiki request suppression log",
 	"action-createwiki-suppressrequest": "suppress wiki requests",
 	"action-requestwiki": "request wikis",
 	"createwiki": "Create a wiki",
@@ -59,7 +60,11 @@
 	"logentry-farmer-requestonhold": "$1 {{GENDER:$2|placed}} wiki request $4 on hold",
 	"logentry-farmer-requestreopen": "$1 {{GENDER:$2|re-opened}} wiki request $4",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$2|requested}} \"$4\" in $7",
+	"logentry-farmersuppression-delete": "$1 {{GENDER:$2|deleted}} wiki request $4",
+	"logentry-farmersuppression-public": "$1 {{GENDER:$2|made}} wiki request $4 public",
+	"logentry-farmersuppression-suppress": "$1 {{GENDER:$2|suppressed}} wiki request $4",
 	"log-name-farmer": "Farmer log",
+	"log-name-farmersuppression": "Suppressed wiki requests log",
 	"notification-createwiki-wiki-creation-email-subject": "Your wiki $1 has been created!",
 	"notification-createwiki-wiki-creation-visitwiki-label": "Visit wiki",
 	"notification-createwiki-visit-request": "Visit request",
@@ -122,5 +127,6 @@
 	"right-requestwiki": "Request wikis",
 	"right-createwiki": "Create wikis",
 	"right-createwiki-deleterequest": "Delete wiki requests",
+	"right-createwiki-suppressionlog": "View the wiki request suppression log",
 	"right-createwiki-suppressrequest": "Hide wiki requests from everyone"
 }
