@@ -360,7 +360,7 @@ class RequestWikiRequestViewer {
 		array $formData,
 		HTMLForm $form,
 		WikiRequest $request,
-		int $requestID
+		string $requestID
 	) {
 		$out = $form->getContext()->getOutput();
 		$user = $form->getUser();
