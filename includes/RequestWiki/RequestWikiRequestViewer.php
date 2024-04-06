@@ -9,10 +9,15 @@ use HTMLForm;
 use HTMLFormField;
 use IContextSource;
 use Linker;
+use ManualLogEntry;
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\User;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
+use SpecialPage;
+use Title;
 
 class RequestWikiRequestViewer {
 
@@ -20,10 +25,13 @@ class RequestWikiRequestViewer {
 	private $config;
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
+	/** @var LinkRenderer */
+	private $linkRenderer;
 
 	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$this->linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	}
 
 	public function getFormDescriptor(
@@ -340,8 +348,8 @@ class RequestWikiRequestViewer {
 		$htmlForm->setId( 'createwiki-form' );
 		$htmlForm->suppressDefaultSubmit();
 		$htmlForm->setSubmitCallback(
-			function ( array $formData, HTMLForm $form ) use ( $request ) {
-				return $this->submitForm( $formData, $form, $request );
+			function ( array $formData, HTMLForm $form ) use ( $request, $context, $id ) {
+				return $this->submitForm( $formData, $form, $request, $context->getUser(), $id );
 			}
 		);
 
@@ -351,7 +359,9 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form,
-		WikiRequest $request
+		WikiRequest $request,
+		User $user,
+		int $requestID
 	) {
 		$out = $form->getContext()->getOutput();
 		$user = $form->getUser();
@@ -406,8 +416,36 @@ class RequestWikiRequestViewer {
 			$request->visibility = $formData['visibility'];
 			if ( isset( $formData['visibility-options'] ) ) {
 				$request->visibility = $formData['visibility-options'];
-			}
+				$suppressionLog = '';
+				switch ( $formData['visibility-options'] ) {
+					case 0:
+						$suppressionLog = 'public';
+						break;
 
+					case 1:
+						$suppressionLog = 'delete';
+						break;
+
+					case 2:
+						$suppressionLog = 'suppress';
+						break;
+				}
+				$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $suppressionLog );
+				$suppressionLogEntry->setPerformer( $user );
+				$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID ) );
+				$suppressionLogEntry->setParameters(
+					[
+						'4::id' => Message::rawParam(
+							$this->linkRenderer->makeKnownLink(
+								Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $requestID ),
+								'#' . $requestID
+							)
+						),
+					]
+				);
+				$suppressionLogID = $suppressionLogEntry->insert();
+				$suppressionLogEntry->publish( $suppressionLogID );
+			}
 			if ( $formData['submission-action'] == 'approve' ) {
 				$request->approve( $user, $formData['reason'] );
 			} elseif ( $formData['submission-action'] == 'onhold' ) {
