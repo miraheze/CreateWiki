@@ -307,7 +307,6 @@ class WikiRequest {
 			// Nothing to do, the wiki request already has the requested suppression level
 			return;
 		}
-		$oldLevel = $this->visibility;
 		$this->visibility = $level;
 
 		$this->save();
