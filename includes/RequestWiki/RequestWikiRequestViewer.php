@@ -446,6 +446,7 @@ class RequestWikiRequestViewer {
 				$suppressionLogID = $suppressionLogEntry->insert();
 				$suppressionLogEntry->publish( $suppressionLogID );
 			}
+
 			if ( $formData['submission-action'] == 'approve' ) {
 				$request->approve( $user, $formData['reason'] );
 			} elseif ( $formData['submission-action'] == 'onhold' ) {
