@@ -403,7 +403,6 @@ class RequestWikiRequestViewer {
 
 			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
-			$request->visibility = $formData['visibility'];
 			if ( isset( $formData['visibility-options'] ) ) {
 				$request->suppress( $user, $formData['visibility-options'] );
 			}
