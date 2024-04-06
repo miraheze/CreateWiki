@@ -340,8 +340,8 @@ class RequestWikiRequestViewer {
 		$htmlForm->setId( 'createwiki-form' );
 		$htmlForm->suppressDefaultSubmit();
 		$htmlForm->setSubmitCallback(
-			function ( array $formData, HTMLForm $form ) use ( $request, $id ) {
-				return $this->submitForm( $formData, $form, $request, $id );
+			function ( array $formData, HTMLForm $form ) use ( $request ) {
+				return $this->submitForm( $formData, $form, $request );
 			}
 		);
 
@@ -352,7 +352,6 @@ class RequestWikiRequestViewer {
 		array $formData,
 		HTMLForm $form,
 		WikiRequest $request,
-		string $requestID
 	) {
 		$out = $form->getContext()->getOutput();
 		$user = $form->getUser();
