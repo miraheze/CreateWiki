@@ -9,15 +9,10 @@ use HTMLForm;
 use HTMLFormField;
 use IContextSource;
 use Linker;
-use ManualLogEntry;
-use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MediaWikiServices;
-use Message;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
-use SpecialPage;
-use Title;
 
 class RequestWikiRequestViewer {
 
@@ -25,13 +20,10 @@ class RequestWikiRequestViewer {
 	private $config;
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
-	/** @var LinkRenderer */
-	private $linkRenderer;
 
 	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$this->linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	}
 
 	public function getFormDescriptor(
