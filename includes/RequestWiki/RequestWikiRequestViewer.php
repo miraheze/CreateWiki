@@ -31,10 +31,9 @@ class RequestWikiRequestViewer {
 		IContextSource $context
 	) {
 		$visibilityConds = [
-			0 => 'read',
-			1 => 'createwiki',
-			2 => 'delete',
-			3 => 'suppressrevision',
+			0 => 'public',
+			1 => 'createwiki-deleterequest',
+			2 => 'createwiki-suppressrequest',
 		];
 
 		// Gets user from request
@@ -44,8 +43,15 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
-		if ( $visibilityConds[$request->visibility] !== 'read' ) {
-			if ( !$permissionManager->userHasAllRights( $userR, 'createwiki', $visibilityConds[$request->visibility] ) ) {
+		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
+		if ( $request->visibility >= 3 ) {
+			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
+
+			return [];
+		}
+
+		if ( $visibilityConds[$request->visibility] !== 'public' ) {
+			if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility] ) ) {
 				$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
 				return [];
@@ -210,18 +216,20 @@ class RequestWikiRequestViewer {
 			];
 		}
 
+		// TODO: Should we really require (createwiki) to suppress wiki requests?
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() ) {
+
+			// You can't even get to this part in suppressed wiki requests without the appropiate userright, so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
-				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->escaped(),
 			];
 
-			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
-				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
+			if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
+				$visibilityOptions[1] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
 			}
 
-			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
-				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->escaped();
+			if ( $permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' ) ) {
+				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
 			$wm = new WikiManager( $request->dbname, $this->hookRunner );
@@ -343,7 +351,7 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form,
-		WikiRequest $request
+		WikiRequest $request,
 	) {
 		$out = $form->getContext()->getOutput();
 		$user = $form->getUser();
@@ -397,7 +405,7 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 			if ( isset( $formData['visibility-options'] ) ) {
-				$request->visibility = $formData['visibility-options'];
+				$request->suppress( $user, $formData['visibility-options'] );
 			}
 
 			if ( $formData['submission-action'] == 'approve' ) {

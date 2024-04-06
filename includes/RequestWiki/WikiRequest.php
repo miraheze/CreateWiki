@@ -284,6 +284,50 @@ class WikiRequest {
 		$logEntry->publish( $logID );
 	}
 
+	private function suppressionLog( User $user, string $log ) {
+		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
+		$suppressionLogEntry->setPerformer( $user );
+		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
+		$suppressionLogEntry->setParameters(
+			[
+				'4::id' => Message::rawParam(
+					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
+						'#' . $this->id
+					)
+				),
+			]
+		);
+		$suppressionLogID = $suppressionLogEntry->insert();
+		$suppressionLogEntry->publish( $suppressionLogID );
+	}
+
+	public function suppress( User $user, int $level, $log = true ) {
+		if ( $level === $this->visibility ) {
+			// Nothing to do, the wiki request already has the requested suppression level
+			return;
+		}
+		$this->visibility = $level;
+
+		$this->save();
+
+		if ( $log ) {
+			switch ( $level ) {
+				case 0:
+					$this->suppressionLog( $user, 'public' );
+					break;
+
+				case 1:
+					$this->suppressionLog( $user, 'delete' );
+					break;
+
+				case 2:
+					$this->suppressionLog( $user, 'suppress' );
+					break;
+			}
+		}
+	}
+
 	public function reopen( User $user, $log = true ) {
 		$status = $this->status;
 

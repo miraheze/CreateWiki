@@ -43,10 +43,9 @@ class RestWikiRequest extends SimpleHandler {
 		$requestID = (int)$id;
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
-			0 => 'read',
-			1 => 'createwiki',
-			2 => 'delete',
-			3 => 'suppressrevision',
+			0 => 'public',
+			1 => 'createwiki-deleterequest',
+			2 => 'createwiki-suppressrequest',
 		];
 		$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
@@ -59,17 +58,16 @@ class RestWikiRequest extends SimpleHandler {
 			__METHOD__
 		);
 		if ( $wikiRequest ) {
+
+			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
+			if ( $wikiRequest->cw_visibility >= 3 ) {
+				return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+			}
+
 			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
 
-			/*
-			 * CreateWiki is enabled globally on all wikis in the farm.
-			 *
-			 * Require both (createwiki) and the required permission to prevent suppressed requests from
-			 * being revealed to local suppressors/sysops
-			 */
-
-			if ( $wikiRequestVisibility !== 'read' ) {
-				if ( !$this->getAuthority()->isAllowedAll( 'createwiki', $wikiRequestVisibility ) ) {
+			if ( $wikiRequestVisibility !== 'public' ) {
+				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
 					// User does not have permission to view this request
 					return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
 				}

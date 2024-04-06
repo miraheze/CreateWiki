@@ -16,6 +16,9 @@
 	},
 	"AvailableRights": [
 		"createwiki",
+		"createwiki-deleterequest",
+		"createwiki-suppressionlog",
+		"createwiki-suppressrequest",
 		"requestwiki"
 	],
 	"SpecialPages": {
@@ -44,8 +47,12 @@
 		"SetContainersAccessJob": "Miraheze\\CreateWiki\\SetContainersAccessJob"
 	},
 	"LogTypes": [
-		"farmer"
+		"farmer",
+		"farmersuppression"
 	],
+	"LogRestrictions": {
+		"farmersuppression": "createwiki-suppressionlog"
+	},
 	"ActionFilteredLogs": {
 		"farmer": {
 			"createwiki": [
@@ -64,6 +71,17 @@
 				"requestreopen",
 				"requestwiki"
 			]
+		},
+		"farmersuppression": {
+			"delete": [
+				"delete"
+			],
+			"public": [
+				"public"
+			],
+			"suppress": [
+				"suppress"
+			]
 		}
 	},
 	"LogActionsHandlers": {
@@ -73,7 +91,8 @@
 		"farmer/requestmoredetails": "LogFormatter",
 		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
-		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter"
+		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+		"farmersuppression/*": "LogFormatter"
 	},
 	"MessagesDirs": {
 		"CreateWiki": [
