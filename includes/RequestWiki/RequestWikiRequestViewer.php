@@ -12,6 +12,7 @@ use Linker;
 use ManualLogEntry;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MediaWikiServices;
+use Message;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
