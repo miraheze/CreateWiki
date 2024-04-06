@@ -71,7 +71,7 @@
 				"requestreopen",
 				"requestwiki"
 			]
-		}
+		},
 		"farmersuppression": {
 			"delete": [
 				"delete"
