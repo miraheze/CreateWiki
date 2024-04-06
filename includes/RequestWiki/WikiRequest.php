@@ -291,7 +291,7 @@ class WikiRequest {
 		$suppressionLogEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
-					$this->linkRenderer->makeKnownLink(
+					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
 						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
 						'#' . $this->id
 					)
