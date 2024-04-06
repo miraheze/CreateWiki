@@ -303,7 +303,7 @@ class WikiRequest {
 	}
 
 	public function suppress( User $user, int $level, $log = true ) {
-		if ( $level === $this->visibility ) {
+		if ( $level === (int)$this->visibility ) {
 			// Nothing to do, the wiki request already has the requested suppression level
 			return;
 		}
