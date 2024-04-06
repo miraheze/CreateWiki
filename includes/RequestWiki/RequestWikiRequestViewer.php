@@ -12,7 +12,6 @@ use Linker;
 use ManualLogEntry;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\User\User;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
@@ -348,8 +347,8 @@ class RequestWikiRequestViewer {
 		$htmlForm->setId( 'createwiki-form' );
 		$htmlForm->suppressDefaultSubmit();
 		$htmlForm->setSubmitCallback(
-			function ( array $formData, HTMLForm $form ) use ( $request, $context, $id ) {
-				return $this->submitForm( $formData, $form, $request, $context->getUser(), $id );
+			function ( array $formData, HTMLForm $form ) use ( $request, $id ) {
+				return $this->submitForm( $formData, $form, $request, $id );
 			}
 		);
 
@@ -360,7 +359,6 @@ class RequestWikiRequestViewer {
 		array $formData,
 		HTMLForm $form,
 		WikiRequest $request,
-		User $user,
 		int $requestID
 	) {
 		$out = $form->getContext()->getOutput();
