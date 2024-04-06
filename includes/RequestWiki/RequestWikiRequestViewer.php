@@ -414,36 +414,7 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$request->visibility = $formData['visibility'];
 			if ( isset( $formData['visibility-options'] ) ) {
-				$request->visibility = $formData['visibility-options'];
-				$suppressionLog = '';
-				switch ( $formData['visibility-options'] ) {
-					case 0:
-						$suppressionLog = 'public';
-						break;
-
-					case 1:
-						$suppressionLog = 'delete';
-						break;
-
-					case 2:
-						$suppressionLog = 'suppress';
-						break;
-				}
-				$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $suppressionLog );
-				$suppressionLogEntry->setPerformer( $user );
-				$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID ) );
-				$suppressionLogEntry->setParameters(
-					[
-						'4::id' => Message::rawParam(
-							$this->linkRenderer->makeKnownLink(
-								Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $requestID ),
-								'#' . $requestID
-							)
-						),
-					]
-				);
-				$suppressionLogID = $suppressionLogEntry->insert();
-				$suppressionLogEntry->publish( $suppressionLogID );
+				$request->suppress( $user, $formData['visibility-options'] );
 			}
 
 			if ( $formData['submission-action'] == 'approve' ) {
