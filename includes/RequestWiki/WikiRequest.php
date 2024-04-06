@@ -293,7 +293,7 @@ class WikiRequest {
 				'4::id' => Message::rawParam(
 					$this->linkRenderer->makeKnownLink(
 						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
-						'#' . $requestID
+						'#' . $this->id
 					)
 				),
 			]
