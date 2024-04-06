@@ -287,12 +287,12 @@ class WikiRequest {
 	private function suppressionLog( User $user, string $log ) {
 		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
 		$suppressionLogEntry->setPerformer( $user );
-		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID ) );
+		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
 		$suppressionLogEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
 					$this->linkRenderer->makeKnownLink(
-						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $requestID ),
+						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
 						'#' . $requestID
 					)
 				),
