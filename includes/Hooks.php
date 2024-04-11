@@ -134,7 +134,7 @@ class Hooks implements
 		$notificationCategories['wiki-creation'] = [
 			'priority' => 1,
 			'tooltip' => 'echo-pref-tooltip-wiki-creation',
-			'no-dismiss' => [ 'all' ],
+			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-declined'] = [
@@ -144,8 +144,8 @@ class Hooks implements
 
 		$notificationCategories['request-moredetails'] = [
 			'priority' => 1,
-			'tooltip' => 'echo-pref-tooltip-wiki-request-moredetails'
-			'no-dismiss' => [ 'all' ],
+			'tooltip' => 'echo-pref-tooltip-wiki-request-moredetails',
+			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-comment'] = [
