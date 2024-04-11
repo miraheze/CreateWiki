@@ -100,8 +100,6 @@
 	"requestwikiqueue-request-label-visibility": "Bu isteğin görünürlüğünü şu şekilde işaretle...",
 	"requestwikiqueue-request-label-visibility-all": "'read' iznine sahip herkes bu isteği görüntüleyebilir",
 	"requestwikiqueue-request-label-visibility-delete": "'delete' iznine sahip herkes bu isteği görüntüleyebilir",
-	"requestwikiqueue-request-label-visibility-hide": "'createwiki' iznine sahip herkes bu isteği görüntüleyebilir",
-	"requestwikiqueue-request-label-visibility-oversight": "'suppressrevision' iznine sahip herkes bu isteği görüntüleyebilir",
 	"right-requestwiki": "Viki talep et",
 	"right-createwiki": "Viki oluştur"
 }

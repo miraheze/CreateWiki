@@ -63,8 +63,6 @@
 	"requestwikiqueue-request-label-visibility": "Indikez la videbleso di ca demandi kom...",
 	"requestwikiqueue-request-label-visibility-all": "Irgu kun 'read' ('lektar') povas vidar ca demando",
 	"requestwikiqueue-request-label-visibility-delete": "Irgu kun permiso por efacar ('delete') povas vidar ca demando",
-	"requestwikiqueue-request-label-visibility-hide": "Irgu kun permiso pri kreo di wiki ('createwiki') povas vidar ca demando",
-	"requestwikiqueue-request-label-visibility-oversight": "Irgu kun permiso 'suppressrevision' povas vidar ca demando",
 	"right-requestwiki": "Demandar wiki-i",
 	"right-createwiki": "Krear wiki"
 }

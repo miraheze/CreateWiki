@@ -95,8 +95,6 @@
 	"requestwikiqueue-request-label-visibility": "Označi vidljivost ovog zahtjeva kao...",
 	"requestwikiqueue-request-label-visibility-all": "Svi koji imaju dozvolu za čitanje mogu vidjeti ovaj zahtjev",
 	"requestwikiqueue-request-label-visibility-delete": "Svi koji imaju dozvolu za brisanje mogu vidjeti ovaj zahtjev",
-	"requestwikiqueue-request-label-visibility-hide": "Svi koji imaju dozvolu za pravljenje vikija mogu vidjeti ovaj zahtjev",
-	"requestwikiqueue-request-label-visibility-oversight": "Svi koji imaju dozvolu za skrivanje izmjena mogu vidjeti ovaj zahtjev",
 	"right-requestwiki": "Zahtjevanje vikija",
 	"right-createwiki": "Pravljenje vikija"
 }

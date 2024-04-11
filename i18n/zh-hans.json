@@ -124,10 +124,8 @@
 	"requestwikiqueue-request-label-status": "状态",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "标记该请求的可见性为……",
-	"requestwikiqueue-request-label-visibility-all": "有“read”权限的用户可以查看",
-	"requestwikiqueue-request-label-visibility-delete": "有“delete”权限的用户可以查看",
-	"requestwikiqueue-request-label-visibility-hide": "有“createwiki”权限的用户可以查看",
-	"requestwikiqueue-request-label-visibility-oversight": "有“suppressrevision”权限的用户可以查看",
+	"requestwikiqueue-request-label-visibility-all": "公开可见",
+	"requestwikiqueue-request-label-visibility-delete": "有“createwiki-deleterequest”权限的用户可以查看",
 	"requestwikiqueue-search-header": "搜索wiki申请",
 	"right-requestwiki": "申请wiki",
 	"right-createwiki": "创建wiki"

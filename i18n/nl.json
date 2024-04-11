@@ -104,10 +104,8 @@
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "De zichtbaarheid van dit verzoek instellen op…",
-	"requestwikiqueue-request-label-visibility-all": "Gebruikers met 'read' (lezen) kunnen bekijken",
-	"requestwikiqueue-request-label-visibility-delete": "Gebruikers met 'delete' (verwijderen) kunnen bekijken",
-	"requestwikiqueue-request-label-visibility-hide": "Gebruikers met 'createwiki' (wiki aanmaken) kunnen bekijken",
-	"requestwikiqueue-request-label-visibility-oversight": "Gebruikers met de machtiging 'suppressrevision' (versie onderdrukken) kunnen bekijken",
+	"requestwikiqueue-request-label-visibility-all": "Openbaar zichtbaar",
+	"requestwikiqueue-request-label-visibility-delete": "Gebruikers met 'createwiki-deleterequest'-rechten kunnen dit bekijken",
 	"right-requestwiki": "Wiki's aanvragen",
 	"right-createwiki": "Wiki's aanmaken"
 }

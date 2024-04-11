@@ -106,8 +106,6 @@
 	"requestwikiqueue-request-label-visibility": "Označi vidnost te prošnje kot ...",
 	"requestwikiqueue-request-label-visibility-all": "Uporabniki s pravico »read« (branje) si lahko ogledajo",
 	"requestwikiqueue-request-label-visibility-delete": "Uporabniki s pravico »delete« (brisanje) si lahko ogledajo",
-	"requestwikiqueue-request-label-visibility-hide": "Uporabniki s pravico »createwiki« (ustvarjanje vikijev) si lahko ogledajo.",
-	"requestwikiqueue-request-label-visibility-oversight": "Uporabniki s pravico »suppressrevision« (ukinjanje redakcij) si lahko ogledajo",
 	"right-requestwiki": "Vlaganje prošenj za viki",
 	"right-createwiki": "Ustvarjanje vikijev"
 }

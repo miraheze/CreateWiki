@@ -97,8 +97,6 @@
 	"requestwikiqueue-request-label-visibility": "Marque a visibilidade desta solicitação como...",
 	"requestwikiqueue-request-label-visibility-all": "Todos com 'read' podem ver este pedido",
 	"requestwikiqueue-request-label-visibility-delete": "Todos com permissões \"delete\" podem visualizar essa solicitação",
-	"requestwikiqueue-request-label-visibility-hide": "Todos com permissões 'createwiki' podem ver este pedido",
-	"requestwikiqueue-request-label-visibility-oversight": "Todos com permissões de \"suppressrevision\" podem visualizar essa solicitação",
 	"right-requestwiki": "Solicitar wikis",
 	"right-createwiki": "Criar wikis em uma \"farm\" de wikis"
 }

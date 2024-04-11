@@ -15,6 +15,7 @@
 		]
 	},
 	"action-createwiki": "luoda wikejä",
+	"action-createwiki-deleterequest": "poistaa wikipyyntöjä",
 	"action-requestwiki": "pyytää wikejä",
 	"createwiki": "Luo wiki",
 	"createwiki-defaultmainpage": "__NOTOC__\n== Tervetuloa sivustolle {{SITENAME}}! ==\nTämän etusivu on luotu automaattisesti, ja näyttää siltä ettei sitä ole vielä korvattu uudella sisällöllä.\n\n=== Wikin byrokraat(e)ille ===\nMoi ja tervetuloa uuteen wikiisi! Kiitos että valitsit juuri Mirahezen isännöimään wikiäsi. Toivottavasti tulet nauttimaan tarjoamistamme isännöintipalveluista.\n\nVoit aloittaa työt tässä uudessa wikissäsi ihan milloin lystäät, vaikka heti.\n\nTarvitsetko apua? Ei hätää! Me autamme mielellämme tarvittaessa. Olemme koonneet tähän muutamia linkkejä, joista voi olla hyötyä pääsemisessä alkuu:\n* <span class=\"plainlinks\">[[mw:Special:MyLanguage/Help:Contents|MediaWikin ohjeisto (mm. navigointi, muokkaaminen, sivujen poistaminen ja käyttäjien estäminen)]]\n* [[meta:Special:MyLanguage/FAQ|Mirahezen UKK]]\n* [[meta:Special:MyLanguage/Request features|Pyydä wikiisi asetusmuutoksia]]. (Laajennusten, ulkoasun ja logon/faviconin muutokset voit tehdä itse sivulla [[Special:ManageWiki]], siitä lisää tietoa Metassa sivulla  [[meta:Special:MyLanguage/ManageWiki|ManageWiki]]).\n\n==== Miraheze, en vieläkään ymmärrä asiaa X! ====\nTämä on helposti korjattavissa. Jos ongelmaasi ei löydy ratkaisua ohjeistossa tai vastausta usein kysytyistä kysymyksistä, voit hyvin kysyä asiaa suoraan meiltä. Tavoitat meidät seuraavilla tavoilla:\n* [[meta:Special:MyLanguage/Help center|Mirahezen omasta wikistä]]\n* [[phorge:|Mirahezen Phorgeista]]\n* [https://miraheze.org/discord Mirahezen Discord-ryhmästä]\n* IRCissä kanavalta #miraheze osoitteessa irc.libera.chat ([irc://irc.libera.chat/%23miraheze suora linkki]; [https://web.libera.chat/?channel=#miraheze webchat])\n\n=== Tämän wikin vierailijoille ===\nHeippa! Tämä etusivu tässä on Mirahezen uusien wikien oletusetusivu, jota wikin byrokraatti ei ole vain vielä muokannut uusiksi. Voi kuitenkin olla että etusivua työstetään vielä, joten suosittelemme palaamaan sivustolle jonkin ajan päästä uudestaan!",
@@ -47,6 +48,7 @@
 	"log-action-filter-farmer-requestapprove": "Wikipyyntö hyväksytty",
 	"log-action-filter-farmer-requestdecline": "Wikipyyntö hylätty",
 	"log-action-filter-farmer-requestwiki": "Wikipyyntö avattu/avattu uudelleen",
+	"log-action-filter-farmersuppression-delete": "Poistettu wikipyyntö",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|loi}} wikin ”$4”",
 	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|hyväksyi}} wikipyynnön $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|hylkäsi}} wikipyynnön $4",
@@ -101,10 +103,9 @@
 	"requestwikiqueue-request-label-status": "Tila",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Merkitse tämän pyynnön näkyvyydeksi...",
-	"requestwikiqueue-request-label-visibility-all": "Käyttäjät, joilla on 'read' -oikeus, voivat katsoa",
-	"requestwikiqueue-request-label-visibility-delete": "Käyttäjät, joilla on 'delete' -oikeus, voivat katsoa",
-	"requestwikiqueue-request-label-visibility-hide": "Kaikki, joilla on 'createwiki' -oikeus, voivat katsoa tätä pyyntöä",
-	"requestwikiqueue-request-label-visibility-oversight": "Käyttäjät, joilla on 'suppressrevision' -oikeus, voivat katsoa",
+	"requestwikiqueue-request-label-visibility-all": "Julkisesti näkyvillä",
+	"requestwikiqueue-request-label-visibility-delete": "Käyttäjät, joilla on 'createwiki-deleterequest' -oikeus, voivat katsoa",
 	"right-requestwiki": "Pyydä wikejä",
-	"right-createwiki": "Luoda wikejä wikifarmiin"
+	"right-createwiki": "Luoda wikejä wikifarmiin",
+	"right-createwiki-deleterequest": "Poistaa wikipyyntöjä"
 }

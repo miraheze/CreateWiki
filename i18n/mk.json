@@ -94,8 +94,6 @@
 	"requestwikiqueue-request-label-visibility": "Означи ја видливоста на барањево како....",
 	"requestwikiqueue-request-label-visibility-all": "Секој со дозвола за читање може да го гледа барањево",
 	"requestwikiqueue-request-label-visibility-delete": "Секој со дозвола за бришење може да го гледа барањево",
-	"requestwikiqueue-request-label-visibility-hide": "Секој со дозвола за создавање викија може да го гледа барањево",
-	"requestwikiqueue-request-label-visibility-oversight": "Секој со дозвола за скривање на преработки може да го гледа барањево",
 	"right-requestwiki": "Побарување на викија",
 	"right-createwiki": "Создавање на викија на вики-фармата"
 }

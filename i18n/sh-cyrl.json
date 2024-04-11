@@ -92,8 +92,6 @@
 	"requestwikiqueue-request-label-visibility": "Означи видљивост овог захтјева као...",
 	"requestwikiqueue-request-label-visibility-all": "Сви који имају дозволу за читање могу видјети овај захтјев",
 	"requestwikiqueue-request-label-visibility-delete": "Сви који имају дозволу за брисање могу видјети овај захтјев",
-	"requestwikiqueue-request-label-visibility-hide": "Сви који имају дозволу за прављење викија могу видјети овај захтјев",
-	"requestwikiqueue-request-label-visibility-oversight": "Сви који имају дозволу за скривање измјена могу видјети овај захтјев",
 	"right-requestwiki": "Захтјевање викија",
 	"right-createwiki": "Прављење викија"
 }

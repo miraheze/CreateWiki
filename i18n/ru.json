@@ -125,8 +125,6 @@
 	"requestwikiqueue-request-label-visibility": "Изменить видимость этого запроса на…",
 	"requestwikiqueue-request-label-visibility-all": "Участники с правом на чтение может посмотреть запрос",
 	"requestwikiqueue-request-label-visibility-delete": "Пользователи с правом на удаление могут увидеть",
-	"requestwikiqueue-request-label-visibility-hide": "Пользователи с правом на создание вики могут увидеть",
-	"requestwikiqueue-request-label-visibility-oversight": "Пользователи с правом на скрытие правок могуть увидеть",
 	"right-requestwiki": "запрос вики",
 	"right-createwiki": "Создание вики"
 }

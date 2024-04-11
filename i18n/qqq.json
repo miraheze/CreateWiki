@@ -14,6 +14,9 @@
 		]
 	},
 	"action-createwiki": "{{doc-action|createwiki}}",
+	"action-createwiki-deleterequest": "{{doc-action}}",
+	"action-createwiki-suppressionlog": "{{doc-action}}",
+	"action-createwiki-suppressrequest": "{{doc-action}}",
 	"action-requestwiki": "{{doc-action|requestwiki}}",
 	"createwiki": "",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
@@ -66,5 +69,8 @@
 	"requestwikiqueue-request-label-status": "Used as a label for 'status'\n{{Identical|Status}}",
 	"requestwikiqueue-request-label-url": "Used as a label for 'URL'\n{{Identical|URL}}",
 	"right-requestwiki": "{{doc-right|requestwiki}}",
-	"right-createwiki": "{{doc-right|createwiki}}"
+	"right-createwiki": "{{doc-right|createwiki}}",
+	"right-createwiki-deleterequest": "{{doc-right}}",
+	"right-createwiki-suppressionlog": "{{doc-right}}",
+	"right-createwiki-suppressrequest": "{{doc-right}}"
 }
