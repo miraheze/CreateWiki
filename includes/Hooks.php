@@ -138,8 +138,8 @@ class Hooks implements
 
 		$notificationCategories['request-declined'] = [
 			'priority' => 3,
-			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
-			'no-dismiss' => [ 'email' ],
+			'tooltip' => 'echo-pref-tooltip-wiki-request-declined',
+			'no-dismiss' => [ 'email' ]
 		];
 
 		$notificationCategories['request-moredetails'] = [
