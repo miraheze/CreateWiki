@@ -132,19 +132,18 @@ class Hooks implements
 		&$notifications, &$notificationCategories, &$icons
 	) {
 		$notificationCategories['wiki-creation'] = [
-			'priority' => 1,
-			'tooltip' => 'echo-pref-tooltip-wiki-creation',
+			'priority' => 3,
 			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-declined'] = [
-			'priority' => 2,
+			'priority' => 3,
 			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
+			'no-dismiss' => [ 'email' ],
 		];
 
 		$notificationCategories['request-moredetails'] = [
 			'priority' => 1,
-			'tooltip' => 'echo-pref-tooltip-wiki-request-moredetails',
 			'no-dismiss' => [ 'all' ]
 		];
 
