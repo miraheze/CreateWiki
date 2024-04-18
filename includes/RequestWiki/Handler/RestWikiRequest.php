@@ -120,7 +120,7 @@ class RestWikiRequest extends SimpleHandler {
 		return [
 			'id' => [
 				self::PARAM_SOURCE => 'path',
-				ParamValidator::PARAM_TYPE => 'int',
+				ParamValidator::PARAM_TYPE => 'integer',
 				ParamValidator::PARAM_REQUIRED => true,
 			],
 		];
