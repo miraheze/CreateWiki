@@ -6,6 +6,7 @@ use Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
+use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\ILBFactory;
 
@@ -39,8 +40,7 @@ class RestWikiRequest extends SimpleHandler {
 		$this->userFactory = $userFactory;
 	}
 
-	public function run( $id ) {
-		$requestID = (int)$id;
+	public function run( $requestID ) {
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
 			0 => 'public',
@@ -58,10 +58,9 @@ class RestWikiRequest extends SimpleHandler {
 			__METHOD__
 		);
 		if ( $wikiRequest ) {
-
 			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
 			if ( $wikiRequest->cw_visibility >= 3 ) {
-				return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+				return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 			}
 
 			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
@@ -69,9 +68,10 @@ class RestWikiRequest extends SimpleHandler {
 			if ( $wikiRequestVisibility !== 'public' ) {
 				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
 					// User does not have permission to view this request
-					return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+					return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 				}
 			}
+
 			$response = [
 				'comment' => $wikiRequest->cw_comment,
 				'dbname' => $wikiRequest->cw_dbname,
@@ -108,8 +108,8 @@ class RestWikiRequest extends SimpleHandler {
 			$response['comments'] = $wikiRequestComments;
 			return $this->getResponseFactory()->createJson( $response );
 		}
-		// Request does not exist, or has been suppressed
-		return $this->getResponseFactory()->createHttpError( 404, ['message' => 'Request not found'] );
+		// Request does not exist
+		return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 	}
 
 	public function needsWriteAccess() {
@@ -120,7 +120,7 @@ class RestWikiRequest extends SimpleHandler {
 		return [
 			'id' => [
 				self::PARAM_SOURCE => 'path',
-				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_TYPE => 'int',
 				ParamValidator::PARAM_REQUIRED => true,
 			],
 		];
