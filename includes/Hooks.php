@@ -14,6 +14,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
 use Wikimedia\Rdbms\ILBFactory;
 
 class Hooks implements
@@ -173,6 +174,18 @@ class Hooks implements
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestDeclinedPresentationModel::class,
+			'immediate' => true
+		];
+
+		$notifications['request-moredetails'] = [
+			EchoAttributeManager::ATTR_LOCATORS => [
+				'EchoUserLocator::locateEventAgent'
+			],
+			'category' => 'request-moredetails',
+			'group' => 'positive',
+			'section' => 'alert',
+			'canNotifyAgent' => true,
+			'presentation-model' => EchoRequestMoreDetailsPresentationModel::class,
 			'immediate' => true
 		];
 
