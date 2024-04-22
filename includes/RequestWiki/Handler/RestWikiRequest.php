@@ -41,6 +41,9 @@ class RestWikiRequest extends SimpleHandler {
 	}
 
 	public function run( $requestID ) {
+		if ( $this->config->get( 'CreateWikiDisableRESTAPI' ) ) {
+			return $this->getResponseFactory()->createLocalizedHttpError( 403, new MessageValue( 'createwiki-rest-disabled' ) );
+		}
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
 			0 => 'public',
