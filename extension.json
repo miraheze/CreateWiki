@@ -287,7 +287,7 @@
 			"value": []
 		},
 		"CreateWikiRequestCountWarnThreshold": {
-			"description": "Interger, amount of wiki requests a user can have before being flagged.",
+			"description": "Integer. Amount of wiki requests a user can have before being flagged.",
 			"public": true,
 			"value": 5
 		},
