@@ -377,8 +377,19 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner );
-		$cWJ->resetDatabaseList();
-		$cWJ->update();
+        $cWJ = new CreateWikiJson($wiki ?? $this->config->get('CreateWikiGlobalWiki'), $this->hookRunner);
+        $cWJ->resetDatabaseList();
+        $cWJ->update();
+    }
+    public function getUserRequestCount(string $userID) {
+        $requestCount = $this->cwdb->selectRowCount(
+            'cw_requests',
+            '*',
+            [
+                'cw_user' => $userID
+            ]
+        );
+        return $requestCount;
+        }
 	}
 }
