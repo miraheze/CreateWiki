@@ -96,8 +96,6 @@
 	"requestwikiqueue-request-label-visibility": "इस अनुरोध के दृश्यता को ऐसे चिह्नित करें...",
 	"requestwikiqueue-request-label-visibility-all": "'पढ़ें' में सभी सदस्य इस अनुरोध को देख सकते हैं",
 	"requestwikiqueue-request-label-visibility-delete": "'हटाएँ' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
-	"requestwikiqueue-request-label-visibility-hide": "'createwiki' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
-	"requestwikiqueue-request-label-visibility-oversight": "'suppressrevision' अधिकार वाले सभी सदस्य इस अनुरोध को देख सकते हैं",
 	"right-requestwiki": "विकियों का अनुरोध करना",
 	"right-createwiki": "विकियाँ बनाना"
 }

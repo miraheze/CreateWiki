@@ -35,6 +35,7 @@
 	"echo-pref-tooltip-wiki-request-comment": "কোনো উইকির অনুরোধে কোনো মন্তব্য যুক্ত হলে আমাকে জানান।",
 	"echo-pref-tooltip-wiki-request-declined": "আমার অনুরোধ প্রত্যাখ্যান করা হলে আমাকে জানান।",
 	"log-description-farmer": "এই লগ উইকি সৃষ্টি ট্র্যাক করে।",
+	"log-action-filter-farmersuppression": "কাজের ধরন:",
 	"logentry-farmer-createwiki": "$1, \"$4\" উইকিটি {{GENDER:$2|তৈরি করেছেন}}",
 	"log-name-farmer": "কৃষক লগ",
 	"notification-createwiki-wiki-creation-visitwiki-label": "উইকি দেখুন",

@@ -25,6 +25,7 @@
 	"echo-pref-tooltip-wiki-creation": "Обавештава вас када се вики направи.",
 	"echo-pref-tooltip-wiki-request-declined": "Обавести ме ако је мој захтев за вики одбијен.",
 	"log-description-farmer": "Овај дневник приказује захтеве за викијима, прављење, одобравање и одбијање.",
+	"log-action-filter-farmersuppression": "Врста радње:",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|направио|направила}} је вики „$4”",
 	"logentry-farmer-requestapprove": "$1 је {{GENDER:$2|одобрио|одобрила}} вики захтев $4",
 	"logentry-farmer-requestdecline": "$1 је {{GENDER:$2|одбио|одбила}} вики захтев $4",
@@ -52,10 +53,8 @@
 	"requestwikiqueue-request-label-status": "Статус",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Означи видљивост ових захтева као…",
-	"requestwikiqueue-request-label-visibility-all": "Корисници који имају дозволу за читање могу да виде овај захтев",
+	"requestwikiqueue-request-label-visibility-all": "Јавно видљиво",
 	"requestwikiqueue-request-label-visibility-delete": "Корисници који имају дозволу за брисање могу да виде овај захтев",
-	"requestwikiqueue-request-label-visibility-hide": "Корисници који имају дозволу за прављење викија могу да виде овај захтев",
-	"requestwikiqueue-request-label-visibility-oversight": "Корисници који имају дозволу скривања измена могу да виде овај захтев",
 	"right-requestwiki": "Затражи викије",
 	"right-createwiki": "прављење викија на фарми"
 }

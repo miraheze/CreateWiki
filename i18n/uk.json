@@ -104,8 +104,6 @@
 	"requestwikiqueue-request-label-visibility": "Позначити видимість даного запиту як…",
 	"requestwikiqueue-request-label-visibility-all": "Кожний з правом на читання може подивитися запит",
 	"requestwikiqueue-request-label-visibility-delete": "Кожний з правом на видалення може подивитися запит",
-	"requestwikiqueue-request-label-visibility-hide": "Кожний з правом на створення вікі може подивитися запит",
-	"requestwikiqueue-request-label-visibility-oversight": "Кожний з правом на приховання версій може подивитися запит",
 	"right-requestwiki": "Надсилання запитів на вікі",
 	"right-createwiki": "Створення нових вікі на фермі"
 }

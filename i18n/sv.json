@@ -85,8 +85,6 @@
 	"requestwikiqueue-request-label-visibility": "Markera begärans synbarhet som...",
 	"requestwikiqueue-request-label-visibility-all": "Alla med 'read' kan läsa den här begäran",
 	"requestwikiqueue-request-label-visibility-delete": "Alla med 'delete'-rättigheter kan läsa den här begäran",
-	"requestwikiqueue-request-label-visibility-hide": "Alla med 'createwiki'-rättigheter kan läsa den här begäran",
-	"requestwikiqueue-request-label-visibility-oversight": "Alla med 'suppressrevision'-rättigheter kan läsa den här begäran",
 	"right-requestwiki": "Begär wikier",
 	"right-createwiki": "Skapa wikier"
 }

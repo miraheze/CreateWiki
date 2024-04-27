@@ -95,8 +95,6 @@
 	"requestwikiqueue-request-label-visibility": "Бұл сұраудың көріну мүмкіндігін осылай белгілеу...",
 	"requestwikiqueue-request-label-visibility-all": "'Оқу' құқығы бар барлық адам бұл сұранысты көре алады",
 	"requestwikiqueue-request-label-visibility-delete": "'Жою' құқығы бар барлық адам бұл сұранысты көре алады",
-	"requestwikiqueue-request-label-visibility-hide": "'createwiki' құқығы бар барлық адам бұл сұранысты көре алады",
-	"requestwikiqueue-request-label-visibility-oversight": "'suppressrevision' құқығы бар барлық адам бұл сұранысты көре алады",
 	"right-requestwiki": "Уики сұрау",
 	"right-createwiki": "Уики бастау"
 }

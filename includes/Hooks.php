@@ -14,6 +14,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
 use Wikimedia\Rdbms\ILBFactory;
 
 class Hooks implements
@@ -133,17 +134,18 @@ class Hooks implements
 	) {
 		$notificationCategories['wiki-creation'] = [
 			'priority' => 3,
-			'tooltip' => 'echo-pref-tooltip-wiki-creation',
+			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-declined'] = [
 			'priority' => 3,
-			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
+			'tooltip' => 'echo-pref-tooltip-wiki-request-declined',
+			'no-dismiss' => [ 'email' ]
 		];
 
 		$notificationCategories['request-moredetails'] = [
-			'priority' => 3,
-			'tooltip' => 'echo-pref-tooltip-wiki-request-moredetails'
+			'priority' => 1,
+			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-comment'] = [
@@ -172,6 +174,18 @@ class Hooks implements
 			'section' => 'alert',
 			'canNotifyAgent' => true,
 			'presentation-model' => EchoRequestDeclinedPresentationModel::class,
+			'immediate' => true
+		];
+
+		$notifications['request-moredetails'] = [
+			EchoAttributeManager::ATTR_LOCATORS => [
+				'EchoUserLocator::locateEventAgent'
+			],
+			'category' => 'request-moredetails',
+			'group' => 'positive',
+			'section' => 'alert',
+			'canNotifyAgent' => true,
+			'presentation-model' => EchoRequestMoreDetailsPresentationModel::class,
 			'immediate' => true
 		];
 

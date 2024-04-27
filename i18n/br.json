@@ -31,6 +31,7 @@
 	"requestwikiqueue-decline": "Nac'hañ",
 	"requestwikiqueue-declined": "Nac'het",
 	"requestwikiqueue-edit": "Goulenn da aozañ",
+	"requestwikiqueue-moredetails": "Muioc'h a vunudoù zo ezhomm",
 	"requestwikiqueue-pager-status-approved": "aprouet",
 	"requestwikiqueue-pager-status-declined": "nac'het",
 	"requestwikiqueue-request-label-action": "Petra ho peus c'hoant d'ober?",
@@ -39,5 +40,6 @@
 	"requestwikiqueue-request-label-sitename": "Anv al lec'hienn",
 	"requestwikiqueue-request-label-status": "Statud",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-visibility-all": "A c'hall bezañ gwelet gant an holl",
 	"right-createwiki": "Krouiñ wikioù er feurm wiki"
 }

@@ -122,8 +122,6 @@
 	"requestwikiqueue-request-label-visibility": "Marquer la visibilité de cette demande comme...",
 	"requestwikiqueue-request-label-visibility-all": "Les utilisateurs avec « lecture » peuvent voir",
 	"requestwikiqueue-request-label-visibility-delete": "Les utilisateurs disposant des autorisations « supprimer » peuvent afficher",
-	"requestwikiqueue-request-label-visibility-hide": "Toute personne disposant des permissions « createwiki » (créer un wiki) peut voir cette demande",
-	"requestwikiqueue-request-label-visibility-oversight": "Les utilisateurs disposant des autorisations « suppressrevision » peuvent afficher",
 	"right-requestwiki": "Demander des wikis",
 	"right-createwiki": "Créer des wikis"
 }

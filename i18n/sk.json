@@ -88,8 +88,6 @@
 	"requestwikiqueue-request-label-visibility": "Označiť viditeľnosť tejto žiadosti ako...",
 	"requestwikiqueue-request-label-visibility-all": "Každý môže túto žiadosť vidieť",
 	"requestwikiqueue-request-label-visibility-delete": "Každý s povolením mazať môže túto žiadosť vidieť",
-	"requestwikiqueue-request-label-visibility-hide": "Každý s povolením vytvoriť wiki môže túto žiadosť vidieť",
-	"requestwikiqueue-request-label-visibility-oversight": "Každý s povolením potlačiť revíziu môže vidieť túto žiadosť",
 	"right-requestwiki": "Žiadať wiki",
 	"right-createwiki": "Tvoriť wiki stránky"
 }

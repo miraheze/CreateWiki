@@ -81,8 +81,6 @@
 	"requestwikiqueue-request-label-visibility": "ضع علامة رؤية الطلبات ك",
 	"requestwikiqueue-request-label-visibility-all": "يمكن لكل من لديه \"قراءة\" مشاهدة هذا الطلب",
 	"requestwikiqueue-request-label-visibility-delete": "يمكن لكل شخص لديه صلاحيات \"حذف\" عرض هذا الطلب",
-	"requestwikiqueue-request-label-visibility-hide": "يمكن لكل شخص لديه صلاحيات \"إنشاء ويكي\" عرض هذا الطلب",
-	"requestwikiqueue-request-label-visibility-oversight": "بإمكان اي شخص لديه صلاحيات 'منع النشر و العرض' عرض هذا الطلب",
 	"right-requestwiki": "طلب الويكيات",
 	"right-createwiki": "أنشئ ويكيات في مزرعة الويكي"
 }
