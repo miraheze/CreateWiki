@@ -377,19 +377,18 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-        $cWJ = new CreateWikiJson($wiki ?? $this->config->get('CreateWikiGlobalWiki'), $this->hookRunner);
-        $cWJ->resetDatabaseList();
-        $cWJ->update();
-    }
-    public function getUserRequestCount(string $userID) {
-        $requestCount = $this->cwdb->selectRowCount(
-            'cw_requests',
-            '*',
-            [
-                'cw_user' => $userID
-            ]
-        );
-        return $requestCount;
-        }
+		$cWJ = new CreateWikiJson($wiki ?? $this->config->get('CreateWikiGlobalWiki'), $this->hookRunner);
+		$cWJ->resetDatabaseList();
+		$cWJ->update();
 	}
+	public function getUserRequestCount(int $userID, int $viewLevel) {
+
+		return $this->cwdb->newSelectQueryBuilder()
+			->select('*')
+			->from('cw_requests')
+			->where([
+				$this->cwdb->expr('cw_visibility', '<=', $viewLevel),
+				'cw_user' => $userID])
+			->caller( __METHOD__ )->fetchRowCount();
+		}
 }

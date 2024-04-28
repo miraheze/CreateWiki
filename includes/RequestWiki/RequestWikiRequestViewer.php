@@ -240,21 +240,23 @@ class RequestWikiRequestViewer {
 				$context->getOutput()->addHTML( Html::errorBox( $wmError ) );
 			}
 
-            if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
-                $requesterCount = $wm->getUserRequestCount( $request->requester->getId());
-                if ($requesterCount >= $this->config->get( 'CreateWikiRequestCountWarnThreshold')) {
-                    $context->getOutput()->addHTML(
-                        Html::warningBox(
-                            Html::rawElement(
-                                'p',
-                                [],
-                                wfMessage( 'createwiki-error-requestcountwarn', $requesterCount, $request->requester->getName())->parse()
-                            ),
-                            'mw-notify-error'
-                        )
-                    );
-                    }
-            }
+			if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
+				if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) { $viewerCwDeleteLevel = 1; }
+				else { $viewerCwDeleteLevel = ($permissionManager->userHasRight( $userR, 'createwiki-suppressrequest') ? 2 : 0);}
+				$requesterCount = $wm->getUserRequestCount( $request->requester->getId(), $viewerCwDeleteLevel );
+				if ($requesterCount >= $this->config->get( 'CreateWikiRequestCountWarnThreshold')) {
+					$context->getOutput()->addHTML(
+						Html::warningBox(
+							Html::rawElement(
+								'p',
+								[],
+								wfMessage( 'createwiki-error-requestcountwarn', $requesterCount, $request->requester->getName())->parse()
+							),
+							'mw-notify-error'
+						)
+					);
+					}
+			}
 			$formDescriptor += [
 				'info-submission' => [
 					'type' => 'info',
