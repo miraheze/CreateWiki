@@ -37,6 +37,7 @@
 	"createwiki-label-reason": "Used as a label for 'reason'.\n{{Identical|Reason}}",
 	"createwiki-label-requester": "Used as a label for 'requester'.\n{{Identical|Requester}}",
 	"createwiki-label-sitename": "Used as a label for 'sitename'.\n{{Identical|Sitename}}",
+	"createwiki-rest-disabled": "Returned from REST endpoints when $wgCreateWikiDisableRESTAPI is set to true",
 	"createwiki-success": "Message when a wiki has successfully been created.",
 	"log-description-farmer": "Description of farmer log",
 	"log-action-filter-farmer": "{{Identical|Type of action}}",
