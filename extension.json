@@ -256,6 +256,11 @@
 			"public": true,
 			"value": "wiki"
 		},
+		"CreateWikiDisableRESTAPI": {
+			"description": "Bool. If set to true, disable the REST API",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiEmailNotifications": {
 			"description": "Boolean. Whether to send emails for new wiki creations.",
 			"public": true,
