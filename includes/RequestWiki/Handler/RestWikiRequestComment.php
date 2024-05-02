@@ -11,6 +11,7 @@ use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use MediaWiki\Rest\Validator\BodyValidator;
 use MediaWiki\Rest\Validator\JsonBodyValidator;
+use MediaWiki\Rest\Validator\UnsupportedContentTypeBodyValidator;
 
 /**
  * Posts a comment to the specified wiki request
@@ -71,6 +72,7 @@ class RestWikiRequestComment extends SimpleHandler {
 
 		$comment = $this->getValidatedBody()['comment'];
 		$wikiRequest->addComment( $comment, $this->getAuthority()->getUser() );
+		return $this->getResponseFactory()->createJson( [''] );
 	}
 
 	public function needsWriteAccess() {
@@ -87,7 +89,10 @@ class RestWikiRequestComment extends SimpleHandler {
 		];
 	}
 
-	public function getBodyValidator(): BodyValidator {
+	public function getBodyValidator( $contentType ): BodyValidator {
+		if ( $contentType !== 'application/json' ) {
+			return new UnsupportedContentTypeBodyValidator( $contentType );
+		}
 		return new JsonBodyValidator( [
 			'comment' => [
 				self::PARAM_SOURCE => 'body',
