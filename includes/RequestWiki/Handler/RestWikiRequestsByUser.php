@@ -81,7 +81,7 @@ class RestWikiRequestsByUser extends SimpleHandler {
 					}
 				}
 
-				$wikiRequestsArray[] = ['id' => $wikiRequest->cw_id, 'visibility' => $wikiRequestVisibility];
+				$wikiRequestsArray[] = ['id' => (int)$wikiRequest->cw_id, 'visibility' => $wikiRequestVisibility];
 			}
 
 			if ( count( $wikiRequestsArray ) === 0 ) {
