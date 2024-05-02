@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserIdentity;
 use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -13,7 +14,6 @@ use RuntimeException;
 use SpecialPage;
 use Title;
 use UnexpectedValueException;
-use User;
 
 class WikiRequest {
 	public $dbname;
@@ -109,7 +109,7 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, User $user, string $type = 'comment', array $notifyUsers = [] ) {
+	public function addComment( string $comment, UserIdentity $user, string $type = 'comment', array $notifyUsers = [] ) {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
 			return;
@@ -163,7 +163,7 @@ class WikiRequest {
 		return $this->status;
 	}
 
-	public function approve( User $user, string $reason = null ) {
+	public function approve( UserIdentity $user, string $reason = null ) {
 		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobParams = [
 				'id' => $this->id,
@@ -205,7 +205,7 @@ class WikiRequest {
 		}
 	}
 
-	public function decline( string $reason, User $user ) {
+	public function decline( string $reason, UserIdentity $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 
@@ -228,7 +228,7 @@ class WikiRequest {
 		}
 	}
 
-	public function onhold( string $reason, User $user ) {
+	public function onhold( string $reason, UserIdentity $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'onhold';
 		$this->save();
 
@@ -246,7 +246,7 @@ class WikiRequest {
 		$this->log( $user, 'requestonhold' );
 	}
 
-	public function moredetails( string $reason, User $user ) {
+	public function moredetails( string $reason, UserIdentity $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
 		$this->save();
 
@@ -264,7 +264,7 @@ class WikiRequest {
 		$this->log( $user, 'requestmoredetails' );
 	}
 
-	private function log( User $user, string $log ) {
+	private function log( UserIdentity $user, string $log ) {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
@@ -284,7 +284,7 @@ class WikiRequest {
 		$logEntry->publish( $logID );
 	}
 
-	private function suppressionLog( User $user, string $log ) {
+	private function suppressionLog( UserIdentity $user, string $log ) {
 		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
 		$suppressionLogEntry->setPerformer( $user );
 		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
@@ -302,7 +302,7 @@ class WikiRequest {
 		$suppressionLogEntry->publish( $suppressionLogID );
 	}
 
-	public function suppress( User $user, int $level, $log = true ) {
+	public function suppress( UserIdentity $user, int $level, $log = true ) {
 		if ( $level === (int)$this->visibility ) {
 			// Nothing to do, the wiki request already has the requested suppression level
 			return;
@@ -328,7 +328,7 @@ class WikiRequest {
 		}
 	}
 
-	public function reopen( User $user, $log = true ) {
+	public function reopen( UserIdentity $user, $log = true ) {
 		$status = $this->status;
 
 		$this->status = ( $status == 'approved' ) ? 'approved' : 'inreview';
