@@ -30,7 +30,7 @@
 	"createwiki-help-sitename": "This will be the wiki's name and the name of its 'Project' namespace.",
 	"createwiki-help-subdomain": "This will be the wiki's URL. If you wish to set up a custom domain, you still need to select a Miraheze subdomain first. [[Special:MyLanguage/Custom domains|Click here for more information]].",
 	"createwiki-label-category": "Category:",
-	"createwiki-label-dbname": "Database name:",
+	"createwiki-label-dbname": "Database name",
 	"createwiki-label-language": "Language:",
 	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Describe the focus or purpose of this wiki:",
