@@ -44,6 +44,7 @@
 	"createwiki-label-requester": "申請者：",
 	"createwiki-label-sitename": "站點名稱：",
 	"createwiki-label-statuschangecomment": "進行此操作的原因：",
+	"createwiki-rest-disabled": "此 wiki 的設定已停用對 CreateWiki REST API 的存取",
 	"createwiki-success": "已成功建立wiki。",
 	"echo-category-title-wiki-creation": "wiki建立",
 	"echo-category-title-request-comment": "已於 wiki 申請留言",
