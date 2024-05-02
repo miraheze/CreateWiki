@@ -56,7 +56,10 @@ class RestWikiRequestsByUser extends SimpleHandler {
 		$userID = $this->userFactory->newFromName( $userName )->getId();
 		$wikiRequests = $dbr->select(
 			'cw_requests',
-			'cw_id, cw_visibility',
+			[
+				'cw_id',
+				'cw_visibility',
+			],
 			[
 				'cw_user' => $userID,
 			],
