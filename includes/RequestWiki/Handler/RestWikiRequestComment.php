@@ -93,7 +93,7 @@ class RestWikiRequestComment extends SimpleHandler {
 			'comment' => [
 				self::PARAM_SOURCE => 'body',
 				ParamValidator::PARAM_TYPE => 'string',
-				ParamValidator::PARAM_REQUIRES => true,
+				ParamValidator::PARAM_REQUIRED => true,
 			],
 		] );
 	}
