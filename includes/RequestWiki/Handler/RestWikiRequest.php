@@ -85,7 +85,7 @@ class RestWikiRequest extends SimpleHandler {
 				'url' => $wikiRequest->cw_url,
 				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
 				'category' => $wikiRequest->cw_category,
-				'bio' => $wikiRequest->cw_bio,
+				'bio' => (bool)$wikiRequest->cw_bio,
 				'visibility' => $wikiRequestVisibility,
 			];
 			$wikiRequestCwComments = $dbr->select(
