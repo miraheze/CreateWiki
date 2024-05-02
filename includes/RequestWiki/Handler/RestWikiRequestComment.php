@@ -50,7 +50,7 @@ class RestWikiRequestComment extends SimpleHandler {
 			return $this->getResponseFactory()->createLocalizedHttpError( 403, new MessageValue( 'createwiki-rest-mustlogin' ) );
 		}
 		// Only allow users with (createwiki) the creator of the request to post comments
-		if ( !$this->getAuthority()->isAllowed( 'createwiki' ) || $this->getAuthority()->getUser()->getId() !== $wikiRequest->requester->getId() )
+		if ( !$this->getAuthority()->isAllowed( 'createwiki' ) || $this->getAuthority()->getUser()->getId() !== $wikiRequest->requester->getId() ) {
 			return $this->getResponseFactory()->createLocalizedHttpError( 403, new MessageValue( 'createwiki-rest-notallowed' ) );
 		}
 		// Do not allow blocked users to post comments
