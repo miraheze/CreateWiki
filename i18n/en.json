@@ -38,6 +38,7 @@
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-statuschangecomment": "Reason for this action:",
 	"createwiki-rest-disabled": "Access to the REST API for CreateWiki has been disabled in the settings for this wiki",
+	"createwiki-rest-usernowikirequests": "This user has not made any wiki requests",
 	"createwiki-success": "The wiki was successfully created.",
 	"echo-category-title-wiki-creation": "Wiki creation",
 	"echo-category-title-request-comment": "Comment added to wiki request",
