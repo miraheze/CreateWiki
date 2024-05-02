@@ -84,7 +84,7 @@ class RestWikiRequestsByUser extends SimpleHandler {
 				$wikiRequestsArray[] = ['id' => $wikiRequest->cw_id, 'visibility' => $wikiRequestVisibility];
 			}
 
-			if ( sizeof( $wikiRequestsArray ) === 0 ) {
+			if ( count( $wikiRequestsArray ) === 0 ) {
 				// This user _has_ made wiki requests, but these are suppressed wiki requests and the user making this request doesn't have permission to view them
 				return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'createwiki-rest-usernowikirequests' ) );
 			}
