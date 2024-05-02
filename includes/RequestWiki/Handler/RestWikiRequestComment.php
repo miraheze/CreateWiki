@@ -51,10 +51,10 @@ class RestWikiRequestComment extends SimpleHandler {
 			return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 		}
 		// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
-		if ( $wikiRequest->cw_visibility >= 3 ) {
+		if ( $wikiRequest->visibility >= 3 ) {
 			return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 		}
-		$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
+		$wikiRequestVisibility = $visibilityConds[$wikiRequest->visibility];
 		if ( $wikiRequestVisibility !== 'public' ) {
 			if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
 				// User does not have permission to view this request
