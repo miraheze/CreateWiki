@@ -79,6 +79,10 @@ class RestWikiRequestComment extends SimpleHandler {
 		return true;
 	}
 
+	public function requireSafeAgainstCsrf() {
+		return true;
+	}
+
 	public function getParamSettings() {
 		return [
 			'id' => [
