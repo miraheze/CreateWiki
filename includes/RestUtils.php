@@ -17,7 +17,7 @@ class RestUtils {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotglobalwiki' ), 403 );
 		}
 		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		if ( $config-get( 'CreateWikiDisableRESTAPI' ) ) {
+		if ( $config->get( 'CreateWikiDisableRESTAPI' ) ) {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-rest-disabled' ), 403 );
 		}
 	}
