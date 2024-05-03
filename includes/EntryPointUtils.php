@@ -7,7 +7,7 @@ use MediaWiki\WikiMap\WikiMap;
 class EntryPointUtils {
 
 	public static function currentWikiIsGlobalWiki(): bool {
-		$config = MediaWikiServices::getConfigFactory()->makeConfig( 'CreateWiki' );
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		if ( $config->get( 'CreateWikiGlobalWiki' ) === WikiMap::getCurrentWikiId() ) {
 			return true;
 		} else {
