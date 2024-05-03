@@ -35,6 +35,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
 			);
 		}
+
 		$request = $this->getRequest();
 		$out = $this->getOutput();
 
