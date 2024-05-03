@@ -24,7 +24,6 @@ class WikiRequest {
 	public $url;
 	public $category;
 	public $requester;
-	public $visibility = 0;
 	public $timestamp;
 	public $bio;
 	public $purpose;
@@ -35,6 +34,7 @@ class WikiRequest {
 	private $status = 'inreview';
 	private $comments = [];
 	private $involvedUsers = [];
+	private $visiblity = 0;
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
@@ -68,7 +68,7 @@ class WikiRequest {
 			$this->requester = $userFactory->newFromId( $dbRequest->cw_user );
 			$this->status = $dbRequest->cw_status;
 			$this->timestamp = $dbRequest->cw_timestamp;
-			$this->visibility = $dbRequest->cw_visibility;
+			$this->visibility = (int)$dbRequest->cw_visibility;
 			$this->bio = $dbRequest->cw_bio;
 
 			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
@@ -161,6 +161,10 @@ class WikiRequest {
 
 	public function getStatus() {
 		return $this->status;
+	}
+
+	public function getVisibility(): int {
+		return $this->visibility;
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ) {
