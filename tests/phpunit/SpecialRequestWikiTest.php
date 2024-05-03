@@ -4,8 +4,8 @@ namespace Miraheze\CreateWiki\Tests;
 
 use DerivativeContext;
 use ErrorPageError;
-use MediaWikiIntegrationTestCase;
 use MediaWiki\WikiMap\WikiMap;
+use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
 use SpecialPage;
