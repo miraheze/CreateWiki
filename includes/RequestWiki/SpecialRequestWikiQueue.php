@@ -4,8 +4,8 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use Html;
 use HTMLForm;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\EntryPointUtils;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use SpecialPage;
 
 class SpecialRequestWikiQueue extends SpecialPage {
