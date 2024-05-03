@@ -6,6 +6,7 @@ use Config;
 use FormSpecialPage;
 use Html;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 
@@ -21,6 +22,16 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
+	}
+
+	public function execute( $par ) {
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			return $this->getOutput()->addHTML(
+				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
+			);
+		}
+
+		parent::execute( $par );
 	}
 
 	protected function getFormFields() {

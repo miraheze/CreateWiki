@@ -6,6 +6,7 @@ use Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\RestUtils;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\ILBFactory;
@@ -41,9 +42,7 @@ class RestWikiRequest extends SimpleHandler {
 	}
 
 	public function run( $requestID ) {
-		if ( $this->config->get( 'CreateWikiDisableRESTAPI' ) ) {
-			return $this->getResponseFactory()->createLocalizedHttpError( 403, new MessageValue( 'createwiki-rest-disabled' ) );
-		}
+		RestUtils::checkEnv();
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
 			0 => 'public',

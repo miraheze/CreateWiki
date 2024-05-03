@@ -12,6 +12,7 @@ use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
@@ -29,6 +30,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function execute( $par ) {
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			return $this->getOutput()->addHTML(
+				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
+			);
+		}
+
 		$request = $this->getRequest();
 		$out = $this->getOutput();
 
