@@ -2,7 +2,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
-use MediaWiki\WikiMap\WikiMap
+use MediaWiki\WikiMap\WikiMap;
 
 class EntryPointUtils {
 
