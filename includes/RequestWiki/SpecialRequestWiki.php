@@ -11,8 +11,8 @@ use Html;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\EntryPointUtils;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {

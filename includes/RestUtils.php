@@ -7,6 +7,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Rest\LocalizedHttpException;
 use Miraheze\CreateWiki\EntryPointUtils;
 use Wikimedia\Message\MessageValue;
+
 // phpcs:enable
 
 class RestUtils {
