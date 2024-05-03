@@ -9,7 +9,9 @@ use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\SpecialPage\DisabledSpecialPage;
 use MediaWiki\Title\Title;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
@@ -63,7 +65,7 @@ class Hooks implements
 
 	/** @inheritDoc */
 	public function onSetupAfterCache() {
-		global $wgGroupPermissions;
+		global $wgGroupPermissions, $wgSpecialPages;
 
 		$dbName = $this->config->get( 'DBname' );
 
@@ -88,6 +90,12 @@ class Hooks implements
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
+		}
+
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			$wgSpecialPages['RequestWikiQueue'] = DisabledSpecialPage::getCallback( 'RequestWikiQueue', 'createwiki-currentwikinotglobalwiki' );
+			$wgSpecialPages['RequestWiki'] = DisabledSpecialPage::getCallback( 'RequestWiki', 'createwiki-currentwikinotglobalwiki' );
+			$wgSpecialPages['CreateWiki'] = DisabledSpecialPage::getCallback( 'CreateWiki', 'createwiki-currentwikinotglobalwiki' );
 		}
 	}
 
