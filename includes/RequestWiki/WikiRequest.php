@@ -109,10 +109,10 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, UserIdentity $user, string $type = 'comment', array $notifyUsers = [] ) {
+	public function addComment( string $comment, UserIdentity $user, string $type = 'comment', array $notifyUsers = [] ): bool {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
-			return;
+			return false;
 		}
 
 		$this->dbw->insert(
@@ -134,6 +134,8 @@ class WikiRequest {
 		}
 
 		$this->sendNotification( $comment, $notifyUsers, $type );
+
+		return true;
 	}
 
 	private function sendNotification( string $comment, array $notifyUsers, string $type = 'comment' ) {
