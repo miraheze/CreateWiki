@@ -6,13 +6,13 @@ use Config;
 use Exception;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
+use MediaWiki\Rest\Validator\BodyValidator;
+use MediaWiki\Rest\Validator\JsonBodyValidator;
+use MediaWiki\Rest\Validator\UnsupportedContentTypeBodyValidator;
 use Miraheze\CreateWiki\RequestWiki\WikiRequest;
 use Miraheze\CreateWiki\RestUtils;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
-use MediaWiki\Rest\Validator\BodyValidator;
-use MediaWiki\Rest\Validator\JsonBodyValidator;
-use MediaWiki\Rest\Validator\UnsupportedContentTypeBodyValidator;
 
 /**
  * Posts a comment to the specified wiki request
