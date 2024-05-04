@@ -34,7 +34,7 @@ class WikiRequest {
 	private $status = 'inreview';
 	private $comments = [];
 	private $involvedUsers = [];
-	private $visiblity = 0;
+	private $visibility = 0;
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
