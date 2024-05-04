@@ -7,6 +7,7 @@ use Exception;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
 use Miraheze\CreateWiki\RequestWiki\WikiRequest;
+use Miraheze\CreateWiki\RestUtils;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use MediaWiki\Rest\Validator\BodyValidator;
@@ -32,9 +33,7 @@ class RestWikiRequestComment extends SimpleHandler {
 	}
 
 	public function run( $requestID ) {
-		if ( $this->config->get( 'CreateWikiDisableRESTAPI' ) ) {
-			return $this->getResponseFactory()->createLocalizedHttpError( 403, new MessageValue( 'createwiki-rest-disabled' ) );
-		}
+		RestUtils::checkEnv();
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
 			0 => 'public',
@@ -51,10 +50,10 @@ class RestWikiRequestComment extends SimpleHandler {
 			return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 		}
 		// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
-		if ( $wikiRequest->visibility >= 3 ) {
+		if ( $wikiRequest->getVisibility() >= 3 ) {
 			return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 		}
-		$wikiRequestVisibility = $visibilityConds[$wikiRequest->visibility];
+		$wikiRequestVisibility = $visibilityConds[$wikiRequest->getVisibility()];
 		if ( $wikiRequestVisibility !== 'public' ) {
 			if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
 				// User does not have permission to view this request
