@@ -276,7 +276,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'revdelete-suppress-text',
 					'hide-if' => [ '!==', 'wpvisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
-					'default' => $request->getVisibility(),
+					'default' => (string)$request->getVisibility(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
