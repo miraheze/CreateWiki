@@ -44,14 +44,14 @@ class RequestWikiRequestViewer {
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
 		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
-		if ( $request->visibility >= 3 ) {
+		if ( $request->getVisibility() >= 3 ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
 			return [];
 		}
 
-		if ( $visibilityConds[$request->visibility] !== 'public' ) {
-			if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility] ) ) {
+		if ( $visibilityConds[$request->getVisibility()] !== 'public' ) {
+			if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->getVisibility()] ) ) {
 				$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
 				return [];
@@ -267,7 +267,7 @@ class RequestWikiRequestViewer {
 				'visibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $request->visibility != 0 ) ? 1 : 0,
+					'default' => ( $request->getVisibility() != 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
@@ -276,7 +276,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'revdelete-suppress-text',
 					'hide-if' => [ '!==', 'wpvisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
-					'default' => $request->visibility,
+					'default' => $request->getVisibility(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
