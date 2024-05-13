@@ -37,6 +37,7 @@
 	"createwiki-label-requester": "Requester:",
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-statuschangecomment": "Reason for this action:",
+	"createwiki-label-wiki-tags": "Wiki tags",
 	"createwiki-rest-disabled": "Access to the REST API for CreateWiki has been disabled in the settings for this wiki",
 	"createwiki-rest-usernowikirequests": "This user has not made any wiki requests",
 	"createwiki-success": "The wiki was successfully created.",
