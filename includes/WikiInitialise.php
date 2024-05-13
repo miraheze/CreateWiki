@@ -1,5 +1,6 @@
 <?php
 
+use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
 
 class WikiInitialise {
