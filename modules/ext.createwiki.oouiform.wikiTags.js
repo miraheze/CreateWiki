@@ -8,11 +8,11 @@
 
 		infusedFallbackLayout.$element.css( 'display', 'none' );
 
-		var tags = $.map( Object.entries( mw.config.get( 'wgCreateWikiAvailableTags' ) ), function ( val ) {
+		var tags = Object.entries( mw.config.get( 'wgCreateWikiAvailableTags' ) ).map( function ( val ) {
 			return {
-				data: val[0],
-				label: val[1]
-			}
+				data: val[ 0 ],
+				label: val[ 1 ]
+			};
 		} );
 
 		var multiTagSelect = new OO.ui.MenuTagMultiselectWidget( {
@@ -27,7 +27,7 @@
 
 		multiTagSelect.on( 'change', function ( items ) {
 			// Map selection changes back to the fallback input so that it is included in form submit
-			infusedFallbackInput.setValue( $.map( items, function ( val ) {
+			infusedFallbackInput.setValue( items.map( function ( val ) {
 				return val.data;
 			} ).join( ',' ) );
 		} );
