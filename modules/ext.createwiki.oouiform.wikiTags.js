@@ -10,12 +10,10 @@
 
 		var tags = [];
 		for ( var key in mw.config.get( 'wgCreateWikiAvailableTags' ) ) {
-			if ( mw.config.get( 'wgCreateWikiAvailableTags' ).hasOwnProperty( key ) ) {
-				tags.push( {
-					data: key,
-					label: mw.config.get( 'wgCreateWikiAvailableTags' )[ key ]
-				} );
-			}
+			tags.push( {
+				data: key,
+				label: mw.config.get( 'wgCreateWikiAvailableTags' )[ key ]
+			} );
 		}
 
 		var multiTagSelect = new OO.ui.MenuTagMultiselectWidget( {
