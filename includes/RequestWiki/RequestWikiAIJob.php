@@ -4,10 +4,10 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use Job;
 use MediaWiki\MediaWikiServices;
-use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use Phpml\ModelManager;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
+use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Phpml\ModelManager;
 
 class RequestWikiAIJob extends Job {
 	public function __construct( Title $title, array $params ) {

@@ -3,9 +3,9 @@
 namespace Miraheze\CreateWiki\CreateWiki;
 
 use MediaWiki\Config\Config;
-use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;

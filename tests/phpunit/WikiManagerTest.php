@@ -3,12 +3,12 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
+use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
-use MediaWiki\Config\SiteConfiguration;
 
 /**
  * @group CreateWiki

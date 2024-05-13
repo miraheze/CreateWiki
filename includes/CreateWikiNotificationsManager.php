@@ -3,9 +3,9 @@
 namespace Miraheze\CreateWiki;
 
 use DeferredUpdates;
-use MediaWiki\Extension\Notifications\Model\Event;
 use MailAddress;
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Extension\Notifications\Model\Event;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use UserMailer;

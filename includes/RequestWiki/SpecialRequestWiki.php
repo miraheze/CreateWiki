@@ -2,18 +2,18 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Config\Config;
 use ErrorPageError;
 use Exception;
 use ExtensionRegistry;
-use MediaWiki\SpecialPage\FormSpecialPage;
-use MediaWiki\Html\Html;
 use ManualLogEntry;
+use MediaWiki\Config\Config;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\SpecialPage\FormSpecialPage;
+use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use MediaWiki\Title\Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
