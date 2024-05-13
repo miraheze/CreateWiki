@@ -199,7 +199,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 					'mw-notify-error'
 				)
 			);
-			throw new Exception( $e );
 
 			return false;
 		}
