@@ -8,7 +8,7 @@ use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
-use SiteConfiguration;
+use MediaWiki\Config\SiteConfiguration;
 
 /**
  * @group CreateWiki

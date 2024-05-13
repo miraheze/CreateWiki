@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\Config\SiteConfiguration;
+
 class WikiInitialise {
 	private $cacheDir;
 	public $config;

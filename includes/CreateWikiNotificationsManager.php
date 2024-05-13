@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use DeferredUpdates;
-use EchoEvent;
+use MediaWiki\Extension\Notifications\Model\Event;
 use MailAddress;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\User\UserFactory;
@@ -170,7 +170,7 @@ class CreateWikiNotificationsManager {
 				continue;
 			}
 
-			EchoEvent::create( [
+			Event::create( [
 				'type' => $this->type,
 				'extra' => $data['extra'] + [ 'notifyAgent' => true ],
 				'agent' => $user,

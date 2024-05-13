@@ -6,8 +6,8 @@ use Job;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Phpml\ModelManager;
-use Title;
-use User;
+use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 
 class RequestWikiAIJob extends Job {
 	public function __construct( Title $title, array $params ) {

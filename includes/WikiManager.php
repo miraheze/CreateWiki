@@ -10,7 +10,7 @@ use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use SpecialPage;
+use MediaWiki\SpecialPage\SpecialPage;
 
 class WikiManager {
 	private $config;

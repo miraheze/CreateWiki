@@ -7,8 +7,8 @@ use Job;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\RequestWiki\WikiRequest;
 use Miraheze\CreateWiki\WikiManager;
-use Title;
-use User;
+use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 
 class CreateWikiJob extends Job {
 	public function __construct( Title $title, array $params ) {

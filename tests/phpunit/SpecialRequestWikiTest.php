@@ -8,7 +8,7 @@ use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
-use SpecialPage;
+use MediaWiki\SpecialPage\SpecialPage;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 

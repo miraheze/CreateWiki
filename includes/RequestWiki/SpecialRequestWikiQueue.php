@@ -2,11 +2,11 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Html;
+use MediaWiki\Html\Html;
 use HTMLForm;
 use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use SpecialPage;
+use MediaWiki\SpecialPage\SpecialPage;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
