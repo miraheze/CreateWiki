@@ -406,7 +406,7 @@ class WikiRequest {
 		}
 
 		$testid = $this->dbw->insertId();
-		
+
 		return $this->dbw->selectRow(
 			'cw_requests',
 			'*',
