@@ -50,7 +50,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 			$dbw->newInsertQueryBuilder()
 				->insertInto( 'cw_wikis' )
 				->ignore()
-				->rows( [
+				->row( [
 					'wiki_dbname' => 'wikidb',
 					'wiki_dbcluster' => 'c1',
 					'wiki_sitename' => 'TestWiki',
