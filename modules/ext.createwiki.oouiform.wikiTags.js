@@ -8,12 +8,15 @@
 
 		infusedFallbackLayout.$element.css( 'display', 'none' );
 
-		var tags = Object.entries( mw.config.get( 'wgCreateWikiAvailableTags' ) ).map( function ( val ) {
-			return {
-				data: val[ 0 ],
-				label: val[ 1 ]
-			};
-		} );
+		var tags = [];
+		for ( var key in mw.config.get( 'wgCreateWikiAvailableTags' ) ) {
+			if ( mw.config.get( 'wgCreateWikiAvailableTags' ).hasOwnProperty( key ) ) {
+				tags.push( {
+					data: key,
+					label: mw.config.get( 'wgCreateWikiAvailableTags' )[ key ]
+				} );
+			}
+		}
 
 		var multiTagSelect = new OO.ui.MenuTagMultiselectWidget( {
 			options: tags,
