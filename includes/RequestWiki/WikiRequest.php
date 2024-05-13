@@ -390,7 +390,7 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 		];
 
-		$row = [ 'cw_id' => $this->id ] + $set;
+		$row = [ 'cw_id' => $this->id ?? 0 ] + $set;
 
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
