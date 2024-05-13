@@ -131,7 +131,7 @@ class WikiManager {
 
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
-			->rows( [
+			->row( [
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
