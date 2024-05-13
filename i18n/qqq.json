@@ -37,6 +37,7 @@
 	"createwiki-label-reason": "Used as a label for 'reason'.\n{{Identical|Reason}}",
 	"createwiki-label-requester": "Used as a label for 'requester'.\n{{Identical|Requester}}",
 	"createwiki-label-sitename": "Used as a label for 'sitename'.\n{{Identical|Sitename}}",
+	"createwiki-label-wiki-tags": "Used as a label for 'wiki tags'.",
 	"createwiki-rest-disabled": "Returned from REST endpoints when $wgCreateWikiDisableRESTAPI is set to true",
 	"createwiki-rest-usernowikirequests": "Returned by the wiki_requests/user/{username} endpoint if the user has not made any wiki requests",
 	"createwiki-success": "Message when a wiki has successfully been created.",
