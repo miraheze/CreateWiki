@@ -375,7 +375,7 @@ class WikiRequest {
 
 		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
-		$row = [
+		$set = [
 			'cw_comment' => $comment,
 			'cw_dbname' => $this->dbname,
 			'cw_language' => $this->language,
@@ -390,12 +390,14 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 		];
 
+		$row = [ 'cw_id' => $this->id ] + $set;
+
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
 			->row( $row )
 			->onDuplicateKeyUpdate()
 			->uniqueIndexFields( [ 'cw_id' ] )
-			->set( $row )
+			->set( $set )
 			->caller( __METHOD__ )
 			->execute();
 
