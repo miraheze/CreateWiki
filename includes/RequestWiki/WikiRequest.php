@@ -405,6 +405,17 @@ class WikiRequest {
 			$this->tryAutoCreate();
 		}
 
+		$testid = $this->dbw->insertId();
+		
+		return $this->dbw->selectRow(
+			'cw_requests',
+			'*',
+			[
+				'cw_id' => $testid,
+			],
+			__METHOD__
+		)->cw_dbname;
+
 		return $this->dbw->insertId();
 	}
 
