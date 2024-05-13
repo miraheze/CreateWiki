@@ -49,8 +49,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
-		$out->addModules( [ 'mediawiki.special.userrights' ] );
-		$out->addModuleStyles( 'mediawiki.notification.convertmessagebox.styles' );
+		$out->addModules( [
+			'mediawiki.special.userrights',
+			'ext.createwiki.oouiform.wikiTags',
+		] );
+
+		$out->addModuleStyles( [ 'mediawiki.notification.convertmessagebox.styles' ] );
+
+		$out->addJsConfigVars( [
+			'wgCreateWikiAvailableTags' => $this->config->get( 'CreateWikiAvailableTags' ),
+		] );
 
 		$out->addWikiMsg( 'requestwiki-header' );
 
@@ -92,6 +100,15 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-category',
 				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
+			];
+		}
+
+		if ( $this->config->get( 'CreateWikiUseWikiTags' ) ) {
+			$formDescriptor['wikitags'] = [
+				'type' => 'text',
+				'label-message' => 'createwiki-label-wiki-tags',
+				'cssclass' => 'createwiki-wikitags',
+				'disabled' => true,
 			];
 		}
 
