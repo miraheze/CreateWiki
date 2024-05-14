@@ -70,8 +70,11 @@ class RestWikiRequestComment extends SimpleHandler {
 		}
 
 		$comment = $this->getValidatedBody()['comment'];
-		$wikiRequest->addComment( $comment, $this->getAuthority()->getUser() );
-		return $this->getResponseFactory()->createJson( ['status' => 'Comment successfully posted'] );
+		$commentWasPosted = $wikiRequest->addComment( $comment, $this->getAuthority()->getUser() );
+		if ( !$commentWasPosted ) {
+			return $this->getResponseFactory()->createLocalizedHttpError( 400, new MessageValue( 'createwiki-rest-emptycomment' ) );
+		}
+		return $this->getResponseFactory()->createNoContent();
 	}
 
 	public function needsWriteAccess() {
