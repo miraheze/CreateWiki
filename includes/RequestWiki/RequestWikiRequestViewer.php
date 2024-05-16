@@ -85,7 +85,8 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => $request->requester->getName() . Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
+				'default' => $request->requester->getName() .
+					Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
 				'raw' => true,
 			],
 			'requestedDate' => [
@@ -113,18 +114,24 @@ class RequestWikiRequestViewer {
 		];
 
 		foreach ( $request->getComments() as $comment ) {
-			$formDescriptor['comment' . $comment['timestamp'] ] = [
+			$formDescriptor['comment' . $comment['timestamp']] = [
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 4,
 				// @phan-suppress-next-line SecurityCheck-XSS
-				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
+				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams(
+					$comment['user']->getName()
+				)->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment'],
 			];
 		}
 
-		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() || $userR->getId() == $request->requester->getId() ) {
+		if (
+			$permissionManager->userHasRight( $userR, 'createwiki' ) &&
+			!$userR->getBlock() ||
+			$userR->getId() == $request->requester->getId()
+		) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
@@ -241,21 +248,29 @@ class RequestWikiRequestViewer {
 			}
 
 			if ( $permissionManager->userHasRight( $userR, 'createwiki' ) ) {
-				if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) { $viewerCwDeleteLevel = 1; }
-				else { $viewerCwDeleteLevel = ($permissionManager->userHasRight( $userR, 'createwiki-suppressrequest') ? 2 : 0);}
-				$requesterCount = $wm->getUserRequestCount( $request->requester->getId(), $viewerCwDeleteLevel );
-				if ($requesterCount >= $this->config->get( 'CreateWikiRequestCountWarnThreshold')) {
+				if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
+					$viewerCwDeleteLevel = 1;
+				} else {
+					$viewerCwDeleteLevel = ( $permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' )
+						? 2 : 0 );
+				}
+				$requesterCount = $wm->getUserRequestCount( $request->requester, $viewerCwDeleteLevel, '*' );
+				if ( $requesterCount >= $this->config->get( 'CreateWikiRequestCountWarnThreshold' ) ) {
 					$context->getOutput()->addHTML(
 						Html::warningBox(
 							Html::rawElement(
 								'p',
 								[],
-								wfMessage( 'createwiki-error-requestcountwarn', $requesterCount, $request->requester->getName())->parse()
+								wfMessage(
+									'createwiki-error-requestcountwarn',
+									$requesterCount,
+									$request->requester->getName()
+								)->parse()
 							),
 							'mw-notify-error'
 						)
 					);
-					}
+				}
 			}
 			$formDescriptor += [
 				'info-submission' => [
@@ -275,7 +290,7 @@ class RequestWikiRequestViewer {
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
-					],
+				],
 				'reason' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
 					'cssclass' => 'createwiki-infuse',
@@ -291,7 +306,11 @@ class RequestWikiRequestViewer {
 				'visibility-options' => [
 					'type' => 'radio',
 					'label-message' => 'revdelete-suppress-text',
-					'hide-if' => [ '!==', 'wpvisibility', '1' ],
+					'hide-if' => [
+						'!==',
+						'wpvisibility',
+						'1'
+					],
 					'options' => array_flip( $visibilityOptions ),
 					'default' => $request->visibility,
 					'cssclass' => 'createwiki-infuse',

@@ -50,9 +50,7 @@ class WikiManager {
 			$clusterSize = [];
 			foreach ( $this->config->get( 'CreateWikiDatabaseClusters' ) as $cluster ) {
 				$count = $this->cwdb->selectRowCount(
-					'cw_wikis',
-					'*',
-					[
+					'cw_wikis', '*', [
 						'wiki_dbcluster' => $cluster
 					]
 				);
@@ -64,22 +62,18 @@ class WikiManager {
 			$rand = rand( 0, count( $candidateArray ) - 1 );
 			$this->cluster = $candidateArray[$rand];
 			$clusterDB = $this->cwdb->selectRow(
-				'cw_wikis',
-				'wiki_dbname',
-				[
+				'cw_wikis', 'wiki_dbname', [
 					'wiki_dbcluster' => $this->cluster
 				]
 			)->wiki_dbname;
 			$this->lb = $lbs[$this->cluster];
 			$newDbw = $lbs[$this->cluster]->getConnection( DB_PRIMARY, [], $clusterDB );
-
 		} elseif ( !$check && !$this->config->get( 'CreateWikiDatabaseClusters' ) ) {
 			// DB doesn't exist and we don't have clusters
 			$newDbw = $this->cwdb;
 		} else {
 			// DB exists
-			$newDbw = $this->lbFactory->getMainLB( $dbname )
-				->getMaintenanceConnectionRef( DB_PRIMARY, [], $dbname );
+			$newDbw = $this->lbFactory->getMainLB( $dbname )->getMaintenanceConnectionRef( DB_PRIMARY, [], $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -111,8 +105,7 @@ class WikiManager {
 		if ( $this->lb ) {
 			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
-			$this->dbw = $this->lbFactory->getMainLB( $wiki )
-				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
+			$this->dbw = $this->lbFactory->getMainLB( $wiki )->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
 		}
 	}
 
@@ -130,8 +123,7 @@ class WikiManager {
 		}
 
 		$this->cwdb->insert(
-			'cw_wikis',
-			[
+			'cw_wikis', [
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $siteName,
@@ -176,18 +168,34 @@ class WikiManager {
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
 					[
-						'--wiki', $wiki
+						'--wiki',
+						$wiki
 					],
 					$scriptOptions
-				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				)->limits(
+					[
+						'memory' => 0,
+						'filesize' => 0,
+						'time' => 0,
+						'walltime' => 0
+					]
+				)->execute();
 
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
 					[
-						'--wiki', $wiki
+						'--wiki',
+						$wiki
 					],
 					$scriptOptions
-				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+				)->limits(
+					[
+						'memory' => 0,
+						'filesize' => 0,
+						'time' => 0,
+						'walltime' => 0
+					]
+				)->execute();
 
 				if ( $centralAuth ) {
 					if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
@@ -195,10 +203,18 @@ class WikiManager {
 							MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
 							[
 								$requester,
-								'--wiki', $wiki
+								'--wiki',
+								$wiki
 							],
 							$scriptOptions
-						)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+						)->limits(
+							[
+								'memory' => 0,
+								'filesize' => 0,
+								'time' => 0,
+								'walltime' => 0
+							]
+						)->execute();
 					}
 
 					Shell::makeScriptCommand(
@@ -209,10 +225,18 @@ class WikiManager {
 							'--interface-admin',
 							'--sysop',
 							'--force',
-							'--wiki', $wiki
+							'--wiki',
+							$wiki
 						],
 						$scriptOptions
-					)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+					)->limits(
+						[
+							'memory' => 0,
+							'filesize' => 0,
+							'time' => 0,
+							'walltime' => 0
+						]
+					)->execute();
 				}
 			},
 			DeferredUpdates::POSTSEND,
@@ -223,7 +247,9 @@ class WikiManager {
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' .
+						substr( $wiki, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) .
+						".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $siteName,
 				],
 				'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
@@ -233,8 +259,9 @@ class WikiManager {
 				],
 			];
 
-			MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-				->sendNotification( $notificationData, [ $requester ] );
+			MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )->sendNotification(
+					$notificationData, [ $requester ]
+				);
 
 			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
 		}
@@ -246,9 +273,7 @@ class WikiManager {
 		$wiki = $this->dbname;
 
 		$row = $this->cwdb->selectRow(
-			'cw_wikis',
-			'*',
-			[
+			'cw_wikis', '*', [
 				'wiki_dbname' => $wiki
 			]
 		);
@@ -260,15 +285,18 @@ class WikiManager {
 		$deletedWiki = (bool)$row->wiki_deleted && (bool)$row->wiki_deleted_timestamp;
 
 		// Return error if: wiki is not deleted, force is not used & wiki
-		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) ) {
+		if (
+			!$force &&
+			( !$deletedWiki ||
+				( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) )
+		) {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->delete(
-				$table,
-				[
+				$table, [
 					$selector => $wiki
 				]
 			);
@@ -300,11 +328,9 @@ class WikiManager {
 		foreach ( (array)$this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->update(
-				$table,
-				[
+				$table, [
 					$selector => $new
-				],
-				[
+				], [
 					$selector => $old
 				]
 			);
@@ -377,18 +403,36 @@ class WikiManager {
 	}
 
 	private function recacheJson( $wiki = null ) {
-		$cWJ = new CreateWikiJson($wiki ?? $this->config->get('CreateWikiGlobalWiki'), $this->hookRunner);
+		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner );
 		$cWJ->resetDatabaseList();
 		$cWJ->update();
 	}
-	public function getUserRequestCount(int $userID, int $viewLevel) {
 
-		return $this->cwdb->newSelectQueryBuilder()
-			->select('*')
-			->from('cw_requests')
-			->where([
-				$this->cwdb->expr('cw_visibility', '<=', $viewLevel),
-				'cw_user' => $userID])
-			->caller( __METHOD__ )->fetchRowCount();
+	public function getUserRequestCount( $user, int $viewLevel, string $status ) {
+		$visibilityConds = [
+			0 => 'public',
+			1 => 'createwiki-deleterequest',
+			2 => 'createwiki-suppressrequest',
+		];
+		$conditions = [ 'cw_user' => $user->getId() ];
+		if ( $status != '*' ) {
+			$conditions['cw_status'] = $status;
 		}
+		$requests = $this->cwdb->newSelectQueryBuilder()->select( 'cw_visibility' )->from( 'cw_requests' )->where(
+				$conditions
+			)->caller( __METHOD__ )->fetchResultSet();
+
+		$count = 0;
+		foreach ( $requests as $req ) {
+			$wikiRequestVisibility = $visibilityConds[$req->cw_v];
+			if ( $wikiRequestVisibility !== 'public' ) {
+				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
+					continue;
+				}
+			}
+			$count += 1;
+		}
+
+		return $count;
+	}
 }
