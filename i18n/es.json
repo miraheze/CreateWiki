@@ -47,6 +47,7 @@
 	"createwiki-label-reason": "Motivo:",
 	"createwiki-label-requester": "Solicitante:",
 	"createwiki-label-sitename": "Nombre del sitio:",
+	"createwiki-rest-disabled": "El acceso a la API REST para CreateWiki se ha deshabilitado en la configuración de este wiki.",
 	"createwiki-success": "El wiki ha sido creado exitosamente.",
 	"echo-category-title-wiki-creation": "Creación del wiki",
 	"echo-category-title-request-comment": "Comentario añadido a la solicitud del wiki",

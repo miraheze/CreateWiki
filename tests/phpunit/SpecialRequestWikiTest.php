@@ -4,10 +4,11 @@ namespace Miraheze\CreateWiki\Tests;
 
 use DerivativeContext;
 use ErrorPageError;
+use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
-use SpecialPage;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 
@@ -33,6 +34,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::execute
 	 */
 	public function testExecuteNotLoggedIn() {
+		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
 		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
 
@@ -70,6 +72,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::execute
 	 */
 	public function testExecuteLoggedInEmailNotConfirmed() {
+		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
 		$hookRunner = $this->createMock( CreateWikiHookRunner::class );

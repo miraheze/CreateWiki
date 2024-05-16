@@ -3,8 +3,10 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use HTMLForm;
+use MediaWiki\Html\Html;
+use MediaWiki\SpecialPage\SpecialPage;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use SpecialPage;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
@@ -18,6 +20,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	public function execute( $par ) {
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			return $this->getOutput()->addHTML(
+				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
+			);
+		}
+
 		$this->setHeaders();
 
 		if ( $par === null || $par === '' ) {

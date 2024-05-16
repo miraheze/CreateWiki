@@ -39,6 +39,7 @@
 	"createwiki-label-requester": "המבקש:",
 	"createwiki-label-sitename": "שם האתר:",
 	"createwiki-label-statuschangecomment": "הסיבה לפעולה הזאת:",
+	"createwiki-rest-disabled": "הגישה ל־REST API בשביל CreateWiki הושבתה בהגדרות של הוויקי הזה",
 	"createwiki-success": "אתר הוויקי נוצר בהצלחה.",
 	"echo-category-title-wiki-creation": "יצירת ויקי",
 	"echo-category-title-request-comment": "נוספה הערה לבקשת ויקי",

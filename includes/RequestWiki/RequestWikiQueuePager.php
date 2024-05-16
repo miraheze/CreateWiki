@@ -2,10 +2,10 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
-use TablePager;
-use Title;
+use MediaWiki\Pager\TablePager;
+use MediaWiki\Title\Title;
 
 class RequestWikiQueuePager extends TablePager {
 

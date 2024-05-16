@@ -151,7 +151,7 @@
 	"requestwikiqueue-search-header": "ウィキ申請の検索",
 	"right-requestwiki": "ウィキを申請",
 	"right-createwiki": "ウィキを作成",
-	"right-createwiki-deleterequest": "削除されたウィキの申請",
+	"right-createwiki-deleterequest": "ウィキの申請を削除",
 	"right-createwiki-suppressionlog": "ウィキの申請秘匿記録を表示",
 	"right-createwiki-suppressrequest": "ウィキの申請を全員から非表示にする"
 }

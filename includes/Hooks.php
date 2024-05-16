@@ -2,8 +2,9 @@
 
 namespace Miraheze\CreateWiki;
 
-use Config;
-use EchoAttributeManager;
+use MediaWiki\Config\Config;
+use MediaWiki\Extension\Notifications\AttributeManager;
+use MediaWiki\Extension\Notifications\UserLocator;
 use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\MakeGlobalVariablesScriptHook;
@@ -154,8 +155,8 @@ class Hooks implements
 		];
 
 		$notifications['wiki-creation'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'wiki-creation',
 			'group' => 'positive',
@@ -166,8 +167,8 @@ class Hooks implements
 		];
 
 		$notifications['request-declined'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'request-declined',
 			'group' => 'positive',
@@ -178,8 +179,8 @@ class Hooks implements
 		];
 
 		$notifications['request-moredetails'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'request-moredetails',
 			'group' => 'positive',
@@ -190,8 +191,8 @@ class Hooks implements
 		];
 
 		$notifications['request-comment'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'request-comment',
 			'group' => 'positive',

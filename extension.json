@@ -5,7 +5,8 @@
 		"John Lewis",
 		"Paladox",
 		"Universal Omega",
-		"Agent Isai"
+		"Agent Isai",
+		"Alex"
 	],
 	"url": "https://github.com/miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
@@ -120,6 +121,16 @@
 			"path": "/createwiki/v0/wiki_request/{id}",
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
+			"services": [
+				"ConfigFactory",
+				"DBLoadBalancerFactory",
+				"UserFactory"
+			]
+		},
+		{
+			"path": "/createwiki/v0/wiki_requests/user/{username}",
+			"method": "GET",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
 			"services": [
 				"ConfigFactory",
 				"DBLoadBalancerFactory",
@@ -256,6 +267,11 @@
 			"public": true,
 			"value": "wiki"
 		},
+		"CreateWikiDisableRESTAPI": {
+			"description": "Bool. If set to true, disable the REST API",
+			"public": true,
+			"value": false
+		},
 		"CreateWikiEmailNotifications": {
 			"description": "Boolean. Whether to send emails for new wiki creations.",
 			"public": true,
@@ -388,7 +404,7 @@
 		}
 	},
 	"ConfigRegistry": {
-		"CreateWiki": "GlobalVarConfig::newInstance"
+		"CreateWiki": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
 	},
 	"DefaultUserOptions": {
 		"echo-subscriptions-web-request-comment": true,

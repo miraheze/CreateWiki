@@ -2,17 +2,18 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Config;
 use ErrorPageError;
 use Exception;
 use ExtensionRegistry;
-use FormSpecialPage;
-use Html;
 use ManualLogEntry;
+use MediaWiki\Config\Config;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\SpecialPage\FormSpecialPage;
+use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -29,6 +30,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function execute( $par ) {
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			return $this->getOutput()->addHTML(
+				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
+			);
+		}
+
 		$request = $this->getRequest();
 		$out = $this->getOutput();
 

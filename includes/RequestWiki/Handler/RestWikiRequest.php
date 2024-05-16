@@ -2,10 +2,11 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\RestUtils;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\ILBFactory;
@@ -41,6 +42,7 @@ class RestWikiRequest extends SimpleHandler {
 	}
 
 	public function run( $requestID ) {
+		RestUtils::checkEnv();
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
 			0 => 'public',
@@ -82,7 +84,7 @@ class RestWikiRequest extends SimpleHandler {
 				'url' => $wikiRequest->cw_url,
 				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
 				'category' => $wikiRequest->cw_category,
-				'bio' => $wikiRequest->cw_bio,
+				'bio' => (bool)$wikiRequest->cw_bio,
 				'visibility' => $wikiRequestVisibility,
 			];
 			$wikiRequestCwComments = $dbr->select(
