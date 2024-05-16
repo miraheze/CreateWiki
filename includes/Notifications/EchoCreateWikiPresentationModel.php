@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Notifications;
 
-use EchoEventPresentationModel;
+use MediaWiki\Extension\Notifications\Formatters\EchoEventPresentationModel;
 
 class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {

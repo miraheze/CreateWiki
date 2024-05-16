@@ -4,9 +4,9 @@ namespace Miraheze\CreateWiki\CreateWiki;
 
 use LogFormatter;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Title\Title;
 use Message;
-use SpecialPage;
-use Title;
 
 class CreateWikiLogFormatter extends LogFormatter {
 

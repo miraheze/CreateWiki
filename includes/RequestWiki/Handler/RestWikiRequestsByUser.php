@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
