@@ -354,6 +354,7 @@ class RequestWikiRequestViewer {
 		WikiRequest $request,
 	) {
 		$out = $form->getContext()->getOutput();
+		$session = $form->getRequest()->getSession();
 		$user = $form->getUser();
 
 		if ( !$user->isRegistered() ) {
@@ -370,8 +371,15 @@ class RequestWikiRequestViewer {
 
 			return false;
 		} elseif ( isset( $formData['submit-comment'] ) ) {
-			$request->addComment( $formData['comment'], $user );
+			if ( $session->get( 'previous_posted_comment' ) !== $formData['comment'] ) {
+				$session->set( 'previous_posted_comment', $formData['comment'] );
+				$request->addComment( $formData['comment'], $user );
+			} else {
+				$out->addHTML( Html::errorBox( wfMessage( 'createwiki-duplicate-comment' )->escaped() ) );
+				return false;
+			}
 		} elseif ( isset( $formData['submit-edit'] ) ) {
+			$session->remove( 'previous_posted_comment' );
 			$subdomain = $formData['edit-url'];
 			$err = '';
 			$status = $request->parseSubdomain( $subdomain, $err );
@@ -403,6 +411,7 @@ class RequestWikiRequestViewer {
 
 			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
+			$session->remove( 'previous_posted_comment' );
 			if ( isset( $formData['visibility-options'] ) ) {
 				$request->suppress( $user, $formData['visibility-options'] );
 			}
