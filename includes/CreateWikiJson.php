@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use BagOStuff;
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;

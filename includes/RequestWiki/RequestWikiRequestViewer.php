@@ -2,13 +2,13 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Config;
 use Exception;
-use Html;
 use HTMLForm;
 use HTMLFormField;
 use IContextSource;
-use Linker;
+use MediaWiki\Config\Config;
+use MediaWiki\Html\Html;
+use MediaWiki\Linker\Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
