@@ -2,9 +2,9 @@
 
 namespace Miraheze\CreateWiki\Notifications;
 
-use EchoDiscussionParser;
-use EchoEventPresentationModel;
-use RawMessage;
+use MediaWiki\Extension\Notifications\DiscussionParser;
+use MediaWiki\Extension\Notifications\Formatters\EchoEventPresentationModel;
+use MediaWiki\Language\RawMessage;
 
 class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
@@ -17,7 +17,7 @@ class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel
 
 	public function getBodyMessage() {
 		$reason = $this->event->getExtraParam( 'reason' );
-		$text = EchoDiscussionParser::getTextSnippet( $reason, $this->language );
+		$text = DiscussionParser::getTextSnippet( $reason, $this->language );
 
 		return new RawMessage( "$1", [ $text ] );
 	}
