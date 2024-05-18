@@ -85,7 +85,7 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => $request->requester->getName() .
+				'default' => htmlspecialchars( $request->requester->getName() ) .
 					Linker::userToolLinks( $request->requester->getId(), $request->requester->getName() ),
 				'raw' => true,
 			],
@@ -265,8 +265,8 @@ class RequestWikiRequestViewer {
 									'createwiki-error-requestcountwarn',
 									$requesterCount,
 									$request->requester->getName()
-								)->parse()
-							),
+								)
+							)->parse(),
 							'mw-notify-error'
 						)
 					);
