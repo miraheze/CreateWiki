@@ -181,6 +181,16 @@
 				"oojs-ui-widgets"
 			]
 		},
+		"ext.createwiki.oouiform.wikiTags": {
+			"scripts": "ext.createwiki.oouiform.wikiTags.js",
+			"targets": [ "desktop", "mobile" ],
+			"messages": [
+				"createwiki-label-wiki-tags"
+			],
+			"dependencies": [
+				"oojs-ui-widgets"
+			]
+		},
 		"ext.createwiki.oouiform.styles": {
 			"targets": [ "desktop", "mobile" ],
 			"styles": "ext.createwiki.oouiform.ooui.less"
@@ -198,6 +208,11 @@
 		},
 		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
+			"public": true,
+			"value": []
+		},
+		"CreateWikiAvailableTags": {
+			"description": "Array. List of available wiki tags. $wgCreateWikiUseWikiTags must be set to true for this to do anything.",
 			"public": true,
 			"value": []
 		},
@@ -369,6 +384,11 @@
 		},
 		"CreateWikiUseExperimental": {
 			"description": "Boolean. Whether to implement front-end logic for marking wikis as experimental.",
+			"public": true,
+			"value": false
+		},
+		"CreateWikiUseWikiTags": {
+			"description": "Boolean. Whether to implement front-end logic for wiki tags.",
 			"public": true,
 			"value": false
 		},
