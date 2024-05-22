@@ -408,7 +408,7 @@ class WikiManager {
 		$cWJ->update();
 	}
 
-	public function getUserRequestCount( $user, int $viewLevel, string $status ) {
+	public function getUserRequestCount( $user, string $status ) {
 		$visibilityConds = [
 			0 => 'public',
 			1 => 'createwiki-deleterequest',
@@ -426,7 +426,7 @@ class WikiManager {
 		foreach ( $requests as $req ) {
 			$wikiRequestVisibility = $visibilityConds[$req->cw_v];
 			if ( $wikiRequestVisibility !== 'public' ) {
-				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
+				if ( !$user->isAllowed( $wikiRequestVisibility ) ) {
 					continue;
 				}
 			}

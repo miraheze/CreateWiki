@@ -265,8 +265,8 @@ class RequestWikiRequestViewer {
 									'createwiki-error-requestcountwarn',
 									$requesterCount,
 									$request->requester->getName()
-								)
-							)->parse(),
+								)->parse()
+							),
 							'mw-notify-error'
 						)
 					);
