@@ -2,8 +2,6 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RestUtils;
@@ -17,9 +15,6 @@ use Wikimedia\Rdbms\ILBFactory;
  */
 class RestWikiRequest extends SimpleHandler {
 
-	/** @var Config */
-	private $config;
-
 	/** @var ILBFactory */
 	private $dbLoadBalancerFactory;
 
@@ -27,16 +22,13 @@ class RestWikiRequest extends SimpleHandler {
 	private $userFactory;
 
 	/**
-	 * @param ConfigFactory $configFactory
 	 * @param ILBFactory $dbLoadBalancerFactory
 	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
-		ConfigFactory $configFactory,
 		ILBFactory $dbLoadBalancerFactory,
 		UserFactory $userFactory
 	) {
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
 		$this->userFactory = $userFactory;
 	}
