@@ -254,7 +254,7 @@ class RequestWikiRequestViewer {
 					$viewerCwDeleteLevel = ( $permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' )
 						? 2 : 0 );
 				}
-				$requesterCount = $wm->getUserRequestCount( $request->requester, $viewerCwDeleteLevel, '*' );
+				$requesterCount = $wm->getUserRequestCount( $request->requester, $userR, '*' );
 				if ( $requesterCount >= $this->config->get( 'CreateWikiRequestCountWarnThreshold' ) ) {
 					$context->getOutput()->addHTML(
 						Html::warningBox(

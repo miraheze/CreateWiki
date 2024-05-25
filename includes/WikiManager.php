@@ -408,13 +408,13 @@ class WikiManager {
 		$cWJ->update();
 	}
 
-	public function getUserRequestCount( $user, string $status ) {
+	public function getUserRequestCount( $requester, $viewer, string $status ) {
 		$visibilityConds = [
 			0 => 'public',
 			1 => 'createwiki-deleterequest',
 			2 => 'createwiki-suppressrequest',
 		];
-		$conditions = [ 'cw_user' => $user->getId() ];
+		$conditions = [ 'cw_user' => $requester->getId() ];
 		if ( $status != '*' ) {
 			$conditions['cw_status'] = $status;
 		}
@@ -426,7 +426,7 @@ class WikiManager {
 		foreach ( $requests as $req ) {
 			$wikiRequestVisibility = $visibilityConds[$req->cw_v];
 			if ( $wikiRequestVisibility !== 'public' ) {
-				if ( !$user->isAllowed( $wikiRequestVisibility ) ) {
+				if ( !$viewer->isAllowed( $wikiRequestVisibility ) ) {
 					continue;
 				}
 			}
