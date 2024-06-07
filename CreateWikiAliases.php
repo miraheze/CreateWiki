@@ -3,12 +3,12 @@
 $specialPageAliases = [];
 
 $specialPageAliases['de'] = [
-	'CreateWiki' => [ 'WikiErstellen' ],
-	'RequestWiki' => [ 'WikiBeantragen' ]
+	'CreateWiki' => [ 'WikiErstellen', 'WE' ],
+	'RequestWiki' => [ 'WikiBeantragen', 'WB' ]
 ];
 
 $specialPageAliases['en'] = [
-	'CreateWiki' => [ 'CreateWiki' ],
-	'RequestWiki' => [ 'RequestWiki' ],
-	'RequestWikiQueue' => [ 'RequestWikiQueue', 'RequestWikiEdit', 'RWQ' ],
+	'CreateWiki' => [ 'CreateWiki', 'CW' ],
+	'RequestWiki' => [ 'RequestWiki', 'RW' ],
+	'RequestWikiQueue' => [ 'RequestWikiQueue', 'RWQ', 'RequestWikiEdit', 'RWE' ],
 ];
