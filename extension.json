@@ -302,6 +302,11 @@
 			"public": true,
 			"value": []
 		},
+		"CreateWikiRequestCountWarnThreshold": {
+			"description": "Integer. Amount of wiki requests a user can have before being flagged.",
+			"public": true,
+			"value": 5
+		},
 		"CreateWikiShowBiographicalOption": {
 			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
 			"public": true,
