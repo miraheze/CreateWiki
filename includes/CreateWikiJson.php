@@ -100,9 +100,11 @@ class CreateWikiJson {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+
+		$objectCacheFactory = MediaWikiServices::getInstance()->getObjectCacheFactory();
 		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
-			ObjectCache::getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
-			ObjectCache::getLocalClusterInstance();
+			$objectCacheFactory->getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
+			$objectCacheFactory->getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
 
