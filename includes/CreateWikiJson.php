@@ -6,7 +6,6 @@ use BagOStuff;
 use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use ObjectCache;
 use UnexpectedValueException;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\DBConnRef;
