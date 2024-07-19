@@ -1,9 +1,13 @@
 <?php
 
+namespace Miraheze\CreateWiki;
+
+use ExtensionProcessor;
+use ExtensionRegistry;
 use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
 
-class WikiInitialise {
+class WikiInitialize {
 	private $cacheDir;
 	public $config;
 	public $hostname;

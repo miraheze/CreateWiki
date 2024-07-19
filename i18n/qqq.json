@@ -21,6 +21,7 @@
 	"createwiki": "",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
+	"createwiki-duplicate-comment": "Message displayed when the user attempts to resubmit the same comment as the their previous request.",
 	"createwiki-close-email-sender": "{{optional}}",
 	"createwiki-email-subject": "{{doc-important|Do not translate \"Miraheze\"}}\n\nEmail subject (if wiki requester has a registered email).",
 	"createwiki-email-body": "{{doc-important|Do not translate \"Miraheze\"}}\n\nEmail body (if wiki requester has a registered email).",
