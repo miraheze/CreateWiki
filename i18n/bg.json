@@ -41,7 +41,7 @@
 	"requestwikiqueue-request-label-status": "Състояние",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Отбелязване на видимостта на заявката като....",
-	"requestwikiqueue-request-label-visibility-all": "Потребители с „read“ права могат да преглеждат",
-	"requestwikiqueue-request-label-visibility-delete": "Потребители с „delete“ права могат да преглеждат",
+	"requestwikiqueue-request-label-visibility-all": "Публично видими",
+	"requestwikiqueue-request-label-visibility-delete": "Потребители с „createwiki-deleterequest“ права могат да преглеждат",
 	"right-createwiki": "Създаване на уикита"
 }

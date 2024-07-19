@@ -60,7 +60,7 @@ class RequestWikiQueuePager extends TablePager {
 
 		switch ( $name ) {
 			case 'cw_timestamp':
-				$formatted = $language->timeanddate( $row->cw_timestamp );
+				$formatted = $language->timeanddate( $row->cw_timestamp, true );
 				break;
 			case 'cw_dbname':
 				$formatted = $row->cw_dbname;
