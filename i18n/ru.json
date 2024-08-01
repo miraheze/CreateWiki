@@ -21,6 +21,7 @@
 			"Vlad5250",
 			"WerySkok",
 			"Wileyfoxyx",
+			"Yurina Tatiana",
 			"Александр Сигачёв"
 		]
 	},
@@ -64,6 +65,7 @@
 	"log-action-filter-farmer-requestapprove": "Запрос вики одобрен",
 	"log-action-filter-farmer-requestdecline": "Запрос вики отклонён",
 	"log-action-filter-farmer-requestwiki": "Вики-запрос (повторно) открыт",
+	"log-action-filter-farmersuppression": "Тип действия:",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|создал|создала}} вики «$4»",
 	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|одобрил|одобрила}} запрос вики $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|отклонил|отклонила}} запрос вики $4",
