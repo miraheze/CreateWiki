@@ -32,9 +32,9 @@ class RemoteWiki {
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
-	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$this->hookRunner = $hookRunner;
 
 		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )

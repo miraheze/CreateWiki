@@ -41,8 +41,6 @@
 	"requestwikiqueue-request-label-visibility": "Označi vidljivost ovih zahteva kao…",
 	"requestwikiqueue-request-label-visibility-all": "Svi koji imaju dozvolu za čitanje mogu da vide ovaj zahtev",
 	"requestwikiqueue-request-label-visibility-delete": "Svi koji imaju dozvolu za brisanje mogu da vide ovaj zahtev",
-	"requestwikiqueue-request-label-visibility-hide": "Svi koji imaju dozvolu za pravljenje vikija mogu da vide ovaj zahtev",
-	"requestwikiqueue-request-label-visibility-oversight": "Svi koji imaju dozvolu za skrivanje izmena mogu da vide ovaj zahtev",
 	"right-requestwiki": "Zatraži vikije",
 	"right-createwiki": "pravljenje vikija na farmi"
 }

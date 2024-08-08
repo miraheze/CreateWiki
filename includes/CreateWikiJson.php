@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use BagOStuff;
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
@@ -100,7 +100,9 @@ class CreateWikiJson {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$this->cache = ObjectCache::getLocalClusterInstance();
+		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
+			ObjectCache::getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
+			ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
 
@@ -133,7 +135,7 @@ class CreateWikiJson {
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-		$this->initTime ??= $this->dbr->timestamp();
+		$this->initTime = (int)$this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->initTime );
 
@@ -153,7 +155,7 @@ class CreateWikiJson {
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
 
-		$this->initTime ??= $this->dbr->timestamp();
+		$this->initTime = (int)$this->dbr->timestamp();
 
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->initTime );
 
@@ -325,7 +327,7 @@ class CreateWikiJson {
 		}
 
 		$jsonArray = [
-			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : 0,
+			'timestamp' => ( file_exists( $this->cacheDir . '/' . $this->wiki . '.json' ) ) ? $this->wikiTimestamp : (int)$this->dbr->timestamp(),
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,

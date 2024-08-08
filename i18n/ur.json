@@ -69,8 +69,6 @@
 	"requestwikiqueue-request-label-visibility": "اس درخواست کے مرئیت کو ایسے نشان زد کریں۔۔۔",
 	"requestwikiqueue-request-label-visibility-all": "سبھی 'read' حق کے ساتھ اس درخواست کو دیکھ سکتے ہیں",
 	"requestwikiqueue-request-label-visibility-delete": "سبھی 'delete' حق کے ساتھ اس درخواست کو دیکھ سکتے ہیں",
-	"requestwikiqueue-request-label-visibility-hide": "سبھی 'createwiki' حق کے ساتھ اس درخواست کو دیکھ سکتے ہیں",
-	"requestwikiqueue-request-label-visibility-oversight": "سبھی 'suppressrevision' حق کے ساتھ اس درخواست کو دیکھ سکتے ہیں",
 	"right-requestwiki": "ویکیاں درخواست کریں",
 	"right-createwiki": "ویکیاں تخلیق کریں"
 }

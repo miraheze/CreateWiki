@@ -2,22 +2,27 @@
 
 namespace Miraheze\CreateWiki;
 
-use Config;
-use EchoAttributeManager;
+use MediaWiki\Config\Config;
+use MediaWiki\Extension\Notifications\AttributeManager;
+use MediaWiki\Extension\Notifications\UserLocator;
 use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
+use MediaWiki\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
+use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
 use Wikimedia\Rdbms\ILBFactory;
 
 class Hooks implements
 	GetMagicVariableIDsHook,
 	LoginFormValidErrorMessagesHook,
 	ParserGetVariableValueSwitchHook,
+	MakeGlobalVariablesScriptHook,
 	SetupAfterCacheHook
 {
 	/** @var Config */
@@ -104,6 +109,16 @@ class Hooks implements
 	}
 
 	/** @inheritDoc */
+	public function onMakeGlobalVariablesScript(
+		&$vars,
+		$out
+	): void {
+		if ( $out->getTitle()->isSubpageOf( Title::newFromText( "Special:RequestWikiQueue" ) ) ) {
+			$vars['CreateWikiCannedResponses'] = $this->config->get( 'CreateWikiCannedResponses' );
+		}
+	}
+
+	/** @inheritDoc */
 	public function onGetMagicVariableIDs( &$variableIDs ) {
 		$variableIDs[] = 'numberofwikirequests';
 	}
@@ -120,12 +135,18 @@ class Hooks implements
 	) {
 		$notificationCategories['wiki-creation'] = [
 			'priority' => 3,
-			'tooltip' => 'echo-pref-tooltip-wiki-creation',
+			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-declined'] = [
 			'priority' => 3,
-			'tooltip' => 'echo-pref-tooltip-wiki-request-declined'
+			'tooltip' => 'echo-pref-tooltip-wiki-request-declined',
+			'no-dismiss' => [ 'email' ]
+		];
+
+		$notificationCategories['request-moredetails'] = [
+			'priority' => 1,
+			'no-dismiss' => [ 'all' ]
 		];
 
 		$notificationCategories['request-comment'] = [
@@ -134,8 +155,8 @@ class Hooks implements
 		];
 
 		$notifications['wiki-creation'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'wiki-creation',
 			'group' => 'positive',
@@ -146,8 +167,8 @@ class Hooks implements
 		];
 
 		$notifications['request-declined'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'request-declined',
 			'group' => 'positive',
@@ -157,9 +178,21 @@ class Hooks implements
 			'immediate' => true
 		];
 
+		$notifications['request-moredetails'] = [
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
+			],
+			'category' => 'request-moredetails',
+			'group' => 'positive',
+			'section' => 'alert',
+			'canNotifyAgent' => true,
+			'presentation-model' => EchoRequestMoreDetailsPresentationModel::class,
+			'immediate' => true
+		];
+
 		$notifications['request-comment'] = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'category' => 'request-comment',
 			'group' => 'positive',

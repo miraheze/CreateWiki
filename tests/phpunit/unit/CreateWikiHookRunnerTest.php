@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Tests\Unit;
 
+use Generator;
 use MediaWiki\Tests\HookContainer\HookRunnerTestBase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
@@ -10,7 +11,10 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
  */
 class CreateWikiHookRunnerTest extends HookRunnerTestBase {
 
-	public function provideHookRunners() {
+	/**
+	 * @inheritDoc
+	 */
+	public static function provideHookRunners(): Generator {
 		yield CreateWikiHookRunner::class => [ CreateWikiHookRunner::class ];
 	}
 }

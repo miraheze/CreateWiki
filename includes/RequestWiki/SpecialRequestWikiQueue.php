@@ -3,8 +3,10 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use HTMLForm;
+use MediaWiki\Html\Html;
+use MediaWiki\SpecialPage\SpecialPage;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use SpecialPage;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
@@ -18,6 +20,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	public function execute( $par ) {
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			return $this->getOutput()->addHTML(
+				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
+			);
+		}
+
 		$this->setHeaders();
 
 		if ( $par === null || $par === '' ) {
@@ -35,6 +43,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$dbname = $this->getRequest()->getText( 'dbname' );
 
 		$formDescriptor = [
+			'intro' => [
+				'type' => 'info',
+				'default' => $this->msg( 'requestwikiqueue-info' )->text(),
+			],
 			'dbname' => [
 				'type' => 'text',
 				'name' => 'dbname',
@@ -56,7 +68,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'Unreviewed' => 'inreview',
 					'Approved' => 'approved',
 					'Declined' => 'declined',
-					'On hold' => 'onhold',
+					'On hold (further review)' => 'onhold',
+					'Needs more details' => 'moredetails',
 					'All' => '*',
 				],
 				'default' => $status ?: 'inreview',
@@ -64,6 +77,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
+		$htmlForm->setWrapperLegendMsg( 'requestwikiqueue-search-header' );
 		$htmlForm->setMethod( 'get' )->prepareForm()->displayForm( false );
 
 		$pager = new RequestWikiQueuePager( $this, $requester, $dbname, $status );

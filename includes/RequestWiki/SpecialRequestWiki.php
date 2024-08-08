@@ -2,15 +2,18 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Config;
+use ErrorPageError;
 use Exception;
-use FormSpecialPage;
-use Html;
+use ExtensionRegistry;
 use ManualLogEntry;
+use MediaWiki\Config\Config;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\SpecialPage\FormSpecialPage;
+use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Title;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -27,6 +30,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function execute( $par ) {
+		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+			return $this->getOutput()->addHTML(
+				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
+			);
+		}
+
 		$request = $this->getRequest();
 		$out = $this->getOutput();
 
@@ -35,6 +44,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setHeaders();
 
 		$this->checkExecutePermissions( $this->getUser() );
+
+		if ( !$this->getUser()->isEmailConfirmed() && $this->config->get( 'RequestWikiConfirmEmail' ) ) {
+			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
+		}
 
 		$out->addModules( [ 'mediawiki.special.userrights' ] );
 		$out->addModuleStyles( 'mediawiki.notification.convertmessagebox.styles' );
@@ -109,11 +122,33 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 4,
+			'minlength' => $this->config->get( 'RequestWikiMinimumLength' ) ?? false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'validation-callback' => [ $this, 'isValidReason' ],
 		];
+
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->config->get( 'WikiDiscoverUseDescriptions' ) && $this->config->get( 'RequestWikiUseDescriptions' ) ) {
+			$formDescriptor['public-description'] = [
+				'type' => 'textarea',
+				'rows' => 2,
+				'maxlength' => $this->config->get( 'WikiDiscoverDescriptionMaxLength' ) ?? false,
+				'label-message' => 'requestwiki-label-public-description',
+				'help-message' => 'requestwiki-help-public-description',
+				'required' => true,
+				'validation-callback' => [ $this, 'isValidReason' ],
+			];
+		}
+
+		if ( $this->config->get( 'RequestWikiConfirmAgreement' ) ) {
+			$formDescriptor['agreement'] = [
+				'type' => 'check',
+				'label-message' => 'requestwiki-label-agreement',
+				'help-message' => 'requestwiki-help-agreement',
+				'required' => true,
+			];
+		}
 
 		return $formDescriptor;
 	}

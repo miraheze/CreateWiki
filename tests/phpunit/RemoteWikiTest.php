@@ -2,12 +2,12 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
 use Miraheze\CreateWiki\WikiManager;
-use SiteConfiguration;
 use Wikimedia\Rdbms\DBQueryError;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -30,6 +30,18 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
 
+		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+			'host' => $GLOBALS['wgDBserver'],
+			'user' => 'root',
+		] );
+
+		$db->begin();
+		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "FLUSH PRIVILEGES;" );
+		$db->commit();
+	}
+
+	public function addDBDataOnce(): void {
 		try {
 			$dbw = MediaWikiServices::getInstance()
 				->getDBLoadBalancer()
@@ -59,16 +71,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		} catch ( DBQueryError $e ) {
 			// Do nothing
 		}
-
-		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS['wgDBserver'],
-			'user' => 'root',
-		] );
-
-		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "FLUSH PRIVILEGES;" );
-		$db->commit();
 	}
 
 	/**

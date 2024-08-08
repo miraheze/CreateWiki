@@ -94,8 +94,6 @@
 	"requestwikiqueue-request-label-visibility": "Merk synligheten til denne forespørselen som …",
 	"requestwikiqueue-request-label-visibility-all": "Alle med tillatelse til å lese kan vise forespørselen",
 	"requestwikiqueue-request-label-visibility-delete": "Alle me tillatelse til å slette kan vise forespørselen",
-	"requestwikiqueue-request-label-visibility-hide": "Alle med tillatelse til å opprette wikier kan vise forespørselen",
-	"requestwikiqueue-request-label-visibility-oversight": "Alle med tillatelse til å sensurere revisjoner kan vise forespørselen",
 	"right-requestwiki": "Be om wikier",
 	"right-createwiki": "Opprett wikier på wiki-farmen"
 }

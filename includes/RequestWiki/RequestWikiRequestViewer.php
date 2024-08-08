@@ -2,13 +2,13 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Config;
 use Exception;
-use Html;
 use HTMLForm;
 use HTMLFormField;
 use IContextSource;
-use Linker;
+use MediaWiki\Config\Config;
+use MediaWiki\Html\Html;
+use MediaWiki\Linker\Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -31,10 +31,9 @@ class RequestWikiRequestViewer {
 		IContextSource $context
 	) {
 		$visibilityConds = [
-			0 => 'read',
-			1 => 'createwiki',
-			2 => 'delete',
-			3 => 'suppressrevision',
+			0 => 'public',
+			1 => 'createwiki-deleterequest',
+			2 => 'createwiki-suppressrequest',
 		];
 
 		// Gets user from request
@@ -44,10 +43,19 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
-		if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->visibility] ) ) {
+		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
+		if ( $request->getVisibility() >= 3 ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
 			return [];
+		}
+
+		if ( $visibilityConds[$request->getVisibility()] !== 'public' ) {
+			if ( !$permissionManager->userHasRight( $userR, $visibilityConds[$request->getVisibility()] ) ) {
+				$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
+
+				return [];
+			}
 		}
 
 		$formDescriptor = [
@@ -208,18 +216,20 @@ class RequestWikiRequestViewer {
 			];
 		}
 
+		// TODO: Should we really require (createwiki) to suppress wiki requests?
 		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() ) {
+
+			// You can't even get to this part in suppressed wiki requests without the appropiate userright, so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
 				0 => wfMessage( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
-				1 => wfMessage( 'requestwikiqueue-request-label-visibility-hide' )->escaped(),
 			];
 
-			if ( $permissionManager->userHasRight( $userR, 'delete' ) ) {
-				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
+			if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
+				$visibilityOptions[1] = wfMessage( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
 			}
 
-			if ( $permissionManager->userHasRight( $userR, 'suppressrevision' ) ) {
-				$visibilityOptions[3] = wfMessage( 'requestwikiqueue-request-label-visibility-oversight' )->escaped();
+			if ( $permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' ) ) {
+				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
 			$wm = new WikiManager( $request->dbname, $this->hookRunner );
@@ -240,9 +250,10 @@ class RequestWikiRequestViewer {
 					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options-messages' => [
+						'requestwikiqueue-onhold' => 'onhold',
 						'requestwikiqueue-approve' => 'approve',
 						'requestwikiqueue-decline' => 'decline',
-						'requestwikiqueue-onhold' => 'onhold',
+						'requestwikiqueue-moredetails' => 'moredetails',
 					],
 					'default' => $request->getStatus(),
 					'cssclass' => 'createwiki-infuse',
@@ -256,7 +267,7 @@ class RequestWikiRequestViewer {
 				'visibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $request->visibility != 0 ) ? 1 : 0,
+					'default' => ( $request->getVisibility() != 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
@@ -265,7 +276,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'revdelete-suppress-text',
 					'hide-if' => [ '!==', 'wpvisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
-					'default' => $request->visibility,
+					'default' => (string)$request->getVisibility(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
@@ -340,9 +351,10 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form,
-		WikiRequest $request
+		WikiRequest $request,
 	) {
 		$out = $form->getContext()->getOutput();
+		$session = $form->getRequest()->getSession();
 		$user = $form->getUser();
 
 		if ( !$user->isRegistered() ) {
@@ -359,8 +371,15 @@ class RequestWikiRequestViewer {
 
 			return false;
 		} elseif ( isset( $formData['submit-comment'] ) ) {
-			$request->addComment( $formData['comment'], $user );
+			if ( $session->get( 'previous_posted_comment' ) !== $formData['comment'] ) {
+				$session->set( 'previous_posted_comment', $formData['comment'] );
+				$request->addComment( $formData['comment'], $user );
+			} else {
+				$out->addHTML( Html::errorBox( wfMessage( 'createwiki-duplicate-comment' )->escaped() ) );
+				return false;
+			}
 		} elseif ( isset( $formData['submit-edit'] ) ) {
+			$session->remove( 'previous_posted_comment' );
 			$subdomain = $formData['edit-url'];
 			$err = '';
 			$status = $request->parseSubdomain( $subdomain, $err );
@@ -392,12 +411,17 @@ class RequestWikiRequestViewer {
 
 			$request->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
-			$request->visibility = $formData['visibility'];
+			$session->remove( 'previous_posted_comment' );
+			if ( isset( $formData['visibility-options'] ) ) {
+				$request->suppress( $user, $formData['visibility-options'] );
+			}
 
 			if ( $formData['submission-action'] == 'approve' ) {
 				$request->approve( $user, $formData['reason'] );
 			} elseif ( $formData['submission-action'] == 'onhold' ) {
 				$request->onhold( $formData['reason'], $user );
+			} elseif ( $formData['submission-action'] == 'moredetails' ) {
+				$request->moredetails( $formData['reason'], $user );
 			} else {
 				$request->decline( $formData['reason'], $user );
 			}

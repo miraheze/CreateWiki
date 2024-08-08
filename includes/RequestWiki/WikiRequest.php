@@ -4,16 +4,16 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Title\Title;
+use MediaWiki\User\UserIdentity;
 use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use RuntimeException;
-use SpecialPage;
-use Title;
 use UnexpectedValueException;
-use User;
 
 class WikiRequest {
 	public $dbname;
@@ -24,7 +24,6 @@ class WikiRequest {
 	public $url;
 	public $category;
 	public $requester;
-	public $visibility = 0;
 	public $timestamp;
 	public $bio;
 	public $purpose;
@@ -35,6 +34,7 @@ class WikiRequest {
 	private $status = 'inreview';
 	private $comments = [];
 	private $involvedUsers = [];
+	private $visibility = 0;
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
@@ -68,7 +68,7 @@ class WikiRequest {
 			$this->requester = $userFactory->newFromId( $dbRequest->cw_user );
 			$this->status = $dbRequest->cw_status;
 			$this->timestamp = $dbRequest->cw_timestamp;
-			$this->visibility = $dbRequest->cw_visibility;
+			$this->visibility = (int)$dbRequest->cw_visibility;
 			$this->bio = $dbRequest->cw_bio;
 
 			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
@@ -109,10 +109,10 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, User $user, string $type = 'comment', array $notifyUsers = [] ) {
+	public function addComment( string $comment, UserIdentity $user, string $type = 'comment', array $notifyUsers = [] ): bool {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
-			return;
+			return false;
 		}
 
 		$this->dbw->insert(
@@ -134,6 +134,8 @@ class WikiRequest {
 		}
 
 		$this->sendNotification( $comment, $notifyUsers, $type );
+
+		return true;
 	}
 
 	private function sendNotification( string $comment, array $notifyUsers, string $type = 'comment' ) {
@@ -142,7 +144,7 @@ class WikiRequest {
 			return;
 		}
 
-		$reason = $type === 'declined' ? 'reason' : 'comment';
+		$reason = ($type === 'declined' || $type === 'moredetails') ? 'reason' : 'comment';
 		$notificationData = [
 			'type' => "request-{$type}",
 			'extra' => [
@@ -163,7 +165,11 @@ class WikiRequest {
 		return $this->status;
 	}
 
-	public function approve( User $user, string $reason = null ) {
+	public function getVisibility(): int {
+		return $this->visibility;
+	}
+
+	public function approve( UserIdentity $user, string $reason = null ) {
 		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobParams = [
 				'id' => $this->id,
@@ -205,7 +211,7 @@ class WikiRequest {
 		}
 	}
 
-	public function decline( string $reason, User $user ) {
+	public function decline( string $reason, UserIdentity $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 
@@ -228,7 +234,7 @@ class WikiRequest {
 		}
 	}
 
-	public function onhold( string $reason, User $user ) {
+	public function onhold( string $reason, UserIdentity $user ) {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'onhold';
 		$this->save();
 
@@ -246,7 +252,25 @@ class WikiRequest {
 		$this->log( $user, 'requestonhold' );
 	}
 
-	private function log( User $user, string $log ) {
+	public function moredetails( string $reason, UserIdentity $user ) {
+		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
+		$this->save();
+
+		$this->addComment( $reason, $user, 'moredetails', [ $this->requester ] );
+
+		$notifyUsers = $this->involvedUsers;
+		unset(
+			$notifyUsers[$this->requester->getId()],
+			$notifyUsers[$user->getId()]
+		);
+
+		if ( $notifyUsers ) {
+			$this->sendNotification( $reason, $notifyUsers );
+		}
+		$this->log( $user, 'requestmoredetails' );
+	}
+
+	private function log( UserIdentity $user, string $log ) {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
@@ -266,7 +290,51 @@ class WikiRequest {
 		$logEntry->publish( $logID );
 	}
 
-	public function reopen( User $user, $log = true ) {
+	private function suppressionLog( UserIdentity $user, string $log ) {
+		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
+		$suppressionLogEntry->setPerformer( $user );
+		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
+		$suppressionLogEntry->setParameters(
+			[
+				'4::id' => Message::rawParam(
+					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
+						'#' . $this->id
+					)
+				),
+			]
+		);
+		$suppressionLogID = $suppressionLogEntry->insert();
+		$suppressionLogEntry->publish( $suppressionLogID );
+	}
+
+	public function suppress( UserIdentity $user, int $level, $log = true ) {
+		if ( $level === $this->visibility ) {
+			// Nothing to do, the wiki request already has the requested suppression level
+			return;
+		}
+		$this->visibility = $level;
+
+		$this->save();
+
+		if ( $log ) {
+			switch ( $level ) {
+				case 0:
+					$this->suppressionLog( $user, 'public' );
+					break;
+
+				case 1:
+					$this->suppressionLog( $user, 'delete' );
+					break;
+
+				case 2:
+					$this->suppressionLog( $user, 'suppress' );
+					break;
+			}
+		}
+	}
+
+	public function reopen( UserIdentity $user, $log = true ) {
 		$status = $this->status;
 
 		$this->status = ( $status == 'approved' ) ? 'approved' : 'inreview';
@@ -322,15 +390,26 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 		];
 
-		$this->dbw->upsert(
-			'cw_requests',
-			[
-				'cw_id' => $this->id,
-			] + $rows,
-			'cw_id',
-			$rows,
-			__METHOD__
-		);
+		if ( !$this->id ) {
+			// New wiki request
+			$this->dbw->insert(
+				'cw_requests',
+				[
+					$rows,
+				],
+				__METHOD__
+			);
+		} else {
+			// Updating an existing request
+			$this->dbw->update(
+				'cw_requests',
+				$rows,
+				[
+					'cw_id' => $this->id,
+				],
+				__METHOD__
+			);
+		}
 
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();

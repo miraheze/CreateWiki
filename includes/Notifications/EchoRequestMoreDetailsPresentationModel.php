@@ -6,18 +6,18 @@ use MediaWiki\Extension\Notifications\DiscussionParser;
 use MediaWiki\Extension\Notifications\Formatters\EchoEventPresentationModel;
 use MediaWiki\Language\RawMessage;
 
-class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
+class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel {
 	public function getIconType() {
-		return 'chat';
+		return 'global';
 	}
 
 	public function getHeaderMessage() {
-		return $this->msg( 'notification-header-request-comment' );
+		return $this->msg( 'notification-header-request-moredetails' );
 	}
 
 	public function getBodyMessage() {
-		$comment = $this->event->getExtraParam( 'comment' );
-		$text = DiscussionParser::getTextSnippet( $comment, $this->language );
+		$reason = $this->event->getExtraParam( 'reason' );
+		$text = DiscussionParser::getTextSnippet( $reason, $this->language );
 
 		return new RawMessage( "$1", [ $text ] );
 	}

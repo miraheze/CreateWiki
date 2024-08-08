@@ -12,24 +12,17 @@ jobs:
     strategy:
       matrix:
         include:
-          # Latest MediaWiki stable - PHP 8.2
-          - mw: 'REL1_40'
-            php: 8.2
-            php-docker: 82
+          # Latest MediaWiki stable - PHP 8.1
+          - mw: 'REL1_42'
+            php: 8.1
+            php-docker: 81
             composer-test: true
             experimental: false
 
-          # Latest MediaWiki release branch - PHP 8.2
-          - mw: 'REL1_41'
-            php: 8.2
-            php-docker: 82
-            composer-test: false
-            experimental: true
-
-          # Latest MediaWiki master - PHP 8.2
+          # Latest MediaWiki master - PHP 8.1
           - mw: 'master'
-            php: 8.2
-            php-docker: 82
+            php: 8.1
+            php-docker: 81
             composer-test: false
             experimental: true
 
@@ -52,7 +45,7 @@ jobs:
       - uses: rectalogic/notify-irc@v2
         if: env.WORKFLOW_CONCLUSION == 'success'
         with:
-          channel: "#miraheze-sre"
+          channel: "#miraheze-tech-ops"
           server: "irc.libera.chat"
           nickname: miraheze-github
           message: ${{ github.repository }} - ${{ github.actor }} the build passed.
@@ -63,7 +56,7 @@ jobs:
       - uses: rectalogic/notify-irc@v2
         if: env.WORKFLOW_CONCLUSION == 'failure'
         with:
-          channel: "#miraheze-sre"
+          channel: "#miraheze-tech-ops"
           server: "irc.libera.chat"
           nickname: miraheze-github
           message: ${{ github.repository }} - ${{ github.actor }} the build has errored.

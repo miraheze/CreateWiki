@@ -77,8 +77,6 @@
 	"requestwikiqueue-request-label-visibility": "Oznacz widoczność tego wniosku jako…",
 	"requestwikiqueue-request-label-visibility-all": "Każdy z uprawnieniem „read” może zobaczyć to zgłoszenie",
 	"requestwikiqueue-request-label-visibility-delete": "Każdy użytkownik z uprawnieniem „delete” może zobaczyć to zgłoszenie",
-	"requestwikiqueue-request-label-visibility-hide": "Każdy z uprawnieniem „createwiki” może zobaczyć to zgłoszenie",
-	"requestwikiqueue-request-label-visibility-oversight": "Każdy z uprawnieniem „suppressrevision” może zobaczyć to zgłoszenie",
 	"right-requestwiki": "Proszenie o utworzenie nowych wiki",
 	"right-createwiki": "Tworzenie nowych wiki na farmie wiki"
 }

@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ahmed Alyamoor",
 			"HendSalah16",
 			"Meno25",
 			"NancyMilad",
@@ -13,7 +14,7 @@
 	"action-createwiki": "إنشاء ويكيات",
 	"action-requestwiki": "طلب ويكيات",
 	"createwiki": "أنشئ ويكي",
-	"createwiki-defaultmainpage": "__NOTOC__\n== مرحبًا بك في {{SITENAME}}! ==\nتم إنشاء هذه الصفحة الرئيسية تلقائيًا ويبدو أنه لم يتم استبدالها بعد.\n\n=== للبيروقراطيين في هذا الويكي ===\nأهلا ومرحبا بكم في ويكي الجديد الخاص بك! شكرا لاختيارك Miraheze لاستضافة الويكي الخاص بك ، نتمنى أن تستمتع باستضافتنا.\n\nيمكنك البدء فورًا في العمل على موقع wiki الخاص بك أو وقتما تشاء.\n\nتحتاج مساعدة؟ لا مشكلة! سوف نساعدك في wiki الخاص بك حسب الحاجة. للبدء ، حاول التحقق من هذه الروابط المفيدة:\n* [[mw:Special:MyLanguage/Help:Contents|دليل ميدياويكي]] (مثل التنقل والتحرير وحذف الصفحات وحظر المستخدمين)\n* [[meta:Special:MyLanguage/FAQ|Miraheze FAQ]]\n* [[meta:Special:MyLanguage/Request features|طلب تغييرات الإعدادات في الويكي الخاص بك]]. (يجب إجراء تغييرات الامتدادات والجلد والشعار / المفضلة من خلال [[Special:ManageWiki]] على موقع wiki الخاص بك ، راجع [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] لمزيد من المعلومات.)\n\n==== ما زلت لا أفهم X! ====\nحسنًا ، هذه ليست مشكلة. حتى لو لم يتم شرح شيء ما في الوثائق / الأسئلة الشائعة ، فإننا لا نزال سعداء بمساعدتك. تستطيع ان تجدنا هنا:\n* [[meta:Special:MyLanguage/Help center|في ويكي Miraheze الخاص بنا]]\n* تشغيل [[phab:|Phabricator]]\n* في [https://miraheze.org/discord Discord]\n* على IRC في #miraheze على irc.libera.chat ([irc: //irc.libera.chat/٪23miraheze Direct link] ؛ [https://web.libera.chat/؟channel=#miraheze webchat])\n\n=== لزوار هذا الويكي ===\nمرحبًا ، الصفحة الرئيسية الافتراضية لهذا الويكي (هذه الصفحة) لم يتم استبدالها بعد بالبيروقراطيين في هذا الويكي. ربما لا يزال البيروقراطي (البيروقراطيون) يعملون على صفحة رئيسية ، لذا يرجى التحقق مرة أخرى لاحقًا!",
+	"createwiki-defaultmainpage": "__NOTOC__\n== مرحبًا بك في {{SITENAME}}! ==\nتم إنشاء هذه الصفحة الرئيسية تلقائيًا ويبدو أنه لم يتم استبدالها بعد.\n\n=== للبيروقراطيين في هذا الويكي ===\nأهلا ومرحبا بكم في ويكي الجديد الخاص بك! شكرا لاختيارك Miraheze لاستضافة الويكي الخاص بك ، نتمنى أن تستمتع باستضافتنا.\n\nيمكنك البدء فورًا في العمل على موقع wiki الخاص بك أو وقتما تشاء.\n\nتحتاج مساعدة؟ لا مشكلة! سوف نساعدك في wiki الخاص بك حسب الحاجة. للبدء ، حاول التحقق من هذه الروابط المفيدة:\n* [[mw:Special:MyLanguage/Help:Contents|دليل ميدياويكي]] (مثل التنقل والتحرير وحذف الصفحات وحظر المستخدمين)\n* [[meta:Special:MyLanguage/FAQ|Miraheze FAQ]]\n* [[meta:Special:MyLanguage/Request features|طلب تغييرات الإعدادات في الويكي الخاص بك]]. (يجب إجراء تغييرات الامتدادات والجلد والشعار / المفضلة من خلال [[Special:ManageWiki]] على موقع wiki الخاص بك ، راجع [[meta:Special:MyLanguage/ManageWiki|ManageWiki]] لمزيد من المعلومات.)\n\n==== ما زلت لا أفهم X! ====\nحسنًا ، هذه ليست مشكلة. حتى لو لم يتم شرح شيء ما في الوثائق / الأسئلة الشائعة ، فإننا لا نزال سعداء بمساعدتك. تستطيع ان تجدنا هنا:\n* [[meta:Special:MyLanguage/Help center|في ويكي Miraheze الخاص بنا]]\n* تشغيل [[phorge:|Phorge]]\n* في [https://miraheze.org/discord Discord]\n* على IRC في #miraheze على irc.libera.chat ([irc: //irc.libera.chat/٪23miraheze Direct link] ؛ [https://web.libera.chat/؟channel=#miraheze webchat])\n\n=== لزوار هذا الويكي ===\nمرحبًا ، الصفحة الرئيسية الافتراضية لهذا الويكي (هذه الصفحة) لم يتم استبدالها بعد بالبيروقراطيين في هذا الويكي. ربما لا يزال البيروقراطي (البيروقراطيون) يعملون على صفحة رئيسية ، لذا يرجى التحقق مرة أخرى لاحقًا!",
 	"createwiki-desc": "امتداد لإنشاء ويكيات جديدة بسهولة في مزرعة ويكي.",
 	"createwiki-close-email-sender": "ميراهيز",
 	"createwiki-email-subject": "ويكي Miraheze الجديد الخاص بك: $1",
@@ -49,8 +50,10 @@
 	"requestwiki-error-invalidcomment": "يحتوي طلب الويكي على حرف غير صالح; الرجاء المحاولة مرة أخرى، وإذا استمرت المشكلة [[Help center|يُرجَى الاتصال بنا]]",
 	"requestwiki-error-patient": "لقد طلبت ويكي بالفعل، يُرجَى التحلي بالصبر ويجب على أحد منشئي محتوى الويكي إنشاؤه قريبا، إذا كنت بحاجة إلى طلب ويكي آخر، يُرجَى الانتظار وسوف تكون قادرا على الطلب في وقت لاحق.",
 	"requestwiki-header": "شكرًا لاختيارك Miraheze لاستضافة موقع wiki الخاص بك! للبدء ، يرجى ملء هذا النموذج حتى نتمكن من مراجعة طلبك.\nسيتم مراجعة طلب wiki الخاص بك بواسطة أحد المتطوعين ، ويمكن تتبعه في الصفحة التي سيتم تقديمها عند تقديم طلبك.\n\nإذا كنت تريد مجالًا مخصصًا لموقع wiki الخاص بك (أي ليس نطاقًا فرعيًا قياسيًا .miraheze.org) ، يرجى قراءة <span class=\"plainlinks\">[ $1 this]</span> أولاً. يجب عليك أولاً اختيار مجال فرعي ، وسيتم تكوين المجال المخصص الخاص بك بعد ذلك.\n\nعندما تطلب موقع wiki ، فإنك توافق تلقائيًا على [[Content Policy|المحتوى]] و [[Dormancy Policy]].",
+	"requestwiki-label-agreement": "أوافق على [[Project:Privacy Policy|privacy policy]] و[[Project:Terms of Service|Terms of service]] لهذه الخدمة.",
 	"requestwiki-label-language": "اللغة:",
 	"requestwiki-label-private": "ويكي خاص (غير قابل للقراءة من قبل الجميع):",
+	"requestwiki-label-public-description": "قم بوصف الويكي الخاص بك للعامة:",
 	"requestwiki-label-sitename": "اسم الويكي:",
 	"requestwiki-label-subdomain": "النطاق الفرعي:",
 	"requestwiki-notloggedin": "عذرا، يجب <span class=\"plainlinks\">[$1 سجيل الدخول]</span> قبل أن تتمكن من طلب ويكي.",
@@ -78,8 +81,6 @@
 	"requestwikiqueue-request-label-visibility": "ضع علامة رؤية الطلبات ك",
 	"requestwikiqueue-request-label-visibility-all": "يمكن لكل من لديه \"قراءة\" مشاهدة هذا الطلب",
 	"requestwikiqueue-request-label-visibility-delete": "يمكن لكل شخص لديه صلاحيات \"حذف\" عرض هذا الطلب",
-	"requestwikiqueue-request-label-visibility-hide": "يمكن لكل شخص لديه صلاحيات \"إنشاء ويكي\" عرض هذا الطلب",
-	"requestwikiqueue-request-label-visibility-oversight": "بإمكان اي شخص لديه صلاحيات 'منع النشر و العرض' عرض هذا الطلب",
 	"right-requestwiki": "طلب الويكيات",
 	"right-createwiki": "أنشئ ويكيات في مزرعة الويكي"
 }

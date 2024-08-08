@@ -72,8 +72,6 @@
 	"requestwikiqueue-request-label-visibility": "Marcar a visibilidade desta petición como...",
 	"requestwikiqueue-request-label-visibility-all": "Todos os que teñen o permiso 'read' (ler), poden ver esta petición",
 	"requestwikiqueue-request-label-visibility-delete": "Todos os que teñen o permiso 'delete' (borrar), poden ver esta petición",
-	"requestwikiqueue-request-label-visibility-hide": "Todos os que teñen o permiso 'createwiki' (crear wiki), poden ver esta petición",
-	"requestwikiqueue-request-label-visibility-oversight": "Todos os que teñen o permiso 'suppressrevision' (eliminar revisión), poden ver esta petición",
 	"right-requestwiki": "Pedir wikis",
 	"right-createwiki": "Crear wikis no wiki granxa"
 }

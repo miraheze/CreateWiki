@@ -14,10 +14,14 @@
 		]
 	},
 	"action-createwiki": "{{doc-action|createwiki}}",
+	"action-createwiki-deleterequest": "{{doc-action}}",
+	"action-createwiki-suppressionlog": "{{doc-action}}",
+	"action-createwiki-suppressrequest": "{{doc-action}}",
 	"action-requestwiki": "{{doc-action|requestwiki}}",
 	"createwiki": "",
 	"createwiki-defaultmainpage": "{{doc-important|Do not translate \"Miraheze\"}}\n\nDefault Main Page for all wikis created.",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
+	"createwiki-duplicate-comment": "Message displayed when the user attempts to resubmit the same comment as the their previous request.",
 	"createwiki-close-email-sender": "{{optional}}",
 	"createwiki-email-subject": "{{doc-important|Do not translate \"Miraheze\"}}\n\nEmail subject (if wiki requester has a registered email).",
 	"createwiki-email-body": "{{doc-important|Do not translate \"Miraheze\"}}\n\nEmail body (if wiki requester has a registered email).",
@@ -34,7 +38,10 @@
 	"createwiki-label-reason": "Used as a label for 'reason'.\n{{Identical|Reason}}",
 	"createwiki-label-requester": "Used as a label for 'requester'.\n{{Identical|Requester}}",
 	"createwiki-label-sitename": "Used as a label for 'sitename'.\n{{Identical|Sitename}}",
+	"createwiki-rest-disabled": "Returned from REST endpoints when $wgCreateWikiDisableRESTAPI is set to true",
+	"createwiki-rest-usernowikirequests": "Returned by the wiki_requests/user/{username} endpoint if the user has not made any wiki requests",
 	"createwiki-success": "Message when a wiki has successfully been created.",
+	"createwiki-wikinotglobalwiki": "Message displayed on the special pages and API when accessed outside of the global wiki",
 	"log-description-farmer": "Description of farmer log",
 	"log-action-filter-farmer": "{{Identical|Type of action}}",
 	"logentry-farmer-createwiki": "Used as log message.",
@@ -66,5 +73,8 @@
 	"requestwikiqueue-request-label-status": "Used as a label for 'status'\n{{Identical|Status}}",
 	"requestwikiqueue-request-label-url": "Used as a label for 'URL'\n{{Identical|URL}}",
 	"right-requestwiki": "{{doc-right|requestwiki}}",
-	"right-createwiki": "{{doc-right|createwiki}}"
+	"right-createwiki": "{{doc-right|createwiki}}",
+	"right-createwiki-deleterequest": "{{doc-right}}",
+	"right-createwiki-suppressionlog": "{{doc-right}}",
+	"right-createwiki-suppressrequest": "{{doc-right}}"
 }

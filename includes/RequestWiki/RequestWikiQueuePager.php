@@ -2,10 +2,10 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
-use TablePager;
-use Title;
+use MediaWiki\Pager\TablePager;
+use MediaWiki\Title\Title;
 
 class RequestWikiQueuePager extends TablePager {
 
@@ -60,7 +60,7 @@ class RequestWikiQueuePager extends TablePager {
 
 		switch ( $name ) {
 			case 'cw_timestamp':
-				$formatted = $language->timeanddate( $row->cw_timestamp );
+				$formatted = $language->timeanddate( $row->cw_timestamp, true );
 				break;
 			case 'cw_dbname':
 				$formatted = $row->cw_dbname;

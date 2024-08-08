@@ -9,8 +9,8 @@ use FatalError;
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
+use MediaWiki\SpecialPage\SpecialPage;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use SpecialPage;
 
 class WikiManager {
 	private $config;
@@ -26,9 +26,9 @@ class WikiManager {
 	public $cluster;
 	public $exists;
 
-	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$this->hookRunner = $hookRunner;
 		$this->lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 
 		$this->cwdb = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
@@ -223,7 +223,7 @@ class WikiManager {
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -4 ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $wiki, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $siteName,
 				],
 				'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
