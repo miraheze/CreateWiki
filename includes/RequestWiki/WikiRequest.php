@@ -26,6 +26,7 @@ class WikiRequest {
 	public $requester;
 	public $timestamp;
 	public $bio;
+	public $lock;
 	public $purpose;
 
 	private $id;
@@ -70,6 +71,7 @@ class WikiRequest {
 			$this->timestamp = $dbRequest->cw_timestamp;
 			$this->visibility = (int)$dbRequest->cw_visibility;
 			$this->bio = $dbRequest->cw_bio;
+			$this->lock = $dbRequest->cw_lock;
 
 			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
 			$purposeCheck = explode( ':', $newDesc[0], 2 );
@@ -169,6 +171,9 @@ class WikiRequest {
 		return $this->visibility;
 	}
 
+	public function getLocked(): bool {
+		return $this->lock;
+	}
 	public function approve( UserIdentity $user, string $reason = null ) {
 		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobParams = [
