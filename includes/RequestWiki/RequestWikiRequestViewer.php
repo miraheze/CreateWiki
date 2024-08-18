@@ -266,7 +266,7 @@ class RequestWikiRequestViewer {
 				],
 				'lock' => [
 					'type' => 'check',
-					'label' => 'createwiki-label-lock' // TODO: Add message to interface
+					'label' => 'createwiki-label-lock', // TODO: Add message to interface
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
@@ -432,7 +432,7 @@ class RequestWikiRequestViewer {
 				$request->decline( $formData['reason'], $user );
 			}
 		}
-		$request->setLock($formData['lock'])
+		$request->lock = $formData['lock'];
 
 		$out->addHTML(
 			Html::successBox(
