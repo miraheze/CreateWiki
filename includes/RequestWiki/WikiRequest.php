@@ -393,6 +393,7 @@ class WikiRequest {
 			'cw_category' => $this->category,
 			'cw_visibility' => $this->visibility,
 			'cw_bio' => $this->bio,
+			'cw_lock' => $this->lock
 		];
 
 		if ( !$this->id ) {
