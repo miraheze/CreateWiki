@@ -14,6 +14,7 @@ use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use StatusValue;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -147,6 +148,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'label-message' => 'requestwiki-label-agreement',
 				'help-message' => 'requestwiki-help-agreement',
 				'required' => true,
+				'validation-callback' => [ $this, 'isAgreementChecked' ],
 			];
 		}
 
@@ -240,6 +242,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( !$reason || ctype_space( $reason ) ) {
 			return $this->msg( 'htmlform-required', 'parseinline' )->escaped();
+		}
+
+		return true;
+	}
+
+	public function isAgreementChecked( bool $agreement ) {
+		if ( !$agreement ) {
+			return StatusValue::newFatal( 'createwiki-error-agreement' );
 		}
 
 		return true;
