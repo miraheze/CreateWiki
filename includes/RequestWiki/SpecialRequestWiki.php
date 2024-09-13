@@ -87,11 +87,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 			],
 		];
 
-		if ( $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->config->get( 'CreateWikiUseCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $this->config->get( 'CreateWikiCategories' ),
+				'options-message' => 'createwiki-category',
 				'default' => 'uncategorised',
 			];
 		}
@@ -116,18 +116,23 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'options' => $this->config->get( 'CreateWikiPurposes' ),
+				'options-message' => 'requestwiki-purposes',
 			];
 		}
 
+		$formDescriptor['guidance'] = [
+			'type' => 'info',
+			'default' => $this->msg( 'requestwiki-help-guidance' ),
+		];
+
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 4,
+			'rows' => 8,
 			'minlength' => $this->config->get( 'RequestWikiMinimumLength' ) ?? false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
-			'validation-callback' => [ $this, 'isValidReason' ],
+			'validation-callback' => [ $this, 'parseSubdomain' ],
 		];
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->config->get( 'WikiDiscoverUseDescriptions' ) && $this->config->get( 'RequestWikiUseDescriptions' ) ) {
@@ -160,24 +165,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
 		$err = '';
-
-		$status = $request->parseSubdomain( $subdomain, $err );
-		if ( $status === false ) {
-			if ( $err !== '' ) {
-				$out->addHTML(
-					Html::warningBox(
-						Html::rawElement(
-							'p',
-							[],
-							$this->msg( 'createwiki-error-' . $err )->parse()
-						),
-						'mw-notify-error'
-					)
-				);
-			}
-
-			return false;
-		}
 
 		$request->description = $formData['reason'];
 		$request->sitename = $formData['sitename'];

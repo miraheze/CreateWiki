@@ -73,11 +73,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiUseCategories' ) && $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->config->get( 'CreateWikiUseCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $this->config->get( 'CreateWikiCategories' ),
+				'options-message' => 'createwiki-category',
 				'default' => 'uncategorised',
 			];
 		}

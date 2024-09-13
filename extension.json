@@ -221,11 +221,6 @@
 			"public": true,
 			"value": false
 		},
-		"CreateWikiCategories": {
-			"description": "Array. An array of categories used for wiki categorisaion.",
-			"public": true,
-			"value": []
-		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
 			"public": true,
