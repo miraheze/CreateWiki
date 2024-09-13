@@ -374,6 +374,7 @@ class WikiRequest {
 			}
 		}
 
+		$msg = new Message( $message );
 		$comment = ( $this->msg( 'requestwiki-purposes' )->escaped() ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
 		$rows = [
@@ -434,9 +435,8 @@ class WikiRequest {
 	 * Extract database name from subdomain and automatically configure url and dbname
 	 *
 	 * @param string $subdomain subdomain
-	 * @param string &$err optional error string for reported errors
 	 *
-	 * @return boolean true subdomain is valid and accepted, false otherwise
+	 * @return StatusValue
 	 */
 	public function parseSubdomain( string $subdomain ) {
 		$subdomain = strtolower( $subdomain );
