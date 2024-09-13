@@ -13,7 +13,7 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use RuntimeException;
-use StatusValue
+use StatusValue;
 use UnexpectedValueException;
 
 class WikiRequest {

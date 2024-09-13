@@ -117,6 +117,7 @@
 	"requestwikiqueue-pager-status-declined": "declined",
 	"requestwikiqueue-pager-status-inreview": "in review",
 	"requestwikiqueue-request": "Request",
+	"requestwikiqueue-request-header-description": "Wiki description:",
 	"requestwikiqueue-request-header-requestercomment": "The wiki requester commented:",
 	"requestwikiqueue-request-header-wikicreatorcomment-withtimestamp": "$1 commented at $2:",
 	"requestwikiqueue-request-info-submission": "Here you can modify the visibility of the request, approve or decline the request as well as provide additional comments when doing so. If you mark the wiki as approved, it will be created automatically.",
