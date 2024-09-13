@@ -374,8 +374,7 @@ class WikiRequest {
 			}
 		}
 
-		$msg = new Message( $message );
-		$comment = ( $this->msg( 'requestwiki-purposes' )->escaped() ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
+		$comment = ( Message::newFromKey( 'requestwiki-purposes' )->escaped() ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
 		$rows = [
 			'cw_comment' => $comment,
@@ -436,7 +435,7 @@ class WikiRequest {
 	 *
 	 * @param string $subdomain subdomain
 	 *
-	 * @return StatusValue
+	 * @return StatusValue|true
 	 */
 	public function parseSubdomain( string $subdomain ) {
 		$subdomain = strtolower( $subdomain );
