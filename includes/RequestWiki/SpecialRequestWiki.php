@@ -62,6 +62,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	protected function getFormFields() {
+		$request = new WikiRequest( null, $this->hookRunner );
+
 		$formDescriptor = [
 			'subdomain' => [
 				'type' => 'textwithbutton',
@@ -73,6 +75,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'requestwiki-help-subdomain',
 				'required' => true,
+				'validation-callback' => [ $request, 'parseSubdomain' ],
 			],
 			'sitename' => [
 				'type' => 'text',
@@ -132,7 +135,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
-			'validation-callback' => [ $this, 'parseSubdomain' ],
+			'validation-callback' => [ $this, 'isValidReason' ],
 		];
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->config->get( 'WikiDiscoverUseDescriptions' ) && $this->config->get( 'RequestWikiUseDescriptions' ) ) {
@@ -235,6 +238,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function isAgreementChecked( bool $agreement ) {
+		if ( !$agreement ) {
+			return StatusValue::newFatal( 'createwiki-error-agreement' );
+		}
+
+		return true;
+	}
+
+	public function isValidSubdomain( string $subdomain ) {
 		if ( !$agreement ) {
 			return StatusValue::newFatal( 'createwiki-error-agreement' );
 		}

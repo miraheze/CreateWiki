@@ -150,7 +150,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => (string)$request->url,
-					'validation-callback' => [ $this, 'parseSubdomain' ],
+					'validation-callback' => [ $request, 'parseSubdomain' ],
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
