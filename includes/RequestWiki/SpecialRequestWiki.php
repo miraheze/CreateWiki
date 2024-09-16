@@ -175,6 +175,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
 
+		$request->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
+		$request->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
 		$request->description = $formData['reason'];
 		$request->sitename = $formData['sitename'];
 		$request->language = $formData['language'];
