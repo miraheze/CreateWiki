@@ -13,6 +13,7 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 use RuntimeException;
+use StatusValue;
 use UnexpectedValueException;
 
 class WikiRequest {
@@ -433,11 +434,10 @@ class WikiRequest {
 	 * Extract database name from subdomain and automatically configure url and dbname
 	 *
 	 * @param string $subdomain subdomain
-	 * @param string &$err optional error string for reported errors
 	 *
-	 * @return boolean true subdomain is valid and accepted, false otherwise
+	 * @return StatusValue|true
 	 */
-	public function parseSubdomain( string $subdomain, string &$err = '' ) {
+	public function parseSubdomain( string $subdomain ) {
 		$subdomain = strtolower( $subdomain );
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
 			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
@@ -451,17 +451,14 @@ class WikiRequest {
 		// Make the subdomain a dbname
 		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
 		if ( in_array( $database, $this->config->get( 'LocalDatabases' ) ) ) {
-			$err = 'subdomaintaken';
+			return StatusValue::newFatal( 'createwiki-error-subdomaintaken' );
 
-			return false;
 		} elseif ( !ctype_alnum( $subdomain ) ) {
-			$err = 'notalnum';
+			return StatusValue::newFatal( 'createwiki-error-notalnum' );
 
-			return false;
 		} elseif ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			$err = 'disallowed';
+			return StatusValue::newFatal( 'createwiki-error-disallowed' );
 
-			return false;
 		} else {
 			$this->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
 			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );

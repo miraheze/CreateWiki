@@ -103,9 +103,9 @@ class RequestWikiRequestViewer {
 			],
 			'description' => [
 				'type' => 'textarea',
-				'rows' => 4,
+				'rows' => 8,
 				'readonly' => true,
-				'label-message' => 'requestwikiqueue-request-header-requestercomment',
+				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'request',
 				'default' => (string)$request->description,
 				'raw' => true,
@@ -117,7 +117,7 @@ class RequestWikiRequestViewer {
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
-				'rows' => 4,
+				'rows' => 8,
 				// @phan-suppress-next-line SecurityCheck-XSS
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment'],
@@ -128,7 +128,7 @@ class RequestWikiRequestViewer {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 4,
+					'rows' => 8,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
 				],
@@ -150,6 +150,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => (string)$request->url,
+					'validation-callback' => [ $request, 'parseSubdomain' ],
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
@@ -162,7 +163,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-requestercomment',
 					'type' => 'textarea',
 					'section' => 'edit',
-					'rows' => 4,
+					'rows' => 8,
 					'required' => true,
 					'default' => (string)$request->description,
 					'raw' => true,
@@ -380,26 +381,6 @@ class RequestWikiRequestViewer {
 			}
 		} elseif ( isset( $formData['submit-edit'] ) ) {
 			$session->remove( 'previous_posted_comment' );
-			$subdomain = $formData['edit-url'];
-			$err = '';
-			$status = $request->parseSubdomain( $subdomain, $err );
-
-			if ( $status === false ) {
-				if ( $err !== '' ) {
-					$out->addHTML(
-						Html::warningBox(
-							Html::rawElement(
-								'p',
-								[],
-								wfMessage( 'createwiki-error-' . $err )->parse()
-							),
-							'mw-notify-error'
-						)
-					);
-				}
-
-				return false;
-			}
 
 			$request->sitename = $formData['edit-sitename'];
 			$request->language = $formData['edit-language'];
