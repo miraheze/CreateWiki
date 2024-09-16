@@ -73,14 +73,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
 				'label-message' => 'requestwiki-label-subdomain',
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
-				'help-message' => 'requestwiki-help-subdomain',
+				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
 				'validation-callback' => [ $request, 'parseSubdomain' ],
 			],
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
-				'help-message' => 'requestwiki-help-sitename',
+				'help-message' => 'createwiki-help-sitename',
 				'required' => true,
 			],
 			'language' => [
@@ -103,7 +103,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
-				'help-message' => 'requestwiki-help-private',
+				'help-message' => 'createwiki-help-private',
 			];
 		}
 
@@ -111,7 +111,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
-				'help-message' => 'requestwiki-help-bio',
+				'help-message' => 'createwiki-help-bio',
 			];
 		}
 
