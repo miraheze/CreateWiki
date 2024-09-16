@@ -94,6 +94,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
+				'help-message' => 'createwiki-help-category',
 				'options' => $this->config->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
 			];
@@ -119,6 +120,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
+				'help-message' => 'createwiki-help-purpose',
 				'options' => $this->config->get( 'CreateWikiPurposes' ),
 			];
 		}

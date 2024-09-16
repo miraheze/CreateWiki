@@ -28,6 +28,7 @@
 	"createwiki-error-subdomaintaken": "The subdomain you requested is already taken. There might already be a wiki covering your topic; if that's the case, contribute to that wiki instead (wikis on the same topic are prohibited and deleted upon detection). Select another subdomain and try again.",
 	"createwiki-help-agreement": "Failure to follow these policies may lead to wiki closure.",
 	"createwiki-help-bio": "Make sure to follow this farm's policy on covering people.",
+	"createwiki-help-category": "The categorization of this wiki will reflect on places such as on global wiki directory.",
 	"createwiki-help-private": "Only administrators and those you allow will be able to view its contents.",
 	"createwiki-help-reason": "Please enter a sufficient summary describing the topic, scope, and purpose of the wiki you're requesting.",
 	"createwiki-help-sitename": "This will be the wiki's name and the name of its 'Project' namespace.",
