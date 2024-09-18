@@ -116,16 +116,16 @@ class WikiRequest {
 			return false;
 		}
 
-		$this->dbw->insert(
-			'cw_comments',
-			[
+		$this->dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_comments' )
+			->row( [
 				'cw_id' => $this->id,
 				'cw_comment' => $comment,
 				'cw_comment_timestamp' => $this->dbw->timestamp(),
 				'cw_comment_user' => $user->getId(),
-			],
-			__METHOD__
-		);
+			] )
+			->caller( __METHOD__ )
+			->execute();
 
 		// Don't notify the acting user of their action
 		unset( $this->involvedUsers[$user->getId()] );
@@ -376,7 +376,7 @@ class WikiRequest {
 
 		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
 
-		$rows = [
+		$set = [
 			'cw_comment' => $comment,
 			'cw_dbname' => $this->dbname,
 			'cw_language' => $this->language,
@@ -391,26 +391,16 @@ class WikiRequest {
 			'cw_bio' => $this->bio,
 		];
 
-		if ( !$this->id ) {
-			// New wiki request
-			$this->dbw->insert(
-				'cw_requests',
-				[
-					$rows,
-				],
-				__METHOD__
-			);
-		} else {
-			// Updating an existing request
-			$this->dbw->update(
-				'cw_requests',
-				$rows,
-				[
-					'cw_id' => $this->id,
-				],
-				__METHOD__
-			);
-		}
+		$row = [ 'cw_id' => $this->id ?? 0 ] + $set;
+
+		$this->dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_requests' )
+			->row( $row )
+			->onDuplicateKeyUpdate()
+			->uniqueIndexFields( [ 'cw_id' ] )
+			->set( $set )
+			->caller( __METHOD__ )
+			->execute();
 
 		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
