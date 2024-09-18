@@ -28,7 +28,7 @@ class SetContainersAccessJob extends Job implements GenericParameterJob {
 			$dir = $backend->getContainerStoragePath( $zone );
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';
-			$secure = ( $private || $publicPrivate && $this->isPrivate )
+			$secure = ( $private || ( $publicPrivate && $this->isPrivate ) )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$backend->clearCache( [ $dir ] );
