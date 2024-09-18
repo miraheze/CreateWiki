@@ -6,6 +6,7 @@ use BagOStuff;
 use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use ObjectCache;
 use UnexpectedValueException;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\DBConnRef;
@@ -103,7 +104,7 @@ class CreateWikiJson {
 		$objectCacheFactory = MediaWikiServices::getInstance()->getObjectCacheFactory();
 		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
 			$objectCacheFactory->getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
-			$objectCacheFactory->getLocalClusterInstance();
+			ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
 
