@@ -124,7 +124,11 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( $permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() || $userR->getId() == $request->requester->getId() && !$userR->getBlock() ) {
+		if (
+			( $permissionManager->userHasRight( $userR, 'createwiki' ) ||
+			$userR->getId() == $request->requester->getId() ) &&
+			!$userR->getBlock()
+		) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
