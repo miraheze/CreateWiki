@@ -39,7 +39,7 @@ class SetContainersAccess extends Maintenance {
 			$dir = $backend->getContainerStoragePath( $zone );
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';
-			$secure = ( $private || $publicPrivate && $isPrivate )
+			$secure = ( $private || ( $publicPrivate && $isPrivate ) )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
 			$this->prepareDirectory( $backend, $dir, $secure );
