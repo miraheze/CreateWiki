@@ -23,7 +23,7 @@ class CreateWikiJob extends Job {
 		$notValid = $wm->checkDatabaseName( $this->params['dbname'] );
 
 		if ( $notValid ) {
-			$wr->addComment( $notValid, User::newSystemUser( 'CreateWiki Extension' ) );
+			$wr->addComment( $notValid, User::newSystemUser( 'CreateWiki Extension' ), false );
 
 			return true;
 		}
@@ -39,13 +39,14 @@ class CreateWikiJob extends Job {
 				"[[Special:RequestWikiQueue/{$this->params['id']}|Requested]]"
 			);
 		} catch ( Exception $e ) {
-			$wr->addComment( 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(), User::newSystemUser( 'CreateWiki Extension' ) );
+			$wr->addComment( 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(), User::newSystemUser( 'CreateWiki Extension' ), true );
 			$wr->reopen( User::newSystemUser( 'CreateWiki Extension' ), false );
+			$wr->log( User::newSystemUser( 'CreateWiki Extension' ), 'create-failure' );
 
 			return true;
 		}
 
-		$wr->addComment( 'Wiki created.', User::newSystemUser( 'CreateWiki Extension' ) );
+		$wr->addComment( 'Wiki created.', User::newSystemUser( 'CreateWiki Extension' ), false );
 
 		return true;
 	}

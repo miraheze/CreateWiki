@@ -39,7 +39,7 @@ class RequestWikiAIJob extends Job {
 			// @phan-suppress-next-line PhanUndeclaredMethod
 			$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approved'];
 
-			$wr->addComment( 'Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ) );
+			$wr->addComment( 'Approval Score: ' . (string)round( $approveScore, 2 ), User::newSystemUser( 'CreateWiki Extension' ), false );
 
 			if ( is_int( $config->get( 'CreateWikiAIThreshold' ) ) && ( (int)round( $approveScore, 2 ) > $config->get( 'CreateWikiAIThreshold' ) ) && $this->canAutoApprove( $config ) ) {
 				$wr->approve( User::newSystemUser( 'CreateWiki Extension' ) );

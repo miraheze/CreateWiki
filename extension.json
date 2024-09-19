@@ -59,6 +59,12 @@
 			"createwiki": [
 				"createwiki"
 			],
+			"comment": [
+				"comment"
+			],
+			"create-failure": [
+				"create-failure"
+			],
 			"requestapprove": [
 				"requestapprove"
 			],
@@ -68,8 +74,13 @@
 			"requestmoredetails": [
 				"requestmoredetails"
 			],
+			"requestonhold": [
+				"requestonhold"
+			],
+			"requestreopen": [
+				"requestreopen"
+			],
 			"requestwiki": [
-				"requestreopen",
 				"requestwiki"
 			]
 		},
@@ -87,6 +98,8 @@
 	},
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
+		"farmer/comment": "LogFormatter",
+		"farmer/create-failuire": "LogFormatter",
 		"farmer/requestapprove": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
 		"farmer/requestmoredetails": "LogFormatter",
