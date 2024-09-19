@@ -110,7 +110,7 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, UserIdentity $user, string $log = true, string $type = 'comment', array $notifyUsers = [] ): bool {
+	public function addComment( string $comment, UserIdentity $user, bool $log = true, string $type = 'comment', array $notifyUsers = [] ): bool {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
 			return false;
