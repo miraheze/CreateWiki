@@ -110,7 +110,7 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, UserIdentity $user, string $type = 'comment', array $notifyUsers = [] ): bool {
+	public function addComment( string $comment, UserIdentity $user, string $log = true, string $type = 'comment', array $notifyUsers = [] ): bool {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
 			return false;
@@ -135,6 +135,10 @@ class WikiRequest {
 		}
 
 		$this->sendNotification( $comment, $notifyUsers, $type );
+
+		if ( $log ) {
+			$this->log( $user, 'comment' );
+		}
 
 		return true;
 	}
@@ -188,7 +192,7 @@ class WikiRequest {
 
 			$this->status = 'approved';
 			$this->save();
-			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user );
+			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user, false );
 			$this->log( $user, 'requestapprove' );
 
 			if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
@@ -203,11 +207,13 @@ class WikiRequest {
 
 			if ( $validName || $notCreated ) {
 				throw new RuntimeException( $notCreated ?? $validName );
+
+				$this->log( $user, 'create-failure' );
 			} else {
 				$this->status = 'approved';
 				$this->save();
 
-				$this->addComment( 'Request approved and wiki created. ' . ( $reason ?? '' ), $user );
+				$this->addComment( 'Request approved and wiki created. ' . ( $reason ?? '' ), $user, false );
 			}
 		}
 	}
@@ -216,7 +222,7 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 
-		$this->addComment( $reason, $user, 'declined', [ $this->requester ] );
+		$this->addComment( $reason, $user, false, 'declined', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
 		unset(
@@ -239,7 +245,7 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'onhold';
 		$this->save();
 
-		$this->addComment( $reason, $user, 'comment', [ $this->requester ] );
+		$this->addComment( $reason, $user, true, 'comment', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
 		unset(
@@ -257,7 +263,7 @@ class WikiRequest {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
 		$this->save();
 
-		$this->addComment( $reason, $user, 'moredetails', [ $this->requester ] );
+		$this->addComment( $reason, $user, false, 'moredetails', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
 		unset(
@@ -342,7 +348,7 @@ class WikiRequest {
 		$this->save();
 
 		if ( $log ) {
-			$this->addComment( 'Updated request.', $user );
+			$this->addComment( 'Updated request.', $user, true );
 			if ( $status === 'declined' ) {
 				$this->log( $user, 'requestreopen' );
 			}
