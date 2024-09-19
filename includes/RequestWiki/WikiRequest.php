@@ -206,10 +206,9 @@ class WikiRequest {
 			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
-				throw new RuntimeException( $notCreated ?? $validName );
-
-				// @phan-suppress-next-line PhanPluginUnreachableCode
 				$this->log( $user, 'create-failure' );
+
+				throw new RuntimeException( $notCreated ?? $validName );
 			} else {
 				$this->status = 'approved';
 				$this->save();
