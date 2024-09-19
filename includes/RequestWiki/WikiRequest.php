@@ -208,6 +208,7 @@ class WikiRequest {
 			if ( $validName || $notCreated ) {
 				throw new RuntimeException( $notCreated ?? $validName );
 
+				// @phan-suppress-next-line PhanPluginUnreachableCode
 				$this->log( $user, 'create-failure' );
 			} else {
 				$this->status = 'approved';
