@@ -277,7 +277,7 @@ class WikiRequest {
 		$this->log( $user, 'requestmoredetails' );
 	}
 
-	protected function log( UserIdentity $user, string $log ) {
+	public function log( UserIdentity $user, string $log ) {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
