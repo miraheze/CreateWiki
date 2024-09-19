@@ -50,10 +50,9 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 				->getDBLoadBalancer()
 				->getMaintenanceConnectionRef( DB_PRIMARY );
 
-			$dbw->newInsertQueryBuilder()
-				->insertInto( 'cw_wikis' )
-				->ignore()
-				->row( [
+			$dbw->insert(
+				'cw_wikis',
+				[
 					'wiki_dbname' => 'wikidb',
 					'wiki_dbcluster' => 'c1',
 					'wiki_sitename' => 'TestWiki',
@@ -66,10 +65,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 					'wiki_locked' => (int)0,
 					'wiki_inactive' => (int)0,
 					'wiki_inactive_exempt' => (int)0,
-					'wiki_url' => 'http://127.0.0.1:9412',
-				] )
-				->caller( __METHOD__ )
-				->execute();
+					'wiki_url' => 'http://127.0.0.1:9412'
+				],
+				__METHOD__,
+				[ 'IGNORE' ]
+			);
 
 		} catch ( DBQueryError $e ) {
 			// Do nothing
