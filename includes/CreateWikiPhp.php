@@ -55,6 +55,13 @@ class CreateWikiPhp {
 	private $wikiTimestamp;
 
 	/**
+	 * The timestamp for the databases list.
+	 *
+	 * @var int
+	 */
+	private $databaseTimestamp;
+
+	/**
 	 * The CreateWiki hook runner object.
 	 *
 	 * @var CreateWikiHookRunner
@@ -77,9 +84,63 @@ class CreateWikiPhp {
 		$this->wiki = $wiki;
 
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
+
 		if ( !$this->wikiTimestamp ) {
 			$this->resetWiki();
 		}
+
+		if ( !$this->databaseTimestamp ) {
+			$this->resetDatabaseList();
+		}
+	}
+
+	/**
+	 * Update function to check if the cached wiki data and database list are outdated.
+	 * If either the wiki cache file or the database cache file has been modified,
+	 * it will reset the corresponding cached data.
+	 */
+	public function update() {
+		clearstatcache();
+		if ( $this->wikiTimestamp < filemtime( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
+			$this->resetWiki();
+		}
+
+		if ( $this->databaseTimestamp < filemtime( "{$this->cacheDir}/databases.php" ) ) {
+			$this->resetDatabaseList();
+		}
+	}
+
+	/**
+	 * Resets the cached list of databases by fetching the current list from the database.
+	 * This function queries the 'cw_wikis' table for database names and clusters, and writes
+	 * the updated list to a PHP file within the cache directory. It also updates the 
+	 * modification timestamp and stores it in the cache for future reference.
+	 */
+	public function resetDatabaseList() {
+		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
+			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
+			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+
+		$databaseList = $this->dbr->select(
+			'cw_wikis',
+			[ 'wiki_dbname', 'wiki_dbcluster' ]
+		);
+
+		$databases = [];
+		foreach ( $databaseList as $row ) {
+			$databases[] = [
+				'dbname' => $row->wiki_dbname,
+				'dbcluster' => $row->wiki_dbcluster,
+			];
+		}
+
+		$filePath = "{$this->cacheDir}/databases.php";
+		file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" );
+
+		clearstatcache();
+		$this->databaseTimestamp = filemtime( $filePath );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
 	}
 
 	/**
@@ -126,12 +187,13 @@ class CreateWikiPhp {
 	 */
 	private function cacheWikiData( array $data ) {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
-		$data['timestamp'] = time();
 
 		$content = "<?php\n\nreturn " . var_export( $data, true ) . ";\n";
 		file_put_contents( $filePath, $content );
 
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $data['timestamp'] );
+		clearstatcache();
+		$this->wikiTimestamp = filemtime( $filePath );
+		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
 	}
 
 	/**
@@ -144,6 +206,7 @@ class CreateWikiPhp {
 		if ( file_exists( $filePath ) ) {
 			return include $filePath;
 		}
+
 		return null;
 	}
 }
