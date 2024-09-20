@@ -9,6 +9,7 @@ class CreateWikiHookRunner implements
 	CreateWikiDeletionHook,
 	CreateWikiJsonBuilderHook,
 	CreateWikiJsonGenerateDatabaseListHook,
+	CreateWikiPhpBuilderHook,
 	CreateWikiReadPersistentModelHook,
 	CreateWikiRenameHook,
 	CreateWikiStateClosedHook,
@@ -59,6 +60,14 @@ class CreateWikiHookRunner implements
 		$this->container->run(
 			'CreateWikiJsonGenerateDatabaseList',
 			[ &$databaseLists ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiPhpBuilder( $wiki, $dbr, &$cacheArray ): void {
+		$this->container->run(
+			'CreateWikiPhpBuilder',
+			[ $wiki, $dbr, &$cacheArray ]
 		);
 	}
 
