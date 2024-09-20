@@ -102,11 +102,17 @@ class CreateWikiPhp {
 	 */
 	public function update() {
 		clearstatcache();
-		if ( $this->wikiTimestamp < filemtime( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
+		if (
+			!file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ||
+			$this->wikiTimestamp < filemtime( "{$this->cacheDir}/{$this->wiki}.php" )
+		) {
 			$this->resetWiki();
 		}
 
-		if ( $this->databaseTimestamp < filemtime( "{$this->cacheDir}/databases.php" ) ) {
+		if (
+			!file_exists( "{$this->cacheDir}/databases.php" ) ||
+			$this->databaseTimestamp < filemtime( "{$this->cacheDir}/databases.php" )
+		) {
 			$this->resetDatabaseList();
 		}
 	}
