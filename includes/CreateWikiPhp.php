@@ -124,6 +124,21 @@ class CreateWikiPhp {
 	 * modification timestamp and stores it in the cache for future reference.
 	 */
 	public function resetDatabaseList() {
+		$databaseLists = [];
+		$this->hookRunner->onCreateWikiPhpGenerateDatabaseList( $databaseLists );
+
+		if ( !empty( $databaseLists ) ) {
+			foreach ( $databaseLists as $name => $content ) {
+				$filePath = "{$this->cacheDir}/$name.php";
+				file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $content, true ) . ";\n" );
+			}
+
+			clearstatcache();
+			$this->databaseTimestamp = "{$this->cacheDir}/databases.php";
+			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
+			return;
+		}
+
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
