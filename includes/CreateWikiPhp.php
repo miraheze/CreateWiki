@@ -124,15 +124,24 @@ class CreateWikiPhp {
 
 		$databaseList = $this->dbr->select(
 			'cw_wikis',
-			[ 'wiki_dbname', 'wiki_dbcluster' ]
+			[
+				'wiki_dbcluster',
+				'wiki_dbname',
+				'wiki_deleted',
+				'wiki_url',
+				'wiki_sitename',
+			]
 		);
 
 		$databases = [];
 		foreach ( $databaseList as $row ) {
-			$databases[] = [
-				'dbname' => $row->wiki_dbname,
-				'dbcluster' => $row->wiki_dbcluster,
+			$databases[$row->wiki_dbname] = [
+				's' => $row->wiki_sitename,
+				'c' => $row->wiki_dbcluster,
 			];
+			if ( $row->wiki_url !== null ) {
+				$databases[$row->wiki_dbname]['u'] = $row->wiki_url;
+			}
 		}
 
 		$filePath = "{$this->cacheDir}/databases.php";
