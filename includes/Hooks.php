@@ -76,7 +76,7 @@ class Hooks implements
 			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 				if ( file_exists( $cacheDir . '/' . $dbName . '.php' ) ) {
-					$cacheArray = include $cacheDir . '/' . $dbName . '.json';
+					$cacheArray = include $cacheDir . '/' . $dbName . '.php';
 					$isPrivate = (bool)$cacheArray['states']['private'];
 				} else {
 					$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
