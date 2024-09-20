@@ -114,7 +114,7 @@ class CreateWikiPhp {
 	/**
 	 * Resets the cached list of databases by fetching the current list from the database.
 	 * This function queries the 'cw_wikis' table for database names and clusters, and writes
-	 * the updated list to a PHP file within the cache directory. It also updates the 
+	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification timestamp and stores it in the cache for future reference.
 	 */
 	public function resetDatabaseList() {
