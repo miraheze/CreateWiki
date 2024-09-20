@@ -102,7 +102,7 @@ class CreateWikiPhp {
 			throw new UnexpectedValueException( "Wiki '{$this->wiki}' cannot be found." );
 		}
 
-		$jsonArray = [
+		$cacheArray = [
 			'timestamp' => (int)$this->dbr->timestamp(),
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
@@ -115,8 +115,8 @@ class CreateWikiPhp {
 			]
 		];
 
-		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $jsonArray );
-		$this->cacheWikiData( $jsonArray );
+		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $cacheArray );
+		$this->cacheWikiData( $cacheArray );
 	}
 
 	/**
