@@ -148,7 +148,7 @@ class CreateWikiPhp {
 				];
 
 				$tmpFile = tempnam( '/tmp/', $name );
-	
+
 				if ( $tmpFile ) {
 					if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
 						if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.php" ) ) {
