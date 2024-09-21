@@ -293,30 +293,43 @@ class CreateWikiPhp {
 	 * the operation is protected by a file lock to prevent concurrent write issues.
 	 *
 	 * This method will serialize the provided data as a PHP array and write it
-	 * to the specified file. The file is locked using `flock` to guarantee that
-	 * only one process can write to the file at a time. The lock is released
-	 * after the data is written.
+	 * to a temporary file first. Once the write operation is successful, the
+	 * temporary file will be renamed to replace the original file.
 	 *
 	 * @param string $list The base name of the cache file (without the .php extension).
 	 * @param array $data The associative array to be written as a PHP file.
 	 */
 	private function writeWithLock( string $list, array $data ) {
+		$tempFilePath = "{$this->cacheDir}/{$list}.tmp";
 		$filePath = "{$this->cacheDir}/$list.php";
-		$fileHandle = fopen( $filePath, 'w' );
+		$fileHandle = fopen( $tempFilePath, 'w' );
 
 		if ( $fileHandle ) {
 			// Try to acquire an exclusive lock
 			if ( flock( $fileHandle, LOCK_EX ) ) {
-				if ( fwrite( $fileHandle, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-					// Ensure the data is written
-					fflush( $fileHandle );
-				}
+				$writeSuccess = fwrite( $fileHandle, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) !== false;
+
+				// Ensure the data is written
+				fflush( $fileHandle );
 
 				// Release the lock
 				flock( $fileHandle, LOCK_UN );
+			} else {
+				$writeSuccess = false;
 			}
 
 			fclose( $fileHandle );
+
+			// If writing was successful, rename the temp file to the final file
+			if ( $writeSuccess ) {
+				if ( !rename( $tempFilePath, $filePath ) ) {
+					// If rename fails, delete the temp file
+					unlink( $tempFilePath );
+				}
+			} else {
+				// If write failed, delete the temp file
+				unlink( $tempFilePath );
+			}
 		}
 	}
 }
