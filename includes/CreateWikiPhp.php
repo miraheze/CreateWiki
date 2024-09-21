@@ -146,8 +146,18 @@ class CreateWikiPhp {
 					'mtime' => $mtime,
 					'databases' => $content,
 				];
-				$filePath = "{$this->cacheDir}/$name.php";
-				file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" );
+
+				$tmpFile = tempnam( '/tmp/', $name );
+
+				if ( $tmpFile ) {
+					if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
+						if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.php" ) ) {
+							unlink( $tmpFile );
+						}
+					} else {
+						unlink( $tmpFile );
+					}
+				}
 			}
 
 			$this->databaseTimestamp = $mtime;
@@ -184,8 +194,16 @@ class CreateWikiPhp {
 			}
 		}
 
-		$filePath = "{$this->cacheDir}/databases.php";
-		file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" );
+		$tmpFile = tempnam( '/tmp/', 'databases' );
+		if ( $tmpFile ) {
+			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" ) ) {
+				if ( !rename( $tmpFile, "{$this->cacheDir}/databases.php" ) ) {
+					unlink( $tmpFile );
+				}
+			} else {
+				unlink( $tmpFile );
+			}
+		}
 
 		$this->databaseTimestamp = $mtime;
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
@@ -257,8 +275,17 @@ class CreateWikiPhp {
 
 		$data['mtime'] = time();
 
-		$content = "<?php\n\nreturn " . var_export( $data, true ) . ";\n";
-		file_put_contents( $filePath, $content );
+		$tmpFile = tempnam( '/tmp/', $this->wiki );
+
+		if ( $tmpFile ) {
+			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
+				if ( !rename( $tmpFile, "{$this->wiki}.php" ) ) {
+					unlink( $tmpFile );
+				}
+			} else {
+				unlink( $tmpFile );
+			}
+		}
 
 		$this->wikiTimestamp = $data['mtime'];
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
