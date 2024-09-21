@@ -167,7 +167,7 @@ class WikiManager {
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $wiki, $requester, $centralAuth ) {
 				if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-					$this->recache( CreateWikiPhp::class );
+					$this->recache( CreateWikiPHPCache::class );
 				} else {
 					$this->recache( CreateWikiJson::class );
 				}
@@ -280,10 +280,10 @@ class WikiManager {
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
+			$cache = new CreateWikiPHPCache( $wiki, $this->hookRunner );
 
 			$cWP->resetWiki();
-			$this->recache( CreateWikiPhp::class );
+			$this->recache( CreateWikiPHPCache::class );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
@@ -323,10 +323,10 @@ class WikiManager {
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $old, $this->hookRunner );
+			$cache = new CreateWikiPHPCache( $old, $this->hookRunner );
 
 			$cWP->resetWiki();
-			$this->recache( CreateWikiPhp::class );
+			$this->recache( CreateWikiPHPCache::class );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $old, $this->hookRunner );

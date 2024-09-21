@@ -411,7 +411,7 @@ class RemoteWiki {
 
 			if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$cWP = new CreateWikiPhp( $this->dbname, $this->hookRunner );
+				$cache = new CreateWikiPHPCache( $this->dbname, $this->hookRunner );
 
 				$cWP->resetDatabaseList();
 				$cWP->resetWiki();

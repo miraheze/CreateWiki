@@ -70,7 +70,7 @@ class Hooks implements
 		$isPrivate = false;
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			$cWP = new CreateWikiPhp( $dbName, $this->hookRunner );
+			$cache = new CreateWikiPHPCache( $dbName, $this->hookRunner );
 			$cWP->update();
 
 			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {

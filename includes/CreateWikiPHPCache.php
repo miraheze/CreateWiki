@@ -10,7 +10,7 @@ use ObjectCache;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\DBConnRef;
 
-class CreateWikiPhp {
+class CreateWikiPHPCache {
 
 	/**
 	 * The configuration object.
@@ -69,7 +69,7 @@ class CreateWikiPhp {
 	private $hookRunner;
 
 	/**
-	 * CreateWikiPhp constructor.
+	 * CreateWikiPHPCache constructor.
 	 *
 	 * @param string $wiki
 	 * @param CreateWikiHookRunner|null $hookRunner
@@ -136,7 +136,7 @@ class CreateWikiPhp {
 	 */
 	public function resetDatabaseList() {
 		$databaseLists = [];
-		$this->hookRunner->onCreateWikiPhpGenerateDatabaseList( $databaseLists );
+		$this->hookRunner->onCreateWikiPHPCacheGenerateDatabaseList( $databaseLists );
 
 		$mtime = time();
 
@@ -243,7 +243,7 @@ class CreateWikiPhp {
 			'states' => $states,
 		];
 
-		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $cacheArray );
+		$this->hookRunner->onCreateWikiPHPCacheBuilder( $this->wiki, $this->dbr, $cacheArray );
 		$this->cacheWikiData( $cacheArray );
 	}
 

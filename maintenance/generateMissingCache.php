@@ -12,7 +12,7 @@ require_once "$IP/maintenance/Maintenance.php";
 use Maintenance;
 use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\CreateWikiJson;
-use Miraheze\CreateWiki\CreateWikiPhp;
+use Miraheze\CreateWiki\CreateWikiPHPCache;
 
 class GenerateMissingCache extends Maintenance {
 	public function __construct() {
@@ -29,7 +29,7 @@ class GenerateMissingCache extends Maintenance {
 					continue;
 				}
 
-				$cWP = new CreateWikiPhp(
+				$cache = new CreateWikiPHPCache(
 					$db,
 					$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
 				);
