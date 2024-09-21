@@ -79,7 +79,10 @@ class CreateWikiPhp {
 
 		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
-		$this->cache = ObjectCache::getLocalClusterInstance();
+		$objectCacheFactory = MediaWikiServices::getInstance()->getObjectCacheFactory();
+		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
+			$objectCacheFactory->getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
+			ObjectCache::getLocalClusterInstance();
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 		$this->wiki = $wiki;
 
