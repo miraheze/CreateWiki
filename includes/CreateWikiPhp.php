@@ -113,7 +113,7 @@ class CreateWikiPhp {
 		}
 
 		// Regenerate wiki cache if the file does not exist or has no valid mtime
-		if ( $wikiMtime == 0 || $this->wikiTimestamp < $wikiMtime ) {
+		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
 			$this->resetWiki();
 		}
 
@@ -123,7 +123,7 @@ class CreateWikiPhp {
 		}
 
 		// Regenerate database list if the file does not exist or has no valid mtime
-		if ( $databasesMtime === 0 || $this->databaseTimestamp < $databasesMtime ) {
+		if ( $databasesMtime === 0 || $databasesMtime < $this->databaseTimestamp ) {
 			$this->resetDatabaseList();
 		}
 	}
