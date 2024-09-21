@@ -193,6 +193,24 @@ class CreateWikiPhp {
 			throw new UnexpectedValueException( "Wiki '{$this->wiki}' cannot be found." );
 		}
 
+		$states = [];
+
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+			$states['private'] = (bool)$wikiObject->wiki_private;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
+			$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
+		}
+
+		if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
+			$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
+		}
+
+		if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
+			$states['experimental'] = (bool)$wikiObject->wiki_experimental;
+		}
+
 		$cacheArray = [
 			'timestamp' => (int)$this->dbr->timestamp(),
 			'database' => $wikiObject->wiki_dbname,
@@ -203,7 +221,8 @@ class CreateWikiPhp {
 			'core' => [
 				'wgSitename' => $wikiObject->wiki_sitename,
 				'wgLanguageCode' => $wikiObject->wiki_language,
-			]
+			],
+			'states' => $states,
 		];
 
 		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $cacheArray );
