@@ -167,22 +167,24 @@ class CreateWikiPhp {
 			]
 		);
 
-		$databases = [];
+		$databases = [
+			'mtime' => $mtime,
+			'databases' => [],
+		];
 		foreach ( $databaseList as $row ) {
-			$databases[$row->wiki_dbname] = [
+			$databases['databases'][$row->wiki_dbname] = [
 				's' => $row->wiki_sitename,
 				'c' => $row->wiki_dbcluster,
 			];
 			if ( $row->wiki_url !== null ) {
-				$databases[$row->wiki_dbname]['u'] = $row->wiki_url;
+				$databases['databases'][$row->wiki_dbname]['u'] = $row->wiki_url;
 			}
 		}
 
 		$filePath = "{$this->cacheDir}/databases.php";
 		file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" );
 
-		clearstatcache();
-		$this->databaseTimestamp = filemtime( $filePath );
+		$this->databaseTimestamp = $mtime;
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
 	}
 
