@@ -106,7 +106,7 @@ class CreateWikiPhp {
 
 		$wikiMtime = 0;
 		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
-			$wikiMtime = getCachedWikiData()['mtime'] ?? 0;
+			$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
 		}
 
 		// Regenerate wiki cache if the file does not exist or has no valid mtime
@@ -116,7 +116,7 @@ class CreateWikiPhp {
 
 		$databasesMtime = 0;
 		if ( file_exists( "{$this->cacheDir}/databases.php" ) ) {
-			$databasesMtime = getCachedDatabaseList()['mtime'] ?? 0;
+			$databasesMtime = $this->getCachedDatabaseList()['mtime'] ?? 0;
 		}
 
 		// Regenerate database list if the file does not exist or has no valid mtime
