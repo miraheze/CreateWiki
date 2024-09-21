@@ -17,7 +17,7 @@ class RebuildExtensionListCache extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->addDescription( 'Rebuild or generate extension-list.json cache file.' );
+		$this->addDescription( 'Rebuild or generate extension-list cache file (either JSON or PHP based on config).' );
 		$this->addOption( 'cachedir', 'Path to the cachedir to use, otherwise defaults to the value of $wgCreateWikiCacheDirectory.', false );
 
 		$this->requireExtension( 'CreateWiki' );
@@ -25,10 +25,9 @@ class RebuildExtensionListCache extends Maintenance {
 
 	public function execute() {
 		$queue = array_fill_keys( array_merge(
-				glob( $this->getConfig()->get( MainConfigNames::ExtensionDirectory ) . '/*/extension*.json' ),
-				glob( $this->getConfig()->get( MainConfigNames::StyleDirectory ) . '/*/skin.json' )
-			),
-		true );
+			glob( $this->getConfig()->get( MainConfigNames::ExtensionDirectory ) . '/*/extension*.json' ),
+			glob( $this->getConfig()->get( MainConfigNames::StyleDirectory ) . '/*/skin.json' )
+		), true );
 
 		$processor = new ExtensionProcessor();
 
@@ -45,6 +44,35 @@ class RebuildExtensionListCache extends Maintenance {
 		$list = array_column( $data['credits'], 'path', 'name' );
 
 		$cacheDir = $this->getOption( 'cachedir', $this->getConfig()->get( 'CreateWikiCacheDirectory' ) );
+		$usePhpCache = $this->getConfig()->get( 'CreateWikiUsePhpCache' );
+
+		if ( $usePhpCache ) {
+			$this->generatePhpCache( $cacheDir, $list );
+		} else {
+			$this->generateJsonCache( $cacheDir, $list );
+		}
+	}
+
+	/**
+	 * Generate a PHP array cache file.
+	 *
+	 * @param string $cacheDir The cache directory.
+	 * @param array $list The extension list data.
+	 */
+	private function generatePhpCache( string $cacheDir, array $list ): void {
+		$phpContent = "<?php\n\n" .
+			"/**\n * Auto-generated extension list cache.\n */\n\n" .
+			'return ' . var_export( $list, true ) . ";\n";
+		file_put_contents( "{$cacheDir}/extension-list.php", $phpContent, LOCK_EX );
+	}
+
+	/**
+	 * Generate a JSON cache file.
+	 *
+	 * @param string $cacheDir The cache directory.
+	 * @param array $list The extension list data.
+	 */
+	private function generateJsonCache( string $cacheDir, array $list ): void {
 		file_put_contents( "{$cacheDir}/extension-list.json", json_encode( $list ), LOCK_EX );
 	}
 }
