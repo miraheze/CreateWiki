@@ -147,17 +147,7 @@ class CreateWikiPhp {
 					'databases' => $content,
 				];
 
-				$tmpFile = tempnam( '/tmp/', $name );
-
-				if ( $tmpFile ) {
-					if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
-						if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.php" ) ) {
-							unlink( $tmpFile );
-						}
-					} else {
-						unlink( $tmpFile );
-					}
-				}
+				$this->writeWithLock( $name, $list );
 			}
 
 			$this->databaseTimestamp = $mtime;
@@ -194,16 +184,7 @@ class CreateWikiPhp {
 			}
 		}
 
-		$tmpFile = tempnam( '/tmp/', 'databases' );
-		if ( $tmpFile ) {
-			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/databases.php" ) ) {
-					unlink( $tmpFile );
-				}
-			} else {
-				unlink( $tmpFile );
-			}
-		}
+		$this->writeWithLock( 'databases', $databases );
 
 		$this->databaseTimestamp = $mtime;
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
@@ -273,17 +254,7 @@ class CreateWikiPhp {
 	private function cacheWikiData( array $data ) {
 		$data['mtime'] = time();
 
-		$tmpFile = tempnam( '/tmp/', $this->wiki );
-
-		if ( $tmpFile ) {
-			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.php" ) ) {
-					unlink( $tmpFile );
-				}
-			} else {
-				unlink( $tmpFile );
-			}
-		}
+		$this->writeWithLock( $this->wiki, $data );
 
 		$this->wikiTimestamp = $data['mtime'];
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
@@ -315,5 +286,44 @@ class CreateWikiPhp {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Writes data to a PHP file within the cache directory, ensuring that
+	 * the operation is protected by a file lock to prevent concurrent write issues.
+	 * The method updates the PHP file asynchronously, checking if the existing file
+	 * is newer than the temporary file before writing.
+	 *
+	 * @param string $list The base name of the cache file (without the .php extension).
+	 * @param array $data The associative array to be written as a PHP file.
+	 */
+	private function writeWithLock( string $list, array $data ) {
+		$filePath = "{$this->cacheDir}/$list.php";
+
+		// Check if the existing file is newer than the temporary file
+		if ( file_exists( $filePath ) && ( filemtime( $filePath ) > $data['mtime'] ) ) {
+			// If $list.php is newer, return without writing.
+			// This likely means it is already updated and we
+			// don't want a race condition.
+			return;
+		}
+
+		// Serialize data to PHP format
+		$content = "<?php\n\nreturn " . var_export( $data, true ) . ";\n";
+
+		// Generate a unique temporary file name in the cache directory
+		$tempFilePath = tempnam( $this->cacheDir, "{$list}_tmp_" );
+
+		// Write content to the temporary file with exclusive lock
+		if ( file_put_contents( $tempFilePath, $content, LOCK_EX ) !== false ) {
+			// Rename the temporary file to the final file
+			if ( !rename( $tempFilePath, $filePath ) ) {
+				// If rename fails, delete the temporary file
+				unlink( $tempFilePath );
+			}
+		} else {
+			// If write failed, delete the temporary file
+			unlink( $tempFilePath );
+		}
 	}
 }
