@@ -413,8 +413,8 @@ class RemoteWiki {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
 				$cache = new CreateWikiPHPCache( $this->dbname, $this->hookRunner );
 
-				$cWP->resetDatabaseList();
-				$cWP->resetWiki();
+				$cache->resetDatabaseList();
+				$cache->resetWiki();
 			} else {
 				// @phan-suppress-next-line SecurityCheck-PathTraversal
 				$cWJ = new CreateWikiJson( $this->dbname, $this->hookRunner );

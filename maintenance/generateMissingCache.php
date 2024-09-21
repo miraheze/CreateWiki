@@ -34,7 +34,7 @@ class GenerateMissingCache extends Maintenance {
 					$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
 				);
 
-				$cWP->resetWiki();
+				$cache->resetWiki();
 			} else {
 				if ( file_exists( $this->getConfig()->get( 'CreateWikiCacheDirectory' ) . '/' . $db . '.json' ) ) {
 					continue;

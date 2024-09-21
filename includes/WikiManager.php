@@ -282,7 +282,7 @@ class WikiManager {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cache = new CreateWikiPHPCache( $wiki, $this->hookRunner );
 
-			$cWP->resetWiki();
+			$cache->resetWiki();
 			$this->recache( CreateWikiPHPCache::class );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
@@ -325,7 +325,7 @@ class WikiManager {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cache = new CreateWikiPHPCache( $old, $this->hookRunner );
 
-			$cWP->resetWiki();
+			$cache->resetWiki();
 			$this->recache( CreateWikiPHPCache::class );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal

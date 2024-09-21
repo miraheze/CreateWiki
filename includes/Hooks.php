@@ -71,7 +71,7 @@ class Hooks implements
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			$cache = new CreateWikiPHPCache( $dbName, $this->hookRunner );
-			$cWP->update();
+			$cache->update();
 
 			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
