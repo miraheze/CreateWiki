@@ -293,8 +293,8 @@ class CreateWikiPhp {
 	 * the operation is protected by a file lock to prevent concurrent write issues.
 	 *
 	 * This method will serialize the provided data as a PHP array and write it
-	 * to the specified file. The file is locked using `flock` to guarantee that 
-	 * only one process can write to the file at a time. The lock is released 
+	 * to the specified file. The file is locked using `flock` to guarantee that
+	 * only one process can write to the file at a time. The lock is released
 	 * after the data is written.
 	 *
 	 * @param string $list The base name of the cache file (without the .php extension).
