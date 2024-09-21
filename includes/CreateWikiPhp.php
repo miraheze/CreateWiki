@@ -101,18 +101,26 @@ class CreateWikiPhp {
 	 * it will reset the corresponding cached data.
 	 */
 	public function update() {
-		clearstatcache();
-		if (
-			!file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ||
-			$this->wikiTimestamp < filemtime( "{$this->cacheDir}/{$this->wiki}.php" )
-		) {
-			$this->resetWiki();
+		// mtime will be 0 if the file does not exist as well, which means
+		// it will be generated.
+
+		$wikiMtime = 0;
+		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
+			$wikiMtime = getCachedWikiData()['mtime'] ?? 0;
 		}
 
-		if (
-			!file_exists( "{$this->cacheDir}/databases.php" ) ||
-			$this->databaseTimestamp < filemtime( "{$this->cacheDir}/databases.php" )
-		) {
+		// Regenerate wiki cache if the file does not exist or has no valid mtime
+		if ( $wikiMtime == 0 || $this->wikiTimestamp < $wikiMtime ) {
+			$this->resetWiki();
+		}
+		
+		$databasesMtime = 0;
+		if ( file_exists( "{$this->cacheDir}/databases.php" ) ) {
+			$databasesMtime = getCachedDatabaseList()['mtime'] ?? 0;
+		}
+
+		// Regenerate database list if the file does not exist or has no valid mtime
+		if ( $databasesMtime === 0 || $this->databaseTimestamp < $databasesMtime ) {
 			$this->resetDatabaseList();
 		}
 	}
@@ -127,14 +135,19 @@ class CreateWikiPhp {
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiPhpGenerateDatabaseList( $databaseLists );
 
+		$mtime = time();
+
 		if ( !empty( $databaseLists ) ) {
 			foreach ( $databaseLists as $name => $content ) {
+				$list = [
+					'mtime' => $mtime,
+					'databases' => $content,
+				],
 				$filePath = "{$this->cacheDir}/$name.php";
-				file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $content, true ) . ";\n" );
+				file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" );
 			}
 
-			clearstatcache();
-			$this->databaseTimestamp = filemtime( "{$this->cacheDir}/databases.php" );
+			$this->databaseTimestamp = $mtime;
 			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
 			return;
 		}
@@ -237,11 +250,12 @@ class CreateWikiPhp {
 	private function cacheWikiData( array $data ) {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
 
+		$data['mtime'] = time();
+
 		$content = "<?php\n\nreturn " . var_export( $data, true ) . ";\n";
 		file_put_contents( $filePath, $content );
 
-		clearstatcache();
-		$this->wikiTimestamp = filemtime( $filePath );
+		$this->wikiTimestamp = $data['mtime'];
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
 	}
 
@@ -252,6 +266,20 @@ class CreateWikiPhp {
 	 */
 	public function getCachedWikiData() {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
+		if ( file_exists( $filePath ) ) {
+			return include $filePath;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieves cached database list.
+	 *
+	 * @return array|null
+	 */
+	public function getCachedDatabaseList() {
+		$filePath = "{$this->cacheDir}/databases.php";
 		if ( file_exists( $filePath ) ) {
 			return include $filePath;
 		}
