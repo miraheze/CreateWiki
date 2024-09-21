@@ -166,7 +166,11 @@ class WikiManager {
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $wiki, $requester, $centralAuth ) {
-				$this->recacheJson();
+				if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+					$this->recache( CreateWikiPhp::class );
+				} else {
+					$this->recache( CreateWikiJson::class );
+				}
 
 				$scriptOptions = [];
 				if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
@@ -274,12 +278,19 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
+		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
 
-		$cWJ->resetWiki();
+			$cWP->resetWiki();
+			$this->recache( CreateWikiPhp::class );
+		} else {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
 
-		$this->recacheJson();
+			$cWJ->resetWiki();
+			$this->recache( CreateWikiJson::class );
+		}
 
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $wiki );
 
@@ -310,12 +321,19 @@ class WikiManager {
 			);
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWJ = new CreateWikiJson( $old, $this->hookRunner );
+		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cWP = new CreateWikiPhp( $old, $this->hookRunner );
 
-		$cWJ->resetWiki();
+			$cWP->resetWiki();
+			$this->recache( CreateWikiPhp::class );
+		} else {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cWJ = new CreateWikiJson( $old, $this->hookRunner );
 
-		$this->recacheJson();
+			$cWJ->resetWiki();
+			$this->recache( CreateWikiJson::class );
+		}
 
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $old, $new );
 
@@ -376,9 +394,12 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function recacheJson( $wiki = null ) {
-		$cWJ = new CreateWikiJson( $wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ), $this->hookRunner );
-		$cWJ->resetDatabaseList();
-		$cWJ->update();
+	private function recache( $class, $wiki = null ) {
+		$cache = new $class(
+			$wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ),
+			$this->hookRunner
+		);
+		$cache->resetDatabaseList();
+		$cache->update();
 	}
 }

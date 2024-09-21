@@ -67,19 +67,35 @@ class Hooks implements
 		global $wgGroupPermissions;
 
 		$dbName = $this->config->get( 'DBname' );
-
-		$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
-		$cWJ->update();
-
 		$isPrivate = false;
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-			$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
-			if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
-				$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
-				$isPrivate = (bool)$cacheArray['states']['private'];
-			} else {
-				$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
-				$isPrivate = $remoteWiki->isPrivate();
+
+		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+			$cWP = new CreateWikiPhp( $dbName, $this->hookRunner );
+			$cWP->update();
+
+			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+				if ( file_exists( $cacheDir . '/' . $dbName . '.php' ) ) {
+					$cacheArray = include $cacheDir . '/' . $dbName . '.php';
+					$isPrivate = (bool)$cacheArray['states']['private'];
+				} else {
+					$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
+					$isPrivate = $remoteWiki->isPrivate();
+				}
+			}
+		} else {
+			$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
+			$cWJ->update();
+
+			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+				if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
+					$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
+					$isPrivate = (bool)$cacheArray['states']['private'];
+				} else {
+					$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
+					$isPrivate = $remoteWiki->isPrivate();
+				}
 			}
 		}
 
