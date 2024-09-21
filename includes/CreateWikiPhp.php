@@ -147,17 +147,7 @@ class CreateWikiPhp {
 					'databases' => $content,
 				];
 
-				$tmpFile = tempnam( '/tmp/', $name );
-
-				if ( $tmpFile ) {
-					if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
-						if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.php" ) ) {
-							unlink( $tmpFile );
-						}
-					} else {
-						unlink( $tmpFile );
-					}
-				}
+				$this->writeWithLock( $name, $list );
 			}
 
 			$this->databaseTimestamp = $mtime;
@@ -194,16 +184,7 @@ class CreateWikiPhp {
 			}
 		}
 
-		$tmpFile = tempnam( '/tmp/', 'databases' );
-		if ( $tmpFile ) {
-			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/databases.php" ) ) {
-					unlink( $tmpFile );
-				}
-			} else {
-				unlink( $tmpFile );
-			}
-		}
+		$this->writeWithLock( 'databases', $databases );
 
 		$this->databaseTimestamp = $mtime;
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
@@ -273,17 +254,7 @@ class CreateWikiPhp {
 	private function cacheWikiData( array $data ) {
 		$data['mtime'] = time();
 
-		$tmpFile = tempnam( '/tmp/', $this->wiki );
-
-		if ( $tmpFile ) {
-			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.php" ) ) {
-					unlink( $tmpFile );
-				}
-			} else {
-				unlink( $tmpFile );
-			}
-		}
+		$this->writeWithLock( $this->wiki, $data );
 
 		$this->wikiTimestamp = $data['mtime'];
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
@@ -315,5 +286,37 @@ class CreateWikiPhp {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Writes data to a PHP file within the cache directory, ensuring that
+	 * the operation is protected by a file lock to prevent concurrent write issues.
+	 *
+	 * This method will serialize the provided data as a PHP array and write it
+	 * to the specified file. The file is locked using `flock` to guarantee that 
+	 * only one process can write to the file at a time. The lock is released 
+	 * after the data is written.
+	 *
+	 * @param string $list The base name of the cache file (without the .php extension).
+	 * @param array $data The associative array to be written as a PHP file.
+	 */
+	private function writeWithLock( string $list, array $data ) {
+		$filePath = "{$this->cacheDir}/$list.php";
+		$fileHandle = fopen( $filePath, 'w' );
+
+		if ( $fileHandle ) {
+			// Try to acquire an exclusive lock
+			if ( flock( $fileHandle, LOCK_EX ) ) {
+				if ( fwrite( $fileHandle, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
+					// Ensure the data is written
+					fflush( $fileHandle );
+				}
+
+				// Release the lock
+				flock( $fileHandle, LOCK_UN );
+			}
+
+			fclose( $fileHandle );
+		}
 	}
 }
