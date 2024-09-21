@@ -134,7 +134,7 @@ class CreateWikiPhp {
 			}
 
 			clearstatcache();
-			$this->databaseTimestamp = "{$this->cacheDir}/databases.php";
+			$this->databaseTimestamp = filemtime( "{$this->cacheDir}/databases.php" );
 			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
 			return;
 		}
