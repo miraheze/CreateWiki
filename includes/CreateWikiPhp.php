@@ -142,7 +142,7 @@ class CreateWikiPhp {
 				$list = [
 					'mtime' => $mtime,
 					'databases' => $content,
-				],
+				];
 				$filePath = "{$this->cacheDir}/$name.php";
 				file_put_contents( $filePath, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" );
 			}
