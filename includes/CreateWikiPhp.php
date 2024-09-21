@@ -196,7 +196,6 @@ class CreateWikiPhp {
 
 		$tmpFile = tempnam( '/tmp/', 'databases' );
 		if ( $tmpFile ) {
-			file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" )
 			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" ) ) {
 				if ( !rename( $tmpFile, "{$this->cacheDir}/databases.php" ) ) {
 					unlink( $tmpFile );
