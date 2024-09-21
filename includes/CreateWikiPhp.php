@@ -271,15 +271,13 @@ class CreateWikiPhp {
 	 * @param array $data
 	 */
 	private function cacheWikiData( array $data ) {
-		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
-
 		$data['mtime'] = time();
 
 		$tmpFile = tempnam( '/tmp/', $this->wiki );
 
 		if ( $tmpFile ) {
 			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->wiki}.php" ) ) {
+				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.php" ) ) {
 					unlink( $tmpFile );
 				}
 			} else {
