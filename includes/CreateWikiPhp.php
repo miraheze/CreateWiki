@@ -113,7 +113,7 @@ class CreateWikiPhp {
 		if ( $wikiMtime == 0 || $this->wikiTimestamp < $wikiMtime ) {
 			$this->resetWiki();
 		}
-		
+
 		$databasesMtime = 0;
 		if ( file_exists( "{$this->cacheDir}/databases.php" ) ) {
 			$databasesMtime = getCachedDatabaseList()['mtime'] ?? 0;
