@@ -228,10 +228,7 @@ class CreateWikiPhp {
 			$states['experimental'] = (bool)$wikiObject->wiki_experimental;
 		}
 
-		$mtime = time();
-
 		$cacheArray = [
-			'mtime' => $mtime,
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,
@@ -246,9 +243,11 @@ class CreateWikiPhp {
 
 		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $cacheArray );
 
+		$cacheArray['mtime'] = time();
+
 		$this->writeWithLock( $this->wiki, $cacheArray );
 
-		$this->wikiTimestamp = $mtime;
+		$this->wikiTimestamp = $cacheArray['mtime'];
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
 	}
 
