@@ -107,13 +107,21 @@ class CreateWikiPhp {
 		// mtime will be 0 if the file does not exist as well, which means
 		// it will be generated.
 
+		$revalidateFreq = (int)ini_get( 'opcache.revalidate_freq' );
+		if ( !$revalidateFreq ) {
+			// Set to default value if not available
+			$revalidateFreq = 2;
+		}
+
+		$currentTime = time();
+
 		$wikiMtime = 0;
 		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
 			$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
 		}
 
 		// Regenerate wiki cache if the file does not exist or has no valid mtime
-		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
+		if ( $wikiMtime == 0 || $wikiMtime < ( $this->wikiTimestamp + $revalidateFreq ) ) {
 			$this->resetWiki();
 		}
 
@@ -123,7 +131,7 @@ class CreateWikiPhp {
 		}
 
 		// Regenerate database list if the file does not exist or has no valid mtime
-		if ( $databasesMtime === 0 || $databasesMtime < $this->databaseTimestamp ) {
+		if ( $databasesMtime === 0 || $databasesMtime < ( $this->databaseTimestamp + $revalidateFreq ) ) {
 			$this->resetDatabaseList();
 		}
 	}
