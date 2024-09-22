@@ -283,7 +283,7 @@ class CreateWikiPhp {
 			}
 		}
 
-		$this->wikiTimestamp = $data['mtime'];
+		$this->wikiTimestamp = $this->getCachedWikiData()['mtime'];
 		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
 	}
 
