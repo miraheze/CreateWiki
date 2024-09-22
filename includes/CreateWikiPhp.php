@@ -113,15 +113,13 @@ class CreateWikiPhp {
 			$revalidateFreq = 2;
 		}
 
-		$currentTime = time();
-
 		$wikiMtime = 0;
 		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
 			$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
 		}
 
 		// Regenerate wiki cache if the file does not exist or has no valid mtime
-		if ( $wikiMtime == 0 || $wikiMtime < ( $this->wikiTimestamp + $revalidateFreq ) ) {
+		if ( $wikiMtime == 0 || ( $wikiMtime + $revalidateFreq ) < $this->wikiTimestamp ) {
 			$this->resetWiki();
 		}
 
@@ -131,7 +129,7 @@ class CreateWikiPhp {
 		}
 
 		// Regenerate database list if the file does not exist or has no valid mtime
-		if ( $databasesMtime === 0 || $databasesMtime < ( $this->databaseTimestamp + $revalidateFreq ) ) {
+		if ( $databasesMtime === 0 || ( $databasesMtime + $revalidateFreq ) < $this->databaseTimestamp ) {
 			$this->resetDatabaseList();
 		}
 	}
