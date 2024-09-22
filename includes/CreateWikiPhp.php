@@ -229,7 +229,7 @@ class CreateWikiPhp {
 		}
 
 		$cacheArray = [
-			'timestamp' => (int)$this->dbr->timestamp(),
+			'mtime' => time(),
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,
@@ -243,16 +243,6 @@ class CreateWikiPhp {
 		];
 
 		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $cacheArray );
-		$this->cacheWikiData( $cacheArray );
-	}
-
-	/**
-	 * Caches the wiki data to a file.
-	 *
-	 * @param array $data
-	 */
-	private function cacheWikiData( array $data ) {
-		$data['mtime'] = time();
 
 		$this->writeWithLock( $this->wiki, $data );
 
