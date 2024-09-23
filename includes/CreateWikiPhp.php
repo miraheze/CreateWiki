@@ -219,7 +219,7 @@ class CreateWikiPhp {
 		if ( $isNewChanges ) {
 			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $mtime );
 		}
-		
+
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
