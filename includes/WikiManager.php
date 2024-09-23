@@ -386,17 +386,17 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function recache( $wiki = null ) {
+	private function recache() {
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			$cWP = new CreateWikiPhp(
-				$wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ),
+				$this->config->get( 'CreateWikiGlobalWiki' ),
 				$this->hookRunner
 			);
 
 			$cWP->resetDatabaseList();
 		} else {
 			$cWJ = new CreateWikiJson(
-				$wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ),
+				$this->config->get( 'CreateWikiGlobalWiki' ),
 				$this->hookRunner
 			);
 
