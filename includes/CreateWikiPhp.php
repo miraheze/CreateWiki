@@ -124,7 +124,7 @@ class CreateWikiPhp {
 
 		// Regenerate database list if the file does not exist or has no valid mtime
 		if ( $databasesMtime === 0 || $databasesMtime < $this->databaseTimestamp ) {
-			$this->resetDatabaseList();
+			$this->resetDatabaseList( false );
 		}
 	}
 
@@ -133,12 +133,17 @@ class CreateWikiPhp {
 	 * This function queries the 'cw_wikis' table for database names and clusters, and writes
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification timestamp and stores it in the cache for future reference.
+	 *
+	 * @param bool $isNewChanges
 	 */
-	public function resetDatabaseList() {
+	public function resetDatabaseList( bool $isNewChanges = true ) {
+		$mtime = time();
+		if ( $isNewChanges ) {
+			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $mtime );
+		}
+
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiPhpGenerateDatabaseList( $databaseLists );
-
-		$mtime = time();
 
 		if ( !empty( $databaseLists ) ) {
 			foreach ( $databaseLists as $name => $content ) {
@@ -160,8 +165,6 @@ class CreateWikiPhp {
 				}
 			}
 
-			$this->databaseTimestamp = $mtime;
-			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
 			return;
 		}
 
@@ -204,15 +207,14 @@ class CreateWikiPhp {
 				unlink( $tmpFile );
 			}
 		}
-
-		$this->databaseTimestamp = $mtime;
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $this->databaseTimestamp );
 	}
 
 	/**
 	 * Resets the wiki information.
 	 *
 	 * This method retrieves new information for the wiki and updates the cache.
+	 *
+	 * @param bool $isNewChanges
 	 */
 	public function resetWiki( bool $isNewChanges = true ) {
 		$mtime = time();
