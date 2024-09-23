@@ -166,11 +166,7 @@ class WikiManager {
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $wiki, $requester, $centralAuth ) {
-				if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-					$this->recache( CreateWikiPhp::class );
-				} else {
-					$this->recache( CreateWikiJson::class );
-				}
+				$this->recache();
 
 				$scriptOptions = [];
 				if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
@@ -281,16 +277,14 @@ class WikiManager {
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
-
 			$cWP->resetWiki();
-			$this->recache( CreateWikiPhp::class );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
-
 			$cWJ->resetWiki();
-			$this->recache( CreateWikiJson::class );
 		}
+
+		$this->recache()
 
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $wiki );
 
@@ -324,16 +318,14 @@ class WikiManager {
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWP = new CreateWikiPhp( $old, $this->hookRunner );
-
 			$cWP->resetWiki();
-			$this->recache( CreateWikiPhp::class );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $old, $this->hookRunner );
-
 			$cWJ->resetWiki();
-			$this->recache( CreateWikiJson::class );
 		}
+
+		$this->recache();
 
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $old, $new );
 
@@ -394,12 +386,22 @@ class WikiManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function recache( $class, $wiki = null ) {
-		$cache = new $class(
-			$wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ),
-			$this->hookRunner
-		);
-		$cache->resetDatabaseList();
-		$cache->update();
+	private function recache( $wiki = null ) {
+		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+			$cWP = new CreateWikiPhp(
+				$wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ),
+				$this->hookRunner
+			);
+
+			$cWP->resetDatabaseList();
+		} else {
+			$cWJ = new CreateWikiJson(
+				$wiki ?? $this->config->get( 'CreateWikiGlobalWiki' ),
+				$this->hookRunner
+			);
+
+			$cWJ->resetDatabaseList();
+			$cWJ->update();
+		}
 	}
 }
