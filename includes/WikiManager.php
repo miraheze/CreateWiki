@@ -284,7 +284,7 @@ class WikiManager {
 			$cWJ->resetWiki();
 		}
 
-		$this->recache()
+		$this->recache();
 
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $wiki );
 
