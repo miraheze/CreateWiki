@@ -114,7 +114,7 @@ class CreateWikiPhp {
 
 		// Regenerate wiki cache if the file does not exist or has no valid mtime
 		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
-			$this->resetWiki();
+			$this->resetWiki( false );
 		}
 
 		$databasesMtime = 0;
@@ -214,7 +214,12 @@ class CreateWikiPhp {
 	 *
 	 * This method retrieves new information for the wiki and updates the cache.
 	 */
-	public function resetWiki() {
+	public function resetWiki( bool $isNewChanges = true ) {
+		$mtime = time();
+		if ( $isNewChanges ) {
+			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $mtime );
+		}
+		
 		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
 			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
@@ -248,7 +253,7 @@ class CreateWikiPhp {
 		}
 
 		$cacheArray = [
-			'mtime' => time(),
+			'mtime' => $mtime,
 			'database' => $wikiObject->wiki_dbname,
 			'created' => $wikiObject->wiki_creation,
 			'dbcluster' => $wikiObject->wiki_dbcluster,
@@ -282,9 +287,6 @@ class CreateWikiPhp {
 				unlink( $tmpFile );
 			}
 		}
-
-		$this->wikiTimestamp = $this->getCachedWikiData()['mtime'];
-		$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $this->wikiTimestamp );
 	}
 
 	/**
