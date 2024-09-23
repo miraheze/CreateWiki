@@ -3,6 +3,7 @@
 		"authors": [
 			"Chrumps",
 			"Fan Formuły 1",
+			"Meeqoo",
 			"Rail",
 			"Railfail536",
 			"Sp5uhe"
@@ -35,6 +36,8 @@
 	"echo-pref-tooltip-wiki-creation": "Powiadom mnie, kiedy moja wiki zostanie utworzona.",
 	"echo-pref-tooltip-wiki-request-declined": "Powiadom mnie, kiedy moja prośba o wiki zostanie odrzucona.",
 	"log-description-farmer": "Ten rejestr śledzi operacje tworzenia wiki.",
+	"log-action-filter-farmer-requestonhold": "Żądanie Wiki zostało wstrzymane",
+	"log-action-filter-farmer-reopenrequest": "Żądanie Wiki otwarte ponownie",
 	"logentry-farmer-createwiki": "$1 stworzył wiki „$4”",
 	"logentry-farmer-requestwiki": "$1 {{GENDER:$1|poprosił|poprosiła}} o wiki „$4” (język: $5; prywatna: $6) $7",
 	"log-name-farmer": "Rejestr farmy",

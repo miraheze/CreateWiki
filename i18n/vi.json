@@ -108,8 +108,8 @@
 	"requestwikiqueue-request-label-status": "Trạng thái",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility": "Đánh dấu khả năng hiển thị của yêu cầu này là...",
-	"requestwikiqueue-request-label-visibility-all": "Mọi người có quyền 'đọc' đều có thể xem yêu cầu này",
-	"requestwikiqueue-request-label-visibility-delete": "Mọi người có quyền 'xóa' đều có thể xem yêu cầu này",
+	"requestwikiqueue-request-label-visibility-all": "Có thể xem công khai",
+	"requestwikiqueue-request-label-visibility-delete": "Mọi người có quyền 'createwiki-deleterequest' đều có thể xem yêu cầu này",
 	"requestwikiqueue-search-header": "Tìm yêu cầu wiki",
 	"right-requestwiki": "Yêu cầu wiki",
 	"right-createwiki": "Tạo wiki mới"
