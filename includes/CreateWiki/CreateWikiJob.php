@@ -11,6 +11,7 @@ use Miraheze\CreateWiki\RequestWiki\WikiRequest;
 use Miraheze\CreateWiki\WikiManager;
 
 class CreateWikiJob extends Job {
+
 	public function __construct( Title $title, array $params ) {
 		parent::__construct( 'CreateWikiJob', $params );
 	}

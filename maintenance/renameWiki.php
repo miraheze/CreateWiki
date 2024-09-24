@@ -13,6 +13,7 @@ use Maintenance;
 use Miraheze\CreateWiki\WikiManager;
 
 class RenameWiki extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

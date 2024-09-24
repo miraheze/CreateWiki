@@ -6,6 +6,7 @@ use MediaWiki\Logger\LoggerFactory;
 use StringUtils;
 
 class CreateWikiRegexConstraint {
+
 	/**
 	 * @param string $regex invalid regex to log for
 	 * @param string $name name of regex caller (config or message key) to log for

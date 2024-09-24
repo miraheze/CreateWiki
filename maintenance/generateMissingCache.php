@@ -15,6 +15,7 @@ use Miraheze\CreateWiki\CreateWikiJson;
 use Miraheze\CreateWiki\CreateWikiPhp;
 
 class GenerateMissingCache extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

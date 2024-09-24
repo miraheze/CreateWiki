@@ -14,6 +14,7 @@ use Maintenance;
 use MediaWiki\MainConfigNames;
 
 class RebuildExtensionListCache extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

@@ -17,6 +17,7 @@ use Miraheze\CreateWiki\WikiManager;
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
+
 	protected function setUp(): void {
 		parent::setUp();
 

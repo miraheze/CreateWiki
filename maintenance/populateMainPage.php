@@ -18,6 +18,7 @@ use MediaWiki\User\User;
 use WikitextContent;
 
 class PopulateMainPage extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

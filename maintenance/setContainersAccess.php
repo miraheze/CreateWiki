@@ -15,6 +15,7 @@ use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\RemoteWiki;
 
 class SetContainersAccess extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

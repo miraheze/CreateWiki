@@ -14,6 +14,7 @@ use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\RemoteWiki;
 
 class ChangeDBCluster extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

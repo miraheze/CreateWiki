@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks;
 
 interface CreateWikiWritePersistentModelHook {
+
 	/**
 	 * @param string $pipeline
 	 * @return bool

@@ -25,6 +25,7 @@ class Hooks implements
 	MakeGlobalVariablesScriptHook,
 	SetupAfterCacheHook
 {
+
 	/** @var Config */
 	private $config;
 

@@ -18,6 +18,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  * @coversDefaultClass \Miraheze\CreateWiki\RemoteWiki
  */
 class RemoteWikiTest extends MediaWikiIntegrationTestCase {
+
 	protected function setUp(): void {
 		parent::setUp();
 
