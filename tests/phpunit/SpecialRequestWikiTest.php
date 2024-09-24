@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests;
 use ErrorPageError;
 use MediaWiki\Context\DerivativeContext;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -19,6 +20,15 @@ use Wikimedia\TestingAccessWrapper;
  * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki
  */
 class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
+
+	use TempUserTestTrait;
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		// T12639
+		$this->disableAutoCreateTempUser();
+	}
 
 	/**
 	 * @covers ::__construct
