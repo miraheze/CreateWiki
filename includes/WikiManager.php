@@ -13,6 +13,7 @@ use MediaWiki\SpecialPage\SpecialPage;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class WikiManager {
+
 	private $config;
 	private $lbFactory;
 	private $dbname;

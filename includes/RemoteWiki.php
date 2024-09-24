@@ -6,6 +6,7 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class RemoteWiki {
+
 	public $changes = [];
 	public $log;
 	public $logParams = [];

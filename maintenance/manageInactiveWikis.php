@@ -13,6 +13,7 @@ use Maintenance;
 use Miraheze\CreateWiki\RemoteWiki;
 
 class ManageInactiveWikis extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

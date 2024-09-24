@@ -20,6 +20,7 @@ class CreateWikiHookRunner implements
 	CreateWikiTablesHook,
 	CreateWikiWritePersistentModelHook
 {
+
 	/**
 	 * @var HookContainer
 	 */

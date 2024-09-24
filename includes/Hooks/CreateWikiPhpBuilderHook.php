@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Hooks;
 use Wikimedia\Rdbms\DBConnRef;
 
 interface CreateWikiPhpBuilderHook {
+
 	/**
 	 * @param string $wiki
 	 * @param DBConnRef $dbr

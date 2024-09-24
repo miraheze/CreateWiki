@@ -13,6 +13,7 @@ use Maintenance;
 use MediaWiki\MainConfigNames;
 
 class ListDatabases extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

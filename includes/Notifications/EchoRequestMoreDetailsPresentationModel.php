@@ -7,6 +7,7 @@ use MediaWiki\Extension\Notifications\Formatters\EchoEventPresentationModel;
 use MediaWiki\Language\RawMessage;
 
 class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel {
+
 	public function getIconType() {
 		return 'global';
 	}

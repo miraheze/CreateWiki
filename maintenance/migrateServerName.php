@@ -12,6 +12,7 @@ require_once "$IP/maintenance/Maintenance.php";
 use Maintenance;
 
 class MigrateServerName extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

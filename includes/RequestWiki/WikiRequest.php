@@ -17,6 +17,7 @@ use StatusValue;
 use UnexpectedValueException;
 
 class WikiRequest {
+
 	public $dbname;
 	public $description;
 	public $language;
@@ -149,7 +150,7 @@ class WikiRequest {
 			return;
 		}
 
-		$reason = ($type === 'declined' || $type === 'moredetails') ? 'reason' : 'comment';
+		$reason = ( $type === 'declined' || $type === 'moredetails' ) ? 'reason' : 'comment';
 		$notificationData = [
 			'type' => "request-{$type}",
 			'extra' => [

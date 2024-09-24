@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Hooks;
 use Wikimedia\Rdbms\DBConnRef;
 
 interface CreateWikiRenameHook {
+
 	/**
 	 * @param DBConnRef $cwdb
 	 * @param string $old dbname

@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks;
 
 interface CreateWikiJsonGenerateDatabaseListHook {
+
 	/**
 	 * @param array &$databaseLists
 	 * @return void

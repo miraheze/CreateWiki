@@ -19,6 +19,7 @@ use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
 
 class CreatePersistentModel extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 

@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks;
 
 interface CreateWikiStatePublicHook {
+
 	/**
 	 * @param string $dbname
 	 * @return void
