@@ -2,11 +2,11 @@
 
 namespace Miraheze\CreateWiki;
 
-use DeferredUpdates;
 use Exception;
 use ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
+use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;

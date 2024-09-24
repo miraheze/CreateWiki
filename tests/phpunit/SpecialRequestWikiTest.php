@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
-use DerivativeContext;
 use ErrorPageError;
+use MediaWiki\Context\DerivativeContext;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;

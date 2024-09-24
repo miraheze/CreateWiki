@@ -4,10 +4,10 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
 use MediaWiki\User\UserIdentity;
-use Message;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;

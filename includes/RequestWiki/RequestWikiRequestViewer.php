@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use Exception;
-use HTMLForm;
-use HTMLFormField;
-use IContextSource;
 use MediaWiki\Config\Config;
+use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
+use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Linker\Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;

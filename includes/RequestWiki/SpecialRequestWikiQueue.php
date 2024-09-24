@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use HTMLForm;
 use MediaWiki\Html\Html;
+use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\SpecialPage\SpecialPage;
 use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
