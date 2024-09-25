@@ -171,6 +171,7 @@ class WikiInitialize {
 				return;
 			}
 
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cacheArray = include $this->cacheDir . '/' . $this->dbname . '.php';
 		} else {
 			// If we don't have a cache file, let us exit here
@@ -317,6 +318,7 @@ class WikiInitialize {
 				return;
 			}
 
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cacheArray = include $this->cacheDir . '/' . $this->dbname . '.php';
 			$extensionListFileName = 'extension-list.php';
 		} else {
