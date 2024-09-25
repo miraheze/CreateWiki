@@ -378,7 +378,7 @@
 		"CreateWikiUsePhpCache": {
 			"description": "Boolean. Whether or not to use PHP cache files. If disabled, JSON will be used.",
 			"public": true,
-			"value": false
+			"value": true
 		},
 		"CreateWikiUsePrivateWikis": {
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
