@@ -4,13 +4,15 @@ namespace Miraheze\CreateWiki;
 
 use BagOStuff;
 use MediaWiki\Config\Config;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Config\ConfigFactory;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
+use ObjectCacheFactory;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\DBConnRef;
+use Wikimedia\Rdbms\IConnectionProvider;
 
-class CreateWikiPhp {
+class CreateWikiPhpDataFactory {
 
 	/**
 	 * The configuration object.
@@ -18,6 +20,11 @@ class CreateWikiPhp {
 	 * @var Config
 	 */
 	private $config;
+
+	/**
+	 * @var IConnectionProvider
+	 */
+	private $connectionProvider;
 
 	/**
 	 * The database connection reference object.
@@ -69,21 +76,37 @@ class CreateWikiPhp {
 	private $hookRunner;
 
 	/**
-	 * CreateWikiPhp constructor.
+	 * CreateWikiPhpDataFactory constructor.
 	 *
-	 * @param string $wiki
-	 * @param CreateWikiHookRunner|null $hookRunner
+	 * @param ConfigFactory $configFactory
+	 * @param ConnectionProvider $connectionProvider
+	 * @param CreateWikiHookRunner $hookRunner
+	 * @param ObjectCacheFactory $objectCacheFactory
 	 */
-	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
+	public function __construct(
+		ConfigFactory $configFactory,
+		ConnectionProvider $connectionProvider,
+		CreateWikiHookRunner $hookRunner,
+		ObjectCacheFactory $objectCacheFactory
+	) {
+		$this->connectionProvider = $connectionProvider;
+		$this->hookRunner = $hookRunner;
 
-		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-
-		$objectCacheFactory = MediaWikiServices::getInstance()->getObjectCacheFactory();
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
 			$objectCacheFactory->getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
 			ObjectCache::getLocalClusterInstance();
+
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+	}
+	
+	/**
+	 * Create a new CreateWikiPhpDataFactory instance.
+	 *
+	 * @param string $wiki
+	 * @return self
+	 */
+	public function newInstance( string $wiki ): self {
 		$this->wiki = $wiki;
 
 		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
@@ -96,6 +119,8 @@ class CreateWikiPhp {
 		if ( !$this->databaseTimestamp ) {
 			$this->resetDatabaseList();
 		}
+
+		return $this;
 	}
 
 	/**
@@ -143,7 +168,7 @@ class CreateWikiPhp {
 		}
 
 		$databaseLists = [];
-		$this->hookRunner->onCreateWikiPhpGenerateDatabaseList( $databaseLists );
+		$this->hookRunner->onCreateWikiGenerateDatabaseLists( $databaseLists );
 
 		if ( !empty( $databaseLists ) ) {
 			foreach ( $databaseLists as $name => $content ) {
@@ -168,9 +193,9 @@ class CreateWikiPhp {
 			return;
 		}
 
-		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
+			$this->config->get( 'CreateWikiDatabase' )
+		);
 
 		$databaseList = $this->dbr->select(
 			'cw_wikis',
@@ -222,9 +247,9 @@ class CreateWikiPhp {
 			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $mtime );
 		}
 
-		$this->dbr ??= MediaWikiServices::getInstance()->getDBLoadBalancerFactory()
-			->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiDatabase' ) );
+		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
+			$this->config->get( 'CreateWikiDatabase' )
+		);
 
 		$wikiObject = $this->dbr->selectRow(
 			'cw_wikis',
@@ -268,7 +293,7 @@ class CreateWikiPhp {
 			'states' => $states,
 		];
 
-		$this->hookRunner->onCreateWikiPhpBuilder( $this->wiki, $this->dbr, $cacheArray );
+		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $cacheArray );
 		$this->cacheWikiData( $cacheArray );
 	}
 
@@ -310,7 +335,7 @@ class CreateWikiPhp {
 	 *
 	 * @return array|null
 	 */
-	public function getCachedWikiData() {
+	private function getCachedWikiData() {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
 		if ( file_exists( $filePath ) ) {
 			return include $filePath;
@@ -324,7 +349,7 @@ class CreateWikiPhp {
 	 *
 	 * @return array|null
 	 */
-	public function getCachedDatabaseList() {
+	private function getCachedDatabaseList() {
 		$filePath = "{$this->cacheDir}/databases.php";
 		if ( file_exists( $filePath ) ) {
 			return include $filePath;
