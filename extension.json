@@ -179,8 +179,10 @@
 		"default": {
 			"class": "Miraheze\\CreateWiki\\Hooks",
 			"services": [
-				"MainConfig",
+				"ConfigFactory",
+				"ConnectionProvider",
 				"CreateWikiHookRunner",
+				"CreateWikiPhpDataFactory",
 				"DBLoadBalancerFactory"
 			]
 		},
