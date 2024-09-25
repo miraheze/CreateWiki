@@ -292,6 +292,17 @@ class CreateWikiPhp {
 	}
 
 	/**
+	 * Deletes the cache data for a wiki.
+	 *
+	 * @param string $wiki
+	 */
+	public function deleteWikiData( string $wiki ) {
+		if ( file_exists( "{$this->cacheDir}/$wiki.php" ) ) {
+			unlink( "{$this->cacheDir}/$wiki.php" );
+		}
+	}
+
+	/**
 	 * Retrieves cached wiki data.
 	 *
 	 * @return array|null
