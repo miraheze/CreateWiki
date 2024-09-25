@@ -34,7 +34,7 @@ class Hooks implements
 	private IConnectionProvider $connectionProvider;
 
 	/**
-	 * @param Config $config
+	 * @param ConfigFactory $configFactory
 	 * @param IConnectionProvider $connectionProvider
 	 * @param CreateWikiHookRunner $hookRunner
 	 * @param CreateWikiPhpDataFactory $dataFactory
