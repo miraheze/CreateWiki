@@ -30,45 +30,75 @@ class WikiInitialize {
 	}
 
 	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch, array $realms = [] ) {
+		global $wgCreateWikiUsePhpCache;
+
 		$this->cacheDir = $cacheDir;
 		$this->config->suffixes = $suffixes;
 		$this->hostname = $_SERVER['HTTP_HOST'] ?? 'undefined';
 		$this->realms = $realms;
 
-		// Let's fake a database list - default config should suffice
-		if ( !file_exists( $this->cacheDir . '/databases.json' ) ) {
-			$databasesArray = [
-				'timestamp' => 0,
-				'combi' => []
-			];
+		if ( $wgCreateWikiUsePhpCache ) {
+			$databasesFileName = 'databases.php';
+			$deletedFileName = 'deleted.php';
+			$mtimeKey = 'mtime';
+			$listKey = 'databases';
 		} else {
-			$databaseJsonFile = file_get_contents( $this->cacheDir . '/databases.json' );
-			$databasesArray = json_decode( $databaseJsonFile, true ) ?: [
-				'timestamp' => 0,
-				'combi' => []
-			];
+			$databasesFileName = 'databases.json';
+			$deletedFileName = 'deleted.json';
+			$mtimeKey = 'timestamp';
+			$listKey = 'combi';
 		}
 
-		if ( !file_exists( $this->cacheDir . '/deleted.json' ) ) {
+		// Let's fake a database list - default config should suffice
+		if ( !file_exists( $this->cacheDir . '/' . $databasesFileName ) ) {
+			$databasesArray = [
+				$mtimeKey => 0,
+				$listKey => []
+			];
+		} else {
+			if ( $wgCreateWikiUsePhpCache ) {
+				$databasesFile = include $this->cacheDir . '/databases.php';
+				$databasesArray = $databasesFile ?: [
+					'mtime' => 0,
+					'databases' => []
+				];
+			} else {
+				$databaseJsonFile = file_get_contents( $this->cacheDir . '/databases.json' );
+				$databasesArray = json_decode( $databaseJsonFile, true ) ?: [
+					'timestamp' => 0,
+					'combi' => []
+				];
+			}
+		}
+
+		if ( !file_exists( $this->cacheDir . '/' . $deletedFileName ) ) {
 			$deletedDatabases = [
 				'databases' => []
 			];
 		} else {
-			$databaseDeletedFile = file_get_contents( $this->cacheDir . '/deleted.json' );
-			$deletedDatabases = json_decode( $databaseDeletedFile, true ) ?: [
-				'databases' => []
-			];
+			if ( $wgCreateWikiUsePhpCache ) {
+				$databaseDeletedFile = include $this->cacheDir . '/deleted.php';
+				$deletedDatabases = $databaseDeletedFile ?: [
+					'mtime' => 0,
+					'databases' => []
+				];
+			} else {
+				$databaseDeletedFile = file_get_contents( $this->cacheDir . '/deleted.json' );
+				$deletedDatabases = json_decode( $databaseDeletedFile, true ) ?: [
+					'databases' => []
+				];
+			}
 		}
 
 		// Assign all known wikis
-		$this->config->wikis = array_keys( $databasesArray['combi'] );
+		$this->config->wikis = array_keys( $databasesArray[$listKey] );
 
 		// Handle wgServer and wgSitename
 		$suffixMatch = array_flip( $siteMatch );
 		$this->config->settings['wgServer']['default'] = 'https://' . $suffixMatch[ array_key_first( $suffixMatch ) ];
 		$this->config->settings['wgSitename']['default'] = 'No sitename set.';
 
-		foreach ( $databasesArray['combi'] as $db => $data ) {
+		foreach ( $databasesArray[$listKey] as $db => $data ) {
 			foreach ( $suffixes as $suffix ) {
 				if ( substr( $db, -strlen( $suffix ) ) == $suffix ) {
 					$this->config->settings['wgServer'][$db] = $data['u'] ?? 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
@@ -85,7 +115,7 @@ class WikiInitialize {
 		}
 
 		// We need the CLI to be able to access 'deleted' wikis
-		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.json' ) ) {
+		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/' . $deletedFileName ) ) {
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
 		}
 
@@ -117,8 +147,8 @@ class WikiInitialize {
 		// We use this quite a bit. If we don't have one, something is wrong
 		if ( $this->dbname === null ) {
 			$this->missing = true;
-		} elseif ( !count( $databasesArray['combi'] ) ) {
-			$databasesArray['combi'][$this->dbname] = [];
+		} elseif ( !count( $databasesArray[$listKey] ) ) {
+			$databasesArray[$listKey][$this->dbname] = [];
 		}
 
 		// As soon as we know the database name, let's assign it
@@ -133,13 +163,25 @@ class WikiInitialize {
 	}
 
 	public function readCache() {
-		// If we don't have a cache file, let us exit here
-		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
-			return;
-		}
+		global $wgCreateWikiUsePhpCache;
 
-		$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' );
-		$cacheArray = json_decode( $wikiDatabaseFile, true ) ?? [];
+		if ( $wgCreateWikiUsePhpCache ) {
+			// If we don't have a cache file, let us exit here
+			if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.php' ) ) {
+				return;
+			}
+
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cacheArray = include $this->cacheDir . '/' . $this->dbname . '.php';
+		} else {
+			// If we don't have a cache file, let us exit here
+			if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
+				return;
+			}
+
+			$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' );
+			$cacheArray = json_decode( $wikiDatabaseFile, true ) ?? [];
+		}
 
 		// Assign top level variables first
 		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'] ?? $this->config->settings['wgSitename']['default'];
@@ -268,17 +310,31 @@ class WikiInitialize {
 	}
 
 	public function loadExtensions() {
-		// If we don't have a cache file, let us exit here
-		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
-			return;
-		}
+		global $wgCreateWikiUsePhpCache;
 
-		$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' );
-		$cacheArray = json_decode( $wikiDatabaseFile, true );
+		if ( $wgCreateWikiUsePhpCache ) {
+			// If we don't have a cache file, let us exit here
+			if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.php' ) ) {
+				return;
+			}
+
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cacheArray = include $this->cacheDir . '/' . $this->dbname . '.php';
+			$extensionListFileName = 'extension-list.php';
+		} else {
+			// If we don't have a cache file, let us exit here
+			if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.json' ) ) {
+				return;
+			}
+
+			$wikiDatabaseFile = file_get_contents( $this->cacheDir . '/' . $this->dbname . '.json' );
+			$cacheArray = json_decode( $wikiDatabaseFile, true );
+			$extensionListFileName = 'extension-list.json';
+		}
 
 		$config = new GlobalVarConfig( 'wg' );
 
-		if ( !file_exists( "{$this->cacheDir}/extension-list.json" ) ) {
+		if ( !file_exists( "{$this->cacheDir}/{$extensionListFileName}" ) ) {
 			$queue = array_fill_keys( array_merge(
 					glob( $config->get( 'ExtensionDirectory' ) . '/*/extension*.json' ),
 					glob( $config->get( 'StyleDirectory' ) . '/*/skin.json' )
@@ -299,10 +355,22 @@ class WikiInitialize {
 
 			$list = array_column( $data['credits'], 'path', 'name' );
 
-			file_put_contents( "{$this->cacheDir}/extension-list.json", json_encode( $list ), LOCK_EX );
+			if ( $wgCreateWikiUsePhpCache ) {
+				$content = "<?php\n\n" .
+					"/**\n * Auto-generated extension list cache.\n */\n\n" .
+					'return ' . var_export( $list, true ) . ";\n";
+			} else {
+				$content = json_encode( $list );
+			}
+
+			file_put_contents( "{$this->cacheDir}/{$extensionListFileName}", $content, LOCK_EX );
 		} else {
-			$extensionList = file_get_contents( "{$this->cacheDir}/extension-list.json" );
-			$list = json_decode( $extensionList, true );
+			if ( $wgCreateWikiUsePhpCache ) {
+				$list = include "{$this->cacheDir}/extension-list.php";
+			} else {
+				$extensionList = file_get_contents( "{$this->cacheDir}/extension-list.json" );
+				$list = json_decode( $extensionList, true );
+			}
 		}
 
 		if ( isset( $cacheArray['extensions'] ) ) {
