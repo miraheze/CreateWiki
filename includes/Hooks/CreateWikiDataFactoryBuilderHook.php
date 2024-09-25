@@ -4,13 +4,13 @@ namespace Miraheze\CreateWiki\Hooks;
 
 use Wikimedia\Rdbms\DBConnRef;
 
-interface CreateWikiPhpBuilderHook {
+interface CreateWikiDataFactoryBuilderHook {
 
 	/**
 	 * @param string $wiki
 	 * @param DBConnRef $dbr
-	 * @param array &$cacheArray
+	 * @param array &$data
 	 * @return void
 	 */
-	public function onCreateWikiPhpBuilder( $wiki, $dbr, &$cacheArray ): void;
+	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$data ): void;
 }
