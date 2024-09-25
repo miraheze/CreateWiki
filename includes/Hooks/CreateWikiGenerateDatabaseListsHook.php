@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Hooks;
 
-interface CreateWikiGenerateDatabaseLists {
+interface CreateWikiGenerateDatabaseListsHook {
 
 	/**
 	 * @param array &$databaseLists
