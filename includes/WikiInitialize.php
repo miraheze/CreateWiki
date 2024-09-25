@@ -98,7 +98,7 @@ class WikiInitialize {
 		$this->config->settings['wgServer']['default'] = 'https://' . $suffixMatch[ array_key_first( $suffixMatch ) ];
 		$this->config->settings['wgSitename']['default'] = 'No sitename set.';
 
-		foreach ( $databasesArray['combi'] as $db => $data ) {
+		foreach ( $databasesArray[$listKey] as $db => $data ) {
 			foreach ( $suffixes as $suffix ) {
 				if ( substr( $db, -strlen( $suffix ) ) == $suffix ) {
 					$this->config->settings['wgServer'][$db] = $data['u'] ?? 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
@@ -147,8 +147,8 @@ class WikiInitialize {
 		// We use this quite a bit. If we don't have one, something is wrong
 		if ( $this->dbname === null ) {
 			$this->missing = true;
-		} elseif ( !count( $databasesArray['combi'] ) ) {
-			$databasesArray['combi'][$this->dbname] = [];
+		} elseif ( !count( $databasesArray[$listKey] ) ) {
+			$databasesArray[$listKey][$this->dbname] = [];
 		}
 
 		// As soon as we know the database name, let's assign it
