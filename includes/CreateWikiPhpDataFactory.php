@@ -3,8 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use BagOStuff;
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
+use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use ObjectCacheFactory;
@@ -14,31 +13,31 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class CreateWikiPhpDataFactory {
 
-	/**
-	 * The configuration object.
-	 *
-	 * @var Config
-	 */
-	private $config;
+	public const CONSTRUCTOR_OPTIONS = [
+		'CreateWikiCacheDirectory',
+		'CreateWikiCacheType',
+		'CreateWikiDatabase',
+		'CreateWikiUseClosedWikis',
+		'CreateWikiUseExperimental',
+		'CreateWikiUseInactiveWikis',
+		'CreateWikiUsePrivateWikis',
+	];
 
-	/**
-	 * @var IConnectionProvider
-	 */
+
+	/** @var ServiceOptions */
+	private $options;
+
+	/** @var IConnectionProvider */
 	private $connectionProvider;
 
-	/**
-	 * The database connection reference object.
-	 *
-	 * @var DBConnRef
-	 */
+	/** @var DBConnRef */
 	private $dbr;
 
-	/**
-	 * The cache object.
-	 *
-	 * @var BagOStuff
-	 */
+	/** @var BagOStuff */
 	private $cache;
+	
+	/** @var CreateWikiHookRunner */
+	private $hookRunner;
 
 	/**
 	 * The wiki database name.
@@ -69,35 +68,30 @@ class CreateWikiPhpDataFactory {
 	private $databaseTimestamp;
 
 	/**
-	 * The CreateWiki hook runner object.
-	 *
-	 * @var CreateWikiHookRunner
-	 */
-	private $hookRunner;
-
-	/**
 	 * CreateWikiPhpDataFactory constructor.
 	 *
-	 * @param ConfigFactory $configFactory
-	 * @param ConnectionProvider $connectionProvider
-	 * @param CreateWikiHookRunner $hookRunner
+	 * @param IConnectionProvider $connectionProvider
 	 * @param ObjectCacheFactory $objectCacheFactory
+	 * @param CreateWikiHookRunner $hookRunner
+	 * @param ServiceOptions $options
 	 */
 	public function __construct(
-		ConfigFactory $configFactory,
-		ConnectionProvider $connectionProvider,
+		IConnectionProvider $connectionProvider,
+		ObjectCacheFactory $objectCacheFactory,
 		CreateWikiHookRunner $hookRunner,
-		ObjectCacheFactory $objectCacheFactory
+		ServiceOptions $options
 	) {
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
+
 		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
+		$this->options = $options;
 
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->cache = $this->config->get( 'CreateWikiCacheType' ) ?
-			$objectCacheFactory->getInstance( $this->config->get( 'CreateWikiCacheType' ) ) :
+		$this->cache = $this->options->get( 'CreateWikiCacheType' ) ?
+			$objectCacheFactory->getInstance( $this->options->get( 'CreateWikiCacheType' ) ) :
 			ObjectCache::getLocalClusterInstance();
 
-		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+		$this->cacheDir = $this->options->get( 'CreateWikiCacheDirectory' );
 	}
 
 	/**
@@ -194,7 +188,7 @@ class CreateWikiPhpDataFactory {
 		}
 
 		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( 'CreateWikiDatabase' )
+			$this->options->get( 'CreateWikiDatabase' )
 		);
 
 		$databaseList = $this->dbr->select(
@@ -248,7 +242,7 @@ class CreateWikiPhpDataFactory {
 		}
 
 		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( 'CreateWikiDatabase' )
+			$this->options->get( 'CreateWikiDatabase' )
 		);
 
 		$wikiObject = $this->dbr->selectRow(
@@ -263,19 +257,19 @@ class CreateWikiPhpDataFactory {
 
 		$states = [];
 
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->options->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$states['private'] = (bool)$wikiObject->wiki_private;
 		}
 
-		if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
+		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
 			$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
 		}
 
-		if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
+		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
 			$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
 		}
 
-		if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
+		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
 			$states['experimental'] = (bool)$wikiObject->wiki_experimental;
 		}
 
