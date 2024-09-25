@@ -23,7 +23,6 @@ class CreateWikiPhpDataFactory {
 		'CreateWikiUsePrivateWikis',
 	];
 
-
 	/** @var ServiceOptions */
 	private $options;
 
@@ -35,7 +34,7 @@ class CreateWikiPhpDataFactory {
 
 	/** @var BagOStuff */
 	private $cache;
-	
+
 	/** @var CreateWikiHookRunner */
 	private $hookRunner;
 
