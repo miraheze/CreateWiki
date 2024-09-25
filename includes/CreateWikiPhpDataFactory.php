@@ -97,11 +97,11 @@ class CreateWikiPhpDataFactory {
 	}
 
 	/**
-	 * Recache function to check if the cached wiki data and database list are outdated.
-	 * If either the wiki cache file or the database cache file has been modified,
-	 * it will reset the corresponding cached data.
+	 * Syncs the cache by checking if the cached wiki data or database list is outdated.
+	 * If either the wiki or database cache file has been modified, it will reset
+	 * and regenerate the cached data.
 	 */
-	public function recache() {
+	public function syncCache() {
 		// mtime will be 0 if the file does not exist as well, which means
 		// it will be generated.
 
