@@ -281,7 +281,7 @@ class WikiManager {
 			);
 		}
 
-		 if ( !$this->config->get( 'CreateWikiUsePhpCache' ) ) {
+		if ( !$this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
 			$cWJ->resetWiki();
@@ -320,7 +320,7 @@ class WikiManager {
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			/**
-   			* Since the wiki at $new likely won't be cached yet, this will also
+			* Since the wiki at $new likely won't be cached yet, this will also
 			* run resetWiki() on it since it has no mtime, so that it will
 			* generate the new cache file for it as well.
 			*/
