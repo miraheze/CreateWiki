@@ -3,12 +3,14 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\Config\Config;
+use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Extension\Notifications\AttributeManager;
 use MediaWiki\Extension\Notifications\UserLocator;
 use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -16,7 +18,7 @@ use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
-use Wikimedia\Rdbms\ILBFactory;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class Hooks implements
 	GetMagicVariableIDsHook,
@@ -26,28 +28,28 @@ class Hooks implements
 	SetupAfterCacheHook
 {
 
-	/** @var Config */
-	private $config;
-
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
-
-	/** @var ILBFactory */
-	private $dbLoadBalancerFactory;
+	private Config $config;
+	private CreateWikiHookRunner $hookRunner;
+	private CreateWikiPhpDataFactory $dataFactory;
+	private IConnectionProvider $connectionProvider;
 
 	/**
 	 * @param Config $config
+	 * @param IConnectionProvider $connectionProvider 
 	 * @param CreateWikiHookRunner $hookRunner
-	 * @param ILBFactory $dbLoadBalancerFactory
+	 * @param CreateWikiPhpDataFactory $dataFactory
 	 */
 	public function __construct(
-		Config $config,
+		ConfigFactory $configFactory,
+		IConnectionProvider $connectionProvider,
 		CreateWikiHookRunner $hookRunner,
-		ILBFactory $dbLoadBalancerFactory
+		CreateWikiPhpDataFactory $dataFactory
 	) {
-		$this->config = $config;
+		$this->connectionProvider = $connectionProvider;
+		$this->dataFactory = $dataFactory;
 		$this->hookRunner = $hookRunner;
-		$this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
+
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public static function onRegistration() {
@@ -67,12 +69,12 @@ class Hooks implements
 	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		$dbName = $this->config->get( 'DBname' );
+		$dbName = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			$cWP = new CreateWikiPhp( $dbName, $this->hookRunner );
-			$cWP->update();
+			$data = $this->dataFactory->newInstance( $dbName );
+			$data->syncCache();
 
 			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
@@ -118,8 +120,9 @@ class Hooks implements
 		$frame
 	) {
 		if ( $magicWordId === 'numberofwikirequests' ) {
-			$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
-				->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+			$dbr = $this->connectionProvider->getReplicaDatabase(
+				$this->config->get( 'CreateWikiGlobalWiki' )
+			);
 
 			$ret = $variableCache[$magicWordId] = $dbr->selectRowCount( 'cw_requests', '*' );
 		}
@@ -130,7 +133,7 @@ class Hooks implements
 		&$vars,
 		$out
 	): void {
-		if ( $out->getTitle()->isSubpageOf( Title::newFromText( "Special:RequestWikiQueue" ) ) ) {
+		if ( $out->getTitle()->isSubpageOf( Title::newFromText( 'Special:RequestWikiQueue' ) ) ) {
 			$vars['CreateWikiCannedResponses'] = $this->config->get( 'CreateWikiCannedResponses' );
 		}
 	}
