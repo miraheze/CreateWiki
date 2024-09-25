@@ -293,10 +293,13 @@ class CreateWikiPhp {
 
 	/**
 	 * Deletes the cache data for a wiki.
+	 * Probably used when a wiki is deleted or renamed.
 	 *
 	 * @param string $wiki
 	 */
 	public function deleteWikiData( string $wiki ) {
+		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+
 		if ( file_exists( "{$this->cacheDir}/$wiki.php" ) ) {
 			unlink( "{$this->cacheDir}/$wiki.php" );
 		}
