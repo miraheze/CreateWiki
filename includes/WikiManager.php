@@ -265,6 +265,12 @@ class WikiManager {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
 
+		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
+			$cWP->deleteWikiData( $wiki );
+		}
+
 		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->delete(
@@ -275,11 +281,7 @@ class WikiManager {
 			);
 		}
 
-		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
-			$cWP->resetWiki();
-		} else {
+		if ( !$this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
 			$cWJ->resetWiki();
@@ -317,9 +319,14 @@ class WikiManager {
 		}
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
+			/**
+			* Since the wiki at $new likely won't be cached yet, this will also
+			* run resetWiki() on it since it has no mtime, so that it will
+			* generate the new cache file for it as well.
+			*/
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $old, $this->hookRunner );
-			$cWP->resetWiki();
+			$cWP = new CreateWikiPhp( $new, $this->hookRunner );
+			$cWP->deleteWikiData( $old );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $old, $this->hookRunner );
