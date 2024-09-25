@@ -278,7 +278,7 @@ class WikiManager {
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
-			$cWP->resetWiki();
+			$cWP->deleteWikiData( $wiki );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
@@ -318,8 +318,9 @@ class WikiManager {
 
 		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $old, $this->hookRunner );
+			$cWP = new CreateWikiPhp( $new, $this->hookRunner );
 			$cWP->resetWiki();
+			$cWP->deleteWikiData( $old );
 		} else {
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$cWJ = new CreateWikiJson( $old, $this->hookRunner );
