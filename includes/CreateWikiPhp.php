@@ -18,10 +18,6 @@ class CreateWikiPhp {
 		$this->dataFactory = $dataFactory->newInstance( $wiki );
 	}
 
-	public function update() {
-		$this->dataFactory->recache();
-	}
-
 	/**
 	 * @param bool $isNewChanges
 	 */
