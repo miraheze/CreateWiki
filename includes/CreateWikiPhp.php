@@ -7,12 +7,9 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class CreateWikiPhp {
 
-	/** @var CreateWikiPhpDataFactory */
-	private $dataFactory;
+	private CreateWikiPhpDataFactory $dataFactory;
 
 	/**
-	 * CreateWikiPhp constructor.
-	 *
 	 * @param string $wiki
 	 * @param CreateWikiHookRunner|null $hookRunner
 	 */
@@ -21,42 +18,25 @@ class CreateWikiPhp {
 		$this->dataFactory = $dataFactory->newInstance( $wiki );
 	}
 
-	/**
-	 * Update function to check if the cached wiki data and database list are outdated.
-	 * If either the wiki cache file or the database cache file has been modified,
-	 * it will reset the corresponding cached data.
-	 */
 	public function update() {
-		$this->dataFactory->update();
+		$this->dataFactory->recache();
 	}
 
 	/**
-	 * Resets the cached list of databases by fetching the current list from the database.
-	 * This function queries the 'cw_wikis' table for database names and clusters, and writes
-	 * the updated list to a PHP file within the cache directory. It also updates the
-	 * modification timestamp and stores it in the cache for future reference.
-	 *
 	 * @param bool $isNewChanges
 	 */
 	public function resetDatabaseList( bool $isNewChanges = true ) {
-		$this->dataFactory->resetDatabaseList( $isNewChanges );
+		$this->dataFactory->resetDatabaseLists( $isNewChanges );
 	}
 
 	/**
-	 * Resets the wiki information.
-	 *
-	 * This method retrieves new information for the wiki and updates the cache.
-	 *
 	 * @param bool $isNewChanges
 	 */
 	public function resetWiki( bool $isNewChanges = true ) {
-		$this->dataFactory->resetWiki( $isNewChanges );
+		$this->dataFactory->resetWikiData( $isNewChanges );
 	}
 
 	/**
-	 * Deletes the cache data for a wiki.
-	 * Probably used when a wiki is deleted or renamed.
-	 *
 	 * @param string $wiki
 	 */
 	public function deleteWikiData( string $wiki ) {
