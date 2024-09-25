@@ -2,13 +2,13 @@
 
 namespace Miraheze\CreateWiki\Hooks;
 
-use Wikimedia\Rdbms\DBConnRef;
+use Wikimedia\Rdbms\IReadableDatabase;
 
 interface CreateWikiDataFactoryBuilderHook {
 
 	/**
 	 * @param string $wiki
-	 * @param DBConnRef $dbr
+	 * @param IReadableDatabase $dbr
 	 * @param array &$data
 	 * @return void
 	 */
