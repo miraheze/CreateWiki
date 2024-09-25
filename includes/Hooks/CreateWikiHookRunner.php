@@ -6,11 +6,9 @@ use MediaWiki\HookContainer\HookContainer;
 
 class CreateWikiHookRunner implements
 	CreateWikiCreationHook,
+	CreateWikiDataFactoryBuilderHook,
 	CreateWikiDeletionHook,
-	CreateWikiJsonBuilderHook,
-	CreateWikiJsonGenerateDatabaseListHook,
-	CreateWikiPhpBuilderHook,
-	CreateWikiPhpGenerateDatabaseListHook,
+	CreateWikiGenerateDatabaseListsHook,
 	CreateWikiReadPersistentModelHook,
 	CreateWikiRenameHook,
 	CreateWikiStateClosedHook,
@@ -42,6 +40,14 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
+	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$data ): void {
+		$this->container->run(
+			'CreateWikiDataFactoryBuilder',
+			[ $wiki, $dbr, &$data ]
+		);
+	}
+
+	/** @inheritDoc */
 	public function onCreateWikiDeletion( $cwdb, $wiki ): void {
 		$this->container->run(
 			'CreateWikiDeletion',
@@ -50,33 +56,9 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiJsonBuilder( $wiki, $dbr, &$jsonArray ): void {
+	public function onCreateWikiGenerateDatabaseLists( &$databaseLists ): void {
 		$this->container->run(
-			'CreateWikiJsonBuilder',
-			[ $wiki, $dbr, &$jsonArray ]
-		);
-	}
-
-	/** @inheritDoc */
-	public function onCreateWikiJsonGenerateDatabaseList( &$databaseLists ): void {
-		$this->container->run(
-			'CreateWikiJsonGenerateDatabaseList',
-			[ &$databaseLists ]
-		);
-	}
-
-	/** @inheritDoc */
-	public function onCreateWikiPhpBuilder( $wiki, $dbr, &$cacheArray ): void {
-		$this->container->run(
-			'CreateWikiPhpBuilder',
-			[ $wiki, $dbr, &$cacheArray ]
-		);
-	}
-
-	/** @inheritDoc */
-	public function onCreateWikiPhpGenerateDatabaseList( &$databaseLists ): void {
-		$this->container->run(
-			'CreateWikiPhpGenerateDatabaseList',
+			'CreateWikiGenerateDatabaseLists',
 			[ &$databaseLists ]
 		);
 	}
