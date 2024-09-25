@@ -206,7 +206,7 @@ class CreateWikiJson {
 	 */
 	private function generateDatabaseList() {
 		$databaseLists = [];
-		$this->hookRunner->onCreateWikiJsonGenerateDatabaseList( $databaseLists );
+		$this->hookRunner->onCreateWikiGenerateDatabaseLists( $databaseLists );
 
 		if ( !empty( $databaseLists ) ) {
 			$this->generateDatabasesJsonFile( $databaseLists );
@@ -342,7 +342,7 @@ class CreateWikiJson {
 			'states' => $states
 		];
 
-		$this->hookRunner->onCreateWikiJsonBuilder( $this->wiki, $this->dbr, $jsonArray );
+		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $jsonArray );
 
 		$tmpFile = tempnam( '/tmp/', $this->wiki );
 		if ( $tmpFile ) {
