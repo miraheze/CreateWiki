@@ -126,4 +126,13 @@ class CreateWikiHookRunner implements
 			[ $pipeline ]
 		);
 	}
+	
+	// Deprecated aliases
+	public function onCreateWikiJsonBuilder( $wiki, $dbr, &$data ): void {
+		$this->onCreateWikiDataFactoryBuilder( $wiki, $dbr, $data );
+	}
+
+	public function onCreateWikiJsonGenerateDatabaseList( &$databaseLists ): void {
+		$this->onCreateWikiGenerateDatabaseLists( $databaseLists );
+	}
 }
