@@ -99,7 +99,7 @@ class CreateWikiPhpDataFactory {
 
 		$this->cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
 	}
-	
+
 	/**
 	 * Create a new CreateWikiPhpDataFactory instance.
 	 *
