@@ -8,8 +8,8 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use ObjectCacheFactory;
 use UnexpectedValueException;
-use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
+use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiPhpDataFactory {
 
@@ -23,48 +23,23 @@ class CreateWikiPhpDataFactory {
 		'CreateWikiUsePrivateWikis',
 	];
 
-	/** @var ServiceOptions */
-	private $options;
+	private BagOStuff $cache;
+	private CreateWikiHookRunner $hookRunner;
+	private IConnectionProvider $connectionProvider;
+	private IReadableDatabase $dbr;
+	private ServiceOptions $options;
 
-	/** @var IConnectionProvider */
-	private $connectionProvider;
+	/** @var string The wiki database name. */
+	private string $wiki;
 
-	/** @var DBConnRef */
-	private $dbr;
+	/** @var string The directory path for cache files. */
+	private string $cacheDir;
 
-	/** @var BagOStuff */
-	private $cache;
+	/** @var int The cached timestamp for the databases list. */
+	private int $databasesTimestamp;
 
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
-
-	/**
-	 * The wiki database name.
-	 *
-	 * @var string
-	 */
-	private $wiki;
-
-	/**
-	 * The directory path for cache files.
-	 *
-	 * @var string
-	 */
-	private $cacheDir;
-
-	/**
-	 * The timestamp for the wiki information.
-	 *
-	 * @var int
-	 */
-	private $wikiTimestamp;
-
-	/**
-	 * The timestamp for the databases list.
-	 *
-	 * @var int
-	 */
-	private $databaseTimestamp;
+	/** @var int The cached timestamp for the wiki information. */
+	private int $wikiTimestamp;
 
 	/**
 	 * CreateWikiPhpDataFactory constructor.
@@ -102,59 +77,65 @@ class CreateWikiPhpDataFactory {
 	public function newInstance( string $wiki ): self {
 		$this->wiki = $wiki;
 
-		$this->wikiTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
-		$this->databaseTimestamp = (int)$this->cache->get( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ) );
+		$this->databasesTimestamp = (int)$this->cache->get(
+			$this->cache->makeGlobalKey( 'CreateWiki', 'databases' )
+		);
 
-		if ( !$this->wikiTimestamp ) {
-			$this->resetWiki();
+		$this->wikiTimestamp = (int)$this->cache->get(
+			$this->cache->makeGlobalKey( 'CreateWiki', $wiki )
+		);
+
+		if ( !$this->databasesTimestamp ) {
+			$this->resetDatabaseLists( isNewChanges: true );
 		}
 
-		if ( !$this->databaseTimestamp ) {
-			$this->resetDatabaseList();
+		if ( !$this->wikiTimestamp ) {
+			$this->resetWikiData( isNewChanges: true );
 		}
 
 		return $this;
 	}
 
 	/**
-	 * Update function to check if the cached wiki data and database list are outdated.
+	 * Recache function to check if the cached wiki data and database list are outdated.
 	 * If either the wiki cache file or the database cache file has been modified,
 	 * it will reset the corresponding cached data.
 	 */
-	public function update() {
+	public function recache() {
 		// mtime will be 0 if the file does not exist as well, which means
 		// it will be generated.
-
-		$wikiMtime = 0;
-		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
-			$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
-		}
-
-		// Regenerate wiki cache if the file does not exist or has no valid mtime
-		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
-			$this->resetWiki( false );
-		}
 
 		$databasesMtime = 0;
 		if ( file_exists( "{$this->cacheDir}/databases.php" ) ) {
 			$databasesMtime = $this->getCachedDatabaseList()['mtime'] ?? 0;
 		}
 
-		// Regenerate database list if the file does not exist or has no valid mtime
-		if ( $databasesMtime === 0 || $databasesMtime < $this->databaseTimestamp ) {
-			$this->resetDatabaseList( false );
+		// Regenerate database list cache if the databases.php file does not
+		// exist or has no valid mtime
+		if ( $databasesMtime === 0 || $databasesMtime < $this->databasesTimestamp ) {
+			$this->resetDatabaseLists( false );
+		}
+
+		$wikiMtime = 0;
+		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
+			$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
+		}
+
+		// Regenerate wiki data cache if the file does not exist or has no valid mtime
+		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
+			$this->resetWikiData( false );
 		}
 	}
 
 	/**
-	 * Resets the cached list of databases by fetching the current list from the database.
+	 * Resets the cached database lists by fetching the current lists from the database.
 	 * This function queries the 'cw_wikis' table for database names and clusters, and writes
 	 * the updated list to a PHP file within the cache directory. It also updates the
-	 * modification timestamp and stores it in the cache for future reference.
+	 * modification time (mtime) and stores it in the cache for future reference.
 	 *
 	 * @param bool $isNewChanges
 	 */
-	public function resetDatabaseList( bool $isNewChanges = true ) {
+	public function resetDatabaseLists( bool $isNewChanges ) {
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $mtime );
@@ -190,34 +171,38 @@ class CreateWikiPhpDataFactory {
 			$this->options->get( 'CreateWikiDatabase' )
 		);
 
-		$databaseList = $this->dbr->select(
-			'cw_wikis',
-			[
+		$databaseList = $this->dbr->newSelectQueryBuilder()
+			->table( 'cw_wikis' )
+			->fields( [
 				'wiki_dbcluster',
 				'wiki_dbname',
 				'wiki_deleted',
-				'wiki_url',
 				'wiki_sitename',
-			]
-		);
+				'wiki_url',
+			] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
-		$databases = [
-			'mtime' => $mtime,
-			'databases' => [],
-		];
+		$databases = [];
 		foreach ( $databaseList as $row ) {
-			$databases['databases'][$row->wiki_dbname] = [
+			$databases[$row->wiki_dbname] = [
 				's' => $row->wiki_sitename,
 				'c' => $row->wiki_dbcluster,
 			];
+
 			if ( $row->wiki_url !== null ) {
-				$databases['databases'][$row->wiki_dbname]['u'] = $row->wiki_url;
+				$databases[$row->wiki_dbname]['u'] = $row->wiki_url;
 			}
 		}
 
+		$list = [
+			'mtime' => $mtime,
+			'databases' => $databases,
+		];
+
 		$tmpFile = tempnam( '/tmp/', 'databases' );
 		if ( $tmpFile ) {
-			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $databases, true ) . ";\n" ) ) {
+			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
 				if ( !rename( $tmpFile, "{$this->cacheDir}/databases.php" ) ) {
 					unlink( $tmpFile );
 				}
@@ -228,13 +213,13 @@ class CreateWikiPhpDataFactory {
 	}
 
 	/**
-	 * Resets the wiki information.
+	 * Resets the wiki data information.
 	 *
 	 * This method retrieves new information for the wiki and updates the cache.
 	 *
 	 * @param bool $isNewChanges
 	 */
-	public function resetWiki( bool $isNewChanges = true ) {
+	public function resetWikiData( bool $isNewChanges ) {
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $mtime );
@@ -244,50 +229,66 @@ class CreateWikiPhpDataFactory {
 			$this->options->get( 'CreateWikiDatabase' )
 		);
 
-		$wikiObject = $this->dbr->selectRow(
-			'cw_wikis',
-			'*',
-			[ 'wiki_dbname' => $this->wiki ]
-		);
+		$row = $this->dbr->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_wikis' )
+			->where( [ 'wiki_dbname' => $this->wiki ] )
+			->caller( __METHOD__ )
+			->fetchRow();
 
-		if ( !$wikiObject ) {
+		if ( !$row ) {
 			throw new UnexpectedValueException( "Wiki '{$this->wiki}' cannot be found." );
 		}
 
 		$states = [];
 
 		if ( $this->options->get( 'CreateWikiUsePrivateWikis' ) ) {
-			$states['private'] = (bool)$wikiObject->wiki_private;
+			$states['private'] = (bool)$row->wiki_private;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
-			$states['closed'] = $wikiObject->wiki_closed_timestamp ?? false;
+			$states['closed'] = $row->wiki_closed_timestamp ?? false;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
-			$states['inactive'] = ( $wikiObject->wiki_inactive_exempt ) ? 'exempt' : ( $wikiObject->wiki_inactive_timestamp ?? false );
+			$states['inactive'] = ( $row->wiki_inactive_exempt ) ? 'exempt' :
+				( $row->wiki_inactive_timestamp ?? false );
 		}
 
 		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
-			$states['experimental'] = (bool)$wikiObject->wiki_experimental;
+			$states['experimental'] = (bool)$row->wiki_experimental;
 		}
 
-		$cacheArray = [
+		$data = [
 			'mtime' => $mtime,
-			'database' => $wikiObject->wiki_dbname,
-			'created' => $wikiObject->wiki_creation,
-			'dbcluster' => $wikiObject->wiki_dbcluster,
-			'category' => $wikiObject->wiki_category,
-			'url' => $wikiObject->wiki_url ?? false,
+			'database' => $row->wiki_dbname,
+			'created' => $row->wiki_creation,
+			'dbcluster' => $row->wiki_dbcluster,
+			'category' => $row->wiki_category,
+			'url' => $row->wiki_url ?? false,
 			'core' => [
-				'wgSitename' => $wikiObject->wiki_sitename,
-				'wgLanguageCode' => $wikiObject->wiki_language,
+				'wgSitename' => $row->wiki_sitename,
+				'wgLanguageCode' => $row->wiki_language,
 			],
 			'states' => $states,
 		];
 
-		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $cacheArray );
-		$this->cacheWikiData( $cacheArray );
+		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $data );
+		$this->cacheWikiData( $data );
+	}
+
+	/**
+	 * Deletes the wiki data cache for a wiki.
+	 * Probably used when a wiki is deleted or renamed.
+	 *
+	 * @param string $wiki
+	 */
+	public function deleteWikiData( string $wiki ) {
+		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+
+		if ( file_exists( "{$this->cacheDir}/$wiki.php" ) ) {
+			unlink( "{$this->cacheDir}/$wiki.php" );
+		}
 	}
 
 	/**
@@ -310,25 +311,11 @@ class CreateWikiPhpDataFactory {
 	}
 
 	/**
-	 * Deletes the cache data for a wiki.
-	 * Probably used when a wiki is deleted or renamed.
-	 *
-	 * @param string $wiki
-	 */
-	public function deleteWikiData( string $wiki ) {
-		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
-
-		if ( file_exists( "{$this->cacheDir}/$wiki.php" ) ) {
-			unlink( "{$this->cacheDir}/$wiki.php" );
-		}
-	}
-
-	/**
 	 * Retrieves cached wiki data.
 	 *
-	 * @return array|null
+	 * @return ?array
 	 */
-	private function getCachedWikiData() {
+	private function getCachedWikiData(): ?array {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
 		if ( file_exists( $filePath ) ) {
 			return include $filePath;
@@ -340,9 +327,9 @@ class CreateWikiPhpDataFactory {
 	/**
 	 * Retrieves cached database list.
 	 *
-	 * @return array|null
+	 * @return ?array
 	 */
-	private function getCachedDatabaseList() {
+	private function getCachedDatabaseList(): ?array {
 		$filePath = "{$this->cacheDir}/databases.php";
 		if ( file_exists( $filePath ) ) {
 			return include $filePath;
