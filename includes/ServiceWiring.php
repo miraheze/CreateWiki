@@ -26,7 +26,7 @@ return [
 			new ServiceOptions(
 				CreateWikiPhpDataFactory::CONSTRUCTOR_OPTIONS,
 				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
-			),
+			)
 		);
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
