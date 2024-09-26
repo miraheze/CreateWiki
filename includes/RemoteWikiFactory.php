@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\IConnectionProvider;
+use Wikimedia\Rdbms\IReadableDatabase;
 
 class RemoteWikiFactory {
 
@@ -19,7 +20,10 @@ class RemoteWikiFactory {
 
 	private CreateWikiDataFactory $dataFactory;
 	private CreateWikiHookRunner $hookRunner;
+
 	private IConnectionProvider $connectionProvider;
+	private IReadableDatabase $dbr;
+
 	private ServiceOptions $options;
 
 	private array $changes = [];
@@ -62,11 +66,11 @@ class RemoteWikiFactory {
 	}
 
 	public function newInstance( string $wiki ): self {
-		$dbr = $this->connectionProvider->getReplicaDatabase(
+		$this->dbr = $this->connectionProvider->getReplicaDatabase(
 			$this->options->get( 'CreateWikiDatabase' )
 		);
 
-		$row = $dbr->newSelectQueryBuilder()
+		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $wiki ] )
@@ -146,7 +150,7 @@ class RemoteWikiFactory {
 		$this->inactive = true;
 		$this->newRows += [
 			'wiki_inactive' => 1,
-			'wiki_inactive_timestamp' => $this->dbw->timestamp(),
+			'wiki_inactive_timestamp' => $this->dbr->timestamp(),
 		];
 	}
 
@@ -222,7 +226,7 @@ class RemoteWikiFactory {
 		$this->closed = true;
 		$this->newRows += [
 			'wiki_closed' => 1,
-			'wiki_closed_timestamp' => $this->dbw->timestamp(),
+			'wiki_closed_timestamp' => $this->dbr->timestamp(),
 			'wiki_inactive' => 0,
 			'wiki_inactive_timestamp' => null,
 		];
@@ -239,7 +243,7 @@ class RemoteWikiFactory {
 		$this->deleted = true;
 		$this->newRows += [
 			'wiki_deleted' => 1,
-			'wiki_deleted_timestamp' => $this->dbw->timestamp(),
+			'wiki_deleted_timestamp' => $this->dbr->timestamp(),
 			'wiki_closed' => 0,
 			'wiki_closed_timestamp' => null,
 		];
