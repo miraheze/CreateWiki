@@ -47,7 +47,7 @@ class CreateWikiDataFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->factory = new CreateWikiDataFactory(
 			$this->connectionProvider,
-			$this->getServiceContainer->getObjectCacheFactory(),
+			$this->getServiceContainer()->getObjectCacheFactory(),
 			$this->hookRunner,
 			$this->options
 		);
