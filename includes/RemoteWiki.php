@@ -7,6 +7,9 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class RemoteWiki {
 
+	private CreateWikiDataFactory $dataFactory;
+	private CreateWikiHookRunner $hookRunner;
+
 	public $changes = [];
 	public $log;
 	public $logParams = [];
@@ -30,11 +33,10 @@ class RemoteWiki {
 	private $dbcluster;
 	private $category;
 	private $experimental;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
 
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
+		$this->dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiDataFactory' );
 		$this->hookRunner = $hookRunner;
 
 		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
@@ -411,10 +413,9 @@ class RemoteWiki {
 			}
 
 			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $this->dbname, $this->hookRunner );
-
-			$cWP->resetDatabaseList();
-			$cWP->resetWiki();
+			$data = $this->dataFactory->newInstance( $this->dbname );
+			$data->resetDatabaseLists( isNewChanges: true );
+			$data->resetWikiData( isNewChanges: true );
 
 			if ( $this->log === null ) {
 				$this->log = 'settings';
