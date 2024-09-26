@@ -13,7 +13,6 @@ use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Title\Title;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
@@ -30,24 +29,24 @@ class Hooks implements
 
 	private Config $config;
 	private CreateWikiDataFactory $dataFactory;
-	private CreateWikiHookRunner $hookRunner;
+	private RemoteWikiFactory $remoteWikiFactory;
 	private IConnectionProvider $connectionProvider;
 
 	/**
 	 * @param ConfigFactory $configFactory
 	 * @param IConnectionProvider $connectionProvider
 	 * @param CreateWikiDataFactory $dataFactory
-	 * @param CreateWikiHookRunner $hookRunner
+	 * @param RemoteWikiFactory $remoteWikiFactory
 	 */
 	public function __construct(
 		ConfigFactory $configFactory,
 		IConnectionProvider $connectionProvider,
 		CreateWikiDataFactory $dataFactory,
-		CreateWikiHookRunner $hookRunner
+		RemoteWikiFactory $remoteWikiFactory
 	) {
 		$this->connectionProvider = $connectionProvider;
 		$this->dataFactory = $dataFactory;
-		$this->hookRunner = $hookRunner;
+		$this->remoteWikiFactory = $remoteWikiFactory;
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
@@ -81,8 +80,8 @@ class Hooks implements
 				$cacheArray = include $cacheDir . '/' . $dbName . '.php';
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
-				$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
-				$isPrivate = $remoteWiki->isPrivate();
+				$wiki = $this->remoteWikiFactory->newInstance( $dbName );
+				$isPrivate = $wiki->isPrivate();
 			}
 		}
 
