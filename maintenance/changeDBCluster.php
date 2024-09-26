@@ -11,7 +11,6 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use MediaWiki\MainConfigNames;
-use Miraheze\CreateWiki\RemoteWiki;
 
 class ChangeDBCluster extends Maintenance {
 
@@ -32,9 +31,8 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$wiki = new RemoteWiki(
-				$this->getConfig()->get( MainConfigNames::DBname ),
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+			$wiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+				$this->getConfig()->get( MainConfigNames::DBname )
 			);
 
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
@@ -50,10 +48,8 @@ class ChangeDBCluster extends Maintenance {
 				continue;
 			}
 
-			$wiki = new RemoteWiki(
-				$line,
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
-			);
+			$wiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )
+				->newInstance( $line );
 
 			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$wiki->commit();
