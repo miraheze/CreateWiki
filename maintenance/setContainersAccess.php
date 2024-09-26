@@ -12,7 +12,6 @@ require_once "$IP/maintenance/Maintenance.php";
 use FileBackend;
 use Maintenance;
 use MediaWiki\MainConfigNames;
-use Miraheze\CreateWiki\RemoteWiki;
 
 class SetContainersAccess extends Maintenance {
 
@@ -29,9 +28,8 @@ class SetContainersAccess extends Maintenance {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
-		$wiki = new RemoteWiki(
-			$this->getConfig()->get( MainConfigNames::DBname ),
-			$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+		$wiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+			$this->getConfig()->get( MainConfigNames::DBname )
 		);
 
 		$isPrivate = $wiki->isPrivate();
