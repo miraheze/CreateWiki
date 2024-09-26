@@ -49,9 +49,9 @@ class RemoteWikiFactory {
 	private ?string $log;
 
 	public function __construct(
-		CreateWikiDataFactory $dataFactory, 
-		CreateWikiHookRunner $hookRunner, 
-		IConnectionProvider $connectionProvider, 
+		CreateWikiDataFactory $dataFactory,
+		CreateWikiHookRunner $hookRunner,
+		IConnectionProvider $connectionProvider,
 		ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
@@ -75,7 +75,7 @@ class RemoteWikiFactory {
 			]
 		);
 
-		if (!$wikiRow) {
+		if ( !$wikiRow ) {
 			return;
 		}
 
@@ -90,21 +90,21 @@ class RemoteWikiFactory {
 		$this->deleted = (bool)$wikiRow->wiki_deleted;
 		$this->locked = (bool)$wikiRow->wiki_locked;
 
-		if ($this->options->get('CreateWikiUsePrivateWikis')) {
+		if ( $this->options->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$this->private = (bool)$wikiRow->wiki_private;
 		}
 
-		if ($this->options->get('CreateWikiUseClosedWikis')) {
+		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
 			$this->closed = (bool)$wikiRow->wiki_closed;
 		}
 
-		if ($this->options->get('CreateWikiUseInactiveWikis')) {
+		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
 			$this->inactive = (bool)$wikiRow->wiki_inactive;
 			$this->inactiveExempt = (bool)$wikiRow->wiki_inactive_exempt;
 			$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
 		}
 
-		if ($this->options->get('CreateWikiUseExperimental')) {
+		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
 			$this->experimental = (bool)$wikiRow->wiki_experimental;
 		}
 	}
@@ -121,8 +121,8 @@ class RemoteWikiFactory {
 		return $this->sitename;
 	}
 
-	public function setSitename(string $sitename): void {
-		$this->trackChange('sitename', $this->sitename, $sitename);
+	public function setSitename( string $sitename ): void {
+		$this->trackChange( 'sitename', $this->sitename, $sitename );
 		$this->sitename = $sitename;
 		$this->newRows['wiki_sitename'] = $sitename;
 	}
@@ -131,8 +131,8 @@ class RemoteWikiFactory {
 		return $this->language;
 	}
 
-	public function setLanguage(string $lang): void {
-		$this->trackChange('language', $this->language, $lang);
+	public function setLanguage( string $lang ): void {
+		$this->trackChange( 'language', $this->language, $lang );
 		$this->language = $lang;
 		$this->newRows['wiki_language'] = $lang;
 	}
@@ -142,7 +142,7 @@ class RemoteWikiFactory {
 	}
 
 	public function markInactive(): void {
-		$this->trackChange('inactive', 0, 1);
+		$this->trackChange( 'inactive', 0, 1 );
 		$this->inactive = true;
 		$this->newRows += [
 			'wiki_inactive' => 1,
@@ -151,7 +151,7 @@ class RemoteWikiFactory {
 	}
 
 	public function markActive(): void {
-		$this->trackChange('active', 0, 1);
+		$this->trackChange( 'active', 0, 1 );
 		$this->hooks[] = 'CreateWikiStateOpen';
 		$this->inactive = false;
 		$this->closed = false;
@@ -168,13 +168,13 @@ class RemoteWikiFactory {
 	}
 
 	public function markExempt(): void {
-		$this->trackChange('inactive-exempt', 0, 1);
+		$this->trackChange( 'inactive-exempt', 0, 1 );
 		$this->inactiveExempt = true;
 		$this->newRows['wiki_inactive_exempt'] = 1;
 	}
 
 	public function unExempt(): void {
-		$this->trackChange('inactive-exempt', 1, 0);
+		$this->trackChange( 'inactive-exempt', 1, 0 );
 		$this->inactiveExempt = false;
 		$this->newRows['wiki_inactive_exempt'] = 0;
 
@@ -185,7 +185,7 @@ class RemoteWikiFactory {
 	public function setInactiveExemptReason( string $reason ): void {
 		$reason = ( $reason === '' ) ? null : $reason;
 
-		$this->trackChange('inactive-exempt-reason', $this->inactiveExemptReason, $reason);
+		$this->trackChange( 'inactive-exempt-reason', $this->inactiveExemptReason, $reason );
 
 		$this->inactiveExemptReason = $reason;
 		$this->newRows['wiki_inactive_exempt_reason'] = $reason;
@@ -200,14 +200,14 @@ class RemoteWikiFactory {
 	}
 
 	public function markPrivate(): void {
-		$this->trackChange('private', 0, 1);
+		$this->trackChange( 'private', 0, 1 );
 		$this->private = true;
 		$this->newRows['wiki_private'] = 1;
 		$this->hooks[] = 'CreateWikiStatePrivate';
 	}
 
 	public function markPublic(): void {
-		$this->trackChange('public', 0, 1);
+		$this->trackChange( 'public', 0, 1 );
 		$this->private = false;
 		$this->newRows['wiki_private'] = 0;
 		$this->hooks[] = 'CreateWikiStatePublic';
@@ -218,7 +218,7 @@ class RemoteWikiFactory {
 	}
 
 	public function markClosed(): void {
-		$this->trackChange('closed', 0, 1);
+		$this->trackChange( 'closed', 0, 1 );
 		$this->closed = true;
 		$this->newRows += [
 			'wiki_closed' => 1,
@@ -234,7 +234,7 @@ class RemoteWikiFactory {
 	}
 
 	public function delete(): void {
-		$this->trackChange('deleted', 0, 1);
+		$this->trackChange( 'deleted', 0, 1 );
 		$this->log = 'delete';
 		$this->deleted = true;
 		$this->newRows += [
@@ -246,7 +246,7 @@ class RemoteWikiFactory {
 	}
 
 	public function undelete(): void {
-		$this->trackChange('deleted', 1, 0);
+		$this->trackChange( 'deleted', 1, 0 );
 		$this->log = 'undelete';
 		$this->deleted = false;
 		$this->newRows += [
@@ -260,14 +260,14 @@ class RemoteWikiFactory {
 	}
 
 	public function lock(): void {
-		$this->trackChange('locked', 0, 1);
+		$this->trackChange( 'locked', 0, 1 );
 		$this->log = 'lock';
 		$this->locked = true;
 		$this->newRows['wiki_locked'] = 1;
 	}
 
 	public function unlock(): void {
-		$this->trackChange('locked', 1, 0);
+		$this->trackChange( 'locked', 1, 0 );
 		$this->log = 'unlock';
 		$this->locked = false;
 		$this->newRows['wiki_locked'] = 0;
@@ -278,7 +278,7 @@ class RemoteWikiFactory {
 	}
 
 	public function setCategory( string $category ): void {
-		$this->trackChange('category', $this->category, $category);
+		$this->trackChange( 'category', $this->category, $category );
 		$this->category = $category;
 		$this->newRows['wiki_category'] = $category;
 	}
@@ -290,7 +290,7 @@ class RemoteWikiFactory {
 	public function setServerName( string $server ): void {
 		$server = ( $server === '' ) ? null : $server;
 
-		$this->trackChange('servername', $this->url, $server);
+		$this->trackChange( 'servername', $this->url, $server );
 
 		$this->url = $server;
 		$this->newRows['wiki_url'] = $server;
@@ -301,7 +301,7 @@ class RemoteWikiFactory {
 	}
 
 	public function setDBCluster( string $dbcluster ): void {
-		$this->trackChange('dbcluster', $this->dbcluster, $dbcluster);
+		$this->trackChange( 'dbcluster', $this->dbcluster, $dbcluster );
 		$this->dbcluster = $dbcluster;
 		$this->newRows['wiki_dbcluster'] = $dbcluster;
 	}
@@ -311,27 +311,27 @@ class RemoteWikiFactory {
 	}
 
 	public function markExperimental(): void {
-		$this->trackChange('experimental', 0, 1);
+		$this->trackChange( 'experimental', 0, 1 );
 		$this->experimental = true;
 		$this->newRows['wiki_experimental'] = 1;
 	}
 
 	public function unMarkExperimental(): void {
-		$this->trackChange('experimental', 1, 0);
+		$this->trackChange( 'experimental', 1, 0 );
 		$this->experimental = false;
 		$this->newRows['wiki_experimental'] = 0;
 	}
 
 	public function commit(): void {
-		if (!empty($this->changes)) {
-			if ($this->newRows) {
+		if ( !empty( $this->changes ) ) {
+			if ( $this->newRows ) {
 				$this->dbw->update(
 					'cw_wikis',
 					$this->newRows,
-					['wiki_dbname' => $this->dbname]
+					[ 'wiki_dbname' => $this->dbname ]
 				);
 			}
-			
+
 			foreach ( $this->hooks as $hook ) {
 				switch ( $hook ) {
 					case 'CreateWikiStateOpen':
@@ -365,19 +365,19 @@ class RemoteWikiFactory {
 		}
 	}
 
-	public function trackChange(string $field, int|string|null $oldValue, int|string|null $newValue): void {
+	public function trackChange( string $field, int|string|null $oldValue, int|string|null $newValue ): void {
 		$this->changes[$field] = [
 			'old' => $oldValue,
 			'new' => $newValue
 		];
 	}
 
-	public function makeLog(string $log, array $logParams): void {
+	public function makeLog( string $log, array $logParams ): void {
 		$this->log = $log;
 		$this->logParams = $logParams;
 	}
 
-	public function addNewRow(string $row, mixed $value): void {
+	public function addNewRow( string $row, mixed $value ): void {
 		$this->newRows[$row] = $value;
 	}
 }
