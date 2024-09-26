@@ -14,6 +14,9 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class WikiManager {
 
+	private CreateWikiDataFactory $dataFactory;
+	private CreateWikiHookRunner $hookRunner;
+
 	private $config;
 	private $lbFactory;
 	private $dbname;
@@ -21,16 +24,16 @@ class WikiManager {
 	private $cwdb;
 	private $lb = false;
 	private $tables = [];
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
 
 	public $cluster;
 	public $exists;
 
 	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
 		$this->lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$this->dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiDataFactory' );
+		
+		$this->hookRunner = $hookRunner;
 
 		$this->cwdb = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
 			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
@@ -266,8 +269,8 @@ class WikiManager {
 		}
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
-		$cWP->deleteWikiData( $wiki );
+		$data = $this->dataFactory->newInstance( $wiki );
+		$data->deleteWikiData( $wiki );
 
 		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
@@ -312,12 +315,12 @@ class WikiManager {
 
 		/**
 		 * Since the wiki at $new likely won't be cached yet, this will also
-		 * run resetWiki() on it since it has no mtime, so that it will
+		 * run resetWikiData() on it since it has no mtime, so that it will
 		 * generate the new cache file for it as well.
 		 */
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$cWP = new CreateWikiPhp( $new, $this->hookRunner );
-		$cWP->deleteWikiData( $old );
+		$data = $this->dataFactory->newInstance( $new );
+		$data->deleteWikiData( $old );
 
 		$this->recache();
 
@@ -381,11 +384,10 @@ class WikiManager {
 	}
 
 	private function recache() {
-		$cWP = new CreateWikiPhp(
-			$this->config->get( 'CreateWikiGlobalWiki' ),
-			$this->hookRunner
+		$data = $this->dataFactory->newInstance(
+			$this->config->get( 'CreateWikiGlobalWiki' )
 		);
 
-		$cWP->resetDatabaseList();
+		$data->resetDatabaseLists( isNewChanges: true );
 	}
 }
