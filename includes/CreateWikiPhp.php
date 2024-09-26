@@ -9,10 +9,6 @@ class CreateWikiPhp {
 
 	private CreateWikiDataFactory $dataFactory;
 
-	/**
-	 * @param string $wiki
-	 * @param CreateWikiHookRunner $hookRunner
-	 */
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
 		$dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiDataFactory' );
 		$this->dataFactory = $dataFactory->newInstance( $wiki );
