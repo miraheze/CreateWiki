@@ -10,7 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use Miraheze\CreateWiki\RemoteWiki;
 
 class ManageInactiveWikis extends Maintenance {
 
@@ -30,7 +29,7 @@ class ManageInactiveWikis extends Maintenance {
 			);
 		}
 
-		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
 		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
@@ -46,7 +45,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$dbName = $row->wiki_dbname;
-			$wiki = new RemoteWiki( $dbName, $hookRunner );
+			$wiki = $remoteWikiFactory->newInstance( $dbName );
 			$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
 
 			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
