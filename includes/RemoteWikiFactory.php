@@ -19,8 +19,10 @@ class RemoteWikiFactory {
 
 	private CreateWikiDataFactory $dataFactory;
 	private CreateWikiHookRunner $hookRunner;
+
 	private IConnectionProvider $connectionProvider;
 	private IDatabase $dbw;
+
 	private ServiceOptions $options;
 
 	private array $changes = [];
@@ -49,9 +51,9 @@ class RemoteWikiFactory {
 	private ?string $log;
 
 	public function __construct(
+		IConnectionProvider $connectionProvider,
 		CreateWikiDataFactory $dataFactory,
 		CreateWikiHookRunner $hookRunner,
-		IConnectionProvider $connectionProvider,
 		ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
