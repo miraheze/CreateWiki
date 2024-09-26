@@ -167,15 +167,17 @@ class RemoteWiki {
 					$this->factory->addNewRow( $row, $value );
 				}
 			}
-
-			if ( $this->log ) {
-				$this->factory->makeLog( $this->log, null );
+			
+			if ( $this->log === null ) {
+				
 			}
 
-			if ( $this->logParams ) {
-				$this->factory->makeLog( null, $this->logParams );
+			if ( $this->log || $this->logParams ) {
+				$this->factory->makeLog( $this->log, $this->logParams );
 			}
 		}
+
+		$this->log = $this->factory->getLogAction();
 
 		$this->factory->commit();
 	}
