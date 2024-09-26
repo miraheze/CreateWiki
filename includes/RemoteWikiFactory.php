@@ -49,7 +49,7 @@ class RemoteWikiFactory {
 	private bool $experimental = false;
 	private ?string $inactiveExemptReason = null;
 
-	private ?string $log;
+	private ?string $log = null;
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
