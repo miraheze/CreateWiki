@@ -12,6 +12,12 @@ use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 
+/**
+ * @group CreateWiki
+ * @group Database
+ * @group Medium
+ * @coversDefaultClass \Miraheze\CreateWiki\CreateWikiDataFactory
+ */
 class CreateWikiDataFactoryTest extends MediaWikiIntegrationTestCase {
 
 	private CreateWikiDataFactory $factory;
@@ -34,14 +40,14 @@ class CreateWikiDataFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->options->method( 'get' )
 			->willReturnMap( [
-				[ 'CreateWikiCacheType', 'local' ],
+				[ 'CreateWikiCacheType', false ],
 				[ 'CreateWikiCacheDirectory', '/tmp' ],
 				[ 'CreateWikiDatabase', 'wiki_db' ]
 			] );
 
 		$this->factory = new CreateWikiDataFactory(
 			$this->connectionProvider,
-			$this->getService( 'ObjectCacheFactory' ),
+			$this->getServiceContainer->getObjectCacheFactory(),
 			$this->hookRunner,
 			$this->options
 		);
