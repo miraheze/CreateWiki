@@ -101,7 +101,7 @@ class RemoteWiki {
 	}
 
 	public function delete() {
-		$this->factory->delete()
+		$this->factory->delete();
 	}
 
 	public function undelete() {
