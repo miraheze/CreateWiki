@@ -380,9 +380,14 @@ class RemoteWikiFactory {
 		];
 	}
 
-	public function makeLog( string $log, array $logParams ): void {
-		$this->log = $log;
-		$this->logParams = $logParams;
+	public function makeLog( ?string $type, ?array $params ): void {
+		if ( $type ) {
+			$this->log = $type;
+		}
+
+		if ( $params ) {
+			$this->logParams = $params;
+		}
 	}
 
 	public function addNewRow( string $row, mixed $value ): void {
