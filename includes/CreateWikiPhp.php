@@ -21,13 +21,6 @@ class CreateWikiPhp {
 	/**
 	 * @param bool $isNewChanges
 	 */
-	public function resetDatabaseList( bool $isNewChanges = true ) {
-		$this->dataFactory->resetDatabaseLists( $isNewChanges );
-	}
-
-	/**
-	 * @param bool $isNewChanges
-	 */
 	public function resetWiki( bool $isNewChanges = true ) {
 		$this->dataFactory->resetWikiData( $isNewChanges );
 	}
