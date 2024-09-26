@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki;
 
+use InvalidArgumentException;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -78,7 +79,7 @@ class RemoteWikiFactory {
 		);
 
 		if ( !$wikiRow ) {
-			return;
+			throw new InvalidArgumentException( "Wiki '$wiki' cannot be found." );
 		}
 
 		$this->dbname = $wikiRow->wiki_dbname;
