@@ -2,13 +2,13 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
+use BagOStuff;
+use MediaWiki\Config\ServiceOptions;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\CreateWikiDataFactory;
-use BagOStuff;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use MediaWiki\Config\ServiceOptions;
 use UnexpectedValueException;
+use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 
@@ -29,15 +29,15 @@ class CreateWikiDataFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->options = $this->createMock( ServiceOptions::class );
 
 		// Mock required options
-		$this->options->method('assertRequiredOptions')
+		$this->options->method( 'assertRequiredOptions' )
 			->with( CreateWikiDataFactory::CONSTRUCTOR_OPTIONS );
 
-		$this->options->method('get')
-			->willReturnMap([
-				['CreateWikiCacheType', 'local'],
-				['CreateWikiCacheDirectory', '/tmp'],
-				['CreateWikiDatabase', 'wiki_db']
-			]);
+		$this->options->method( 'get' )
+			->willReturnMap( [
+				[ 'CreateWikiCacheType', 'local' ],
+				[ 'CreateWikiCacheDirectory', '/tmp' ],
+				[ 'CreateWikiDatabase', 'wiki_db' ]
+			] );
 
 		$this->factory = new CreateWikiDataFactory(
 			$this->connectionProvider,
