@@ -64,7 +64,7 @@ class RemoteWikiFactory {
 		$this->options = $options;
 	}
 
-	public function newInstance( string $wiki ) {
+	public function newInstance( string $wiki ): self {
 		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
 			$this->options->get( 'CreateWikiDatabase' )
 		);
@@ -109,6 +109,8 @@ class RemoteWikiFactory {
 		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
 			$this->experimental = (bool)$wikiRow->wiki_experimental;
 		}
+
+		return $this;
 	}
 
 	public function getCreationDate(): ?string {
