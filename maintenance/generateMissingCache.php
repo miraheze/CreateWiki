@@ -11,7 +11,6 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use MediaWiki\MainConfigNames;
-use Miraheze\CreateWiki\CreateWikiPhp;
 
 class GenerateMissingCache extends Maintenance {
 
@@ -23,17 +22,15 @@ class GenerateMissingCache extends Maintenance {
 	}
 
 	public function execute() {
+		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
+
 		foreach ( $this->getConfig()->get( MainConfigNames::LocalDatabases ) as $db ) {
 			if ( file_exists( $this->getConfig()->get( 'CreateWikiCacheDirectory' ) . '/' . $db . '.php' ) ) {
 				continue;
 			}
 
-			$cWP = new CreateWikiPhp(
-				$db,
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
-			);
-
-			$cWP->resetWiki();
+			$data = $dataFactory->newInstance( $db );
+			$data->resetWikiData( isNewChanges: true );
 
 			$this->output( "Cache generated for {$db}\n" );
 		}
