@@ -11,7 +11,7 @@ use UnexpectedValueException;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class CreateWikiPhpDataFactory {
+class CreateWikiDataFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		'CreateWikiCacheDirectory',
@@ -42,7 +42,7 @@ class CreateWikiPhpDataFactory {
 	private int $wikiTimestamp;
 
 	/**
-	 * CreateWikiPhpDataFactory constructor.
+	 * CreateWikiDataFactory constructor.
 	 *
 	 * @param IConnectionProvider $connectionProvider
 	 * @param ObjectCacheFactory $objectCacheFactory
@@ -69,7 +69,7 @@ class CreateWikiPhpDataFactory {
 	}
 
 	/**
-	 * Create a new CreateWikiPhpDataFactory instance.
+	 * Create a new CreateWikiDataFactory instance.
 	 *
 	 * @param string $wiki
 	 * @return self
@@ -259,7 +259,7 @@ class CreateWikiPhpDataFactory {
 			$states['experimental'] = (bool)$row->wiki_experimental;
 		}
 
-		$data = [
+		$cacheArray = [
 			'mtime' => $mtime,
 			'database' => $row->wiki_dbname,
 			'created' => $row->wiki_creation,
@@ -273,8 +273,8 @@ class CreateWikiPhpDataFactory {
 			'states' => $states,
 		];
 
-		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $data );
-		$this->cacheWikiData( $data );
+		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $cacheArray );
+		$this->cacheWikiData( $cacheArray );
 	}
 
 	/**

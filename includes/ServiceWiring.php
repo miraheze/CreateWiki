@@ -2,8 +2,8 @@
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\CreateWikiDataFactory;
 use Miraheze\CreateWiki\CreateWikiNotificationsManager;
-use Miraheze\CreateWiki\CreateWikiPhpDataFactory;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 return [
@@ -18,13 +18,13 @@ return [
 			$services->getUserFactory()
 		);
 	},
-	'CreateWikiPhpDataFactory' => static function ( MediaWikiServices $services ): CreateWikiPhpDataFactory {
-		return new CreateWikiPhpDataFactory(
+	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
+		return new CreateWikiDataFactory(
 			$services->getConnectionProvider(),
 			$services->getObjectCacheFactory(),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
-				CreateWikiPhpDataFactory::CONSTRUCTOR_OPTIONS,
+				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,
 				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
 			)
 		);

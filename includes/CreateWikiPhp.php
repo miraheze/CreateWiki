@@ -7,14 +7,14 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class CreateWikiPhp {
 
-	private CreateWikiPhpDataFactory $dataFactory;
+	private CreateWikiDataFactory $dataFactory;
 
 	/**
 	 * @param string $wiki
 	 * @param CreateWikiHookRunner|null $hookRunner
 	 */
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
-		$dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiPhpDataFactory' );
+		$dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiDataFactory' );
 		$this->dataFactory = $dataFactory->newInstance( $wiki );
 	}
 

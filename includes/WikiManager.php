@@ -265,11 +265,9 @@ class WikiManager {
 			return "Wiki {$wiki} can not be deleted yet.";
 		}
 
-		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
-			$cWP->deleteWikiData( $wiki );
-		}
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
+		$cWP = new CreateWikiPhp( $wiki, $this->hookRunner );
+		$cWP->deleteWikiData( $wiki );
 
 		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
@@ -279,12 +277,6 @@ class WikiManager {
 					$selector => $wiki
 				]
 			);
-		}
-
-		if ( !$this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWJ = new CreateWikiJson( $wiki, $this->hookRunner );
-			$cWJ->resetWiki();
 		}
 
 		$this->recache();
@@ -318,20 +310,14 @@ class WikiManager {
 			);
 		}
 
-		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			/**
-			* Since the wiki at $new likely won't be cached yet, this will also
-			* run resetWiki() on it since it has no mtime, so that it will
-			* generate the new cache file for it as well.
-			*/
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWP = new CreateWikiPhp( $new, $this->hookRunner );
-			$cWP->deleteWikiData( $old );
-		} else {
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
-			$cWJ = new CreateWikiJson( $old, $this->hookRunner );
-			$cWJ->resetWiki();
-		}
+		/**
+		 * Since the wiki at $new likely won't be cached yet, this will also
+		 * run resetWiki() on it since it has no mtime, so that it will
+		 * generate the new cache file for it as well.
+		 */
+		// @phan-suppress-next-line SecurityCheck-PathTraversal
+		$cWP = new CreateWikiPhp( $new, $this->hookRunner );
+		$cWP->deleteWikiData( $old );
 
 		$this->recache();
 
@@ -395,21 +381,11 @@ class WikiManager {
 	}
 
 	private function recache() {
-		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			$cWP = new CreateWikiPhp(
-				$this->config->get( 'CreateWikiGlobalWiki' ),
-				$this->hookRunner
-			);
+		$cWP = new CreateWikiPhp(
+			$this->config->get( 'CreateWikiGlobalWiki' ),
+			$this->hookRunner
+		);
 
-			$cWP->resetDatabaseList();
-		} else {
-			$cWJ = new CreateWikiJson(
-				$this->config->get( 'CreateWikiGlobalWiki' ),
-				$this->hookRunner
-			);
-
-			$cWJ->resetDatabaseList();
-			$cWJ->update();
-		}
+		$cWP->resetDatabaseList();
 	}
 }

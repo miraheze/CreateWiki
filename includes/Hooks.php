@@ -29,21 +29,21 @@ class Hooks implements
 {
 
 	private Config $config;
+	private CreateWikiDataFactory $dataFactory;
 	private CreateWikiHookRunner $hookRunner;
-	private CreateWikiPhpDataFactory $dataFactory;
 	private IConnectionProvider $connectionProvider;
 
 	/**
 	 * @param ConfigFactory $configFactory
 	 * @param IConnectionProvider $connectionProvider
+	 * @param CreateWikiDataFactory $dataFactory
 	 * @param CreateWikiHookRunner $hookRunner
-	 * @param CreateWikiPhpDataFactory $dataFactory
 	 */
 	public function __construct(
 		ConfigFactory $configFactory,
 		IConnectionProvider $connectionProvider,
-		CreateWikiHookRunner $hookRunner,
-		CreateWikiPhpDataFactory $dataFactory
+		CreateWikiDataFactory $dataFactory,
+		CreateWikiHookRunner $hookRunner
 	) {
 		$this->connectionProvider = $connectionProvider;
 		$this->dataFactory = $dataFactory;
@@ -72,33 +72,17 @@ class Hooks implements
 		$dbName = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-			$data = $this->dataFactory->newInstance( $dbName );
-			$data->syncCache();
+		$data = $this->dataFactory->newInstance( $dbName );
+		$data->syncCache();
 
-			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
-				if ( file_exists( $cacheDir . '/' . $dbName . '.php' ) ) {
-					$cacheArray = include $cacheDir . '/' . $dbName . '.php';
-					$isPrivate = (bool)$cacheArray['states']['private'];
-				} else {
-					$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
-					$isPrivate = $remoteWiki->isPrivate();
-				}
-			}
-		} else {
-			$cWJ = new CreateWikiJson( $dbName, $this->hookRunner );
-			$cWJ->update();
-
-			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-				$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
-				if ( file_exists( $cacheDir . '/' . $dbName . '.json' ) ) {
-					$cacheArray = json_decode( file_get_contents( $cacheDir . '/' . $dbName . '.json' ), true ) ?? [];
-					$isPrivate = (bool)$cacheArray['states']['private'];
-				} else {
-					$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
-					$isPrivate = $remoteWiki->isPrivate();
-				}
+		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+			$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+			if ( file_exists( $cacheDir . '/' . $dbName . '.php' ) ) {
+				$cacheArray = include $cacheDir . '/' . $dbName . '.php';
+				$isPrivate = (bool)$cacheArray['states']['private'];
+			} else {
+				$remoteWiki = new RemoteWiki( $dbName, $this->hookRunner );
+				$isPrivate = $remoteWiki->isPrivate();
 			}
 		}
 

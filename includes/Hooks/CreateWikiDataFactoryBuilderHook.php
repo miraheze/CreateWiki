@@ -9,8 +9,8 @@ interface CreateWikiDataFactoryBuilderHook {
 	/**
 	 * @param string $wiki
 	 * @param IReadableDatabase $dbr
-	 * @param array &$data
+	 * @param array &$cacheArray
 	 * @return void
 	 */
-	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$data ): void;
+	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$cacheArray ): void;
 }

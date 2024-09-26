@@ -410,19 +410,11 @@ class RemoteWiki {
 				}
 			}
 
-			if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$cWP = new CreateWikiPhp( $this->dbname, $this->hookRunner );
+			// @phan-suppress-next-line SecurityCheck-PathTraversal
+			$cWP = new CreateWikiPhp( $this->dbname, $this->hookRunner );
 
-				$cWP->resetDatabaseList();
-				$cWP->resetWiki();
-			} else {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$cWJ = new CreateWikiJson( $this->dbname, $this->hookRunner );
-
-				$cWJ->resetDatabaseList();
-				$cWJ->resetWiki();
-			}
+			$cWP->resetDatabaseList();
+			$cWP->resetWiki();
 
 			if ( $this->log === null ) {
 				$this->log = 'settings';

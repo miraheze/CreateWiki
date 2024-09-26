@@ -181,8 +181,8 @@
 			"services": [
 				"ConfigFactory",
 				"ConnectionProvider",
+				"CreateWikiDataFactory",
 				"CreateWikiHookRunner",
-				"CreateWikiPhpDataFactory",
 				"DBLoadBalancerFactory"
 			]
 		},
@@ -377,11 +377,6 @@
 		},
 		"CreateWikiUseJobQueue": {
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiUsePhpCache": {
-			"description": "Boolean. Whether or not to use PHP cache files. If disabled, JSON will be used.",
 			"public": true,
 			"value": false
 		},

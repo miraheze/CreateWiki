@@ -45,13 +45,8 @@ class RebuildExtensionListCache extends Maintenance {
 		$list = array_column( $data['credits'], 'path', 'name' );
 
 		$cacheDir = $this->getOption( 'cachedir', $this->getConfig()->get( 'CreateWikiCacheDirectory' ) );
-		$usePhpCache = $this->getConfig()->get( 'CreateWikiUsePhpCache' );
 
-		if ( $usePhpCache ) {
-			$this->generatePhpCache( $cacheDir, $list );
-		} else {
-			$this->generateJsonCache( $cacheDir, $list );
-		}
+		$this->generateCache( $cacheDir, $list );
 	}
 
 	/**
@@ -60,21 +55,11 @@ class RebuildExtensionListCache extends Maintenance {
 	 * @param string $cacheDir The cache directory.
 	 * @param array $list The extension list data.
 	 */
-	private function generatePhpCache( string $cacheDir, array $list ): void {
+	private function generateCache( string $cacheDir, array $list ): void {
 		$phpContent = "<?php\n\n" .
 			"/**\n * Auto-generated extension list cache.\n */\n\n" .
 			'return ' . var_export( $list, true ) . ";\n";
 		file_put_contents( "{$cacheDir}/extension-list.php", $phpContent, LOCK_EX );
-	}
-
-	/**
-	 * Generate a JSON cache file.
-	 *
-	 * @param string $cacheDir The cache directory.
-	 * @param array $list The extension list data.
-	 */
-	private function generateJsonCache( string $cacheDir, array $list ): void {
-		file_put_contents( "{$cacheDir}/extension-list.json", json_encode( $list ), LOCK_EX );
 	}
 }
 

@@ -40,10 +40,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$data ): void {
+	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$cacheArray ): void {
 		$this->container->run(
 			'CreateWikiDataFactoryBuilder',
-			[ $wiki, $dbr, &$data ]
+			[ $wiki, $dbr, &$cacheArray ]
 		);
 	}
 
