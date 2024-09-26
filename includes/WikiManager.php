@@ -318,7 +318,6 @@ class WikiManager {
 		 * run resetWikiData() on it since it has no mtime, so that it will
 		 * generate the new cache file for it as well.
 		 */
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$data = $this->dataFactory->newInstance( $new );
 		$data->deleteWikiData( $old );
 
