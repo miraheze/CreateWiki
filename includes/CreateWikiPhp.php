@@ -11,17 +11,18 @@ class CreateWikiPhp {
 
 	/**
 	 * @param string $wiki
-	 * @param CreateWikiHookRunner|null $hookRunner
+	 * @param CreateWikiHookRunner $hookRunner
 	 */
-	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
 		$dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiDataFactory' );
 		$this->dataFactory = $dataFactory->newInstance( $wiki );
 	}
 
-	/**
-	 * @param bool $isNewChanges
-	 */
-	public function resetWiki( bool $isNewChanges = true ) {
-		$this->dataFactory->resetWikiData( $isNewChanges );
+	public function update() {
+		$this->dataFactory->syncCache();
+	}
+
+	public function resetWiki() {
+		$this->dataFactory->resetWikiData( isNewChanges: true );
 	}
 }
