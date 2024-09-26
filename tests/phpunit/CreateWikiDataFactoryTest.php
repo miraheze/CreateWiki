@@ -8,6 +8,7 @@ use BagOStuff;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use MediaWiki\Config\ServiceOptions;
+use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 
