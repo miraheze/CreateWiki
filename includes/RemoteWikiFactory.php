@@ -390,6 +390,14 @@ class RemoteWikiFactory {
 		}
 	}
 
+	public function getLogAction(): ?string {
+		return $this->log;
+	}
+
+	public function getLogParams(): array {
+		return $this->logParams;
+	}
+
 	public function addNewRow( string $row, mixed $value ): void {
 		$this->newRows[$row] = $value;
 	}
