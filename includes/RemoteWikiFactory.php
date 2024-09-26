@@ -70,45 +70,44 @@ class RemoteWikiFactory {
 			$this->options->get( 'CreateWikiDatabase' )
 		);
 
-		$wikiRow = $this->dbw->selectRow(
-			'cw_wikis',
-			'*',
-			[
-				'wiki_dbname' => $wiki
-			]
-		);
+		$row = $this->dbw->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_wikis' )
+			->where( [ 'wiki_dbname' => $wiki ] )
+			->caller( __METHOD__ )
+			->fetchRow();
 
-		if ( !$wikiRow ) {
+		if ( !$row ) {
 			throw new InvalidArgumentException( "Wiki '$wiki' cannot be found." );
 		}
 
-		$this->dbname = $wikiRow->wiki_dbname;
-		$this->sitename = $wikiRow->wiki_sitename;
-		$this->language = $wikiRow->wiki_language;
-		$this->creation = $wikiRow->wiki_creation;
-		$this->url = $wikiRow->wiki_url;
-		$this->dbcluster = $wikiRow->wiki_dbcluster;
-		$this->category = $wikiRow->wiki_category;
+		$this->dbname = $row->wiki_dbname;
+		$this->sitename = $row->wiki_sitename;
+		$this->language = $row->wiki_language;
+		$this->creation = $row->wiki_creation;
+		$this->url = $row->wiki_url;
+		$this->dbcluster = $row->wiki_dbcluster ?? 'c1';
+		$this->category = $row->wiki_category;
 
-		$this->deleted = (bool)$wikiRow->wiki_deleted;
-		$this->locked = (bool)$wikiRow->wiki_locked;
+		$this->deleted = (bool)$row->wiki_deleted;
+		$this->locked = (bool)$row->wiki_locked;
 
 		if ( $this->options->get( 'CreateWikiUsePrivateWikis' ) ) {
-			$this->private = (bool)$wikiRow->wiki_private;
+			$this->private = (bool)$row->wiki_private;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
-			$this->closed = (bool)$wikiRow->wiki_closed;
+			$this->closed = (bool)$row->wiki_closed;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
-			$this->inactive = (bool)$wikiRow->wiki_inactive;
-			$this->inactiveExempt = (bool)$wikiRow->wiki_inactive_exempt;
-			$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
+			$this->inactive = (bool)$row->wiki_inactive;
+			$this->inactiveExempt = (bool)$row->wiki_inactive_exempt;
+			$this->inactiveExemptReason = $row->wiki_inactive_exempt_reason ?? null;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
-			$this->experimental = (bool)$wikiRow->wiki_experimental;
+			$this->experimental = (bool)$row->wiki_experimental;
 		}
 
 		return $this;
