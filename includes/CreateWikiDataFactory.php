@@ -154,7 +154,7 @@ class CreateWikiDataFactory {
 					'databases' => $content,
 				];
 
-				$this->writeToFile( $name, $list )
+				$this->writeToFile( $name, $list );
 			}
 
 			return;
@@ -193,7 +193,7 @@ class CreateWikiDataFactory {
 			'databases' => $databases,
 		];
 
-		$this->writeToFile( 'databases', $list )
+		$this->writeToFile( 'databases', $list );
 	}
 
 	/**
