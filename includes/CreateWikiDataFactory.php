@@ -113,7 +113,7 @@ class CreateWikiDataFactory {
 		// Regenerate database list cache if the databases.php file does not
 		// exist or has no valid mtime
 		if ( $databasesMtime === 0 || $databasesMtime < $this->databasesTimestamp ) {
-			$this->resetDatabaseLists( false );
+			$this->resetDatabaseLists( isNewChanges: false );
 		}
 
 		$wikiMtime = 0;
@@ -123,7 +123,7 @@ class CreateWikiDataFactory {
 
 		// Regenerate wiki data cache if the file does not exist or has no valid mtime
 		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
-			$this->resetWikiData( false );
+			$this->resetWikiData( isNewChanges: false );
 		}
 	}
 
@@ -138,7 +138,10 @@ class CreateWikiDataFactory {
 	public function resetDatabaseLists( bool $isNewChanges ) {
 		$mtime = time();
 		if ( $isNewChanges ) {
-			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', 'databases' ), $mtime );
+			$this->cache->set(
+				$this->cache->makeGlobalKey( 'CreateWiki', 'databases' ),
+				$mtime
+			);
 		}
 
 		$databaseLists = [];
@@ -151,17 +154,7 @@ class CreateWikiDataFactory {
 					'databases' => $content,
 				];
 
-				$tmpFile = tempnam( '/tmp/', $name );
-
-				if ( $tmpFile ) {
-					if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
-						if ( !rename( $tmpFile, "{$this->cacheDir}/{$name}.php" ) ) {
-							unlink( $tmpFile );
-						}
-					} else {
-						unlink( $tmpFile );
-					}
-				}
+				$this->writeToFile( $name, $list )
 			}
 
 			return;
@@ -200,16 +193,7 @@ class CreateWikiDataFactory {
 			'databases' => $databases,
 		];
 
-		$tmpFile = tempnam( '/tmp/', 'databases' );
-		if ( $tmpFile ) {
-			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $list, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/databases.php" ) ) {
-					unlink( $tmpFile );
-				}
-			} else {
-				unlink( $tmpFile );
-			}
-		}
+		$this->writeToFile( 'databases', $list )
 	}
 
 	/**
@@ -222,7 +206,10 @@ class CreateWikiDataFactory {
 	public function resetWikiData( bool $isNewChanges ) {
 		$mtime = time();
 		if ( $isNewChanges ) {
-			$this->cache->set( $this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ), $mtime );
+			$this->cache->set(
+				$this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ),
+				$mtime
+			);
 		}
 
 		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
@@ -247,12 +234,12 @@ class CreateWikiDataFactory {
 		}
 
 		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
-			$states['closed'] = $row->wiki_closed_timestamp ?? false;
+			$states['closed'] = (bool)$row->wiki_closed;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
-			$states['inactive'] = ( $row->wiki_inactive_exempt ) ? 'exempt' :
-				( $row->wiki_inactive_timestamp ?? false );
+			$states['inactive'] = $row->wiki_inactive_exempt ? 'exempt' :
+				(bool)$row->wiki_inactive;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
@@ -274,7 +261,7 @@ class CreateWikiDataFactory {
 		];
 
 		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $cacheArray );
-		$this->cacheWikiData( $cacheArray );
+		$this->writeToFile( $this->wiki, $cacheArray );
 	}
 
 	/**
@@ -292,16 +279,16 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Caches the wiki data to a file.
+	 * Writes data to a PHP file in the cache directory.
 	 *
+	 * @param string $fileName
 	 * @param array $data
 	 */
-	private function cacheWikiData( array $data ) {
-		$tmpFile = tempnam( '/tmp/', $this->wiki );
-
+	private function writeToFile( string $fileName, array $data ) {
+		$tmpFile = tempnam( wfTempDir(), $fileName );
 		if ( $tmpFile ) {
 			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/{$this->wiki}.php" ) ) {
+				if ( !rename( $tmpFile, "{$this->cacheDir}/{$fileName}.php" ) ) {
 					unlink( $tmpFile );
 				}
 			} else {
