@@ -32,7 +32,7 @@ class WikiManager {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 		$this->dataFactory = MediaWikiServices::getInstance()->get( 'CreateWikiDataFactory' );
-		
+
 		$this->hookRunner = $hookRunner;
 
 		$this->cwdb = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
