@@ -31,11 +31,4 @@ class CreateWikiPhp {
 	public function resetWiki( bool $isNewChanges = true ) {
 		$this->dataFactory->resetWikiData( $isNewChanges );
 	}
-
-	/**
-	 * @param string $wiki
-	 */
-	public function deleteWikiData( string $wiki ) {
-		$this->dataFactory->deleteWikiData( $wiki );
-	}
 }
