@@ -40,7 +40,7 @@ class RemoteWiki {
 		$this->hookRunner = $hookRunner;
 
 		$connectionProvider = MediaWikiServices::getInstance()->getConnectionProvider();
-		$this->dbw = $connectionProvider->getPrimaryDomain(
+		$this->dbw = $connectionProvider->getPrimaryDatabase(
 			$this->config->get( 'CreateWikiDatabase' )
 		);
 
