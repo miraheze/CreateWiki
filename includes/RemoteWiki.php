@@ -169,7 +169,11 @@ class RemoteWiki {
 			}
 
 			if ( $this->log ) {
-				$this->factory->makeLog( $this->log, $this->logParams );
+				$this->factory->makeLog( $this->log, null );
+			}
+	
+			if ( $this->logParams ) {
+				$this->factory->makeLog( null, $this->logParams );
 			}
 		}
 
