@@ -177,8 +177,7 @@ class RemoteWiki {
 			}
 		}
 
-		$this->log = $this->factory->getLogAction();
-
 		$this->factory->commit();
+		$this->log = $this->factory->getLogAction();
 	}
 }
