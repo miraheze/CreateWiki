@@ -167,9 +167,9 @@ class RemoteWiki {
 					$this->factory->addNewRow( $row, $value );
 				}
 			}
-			
+
 			if ( $this->log === null ) {
-				
+
 			}
 
 			if ( $this->log || $this->logParams ) {
