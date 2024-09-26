@@ -309,12 +309,12 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testSetDBCluster() {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertNull( $remoteWiki->getDBCluster() );
+		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
 
-		$remoteWiki->setDBCluster( 'c1' );
+		$remoteWiki->setDBCluster( 'c2' );
 		$remoteWiki->commit();
 
-		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
+		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
 	}
 
 	/**
