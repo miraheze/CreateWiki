@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\IConnectionProvider;
-use Wikimedia\Rdbms\IDatabase;
 
 class RemoteWikiFactory {
 
@@ -20,10 +19,7 @@ class RemoteWikiFactory {
 
 	private CreateWikiDataFactory $dataFactory;
 	private CreateWikiHookRunner $hookRunner;
-
 	private IConnectionProvider $connectionProvider;
-	private IDatabase $dbw;
-
 	private ServiceOptions $options;
 
 	private array $changes = [];
@@ -66,11 +62,11 @@ class RemoteWikiFactory {
 	}
 
 	public function newInstance( string $wiki ): self {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
+		$dbr = $this->connectionProvider->getReplicaDatabase(
 			$this->options->get( 'CreateWikiDatabase' )
 		);
 
-		$row = $this->dbw->newSelectQueryBuilder()
+		$row = $dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $wiki ] )
@@ -329,7 +325,11 @@ class RemoteWikiFactory {
 	public function commit(): void {
 		if ( !empty( $this->changes ) ) {
 			if ( $this->newRows ) {
-				$this->dbw->update(
+				$dbw = $this->connectionProvider->getPrimaryDatabase(
+					$this->options->get( 'CreateWikiDatabase' )
+				);
+
+				$dbw->update(
 					'cw_wikis',
 					$this->newRows,
 					[ 'wiki_dbname' => $this->dbname ]
