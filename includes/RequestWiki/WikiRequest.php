@@ -67,7 +67,7 @@ class WikiRequest {
 
 		if ( $dbRequest ) {
 			$this->id = $dbRequest->cw_id;
-			$this->dbname = $dbRequest->cw_dbname;
+			$this->dbname = htmlspecialchars( $dbRequest->cw_dbname );
 			$this->language = $dbRequest->cw_language;
 			$this->private = $dbRequest->cw_private;
 			$this->sitename = $dbRequest->cw_sitename;
