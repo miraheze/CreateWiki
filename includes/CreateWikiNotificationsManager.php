@@ -131,7 +131,7 @@ class CreateWikiNotificationsManager {
 	 * @param array $data
 	 * @param array $receivers
 	 */
-	public function sendNotification( array $data, array $receivers = [] ): void {
+	public function sendNotification( array $data, array $receivers ): void {
 		$this->type = $data['type'];
 
 		if (
