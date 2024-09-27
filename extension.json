@@ -48,7 +48,14 @@
 	"JobClasses": {
 		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
 		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
-		"SetContainersAccessJob": "Miraheze\\CreateWiki\\SetContainersAccessJob"
+		"SetContainersAccessJob": {
+			"class": "Miraheze\\CreateWiki\\SetContainersAccessJob",
+			"services": [
+				"ConfigFactory",
+				"RepoGroup"
+			],
+			"needsPage": false
+		},
 	},
 	"LogTypes": [
 		"farmer",
