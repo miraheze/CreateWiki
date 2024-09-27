@@ -7,31 +7,36 @@ use Exception;
 use ExtensionRegistry;
 use ManualLogEntry;
 use MediaWiki\Config\Config;
+use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\Title\Title;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use StatusValue;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	/** @var Config */
-	private $config;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	private Config $config;
+	private CreateWikiHookRunner $hookRunner;
+	private LinkRenderer $linkRenderer
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	public function __construct(
+		ConfigFactory $configFactory,
+		CreateWikiHookRunner $hookRunner,
+		LinkRenderer $linkRenderer
+	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
+		$this->linkRenderer = $linkRenderer;
 	}
 
 	public function execute( $par ) {
-		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
 			);
@@ -203,7 +208,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return false;
 		}
 
-		$idlink = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
+		$idlink = $this->linkRenderer->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
