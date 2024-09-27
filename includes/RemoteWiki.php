@@ -179,5 +179,6 @@ class RemoteWiki {
 
 		$this->factory->commit();
 		$this->log = $this->factory->getLogAction();
+		$this->logParams = $this->factory->getLogParams();
 	}
 }
