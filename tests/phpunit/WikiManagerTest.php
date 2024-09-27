@@ -218,7 +218,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
 		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp( TS_UNIX, $remoteWiki->isDeleted() ) - ( 86400 * 8 ) );
-		$this->db->update( 'cw_wikis', [ 'wiki_deleted_timestamp' => $eligibleTimestamp ], [ 'wiki_dbname' => 'deletewikitest' ] );
+		$this->db->update(
+			'cw_wikis',
+			[ 'wiki_deleted_timestamp' => $eligibleTimestamp ],
+			[ 'wiki_dbname' => 'deletewikitest' ]
+		);
 
 		$this->assertNull( $wikiManager->delete() );
 		$this->assertFalse( $this->wikiExists( 'deletewikitest' ) );
@@ -263,7 +267,9 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			[ $dbname ], $GLOBALS['wgLocalDatabases']
 		) );
 
-		return $wikiManager->create( 'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		return $wikiManager->create(
+			'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test'
+		);
 	}
 
 	/**
