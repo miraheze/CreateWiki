@@ -74,11 +74,6 @@ class ManageInactiveWikis extends Maintenance {
 
 		$timeStamp = $activity->timestamp;
 
-		// If for some reason $timeStamp returns a non-numeric value, bail out.
-		if ( !is_numeric( $timeStamp ) ) {
-			return true;
-		}
-
 		// Wiki doesn't seem inactive: go on to the next wiki.
 		if ( $timeStamp > date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
 			if ( $canWrite && $wiki->isInactive() ) {
