@@ -19,9 +19,9 @@ class RequestWikiRequestViewer {
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
 
-	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$this->hookRunner = $hookRunner;
 	}
 
 	public function getFormDescriptor(
