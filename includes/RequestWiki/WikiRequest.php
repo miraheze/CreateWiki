@@ -19,6 +19,7 @@ use RuntimeException;
 use StatusValue;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 class WikiRequest {
 
@@ -57,14 +58,12 @@ class WikiRequest {
 
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 
-		$dbRequest = $this->dbw->selectRow(
-			'cw_requests',
-			'*',
-			[
-				'cw_id' => $id,
-			],
-			__METHOD__
-		);
+		$dbRequest = $this->dbw->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_requests' )
+			->where( [ 'cw_id' => $id ] )
+			->caller( __METHOD__ )
+			->fetchRow();
 
 		if ( $dbRequest ) {
 			$this->id = $dbRequest->cw_id;
@@ -90,17 +89,13 @@ class WikiRequest {
 				$this->description = $dbRequest->cw_comment;
 			}
 
-			$commentsReq = $this->dbw->select(
-				'cw_comments',
-				'*',
-				[
-					'cw_id' => $id,
-				],
-				__METHOD__,
-				[
-					'cw_timestamp DESC',
-				]
-			);
+			$commentsReq = $this->dbw->newSelectQueryBuilder()
+				->table( 'cw_comments' )
+				->field( '*' )
+				->where( [ 'cw_id' => $id ] )
+				->orderBy( 'cw_timestamp', SelectQueryBuilder::SORT_DESC )
+				->caller( __METHOD__ )
+				->fetchResultSet();
 
 			foreach ( $commentsReq as $comment ) {
 				$userObj = $userFactory->newFromId( $comment->cw_comment_user );
