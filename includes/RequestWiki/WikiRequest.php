@@ -30,15 +30,15 @@ class WikiRequest {
 	public string $dbname;
 	public string $description;
 	public string $language;
-	public bool $private;
+	public ?int $private;
 	public string $sitename;
 	public string $url;
 	public string $category;
-	public string $timestamp;
+	public ?string $timestamp = null;
 	public int $bio;
 	public ?string $purpose = null;
 
-	private int $id;
+	private ?int $id = null;
 	private string $status = 'inreview';
 	private array $comments = [];
 	private array $involvedUsers = [];
@@ -67,7 +67,7 @@ class WikiRequest {
 			$this->id = $dbRequest->cw_id;
 			$this->dbname = $dbRequest->cw_dbname;
 			$this->language = $dbRequest->cw_language;
-			$this->private = (bool)$dbRequest->cw_private;
+			$this->private = $dbRequest->cw_private;
 			$this->sitename = $dbRequest->cw_sitename;
 			$this->url = $dbRequest->cw_url;
 			$this->category = $dbRequest->cw_category;
@@ -208,7 +208,7 @@ class WikiRequest {
 
 			$validName = $wm->checkDatabaseName( $this->dbname );
 
-			$notCreated = $wm->create( $this->sitename, $this->language, $this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
+			$notCreated = $wm->create( $this->sitename, $this->language, (bool)$this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
 
 			if ( $validName || $notCreated ) {
 				$this->log( $user, 'create-failure' );
@@ -285,7 +285,7 @@ class WikiRequest {
 	public function log( UserIdentity $user, string $log ) {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
+		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id ) );
 
 		$logEntry->setParameters(
 			[
@@ -305,7 +305,7 @@ class WikiRequest {
 	private function suppressionLog( UserIdentity $user, string $log ) {
 		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
 		$suppressionLogEntry->setPerformer( $user );
-		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id ) );
+		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id ) );
 		$suppressionLogEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
