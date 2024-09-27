@@ -61,7 +61,7 @@ class WikiManager {
 		if ( !$check ) {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
-				$lbFactory = $this->getConnectionProvider();
+				$lbFactory = $this->connectionProvider;
 				'@phan-var ILBFactory $lbFactory';
 				$lbs = $lbFactory->getAllMainLBs();
 
