@@ -21,7 +21,7 @@ class CreateWikiJob extends Job {
 		$wm = new WikiManager( $this->params['dbname'], $hookRunner );
 		$wr = new WikiRequest( $this->params['id'], $hookRunner );
 
-		$notValid = $wm->checkDatabaseName( $this->params['dbname'] );
+		$notValid = $wm->checkDatabaseName( dbname: $this->params['dbname'], forRename: false );
 
 		if ( $notValid ) {
 			$wr->addComment( $notValid, User::newSystemUser( 'CreateWiki Extension' ), false );
