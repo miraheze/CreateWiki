@@ -102,7 +102,7 @@ class CreateWikiNotificationsManager {
 	 * @param array $data
 	 * @param string $wiki
 	 */
-	public function notifyBureaucrats( array $data, string $wiki ) {
+	public function notifyBureaucrats( array $data, string $wiki ): void {
 		$dbr = $this->connectionProvider->getReplicaDatabase( $wiki );
 
 		$bureaucrats = $dbr->select(
@@ -131,7 +131,7 @@ class CreateWikiNotificationsManager {
 	 * @param array $data
 	 * @param array $receivers
 	 */
-	public function sendNotification( array $data, array $receivers = [] ) {
+	public function sendNotification( array $data, array $receivers = [] ): void {
 		$this->type = $data['type'];
 
 		if (
@@ -153,7 +153,7 @@ class CreateWikiNotificationsManager {
 	 * @param array $data
 	 * @param array $receivers
 	 */
-	private function sendEchoNotification( array $data, array $receivers ) {
+	private function sendEchoNotification( array $data, array $receivers ): void {
 		foreach ( $receivers as $receiver ) {
 			$user = is_object( $receiver ) ? $receiver : $this->userFactory->newFromName( $receiver );
 
@@ -173,7 +173,7 @@ class CreateWikiNotificationsManager {
 	 * @param array $data
 	 * @param array $receivers
 	 */
-	private function sendEmailNotification( array $data, array $receivers ) {
+	private function sendEmailNotification( array $data, array $receivers ): void {
 		DeferredUpdates::addCallableUpdate( function () use ( $data, $receivers ) {
 			$notifyEmails = [];
 
