@@ -147,7 +147,7 @@ class CreateWikiDataFactory {
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiGenerateDatabaseLists( $databaseLists );
 
-		if ( !empty( $databaseLists ) ) {
+		if ( $databaseLists ) {
 			foreach ( $databaseLists as $name => $content ) {
 				$list = [
 					'mtime' => $mtime,
