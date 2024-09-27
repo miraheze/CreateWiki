@@ -22,7 +22,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$this->hookRunner = $hookRunner;
 
-		$this->config = $this->configFactory->makeConfig( 'CreateWiki' );
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public function execute( $par ) {
