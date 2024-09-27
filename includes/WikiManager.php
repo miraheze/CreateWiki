@@ -93,7 +93,7 @@ class WikiManager {
 
 				$clusterDB = $clusterDBRow->wiki_dbname;
 				$this->lb = $lbs[$this->cluster];
-				$newDbw = $this->lb->getPrimaryDatabase( $clusterDB );
+				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], $clusterDB );
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
@@ -130,7 +130,7 @@ class WikiManager {
 		}
 
 		if ( $this->lb ) {
-			$this->dbw = $this->lb->getPrimaryDatabase( $wiki );
+			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
 		} else {
 			$this->dbw = $this->connectionProvider->getPrimaryDatabase( $wiki );
 		}
