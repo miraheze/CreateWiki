@@ -15,7 +15,7 @@ use RebuildRecentchanges;
 
 class CheckLastWikiActivity extends Maintenance {
 
-	public $timestamp;
+	public int $timestamp;
 
 	public function __construct() {
 		parent::__construct();
