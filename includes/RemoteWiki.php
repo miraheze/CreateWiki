@@ -9,11 +9,11 @@ class RemoteWiki {
 
 	private RemoteWikiFactory $factory;
 
-	public $changes = [];
-	public $logParams = [];
-	public $newRows = [];
+	public array $changes = [];
+	public array $logParams = [];
+	public array $newRows = [];
 
-	public $log = null;
+	public ?string $log = null;
 
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
 		$factory = MediaWikiServices::getInstance()->get( 'RemoteWikiFactory' );
