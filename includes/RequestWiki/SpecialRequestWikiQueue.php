@@ -6,8 +6,8 @@ use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
-use MediaWiki\WikiMap\WikiMap;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class SpecialRequestWikiQueue extends SpecialPage {
