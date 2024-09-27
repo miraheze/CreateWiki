@@ -71,7 +71,11 @@ class RenameWiki extends Maintenance {
 			];
 
 			$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
-				->sendNotification( $notificationData );
+				->sendNotification(
+					data: $notificationData,
+					// No receivers, it will send to configured email
+					receivers: []
+				);
 		}
 	}
 }
