@@ -360,6 +360,8 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->createMock( CreateWikiHookRunner::class ) );
-		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		$wikiManager->create(
+			'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test'
+		);
 	}
 }
