@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use InvalidArgumentException;
+use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -214,7 +215,10 @@ class RemoteWikiFactory {
 		$this->hooks[] = 'CreateWikiStatePrivate';
 
 		$this->jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
-			new SetContainersAccessJob( [ 'private' => true ] )
+			new JobSpecification(
+				SetContainersAccessJob::JOB_NAME,
+				[ 'private' => true ]
+			)
 		);
 	}
 
@@ -225,7 +229,10 @@ class RemoteWikiFactory {
 		$this->hooks[] = 'CreateWikiStatePublic';
 
 		$this->jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
-			new SetContainersAccessJob( [ 'private' => false ] )
+			new JobSpecification(
+				SetContainersAccessJob::JOB_NAME,
+				[ 'private' => false ]
+			)
 		);
 	}
 
