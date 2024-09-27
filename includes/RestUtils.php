@@ -2,13 +2,10 @@
 
 namespace Miraheze\CreateWiki;
 
-// phpcs:disable MediaWiki.Classes.UnusedUseStatement.UnnecessaryUse
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Rest\LocalizedHttpException;
-use Miraheze\CreateWiki\EntryPointUtils;
+use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Message\MessageValue;
-
-// phpcs:enable
 
 class RestUtils {
 
@@ -16,10 +13,12 @@ class RestUtils {
 	 * Called from the REST handlers, checks that the current wiki is the global wiki and that the REST API is not disabled
 	 */
 	public static function checkEnv() {
-		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
+
+		if ( !WikiMap::isCurrentWikiId( $config->get( 'CreateWikiGlobalWiki' ) ) ) {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotglobalwiki' ), 403 );
 		}
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
+
 		if ( $config->get( 'CreateWikiDisableRESTAPI' ) ) {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-rest-disabled' ), 403 );
 		}
