@@ -7,7 +7,7 @@ use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RemoteWikiFactory;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\WikiManager;
 
 /**

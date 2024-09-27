@@ -17,6 +17,8 @@ use Miraheze\CreateWiki\Notifications\EchoCreateWikiPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class Hooks implements

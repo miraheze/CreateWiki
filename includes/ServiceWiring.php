@@ -2,10 +2,10 @@
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MediaWikiServices;
-use Miraheze\CreateWiki\CreateWikiDataFactory;
-use Miraheze\CreateWiki\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RemoteWikiFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 return [
 	'CreateWiki.NotificationsManager' => static function (

@@ -6,7 +6,7 @@ use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RemoteWikiFactory;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\WikiManager;
 use Wikimedia\Rdbms\DBQueryError;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -15,7 +15,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  * @group CreateWiki
  * @group Database
  * @group Medium
- * @coversDefaultClass \Miraheze\CreateWiki\RemoteWikiFactory
+ * @coversDefaultClass \Miraheze\CreateWiki\Services\RemoteWikiFactory
  */
 class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 

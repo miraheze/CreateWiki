@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki;
+namespace Miraheze\CreateWiki\Services;
 
 use MailAddress;
 use MediaWiki\Config\ServiceOptions;

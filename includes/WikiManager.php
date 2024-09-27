@@ -12,6 +12,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use RuntimeException;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;

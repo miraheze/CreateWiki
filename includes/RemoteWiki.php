@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 class RemoteWiki {
 
