@@ -3,29 +3,31 @@
 namespace Miraheze\CreateWiki\CreateWiki;
 
 use MediaWiki\Config\Config;
+use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\SpecialPage\FormSpecialPage;
-use Miraheze\CreateWiki\EntryPointUtils;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\WikiManager;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
-	/** @var Config */
-	private $config;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	private Config $config;
+	private CreateWikiHookRunner $hookRunner;
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	public function __construct(
+		ConfigFactory $configFactory,
+		CreateWikiHookRunner $hookRunner
+	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
+
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public function execute( $par ) {
-		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
 			);
