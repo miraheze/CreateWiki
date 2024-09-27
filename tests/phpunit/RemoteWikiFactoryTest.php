@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use MediaWiki\Config\SiteConfiguration;
-use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
@@ -31,7 +30,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
 
-		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $GLOBALS['wgDBserver'],
 			'user' => 'root',
 		] );
@@ -44,9 +43,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		try {
-			$dbw = MediaWikiServices::getInstance()
-				->getDBLoadBalancer()
-				->getMaintenanceConnectionRef( DB_PRIMARY );
+			$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
 
 			$dbw->insert(
 				'cw_wikis',
