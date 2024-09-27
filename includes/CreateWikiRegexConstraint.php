@@ -11,7 +11,10 @@ class CreateWikiRegexConstraint {
 	 * @param string $regex invalid regex to log for
 	 * @param string $name name of regex caller (config or message key) to log for
 	 */
-	private static function warnInvalidRegex( string $regex, string $name ): void {
+	private static function warnInvalidRegex(
+		string $regex,
+		string $name
+	): void {
 		LoggerFactory::getInstance( 'CreateWiki' )->warning(
 			'{name} contains invalid regex',
 			[
@@ -29,9 +32,9 @@ class CreateWikiRegexConstraint {
 	 */
 	private static function filterInvalidRegexes(
 		array &$regexes,
-		string $name = '',
-		string $start = '',
-		string $end = ''
+		string $name,
+		string $start,
+		string $end
 	): void {
 		$regexes = array_filter( $regexes, static function ( $regex ) use ( $name, $start, $end ) {
 			if ( !StringUtils::isValidPCRERegex( $start . $regex . $end ) ) {
@@ -69,9 +72,9 @@ class CreateWikiRegexConstraint {
 	 */
 	private static function regexesFromText(
 		string $text,
-		string $start = '',
-		string $end = '',
-		string $name = ''
+		string $start,
+		string $end,
+		string $name
 	): array {
 		$lines = explode( "\n", $text );
 		$regexes = self::cleanLines( $lines );
