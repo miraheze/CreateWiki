@@ -341,7 +341,7 @@ class WikiManager {
 
 	public function checkDatabaseName(
 		string $dbname,
-		bool $rename = false
+		bool $forRename = false
 	): ?string {
 		$suffix = $this->config->get( 'CreateWikiDatabaseSuffix' );
 		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
@@ -351,7 +351,7 @@ class WikiManager {
 			)->parse();
 		}
 
-		if ( !$rename && $this->exists ) {
+		if ( !$forRename && $this->exists ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
 		}
 
