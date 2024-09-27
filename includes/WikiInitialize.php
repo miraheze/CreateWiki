@@ -9,16 +9,19 @@ use MediaWiki\Config\SiteConfiguration;
 
 class WikiInitialize {
 
-	private $cacheDir;
-	public $config;
-	public $hostname;
-	public $dbname;
-	public $server;
-	public $sitename;
-	public $realms;
-	public $missing = false;
-	public $wikiDBClusters = [];
-	public $disabledExtensions = [];
+	public SiteConfiguration $config;
+
+	public string $hostname;
+	public string $dbname;
+	public string $server;
+	public string $sitename;
+	public array $realms;
+	public array $wikiDBClusters = [];
+	public array $disabledExtensions = [];
+
+	public bool $missing = false;
+
+	private string $cacheDir;
 
 	public function __construct() {
 		// Safeguard LocalSettings from being accessed
