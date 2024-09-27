@@ -51,7 +51,7 @@ class WikiManager {
 		);
 
 		$hasClusters = $this->config->get( 'CreateWikiDatabaseClusters' );
-	
+
 		if ( !$check ) {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
