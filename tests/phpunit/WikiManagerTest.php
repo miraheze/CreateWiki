@@ -30,11 +30,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatetest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `createwikilegacytest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatelegacytest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `deletewikilegacytest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikilegacytest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `renamewikilegacytest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 	}
@@ -87,16 +87,16 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateSuccess() {
-		$this->assertNull( $this->createWiki( 'createwikitest' ) );
-		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
+		$this->assertNull( $this->createWiki( 'createwikilegacytest' ) );
+		$this->assertTrue( $this->wikiExists( 'createwikilegacytest' ) );
 	}
 
 	/**
 	 * @covers ::create
 	 */
 	public function testCreatePrivate() {
-		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
-		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
+		$this->assertNull( $this->createWiki( 'createwikiprivatelegacytest', true ) );
+		$this->assertTrue( $this->wikiExists( 'createwikiprivatelegacytest' ) );
 	}
 
 	/**
@@ -104,9 +104,9 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testCreateExists() {
 		$this->expectException( FatalError::class );
-		$this->expectExceptionMessage( 'Wiki \'createwikitest\' already exists.' );
+		$this->expectExceptionMessage( 'Wiki \'createwikilegacytest\' already exists.' );
 
-		$this->createWiki( 'createwikitest' );
+		$this->createWiki( 'createwikilegacytest' );
 	}
 
 	/**
@@ -128,15 +128,15 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRenameErrors() {
-		$wikiManager = new WikiManager( 'createwikitest', $this->getMockCreateWikiHookRunner() );
+		$wikiManager = new WikiManager( 'createwikilegacytest', $this->getMockCreateWikiHookRunner() );
 
-		$error = 'Can not rename createwikitest to renamewiki because: ';
+		$error = 'Can not rename createwikilegacytest to renamewiki because: ';
 		$notsuffixed = $error . wfMessage( 'createwiki-error-notsuffixed', 'test' )->parse();
 
-		$error = 'Can not rename createwikitest to rename.wikitest because: ';
+		$error = 'Can not rename createwikilegacytest to rename.wikitest because: ';
 		$notalnum = $error . wfMessage( 'createwiki-error-notalnum' )->parse();
 
-		$error = 'Can not rename createwikitest to Renamewikitest because: ';
+		$error = 'Can not rename createwikilegacytest to Renamewikitest because: ';
 		$notlowercase = $error . wfMessage( 'createwiki-error-notlowercase' )->parse();
 
 		$this->assertSame( $notsuffixed, $wikiManager->rename( 'renamewiki' ) );
@@ -148,48 +148,48 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRenameSuccess() {
-		$this->createWiki( 'renamewikitest' );
+		$this->createWiki( 'renamewikilegacytest' );
 
-		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
+		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikilegacytest' ] );
 
-		$wikiManager = new WikiManager( 'createwikitest', $this->getMockCreateWikiHookRunner() );
+		$wikiManager = new WikiManager( 'createwikilegacytest', $this->getMockCreateWikiHookRunner() );
 
-		$this->assertNull( $wikiManager->rename( 'renamewikitest' ) );
-		$this->assertFalse( $this->wikiExists( 'createwikitest' ) );
-		$this->assertTrue( $this->wikiExists( 'renamewikitest' ) );
+		$this->assertNull( $wikiManager->rename( 'renamewikilegacytest' ) );
+		$this->assertFalse( $this->wikiExists( 'createwikilegacytest' ) );
+		$this->assertTrue( $this->wikiExists( 'renamewikilegacytest' ) );
 
-		$this->db->query( 'DROP DATABASE `createwikitest`;' );
+		$this->db->query( 'DROP DATABASE `createwikilegacytest`;' );
 	}
 
 	/**
 	 * @covers ::delete
 	 */
 	public function testDeleteForce() {
-		$wikiManager = new WikiManager( 'renamewikitest', $this->getMockCreateWikiHookRunner() );
+		$wikiManager = new WikiManager( 'renamewikilegacytest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $wikiManager->delete( true ) );
-		$this->assertFalse( $this->wikiExists( 'renamewikitest' ) );
+		$this->assertFalse( $this->wikiExists( 'renamewikilegacytest' ) );
 
-		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
+		$this->db->query( 'DROP DATABASE `renamewikilegacytest`;' );
 	}
 
 	/**
 	 * @covers ::delete
 	 */
 	public function testDeleteIneligible() {
-		$this->createWiki( 'deletewikitest' );
+		$this->createWiki( 'deletewikilegacytest' );
 
-		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
+		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikilegacytest' );
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
 		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
 
-		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
+		$wikiManager = new WikiManager( 'deletewikilegacytest', $this->getMockCreateWikiHookRunner() );
 
-		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
-		$this->assertTrue( $this->wikiExists( 'deletewikitest' ) );
+		$this->assertSame( 'Wiki deletewikilegacytest can not be deleted yet.', $wikiManager->delete() );
+		$this->assertTrue( $this->wikiExists( 'deletewikilegacytest' ) );
 
 		$remoteWiki->undelete();
 		$remoteWiki->commit();
@@ -199,10 +199,10 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteEligible() {
-		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
-		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
+		$wikiManager = new WikiManager( 'deletewikilegacytest', $this->getMockCreateWikiHookRunner() );
+		$this->assertSame( 'Wiki deletewikilegacytest can not be deleted yet.', $wikiManager->delete() );
 
-		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
+		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikilegacytest' );
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
@@ -213,13 +213,13 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$this->db->update(
 			'cw_wikis',
 			[ 'wiki_deleted_timestamp' => $eligibleTimestamp ],
-			[ 'wiki_dbname' => 'deletewikitest' ]
+			[ 'wiki_dbname' => 'deletewikilegacytest' ]
 		);
 
 		$this->assertNull( $wikiManager->delete() );
-		$this->assertFalse( $this->wikiExists( 'deletewikitest' ) );
+		$this->assertFalse( $this->wikiExists( 'deletewikilegacytest' ) );
 
-		$this->db->query( 'DROP DATABASE `deletewikitest`;' );
+		$this->db->query( 'DROP DATABASE `deletewikilegacytest`;' );
 	}
 
 	/**
@@ -227,21 +227,21 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteRecreate() {
-		$this->createWiki( 'recreatewikitest' );
+		$this->createWiki( 'recreatewikilegacytest' );
 
-		$wikiManager = new WikiManager( 'recreatewikitest', $this->getMockCreateWikiHookRunner() );
+		$wikiManager = new WikiManager( 'recreatewikilegacytest', $this->getMockCreateWikiHookRunner() );
 
 		$this->assertNull( $wikiManager->delete( true ) );
-		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
+		$this->assertFalse( $this->wikiExists( 'recreatewikilegacytest' ) );
 
-		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->db->query( 'DROP DATABASE `recreatewikilegacytest`;' );
 
-		$this->assertNull( $this->createWiki( 'recreatewikitest' ) );
-		$this->assertTrue( $this->wikiExists( 'recreatewikitest' ) );
+		$this->assertNull( $this->createWiki( 'recreatewikilegacytest' ) );
+		$this->assertTrue( $this->wikiExists( 'recreatewikilegacytest' ) );
 
 		$wikiManager->delete( true );
 
-		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->db->query( 'DROP DATABASE `recreatewikilegacytest`;' );
 	}
 
 	/**
