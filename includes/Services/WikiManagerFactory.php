@@ -67,7 +67,7 @@ class WikiManagerFactory {
 		$this->connectionProvider = $connectionProvider;
 		$this->dataFactory = $dataFactory;
 		$this->hookRunner = $hookRunner;
-		$this->messageLocalizer = $messageLocalizer ;
+		$this->messageLocalizer = $messageLocalizer;
 		$this->notificationsManager = $notificationsManager;
 		$this->options = $options;
 		$this->userFactory = $userFactory;
