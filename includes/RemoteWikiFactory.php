@@ -212,6 +212,10 @@ class RemoteWikiFactory {
 		$this->private = true;
 		$this->newRows['wiki_private'] = 1;
 		$this->hooks[] = 'CreateWikiStatePrivate';
+
+		$this->jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+			new SetContainersAccessJob( [ 'private' => true ] )
+		);
 	}
 
 	public function markPublic(): void {
@@ -219,6 +223,10 @@ class RemoteWikiFactory {
 		$this->private = false;
 		$this->newRows['wiki_private'] = 0;
 		$this->hooks[] = 'CreateWikiStatePublic';
+
+		$this->jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
+			new SetContainersAccessJob( [ 'private' => false ] )
+		);
 	}
 
 	public function isClosed(): bool {
