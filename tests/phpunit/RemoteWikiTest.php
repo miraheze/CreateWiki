@@ -361,6 +361,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
-		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		$wikiManager->create(
+			'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test'
+		);
 	}
 }
