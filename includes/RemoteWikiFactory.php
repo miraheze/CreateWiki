@@ -326,7 +326,6 @@ class RemoteWikiFactory {
 		$this->newRows['wiki_experimental'] = 0;
 	}
 
-	
 	public function trackChange( string $field, int|string|null $oldValue, int|string|null $newValue ): void {
 		$this->changes[$field] = [
 			'old' => $oldValue,
