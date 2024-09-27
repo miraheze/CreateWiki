@@ -101,7 +101,7 @@ class CreateWikiDataFactory {
 	 * If either the wiki or database cache file has been modified, it will reset
 	 * and regenerate the cached data.
 	 */
-	public function syncCache() {
+	public function syncCache(): void {
 		// mtime will be 0 if the file does not exist as well, which means
 		// it will be generated.
 
@@ -135,7 +135,7 @@ class CreateWikiDataFactory {
 	 *
 	 * @param bool $isNewChanges
 	 */
-	public function resetDatabaseLists( bool $isNewChanges ) {
+	public function resetDatabaseLists( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->cache->set(
@@ -203,7 +203,7 @@ class CreateWikiDataFactory {
 	 *
 	 * @param bool $isNewChanges
 	 */
-	public function resetWikiData( bool $isNewChanges ) {
+	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->cache->set(
@@ -270,7 +270,7 @@ class CreateWikiDataFactory {
 	 *
 	 * @param string $wiki
 	 */
-	public function deleteWikiData( string $wiki ) {
+	public function deleteWikiData( string $wiki ): void {
 		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 
 		if ( file_exists( "{$this->cacheDir}/$wiki.php" ) ) {
@@ -284,11 +284,17 @@ class CreateWikiDataFactory {
 	 * @param string $fileName
 	 * @param array $data
 	 */
-	private function writeToFile( string $fileName, array $data ) {
+	private function writeToFile( string $fileName, array $data ): void {
+		$filePath = "{$this->cacheDir}/{$fileName}.php";
+		if ( !$this->isValidPath( $filePath ) ) {
+			// If we don't have a valid path to use, we exit here.
+			return;
+		}
+
 		$tmpFile = tempnam( wfTempDir(), $fileName );
 		if ( $tmpFile ) {
 			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, "{$this->cacheDir}/{$fileName}.php" ) ) {
+				if ( !rename( $tmpFile, $filePath ) ) {
 					unlink( $tmpFile );
 				}
 			} else {
@@ -304,7 +310,7 @@ class CreateWikiDataFactory {
 	 */
 	private function getCachedWikiData(): ?array {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
-		if ( file_exists( $filePath ) ) {
+		if ( $this->isExistingPathValid( $filePath ) ) {
 			return include $filePath;
 		}
 
@@ -318,10 +324,41 @@ class CreateWikiDataFactory {
 	 */
 	private function getCachedDatabaseList(): ?array {
 		$filePath = "{$this->cacheDir}/databases.php";
-		if ( file_exists( $filePath ) ) {
+		if ( $this->isExistingPathValid( $filePath ) ) {
 			return include $filePath;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Check if a file path is valid and if the file exists.
+	 *
+	 * @param string $filePath The file path to check.
+	 * @return bool True if the file exists and the path is valid, false otherwise.
+	 */
+	private function isExistingPathValid( string $filePath ): bool {
+		// Check if the file path is valid and if the file exists
+		return $this->isValidPath( $filePath ) && file_exists( $filePath );
+	}
+
+	/**
+	 * Checks for path traversal and ensures that the file path is within the allowed directory.
+	 *
+	 * @param string $filePath The fule path to check.
+	 * @return bool True if the path is valid or if the file does not exist but the path is valid.
+	 */
+	private function isValidPath( string $filePath ): bool {
+		$realCacheDir = realpath( $this->cacheDir );
+	
+		// If the file exists, resolve its real path and check if it's within the cache directory
+		if ( file_exists( $filePath ) ) {
+			$realPath = realpath( $filePath );
+			return $realPath !== false && strpos( $realPath, $realCacheDir ) === 0;
+		}
+
+		// If the file does not exist, check the parent directory's real path
+		$parentDir = realpath( dirname( $filePath ) );
+		return $parentDir !== false && strpos( $parentDir, $realCacheDir ) === 0;
 	}
 }
