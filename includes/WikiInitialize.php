@@ -29,7 +29,7 @@ class WikiInitialize {
 			die( 'Not an entry point.' );
 		}
 
-		$this->config = new SiteConfiguration;
+		$this->config = new SiteConfiguration();
 	}
 
 	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch, array $realms = [] ) {
