@@ -38,6 +38,7 @@ return [
 			$services->getConnectionProvider(),
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
+			$services->getJobQueueGroupFactory(),
 			new ServiceOptions(
 				RemoteWikiFactory::CONSTRUCTOR_OPTIONS,
 				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
