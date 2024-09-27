@@ -30,7 +30,7 @@
 			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
 				"ConfigFactory",
-				"CreateWikiHookRunner"
+				"WikiManagerFactory"
 			]
 		},
 		"RequestWiki": {
