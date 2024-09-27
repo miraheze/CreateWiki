@@ -19,7 +19,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' ); 
+		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' );
 		$this->setMwGlobals( 'wgCreateWikiSQLfiles', [
 			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
 		] );
