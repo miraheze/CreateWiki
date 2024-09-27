@@ -14,7 +14,7 @@ use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use RuntimeException;
 use StatusValue;
 use UnexpectedValueException;
@@ -23,8 +23,9 @@ use Wikimedia\Rdbms\IDatabase;
 class WikiRequest {
 
 	private Config $config;
-	private CreateWikiHookRunner $hookRunner;
 	private IDatabase $dbw;
+
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public User $requester;
 
@@ -47,7 +48,7 @@ class WikiRequest {
 
 	public function __construct( ?int $id, CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
+		$this->wikiManagerFactory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
 
 		$connectionProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$this->dbw = $connectionProvider->getPrimaryDatabase(
@@ -206,8 +207,7 @@ class WikiRequest {
 				$this->tryAutoCreate();
 			}
 		} else {
-			$wm = new WikiManager( $this->dbname, $this->hookRunner );
-
+			$wm = $this->wikiManagerFactory->newInstance( $this->dbname );
 			// This runs checkDatabaseName and if it returns a
 			// non-null value it is returning an error.
 			$notCreated = $wm->create(
