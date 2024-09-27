@@ -15,6 +15,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use RuntimeException;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
+use Wikimedia\Rdbms\ILBFactory;
 use Wikimedia\Rdbms\ILoadBalancer;
 
 class WikiManager {
@@ -60,7 +61,9 @@ class WikiManager {
 		if ( !$check ) {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
-				$lbs = $services->getDBLoadBalancerFactory()->getAllMainLBs();
+				$lbFactory = $this->getConnectionProvider();
+				'@phan-var ILBFactory $lbFactory';
+				$lbs = $lbFactory->getAllMainLBs();
 
 				// Calculate the size of each cluster
 				$clusterSizes = [];
