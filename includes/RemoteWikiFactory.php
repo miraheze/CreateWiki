@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki;
 
 use InvalidArgumentException;
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
@@ -24,6 +25,7 @@ class RemoteWikiFactory {
 	private IConnectionProvider $connectionProvider;
 	private IReadableDatabase $dbr;
 
+	private JobQueueGroupFactory $jobQueueGroupFactory;
 	private ServiceOptions $options;
 
 	private array $changes = [];
@@ -55,6 +57,7 @@ class RemoteWikiFactory {
 		IConnectionProvider $connectionProvider,
 		CreateWikiDataFactory $dataFactory,
 		CreateWikiHookRunner $hookRunner,
+		JobQueueGroupFactory $jobQueueGroupFactory,
 		ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
@@ -62,6 +65,7 @@ class RemoteWikiFactory {
 		$this->dataFactory = $dataFactory;
 		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
+		$this->jobQueueGroupFactory = $jobQueueGroupFactory;
 		$this->options = $options;
 	}
 
