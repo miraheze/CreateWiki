@@ -3,10 +3,12 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
+use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -15,30 +17,32 @@ use Miraheze\CreateWiki\WikiManager;
 use RuntimeException;
 use StatusValue;
 use UnexpectedValueException;
+use Wikimedia\Rdbms\IDatabase;
 
 class WikiRequest {
 
-	public $dbname;
-	public $description;
-	public $language;
-	public $private;
-	public $sitename;
-	public $url;
-	public $category;
-	public $requester;
-	public $timestamp;
-	public $bio;
-	public $purpose;
+	private Config $config;
+	private CreateWikiHookRunner $hookRunner;
+	private IDatabase $dbw;
 
-	private $id;
-	private $dbw;
-	private $config;
-	private $status = 'inreview';
-	private $comments = [];
-	private $involvedUsers = [];
-	private $visibility = 0;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	public User $requester;
+
+	public string $dbname;
+	public string $description;
+	public string $language;
+	public ?int $private;
+	public string $sitename;
+	public string $url;
+	public string $category;
+	public int $timestamp;
+	public int $bio;
+	public ?string $purpose = null;
+
+	private int $id;
+	private string $status = 'inreview';
+	private array $comments = [];
+	private array $involvedUsers = [];
+	private int $visibility = 0;
 
 	public function __construct( int $id = null, CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
