@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
-use MediaWiki\Config\SiteConfiguration;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -21,10 +20,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$conf = new SiteConfiguration();
-		$conf->suffixes = [ 'test' ];
-
-		$this->setMwGlobals( 'wgConf', $conf );
 		$this->setMwGlobals( 'wgCreateWikiUseClosedWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
