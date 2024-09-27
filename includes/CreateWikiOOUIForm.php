@@ -13,7 +13,7 @@ use Xml;
 
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 
-	/** @var bool */
+	/** @var bool Override default value from HTMLForm */
 	protected $mSubSectionBeforeFields = false;
 
 	/**
