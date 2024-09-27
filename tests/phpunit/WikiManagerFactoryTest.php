@@ -166,7 +166,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteForce() {
 		$wikiManager = $this->getFactoryService()->newInstance( 'renamewikitest' );
 
-		$this->assertNull( $wikiManager->delete( true ) );
+		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'renamewikitest' ) );
 
 		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
@@ -187,7 +187,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = $this->getFactoryService()->newInstance( 'deletewikitest' );
 
-		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
+		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete( force: false ) );
 		$this->assertTrue( $this->wikiExists( 'deletewikitest' ) );
 
 		$remoteWiki->undelete();
@@ -199,7 +199,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testDeleteEligible() {
 		$wikiManager = $this->getFactoryService()->newInstance( 'deletewikitest' );
-		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
+		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete( force: false ) );
 
 		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
 
@@ -230,7 +230,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = $this->getFactoryService()->newInstance( 'recreatewikitest' );
 
-		$this->assertNull( $wikiManager->delete( true ) );
+		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
 
 		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
@@ -238,7 +238,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $this->createWiki( 'recreatewikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'recreatewikitest' ) );
 
-		$wikiManager->delete( true );
+		$wikiManager->delete( force: true );
 
 		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
 	}
