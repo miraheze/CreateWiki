@@ -114,7 +114,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateErrors() {
-		$notsuffixed = wfMessage( 'createwiki-error-notsuffixed' )->parse();
+		$notsuffixed = wfMessage( 'createwiki-error-notsuffixed', 'test' )->parse();
 		$notalnum = wfMessage( 'createwiki-error-notalnum' )->parse();
 		$notlowercase = wfMessage( 'createwiki-error-notlowercase' )->parse();
 
