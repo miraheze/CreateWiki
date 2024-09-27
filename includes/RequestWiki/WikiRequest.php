@@ -208,14 +208,21 @@ class WikiRequest {
 		} else {
 			$wm = new WikiManager( $this->dbname, $this->hookRunner );
 
-			$validName = $wm->checkDatabaseName( $this->dbname );
+			// This runs checkDatabaseName and if it returns a
+			// non-null value it is returning an error.
+			$notCreated = $wm->create(
+				$this->sitename,
+				$this->language,
+				(bool)$this->private,
+				$this->category,
+				$this->requester->getName(),
+				$user->getName(),
+				"[[Special:RequestWikiQueue/{$this->id}|Requested]]"
+			);
 
-			$notCreated = $wm->create( $this->sitename, $this->language, (bool)$this->private, $this->category, $this->requester->getName(), $user->getName(), "[[Special:RequestWikiQueue/{$this->id}|Requested]]" );
-
-			if ( $validName || $notCreated ) {
+			if ( $notCreated ) {
 				$this->log( $user, 'create-failure' );
-
-				throw new RuntimeException( $notCreated ?? $validName ?? 'Unknown error' );
+				throw new RuntimeException( $notCreated );
 			} else {
 				$this->status = 'approved';
 				$this->save();
