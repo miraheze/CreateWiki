@@ -9,17 +9,10 @@ use MediaWiki\Title\Title;
 
 class RequestWikiQueuePager extends TablePager {
 
-	/** @var Config */
-	private $config;
-
-	/** @var string */
-	private $requester;
-
-	/** @var string */
-	private $dbname;
-
-	/** @var string */
-	private $status;
+	private Config $config;
+	private string $requester;
+	private string $dbname;
+	private string $status;
 
 	public function __construct( $page, $requester, $dbname, $status ) {
 		parent::__construct( $page->getContext(), $page->getLinkRenderer() );
