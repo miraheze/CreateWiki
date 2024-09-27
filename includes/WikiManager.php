@@ -6,41 +6,46 @@ use Exception;
 use ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
+use MediaWiki\Config\Config;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use RuntimeException;
+use Wikimedia\Rdbms\IConnectionProvider;
+use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\ILoadBalancer;
 
 class WikiManager {
 
 	private CreateWikiDataFactory $dataFactory;
 	private CreateWikiHookRunner $hookRunner;
 
-	private $config;
-	private $lbFactory;
-	private $dbname;
-	private $dbw;
-	private $cwdb;
-	private $lb = false;
-	private $tables = [];
+	private Config $config;
+	private IConnectionProvider $connectionProvider;
+	private IDatabase $dbw;
+	private IDatabase $cwdb;
 
-	public $cluster;
-	public $exists;
+	private ?ILoadBalancer $lb = null;
+
+	private string $dbname;
+	private array $tables = [];
+
+	public bool $exists;
+	public ?string $cluster = null;
 
 	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner ) {
 		$services = MediaWikiServices::getInstance();
 		$this->config = $services->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->lbFactory = $services->getDBLoadBalancerFactory();
+		$this->connectionProvider = $services->getConnectionProvider();
 		$this->dataFactory = $services->get( 'CreateWikiDataFactory' );
 
 		$this->hookRunner = $hookRunner;
 
 		// Get connection for the CreateWiki database
 		$createWikiDBName = $this->config->get( 'CreateWikiDatabase' );
-		$this->cwdb = $this->lbFactory->getMainLB( $createWikiDBName )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $createWikiDBName );
+		$this->cwdb = $this->connectionProvider->getPrimaryDatabase( $createWikiDBName );
 
 		// Check if the database exists in the cw_wikis table
 		$check = $this->cwdb->selectRow(
@@ -55,7 +60,7 @@ class WikiManager {
 		if ( !$check ) {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
-				$lbs = $this->lbFactory->getAllMainLBs();
+				$lbs = $this->connectionProvider->getAllMainLBs();
 
 				// Calculate the size of each cluster
 				$clusterSizes = [];
@@ -85,15 +90,14 @@ class WikiManager {
 
 				$clusterDB = $clusterDBRow->wiki_dbname;
 				$this->lb = $lbs[$this->cluster];
-				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], $clusterDB );
+				$newDbw = $this->lb->getPrimaryDatabase( $clusterDB );
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
 			}
 		} else {
 			// DB exists
-			$newDbw = $this->lbFactory->getMainLB( $dbname )
-				->getMaintenanceConnectionRef( DB_PRIMARY, [], $dbname );
+			$newDbw = $this->connectionProvider->getPrimaryDatabase( $dbname );
 		}
 
 		$this->dbname = $dbname;
