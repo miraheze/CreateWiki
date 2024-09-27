@@ -21,7 +21,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
-	private LinkRenderer $linkRenderer
+	private LinkRenderer $linkRenderer;
 
 	public function __construct(
 		ConfigFactory $configFactory,
