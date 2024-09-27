@@ -30,11 +30,11 @@ class WikiRequest {
 	public string $dbname;
 	public string $description;
 	public string $language;
-	public ?int $private;
+	public bool $private;
 	public string $sitename;
 	public string $url;
 	public string $category;
-	public int $timestamp;
+	public string $timestamp;
 	public int $bio;
 	public ?string $purpose = null;
 
@@ -67,7 +67,7 @@ class WikiRequest {
 			$this->id = $dbRequest->cw_id;
 			$this->dbname = $dbRequest->cw_dbname;
 			$this->language = $dbRequest->cw_language;
-			$this->private = $dbRequest->cw_private;
+			$this->private = (bool)$dbRequest->cw_private;
 			$this->sitename = $dbRequest->cw_sitename;
 			$this->url = $dbRequest->cw_url;
 			$this->category = $dbRequest->cw_category;
@@ -158,7 +158,7 @@ class WikiRequest {
 		$notificationData = [
 			'type' => "request-{$type}",
 			'extra' => [
-				'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', $this->id )->getFullURL(),
+				'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id )->getFullURL(),
 				$reason => $comment,
 			],
 		];
