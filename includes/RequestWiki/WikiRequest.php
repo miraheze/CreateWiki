@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ManualLogEntry;
 use MediaWiki\Config\Config;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
@@ -462,7 +463,7 @@ class WikiRequest {
 
 		// Make the subdomain a dbname
 		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
-		if ( in_array( $database, $this->config->get( 'LocalDatabases' ) ) ) {
+		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
 			return StatusValue::newFatal( 'createwiki-error-subdomaintaken' );
 
 		} elseif ( !ctype_alnum( $subdomain ) ) {
