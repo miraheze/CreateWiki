@@ -7,6 +7,7 @@ use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use UnexpectedValueException;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
@@ -385,11 +386,12 @@ class RemoteWikiFactory {
 					$this->options->get( 'CreateWikiDatabase' )
 				);
 
-				$dbw->update(
-					'cw_wikis',
-					$this->newRows,
-					[ 'wiki_dbname' => $this->dbname ]
-				);
+				$dbw->newUpdateQueryBuilder()
+					->update( 'cw_wikis' )
+					->set( $this->newRows )
+					->where( [ 'wiki_dbname' => $this->dbname ] )
+					->caller( __METHOD__ )
+					->execute();
 			}
 
 			foreach ( $this->hooks as $hook ) {
@@ -407,7 +409,7 @@ class RemoteWikiFactory {
 						$this->hookRunner->onCreateWikiStatePrivate( $this->dbname );
 						break;
 					default:
-						// TODO: throw exception
+						throw new UnexpectedValueException( 'Unsupported hook: ' . $hook );
 				}
 			}
 
