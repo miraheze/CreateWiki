@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Tests;
 
 use FatalError;
 use MediaWiki\Config\SiteConfiguration;
-use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
@@ -30,7 +29,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
 		] );
 
-		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $GLOBALS['wgDBserver'],
 			'user' => 'root',
 		] );
@@ -47,9 +46,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		try {
-			$dbw = MediaWikiServices::getInstance()
-				->getDBLoadBalancer()
-				->getMaintenanceConnectionRef( DB_PRIMARY );
+			$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
 
 			$dbw->insert(
 				'cw_wikis',
