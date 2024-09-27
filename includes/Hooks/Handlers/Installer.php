@@ -8,7 +8,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 
 	/** @inheritDoc */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
-		$dir = __DIR__ . "/../../../sql";
+		$dir = __DIR__ . '/../../../sql';
 
 		$updater->addExtensionTable(
 			'cw_requests',
