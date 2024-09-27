@@ -131,7 +131,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = new WikiManager( 'createwikitest', $this->getMockCreateWikiHookRunner() );
 
 		$error = 'Can not rename createwikitest to renamewiki because: ';
-		$notsuffixed = $error . wfMessage( 'createwiki-error-notsuffixed' )->parse();
+		$notsuffixed = $error . wfMessage( 'createwiki-error-notsuffixed', 'test' )->parse();
 
 		$error = 'Can not rename createwikitest to rename.wikitest because: ';
 		$notalnum = $error . wfMessage( 'createwiki-error-notalnum' )->parse();
