@@ -2,29 +2,39 @@
 
 namespace Miraheze\CreateWiki;
 
-use GenericParameterJob;
 use Job;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Config\Config;
+use MediaWiki\Config\ConfigFactory;
+use RepoGroup;
 
-class SetContainersAccessJob extends Job implements GenericParameterJob {
+class SetContainersAccessJob extends Job {
 
-	/** @var bool */
-	private $isPrivate;
+	public const JOB_NAME = 'SetContainersAccessJob';
 
-	public function __construct( array $params ) {
-		parent::__construct( 'SetContainersAccessJob', $params );
+	private bool $isPrivate;
+
+	private Config $config;
+	private RepoGroup $repoGroup;
+
+	public function __construct(
+		array $params,
+		ConfigFactory $configFactory,
+		RepoGroup $repoGroup
+	) {
+		parent::__construct( self::JOB_NAME, $params );
 
 		$this->isPrivate = $params['private'];
+
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$this->repoGroup = $repoGroup;
 	}
 
-	public function run() {
-		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-
+	public function run(): bool {
 		// Make sure all of the file repo zones are setup
-		$repo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+		$repo = $this->repoGroup->getLocalRepo();
 
 		$backend = $repo->getBackend();
-		foreach ( $config->get( 'CreateWikiContainers' ) as $zone => $status ) {
+		foreach ( $this->config->get( 'CreateWikiContainers' ) as $zone => $status ) {
 			$dir = $backend->getContainerStoragePath( $zone );
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';
