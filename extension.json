@@ -29,18 +29,22 @@
 		"CreateWiki": {
 			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
+				"ConfigFactory",
 				"CreateWikiHookRunner"
 			]
 		},
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
 			"services": [
-				"CreateWikiHookRunner"
+				"ConfigFactory",
+				"CreateWikiHookRunner",
+				"LinkRenderer"
 			]
 		},
 		"RequestWikiQueue": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
 			"services": [
+				"ConfigFactory",
 				"CreateWikiHookRunner"
 			]
 		}
