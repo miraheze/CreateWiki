@@ -168,10 +168,6 @@ class RemoteWiki {
 				}
 			}
 
-			if ( $this->log === null ) {
-
-			}
-
 			if ( $this->log || $this->logParams ) {
 				$this->factory->makeLog( $this->log, $this->logParams );
 			}
