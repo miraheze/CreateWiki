@@ -7,7 +7,7 @@ use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RemoteWiki;
+use Miraheze\CreateWiki\RemoteWikiFactory;
 use Miraheze\CreateWiki\WikiManager;
 
 /**
@@ -82,6 +82,13 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function getMockCreateWikiHookRunner() {
 		return $this->createMock( CreateWikiHookRunner::class );
+	}
+
+	/**
+	 * @return RemoteWikiFactory
+	 */
+	public function getRemoteWikiFactory(): RemoteWikiFactory {
+		return $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 	}
 
 	/**
@@ -180,7 +187,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteIneligible() {
 		$this->createWiki( 'deletewikitest' );
 
-		$remoteWiki = new RemoteWiki( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
+		$remoteWiki = $this->getRemoteWikiFactory->newInstance( 'deletewikitest' );
+
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
@@ -202,7 +210,8 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
 
-		$remoteWiki = new RemoteWiki( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
+		$remoteWiki = $this->getRemoteWikiFactory->newInstance( 'deletewikitest' );
+
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
