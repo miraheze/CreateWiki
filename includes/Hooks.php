@@ -127,12 +127,12 @@ class Hooks implements
 	}
 
 	/**
-	* Add CreateWiki events to Echo
-	*
-	* @param array &$notifications array of Echo notifications
-	* @param array &$notificationCategories array of Echo notification categories
-	* @param array &$icons array of icon details
-	*/
+	 * Add CreateWiki events to Echo
+	 *
+	 * @param array &$notifications array of Echo notifications
+	 * @param array &$notificationCategories array of Echo notification categories
+	 * @param array &$icons array of icon details
+	 */
 	public static function onBeforeCreateEchoEvent(
 		&$notifications, &$notificationCategories, &$icons
 	) {
