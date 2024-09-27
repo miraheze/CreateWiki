@@ -6,10 +6,11 @@ use MailAddress;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\Notifications\Model\Event;
+use MediaWiki\MainConfigNames;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use UserMailer;
-use Wikimedia\Rdbms\LBFactory;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class CreateWikiNotificationsManager {
 
@@ -17,40 +18,31 @@ class CreateWikiNotificationsManager {
 		'CreateWikiEmailNotifications',
 		'CreateWikiNotificationEmail',
 		'CreateWikiUseEchoNotifications',
-		'PasswordSender',
-		'Sitename',
+		MainConfigNames::PasswordSender,
+		MainConfigNames::Sitename,
 	];
 
-	/** @var LBFactory */
-	private $lbFactory;
-
-	/** @var MessageLocalizer */
-	private $messageLocalizer;
-
-	/** @var ServiceOptions */
-	private $options;
-
-	/** @var UserFactory */
-	private $userFactory;
-
-	/** @var string */
-	private $type;
+	private IConnectionProvider $connectionProvider;
+	private MessageLocalizer $messageLocalizer;
+	private ServiceOptions $options;
+	private UserFactory $userFactory;
+	private string $type;
 
 	/**
-	 * @param LBFactory $lbFactory
+	 * @param IConnectionProvider $connectionProvider
 	 * @param MessageLocalizer $messageLocalizer
 	 * @param ServiceOptions $options
 	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
-		LBFactory $lbFactory,
+		IConnectionProvider $connectionProvider,
 		MessageLocalizer $messageLocalizer,
 		ServiceOptions $options,
 		UserFactory $userFactory
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 
-		$this->lbFactory = $lbFactory;
+		$this->connectionProvider = $connectionProvider;
 		$this->messageLocalizer = $messageLocalizer;
 
 		$this->options = $options;
@@ -66,7 +58,7 @@ class CreateWikiNotificationsManager {
 		}
 
 		if ( $this->type === 'wiki-creation' ) {
-			return 'CreateWiki on ' . $this->options->get( 'Sitename' );
+			return 'CreateWiki on ' . $this->options->get( MainConfigNames::Sitename );
 		}
 
 		return 'CreateWiki Notifications';
@@ -111,8 +103,7 @@ class CreateWikiNotificationsManager {
 	 * @param string $wiki
 	 */
 	public function notifyBureaucrats( array $data, string $wiki ) {
-		$lb = $this->lbFactory->getMainLB( $wiki );
-		$dbr = $lb->getMaintenanceConnectionRef( DB_REPLICA, [], $wiki );
+		$dbr = $this->connectionProvider->getReplicaDatabase( $wiki );
 
 		$bureaucrats = $dbr->select(
 			[ 'user', 'user_groups' ],
@@ -206,7 +197,7 @@ class CreateWikiNotificationsManager {
 				$notifyEmails[] = new MailAddress( $this->options->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
 			}
 
-			$from = new MailAddress( $this->options->get( 'PasswordSender' ), $this->getFromName() );
+			$from = new MailAddress( $this->options->get( MainConfigNames::PasswordSender ), $this->getFromName() );
 			UserMailer::send(
 				$notifyEmails,
 				$from,
