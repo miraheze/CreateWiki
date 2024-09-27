@@ -10,7 +10,7 @@ use Miraheze\CreateWiki\RemoteWikiFactory;
 return [
 	'CreateWiki.NotificationsManager' => static function ( MediaWikiServices $services ): CreateWikiNotificationsManager {
 		return new CreateWikiNotificationsManager(
-			$services->getDBLoadBalancerFactory(),
+			$services->connectionProvider(),
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
