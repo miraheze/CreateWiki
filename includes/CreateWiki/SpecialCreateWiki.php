@@ -21,9 +21,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 
-		$this->hookRunner = $hookRunner;
-
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$this->hookRunner = $hookRunner;
 	}
 
 	public function execute( $par ) {
