@@ -21,9 +21,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 
-		$this->hookRunner = $hookRunner;
-
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$this->hookRunner = $hookRunner;
 	}
 
 	public function execute( $par ) {
