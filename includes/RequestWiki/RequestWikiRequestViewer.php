@@ -16,10 +16,8 @@ use Miraheze\CreateWiki\WikiManager;
 
 class RequestWikiRequestViewer {
 
-	/** @var Config */
-	private $config;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	private Config $config;
+	private CreateWikiHookRunner $hookRunner;
 
 	public function __construct( CreateWikiHookRunner $hookRunner = null ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
