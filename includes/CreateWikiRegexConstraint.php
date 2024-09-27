@@ -11,7 +11,7 @@ class CreateWikiRegexConstraint {
 	 * @param string $regex invalid regex to log for
 	 * @param string $name name of regex caller (config or message key) to log for
 	 */
-	private static function warnInvalidRegex( $regex, $name ) {
+	private static function warnInvalidRegex( string $regex, string $name ): void {
 		LoggerFactory::getInstance( 'CreateWiki' )->warning(
 			'{name} contains invalid regex',
 			[
@@ -26,9 +26,13 @@ class CreateWikiRegexConstraint {
 	 * @param string $name name of regex caller (config or message key) for logging
 	 * @param string $start
 	 * @param string $end
-	 * @return void
 	 */
-	private static function filterInvalidRegexes( &$regexes, $name = '', $start = '', $end = '' ) {
+	private static function filterInvalidRegexes(
+		array &$regexes,
+		string $name = '',
+		string $start = '',
+		string $end = ''
+	): void {
 		$regexes = array_filter( $regexes, static function ( $regex ) use ( $name, $start, $end ) {
 			if ( !StringUtils::isValidPCRERegex( $start . $regex . $end ) ) {
 				if ( $name ) {
@@ -48,7 +52,7 @@ class CreateWikiRegexConstraint {
 	 * @param array $lines
 	 * @return array
 	 */
-	private static function cleanLines( $lines ) {
+	private static function cleanLines( array $lines ): array {
 		return array_filter(
 			array_map( 'trim',
 				preg_replace( '/#.*$/', '', $lines )
@@ -63,7 +67,12 @@ class CreateWikiRegexConstraint {
 	 * @param string $name name of regex caller (config or message key) for logging
 	 * @return array
 	 */
-	private static function regexesFromText( $text, $start = '', $end = '', $name = '' ) {
+	private static function regexesFromText(
+		string $text,
+		string $start = '',
+		string $end = '',
+		string $name = ''
+	): array {
 		$lines = explode( "\n", $text );
 		$regexes = self::cleanLines( $lines );
 
@@ -79,7 +88,12 @@ class CreateWikiRegexConstraint {
 	 * @param string $name name of regex caller (config or message key) for logging
 	 * @return string
 	 */
-	public static function regexFromArray( $regexes, $start, $end, $name = '' ) {
+	public static function regexFromArray(
+		array $regexes,
+		string $start,
+		string $end,
+		string $name = ''
+	): string {
 		if ( !$regexes ) {
 			return '';
 		}
@@ -108,7 +122,12 @@ class CreateWikiRegexConstraint {
 	 * @param string $name name of regex caller (config or message key) for logging
 	 * @return string
 	 */
-	public static function regexFromArrayOrString( $regex, $start = '', $end = '', $name = '' ) {
+	public static function regexFromArrayOrString(
+		array|string $regex,
+		string $start = '',
+		string $end = '',
+		string $name = ''
+	): string {
 		if ( is_array( $regex ) ) {
 			return self::regexFromArray( $regex, $start, $end, $name );
 		} else {
@@ -130,7 +149,11 @@ class CreateWikiRegexConstraint {
 	 * @param string $end append to the end of each regex line; used only for validation
 	 * @return array
 	 */
-	public static function regexesFromMessage( $key, $start = '/', $end = '/i' ) {
+	public static function regexesFromMessage(
+		string $key,
+		string $start = '/',
+		string $end = '/i'
+	): array {
 		$message = wfMessage( $key )->inContentLanguage();
 
 		if ( !$message->isDisabled() ) {
