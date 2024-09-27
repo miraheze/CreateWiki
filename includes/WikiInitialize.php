@@ -12,9 +12,9 @@ class WikiInitialize {
 	public SiteConfiguration $config;
 
 	public string $hostname;
-	public string $dbname;
 	public string $server;
 	public string $sitename;
+	public ?string $dbname = null;
 	public array $realms;
 	public array $wikiDBClusters = [];
 	public array $disabledExtensions = [];
