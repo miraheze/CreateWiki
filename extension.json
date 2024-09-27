@@ -55,7 +55,7 @@
 				"RepoGroup"
 			],
 			"needsPage": false
-		},
+		}
 	},
 	"LogTypes": [
 		"farmer",
