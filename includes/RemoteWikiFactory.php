@@ -326,8 +326,42 @@ class RemoteWikiFactory {
 		$this->newRows['wiki_experimental'] = 0;
 	}
 
+	
+	public function trackChange( string $field, int|string|null $oldValue, int|string|null $newValue ): void {
+		$this->changes[$field] = [
+			'old' => $oldValue,
+			'new' => $newValue
+		];
+	}
+
+	public function hasChanges(): bool {
+		return (bool)$this->changes;
+	}
+
+	public function addNewRow( string $row, mixed $value ): void {
+		$this->newRows[$row] = $value;
+	}
+
+	public function makeLog( ?string $type, ?array $params ): void {
+		if ( $type ) {
+			$this->log = $type;
+		}
+
+		if ( $params ) {
+			$this->logParams = $params;
+		}
+	}
+
+	public function getLogAction(): ?string {
+		return $this->log;
+	}
+
+	public function getLogParams(): array {
+		return $this->logParams;
+	}
+
 	public function commit(): void {
-		if ( !empty( $this->changes ) ) {
+		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
 				$dbw = $this->connectionProvider->getPrimaryDatabase(
 					$this->options->get( 'CreateWikiDatabase' )
@@ -371,34 +405,5 @@ class RemoteWikiFactory {
 				];
 			}
 		}
-	}
-
-	public function trackChange( string $field, int|string|null $oldValue, int|string|null $newValue ): void {
-		$this->changes[$field] = [
-			'old' => $oldValue,
-			'new' => $newValue
-		];
-	}
-
-	public function makeLog( ?string $type, ?array $params ): void {
-		if ( $type ) {
-			$this->log = $type;
-		}
-
-		if ( $params ) {
-			$this->logParams = $params;
-		}
-	}
-
-	public function getLogAction(): ?string {
-		return $this->log;
-	}
-
-	public function getLogParams(): array {
-		return $this->logParams;
-	}
-
-	public function addNewRow( string $row, mixed $value ): void {
-		$this->newRows[$row] = $value;
 	}
 }
