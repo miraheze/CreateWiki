@@ -391,7 +391,7 @@ class WikiManager {
 		$logID = $logEntry->insert( $logDBConn );
 		$logEntry->publish( $logID );
 	}
-	
+
 	private function compileTables(): void {
 		$cTables = [];
 
