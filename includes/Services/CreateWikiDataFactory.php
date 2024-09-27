@@ -350,7 +350,7 @@ class CreateWikiDataFactory {
 	 */
 	private function isValidPath( string $filePath ): bool {
 		$realCacheDir = realpath( $this->cacheDir );
-	
+
 		// If the file exists, resolve its real path and check if it's within the cache directory
 		if ( file_exists( $filePath ) ) {
 			$realPath = realpath( $filePath );
