@@ -20,7 +20,7 @@ class EchoRequestMoreDetailsPresentationModel extends EchoEventPresentationModel
 		$reason = $this->event->getExtraParam( 'reason' );
 		$text = DiscussionParser::getTextSnippet( $reason, $this->language );
 
-		return new RawMessage( "$1", [ $text ] );
+		return new RawMessage( '$1', [ $text ] );
 	}
 
 	public function getPrimaryLink() {
