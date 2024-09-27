@@ -95,7 +95,7 @@ class CreateWikiRegexConstraint {
 		array $regexes,
 		string $start,
 		string $end,
-		string $name = ''
+		string $name
 	): string {
 		if ( !$regexes ) {
 			return '';
@@ -127,9 +127,9 @@ class CreateWikiRegexConstraint {
 	 */
 	public static function regexFromArrayOrString(
 		array|string $regex,
-		string $start = '',
-		string $end = '',
-		string $name = ''
+		string $start,
+		string $end,
+		string $name
 	): string {
 		if ( is_array( $regex ) ) {
 			return self::regexFromArray( $regex, $start, $end, $name );
@@ -154,8 +154,8 @@ class CreateWikiRegexConstraint {
 	 */
 	public static function regexesFromMessage(
 		string $key,
-		string $start = '/',
-		string $end = '/i'
+		string $start,
+		string $end
 	): array {
 		$message = wfMessage( $key )->inContentLanguage();
 
