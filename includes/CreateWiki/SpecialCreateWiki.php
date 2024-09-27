@@ -45,7 +45,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'type' => 'text',
 				'default' => $request->getVal( 'wpdbname' ) ?: $par,
 				'required' => true,
-				'validation-callback' => [ $this, 'validateDBname' ],
+				'validation-callback' => [ $this, 'isValidDatabase' ],
 			],
 			'requester' => [
 				'label-message' => 'createwiki-label-requester',
@@ -117,14 +117,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function validateDBname( $DBname, $allData ) {
-		if ( $DBname === null ) {
+	public function isValidDatabase( ?string $dbname ) {
+		if ( $dbname === null ) {
 			return true;
 		}
 
-		$wm = new WikiManager( $DBname, $this->hookRunner );
+		$wm = new WikiManager( $dbname, $this->hookRunner );
 
-		$check = $wm->checkDatabaseName( $DBname );
+		$check = $wm->checkDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
 			return $check;
