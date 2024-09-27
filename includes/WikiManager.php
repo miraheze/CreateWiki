@@ -7,12 +7,16 @@ use ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
 use MediaWiki\Config\Config;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\UserFactory;
+use MessageLocalizer;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use RuntimeException;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -23,9 +27,12 @@ class WikiManager {
 
 	private CreateWikiDataFactory $dataFactory;
 	private CreateWikiHookRunner $hookRunner;
+	private CreateWikiNotificationsManager $notificationsManager;
 
 	private Config $config;
 	private IConnectionProvider $connectionProvider;
+	private MessageLocalizer $messageLocalizer;
+	private UserFactory $userFactory;
 	private DBConnRef $dbw;
 	private DBConnRef $cwdb;
 
@@ -37,13 +44,18 @@ class WikiManager {
 	public bool $exists;
 	public ?string $cluster = null;
 
-	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner ) {
+	public function __construct(
+		string $dbname,
+		CreateWikiHookRunner $hookRunner
+	) {
 		$services = MediaWikiServices::getInstance();
 		$this->config = $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->connectionProvider = $services->getConnectionProvider();
 		$this->dataFactory = $services->get( 'CreateWikiDataFactory' );
-
 		$this->hookRunner = $hookRunner;
+		$this->messageLocalizer = RequestContext::getMain();
+		$this->notificationsManager = $services->get( 'CreateWiki.NotificationsManager' );
+		$this->userFactory = $services->getUserFactory();
 
 		// Get connection for the CreateWiki database
 		$createWikiDBName = $this->config->get( 'CreateWikiDatabase' );
@@ -109,14 +121,12 @@ class WikiManager {
 		$this->exists = (bool)$check;
 	}
 
-	public function doCreateDatabase() {
-		$wiki = $this->dbname;
-
+	public function doCreateDatabase(): ?string {
 		if ( $this->exists ) {
-			throw new FatalError( "Wiki '{$wiki}' already exists." );
+			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
-		$checkErrors = $this->checkDatabaseName( $wiki );
+		$checkErrors = $this->checkDatabaseName( $this->dbname );
 
 		if ( $checkErrors ) {
 			return $checkErrors;
@@ -124,17 +134,19 @@ class WikiManager {
 
 		try {
 			$dbCollation = $this->config->get( 'CreateWikiCollation' );
-			$dbQuotes = $this->dbw->addIdentifierQuotes( $wiki );
+			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
 			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};" );
 		} catch ( Exception $e ) {
-			throw new FatalError( "Wiki '{$wiki}' already exists." );
+			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
 		if ( $this->lb ) {
-			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
+			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
 		} else {
-			$this->dbw = $this->connectionProvider->getPrimaryDatabase( $wiki );
+			$this->dbw = $this->connectionProvider->getPrimaryDatabase( $this->dbname );
 		}
+
+		return null;
 	}
 
 	public function create(
@@ -145,7 +157,7 @@ class WikiManager {
 		string $requester,
 		string $actor,
 		string $reason
-	) {
+	): ?string {
 		if ( $this->doCreateDatabase() ) {
 			return $this->doCreateDatabase();
 		}
@@ -159,7 +171,7 @@ class WikiManager {
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
-				'wiki_category' => $category
+				'wiki_category' => $category,
 			]
 		);
 
@@ -176,39 +188,28 @@ class WikiManager {
 		string $reason,
 		bool $notify = true,
 		bool $centralAuth = true
-	) {
-		$wiki = $this->dbname;
-
+	): void {
 		foreach ( $this->config->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
-		$this->hookRunner->onCreateWikiCreation( $wiki, $private );
+		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
 
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $wiki, $requester, $centralAuth ) {
+			function () use ( $requester, $centralAuth ) {
 				$this->recache();
 
-				$scriptOptions = [];
-				if ( version_compare( MW_VERSION, '1.40', '>=' ) ) {
-					$scriptOptions = [ 'wrapper' => MW_INSTALL_PATH . '/maintenance/run.php' ];
-				}
+				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
-					[
-						'--wiki', $wiki
-					],
-					$scriptOptions
-				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+					[ '--wiki', $this->dbname ]
+				)->limits( $limits )->execute();
 
 				Shell::makeScriptCommand(
 					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
-					[
-						'--wiki', $wiki
-					],
-					$scriptOptions
-				)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+					[ '--wiki', $this->dbname ]
+				)->limits( $limits )->execute();
 
 				if ( $centralAuth ) {
 					if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
@@ -216,10 +217,9 @@ class WikiManager {
 							MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
 							[
 								$requester,
-								'--wiki', $wiki
-							],
-							$scriptOptions
-						)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+								'--wiki', $this->dbname
+							]
+						)->limits( $limits )->execute();
 					}
 
 					Shell::makeScriptCommand(
@@ -230,10 +230,9 @@ class WikiManager {
 							'--interface-admin',
 							'--sysop',
 							'--force',
-							'--wiki', $wiki
-						],
-						$scriptOptions
-					)->limits( [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ] )->execute();
+							'--wiki', $this->dbname
+						]
+					)->limits( $limits )->execute();
 				}
 			},
 			DeferredUpdates::POSTSEND,
@@ -244,34 +243,35 @@ class WikiManager {
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $wiki, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $this->dbname, 0, -strlen( $this->config->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->config->get( 'CreateWikiSubdomain' )}",
 					'sitename' => $siteName,
 				],
-				'subject' => wfMessage( 'createwiki-email-subject', $siteName )->inContentLanguage()->text(),
+				'subject' => $this->messageLocalizer->msg(
+					'createwiki-email-subject', $siteName
+				)->inContentLanguage()->text(),
 				'body' => [
-					'html' => nl2br( wfMessage( 'createwiki-email-body' )->inContentLanguage()->text() ),
-					'text' => wfMessage( 'createwiki-email-body' )->inContentLanguage()->text(),
+					'html' => nl2br( $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->text() ),
+					'text' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->text(),
 				],
 			];
 
-			MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-				->sendNotification( $notificationData, [ $requester ] );
+			$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 
-			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $wiki ] );
+			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
 		}
 	}
 
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): ?string {
 		$this->compileTables();
-
-		$wiki = $this->dbname;
 
 		$row = $this->cwdb->selectRow(
 			'cw_wikis',
 			'*',
-			[
-				'wiki_dbname' => $wiki
-			]
+			[ 'wiki_dbname' => $this->dbname ]
 		);
 
 		$deletionDate = $row->wiki_deleted_timestamp;
@@ -282,51 +282,45 @@ class WikiManager {
 
 		// Return error if: wiki is not deleted, force is not used & wiki
 		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->config->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) ) {
-			return "Wiki {$wiki} can not be deleted yet.";
+			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
-		$data = $this->dataFactory->newInstance( $wiki );
-		$data->deleteWikiData( $wiki );
+		$data = $this->dataFactory->newInstance( $this->dbname );
+		$data->deleteWikiData( $this->dbname );
 
 		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->delete(
 				$table,
-				[
-					$selector => $wiki
-				]
+				[ $selector => $this->dbname ]
 			);
 		}
 
 		$this->recache();
 
-		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $wiki );
+		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $this->dbname );
 
 		return null;
 	}
 
-	public function rename( string $new ) {
+	public function rename( string $newDatabaseName ): ?string {
+		// NOTE: $this->dbname is the old database name
+
 		$this->compileTables();
 
-		$old = $this->dbname;
-
-		$error = $this->checkDatabaseName( $new, true );
+		$error = $this->checkDatabaseName( $newDatabaseName, true );
 
 		if ( $error ) {
-			return "Can not rename {$old} to {$new} because: {$error}";
+			return "Can not rename {$this->dbname} to {$newDatabaseName} because: {$error}";
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->update(
 				$table,
-				[
-					$selector => $new
-				],
-				[
-					$selector => $old
-				]
+				[ $selector => $newDatabaseName ],
+				[ $selector => $this->dbname ]
 			);
 		}
 
@@ -335,48 +329,51 @@ class WikiManager {
 		 * run resetWikiData() on it since it has no mtime, so that it will
 		 * generate the new cache file for it as well.
 		 */
-		$data = $this->dataFactory->newInstance( $new );
-		$data->deleteWikiData( $old );
+		$data = $this->dataFactory->newInstance( $newDatabaseName );
+		$data->deleteWikiData( $this->dbname );
 
 		$this->recache();
 
-		$this->hookRunner->onCreateWikiRename( $this->cwdb, $old, $new );
+		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
 
 		return null;
 	}
 
-	private function compileTables() {
-		$cTables = [];
-
-		$this->hookRunner->onCreateWikiTables( $cTables );
-
-		$cTables['cw_wikis'] = 'wiki_dbname';
-
-		$this->tables = $cTables;
-	}
-
-	public function checkDatabaseName( string $dbname, bool $rename = false ) {
+	public function checkDatabaseName(
+		string $dbname,
+		bool $rename = false
+	): ?string {
 		$suffix = $this->config->get( 'CreateWikiDatabaseSuffix' );
 		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
-
-		$error = false;
-
 		if ( !$suffixed ) {
-			$error = 'notsuffixed';
-		} elseif ( !$rename && $this->exists ) {
-			$error = 'dbexists';
-		} elseif ( !ctype_alnum( $dbname ) ) {
-			$error = 'notalnum';
-		} elseif ( strtolower( $dbname ) !== $dbname ) {
-			$error = 'notlowercase';
+			return $this->messageLocalizer->msg(
+				'createwiki-error-notsuffixed', $suffix
+			)->parse();
 		}
 
-		return ( $error ) ? wfMessage( 'createwiki-error-' . $error )->parse() : false;
+		if ( !$rename && $this->exists ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
+		}
+
+		if ( !ctype_alnum( $dbname ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' )->parse();
+		}
+
+		if ( strtolower( $dbname ) !== $dbname ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notlowercase' )->parse();
+		}
+
+		return null;
 	}
 
-	private function logEntry( string $log, string $action, string $actor, string $reason, array $params ) {
-		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
-		$user = $userFactory->newFromName( $actor );
+	private function logEntry(
+		string $log,
+		string $action,
+		string $actor,
+		string $reason,
+		array $params
+	): void {
+		$user = $this->userFactory->newFromName( $actor );
 
 		if ( !$user ) {
 			return;
@@ -394,8 +391,18 @@ class WikiManager {
 		$logID = $logEntry->insert( $logDBConn );
 		$logEntry->publish( $logID );
 	}
+	
+	private function compileTables(): void {
+		$cTables = [];
 
-	private function recache() {
+		$this->hookRunner->onCreateWikiTables( $cTables );
+
+		$cTables['cw_wikis'] = 'wiki_dbname';
+
+		$this->tables = $cTables;
+	}
+
+	private function recache(): void {
 		$data = $this->dataFactory->newInstance(
 			$this->config->get( 'CreateWikiGlobalWiki' )
 		);
