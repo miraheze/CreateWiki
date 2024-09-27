@@ -194,7 +194,15 @@ class WikiManagerFactory {
 			]
 		);
 
-		$this->doAfterCreate( $siteName, $private, $requester, $actor, $reason );
+		$this->doAfterCreate(
+			$siteName,
+			$private,
+			$requester,
+			$actor,
+			$reason,
+			notify: true,
+			centralAuth: true
+		);
 
 		return null;
 	}
@@ -205,8 +213,8 @@ class WikiManagerFactory {
 		string $requester,
 		string $actor,
 		string $reason,
-		bool $notify = true,
-		bool $centralAuth = true
+		bool $notify,
+		bool $centralAuth
 	): void {
 		foreach ( $this->options->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
