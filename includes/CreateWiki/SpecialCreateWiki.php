@@ -7,22 +7,21 @@ use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\WikiMap\WikiMap;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
 	private Config $config;
-	private CreateWikiHookRunner $hookRunner;
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct(
 		ConfigFactory $configFactory,
-		CreateWikiHookRunner $hookRunner
+		WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
+		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
 	public function execute( $par ) {
@@ -74,7 +73,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiUseCategories' ) && $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->config->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
@@ -108,11 +107,22 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$category = 'uncategorised';
 		}
 
-		$wm = new WikiManager( $formData['dbname'], $this->hookRunner );
+		$wm = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
+		$wm->create(
+			$formData['sitename'],
+			$formData['language'],
+			$private,
+			$category,
+			$formData['requester'],
+			$this->getContext()->getUser()->getName(),
+			$formData['reason']
+		);
 
-		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
-
-		$this->getOutput()->addHTML( Html::successBox( $this->msg( 'createwiki-success' )->escaped() ) );
+		$this->getOutput()->addHTML(
+			Html::successBox(
+				$this->msg( 'createwiki-success' )->escaped()
+			)
+		);
 
 		return true;
 	}
@@ -122,8 +132,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			return true;
 		}
 
-		$wm = new WikiManager( $dbname, $this->hookRunner );
-
+		$wm = $this->wikiManagerFactory->newInstance( $dbname );
 		$check = $wm->checkDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
