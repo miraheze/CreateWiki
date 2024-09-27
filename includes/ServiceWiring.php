@@ -1,11 +1,13 @@
 <?php
 
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 return [
 	'CreateWiki.NotificationsManager' => static function (
@@ -43,6 +45,20 @@ return [
 			$services->getJobQueueGroupFactory(),
 			new ServiceOptions(
 				RemoteWikiFactory::CONSTRUCTOR_OPTIONS,
+				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+			)
+		);
+	},
+	'WikiManagerFactory' => static function ( MediaWikiServices $services ): WikiManagerFactory {
+		return new WikiManagerFactory(
+			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDataFactory' ),
+			$services->get( 'CreateWikiHookRunner' ),
+			$services->get( 'CreateWiki.NotificationsManager' ),
+			$services->getUserFactory(),
+			RequestContext::getMain(),
+			new ServiceOptions(
+				WikiManagerFactory::CONSTRUCTOR_OPTIONS,
 				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
 			)
 		);
