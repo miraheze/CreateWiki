@@ -237,7 +237,7 @@ class RequestWikiRequestViewer {
 
 			$wm = new WikiManager( $request->dbname, $this->hookRunner );
 
-			$wmError = $wm->checkDatabaseName( $request->dbname );
+			$wmError = $wm->checkDatabaseName( $request->dbname, forRename: false );
 
 			if ( $wmError ) {
 				$context->getOutput()->addHTML( Html::errorBox( $wmError ) );
