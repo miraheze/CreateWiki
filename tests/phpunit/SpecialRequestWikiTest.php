@@ -7,9 +7,9 @@ use MediaWiki\Context\DerivativeContext;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\WikiMap\WikiMap;
-use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
+use SpecialPageTestBase;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 
@@ -19,25 +19,38 @@ use Wikimedia\TestingAccessWrapper;
  * @group Medium
  * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki
  */
-class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
+class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	use TempUserTestTrait;
+
+	private SpecialRequestWiki $specialRequestWiki;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function newSpecialPage() {
+		$services = $this->getServiceContainer();
+		return new SpecialRequestWiki(
+			$services->getConfigFactory(),
+			$this->createMock( CreateWikiHookRunner::class ),
+			$services->getLinkRenderer()
+		);
+	}
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		// T12639
 		$this->disableAutoCreateTempUser();
+
+		$this->specialRequestWiki = $this->newSpecialPage();
 	}
 
 	/**
 	 * @covers ::__construct
 	 */
 	public function testConstructor() {
-		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
-
-		$this->assertInstanceOf( SpecialRequestWiki::class, $specialRequestWiki );
+		$this->assertInstanceOf( SpecialRequestWiki::class, $this->specialRequestWiki );
 	}
 
 	/**
@@ -45,11 +58,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testExecuteNotLoggedIn() {
 		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
-		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
-
 		$this->expectException( UserNotLoggedIn::class );
-		$specialRequestWiki->execute( '' );
+		$this->specialRequestWiki->execute( '' );
 	}
 
 	/**
@@ -62,10 +72,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		$user->setEmail( 'test@example.com' );
 		$user->setEmailAuthenticationTimestamp( wfTimestamp() );
 
-		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			new SpecialRequestWiki( $hookRunner )
+			$this->specialRequestWiki
 		);
 
 		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
@@ -85,10 +93,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
-		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			new SpecialRequestWiki( $hookRunner )
+			$this->specialRequestWiki
 		);
 
 		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
@@ -107,10 +113,8 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getFormFields
 	 */
 	public function testGetFormFields() {
-		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			new SpecialRequestWiki( $hookRunner )
+			$this->specialRequestWiki
 		);
 
 		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
@@ -147,11 +151,7 @@ class SpecialRequestWikiTest extends MediaWikiIntegrationTestCase {
 	public function testOnSubmit( $formData, $expected ) {
 		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'miraheze.org' );
 
-		$hookRunner = $this->createMock( CreateWikiHookRunner::class );
-		$specialRequestWiki = new SpecialRequestWiki( $hookRunner );
-
-		$submitData = $specialRequestWiki->onSubmit( $formData );
-
+		$submitData = $this->specialRequestWiki->onSubmit( $formData );
 		$this->assertSame( $expected, $submitData );
 	}
 }
