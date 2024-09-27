@@ -67,7 +67,17 @@ class WikiRequest {
 
 		if ( $dbRequest ) {
 			$this->id = $dbRequest->cw_id;
-			$this->dbname = htmlspecialchars( $dbRequest->cw_dbname );
+
+			// Filter out all non-alphanumeric characters
+			$sanitizedDbname = preg_replace( '/[^a-zA-Z0-9]/', '', $dbRequest->cw_dbname );
+    
+			// Ensure that dbname is not empty after sanitization
+			if ( !$sanitizedDbname ) {
+				throw new UnexpectedValueException( 'Invalid dbname provided.' );
+			}
+
+			$this->dbname = $sanitizedDbname;
+
 			$this->language = $dbRequest->cw_language;
 			$this->private = $dbRequest->cw_private;
 			$this->sitename = $dbRequest->cw_sitename;
