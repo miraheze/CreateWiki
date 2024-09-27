@@ -48,7 +48,7 @@ class WikiRequest {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
 
-		$connectionProvider = MediaWikiServices::getInstance()->ggetConnectionProvider();
+		$connectionProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$this->dbw = $connectionProvider->getPrimaryDatabase(
 			$this->config->get( 'CreateWikiGlobalWiki' )
 		);
