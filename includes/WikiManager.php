@@ -356,13 +356,8 @@ class WikiManager {
 	}
 
 	public function checkDatabaseName( string $dbname, bool $rename = false ) {
-		$suffixed = false;
-		foreach ( $this->config->get( 'Conf' )->suffixes as $suffix ) {
-			if ( substr( $dbname, -strlen( $suffix ) ) === $suffix ) {
-				$suffixed = true;
-				break;
-			}
-		}
+		$suffix = $this->config->get( 'CreateWikiDatabaseSuffix' );
+		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
 
 		$error = false;
 
