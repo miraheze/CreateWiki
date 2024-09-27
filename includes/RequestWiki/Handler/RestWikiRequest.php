@@ -9,7 +9,7 @@ use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RestUtils;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
-use Wikimedia\Rdbms\ILBFactory;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
  * Returns information related to a wiki request
@@ -17,27 +17,22 @@ use Wikimedia\Rdbms\ILBFactory;
  */
 class RestWikiRequest extends SimpleHandler {
 
-	/** @var Config */
-	private $config;
-
-	/** @var ILBFactory */
-	private $dbLoadBalancerFactory;
-
-	/** @var UserFactory */
-	private $userFactory;
+	private Config $config;
+	private IConnectionProvider $connectionProvider;
+	private UserFactory $userFactory;
 
 	/**
 	 * @param ConfigFactory $configFactory
-	 * @param ILBFactory $dbLoadBalancerFactory
+	 * @param IConnectionProvider $connectionProvider
 	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
 		ConfigFactory $configFactory,
-		ILBFactory $dbLoadBalancerFactory,
+		IConnectionProvider $connectionProvider,
 		UserFactory $userFactory
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
+		$this->connectionProvider = $connectionProvider;
 		$this->userFactory = $userFactory;
 	}
 
@@ -49,8 +44,11 @@ class RestWikiRequest extends SimpleHandler {
 			1 => 'createwiki-deleterequest',
 			2 => 'createwiki-suppressrequest',
 		];
-		$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+
+		$dbr = $this->connectionProvider->getReplicaDatabase(
+			$this->config->get( 'CreateWikiGlobalWiki' )
+		);
+
 		$wikiRequest = $dbr->selectRow(
 			'cw_requests',
 			'*',
