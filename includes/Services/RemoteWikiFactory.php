@@ -88,7 +88,8 @@ class RemoteWikiFactory {
 			throw new InvalidArgumentException( "Wiki '$wiki' cannot be found." );
 		}
 
-		$this->dbname = $row->wiki_dbname;
+		$this->dbname = $wiki;
+
 		$this->sitename = $row->wiki_sitename;
 		$this->language = $row->wiki_language;
 		$this->creation = $row->wiki_creation;
