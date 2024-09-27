@@ -187,7 +187,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteIneligible() {
 		$this->createWiki( 'deletewikitest' );
 
-		$remoteWiki = $this->getRemoteWikiFactory->newInstance( 'deletewikitest' );
+		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
@@ -210,7 +210,7 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = new WikiManager( 'deletewikitest', $this->getMockCreateWikiHookRunner() );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete() );
 
-		$remoteWiki = $this->getRemoteWikiFactory->newInstance( 'deletewikitest' );
+		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
