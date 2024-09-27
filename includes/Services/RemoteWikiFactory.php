@@ -415,7 +415,6 @@ class RemoteWikiFactory {
 				}
 			}
 
-			// @phan-suppress-next-line SecurityCheck-PathTraversal
 			$data = $this->dataFactory->newInstance( $this->dbname );
 			$data->resetDatabaseLists( isNewChanges: true );
 			$data->resetWikiData( isNewChanges: true );
