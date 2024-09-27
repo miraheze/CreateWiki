@@ -140,6 +140,10 @@ class WikiManagerFactory {
 		return $this;
 	}
 
+	public function exists(): bool {
+		return $this->exists;
+	}
+
 	public function doCreateDatabase(): ?string {
 		if ( $this->exists ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
@@ -312,12 +316,10 @@ class WikiManagerFactory {
 			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
-		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$data = $this->dataFactory->newInstance( $this->dbname );
 		$data->deleteWikiData( $this->dbname );
 
 		foreach ( $this->tables as $table => $selector ) {
-			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->delete(
 				$table,
 				[ $selector => $this->dbname ]
@@ -343,7 +345,6 @@ class WikiManagerFactory {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
-			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->update(
 				$table,
 				[ $selector => $newDatabaseName ],
