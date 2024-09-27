@@ -8,7 +8,9 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWikiFactory;
 
 return [
-	'CreateWiki.NotificationsManager' => static function ( MediaWikiServices $services ): CreateWikiNotificationsManager {
+	'CreateWiki.NotificationsManager' => static function (
+		MediaWikiServices $services
+	): CreateWikiNotificationsManager {
 		return new CreateWikiNotificationsManager(
 			$services->getConnectionProvider(),
 			RequestContext::getMain(),
