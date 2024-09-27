@@ -70,7 +70,7 @@ class WikiRequest {
 
 			// Filter out all non-alphanumeric characters
 			$sanitizedDbname = preg_replace( '/[^a-zA-Z0-9]/', '', $dbRequest->cw_dbname );
-    
+
 			// Ensure that dbname is not empty after sanitization
 			if ( !$sanitizedDbname ) {
 				throw new UnexpectedValueException( 'Invalid dbname provided.' );
