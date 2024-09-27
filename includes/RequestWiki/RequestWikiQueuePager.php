@@ -10,6 +10,7 @@ use MediaWiki\Title\Title;
 class RequestWikiQueuePager extends TablePager {
 
 	private Config $config;
+
 	private string $requester;
 	private string $dbname;
 	private string $status;
