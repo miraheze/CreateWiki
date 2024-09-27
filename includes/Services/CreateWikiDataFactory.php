@@ -285,16 +285,10 @@ class CreateWikiDataFactory {
 	 * @param array $data
 	 */
 	private function writeToFile( string $fileName, array $data ): void {
-		$filePath = "{$this->cacheDir}/{$fileName}.php";
-		if ( !$this->isValidPath( $filePath ) ) {
-			// If we don't have a valid path to use, we exit here.
-			return;
-		}
-
 		$tmpFile = tempnam( wfTempDir(), $fileName );
 		if ( $tmpFile ) {
 			if ( file_put_contents( $tmpFile, "<?php\n\nreturn " . var_export( $data, true ) . ";\n" ) ) {
-				if ( !rename( $tmpFile, $filePath ) ) {
+				if ( !rename( $tmpFile, "{$this->cacheDir}/{$fileName}.php" ) ) {
 					unlink( $tmpFile );
 				}
 			} else {
@@ -310,7 +304,7 @@ class CreateWikiDataFactory {
 	 */
 	private function getCachedWikiData(): ?array {
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
-		if ( $this->isExistingPathValid( $filePath ) ) {
+		if ( file_exists( $filePath ) ) {
 			return include $filePath;
 		}
 
@@ -324,41 +318,10 @@ class CreateWikiDataFactory {
 	 */
 	private function getCachedDatabaseList(): ?array {
 		$filePath = "{$this->cacheDir}/databases.php";
-		if ( $this->isExistingPathValid( $filePath ) ) {
+		if ( file_exists( $filePath ) ) {
 			return include $filePath;
 		}
 
 		return null;
-	}
-
-	/**
-	 * Check if a file path is valid and if the file exists.
-	 *
-	 * @param string $filePath The file path to check.
-	 * @return bool True if the file exists and the path is valid, false otherwise.
-	 */
-	private function isExistingPathValid( string $filePath ): bool {
-		// Check if the file path is valid and if the file exists
-		return $this->isValidPath( $filePath ) && file_exists( $filePath );
-	}
-
-	/**
-	 * Checks for path traversal and ensures that the file path is within the allowed directory.
-	 *
-	 * @param string $filePath The fule path to check.
-	 * @return bool True if the path is valid or if the file does not exist but the path is valid.
-	 */
-	private function isValidPath( string $filePath ): bool {
-		$realCacheDir = realpath( $this->cacheDir );
-
-		// If the file exists, resolve its real path and check if it's within the cache directory
-		if ( file_exists( $filePath ) ) {
-			$realPath = realpath( $filePath );
-			return $realPath !== false && strpos( $realPath, $realCacheDir ) === 0;
-		}
-
-		// If the file does not exist, check the parent directory's real path
-		$parentDir = realpath( dirname( $filePath ) );
-		return $parentDir !== false && strpos( $parentDir, $realCacheDir ) === 0;
 	}
 }
