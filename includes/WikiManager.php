@@ -13,8 +13,8 @@ use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use RuntimeException;
+use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
-use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
 
 class WikiManager {
@@ -24,8 +24,8 @@ class WikiManager {
 
 	private Config $config;
 	private IConnectionProvider $connectionProvider;
-	private IDatabase $dbw;
-	private IDatabase $cwdb;
+	private DBConnRef $dbw;
+	private DBConnRef $cwdb;
 
 	private ?ILoadBalancer $lb = null;
 
@@ -60,7 +60,7 @@ class WikiManager {
 		if ( !$check ) {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
-				$lbs = $this->connectionProvider->getAllMainLBs();
+				$lbs = $services->getDBLoadBalancerFactory()->getAllMainLBs();
 
 				// Calculate the size of each cluster
 				$clusterSizes = [];
@@ -127,10 +127,9 @@ class WikiManager {
 		}
 
 		if ( $this->lb ) {
-			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $wiki );
+			$this->dbw = $this->lb->getPrimaryDatabase( $wiki );
 		} else {
-			$this->dbw = $this->lbFactory->getMainLB( $wiki )
-				->getMaintenanceConnectionRef( DB_PRIMARY, [], $wiki );
+			$this->dbw = $this->connectionProvider->getPrimaryDatabase( $wiki );
 		}
 	}
 
@@ -314,7 +313,7 @@ class WikiManager {
 			return "Can not rename {$old} to {$new} because: {$error}";
 		}
 
-		foreach ( (array)$this->tables as $table => $selector ) {
+		foreach ( $this->tables as $table => $selector ) {
 			// @phan-suppress-next-line SecurityCheck-SQLInjection
 			$this->cwdb->update(
 				$table,
@@ -384,8 +383,9 @@ class WikiManager {
 			return;
 		}
 
-		$logDBConn = $this->lbFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$logDBConn = $this->connectionProvider->getPrimaryDatabase(
+			$this->config->get( 'CreateWikiGlobalWiki' )
+		);
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
