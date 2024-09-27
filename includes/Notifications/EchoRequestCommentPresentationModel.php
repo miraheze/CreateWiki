@@ -20,7 +20,7 @@ class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 		$comment = $this->event->getExtraParam( 'comment' );
 		$text = DiscussionParser::getTextSnippet( $comment, $this->language );
 
-		return new RawMessage( "$1", [ $text ] );
+		return new RawMessage( '$1', [ $text ] );
 	}
 
 	public function getPrimaryLink() {
