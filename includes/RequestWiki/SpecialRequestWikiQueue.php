@@ -2,25 +2,31 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
+use MediaWiki\Config\Config;
+use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\SpecialPage\SpecialPage;
-use Miraheze\CreateWiki\EntryPointUtils;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	private Config $config;
+	private CreateWikiHookRunner $hookRunner;
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	public function __construct(
+		ConfigFactory $configFactory,
+		CreateWikiHookRunner $hookRunner
+	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 
 		$this->hookRunner = $hookRunner;
+
+		$this->config = $this->configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public function execute( $par ) {
-		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
+		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
 			);
