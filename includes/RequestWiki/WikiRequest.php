@@ -215,7 +215,7 @@ class WikiRequest {
 			if ( $validName || $notCreated ) {
 				$this->log( $user, 'create-failure' );
 
-				throw new RuntimeException( $notCreated ?? $validName );
+				throw new RuntimeException( $notCreated ?? $validName ?? 'Unknown error' );
 			} else {
 				$this->status = 'approved';
 				$this->save();
