@@ -126,7 +126,7 @@ class WikiManager {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
-		$checkErrors = $this->checkDatabaseName( $this->dbname );
+		$checkErrors = $this->checkDatabaseName( $this->dbname, forRename: false );
 
 		if ( $checkErrors ) {
 			return $checkErrors;
@@ -309,7 +309,7 @@ class WikiManager {
 
 		$this->compileTables();
 
-		$error = $this->checkDatabaseName( $newDatabaseName, true );
+		$error = $this->checkDatabaseName( dbname: $newDatabaseName, forRename: true );
 
 		if ( $error ) {
 			return "Can not rename {$this->dbname} to {$newDatabaseName} because: {$error}";
@@ -341,7 +341,7 @@ class WikiManager {
 
 	public function checkDatabaseName(
 		string $dbname,
-		bool $forRename = false
+		bool $forRename
 	): ?string {
 		$suffix = $this->config->get( 'CreateWikiDatabaseSuffix' );
 		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
