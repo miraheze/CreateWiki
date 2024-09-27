@@ -80,13 +80,13 @@ class CreateWikiRegexConstraint {
 	 * @return string
 	 */
 	public static function regexFromArray( $regexes, $start, $end, $name = '' ) {
-		if ( empty( $regexes ) ) {
+		if ( !$regexes ) {
 			return '';
 		}
 
 		self::filterInvalidRegexes( $regexes, $name, $start, $end );
 
-		if ( !empty( $regexes ) ) {
+		if ( $regexes ) {
 			$regex = $start . implode( '|', $regexes ) . $end;
 
 			if ( StringUtils::isValidPCRERegex( $regex ) ) {
