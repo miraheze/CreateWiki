@@ -44,13 +44,14 @@ class WikiRequest {
 	private array $involvedUsers = [];
 	private int $visibility = 0;
 
-	public function __construct( int $id = null, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( ?int $id, CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner ?? MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
+		$this->hookRunner = $hookRunner;
 
-		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
+		$connectionProvider = MediaWikiServices::getInstance()->ggetConnectionProvider();
+		$this->dbw = $connectionProvider->getPrimaryDatabase(
+			$this->config->get( 'CreateWikiGlobalWiki' )
+		);
 
 		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
 
