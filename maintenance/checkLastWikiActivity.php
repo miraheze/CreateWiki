@@ -24,7 +24,7 @@ class CheckLastWikiActivity extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$timestamp = $this->getTimestamp();
 		if ( $timestamp === 0 && SiteStats::edits() >= 2 ) {
 			$rebuildRC = $this->runChild(
@@ -42,7 +42,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	private function getTimestamp(): int {
-		$dbr = $this->getDB( DB_REPLICA );
+		$dbr = $this->getReplicaDatabase();
 		$row = $dbr->selectRow(
 			'recentchanges',
 			'rc_timestamp',
