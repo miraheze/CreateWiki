@@ -43,7 +43,9 @@
 		"RequestWikiQueue": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
 			"services": [
-				"ConfigFactory"
+				"ConnectionProvider",
+				"PermissionManager",
+				"UserFactory"
 			]
 		}
 	},
