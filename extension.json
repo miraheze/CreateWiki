@@ -130,7 +130,12 @@
 		"farmer/requestmoredetails": "LogFormatter",
 		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
-		"farmer/requestwiki": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+		"farmer/requestwiki": {
+			"class": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+			"services": [
+				"LinkRenderer"
+			]
+		},
 		"farmersuppression/*": "LogFormatter"
 	},
 	"MessagesDirs": {
