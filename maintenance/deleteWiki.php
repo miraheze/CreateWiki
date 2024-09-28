@@ -24,7 +24,7 @@ class DeleteWiki extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$dbname = $this->getOption( 'deletewiki' );
 
 		if ( !$dbname ) {
