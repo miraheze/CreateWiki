@@ -24,7 +24,7 @@ class SetContainersAccess extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
@@ -45,7 +45,11 @@ class SetContainersAccess extends Maintenance {
 		}
 	}
 
-	protected function prepareDirectory( FileBackend $backend, $dir, array $secure ) {
+	protected function prepareDirectory(
+		FileBackend $backend,
+		string $dir,
+		array $secure
+	): void {
 		// Create zone if it doesn't exist...
 		$this->output( "Making sure '$dir' exists..." );
 		$backend->clearCache( [ $dir ] );
