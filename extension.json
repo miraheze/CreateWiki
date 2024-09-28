@@ -226,7 +226,7 @@
 	},
 	"config": {
 		"CreateWikiAIThreshold": {
-			"description": "Integer. Minimum percentage point threshold for a request to be automatically created when acceptable.",
+			"description": "Integer or false. Minimum percentage point threshold for a request to be automatically created when acceptable.",
 			"public": true,
 			"value": false
 		},
@@ -246,17 +246,17 @@
 			"value": ""
 		},
 		"CreateWikiCacheType": {
-			"description": "Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
+			"description": "String or false. Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
 			"public": true,
 			"value": false
 		},
 		"CreateWikiCannedResponses": {
-			"description": "Boolean. Array of default responses to give. If this is enabled, free-text options are removed.",
+			"description": "Array. An array of default responses to give. If this is enabled (not an empty array), free-text options are removed.",
 			"public": true,
-			"value": false
+			"value": []
 		},
 		"CreateWikiCategories": {
-			"description": "Array. An array of categories used for wiki categorisaion.",
+			"description": "Array. An array of categories used for wiki categorization. If this is an empty array, categories will not be used at all.",
 			"public": true,
 			"value": []
 		},
@@ -360,11 +360,6 @@
 				"removed": 120,
 				"deleted": 7
 			}
-		},
-		"CreateWikiUseCategories": {
-			"description": "Boolean. Whether to use categories to categorise wikis.",
-			"public": true,
-			"value": false
 		},
 		"CreateWikiUseClosedWikis": {
 			"description": "Boolean. Whether to implement front end logic for closing wikis.",
