@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\CreateWiki;
 
+use ErrorPageError;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
@@ -29,13 +30,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 	}
 
 	/**
-	 * @inheritDoc
+	 * @param ?string $par
 	 */
-	public function execute( ?string $par ): void {
+	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
-			return $this->getOutput()->addHTML(
-				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
-			);
+			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
 		parent::execute( $par );
