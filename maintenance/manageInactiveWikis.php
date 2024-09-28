@@ -10,6 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 class ManageInactiveWikis extends Maintenance {
 
@@ -54,7 +55,7 @@ class ManageInactiveWikis extends Maintenance {
 		}
 	}
 
-	private function checkLastActivity( string $dbName, string $wiki ): bool {
+	private function checkLastActivity( string $dbName, RemoteWikiFactory $wiki ): bool {
 		$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
 		$closeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['closed'];
 		$removeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['removed'];
