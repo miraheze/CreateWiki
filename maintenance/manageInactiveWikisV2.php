@@ -145,10 +145,10 @@ class ManageInactiveWikisV2 extends Maintenance {
 		if ( $isClosed && $remoteWiki->getClosedTimestamp() < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
 			if ( $canWrite ) {
 				// $remoteWiki->delete( force: false );
-				// $this->output( "{$dbName} is eligible to be removed from public viewing and has been.\n" );
+				// $this->output( "{$dbName} is eligible for removal and now has been.\n" );
 				$this->output( "{$dbName} is eligible for removal, but deletion is currently disabled.\n" );
 			} else {
-				// $this->output( "{$dbName} is eligible for public removal, was closed on {$remoteWiki->getClosedTimestamp()}.\n" );
+				// $this->output( "{$dbName} is eligible for removal. It was closed on {$remoteWiki->getClosedTimestamp()}.\n" );
 				$this->output( "{$dbName} is eligible for removal if --write is used, but deletion is disabled.\n" );
 			}
 		} else {
