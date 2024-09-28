@@ -444,6 +444,5 @@
 		"includes/ServiceWiring.php"
 	],
 	"load_composer_autoloader": true,
-	"callback": "Miraheze\\CreateWiki\\Hooks::onRegistration",
 	"manifest_version": 2
 }
