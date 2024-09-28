@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable MediaWiki.Commenting.FunctionComment.MissingDocumentationPublic
+
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
