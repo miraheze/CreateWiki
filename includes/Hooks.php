@@ -53,14 +53,6 @@ class Hooks implements
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
-	public static function onRegistration() {
-		global $wgLogTypes;
-
-		if ( !in_array( 'farmer', $wgLogTypes ) ) {
-			$wgLogTypes[] = 'farmer';
-		}
-	}
-
 	/** @inheritDoc */
 	public function onLoginFormValidErrorMessages( array &$messages ) {
 		$messages[] = 'requestwiki-notloggedin';
