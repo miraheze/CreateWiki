@@ -178,12 +178,14 @@
 		}
 	],
 	"Hooks": {
-		"BeforeCreateEchoEvent": "Miraheze\\CreateWiki\\Hooks::onBeforeCreateEchoEvent",
-		"LoadExtensionSchemaUpdates": {
-			"handler": "Installer"
+		"BeforeCreateEchoEvent": {
+			"handler": "Notifications"
 		},
 		"GetMagicVariableIDs": {
 			"handler": "default"
+		},
+		"LoadExtensionSchemaUpdates": {
+			"handler": "Installer"
 		},
 		"LoginFormValidErrorMessages": {
 			"handler": "default"
@@ -210,6 +212,9 @@
 		},
 		"Installer": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"
+		}
+		"Notifications": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Notifications"
 		}
 	},
 	"ResourceModules": {
