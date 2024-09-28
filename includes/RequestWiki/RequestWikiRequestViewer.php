@@ -57,7 +57,7 @@ class RequestWikiRequestViewer {
 			return [];
 		}
 
-		if ( $visibilityConds[$request->getVisibility()] !== 'public' ) {
+		if ( $visibilityConds[$this->request->getVisibility()] !== 'public' ) {
 			if ( !$this->permissionManager->userHasRight( $userR, $visibilityConds[$this->request->getVisibility()] ) ) {
 				$this->context->getOutput()->addHTML(
 					Html::errorBox(
@@ -164,7 +164,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => $this->request->url,
-					'validation-callback' => [ $request, 'parseSubdomain' ],
+					'validation-callback' => [ $this->request, 'parseSubdomain' ],
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
@@ -331,7 +331,7 @@ class RequestWikiRequestViewer {
 		$out = $this->context->getOutput();
 
 		try {
-			$this->request = new WikiRequest( $id );
+			$this->request = new WikiRequest( $requestID );
 		} catch ( Exception $e ) {
 			$out->addHTML(
 				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
