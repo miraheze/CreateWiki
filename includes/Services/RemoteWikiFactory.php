@@ -54,8 +54,8 @@ class RemoteWikiFactory {
 	private bool $experimental = false;
 	private ?string $inactiveExemptReason = null;
 
-	private ?string $closedTimestamp = null;
-	private ?string $inactiveTimestamp = null;
+	private ?int $closedTimestamp = null;
+	private ?int $inactiveTimestamp = null;
 
 	private ?string $log = null;
 
@@ -180,8 +180,8 @@ class RemoteWikiFactory {
 		];
 	}
 
-	public function getInactiveTimestamp(): ?string {
-		return $this->inactiveTimestamp;
+	public function getInactiveTimestamp(): int {
+		return $this->inactiveTimestamp ?? 0;
 	}
 
 	public function isInactiveExempt(): bool {
@@ -264,8 +264,8 @@ class RemoteWikiFactory {
 		$this->hooks[] = 'CreateWikiStateClosed';
 	}
 
-	public function getClosedTimestamp(): ?string {
-		return $this->closedTimestamp;
+	public function getClosedTimestamp(): int {
+		return $this->closedTimestamp ?? 0;
 	}
 
 	public function isDeleted(): bool {
