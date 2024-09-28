@@ -48,7 +48,7 @@ class RemoteWiki {
 	}
 
 	public function isInactive() {
-		return $this->factory->isInactive();
+		return $this->factory->getInactiveTimestamp();
 	}
 
 	public function markInactive() {
@@ -92,7 +92,7 @@ class RemoteWiki {
 	}
 
 	public function isClosed() {
-		return $this->factory->isClosed();
+		return $this->factory->getClosedTimestamp();
 	}
 
 	public function markClosed() {
