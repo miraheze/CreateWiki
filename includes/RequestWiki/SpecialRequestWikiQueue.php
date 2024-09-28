@@ -21,7 +21,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	public function __construct(
 		IConnectionProvider $connectionProvider,
 		PermissionManager $permissionManager,
-		UserFactory $userFactory, 
+		UserFactory $userFactory,
 		WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
