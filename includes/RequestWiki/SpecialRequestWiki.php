@@ -14,24 +14,20 @@ use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\Title\Title;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use StatusValue;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
 	private Config $config;
-	private CreateWikiHookRunner $hookRunner;
 	private LinkRenderer $linkRenderer;
 
 	public function __construct(
 		ConfigFactory $configFactory,
-		CreateWikiHookRunner $hookRunner,
 		LinkRenderer $linkRenderer
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
 		$this->linkRenderer = $linkRenderer;
 	}
 
@@ -67,7 +63,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	protected function getFormFields() {
-		$request = new WikiRequest( null, $this->hookRunner );
+		$request = new WikiRequest( null );
 
 		$formDescriptor = [
 			'subdomain' => [
@@ -176,7 +172,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$request = new WikiRequest( null, $this->hookRunner );
+		$request = new WikiRequest( null );
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
 
