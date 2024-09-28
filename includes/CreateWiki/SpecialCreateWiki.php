@@ -3,8 +3,6 @@
 namespace Miraheze\CreateWiki\CreateWiki;
 
 use ErrorPageError;
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\WikiMap\WikiMap;
