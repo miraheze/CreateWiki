@@ -14,6 +14,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 	private Config $config;
 	private WikiManagerFactory $wikiManagerFactory;
 
+	/**
+	 * @param ConfigFactory $configFactory
+	 * @param WikiManagerFactory $wikiManagerFactory
+	 */
 	public function __construct(
 		ConfigFactory $configFactory,
 		WikiManagerFactory $wikiManagerFactory
@@ -24,7 +28,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
-	public function execute( $par ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function execute( ?string $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
@@ -34,7 +41,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 		parent::execute( $par );
 	}
 
-	protected function getFormFields() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getFormFields(): array {
 		$par = $this->par;
 		$request = $this->getRequest();
 
@@ -94,7 +104,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return $formDescriptor;
 	}
 
-	public function onSubmit( array $formData ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function onSubmit( array $formData ): bool {
 		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$private = $formData['private'];
 		} else {
@@ -127,7 +140,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function isValidDatabase( ?string $dbname ) {
+	/**
+	 * @param ?string $dbname
+	 * @return bool|string
+	 */
+	public function isValidDatabase( ?string $dbname ): bool|string {
 		if ( $dbname === null ) {
 			return true;
 		}
@@ -136,17 +153,24 @@ class SpecialCreateWiki extends FormSpecialPage {
 		$check = $wm->checkDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
+			// Will return a string — the error it received
 			return $check;
 		}
 
 		return true;
 	}
 
-	protected function getDisplayFormat() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	protected function getGroupName() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getGroupName(): string {
 		return 'wikimanage';
 	}
 }
