@@ -54,7 +54,7 @@
 				"WikiManagerFactory"
 			],
 			"needsPage": false
-		}, 
+		},
 		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\SetContainersAccessJob",
