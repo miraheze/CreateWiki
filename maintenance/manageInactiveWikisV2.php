@@ -50,7 +50,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
 
 			// Check if the wiki is inactive based on creation date
-			if ( $wiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
+			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
 				$this->checkLastActivity( $dbName, $remoteWiki );
 			}
 		}
@@ -111,7 +111,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			$this->handleClosedWiki( $dbName, $remoteWiki, $removeDays, $canWrite );
 		}
 
-		$wiki->commit();
+		$remoteWiki->commit();
 		return true;
 	}
 
