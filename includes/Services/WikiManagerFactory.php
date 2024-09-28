@@ -72,6 +72,9 @@ class WikiManagerFactory {
 		$this->userFactory = $userFactory;
 	}
 
+	/**
+	 * @param-taint $dbname tainted
+	 */
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
 		$this->cwdb = $this->connectionProvider->getPrimaryDatabase(
