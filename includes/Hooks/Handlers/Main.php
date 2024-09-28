@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki;
+namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
@@ -15,7 +15,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
 
-class Hooks implements
+class Main implements
 	GetMagicVariableIDsHook,
 	LoginFormValidErrorMessagesHook,
 	ParserGetVariableValueSwitchHook,
