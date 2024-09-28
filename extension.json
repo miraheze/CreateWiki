@@ -214,14 +214,12 @@
 	"ResourceModules": {
 		"ext.createwiki.oouiform": {
 			"scripts": "ext.createwiki.oouiform.ooui.js",
-			"targets": [ "desktop", "mobile" ],
 			"dependencies": [
 				"mediawiki.storage",
 				"oojs-ui-widgets"
 			]
 		},
 		"ext.createwiki.oouiform.styles": {
-			"targets": [ "desktop", "mobile" ],
 			"styles": "ext.createwiki.oouiform.ooui.less"
 		}
 	},
@@ -241,9 +239,9 @@
 			"value": []
 		},
 		"CreateWikiDisallowedSubdomains": {
-			"description": "String or array. Regex to match for disallowed subdomains.",
+			"description": "Array or string. Regexes to match for disallowed subdomains.",
 			"public": true,
-			"value": "/ /"
+			"value": []
 		},
 		"CreateWikiCacheDirectory": {
 			"description": "String. The path to store CreateWiki cache files at.",
