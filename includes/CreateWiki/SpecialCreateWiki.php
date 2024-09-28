@@ -12,20 +12,13 @@ use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
-	private Config $config;
 	private WikiManagerFactory $wikiManagerFactory;
 
 	/**
-	 * @param ConfigFactory $configFactory
 	 * @param WikiManagerFactory $wikiManagerFactory
 	 */
-	public function __construct(
-		ConfigFactory $configFactory,
-		WikiManagerFactory $wikiManagerFactory
-	) {
+	public function __construct( WikiManagerFactory $wikiManagerFactory ) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
-
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
@@ -33,7 +26,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
 			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
@@ -75,18 +68,18 @@ class SpecialCreateWiki extends FormSpecialPage {
 			],
 		];
 
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $this->config->get( 'CreateWikiCategories' ),
+				'options' => $this->getConfig()->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
 			];
 		}
@@ -107,13 +100,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @inheritDoc
 	 */
 	public function onSubmit( array $formData ): bool {
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$private = $formData['private'];
 		} else {
 			$private = 0;
 		}
 
-		if ( $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiCategories' ) ) {
 			$category = $formData['category'];
 		} else {
 			$category = 'uncategorised';
