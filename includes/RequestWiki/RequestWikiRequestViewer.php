@@ -11,7 +11,6 @@ use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Linker\Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class RequestWikiRequestViewer {
@@ -19,7 +18,7 @@ class RequestWikiRequestViewer {
 	private Config $config;
 	private WikiManagerFactory $wikiManagerFactory;
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	public function __construct() {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->wikiManagerFactory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
 	}
