@@ -4,34 +4,57 @@ namespace Miraheze\CreateWiki\CreateWiki;
 
 use Exception;
 use Job;
-use MediaWiki\MediaWikiServices;
-use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\RequestWiki\WikiRequest;
-use Miraheze\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class CreateWikiJob extends Job {
 
-	public function __construct( Title $title, array $params ) {
-		parent::__construct( 'CreateWikiJob', $params );
+	public const JOB_NAME = 'CreateWikiJob';
+
+	private WikiManagerFactory $wikiManagerFactory;
+	
+	private int $id;
+	private bool $private;
+
+	private string $creator;
+	private string $dbname;
+	private string $language;
+	private string $requester;
+	private string $sitename;
+
+	public function __construct(
+		array $params,
+		WikiManagerFactory $wikiManagerFactory
+	) {
+		parent::__construct( self::JOB_NAME, $params );
+
+		$this->creator = $params['creator'];
+		$this->dbname = $params['dbname'];
+		$this->id = $params['id'];
+		$this->language = $params['language'];
+		$this->private = $params['private'];
+		$this->requester = $params['requester'];
+		$this->sitename = $params['sitename'];
+
+		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
 	public function run(): bool {
-		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
-		$wm = new WikiManager( $this->params['dbname'], $hookRunner );
-		$wr = new WikiRequest( $this->params['id'], $hookRunner );
+		$wm = $this->wikiManagerFactory->newInstance( $this->dbname );
+		$wr = new WikiRequest( $this->id );
 
 		try {
 			// This runs checkDatabaseName and if it returns a
 			// non-null value it is returning an error.
 			$notCreated = $wm->create(
-				$this->params['sitename'],
-				$this->params['language'],
-				$this->params['private'],
-				$this->params['category'],
-				$this->params['requester'],
-				$this->params['creator'],
-				"[[Special:RequestWikiQueue/{$this->params['id']}|Requested]]"
+				sitename: $this->sitename,
+				language: $this->language,
+				private: $this->private,
+				category: $this->category,
+				requester: $this->requester,
+				actor: $this->creator,
+				reason: "[[Special:RequestWikiQueue/{$this->id}|Requested]]"
 			);
 
 			if ( $notCreated ) {
