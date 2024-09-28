@@ -44,8 +44,4 @@ class WikiManager {
 	public function rename( string $newDatabaseName ): ?string {
 		return $this->factory->rename( $newDatabaseName );
 	}
-
-	public function checkDatabaseName( string $dbname, bool $forRename ): ?string {
-		return $this->factory->checkDatabaseName( $dbname, $forRename );
-	}
 }
