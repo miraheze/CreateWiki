@@ -182,36 +182,36 @@
 			"handler": "Notifications"
 		},
 		"GetMagicVariableIDs": {
-			"handler": "default"
+			"handler": "Main"
 		},
 		"LoadExtensionSchemaUpdates": {
 			"handler": "Installer"
 		},
 		"LoginFormValidErrorMessages": {
-			"handler": "default"
+			"handler": "Main"
 		},
 		"MakeGlobalVariablesScript": {
-			"handler": "default"
+			"handler": "Main"
 		},
 		"ParserGetVariableValueSwitch": {
-			"handler": "default"
+			"handler": "Main"
 		},
 		"SetupAfterCache": {
-			"handler": "default"
+			"handler": "Main"
 		}
 	},
 	"HookHandlers": {
-		"default": {
-			"class": "Miraheze\\CreateWiki\\Hooks",
+		"Installer": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"
+		},
+		"Main": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Main",
 			"services": [
 				"ConfigFactory",
 				"ConnectionProvider",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"
 			]
-		},
-		"Installer": {
-			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"
 		},
 		"Notifications": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Notifications"
