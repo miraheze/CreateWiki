@@ -184,7 +184,7 @@ class WikiRequest {
 			$jobQueueGroup->push(
 				new JobSpecification(
 					CreateWikiJob::JOB_NAME,
-					[ 
+					[
 						'id' => $this->id,
 						'dbname' => $this->dbname,
 						'sitename' => $this->sitename,
