@@ -101,7 +101,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$private = 0;
 		}
 
-		if ( $this->config->get( 'CreateWikiUseCategories' ) ) {
+		if ( $this->config->get( 'CreateWikiCategories' ) ) {
 			$category = $formData['category'];
 		} else {
 			$category = 'uncategorised';
