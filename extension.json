@@ -50,7 +50,13 @@
 		}
 	},
 	"JobClasses": {
-		"CreateWikiJob": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
+		"CreateWikiJob": {
+			"class": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiJob",
+			"services": [
+				"WikiManagerFactory"
+			],
+			"needsPage": false
+		}, 
 		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\SetContainersAccessJob",
