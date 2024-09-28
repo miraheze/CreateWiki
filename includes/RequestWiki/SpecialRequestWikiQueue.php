@@ -8,6 +8,7 @@ use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWikiQueue extends SpecialPage {
@@ -15,17 +16,20 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	private IConnectionProvider $connectionProvider;
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
 		PermissionManager $permissionManager,
-		UserFactory $userFactory
+		UserFactory $userFactory, 
+		WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 
 		$this->connectionProvider = $connectionProvider;
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
+		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
 	public function execute( $par ) {
