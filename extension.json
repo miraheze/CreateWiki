@@ -29,7 +29,6 @@
 		"CreateWiki": {
 			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
-				"ConfigFactory",
 				"WikiManagerFactory"
 			]
 		},
