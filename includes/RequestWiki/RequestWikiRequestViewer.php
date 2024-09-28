@@ -239,11 +239,11 @@ class RequestWikiRequestViewer {
 				0 => $this->context->msg( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
 			];
 
-			if ( $permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
+			if ( $this->permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
 				$visibilityOptions[1] = $this->context->msg( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
 			}
 
-			if ( $permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' ) ) {
+			if ( $this->permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' ) ) {
 				$visibilityOptions[2] = $this->context->msg( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
