@@ -32,7 +32,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
 			$services->getConfigFactory(),
-			$this->createMock( CreateWikiHookRunner::class ),
 			$services->getLinkRenderer()
 		);
 	}
