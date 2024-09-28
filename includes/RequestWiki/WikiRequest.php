@@ -113,7 +113,13 @@ class WikiRequest {
 		}
 	}
 
-	public function addComment( string $comment, UserIdentity $user, bool $log = true, string $type = 'comment', array $notifyUsers = [] ): bool {
+	public function addComment(
+		string $comment,
+		UserIdentity $user,
+		bool $log = true,
+		string $type = 'comment',
+		array $notifyUsers = []
+	): bool {
 		// don't post empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
 			return false;
@@ -146,7 +152,11 @@ class WikiRequest {
 		return true;
 	}
 
-	private function sendNotification( string $comment, array $notifyUsers, string $type = 'comment' ) {
+	private function sendNotification(
+		string $comment,
+		array $notifyUsers,
+		string $type = 'comment'
+	): void {
 		// don't send notifications for empty comments
 		if ( !$comment || ctype_space( $comment ) ) {
 			return;
@@ -165,11 +175,11 @@ class WikiRequest {
 			->sendNotification( $notificationData, $notifyUsers );
 	}
 
-	public function getComments() {
+	public function getComments(): array {
 		return $this->comments;
 	}
 
-	public function getStatus() {
+	public function getStatus(): string {
 		return $this->status;
 	}
 
@@ -177,7 +187,7 @@ class WikiRequest {
 		return $this->visibility;
 	}
 
-	public function approve( UserIdentity $user, string $reason = null ) {
+	public function approve( UserIdentity $user, string $reason = null ): void {
 		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
 			$jobQueueGroup->push(
@@ -230,13 +240,14 @@ class WikiRequest {
 		}
 	}
 
-	public function decline( string $reason, UserIdentity $user ) {
+	public function decline( string $reason, UserIdentity $user ): void {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
 		$this->save();
 
 		$this->addComment( $reason, $user, false, 'declined', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
+
 		unset(
 			$notifyUsers[$this->requester->getId()],
 			$notifyUsers[$user->getId()]
@@ -253,13 +264,14 @@ class WikiRequest {
 		}
 	}
 
-	public function onhold( string $reason, UserIdentity $user ) {
+	public function onhold( string $reason, UserIdentity $user ): void {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'onhold';
 		$this->save();
 
 		$this->addComment( $reason, $user, true, 'comment', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
+
 		unset(
 			$notifyUsers[$this->requester->getId()],
 			$notifyUsers[$user->getId()]
@@ -268,16 +280,18 @@ class WikiRequest {
 		if ( $notifyUsers ) {
 			$this->sendNotification( $reason, $notifyUsers );
 		}
+
 		$this->log( $user, 'requestonhold' );
 	}
 
-	public function moredetails( string $reason, UserIdentity $user ) {
+	public function moredetails( string $reason, UserIdentity $user ): void {
 		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
 		$this->save();
 
 		$this->addComment( $reason, $user, false, 'moredetails', [ $this->requester ] );
 
 		$notifyUsers = $this->involvedUsers;
+
 		unset(
 			$notifyUsers[$this->requester->getId()],
 			$notifyUsers[$user->getId()]
@@ -286,10 +300,11 @@ class WikiRequest {
 		if ( $notifyUsers ) {
 			$this->sendNotification( $reason, $notifyUsers );
 		}
+
 		$this->log( $user, 'requestmoredetails' );
 	}
 
-	public function log( UserIdentity $user, string $log ) {
+	public function log( UserIdentity $user, string $log ): void {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id ) );
@@ -309,7 +324,7 @@ class WikiRequest {
 		$logEntry->publish( $logID );
 	}
 
-	private function suppressionLog( UserIdentity $user, string $log ) {
+	private function suppressionLog( UserIdentity $user, string $log ): void {
 		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
 		$suppressionLogEntry->setPerformer( $user );
 		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id ) );
@@ -327,7 +342,11 @@ class WikiRequest {
 		$suppressionLogEntry->publish( $suppressionLogID );
 	}
 
-	public function suppress( UserIdentity $user, int $level, $log = true ) {
+	public function suppress(
+		UserIdentity $user,
+		int $level,
+		bool $log = true
+	): void {
 		if ( $level === $this->visibility ) {
 			// Nothing to do, the wiki request already has the requested suppression level
 			return;
@@ -353,7 +372,7 @@ class WikiRequest {
 		}
 	}
 
-	public function reopen( UserIdentity $user, $log = true ) {
+	public function reopen( UserIdentity $user, bool $log = true ): void {
 		$status = $this->status;
 
 		$this->status = ( $status == 'approved' ) ? 'approved' : 'inreview';
@@ -367,7 +386,7 @@ class WikiRequest {
 		}
 	}
 
-	public function save() {
+	public function save(): int {
 		$inReview = $this->dbw->select(
 			'cw_requests',
 			[
@@ -437,25 +456,26 @@ class WikiRequest {
 		return $this->dbw->insertId();
 	}
 
-	public function tryAutoCreate() {
+	public function tryAutoCreate(): void {
 		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
-		$jobQueueGroup->push( new RequestWikiAIJob(
-			Title::newMainPage(),
-			[
-				'description' => $this->description,
-				'id' => $this->id,
-			]
-		) );
+		$jobQueueGroup->push(
+			new JobSpecification(
+				RequestWikiAIJob::JOB_NAME,
+				[
+					'description' => $this->description,
+					'id' => $this->id,
+				]
+			)
+		);
 	}
 
 	/**
 	 * Extract database name from subdomain and automatically configure url and dbname
 	 *
 	 * @param string $subdomain subdomain
-	 *
-	 * @return StatusValue|true
+	 * @return StatusValue|bool
 	 */
-	public function parseSubdomain( string $subdomain ) {
+	public function parseSubdomain( string $subdomain ): StatusValue|bool {
 		$subdomain = strtolower( $subdomain );
 		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
 			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
@@ -470,17 +490,13 @@ class WikiRequest {
 		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
 		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
 			return StatusValue::newFatal( 'createwiki-error-subdomaintaken' );
-
 		} elseif ( !ctype_alnum( $subdomain ) ) {
 			return StatusValue::newFatal( 'createwiki-error-notalnum' );
-
 		} elseif ( preg_match( $disallowedSubdomains, $subdomain ) ) {
 			return StatusValue::newFatal( 'createwiki-error-disallowed' );
-
 		} else {
 			$this->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
 			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
-
 			return true;
 		}
 	}
