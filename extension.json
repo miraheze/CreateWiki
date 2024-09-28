@@ -37,15 +37,13 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
 			"services": [
 				"ConfigFactory",
-				"CreateWikiHookRunner",
 				"LinkRenderer"
 			]
 		},
 		"RequestWikiQueue": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
 			"services": [
-				"ConfigFactory",
-				"CreateWikiHookRunner"
+				"ConfigFactory"
 			]
 		}
 	},
