@@ -28,7 +28,7 @@ class PopulateMainPage extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$language = $this->getOption( 'lang', $this->getConfig()->get( MainConfigNames::LanguageCode ) );
 
 		$mainPageName = wfMessage( 'mainpage' )->inLanguage( $language )->plain();
