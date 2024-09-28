@@ -55,7 +55,14 @@
 			],
 			"needsPage": false
 		},
-		"RequestWikiAIJob": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
+		"RequestWikiAIJob": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\RequestWikiAIJob",
+			"services": [
+				"ConfigFactory",
+				"CreateWikiHookRunner"
+			],
+			"needsPage": false
+		},
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\SetContainersAccessJob",
 			"services": [
