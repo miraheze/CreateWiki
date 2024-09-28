@@ -24,6 +24,10 @@ class CreateWikiJob extends Job {
 	private string $requester;
 	private string $sitename;
 
+	/**
+	 * @param array $params
+	 * @param WikiManagerFactory $wikiManagerFactory
+	 */
 	public function __construct(
 		array $params,
 		WikiManagerFactory $wikiManagerFactory
@@ -42,6 +46,9 @@ class CreateWikiJob extends Job {
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function run(): bool {
 		$wm = $this->wikiManagerFactory->newInstance( $this->dbname );
 		$wr = new WikiRequest( $this->id );
