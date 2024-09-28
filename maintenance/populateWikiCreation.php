@@ -20,7 +20,7 @@ class PopulateWikiCreation extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
 
 		$res = $dbw->select(
