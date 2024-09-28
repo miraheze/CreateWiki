@@ -20,7 +20,7 @@ class RequestWikiAIJob extends Job {
 		$modelFile = $config->get( 'CreateWikiPersistentModelFile' );
 		$hookRunner = MediaWikiServices::getInstance()->get( 'CreateWikiHookRunner' );
 
-		$wr = new WikiRequest( $this->params['id'], $hookRunner );
+		$wr = new WikiRequest( $this->params['id'] );
 
 		$pipeline = '';
 		$hookRunner->onCreateWikiReadPersistentModel( $pipeline );
