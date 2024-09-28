@@ -323,9 +323,8 @@ class RequestWikiRequestViewer {
 	}
 
 	/**
-	 * @param string $id
-	 * @param IContextSource $context
-	 * @param string $formClass
+	 * @param int $requestID
+	 * @return ?CreateWikiOOUIForm
 	 */
 	public function getForm( int $requestID ): ?CreateWikiOOUIForm {
 		$out = $this->context->getOutput();
