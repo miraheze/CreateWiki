@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
+use JobSpecification;
 use ManualLogEntry;
 use MediaWiki\Config\Config;
 use MediaWiki\MainConfigNames;
@@ -179,19 +180,22 @@ class WikiRequest {
 
 	public function approve( UserIdentity $user, string $reason = null ) {
 		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
-			$jobParams = [
-				'id' => $this->id,
-				'dbname' => $this->dbname,
-				'sitename' => $this->sitename,
-				'language' => $this->language,
-				'private' => $this->private,
-				'category' => $this->category,
-				'requester' => $this->requester->getName(),
-				'creator' => $user->getName(),
-			];
-
 			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
-			$jobQueueGroup->push( new CreateWikiJob( Title::newMainPage(), $jobParams ) );
+			$jobQueueGroup->push(
+				new JobSpecification(
+					CreateWikiJob::JOB_NAME,
+					[ 
+						'id' => $this->id,
+						'dbname' => $this->dbname,
+						'sitename' => $this->sitename,
+						'language' => $this->language,
+						'private' => (bool)$this->private,
+						'category' => $this->category,
+						'requester' => $this->requester->getName(),
+						'creator' => $user->getName(),
+					]
+				)
+			);
 
 			$this->status = 'approved';
 			$this->save();
