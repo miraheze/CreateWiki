@@ -2,24 +2,34 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\UserFactory;
 use MediaWiki\WikiMap\WikiMap;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
-	private Config $config;
+	private IConnectionProvider $connectionProvider;
+	private PermissionManager $permissionManager;
+	private UserFactory $userFactory;
 
-	public function __construct( ConfigFactory $configFactory ) {
+	public function __construct(
+		IConnectionProvider $connectionProvider,
+		PermissionManager $permissionManager,
+		UserFactory $userFactory
+	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+
+		$this->connectionProvider = $connectionProvider;
+		$this->permissionManager = $permissionManager;
+		$this->userFactory = $userFactory;
 	}
 
 	public function execute( $par ) {
-		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
 			);
@@ -75,10 +85,25 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
-		$htmlForm->setWrapperLegendMsg( 'requestwikiqueue-search-header' );
-		$htmlForm->setMethod( 'get' )->prepareForm()->displayForm( false );
+		$htmlForm
+			->setMethod( 'get' )
+			->setWrapperLegendMsg( 'requestwikiqueue-search-header' )
+			->setSubmitTextMsg( 'search' )
+			->prepareForm()
+			->displayForm( false );
 
-		$pager = new RequestWikiQueuePager( $this, $requester, $dbname, $status );
+		$pager = new RequestWikiQueuePager(
+			$this->getConfig(),
+			$this->getContext(),
+			$this->connectionProvider,
+			$this->getLinkRenderer(),
+			$this->permissionManager,
+			$this->userFactory,
+			$dbname,
+			$requester,
+			$status
+		);
+
 		$table = $pager->getFullOutput();
 
 		$this->getOutput()->addParserOutputContent( $table );
