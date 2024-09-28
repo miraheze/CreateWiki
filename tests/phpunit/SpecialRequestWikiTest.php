@@ -7,7 +7,6 @@ use MediaWiki\Context\DerivativeContext;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\WikiMap\WikiMap;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
 use SpecialPageTestBase;
 use UserNotLoggedIn;
