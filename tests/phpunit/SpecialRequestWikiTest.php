@@ -28,11 +28,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @inheritDoc
 	 */
 	protected function newSpecialPage() {
-		$services = $this->getServiceContainer();
-		return new SpecialRequestWiki(
-			$services->getConfigFactory(),
-			$services->getLinkRenderer()
-		);
+		return new SpecialRequestWiki();
 	}
 
 	protected function setUp(): void {
