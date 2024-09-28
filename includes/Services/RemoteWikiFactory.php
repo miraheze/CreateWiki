@@ -54,6 +54,9 @@ class RemoteWikiFactory {
 	private bool $experimental = false;
 	private ?string $inactiveExemptReason = null;
 
+	private ?string $closedTimestamp = null;
+	private ?string $inactiveTimestamp = null;
+
 	private ?string $log = null;
 
 	public function __construct(
@@ -106,10 +109,12 @@ class RemoteWikiFactory {
 
 		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
 			$this->closed = (bool)$row->wiki_closed;
+			$this->closedTimestamp = $row->wiki_closed_timestamp;
 		}
 
 		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
 			$this->inactive = (bool)$row->wiki_inactive;
+			$this->inactiveTimestamp = $row->wiki_inactive_timestamp;
 			$this->inactiveExempt = (bool)$row->wiki_inactive_exempt;
 			$this->inactiveExemptReason = $row->wiki_inactive_exempt_reason ?? null;
 		}
@@ -173,6 +178,10 @@ class RemoteWikiFactory {
 			'wiki_inactive' => 0,
 			'wiki_inactive_timestamp' => null,
 		];
+	}
+	
+	public function getInactiveTimestamp(): ?string {
+		return $this->inactiveTimestamp;
 	}
 
 	public function isInactiveExempt(): bool {
@@ -253,6 +262,10 @@ class RemoteWikiFactory {
 			'wiki_inactive_timestamp' => null,
 		];
 		$this->hooks[] = 'CreateWikiStateClosed';
+	}
+
+	public function getClosedTimestamp(): ?string {
+		return $this->closedTimestamp;
 	}
 
 	public function isDeleted(): bool {
