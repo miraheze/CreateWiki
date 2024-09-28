@@ -12,9 +12,9 @@ class WikiManager {
 
 	public bool $exists;
 
-	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
+	public function __construct( string $dbname, CreateWikiHookRunner $hookRunner ) {
 		$factory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
-		$this->factory = $factory->newInstance( $wiki );
+		$this->factory = $factory->newInstance( $dbname );
 		$this->exists = $factory->exists();
 	}
 
