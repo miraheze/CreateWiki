@@ -234,7 +234,6 @@ class RequestWikiRequestViewer {
 			}
 
 			$wm = $this->wikiManagerFactory->newInstance( $request->dbname );
-
 			$wmError = $wm->checkDatabaseName( $request->dbname, forRename: false );
 
 			if ( $wmError ) {
