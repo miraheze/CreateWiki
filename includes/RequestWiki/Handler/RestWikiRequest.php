@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
+use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RestUtils;
@@ -36,7 +37,7 @@ class RestWikiRequest extends SimpleHandler {
 		$this->userFactory = $userFactory;
 	}
 
-	public function run( $requestID ) {
+	public function run( int $requestID ): Response {
 		RestUtils::checkEnv();
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
@@ -112,11 +113,11 @@ class RestWikiRequest extends SimpleHandler {
 		return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 	}
 
-	public function needsWriteAccess() {
+	public function needsWriteAccess(): bool {
 		return false;
 	}
 
-	public function getParamSettings() {
+	public function getParamSettings(): array {
 		return [
 			'id' => [
 				self::PARAM_SOURCE => 'path',
