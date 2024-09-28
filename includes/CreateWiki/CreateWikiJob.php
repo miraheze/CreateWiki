@@ -17,6 +17,7 @@ class CreateWikiJob extends Job {
 	private int $id;
 	private bool $private;
 
+	private string $category;
 	private string $creator;
 	private string $dbname;
 	private string $language;
@@ -29,6 +30,7 @@ class CreateWikiJob extends Job {
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
+		$this->category = $params['category'];
 		$this->creator = $params['creator'];
 		$this->dbname = $params['dbname'];
 		$this->id = $params['id'];
