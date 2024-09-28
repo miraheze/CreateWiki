@@ -6,10 +6,7 @@ use ErrorPageError;
 use Exception;
 use ExtensionRegistry;
 use ManualLogEntry;
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Html\Html;
-use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\Title\Title;
 use MediaWiki\WikiMap\WikiMap;
@@ -18,21 +15,12 @@ use StatusValue;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	private Config $config;
-	private LinkRenderer $linkRenderer;
-
-	public function __construct(
-		ConfigFactory $configFactory,
-		LinkRenderer $linkRenderer
-	) {
+	public function __construct() {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
-
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->linkRenderer = $linkRenderer;
 	}
 
 	public function execute( $par ) {
-		if ( !WikiMap::isCurrentWikiId( $this->config->get( 'CreateWikiGlobalWiki' ) ) ) {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
 			);
@@ -47,12 +35,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( !$this->getUser()->isEmailConfirmed() && $this->config->get( 'RequestWikiConfirmEmail' ) ) {
+		if ( !$this->getUser()->isEmailConfirmed() && $this->getConfig()->get( 'RequestWikiConfirmEmail' ) ) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
 		$out->addModules( [ 'mediawiki.special.userrights' ] );
-		$out->addModuleStyles( 'mediawiki.notification.convertmessagebox.styles' );
+		$out->addModuleStyles( [ 'mediawiki.notification.convertmessagebox.styles' ] );
 
 		$out->addWikiMsg( 'requestwiki-header' );
 
@@ -71,7 +59,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'buttontype' => 'button',
 				'buttonflags' => [],
 				'buttonid' => 'inline-subdomain',
-				'buttondefault' => '.' . $this->config->get( 'CreateWikiSubdomain' ),
+				'buttondefault' => '.' . $this->getConfig()->get( 'CreateWikiSubdomain' ),
 				'label-message' => 'requestwiki-label-subdomain',
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
@@ -91,17 +79,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 			],
 		];
 
-		if ( $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiCategories' ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'help-message' => 'createwiki-help-category',
-				'options' => $this->config->get( 'CreateWikiCategories' ),
+				'options' => $this->getConfig()->get( 'CreateWikiCategories' ),
 				'default' => 'uncategorised',
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiUsePrivateWikis' ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
@@ -109,7 +97,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiShowBiographicalOption' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiShowBiographicalOption' ) ) {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
@@ -117,12 +105,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiPurposes' ) ) {
+		if ( $this->getConfig()->get( 'CreateWikiPurposes' ) ) {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
 				'help-message' => 'createwiki-help-purpose',
-				'options' => $this->config->get( 'CreateWikiPurposes' ),
+				'options' => $this->getConfig()->get( 'CreateWikiPurposes' ),
 			];
 		}
 
@@ -134,7 +122,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 8,
-			'minlength' => $this->config->get( 'RequestWikiMinimumLength' ) ?? false,
+			'minlength' => $this->getConfig()->get( 'RequestWikiMinimumLength' ) ?: false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
@@ -146,11 +134,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'default' => $this->msg( 'requestwiki-label-guidance-post' ),
 		];
 
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->config->get( 'WikiDiscoverUseDescriptions' ) && $this->config->get( 'RequestWikiUseDescriptions' ) ) {
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) && $this->getConfig()->get( 'RequestWikiUseDescriptions' ) ) {
 			$formDescriptor['public-description'] = [
 				'type' => 'textarea',
 				'rows' => 2,
-				'maxlength' => $this->config->get( 'WikiDiscoverDescriptionMaxLength' ) ?? false,
+				'maxlength' => $this->getConfig()->get( 'WikiDiscoverDescriptionMaxLength' ) ?? false,
 				'label-message' => 'requestwiki-label-public-description',
 				'help-message' => 'requestwiki-help-public-description',
 				'required' => true,
@@ -158,7 +146,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->config->get( 'RequestWikiConfirmAgreement' ) ) {
+		if ( $this->getConfig()->get( 'RequestWikiConfirmAgreement' ) ) {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
@@ -172,12 +160,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function onSubmit( array $formData ) {
-		$request = new WikiRequest( null );
+		$request = new WikiRequest( id: null );
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
 
-		$request->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
-		$request->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
+		$request->dbname = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
+		$request->url = $subdomain . '.' . $this->getConfig()->get( 'CreateWikiSubdomain' );
 		$request->description = $formData['reason'];
 		$request->sitename = $formData['sitename'];
 		$request->language = $formData['language'];
@@ -204,7 +192,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return false;
 		}
 
-		$idlink = $this->linkRenderer->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
+		$idlink = $this->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
 
 		$farmerLogEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
 		$farmerLogEntry->setPerformer( $this->getUser() );
