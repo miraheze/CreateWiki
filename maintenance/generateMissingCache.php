@@ -21,7 +21,7 @@ class GenerateMissingCache extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
 
 		foreach ( $this->getConfig()->get( MainConfigNames::LocalDatabases ) as $db ) {
