@@ -10,7 +10,7 @@ use Miraheze\CreateWiki\Notifications\EchoRequestCommentPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestDeclinedPresentationModel;
 use Miraheze\CreateWiki\Notifications\EchoRequestMoreDetailsPresentationModel;
 
-class EchoHandler implements BeforeCreateEchoEventHook {
+class Notifications implements BeforeCreateEchoEventHook {
 
 	/**
 	 * Add CreateWiki events to Echo
