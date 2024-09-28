@@ -212,7 +212,7 @@
 		},
 		"Installer": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"
-		}
+		},
 		"Notifications": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Notifications"
 		}
