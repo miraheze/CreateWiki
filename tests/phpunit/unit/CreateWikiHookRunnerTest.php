@@ -11,9 +11,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
  */
 class CreateWikiHookRunnerTest extends HookRunnerTestBase {
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public static function provideHookRunners(): Generator {
 		yield CreateWikiHookRunner::class => [ CreateWikiHookRunner::class ];
 	}
