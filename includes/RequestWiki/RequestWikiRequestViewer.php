@@ -12,16 +12,16 @@ use MediaWiki\Linker\Linker;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class RequestWikiRequestViewer {
 
 	private Config $config;
-	private CreateWikiHookRunner $hookRunner;
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct( CreateWikiHookRunner $hookRunner ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
+		$this->wikiManagerFactory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
 	}
 
 	public function getFormDescriptor(
@@ -235,7 +235,7 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[2] = wfMessage( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
-			$wm = new WikiManager( $request->dbname, $this->hookRunner );
+			$wm = $this->wikiManagerFactory->newInstance( $request->dbname );
 
 			$wmError = $wm->checkDatabaseName( $request->dbname, forRename: false );
 
@@ -329,7 +329,7 @@ class RequestWikiRequestViewer {
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
 		try {
-			$request = new WikiRequest( (int)$id, $this->hookRunner );
+			$request = new WikiRequest( (int)$id );
 		} catch ( Exception $e ) {
 			$context->getOutput()->addHTML( Html::errorBox( wfMessage( 'requestwiki-unknown' )->escaped() ) );
 
