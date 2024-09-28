@@ -70,6 +70,8 @@ class ManageInactiveWikisV2 extends Maintenance {
 			CheckLastWikiActivity::class,
 			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php'
 		);
+		'@phan-var CheckLastWikiActivity $activity';
+
 		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbName ) );
 		$activity->execute();
