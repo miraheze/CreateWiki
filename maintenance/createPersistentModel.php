@@ -26,7 +26,7 @@ class CreatePersistentModel extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiGlobalWiki' ) );
 
 		$res = $dbr->select(
