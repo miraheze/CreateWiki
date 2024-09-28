@@ -45,7 +45,8 @@
 			"services": [
 				"ConnectionProvider",
 				"PermissionManager",
-				"UserFactory"
+				"UserFactory",
+				"WikiManagerFactory"
 			]
 		}
 	},
