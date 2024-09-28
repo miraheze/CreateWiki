@@ -14,7 +14,6 @@ use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\CreateWiki\CreateWikiJob;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use RuntimeException;
 use StatusValue;
@@ -48,7 +47,7 @@ class WikiRequest {
 	private array $involvedUsers = [];
 	private int $visibility = 0;
 
-	public function __construct( ?int $id, CreateWikiHookRunner $hookRunner = null ) {
+	public function __construct( ?int $id ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->wikiManagerFactory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
 
