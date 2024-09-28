@@ -19,7 +19,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		parent::setUp();
 
 		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' );
-		$this->setMwGlobals( 'wgCreateWikiDatabaseClusters', [ 'c1' ] );
 		$this->setMwGlobals( 'wgCreateWikiSQLfiles', [
 			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
 		] );
