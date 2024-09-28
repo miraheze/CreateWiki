@@ -8,21 +8,14 @@ use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\WikiMap\WikiMap;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	private Config $config;
-	private CreateWikiHookRunner $hookRunner;
 
-	public function __construct(
-		ConfigFactory $configFactory,
-		CreateWikiHookRunner $hookRunner
-	) {
+	public function __construct( ConfigFactory $configFactory ) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
-
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
 	}
 
 	public function execute( $par ) {
@@ -38,7 +31,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->doPagerStuff();
 		} else {
 			$this->getOutput()->addBacklinkSubtitle( $this->getPageTitle() );
-
 			$this->lookupRequest( $par );
 		}
 	}
@@ -101,7 +93,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 		$out->addModules( [ 'mediawiki.special.userrights' ] );
 
-		$requestViewer = new RequestWikiRequestViewer( $this->hookRunner );
+		$requestViewer = new RequestWikiRequestViewer();
 		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );
 
 		$htmlForm->show();
