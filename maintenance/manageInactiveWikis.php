@@ -49,7 +49,7 @@ class ManageInactiveWikis extends Maintenance {
 			$wiki = $remoteWikiFactory->newInstance( $dbName );
 			$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
 
-			if ( $wiki->getCreationDate() < date( "YmdHis", strtotime( "-{$inactiveDays} days" ) ) ) {
+			if ( $wiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
 				$this->checkLastActivity( $dbName, $wiki );
 			}
 		}
