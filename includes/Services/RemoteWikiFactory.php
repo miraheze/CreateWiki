@@ -179,7 +179,7 @@ class RemoteWikiFactory {
 			'wiki_inactive_timestamp' => null,
 		];
 	}
-	
+
 	public function getInactiveTimestamp(): ?string {
 		return $this->inactiveTimestamp;
 	}
