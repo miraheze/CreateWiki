@@ -345,7 +345,6 @@ class RequestWikiRequestViewer {
 		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
-
 		$formDescriptor = $this->getFormDescriptor();
 		$htmlForm = new CreateWikiOOUIForm( $formDescriptor, $this->context, 'requestwikiqueue' );
 

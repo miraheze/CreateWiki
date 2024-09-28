@@ -120,7 +120,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->permissionManager,
 			$this->wikiManagerFactory
 		);
-	
+
 		$htmlForm = $requestViewer->getForm( (int)$par );
 
 		if ( $htmlForm ) {
