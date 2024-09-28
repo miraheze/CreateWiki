@@ -176,7 +176,7 @@ class WikiManagerFactory {
 	}
 
 	public function create(
-		string $siteName,
+		string $sitename,
 		string $language,
 		bool $private,
 		string $category,
@@ -193,7 +193,7 @@ class WikiManagerFactory {
 			[
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
-				'wiki_sitename' => $siteName,
+				'wiki_sitename' => $sitename,
 				'wiki_language' => $language,
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
@@ -202,7 +202,7 @@ class WikiManagerFactory {
 		);
 
 		$this->doAfterCreate(
-			$siteName,
+			$sitename,
 			$private,
 			$requester,
 			$actor,
@@ -215,7 +215,7 @@ class WikiManagerFactory {
 	}
 
 	public function doAfterCreate(
-		string $siteName,
+		string $sitename,
 		bool $private,
 		string $requester,
 		string $actor,
@@ -278,10 +278,10 @@ class WikiManagerFactory {
 				'type' => 'wiki-creation',
 				'extra' => [
 					'wiki-url' => 'https://' . substr( $this->dbname, 0, -strlen( $this->options->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->options->get( 'CreateWikiSubdomain' )}",
-					'sitename' => $siteName,
+					'sitename' => $sitename,
 				],
 				'subject' => $this->messageLocalizer->msg(
-					'createwiki-email-subject', $siteName
+					'createwiki-email-subject', $sitename
 				)->inContentLanguage()->text(),
 				'body' => [
 					'html' => nl2br( $this->messageLocalizer->msg(
