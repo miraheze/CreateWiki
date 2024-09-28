@@ -115,7 +115,6 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 8,
-				// @phan-suppress-next-line SecurityCheck-XSS
 				'label' => wfMessage( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
 				'default' => $comment['comment'],
 			];
