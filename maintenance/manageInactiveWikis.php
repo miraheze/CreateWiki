@@ -22,7 +22,7 @@ class ManageInactiveWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		if ( !$this->getConfig()->get( 'CreateWikiEnableManageInactiveWikis' ) ) {
 			$this->fatalError(
 				'This script can not be run because it has not yet been enabled. You may enable $wgCreateWikiEnableManageInactiveWikis in order to run this script.'
@@ -38,7 +38,7 @@ class ManageInactiveWikis extends Maintenance {
 			'wiki_dbname',
 			[
 				'wiki_inactive_exempt' => 0,
-				'wiki_deleted' => 0
+				'wiki_deleted' => 0,
 			],
 			__METHOD__
 		);
@@ -54,7 +54,7 @@ class ManageInactiveWikis extends Maintenance {
 		}
 	}
 
-	private function checkLastActivity( $dbName, $wiki ) {
+	private function checkLastActivity( string $dbName, string $wiki ): bool {
 		$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
 		$closeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['closed'];
 		$removeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['removed'];
@@ -161,7 +161,7 @@ class ManageInactiveWikis extends Maintenance {
 		return true;
 	}
 
-	private function notify( $wiki ) {
+	private function notify( string $wiki ): void {
 		$notificationData = [
 			'type' => 'closure',
 			'subject' => wfMessage( 'miraheze-close-email-subject', $wiki )->inContentLanguage()->text(),
