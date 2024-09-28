@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\Services\WikiManagerFactory;
 class WikiManager {
 
 	private WikiManagerFactory $factory;
+
 	public bool $exists;
 
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
@@ -18,7 +19,7 @@ class WikiManager {
 	}
 
 	public function create(
-		string $siteName,
+		string $sitename,
 		string $language,
 		bool $private,
 		string $category,
@@ -27,7 +28,7 @@ class WikiManager {
 		string $reason
 	): ?string {
 		return $this->factory->create(
-			$siteName,
+			$sitename,
 			$language,
 			$private,
 			$category,
