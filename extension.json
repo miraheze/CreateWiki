@@ -143,12 +143,8 @@
 		"CreateWikiMagic": "CreateWikiMagic.php"
 	},
 	"AutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\": "includes/"
-	},
-	"AutoloadClasses": {
-		"Miraheze\\CreateWiki\\Maintenance\\DeleteWikis": "maintenance/deleteWikis.php",
-		"Miraheze\\CreateWiki\\Maintenance\\PopulateMainPage": "maintenance/populateMainPage.php",
-		"Miraheze\\CreateWiki\\Maintenance\\RenameWiki": "maintenance/renameWiki.php"
+		"Miraheze\\CreateWiki\\": "includes/",
+		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
 	},
 	"TestAutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\Tests\\Unit\\": "tests/phpunit/unit/",
@@ -230,47 +226,34 @@
 	"config": {
 		"CreateWikiAIThreshold": {
 			"description": "Integer or false. Minimum percentage point threshold for a request to be automatically created when acceptable.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
-			"public": true,
-			"value": []
-		},
-		"CreateWikiDisallowedSubdomains": {
-			"description": "Array or string. Regexes to match for disallowed subdomains.",
-			"public": true,
 			"value": []
 		},
 		"CreateWikiCacheDirectory": {
 			"description": "String. The path to store CreateWiki cache files at.",
-			"public": true,
 			"value": ""
 		},
 		"CreateWikiCacheType": {
 			"description": "String or false. Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiCannedResponses": {
 			"description": "Array. An array of default responses to give. If this is enabled (not an empty array), free-text options are removed.",
-			"public": true,
 			"value": []
 		},
 		"CreateWikiCategories": {
 			"description": "Array. An array of categories used for wiki categorization. If this is an empty array, categories will not be used at all.",
-			"public": true,
 			"value": []
 		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
-			"public": true,
 			"value": ""
 		},
 		"CreateWikiContainers": {
 			"description": "Array. List of local containers to create. Format: <container>: <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MW default containers with most public apart from deleted and temp.",
-			"public": true,
 			"value": {
 				"local-public": "public-private",
 				"local-thumb": "public-private",
@@ -281,82 +264,70 @@
 		},
 		"CreateWikiCustomDomainPage": {
 			"description": "String. Page name to link to for more information on custom domains.",
-			"public": true,
 			"value": ""
 		},
 		"CreateWikiDatabase": {
 			"description": "String. Database name of where cw_wikis is stored.",
-			"public": true,
 			"value": ""
 		},
 		"CreateWikiDatabaseClusters": {
 			"description": "Array. LBFactory clusters which CreateWiki considers active.",
-			"public": true,
 			"value": []
 		},
 		"CreateWikiDatabaseClustersInactive": {
 			"description": "Array. LBFactory clusters which are not considered active for use of automatic loadbalancing.",
-			"public": true,
 			"value": []
 		},
 		"CreateWikiDatabaseSuffix": {
 			"description": "String. Database suffix.",
-			"public": true,
 			"value": "wiki"
 		},
 		"CreateWikiDisableRESTAPI": {
 			"description": "Boolean. If set to true, disable the REST API",
-			"public": true,
 			"value": false
+		},
+		"CreateWikiDisallowedSubdomains": {
+			"description": "Array or string. Regexes to match for disallowed subdomains.",
+			"value": []
 		},
 		"CreateWikiEmailNotifications": {
 			"description": "Boolean. Whether to send emails for new wiki creations.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiEnableManageInactiveWikis": {
 			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiGlobalWiki": {
-			"description": "String. Database name of the global wiki. (Where RequestWiki should be enabled and Special:CreateWiki available.)",
-			"public": true,
+			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
 			"value": ""
 		},
+		"CreateWikiInactiveExemptReasonOptions": {
+			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
+			"value": []
+		},
 		"CreateWikiNotificationEmail": {
-			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications!",
-			"public": true,
+			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
 			"value": "root@localhost"
 		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
-			"public": true,
 			"value": ""
 		},
 		"CreateWikiPurposes": {
 			"description": "Array. List of identified purposes to show when requesting a wiki.",
-			"public": true,
 			"value": []
 		},
 		"CreateWikiShowBiographicalOption": {
 			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiSQLfiles": {
 			"description": "Array. All SQLs to be loaded into every wiki by default.",
-			"public": true,
 			"value": []
-		},
-		"CreateWikiSubdomain": {
-			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
-			"public": true,
-			"value": ""
 		},
 		"CreateWikiStateDays": {
 			"description": "Array. Integer values in days when a wiki is deemed inactive, closed, removed (hidden) and deleted. Number of days passed since last change - not from initial inactivity.",
-			"public": true,
 			"value": {
 				"inactive": 45,
 				"closed": 15,
@@ -364,69 +335,56 @@
 				"deleted": 7
 			}
 		},
+		"CreateWikiSubdomain": {
+			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
+			"value": ""
+		},
 		"CreateWikiUseClosedWikis": {
 			"description": "Boolean. Whether to implement front end logic for closing wikis.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiUseCustomDomains": {
 			"description": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiUseEchoNotifications": {
 			"description": "Boolean. Whether to use Echo notifications (beta feature).",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiUseInactiveWikis": {
-			"description": "Boolean. Whether to implement front end logic for inactive wikis.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiInactiveExemptReasonOptions": {
-			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
-			"public": true,
-			"value": []
-		},
-		"CreateWikiUseJobQueue": {
-			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
-			"public": true,
-			"value": false
-		},
-		"CreateWikiUsePrivateWikis": {
-			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
-			"public": true,
 			"value": false
 		},
 		"CreateWikiUseExperimental": {
 			"description": "Boolean. Whether to implement front-end logic for marking wikis as experimental.",
-			"public": true,
+			"value": false
+		},
+		"CreateWikiUseInactiveWikis": {
+			"description": "Boolean. Whether to implement front end logic for inactive wikis.",
+			"value": false
+		},
+		"CreateWikiUseJobQueue": {
+			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
+			"value": false
+		},
+		"CreateWikiUsePrivateWikis": {
+			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
 			"value": false
 		},
 		"RequestWiki": {
 			"description": "Boolean. Whether RequestWiki should be enabled or not.",
-			"public": true,
 			"value": true
 		},
 		"RequestWikiConfirmAgreement": {
 			"description": "Boolean. Require users to confirm they will abide by farm policies.",
-			"public": true,
 			"value": false
 		},
 		"RequestWikiConfirmEmail": {
 			"description": "Boolean. Require users to confirm emails before being able to request wikis.",
-			"public": true,
 			"value": true
 		},
 		"RequestWikiMinimumLength": {
-			"description": "Int. Minimum length of wiki requests.",
-			"public": true,
+			"description": "Integer. Minimum length for descriptions within wiki requests.",
 			"value": false
 		},
 		"RequestWikiUseDescriptions": {
-			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not.",
-			"public": true,
+			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not. If WikiDiscover is not installed, this does nothing.",
 			"value": false
 		}
 	},
