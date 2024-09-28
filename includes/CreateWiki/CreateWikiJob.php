@@ -13,7 +13,7 @@ class CreateWikiJob extends Job {
 	public const JOB_NAME = 'CreateWikiJob';
 
 	private WikiManagerFactory $wikiManagerFactory;
-	
+
 	private int $id;
 	private bool $private;
 
