@@ -251,7 +251,7 @@ class RequestWikiRequestViewer {
 			$wmError = $wm->checkDatabaseName( $this->request->dbname, forRename: false );
 
 			if ( $wmError ) {
-				$context->getOutput()->addHTML( Html::errorBox( $wmError ) );
+				$this->context->getOutput()->addHTML( Html::errorBox( $wmError ) );
 			}
 
 			$formDescriptor += [
