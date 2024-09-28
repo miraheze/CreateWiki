@@ -24,7 +24,7 @@ class RebuildExtensionListCache extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$queue = array_fill_keys( array_merge(
 			glob( $this->getConfig()->get( MainConfigNames::ExtensionDirectory ) . '/*/extension*.json' ),
 			glob( $this->getConfig()->get( MainConfigNames::StyleDirectory ) . '/*/skin.json' )
