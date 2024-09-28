@@ -113,19 +113,19 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getOutput()->addParserOutputContent( $table );
 	}
 
-	private function lookupRequest( $par ) {
-		$out = $this->getOutput();
+	private function lookupRequest( string $par ) {
+		$requestViewer = new RequestWikiRequestViewer(
+			$this->getConfig(),
+			$this->getContext(),
+			$this->permissionManager,
+			$this->wikiManagerFactory
+		);
+	
+		$htmlForm = $requestViewer->getForm( (int)$par );
 
-		$out->addModules( [ 'ext.createwiki.oouiform' ] );
-
-		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
-		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
-		$out->addModules( [ 'mediawiki.special.userrights' ] );
-
-		$requestViewer = new RequestWikiRequestViewer();
-		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );
-
-		$htmlForm->show();
+		if ( $htmlForm ) {
+			$htmlForm->show();
+		}
 	}
 
 	protected function getGroupName() {
