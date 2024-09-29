@@ -167,7 +167,7 @@ class WikiRequestManager {
 	}
 
 	public function getStatus(): string {
-		return $this->row->request_status;
+		return $this->row->cw_status;
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ): void {
