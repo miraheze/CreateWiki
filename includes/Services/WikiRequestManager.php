@@ -4,22 +4,21 @@ namespace Miraheze\CreateWiki\Services;
 
 use JobSpecification;
 use ManualLogEntry;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Config\ServiceOptions;
+use MediaWiki\JobQueue\JobQueueGroupFactory;
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
+use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use RuntimeException;
+use stdClass;
+use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
-use MediaWiki\Linker\LinkRenderer;
-use stdClass;
-use MediaWiki\User\UserFactory;
-use Wikimedia\Rdbms\IConnectionProvider;
-use MediaWiki\JobQueue\JobQueueGroupFactory;
-use MediaWiki\Config\ServiceOptions;
 
 class WikiRequestManager {
 
