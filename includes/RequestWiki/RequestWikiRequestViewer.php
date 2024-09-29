@@ -400,7 +400,7 @@ class RequestWikiRequestViewer {
 		$session->remove( 'previous_posted_comment' );
 
 		if ( isset( $formData['submit-edit'] ) ) {
-			if ( $status === 'approved' ) {
+			if ( $this->wikiRequestManager->getStatus() === 'approved' ) {
 				// TODO: can not edit already approved request message
 				return;
 			}
@@ -417,9 +417,17 @@ class RequestWikiRequestViewer {
 
 			$changes = $this->wikiRequestManager->getChanges();
 			if ( $changes ) {
-				$comment = $this->context->msg( 'createwiki-request-reopened' )->rawParams(
+				$message = 'createwiki-request-edited';
+				$log = false;
+				if ( $this->wikiRequestManager->getStatus() === 'declined' ) {
+					$message = 'createwiki-request-reopened';
+					$log = true;
+				}
+
+				$comment = $this->context->msg( $message )->rawParams(
 					implode( "\n\n", $changes )
 				)->inContentLanguage()->escaped();
+
 				$this->wikiRequestManager->addComment(
 					comment: $comment,
 					user: $user,
@@ -428,7 +436,10 @@ class RequestWikiRequestViewer {
 				);
 
 				$this->wikiRequestManager->setStatus( 'inreview' );
-				$this->wikiRequestManager->log( $user, 'requestreopen' );
+	
+				if ( $log ) {
+					$this->wikiRequestManager->log( $user, 'requestreopen' );
+				}
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
