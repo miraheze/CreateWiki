@@ -187,7 +187,25 @@ class WikiRequestManager {
 	}
 
 	public function getDescription(): string {
+		$comment = explode( "\n", $this->row->cw_comment, 2 );
+		$purposeCheck = explode( ':', $comment[0], 2 );
+
+		if ( $purposeCheck[0] === 'Purpose' ) {
+			return $comment[1];
+		}
+
 		return $this->row->cw_comment;
+	}
+
+	public function getPurpose(): ?string {
+		$comment = explode( "\n", $this->row->cw_comment, 2 );
+		$purposeCheck = explode( ':', $comment[0], 2 );
+
+		if ( $purposeCheck[0] === 'Purpose' ) {
+			return $purposeCheck[1];
+		}
+ 
+		return null;
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ): void {
