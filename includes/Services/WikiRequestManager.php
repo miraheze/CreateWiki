@@ -145,7 +145,7 @@ class WikiRequestManager {
 
 		$comments = [];
 		foreach ( $res as $row ) {
-			$user = $this->userFactory->newFromId( $row->cw_user );
+			$user = $this->userFactory->newFromId( $row->cw_comment_user );
 
 			$comments[] = [
 				'comment' => $row->cw_comment,
