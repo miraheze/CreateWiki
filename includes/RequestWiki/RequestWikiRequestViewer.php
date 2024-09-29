@@ -415,6 +415,22 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setPrivate( (bool)$formData['edit-private'] ?? false );
 			$this->wikiRequestManager->setBio( (bool)$formData['edit-bio'] ?? false );
 
+			$changes = $this->wikiRequestManager->getChanges();
+			if ( $changes ) {
+				$comment = $this->context->msg( 'createwiki-request-reopened' )->rawParams(
+					implode( "\n\n", $changes )
+				)->inContentLanguage()->escaped();
+				$this->wikiRequestManager->addComment(
+					comment: $comment,
+					user: $user,
+					log: false,
+					type: 'comment'
+				);
+
+				$this->wikiRequestManager->setStatus( 'inreview' );
+				$this->wikiRequestManager->log( $user, 'requestreopen' );
+			}
+
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			return;
 		}
