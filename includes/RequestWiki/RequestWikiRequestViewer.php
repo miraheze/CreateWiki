@@ -9,8 +9,10 @@ use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Linker\Linker;
+use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
+use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class RequestWikiRequestViewer {
@@ -169,7 +171,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => $this->request->url,
-					'validation-callback' => [ $this->request, 'parseSubdomain' ],
+					'validation-callback' => [ $this, 'isValidSubdomain' ],
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
@@ -433,5 +435,39 @@ class RequestWikiRequestViewer {
 		);
 
 		return false;
+	}
+
+	public function isValidSubdomain( ?string $subdomain ): bool|Message {
+		if ( !$subdomain || ctype_space( $subdomain ) ) {
+			return $this->msg( 'htmlform-required' );
+		}
+
+		$subdomain = strtolower( $subdomain );
+		$configSubdomain = $this->getConfig()->get( 'CreateWikiSubdomain' );
+
+		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
+			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
+		}
+
+		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
+			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			'CreateWikiDisallowedSubdomains'
+		);
+
+		$database = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
+
+		if ( in_array( $database, $this->getConfig()->get( MainConfigNames::LocalDatabases ) ) ) {
+			return $this->msg( 'createwiki-error-subdomaintaken' );
+		}
+
+		if ( !ctype_alnum( $subdomain ) ) {
+			return $this->msg( 'createwiki-error-notalnum' );
+		}
+
+		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
+			return $this->msg( 'createwiki-error-disallowed' );
+		}
+
+		return true;
 	}
 }
