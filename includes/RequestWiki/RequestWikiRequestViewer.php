@@ -34,14 +34,13 @@ class RequestWikiRequestViewer {
 	}
 
 	public function getFormDescriptor(): array {
+		$user = $this->context->getUser();
+
 		$visibilityConds = [
 			0 => 'public',
 			1 => 'createwiki-deleterequest',
 			2 => 'createwiki-suppressrequest',
 		];
-
-		// Gets user from request
-		$userR = $this->context->getUser();
 
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
@@ -49,20 +48,16 @@ class RequestWikiRequestViewer {
 		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
 		if ( $this->request->getVisibility() >= 3 ) {
 			$this->context->getOutput()->addHTML(
-				Html::errorBox(
-					$this->context->msg( 'requestwiki-unknown' )->escaped()
-				)
+				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 			);
 
 			return [];
 		}
 
 		if ( $visibilityConds[$this->request->getVisibility()] !== 'public' ) {
-			if ( !$this->permissionManager->userHasRight( $userR, $visibilityConds[$this->request->getVisibility()] ) ) {
+			if ( !$this->permissionManager->userHasRight( $user, $visibilityConds[$this->request->getVisibility()] ) ) {
 				$this->context->getOutput()->addHTML(
-					Html::errorBox(
-						$this->context->msg( 'requestwiki-unknown' )->escaped()
-					)
+					Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 				);
 
 				return [];
@@ -92,25 +87,32 @@ class RequestWikiRequestViewer {
 				'default' => $this->request->language,
 			],
 			'requester' => [
-				// @phan-suppress-next-line SecurityCheck-XSS
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => $this->request->requester->getName() . Linker::userToolLinks( $this->request->requester->getId(), $this->request->requester->getName() ),
+				'default' => htmlspecialchars( $this->request->requester->getName() ) .
+					Linker::userToolLinks(
+						$this->request->requester->getId(),
+						$this->request->requester->getName()
+					),
 				'raw' => true,
 			],
 			'requestedDate' => [
 				'label-message' => 'requestwikiqueue-request-label-requested-date',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => $this->context->getLanguage()->timeanddate( (string)$this->request->timestamp, true ),
+				'default' => $this->context->getLanguage()->timeanddate(
+					$this->request->timestamp, true
+				),
 			],
 			'status' => [
 				'label-message' => 'requestwikiqueue-request-label-status',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->context->msg( 'requestwikiqueue-' . $this->request->getStatus() )->text(),
+				'default' => $this->context->msg(
+					'requestwikiqueue-' . $this->request->getStatus()
+				)->text(),
 			],
 			'description' => [
 				'type' => 'textarea',
@@ -129,15 +131,18 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'section' => 'comments',
 				'rows' => 8,
-				'label' => $this->context->msg( 'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp' )->rawParams( $comment['user']->getName() )->params( $this->context->getLanguage()->timeanddate( $comment['timestamp'], true ) )->text(),
+				'label-message' => [
+					'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp',
+					$comment['user']->getName(),
+					$this->context->getLanguage()->timeanddate( $comment['timestamp'], true ),
+				],
 				'default' => $comment['comment'],
 			];
 		}
 
 		if (
-			( $this->permissionManager->userHasRight( $userR, 'createwiki' ) ||
-			$userR->getId() == $this->request->requester->getId() ) &&
-			!$userR->getBlock()
+			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
+			$user->getActorId() === $this->request->requester->getActorId()
 		) {
 			$formDescriptor += [
 				'comment' => [
@@ -226,24 +231,24 @@ class RequestWikiRequestViewer {
 
 			$formDescriptor['submit-edit'] = [
 				'type' => 'submit',
-				'default' => $this->context->msg( 'requestwikiqueue-request-label-edit-wiki' )->text(),
+				'buttonlabel-message' => 'requestwikiqueue-request-label-edit-wiki',
 				'section' => 'edit',
 			];
 		}
 
 		// TODO: Should we really require (createwiki) to suppress wiki requests?
-		if ( $this->permissionManager->userHasRight( $userR, 'createwiki' ) && !$userR->getBlock() ) {
+		if ( $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock() ) {
 
 			// You can't even get to this part in suppressed wiki requests without the appropiate userright, so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
 				0 => $this->context->msg( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
 			];
 
-			if ( $this->permissionManager->userHasRight( $userR, 'createwiki-deleterequest' ) ) {
+			if ( $this->permissionManager->userHasRight( $user, 'createwiki-deleterequest' ) ) {
 				$visibilityOptions[1] = $this->context->msg( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
 			}
 
-			if ( $this->permissionManager->userHasRight( $userR, 'createwiki-suppressrequest' ) ) {
+			if ( $this->permissionManager->userHasRight( $user, 'createwiki-suppressrequest' ) ) {
 				$visibilityOptions[2] = $this->context->msg( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
@@ -296,7 +301,7 @@ class RequestWikiRequestViewer {
 				],
 				'submit-handle' => [
 					'type' => 'submit',
-					'default' => $this->context->msg( 'htmlform-submit' )->text(),
+					'buttonlabel-message' => 'htmlform-submit',
 					'section' => 'handle',
 				],
 			];
