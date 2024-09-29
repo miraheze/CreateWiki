@@ -75,7 +75,7 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->wikiRequestManager->sitename,
+				'default' => $this->wikiRequestManager->getSitename(),
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
@@ -107,7 +107,7 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'section' => 'request',
 				'default' => $this->context->getLanguage()->timeanddate(
-					$this->wikiRequestManager->timestamp, true
+					$this->wikiRequestManager->getTimestamp(), true
 				),
 			],
 			'status' => [
@@ -166,7 +166,7 @@ class RequestWikiRequestViewer {
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => $this->wikiRequestManager->sitename,
+					'default' => $this->wikiRequestManager->getSitename(),
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
@@ -399,8 +399,8 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-edit'] ) ) {
 			$session->remove( 'previous_posted_comment' );
 
-			$this->wikiRequestManager->sitename = $formData['edit-sitename'];
-			$this->wikiRequestManager->language = $formData['edit-language'];
+			$this->wikiRequestManager->setSitename( $formData['edit-sitename'] );
+			$this->wikiRequestManager->setLanguage( $formData['edit-language'] );
 			$this->wikiRequestManager->purpose = $formData['edit-purpose'] ?? '';
 			$this->wikiRequestManager->description = $formData['edit-description'];
 			$this->wikiRequestManager->category = $formData['edit-category'] ?? '';
