@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 return [
 	'CreateWiki.NotificationsManager' => static function (
@@ -59,6 +60,20 @@ return [
 			RequestContext::getMain(),
 			new ServiceOptions(
 				WikiManagerFactory::CONSTRUCTOR_OPTIONS,
+				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+			)
+		);
+	},
+	'WikiRequestManager' => static function ( MediaWikiServices $services ): WikiRequestManager {
+		return new WikiRequestManager(
+			$services->getConnectionProvider(),
+			$services->get( 'CreateWiki.NotificationsManager' ),
+			$services->getJobQueueGroupFactory(),
+			$services->getLinkRenderer(),
+			$services->ggetUserFactory(),
+			$services->get( 'WikiManagerFactory' ),
+			new ServiceOptions(
+				WikiRequestManager::CONSTRUCTOR_OPTIONS,
 				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
 			)
 		);
