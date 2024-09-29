@@ -7,16 +7,23 @@ use Exception;
 use ExtensionRegistry;
 use ManualLogEntry;
 use MediaWiki\Html\Html;
+use MediaWiki\MainConfigNames;
+use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
+use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use StatusValue;
+use Status;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	public function __construct() {
+	private IConnectionProvider $connectionProvider;
+
+	public function __construct( IConnectionProvider $connectionProvider ) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
+		$this->connectionProvider = $connectionProvider;
 	}
 
 	/**
@@ -36,7 +43,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( !$this->getUser()->isEmailConfirmed() && $this->getConfig()->get( 'RequestWikiConfirmEmail' ) ) {
+		if ( $this->getConfig()->get( 'RequestWikiConfirmEmail' ) && !$this->getUser()->isEmailConfirmed() ) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
@@ -55,8 +62,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 	 * @inheritDoc
 	 */
 	protected function getFormFields(): array {
-		$request = new WikiRequest( id: null );
-
 		$formDescriptor = [
 			'subdomain' => [
 				'type' => 'textwithbutton',
@@ -68,7 +73,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
-				'validation-callback' => [ $request, 'parseSubdomain' ],
+				'validation-callback' => [ $this, 'isValidSubdomain' ],
 			],
 			'sitename' => [
 				'type' => 'text',
@@ -166,66 +171,95 @@ class SpecialRequestWiki extends FormSpecialPage {
 	/**
 	 * @inheritDoc
 	 */
-	public function onSubmit( array $formData ): bool {
-		$request = new WikiRequest( id: null );
-		$subdomain = strtolower( $formData['subdomain'] );
-		$out = $this->getOutput();
+	public function onSubmit( array $data ): Status {
+		$token = $this->getRequest()->getVal( 'wpEditToken' );
+		$userToken = $this->getContext()->getCsrfTokenSet();
 
-		$request->dbname = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
-		$request->url = $subdomain . '.' . $this->getConfig()->get( 'CreateWikiSubdomain' );
-		$request->description = $formData['reason'];
-		$request->sitename = $formData['sitename'];
-		$request->language = $formData['language'];
-		$request->private = $formData['private'] ?? 0;
-		$request->requester = $this->getUser();
-		$request->category = $formData['category'] ?? '';
-		$request->purpose = $formData['purpose'] ?? '';
-		$request->bio = $formData['bio'] ?? 0;
-
-		try {
-			$requestID = $request->save();
-		} catch ( Exception $e ) {
-			$out->addHTML(
-				Html::warningBox(
-					Html::element(
-						'p',
-						[],
-						$this->msg( 'requestwiki-error-patient' )->plain()
-					),
-					'mw-notify-error'
-				)
-			);
-
-			return false;
+		if ( !$userToken->matchToken( $token ) ) {
+			return Status::newFatal( 'sessionfailure' );
 		}
 
-		$idlink = $this->getLinkRenderer()->makeLink( Title::newFromText( 'Special:RequestWikiQueue/' . $requestID ), "#{$requestID}" );
+		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
+			return Status::newFatal( 'actionthrottledtext' );
+		}
+		
+		$dbw = $this->connectionProvider->getPrimaryDatabase(
+			$this->getConfig()->get( 'CreateWikiGlobalWiki' )
+		)
 
-		$farmerLogEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
-		$farmerLogEntry->setPerformer( $this->getUser() );
-		$farmerLogEntry->setTarget( $this->getPageTitle() );
-		$farmerLogEntry->setComment( $formData['reason'] );
-		$farmerLogEntry->setParameters(
+		$duplicate = $dbw->newSelectQueryBuilder()
+			->table( 'cw_requests' )
+			->field( '*' )
+			->where( [
+				'cw_comment' => $data['reason'],
+				'cw_status' => 'inreview',
+			] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
+		if ( (bool)$duplicate ) {
+			return Status::newFatal( 'requestwiki-error-patient' );
+		}
+
+		$subdomain = strtolower( $data['subdomain'] );
+		$dbname = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
+		$url = $subdomain . '.' . $this->getConfig()->get( 'CreateWikiSubdomain' );
+
+		$comment = $data['reason'];
+		if ( $this->getConfig()->get( 'CreateWikiPurposes' ) && ( $data['purpose'] ?? '' ) ) {
+			$comment = implode( "\n", [ 'Purpose: ' . $data['purpose'], $data['reason'] ] );
+		}
+
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'import_requests' )
+			->ignore()
+			->row( [
+				'cw_comment' => $comment,
+				'cw_dbname' => $dbname,
+				'cw_language' => $data['language'],
+				'cw_private' => $data['private'] ?? 0,
+				'cw_status' => 'inreview',
+				'cw_sitename' => $data['sitename'],
+				'cw_timestamp' => $dbw->timestamp(),
+				'cw_url' => $this->url,
+				'cw_user' => $this->requester->getId(),
+				'cw_category' => $data['category'] ?? '',
+				'cw_visibility' => 0,
+				'cw_bio' => $data['bio'] ?? 0,
+			] )
+			->caller( __METHOD__ )
+			->execute();
+
+		$requestID = (string)$dbw->insertId();
+		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID );
+
+		$logEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
+
+		$logEntry->setPerformer( $this->getUser() );
+		$logEntry->setTarget( $this->getPageTitle() );
+		$logEntry->setComment( $data['reason'] );
+
+		$logEntry->setParameters(
 			[
-				'4::sitename' => $formData['sitename'],
-				'5::language' => $formData['language'],
-				'6::private' => (int)( $formData['private'] ?? 0 ),
+				'4::sitename' => $data['sitename'],
+				'5::language' => $data['language'],
+				'6::private' => (int)( $data['private'] ?? 0 ),
 				'7::id' => "#{$requestID}",
 			]
 		);
 
-		$farmerLogID = $farmerLogEntry->insert();
-		$farmerLogEntry->publish( $farmerLogID );
+		$logID = $logEntry->insert( $dbw );
+		$logEntry->publish( $logID );
 
-		// On successful request, redirect them to their request
-		header( 'Location: ' . FormSpecialPage::getTitleFor( 'RequestWikiQueue' )->getFullURL() . '/' . $requestID );
+		// On successful submission, redirect them to their request
+		header( 'Location: ' . $requestLink->getFullURL() );
 
-		return true;
+		return Status::newGood();
 	}
 
-	public function isValidReason( ?string $reason ): bool|string {
+	public function isValidReason( ?string $reason ): bool|Message {
 		if ( !$reason || ctype_space( $reason ) ) {
-			return $this->msg( 'htmlform-required', 'parseinline' )->escaped();
+			return $this->msg( 'htmlform-required' );
 		}
 
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
@@ -236,16 +270,50 @@ class SpecialRequestWiki extends FormSpecialPage {
 			preg_match( '/' . $regex . '/i', $reason, $output );
 
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return $this->msg( 'requestwiki-error-invalidcomment' )->escaped();
+				return $this->msg( 'requestwiki-error-invalidcomment' );
 			}
 		}
 
 		return true;
 	}
 
-	public function isAgreementChecked( bool $agreement ): bool|StatusValue {
+	public function isValidSubdomain( ?string $subdomain ): bool|Message {
+		if ( !$subdomain || ctype_space( $subdomain ) ) {
+			return $this->msg( 'htmlform-required' );
+		}
+
+		$subdomain = strtolower( $subdomain );
+		$configSubdomain = $this->getConfig()->get( 'CreateWikiSubdomain' );
+
+		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
+			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
+		}
+
+		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
+			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			'CreateWikiDisallowedSubdomains'	
+		);
+
+		$database = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
+
+		if ( in_array( $database, $this->getConfig()->get( MainConfigNames::LocalDatabases ) ) ) {
+			return $this->msg( 'createwiki-error-subdomaintaken' );
+		}
+
+		if ( !ctype_alnum( $subdomain ) ) {
+			return $this->msg( 'createwiki-error-notalnum' );
+		}
+
+		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
+			return $this->msg( 'createwiki-error-disallowed' );
+		}
+
+		return true;
+	}
+
+	public function isAgreementChecked( bool $agreement ): bool|Message {
 		if ( !$agreement ) {
-			return StatusValue::newFatal( 'createwiki-error-agreement' );
+			return $this->msg( 'createwiki-error-agreement' );
 		}
 
 		return true;
