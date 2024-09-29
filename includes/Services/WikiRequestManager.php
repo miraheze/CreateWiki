@@ -464,6 +464,22 @@ class WikiRequestManager {
 		}
 	}
 
+	public function setSitename( string $sitename ): void {
+		$this->checkQueryBuilder();
+		if ( $sitename !== $this->getSitename() ) {
+			$this->trackChange( 'sitename', $this->getSitename(), $sitename );
+			$this->queryBuilder->set( [ 'cw_sitename' => $sitename ] );
+		}
+	}
+
+	public function setLanguage( string $language ): void {
+		$this->checkQueryBuilder();
+		if ( $language !== $this->getLanguage() ) {
+			$this->trackChange( 'language', $this->getLanguage(), $language );
+			$this->queryBuilder->set( [ 'cw_language' => $language ] );
+		}
+	}
+
 	public function setStatus( string $status ): void {
 		$this->checkQueryBuilder();
 		if ( $status !== $this->getStatus() ) {
