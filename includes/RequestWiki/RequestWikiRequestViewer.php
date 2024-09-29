@@ -15,6 +15,7 @@ use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use UserNotLoggedIn;
 
 class RequestWikiRequestViewer {
 
@@ -370,46 +371,50 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form
-	): bool {
+	): void {
+		$user = $form->getUser();
+		if ( !$user->isRegistered() ) {
+			throw new UserNotLoggedIn( 'exception-nologin-text', 'exception-nologin' );
+		}
+
 		$out = $form->getContext()->getOutput();
 		$session = $form->getRequest()->getSession();
-		$user = $form->getUser();
 
-		if ( !$user->isRegistered() ) {
-			$out->addHTML(
-				Html::warningBox(
-					Html::rawElement(
-						'p',
-						[],
-						$this->context->msg( 'exception-nologin-text' )->parse()
-					),
-					'mw-notify-error'
-				)
-			);
-
-			return false;
-		} elseif ( isset( $formData['submit-comment'] ) ) {
+		if ( isset( $formData['submit-comment'] ) ) {
 			if ( $session->get( 'previous_posted_comment' ) !== $formData['comment'] ) {
 				$session->set( 'previous_posted_comment', $formData['comment'] );
 				$this->wikiRequestManager->addComment( $formData['comment'], $user );
-			} else {
-				$out->addHTML( Html::errorBox( $this->context->msg( 'createwiki-duplicate-comment' )->escaped() ) );
-				return false;
+				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
+				return;
 			}
-		} elseif ( isset( $formData['submit-edit'] ) ) {
-			$session->remove( 'previous_posted_comment' );
 
+			$out->addHTML( Html::errorBox( $this->context->msg( 'createwiki-duplicate-comment' )->escaped() ) );
+			return;
+		}
+
+		$session->remove( 'previous_posted_comment' );
+
+		if ( isset( $formData['submit-edit'] ) ) {
+			if ( $status === 'approved' ) {
+				// TODO: can not edit already approved request message
+				return;
+			}
+	
+			$this->wikiRequestManager->startQueryBuilder();
+	
 			$this->wikiRequestManager->setSitename( $formData['edit-sitename'] );
 			$this->wikiRequestManager->setLanguage( $formData['edit-language'] );
-			$this->wikiRequestManager->purpose = $formData['edit-purpose'] ?? '';
-			$this->wikiRequestManager->description = $formData['edit-description'];
-			$this->wikiRequestManager->category = $formData['edit-category'] ?? '';
-			$this->wikiRequestManager->private = $formData['edit-private'] ?? 0;
-			$this->wikiRequestManager->bio = $formData['edit-bio'] ?? 0;
+			// $this->wikiRequestManager->setPurpose( $formData['edit-purpose'] ?? '' );
+			// $this->wikiRequestManager->setDescription( $formData['edit-description'] );
+			$this->wikiRequestManager->setCategory( $formData['edit-category'] ?? '' );
+			$this->wikiRequestManager->setPrivate( (bool)$formData['edit-private'] ?? false );
+			$this->wikiRequestManager->setBio( (bool)$formData['edit-bio'] ?? false );
 
-			$this->wikiRequestManager->reopen( $form->getUser() );
-		} elseif ( isset( $formData['submit-handle'] ) ) {
-			$session->remove( 'previous_posted_comment' );
+			$this->wikiRequestManager->tryExecuteQueryBuilder();
+			return;
+		}
+
+		if ( isset( $formData['submit-handle'] ) ) {
 			if ( isset( $formData['visibility-options'] ) ) {
 				$this->wikiRequestManager->suppress( $user, $formData['visibility-options'] );
 			}
@@ -435,8 +440,6 @@ class RequestWikiRequestViewer {
 				'mw-notify-success'
 			)
 		);
-
-		return false;
 	}
 
 	public function isValidSubdomain( ?string $subdomain ): bool|Message {
