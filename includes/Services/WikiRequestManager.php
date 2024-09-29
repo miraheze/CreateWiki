@@ -321,7 +321,7 @@ class WikiRequestManager {
 		int $level,
 		bool $log
 	): void {
-		if ( $level === $this->visibility ) {
+		if ( $level === $this->getVisibility() ) {
 			// Nothing to do, the wiki request already has the requested suppression level
 			return;
 		}
