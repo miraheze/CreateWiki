@@ -282,14 +282,14 @@ class WikiManagerFactory {
 				],
 				'subject' => $this->messageLocalizer->msg(
 					'createwiki-email-subject', $sitename
-				)->inContentLanguage()->text(),
+				)->inContentLanguage()->escaped(),
 				'body' => [
 					'html' => nl2br( $this->messageLocalizer->msg(
 						'createwiki-email-body'
-					)->inContentLanguage()->text() ),
+					)->inContentLanguage()->escaped() ),
 					'text' => $this->messageLocalizer->msg(
 						'createwiki-email-body'
-					)->inContentLanguage()->text(),
+					)->inContentLanguage()->escaped(),
 				],
 			];
 
