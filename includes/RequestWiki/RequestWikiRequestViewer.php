@@ -15,6 +15,7 @@ use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 class RequestWikiRequestViewer {
 
@@ -22,18 +23,20 @@ class RequestWikiRequestViewer {
 	private IContextSource $context;
 	private PermissionManager $permissionManager;
 	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequest $request;
+	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
 		Config $config,
 		IContextSource $context,
 		PermissionManager $permissionManager,
-		WikiManagerFactory $wikiManagerFactory
+		WikiManagerFactory $wikiManagerFactory,
+		WikiRequestManager $wikiRequestManager
 	) {
 		$this->config = $config;
 		$this->context = $context;
 		$this->permissionManager = $permissionManager;
 		$this->wikiManagerFactory = $wikiManagerFactory;
+		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function getFormDescriptor(): array {
@@ -335,11 +338,10 @@ class RequestWikiRequestViewer {
 	 * @return ?CreateWikiOOUIForm
 	 */
 	public function getForm( int $requestID ): ?CreateWikiOOUIForm {
+		$this->wikiRequestManager->fromID( $requestID );
 		$out = $this->context->getOutput();
 
-		try {
-			$this->request = new WikiRequest( $requestID );
-		} catch ( Exception $e ) {
+		if ( $requestID === 0 || !$this->wikiRequestManager->exists() ) {
 			$out->addHTML(
 				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 			);
