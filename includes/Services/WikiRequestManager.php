@@ -170,6 +170,18 @@ class WikiRequestManager {
 		return $this->row->cw_status;
 	}
 
+	public function getSitename(): string {
+		return $this->row->cw_sitename;
+	}
+
+	public function getLanguage(): string {
+		return $this->row->cw_language;
+	}
+
+	public function getTimestamp(): string {
+		return $this->row->cw_timestamp;
+	}
+
 	public function approve( UserIdentity $user, string $reason = null ): void {
 		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
