@@ -38,7 +38,7 @@ class WikiRequest {
 	public string $sitename;
 	public string $url;
 	public string $category;
-	public ?string $timestamp = null;
+	public string $timestamp;
 	public int $bio;
 	public ?string $purpose = null;
 
