@@ -206,7 +206,7 @@ class WikiRequestManager {
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
 		if ( $purposeCheck[0] === 'Purpose' ) {
-			return $purposeCheck[1];
+			return trim( $purposeCheck[1] );
 		}
 
 		return null;
