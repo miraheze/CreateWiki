@@ -315,14 +315,15 @@ class WikiRequestManager {
 			[
 				'4::id' => Message::rawParam(
 					$this->linkRenderer->makeKnownLink(
-						SpecialPage::getTitleValueFor( 'RequestWikiQueue', $this->ID ) ),
+						SpecialPage::getTitleValueFor( 'RequestWikiQueue', $this->ID ),
 						'#' . $this->ID
 					)
 				),
 			]
-			);
-			$suppressionLogID = $suppressionLogEntry->insert();
-			$suppressionLogEntry->publish( $suppressionLogID );
+		);
+
+		$suppressionLogID = $suppressionLogEntry->insert();
+		$suppressionLogEntry->publish( $suppressionLogID );
 	}
 
 	public function suppress(
