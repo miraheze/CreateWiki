@@ -32,7 +32,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
-	public function execute( $par ) {
+	/**
+	 * @param ?string $par
+	 */
+	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
 			return $this->getOutput()->addHTML(
 				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
@@ -49,7 +52,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 	}
 
-	private function doPagerStuff() {
+	private function doPagerStuff(): void {
 		$requester = $this->getRequest()->getText( 'requester' );
 		$status = $this->getRequest()->getText( 'status' );
 		$dbname = $this->getRequest()->getText( 'dbname' );
@@ -113,7 +116,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getOutput()->addParserOutputContent( $table );
 	}
 
-	private function lookupRequest( string $par ) {
+	private function lookupRequest( string $par ): void {
 		$requestViewer = new RequestWikiRequestViewer(
 			$this->getConfig(),
 			$this->getContext(),
@@ -128,7 +131,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		}
 	}
 
-	protected function getGroupName() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getGroupName(): string {
 		return 'wikimanage';
 	}
 }
