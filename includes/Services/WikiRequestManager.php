@@ -163,7 +163,7 @@ class WikiRequestManager {
 	}
 
 	public function getVisibility(): int {
-		return $this->visibility;
+		return $this->row->cw_visibility;
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ): void {
