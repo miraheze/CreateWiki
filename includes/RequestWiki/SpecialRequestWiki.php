@@ -3,15 +3,12 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use ErrorPageError;
-use Exception;
 use ExtensionRegistry;
 use ManualLogEntry;
-use MediaWiki\Html\Html;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
-use MediaWiki\Title\Title;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Status;
@@ -182,7 +179,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
 			return Status::newFatal( 'actionthrottledtext' );
 		}
-		
+
 		$dbw = $this->connectionProvider->getPrimaryDatabase(
 			$this->getConfig()->get( 'CreateWikiGlobalWiki' )
 		)
@@ -291,7 +288,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
 			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
-			'CreateWikiDisallowedSubdomains'	
+			'CreateWikiDisallowedSubdomains'
 		);
 
 		$database = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
