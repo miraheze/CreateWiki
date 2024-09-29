@@ -20,7 +20,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	/**
-	 * @inheritDoc
+	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
