@@ -388,71 +388,29 @@ class WikiRequest {
 	}
 
 	public function save(): int {
-		$inReview = $this->dbw->select(
+		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
+		// Updating an existing request
+		$this->dbw->update(
 			'cw_requests',
 			[
-				'cw_comment',
-				'cw_dbname',
-				'cw_sitename',
+				'cw_comment' => $comment,
+				'cw_dbname' => $this->dbname,
+				'cw_language' => $this->language,
+				'cw_private' => $this->private,
+				'cw_status' => $this->status,
+				'cw_sitename' => $this->sitename,
+				'cw_timestamp' => $this->timestamp,
+				'cw_url' => $this->url,
+				'cw_user' => $this->requester->getId(),
+				'cw_category' => $this->category,
+				'cw_visibility' => $this->visibility,
+				'cw_bio' => $this->bio,
 			],
 			[
-				'cw_status' => 'inreview',
+				'cw_id' => $this->id,
 			],
 			__METHOD__
 		);
-
-		foreach ( $inReview as $row ) {
-			if (
-				$this->id === null
-				&& ( $this->sitename == $row->cw_sitename
-				|| $this->dbname == $row->cw_dbname
-				|| $this->description == $row->cw_comment )
-			) {
-				throw new UnexpectedValueException( 'Request too similar to an existing open request!' );
-			}
-		}
-
-		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
-
-		$rows = [
-			'cw_comment' => $comment,
-			'cw_dbname' => $this->dbname,
-			'cw_language' => $this->language,
-			'cw_private' => $this->private,
-			'cw_status' => $this->status,
-			'cw_sitename' => $this->sitename,
-			'cw_timestamp' => $this->timestamp ?? $this->dbw->timestamp(),
-			'cw_url' => $this->url,
-			'cw_user' => $this->requester->getId(),
-			'cw_category' => $this->category,
-			'cw_visibility' => $this->visibility,
-			'cw_bio' => $this->bio,
-		];
-
-		if ( !$this->id ) {
-			// New wiki request
-			$this->dbw->insert(
-				'cw_requests',
-				[
-					$rows,
-				],
-				__METHOD__
-			);
-		} else {
-			// Updating an existing request
-			$this->dbw->update(
-				'cw_requests',
-				$rows,
-				[
-					'cw_id' => $this->id,
-				],
-				__METHOD__
-			);
-		}
-
-		if ( is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
-			$this->tryAutoCreate();
-		}
 
 		return $this->dbw->insertId();
 	}
@@ -468,37 +426,5 @@ class WikiRequest {
 				]
 			)
 		);
-	}
-
-	/**
-	 * Extract database name from subdomain and automatically configure url and dbname
-	 *
-	 * @param string $subdomain subdomain
-	 * @return StatusValue|bool
-	 */
-	public function parseSubdomain( string $subdomain ): StatusValue|bool {
-		$subdomain = strtolower( $subdomain );
-		if ( strpos( $subdomain, $this->config->get( 'CreateWikiSubdomain' ) ) !== false ) {
-			$subdomain = str_replace( '.' . $this->config->get( 'CreateWikiSubdomain' ), '', $subdomain );
-		}
-
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
-			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
-			'CreateWikiDisallowedSubdomains'
-		);
-
-		// Make the subdomain a dbname
-		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
-		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
-			return StatusValue::newFatal( 'createwiki-error-subdomaintaken' );
-		} elseif ( !ctype_alnum( $subdomain ) ) {
-			return StatusValue::newFatal( 'createwiki-error-notalnum' );
-		} elseif ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			return StatusValue::newFatal( 'createwiki-error-disallowed' );
-		} else {
-			$this->dbname = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
-			$this->url = $subdomain . '.' . $this->config->get( 'CreateWikiSubdomain' );
-			return true;
-		}
 	}
 }
