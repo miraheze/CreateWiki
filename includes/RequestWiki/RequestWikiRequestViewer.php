@@ -474,7 +474,7 @@ class RequestWikiRequestViewer {
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
-			$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-edit-success' )->escaped() ) );
+			$out->addHTML( Html::successBox( $this->context->msg( 'requestwiki-edit-success' )->escaped() ) );
 
 			return;
 		}
