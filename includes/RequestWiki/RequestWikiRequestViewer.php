@@ -458,7 +458,11 @@ class RequestWikiRequestViewer {
 
 		if ( isset( $formData['submit-handle'] ) ) {
 			if ( isset( $formData['visibility-options'] ) ) {
-				$this->wikiRequestManager->suppress( $user, $formData['visibility-options'] );
+				$this->wikiRequestManager->suppress(
+					user: $user,
+					level: $formData['visibility-options'],
+					log: true
+				);
 			}
 
 			if ( $formData['submission-action'] == 'approve' ) {
