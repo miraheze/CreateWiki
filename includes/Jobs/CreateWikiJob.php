@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\CreateWiki;
+namespace Miraheze\CreateWiki\Jobs;
 
 use Exception;
 use Job;
