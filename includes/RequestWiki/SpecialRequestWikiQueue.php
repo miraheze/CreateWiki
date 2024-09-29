@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use ErrorPageError;
-use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
