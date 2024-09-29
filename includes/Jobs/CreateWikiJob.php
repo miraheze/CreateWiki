@@ -5,14 +5,15 @@ namespace Miraheze\CreateWiki\Jobs;
 use Exception;
 use Job;
 use MediaWiki\User\User;
-use Miraheze\CreateWiki\RequestWiki\WikiRequest;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 class CreateWikiJob extends Job {
 
 	public const JOB_NAME = 'CreateWikiJob';
 
 	private WikiManagerFactory $wikiManagerFactory;
+	private WikiRequestManager $wikiRequestManager;
 
 	private int $id;
 	private bool $private;
@@ -24,13 +25,10 @@ class CreateWikiJob extends Job {
 	private string $requester;
 	private string $sitename;
 
-	/**
-	 * @param array $params
-	 * @param WikiManagerFactory $wikiManagerFactory
-	 */
 	public function __construct(
 		array $params,
-		WikiManagerFactory $wikiManagerFactory
+		WikiManagerFactory $wikiManagerFactory,
+		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
@@ -44,19 +42,20 @@ class CreateWikiJob extends Job {
 		$this->sitename = $params['sitename'];
 
 		$this->wikiManagerFactory = $wikiManagerFactory;
+		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function run(): bool {
-		$wm = $this->wikiManagerFactory->newInstance( $this->dbname );
-		$wr = new WikiRequest( $this->id );
+		$this->wikiRequestManager->fromID( $this->id );
+		$wikiManager = $this->wikiManagerFactory->newInstance( $this->dbname );
 
 		try {
 			// This runs checkDatabaseName and if it returns a
 			// non-null value it is returning an error.
-			$notCreated = $wm->create(
+			$notCreated = $wikiManager->create(
 				sitename: $this->sitename,
 				language: $this->language,
 				private: $this->private,
@@ -67,18 +66,43 @@ class CreateWikiJob extends Job {
 			);
 
 			if ( $notCreated ) {
-				$wr->addComment( $notCreated, User::newSystemUser( 'CreateWiki Extension' ), false );
-				$wr->log( User::newSystemUser( 'CreateWiki Extension' ), 'create-failure' );
+				$this->wikiRequestManager->addComment(
+					comment: $notCreated,
+					user: User::newSystemUser( 'CreateWiki Extension' ),
+					log: false,
+					type: 'comment'
+				);
+
+				$this->wikiRequestManager->log(
+					user: User::newSystemUser( 'CreateWiki Extension' ),
+					action: 'create-failure'
+				);
+
 				return true;
 			}
 		} catch ( Exception $e ) {
-			$wr->addComment( 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(), User::newSystemUser( 'CreateWiki Extension' ), true );
-			$wr->reopen( User::newSystemUser( 'CreateWiki Extension' ), false );
-			$wr->log( User::newSystemUser( 'CreateWiki Extension' ), 'create-failure' );
+			$this->wikiRequestManager->addComment(
+				comment: 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(),
+				user: User::newSystemUser( 'CreateWiki Extension' ),
+				log: true,
+				type: 'comment'
+			);
+
+			$this->wikiRequestManager->log(
+				user: User::newSystemUser( 'CreateWiki Extension' ),
+				action: 'create-failure'
+			);
+
 			return true;
 		}
 
-		$wr->addComment( 'Wiki created.', User::newSystemUser( 'CreateWiki Extension' ), false );
+		$this->wikiRequestManager->addComment(
+			comment: 'Wiki created.',
+			user: User::newSystemUser( 'CreateWiki Extension' ),
+			log: false,
+			type: 'comment'
+		);
+
 		return true;
 	}
 }
