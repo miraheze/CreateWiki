@@ -9,6 +9,7 @@ use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Linker\Linker;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
@@ -439,11 +440,11 @@ class RequestWikiRequestViewer {
 
 	public function isValidSubdomain( ?string $subdomain ): bool|Message {
 		if ( !$subdomain || ctype_space( $subdomain ) ) {
-			return $this->msg( 'htmlform-required' );
+			return $this->context->msg( 'htmlform-required' );
 		}
 
 		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->getConfig()->get( 'CreateWikiSubdomain' );
+		$configSubdomain = $this->config->get( 'CreateWikiSubdomain' );
 
 		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
 			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
@@ -454,18 +455,18 @@ class RequestWikiRequestViewer {
 			'CreateWikiDisallowedSubdomains'
 		);
 
-		$database = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
+		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
 
-		if ( in_array( $database, $this->getConfig()->get( MainConfigNames::LocalDatabases ) ) ) {
-			return $this->msg( 'createwiki-error-subdomaintaken' );
+		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
+			return $this->context->msg( 'createwiki-error-subdomaintaken' );
 		}
 
 		if ( !ctype_alnum( $subdomain ) ) {
-			return $this->msg( 'createwiki-error-notalnum' );
+			return $this->context->msg( 'createwiki-error-notalnum' );
 		}
 
 		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			return $this->msg( 'createwiki-error-disallowed' );
+			return $this->context->msg( 'createwiki-error-disallowed' );
 		}
 
 		return true;
