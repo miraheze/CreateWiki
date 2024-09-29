@@ -204,7 +204,7 @@ class WikiRequestManager {
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return $purposeCheck[1];
 		}
- 
+
 		return null;
 	}
 
