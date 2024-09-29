@@ -383,7 +383,12 @@ class RequestWikiRequestViewer {
 		if ( isset( $formData['submit-comment'] ) ) {
 			if ( $session->get( 'previous_posted_comment' ) !== $formData['comment'] ) {
 				$session->set( 'previous_posted_comment', $formData['comment'] );
-				$this->wikiRequestManager->addComment( $formData['comment'], $user );
+				$this->wikiRequestManager->addComment(
+					comment: $formData['comment'],
+					user: $user,
+					log: true,
+					type: 'comment'
+				);
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
 				return;
 			}
