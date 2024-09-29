@@ -8,7 +8,7 @@ use MediaWiki\Config\ConfigFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RequestWiki\WikiRequest;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Phpml\ModelManager;
 
 class RequestWikiAIJob extends Job {
@@ -17,6 +17,7 @@ class RequestWikiAIJob extends Job {
 
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
+	private WikiRequestManager $wikiRequestManager;
 
 	private string $description;
 	private int $id;
@@ -24,21 +25,22 @@ class RequestWikiAIJob extends Job {
 	public function __construct(
 		array $params,
 		ConfigFactory $configFactory,
-		CreateWikiHookRunner $hookRunner
+		CreateWikiHookRunner $hookRunner,
+		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
+		$this->wikiRequestManager = $wikiRequestManager;
 
 		$this->description = $params['description'];
 		$this->id = $params['id'];
 	}
 
 	public function run(): bool {
+		$this->wikiRequestManager->fromID( $this->id );
 		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
-
-		$wr = new WikiRequest( $this->id );
 
 		$pipeline = '';
 		$this->hookRunner->onCreateWikiReadPersistentModel( $pipeline );
@@ -57,10 +59,11 @@ class RequestWikiAIJob extends Job {
 			// @phan-suppress-next-line PhanUndeclaredMethod
 			$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approved'];
 
-			$wr->addComment(
-				'Approval Score: ' . (string)round( $approveScore, 2 ),
-				User::newSystemUser( 'CreateWiki Extension' ),
-				false
+			$this->wikiRequestManager->addComment(
+				comment: 'Approval Score: ' . (string)round( $approveScore, 2 ),
+				user: User::newSystemUser( 'CreateWiki Extension' ),
+				log: false,
+				type: 'comment'
 			);
 
 			if (
@@ -68,7 +71,10 @@ class RequestWikiAIJob extends Job {
 				( (int)round( $approveScore, 2 ) > $this->config->get( 'CreateWikiAIThreshold' ) ) &&
 				$this->canAutoApprove()
 			) {
-				$wr->approve( User::newSystemUser( 'CreateWiki Extension' ) );
+				$this->wikiRequestManager->approve(
+					user: User::newSystemUser( 'CreateWiki Extension' ),
+					comment: ''
+				);
 			}
 		}
 
