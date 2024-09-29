@@ -186,6 +186,10 @@ class WikiRequestManager {
 		return $this->row->cw_url;
 	}
 
+	public function getCategory(): string {
+		return $this->row->cw_category;
+	}
+
 	public function getDescription(): string {
 		$comment = explode( "\n", $this->row->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
@@ -206,6 +210,14 @@ class WikiRequestManager {
 		}
 
 		return null;
+	}
+
+	public function isPrivate(): bool {
+		return (bool)$this->row->cw_private;
+	}
+
+	public function isBio(): bool {
+		return (bool)$this->row->cw_bio;
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ): void {
