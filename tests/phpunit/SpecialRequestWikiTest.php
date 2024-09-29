@@ -4,8 +4,12 @@ namespace Miraheze\CreateWiki\Tests;
 
 use ErrorPageError;
 use MediaWiki\Context\DerivativeContext;
+use MediaWiki\Context\RequestContext;
+use MediaWiki\Request\FauxRequest;
+use MediaWiki\Request\WebRequest;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
+use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
 use SpecialPageTestBase;
@@ -63,6 +67,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::execute
 	 */
 	public function testExecuteLoggedInEmailConfirmed() {
+		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
 		$user = $this->getTestUser()->getUser();
@@ -148,9 +153,27 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @param bool $expected
 	 */
 	public function testOnSubmit( $formData, $expected ) {
+		$context = new DerivativeContext( $this->specialRequestWiki->getContext() );
+		$user = $this->getMutableTestUser()->getUser();
+
+		$context->setUser( $user );
+		$this->setSessionUser( $user, $user->getRequest() );
+
+		$request = new FauxRequest(
+			[ 'wpEditToken' => $user->getEditToken() ],
+			true
+		);
+
 		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'miraheze.org' );
 
 		$submitData = $this->specialRequestWiki->onSubmit( $formData );
 		$this->assertSame( $expected, $submitData );
+	}
+
+	private function setSessionUser( User $user, WebRequest $request ) {
+		RequestContext::getMain()->setUser( $user );
+		RequestContext::getMain()->setRequest( $request );
+		TestingAccessWrapper::newFromObject( $user )->mRequest = $request;
+		$request->getSession()->setUser( $user );
 	}
 }
