@@ -224,6 +224,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	public function isValidReason( ?string $reason ): bool|string {
+		if ( !$reason || ctype_space( $reason ) ) {
+			return $this->msg( 'htmlform-required', 'parseinline' )->escaped();
+		}
+
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
 			'CreateWiki-disallowlist', '/', '/i'
 		);
@@ -234,10 +238,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
 				return $this->msg( 'requestwiki-error-invalidcomment' )->escaped();
 			}
-		}
-
-		if ( !$reason || ctype_space( $reason ) ) {
-			return $this->msg( 'htmlform-required', 'parseinline' )->escaped();
 		}
 
 		return true;
