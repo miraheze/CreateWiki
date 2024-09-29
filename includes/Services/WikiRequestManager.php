@@ -18,6 +18,7 @@ use stdClass;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
+use Wikimedia\Rdbms\UpdateQueryBuilder;
 
 class WikiRequestManager {
 
@@ -30,6 +31,8 @@ class WikiRequestManager {
 	private ServiceOptions $options;
 	private IDatabase $dbw;
 
+	private ?UpdateQueryBuilder $queryBuilder = null;
+
 	private WikiManagerFactory $wikiManagerFactory;
 
 	private stdClass|bool $row;
@@ -40,6 +43,7 @@ class WikiRequestManager {
 	private JobQueueGroupFactory $jobQueueGroupFactory;
 
 	private int $ID;
+	private array $changes = [];
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
@@ -402,49 +406,96 @@ class WikiRequestManager {
 	public function isBio(): bool {
 		return (bool)$this->row->cw_bio;
 	}
-
-	public function startAtomic( string $fname ): void {
-		$this->dbw->startAtomic( $fname );
+	
+	public function startQueryBuilder(): void {
+		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
+			->update( 'cw_requests' )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ );
+	}
+	
+	public function checkQueryBuilder(): void {
+		if ( !$this->queryBuilder ) {
+			throw new RuntimeException(
+				'queryBuilder not yet initialized, you must first call startQueryBuilder()'
+			);
+		}
 	}
 
-	public function setPrivate( int $private ): void {
-		$this->dbw->newUpdateQueryBuilder()
-			->update( 'cw_requests' )
-			->set( [ 'cw_private' => $private ] )
-			->where( [ 'cw_id' => $this->ID ] )
-			->caller( __METHOD__ )
-			->execute();
+	public function setPrivate( bool $private ): void {
+		$this->checkQueryBuilder();
+		if ( $private !== $this->isPrivate() ) {
+			$this->trackChange( 'private', $this->isPrivate(), $private );
+			$this->queryBuilder->set( [ 'cw_private' => (int)$private ] );
+		}
+	}
+
+	public function setBio( bool $bio ): void {
+		$this->checkQueryBuilder();
+		if ( $bio !== $this->isBio() ) {
+			$this->trackChange( 'bio', $this->isBio(), $bio );
+			$this->queryBuilder->set( [ 'cw_bio' => (int)$bio ] );
+		}
 	}
 
 	public function setVisibility( int $visibility ): void {
-		$this->dbw->newUpdateQueryBuilder()
-			->update( 'cw_requests' )
-			->set( [ 'cw_visibility' => $visibility ] )
-			->where( [ 'cw_id' => $this->ID ] )
-			->caller( __METHOD__ )
-			->execute();
+		$this->checkQueryBuilder();
+		if ( $visibility !== $this->getVisibility() ) {
+			// TODO:
+			/* if ( !in_array( $visibility, self::VISIBILITIES ) ) {
+				throw new InvalidArgumentException( 'Can not set an unsupported visibility type.' );
+			} */
+
+			$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
+			$this->queryBuilder->set( [ 'cw_visibility' => $visibility ] );
+		}
 	}
 
 	public function setCategory( string $category ): void {
-		$this->dbw->newUpdateQueryBuilder()
-			->update( 'cw_requests' )
-			->set( [ 'cw_category' => $category ] )
-			->where( [ 'cw_id' => $this->ID ] )
-			->caller( __METHOD__ )
-			->execute();
+		$this->checkQueryBuilder();
+		if ( $category !== $this->getCategory() ) {
+			// TODO:
+			/* if ( !in_array( $category, $this->options->get( 'CreateWikiCategories' ) ) ) {
+				throw new InvalidArgumentException( 'Can not set an unsupported category.' );
+			} */
+
+			$this->trackChange( 'category', $this->getCategory(), $category );
+			$this->queryBuilder->set( [ 'cw_category' => $category ] );
+		}
 	}
 
 	public function setStatus( string $status ): void {
-		$this->dbw->newUpdateQueryBuilder()
-			->update( 'cw_requests' )
-			->set( [ 'cw_status' => $status ] )
-			->where( [ 'cw_id' => $this->ID ] )
-			->caller( __METHOD__ )
-			->execute();
+		$this->checkQueryBuilder();
+		if ( $status !== $this->getStatus() ) {
+			// TODO:
+			/* if ( !in_array( $status, self::SUPPORTED_STATUSES ) ) {
+				throw new InvalidArgumentException( 'Can not set an unsupported status.' );
+			} */
+
+			$this->trackChange( 'status', $this->getStatus(), $status );
+			$this->queryBuilder->set( [ 'cw_status' => $status ] );
+		}
+
 	}
 
-	public function endAtomic( string $fname ): void {
-		$this->dbw->endAtomic( $fname );
+	public function tryExecuteQueryBuilder(): void {
+		$this->checkQueryBuilder();
+		if ( $this->changes ) {
+			$this->queryBuilder->execute();
+		}
+
+		$this->clearQueryBuilder();
+	}
+	
+	public function clearQueryBuilder(): void {
+		$this->queryBuilder = null;
+	}
+
+	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
+		$this->changes[$field] = [
+			'old' => $oldValue,
+			'new' => $newValue
+		];
 	}
 
 	public function tryAutoCreate(): void {
