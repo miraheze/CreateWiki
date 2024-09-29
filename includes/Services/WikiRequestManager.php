@@ -158,10 +158,6 @@ class WikiRequestManager {
 		return array_unique( array_merge( array_column( $this->getComments(), 'user' ), [ $this->getRequester() ] ) );
 	}
 
-	public function getComments(): array {
-		return $this->comments;
-	}
-
 	public function getStatus(): string {
 		return $this->status;
 	}
