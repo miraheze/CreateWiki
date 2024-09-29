@@ -70,7 +70,7 @@ return [
 			$services->get( 'CreateWiki.NotificationsManager' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
-			$services->ggetUserFactory(),
+			$services->getUserFactory(),
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
 				WikiRequestManager::CONSTRUCTOR_OPTIONS,
