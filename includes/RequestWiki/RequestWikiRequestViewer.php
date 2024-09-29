@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use Exception;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
