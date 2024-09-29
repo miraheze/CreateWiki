@@ -74,32 +74,38 @@ class RequestWikiRequestViewer {
 			}
 		}
 
+		if ( $this->wikiRequestManager->isLocked() ) {
+			$this->context->getOutput()->addHTML(
+				Html::errorBox( $this->context->msg( 'createwiki-request-locked' )->escaped() )
+			);
+		}
+
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
 				'type' => 'text',
 				'readonly' => true,
-				'section' => 'request',
+				'section' => 'details',
 				'default' => $this->wikiRequestManager->getSitename(),
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
 				'type' => 'text',
 				'readonly' => true,
-				'section' => 'request',
+				'section' => 'details',
 				'default' => $this->wikiRequestManager->getUrl(),
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'type' => 'text',
 				'readonly' => true,
-				'section' => 'request',
+				'section' => 'details',
 				'default' => $this->wikiRequestManager->getLanguage(),
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
-				'section' => 'request',
+				'section' => 'details',
 				'default' => htmlspecialchars( $this->wikiRequestManager->getRequester()->getName() ) .
 					Linker::userToolLinks(
 						$this->wikiRequestManager->getRequester()->getId(),
@@ -110,7 +116,7 @@ class RequestWikiRequestViewer {
 			'requestedDate' => [
 				'label-message' => 'requestwikiqueue-request-label-requested-date',
 				'type' => 'info',
-				'section' => 'request',
+				'section' => 'details',
 				'default' => $this->context->getLanguage()->timeanddate(
 					$this->wikiRequestManager->getTimestamp(), true
 				),
@@ -119,7 +125,7 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-status',
 				'type' => 'text',
 				'readonly' => true,
-				'section' => 'request',
+				'section' => 'details',
 				'default' => $this->context->msg(
 					'requestwikiqueue-' . $this->wikiRequestManager->getStatus()
 				)->text(),
@@ -129,7 +135,7 @@ class RequestWikiRequestViewer {
 				'rows' => 8,
 				'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-description',
-				'section' => 'request',
+				'section' => 'details',
 				'default' => $this->wikiRequestManager->getDescription(),
 				'raw' => true,
 			],
@@ -140,7 +146,7 @@ class RequestWikiRequestViewer {
 				'type' => 'textarea',
 				'readonly' => true,
 				'section' => 'comments',
-				'rows' => 8,
+				'rows' => 6,
 				'label-message' => [
 					'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp',
 					$comment['user']->getName(),
@@ -160,10 +166,13 @@ class RequestWikiRequestViewer {
 					'rows' => 6,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
+					'validation-callback' => [ $this, 'isValidComment' ],
+					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'submit-comment' => [
 					'type' => 'submit',
 					'buttonlabel-message' => 'htmlform-submit',
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'section' => 'comments',
 				],
 				'edit-sitename' => [
@@ -172,6 +181,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'required' => true,
 					'default' => $this->wikiRequestManager->getSitename(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
@@ -180,11 +190,13 @@ class RequestWikiRequestViewer {
 					'required' => true,
 					'default' => $this->wikiRequestManager->getUrl(),
 					'validation-callback' => [ $this, 'isValidSubdomain' ],
+					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
 					'type' => 'language',
 					'default' => $this->wikiRequestManager->getLanguage(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				],
@@ -195,6 +207,7 @@ class RequestWikiRequestViewer {
 					'rows' => 6,
 					'required' => true,
 					'default' => $this->wikiRequestManager->getDescription(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'raw' => true,
 				],
 			];
@@ -205,6 +218,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'createwiki-label-category',
 					'options' => $this->config->get( 'CreateWikiCategories' ),
 					'default' => $this->wikiRequestManager->getCategory(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				];
@@ -215,6 +229,7 @@ class RequestWikiRequestViewer {
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
 					'default' => $this->wikiRequestManager->isPrivate(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'section' => 'edit',
 				];
 			}
@@ -224,6 +239,7 @@ class RequestWikiRequestViewer {
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
 					'default' => $this->wikiRequestManager->isBio(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'section' => 'edit',
 				];
 			}
@@ -234,6 +250,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwiki-label-purpose',
 					'options' => $this->config->get( 'CreateWikiPurposes' ),
 					'default' => $this->wikiRequestManager->getPurpose(),
+					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				];
@@ -242,6 +259,7 @@ class RequestWikiRequestViewer {
 			$formDescriptor['submit-edit'] = [
 				'type' => 'submit',
 				'buttonlabel-message' => 'requestwikiqueue-request-label-edit-wiki',
+				'disabled' => $this->wikiRequestManager->isLocked(),
 				'section' => 'edit',
 			];
 		}
@@ -270,12 +288,18 @@ class RequestWikiRequestViewer {
 			}
 
 			$formDescriptor += [
-				'info-submission' => [
+				'handle-info' => [
 					'type' => 'info',
 					'default' => $this->context->msg( 'requestwikiqueue-request-info-submission' )->text(),
-					'section' => 'handle',
+					'section' => 'handling',
 				],
-				'submission-action' => [
+				'handle-lock' => [
+					'type' => 'check',
+					'label-message' => 'createwiki-label-lock',
+					'default' => $this->wikiRequestManager->isLocked(),
+					'section' => 'handling',
+				],
+				'handle-action' => [
 					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-action',
 					'options-messages' => [
@@ -286,51 +310,50 @@ class RequestWikiRequestViewer {
 					],
 					'default' => $this->wikiRequestManager->getStatus(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
-					],
-				'reason' => [
-					'label-message' => 'createwiki-label-statuschangecomment',
-					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
+					'section' => 'handling',
 				],
-				'visibility' => [
+				'handle-comment' => [
+					'label-message' => 'createwiki-label-statuschangecomment',
+					'section' => 'handling',
+				],
+				'handle-visibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $this->wikiRequestManager->getVisibility() != 0 ) ? 1 : 0,
+					'default' => ( $this->wikiRequestManager->getVisibility() !== 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
+					'section' => 'handling',
 				],
-				'visibility-options' => [
+				'handle-visibility-options' => [
 					'type' => 'radio',
 					'label-message' => 'revdelete-suppress-text',
-					'hide-if' => [ '!==', 'wpvisibility', '1' ],
+					'hide-if' => [ '!==', 'handle-visibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
 					'default' => (string)$this->wikiRequestManager->getVisibility(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'handle',
+					'section' => 'handling',
 				],
 				'submit-handle' => [
 					'type' => 'submit',
 					'buttonlabel-message' => 'htmlform-submit',
-					'section' => 'handle',
+					'section' => 'handling',
 				],
 			];
 
 			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
-				$formDescriptor['reason']['type'] = 'selectorother';
-				$formDescriptor['reason']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
+				$formDescriptor['handle-comment']['type'] = 'selectorother';
+				$formDescriptor['handle-comment']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
 
-				$formDescriptor['reason']['default'] = HTMLFormField::flattenOptions(
+				$formDescriptor['handle-comment']['default'] = HTMLFormField::flattenOptions(
 					$this->config->get( 'CreateWikiCannedResponses' )
 				)[0];
 			} else {
-				$formDescriptor['reason']['type'] = 'textarea';
-				$formDescriptor['reason']['rows'] = 4;
+				$formDescriptor['handle-comment']['type'] = 'textarea';
+				$formDescriptor['handle-comment']['rows'] = 6;
 			}
 
 			if ( $error ) {
 				// We don't want to be able to approve it if the database is not valid
-				unset( $formDescriptor['submission-action']['options-messages']['requestwikiqueue-approve'] );
+				unset( $formDescriptor['handle-action']['options-messages']['requestwikiqueue-approve'] );
 			}
 		}
 
@@ -457,22 +480,22 @@ class RequestWikiRequestViewer {
 		}
 
 		if ( isset( $formData['submit-handle'] ) ) {
-			if ( isset( $formData['visibility-options'] ) ) {
+			if ( isset( $formData['handle-visibility-options'] ) ) {
 				$this->wikiRequestManager->suppress(
 					user: $user,
-					level: $formData['visibility-options'],
+					level: $formData['handle-visibility-options'],
 					log: true
 				);
 			}
 
-			if ( $formData['submission-action'] == 'approve' ) {
-				$this->wikiRequestManager->approve( $user, $formData['reason'] );
-			} elseif ( $formData['submission-action'] == 'onhold' ) {
-				$this->wikiRequestManager->onhold( $formData['reason'], $user );
-			} elseif ( $formData['submission-action'] == 'moredetails' ) {
-				$this->wikiRequestManager->moredetails( $formData['reason'], $user );
+			if ( $formData['handle-action'] == 'approve' ) {
+				$this->wikiRequestManager->approve( $user, $formData['handle-comment'] );
+			} elseif ( $formData['handle-action'] == 'onhold' ) {
+				$this->wikiRequestManager->onhold( $formData['handle-comment'], $user );
+			} elseif ( $formData['handle-action'] == 'moredetails' ) {
+				$this->wikiRequestManager->moredetails( $formData['handle-comment'], $user );
 			} else {
-				$this->wikiRequestManager->decline( $formData['reason'], $user );
+				$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
 			}
 		}
 
@@ -486,6 +509,14 @@ class RequestWikiRequestViewer {
 				'mw-notify-success'
 			)
 		);
+	}
+
+	public function isValidComment( ?string $comment, array $alldata ): bool|Message {
+		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
+			return $this->context->msg( 'htmlform-required' );
+		}
+
+		return true;
 	}
 
 	public function isValidSubdomain( ?string $subdomain ): bool|Message {
