@@ -14,13 +14,34 @@ use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use RuntimeException;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
+use MediaWiki\Linker\LinkRenderer;
+use stdClass;
+use MediaWiki\User\UserFactory;
+use Wikimedia\Rdbms\IConnectionProvider;
+use MediaWiki\JobQueue\JobQueueGroupFactory;
+use MediaWiki\Config\ServiceOptions;
 
 class WikiRequestManager {
+
+	public const CONSTRUCTOR_OPTIONS = [
+		'CreateWikiAIThreshold',
+		'CreateWikiGlobalWiki',
+		'CreateWikiUseJobQueue',
+	];
 
 	private ServiceOptions $options;
 	private IDatabase $dbw;
 
 	private WikiManagerFactory $wikiManagerFactory;
+
+	private stdClass|bool $row;
+	private LinkRenderer $linkRenderer;
+	private UserFactory $userFactory;
+	private CreateWikiNotificationsManager $notificationsManager;
+	private IConnectionProvider $connectionProvider;
+	private JobQueueGroupFactory $jobQueueGroupFactory;
+
+	private int $ID;
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
@@ -31,6 +52,15 @@ class WikiRequestManager {
 		WikiManagerFactory $wikiManagerFactory,
 		ServiceOptions $options
 	) {
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
+
+		$this->connectionProvider = $connectionProvider;
+		$this->notificationsManager = $notificationsManager;
+		$this->jobQueueGroupFactory = $jobQueueGroupFactor;
+		$this->linkRenderer = $linkRenderer;
+		$this->userFactory = $userFactory;
+		$this->wikiManagerFactory = $wikiManagerFactory;
+		$this->options = $options;
 	}
 
 	public function fromID( int $requestID ): void {
@@ -95,8 +125,7 @@ class WikiRequestManager {
 			],
 		];
 
-		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData, $notifyUsers );
+		$this->notificationsManager->sendNotification( $notificationData, $notifyUsers );
 	}
 
 	public function getComments(): array {
@@ -143,8 +172,8 @@ class WikiRequestManager {
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ): void {
-		if ( $this->config->get( 'CreateWikiUseJobQueue' ) ) {
-			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
+		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
+			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 			$jobQueueGroup->push(
 				new JobSpecification(
 					CreateWikiJob::JOB_NAME,
@@ -166,7 +195,7 @@ class WikiRequestManager {
 			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user, false );
 			$this->log( $user, 'requestapprove' );
 
-			if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
+			if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
 				$this->tryAutoCreate();
 			}
 		} else {
@@ -214,7 +243,7 @@ class WikiRequestManager {
 
 		$this->log( $user, 'requestdecline' );
 
-		if ( !is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) ) {
+		if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
 			$this->tryAutoCreate();
 		}
 	}
@@ -267,7 +296,7 @@ class WikiRequestManager {
 		$logEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
-					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+					$this->linkRenderer->makeKnownLink(
 						SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID ),
 						'#' . $this->ID
 					)
@@ -286,7 +315,7 @@ class WikiRequestManager {
 		$suppressionLogEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
-					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
+					$this->linkRenderer->makeKnownLink(
 						SpecialPage::getTitleValueFor( 'RequestWikiQueue', $this->ID ) ),
 						'#' . $this->ID
 					)
@@ -342,7 +371,7 @@ class WikiRequestManager {
 	}
 
 	public function tryAutoCreate(): void {
-		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup();
+		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
