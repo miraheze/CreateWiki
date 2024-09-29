@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\Services;
 
 use JobSpecification;
 use ManualLogEntry;
@@ -18,158 +18,120 @@ use RuntimeException;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 
-class WikiRequest {
+class WikiRequestManager {
 
-	private Config $config;
+	private ServiceOptions $options;
 	private IDatabase $dbw;
 
 	private WikiManagerFactory $wikiManagerFactory;
 
-	public User $requester;
+	public function __construct(
+		IConnectionProvider $connectionProvider,
+		CreateWikiNotificationsManager $notificationsManager,
+		JobQueueGroupFactory $jobQueueGroupFactory,
+		LinkRenderer $linkRenderer,
+		UserFactory $userFactory,
+		WikiManagerFactory $wikiManagerFactory,
+		ServiceOptions $options
+	) {
 
-	public string $dbname;
-	public string $description;
-	public string $language;
-	public ?int $private;
-	public string $sitename;
-	public string $url;
-	public string $category;
-	public string $timestamp;
-	public int $bio;
-	public ?string $purpose = null;
+	}
 
-	private ?int $id = null;
-	private string $status = 'inreview';
-	private array $comments = [];
-	private array $involvedUsers = [];
-	private int $visibility = 0;
-
-	public function __construct( int $id ) {
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->wikiManagerFactory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
-
-		$connectionProvider = MediaWikiServices::getInstance()->getConnectionProvider();
-		$this->dbw = $connectionProvider->getPrimaryDatabase(
-			$this->config->get( 'CreateWikiGlobalWiki' )
+	public function fromID( int $requestID ): void {
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
+			$this->options->get( 'CreateWikiGlobalWiki' )
 		);
 
-		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+		$this->ID = $requestID;
 
-		$dbRequest = $this->dbw->newSelectQueryBuilder()
-			->select( '*' )
-			->from( 'cw_requests' )
-			->where( [ 'cw_id' => $id ] )
+		$this->row = $this->dbw->newSelectQueryBuilder()
+			->table( 'cw_requests' )
+			->field( '*' )
+			->where( [ 'cw_id' => $requestID ] )
 			->caller( __METHOD__ )
 			->fetchRow();
+	}
 
-		if ( $dbRequest ) {
-			$this->id = $dbRequest->cw_id;
-			$this->dbname = $dbRequest->cw_dbname;
-			$this->language = $dbRequest->cw_language;
-			$this->private = $dbRequest->cw_private;
-			$this->sitename = $dbRequest->cw_sitename;
-			$this->url = $dbRequest->cw_url;
-			$this->category = $dbRequest->cw_category;
-			$this->requester = $userFactory->newFromId( $dbRequest->cw_user );
-			$this->status = $dbRequest->cw_status;
-			$this->timestamp = $dbRequest->cw_timestamp;
-			$this->visibility = (int)$dbRequest->cw_visibility;
-			$this->bio = $dbRequest->cw_bio;
-
-			$newDesc = explode( "\n", $dbRequest->cw_comment, 2 );
-			$purposeCheck = explode( ':', $newDesc[0], 2 );
-
-			if ( $purposeCheck[0] == 'Purpose' ) {
-				$this->description = $newDesc[1];
-				$this->purpose = $purposeCheck[1];
-			} else {
-				$this->description = $dbRequest->cw_comment;
-			}
-
-			$commentsReq = $this->dbw->newSelectQueryBuilder()
-				->table( 'cw_comments' )
-				->field( '*' )
-				->where( [ 'cw_id' => $id ] )
-				->orderBy( 'cw_timestamp', SelectQueryBuilder::SORT_DESC )
-				->caller( __METHOD__ )
-				->fetchResultSet();
-
-			foreach ( $commentsReq as $comment ) {
-				$userObj = $userFactory->newFromId( $comment->cw_comment_user );
-
-				$this->comments[] = [
-					'timestamp' => $comment->cw_comment_timestamp,
-					'user' => $userObj,
-					'comment' => $comment->cw_comment,
-				];
-
-				$this->involvedUsers[$comment->cw_comment_user] = $userObj;
-			}
-		} elseif ( $id ) {
-			throw new RuntimeException( 'Unknown Request ID' );
-		}
+	public function exists(): bool {
+		return (bool)$this->row;
 	}
 
 	public function addComment(
 		string $comment,
-		UserIdentity $user,
-		bool $log = true,
-		string $type = 'comment',
-		array $notifyUsers = []
-	): bool {
-		// don't post empty comments
-		if ( !$comment || ctype_space( $comment ) ) {
-			return false;
-		}
-
-		$this->dbw->insert(
-			'cw_comments',
-			[
-				'cw_id' => $this->id,
+		User $user,
+		bool $log,
+		string $type
+	) {
+		$this->dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_comments' )
+			->row( [
+				'cw_id' => $this->ID,
 				'cw_comment' => $comment,
 				'cw_comment_timestamp' => $this->dbw->timestamp(),
 				'cw_comment_user' => $user->getId(),
-			],
-			__METHOD__
-		);
+			] )
+			->caller( __METHOD__ )
+			->execute();
 
-		// Don't notify the acting user of their action
-		unset( $this->involvedUsers[$user->getId()] );
-
-		if ( !$notifyUsers ) {
-			$notifyUsers = $this->involvedUsers;
-		}
-
-		$this->sendNotification( $comment, $notifyUsers, $type );
+		$this->sendNotification( $comment, $type, $user );
 
 		if ( $log ) {
 			$this->log( $user, 'comment' );
 		}
-
-		return true;
 	}
 
 	private function sendNotification(
 		string $comment,
-		array $notifyUsers,
-		string $type = 'comment'
+		string $type,
+		User $user
 	): void {
-		// don't send notifications for empty comments
-		if ( !$comment || ctype_space( $comment ) ) {
-			return;
-		}
+		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
 
-		$reason = ( $type === 'declined' || $type === 'moredetails' ) ? 'reason' : 'comment';
+		$involvedUsers = array_values( array_filter(
+			array_diff( $this->getInvolvedUsers(), [ $user ] )
+		) );
+
 		$notificationData = [
 			'type' => "request-{$type}",
 			'extra' => [
-				'request-url' => SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id )->getFullURL(),
-				$reason => $comment,
+				'request-url' => $requestLink,
+				'comment' => $comment,
 			],
 		];
 
 		MediaWikiServices::getInstance()->get( 'CreateWiki.NotificationsManager' )
 			->sendNotification( $notificationData, $notifyUsers );
+	}
+
+	public function getComments(): array {
+		$res = $this->dbw->newSelectQueryBuilder()
+			->table( 'cw_comments' )
+			->field( '*' )
+			->where( [ 'cw_id' => $this->ID ] )
+			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
+			->caller( __METHOD__ )
+			->fetchResultSet();
+
+		if ( !$res->numRows() ) {
+			return [];
+		}
+
+		$comments = [];
+		foreach ( $res as $row ) {
+			$user = $this->userFactory->newFromId( $row->cw_user );
+
+			$comments[] = [
+				'comment' => $row->cw_comment,
+				'timestamp' => $row->cw_comment_timestamp,
+				'user' => $user,
+			];
+		}
+
+		return $comments;
+	}
+
+	public function getInvolvedUsers(): array {
+		return array_unique( array_merge( array_column( $this->getComments(), 'user' ), [ $this->getRequester() ] ) );
 	}
 
 	public function getComments(): array {
@@ -304,14 +266,14 @@ class WikiRequest {
 	public function log( UserIdentity $user, string $log ): void {
 		$logEntry = new ManualLogEntry( 'farmer', $log );
 		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id ) );
+		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID ) );
 
 		$logEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
 					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
-						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
-						'#' . $this->id
+						SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID ),
+						'#' . $this->ID
 					)
 				),
 			]
@@ -324,13 +286,13 @@ class WikiRequest {
 	private function suppressionLog( UserIdentity $user, string $log ): void {
 		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
 		$suppressionLogEntry->setPerformer( $user );
-		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id ) );
+		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID ) );
 		$suppressionLogEntry->setParameters(
 			[
 				'4::id' => Message::rawParam(
 					MediaWikiServices::getInstance()->getLinkRenderer()->makeKnownLink(
-						Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $this->id ),
-						'#' . $this->id
+						SpecialPage::getTitleValueFor( 'RequestWikiQueue', $this->ID ) ),
+						'#' . $this->ID
 					)
 				),
 			]
@@ -381,34 +343,6 @@ class WikiRequest {
 				$this->log( $user, 'requestreopen' );
 			}
 		}
-	}
-
-	public function save(): int {
-		$comment = ( $this->config->get( 'CreateWikiPurposes' ) ) ? implode( "\n", [ 'Purpose: ' . $this->purpose, $this->description ] ) : $this->description;
-		// Updating an existing request
-		$this->dbw->update(
-			'cw_requests',
-			[
-				'cw_comment' => $comment,
-				'cw_dbname' => $this->dbname,
-				'cw_language' => $this->language,
-				'cw_private' => $this->private,
-				'cw_status' => $this->status,
-				'cw_sitename' => $this->sitename,
-				'cw_timestamp' => $this->timestamp,
-				'cw_url' => $this->url,
-				'cw_user' => $this->requester->getId(),
-				'cw_category' => $this->category,
-				'cw_visibility' => $this->visibility,
-				'cw_bio' => $this->bio,
-			],
-			[
-				'cw_id' => $this->id,
-			],
-			__METHOD__
-		);
-
-		return $this->dbw->insertId();
 	}
 
 	public function tryAutoCreate(): void {
