@@ -123,7 +123,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->getConfig(),
 			$this->getContext(),
 			$this->permissionManager,
-			$this->wikiManagerFactory, 
+			$this->wikiManagerFactory,
 			$this->wikiRequestManager
 		);
 
