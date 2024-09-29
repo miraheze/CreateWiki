@@ -182,7 +182,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$dbw = $this->connectionProvider->getPrimaryDatabase(
 			$this->getConfig()->get( 'CreateWikiGlobalWiki' )
-		)
+		);
 
 		$duplicate = $dbw->newSelectQueryBuilder()
 			->table( 'cw_requests' )
