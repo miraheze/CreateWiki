@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
 use MediaWiki\Config\Config;
@@ -8,6 +8,7 @@ use MediaWiki\Config\ConfigFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\WikiRequest;
 use Phpml\ModelManager;
 
 class RequestWikiAIJob extends Job {
