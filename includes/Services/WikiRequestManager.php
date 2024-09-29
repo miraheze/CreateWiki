@@ -513,6 +513,10 @@ class WikiRequestManager {
 		];
 	}
 
+	public function getChanges(): array {
+		return $this->changes;
+	}
+
 	public function tryAutoCreate(): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
