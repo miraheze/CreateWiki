@@ -95,10 +95,10 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => htmlspecialchars( $this->wikiRequestManager->requester->getName() ) .
+				'default' => htmlspecialchars( $this->wikiRequestManager->getRequester()->getName() ) .
 					Linker::userToolLinks(
-						$this->wikiRequestManager->requester->getId(),
-						$this->wikiRequestManager->requester->getName()
+						$this->wikiRequestManager->getRequester()->getId(),
+						$this->wikiRequestManager->getRequester()->getName()
 					),
 				'raw' => true,
 			],
@@ -147,7 +147,7 @@ class RequestWikiRequestViewer {
 
 		if (
 			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
-			$user->getActorId() === $this->wikiRequestManager->requester->getActorId()
+			$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId()
 		) {
 			$formDescriptor += [
 				'comment' => [
