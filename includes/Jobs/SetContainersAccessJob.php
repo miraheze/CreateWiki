@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki;
+namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
 use MediaWiki\Config\Config;
@@ -11,10 +11,10 @@ class SetContainersAccessJob extends Job {
 
 	public const JOB_NAME = 'SetContainersAccessJob';
 
-	private bool $isPrivate;
-
 	private Config $config;
 	private RepoGroup $repoGroup;
+
+	private bool $isPrivate;
 
 	public function __construct(
 		array $params,
