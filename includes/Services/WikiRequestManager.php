@@ -166,6 +166,10 @@ class WikiRequestManager {
 		return $this->row->cw_visibility;
 	}
 
+	public function getRequester(): User {
+		return $this->userFactory->newFromId( $this->row->cw_user );
+	}
+
 	public function approve( UserIdentity $user, string $reason = null ): void {
 		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
