@@ -199,7 +199,7 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
 					'options' => $this->config->get( 'CreateWikiCategories' ),
-					'default' => $this->wikiRequestManager->category,
+					'default' => $this->wikiRequestManager->getCategory(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				];
@@ -209,7 +209,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['edit-private'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
-					'default' => $this->wikiRequestManager->private,
+					'default' => $this->wikiRequestManager->isPrivate(),
 					'section' => 'edit',
 				];
 			}
@@ -218,7 +218,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['edit-bio'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
-					'default' => $this->wikiRequestManager->bio,
+					'default' => $this->wikiRequestManager->isBio(),
 					'section' => 'edit',
 				];
 			}
@@ -228,7 +228,7 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
 					'options' => $this->config->get( 'CreateWikiPurposes' ),
-					'default' => trim( $this->wikiRequestManager->purpose ),
+					'default' => $this->wikiRequestManager->getPurpose(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				];
