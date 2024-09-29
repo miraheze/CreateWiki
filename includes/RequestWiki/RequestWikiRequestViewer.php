@@ -416,33 +416,39 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setBio( (bool)$formData['edit-bio'] ?? false );
 
 			$changes = $this->wikiRequestManager->getChanges();
-			if ( $changes ) {
-				$message = 'createwiki-request-edited';
-				$log = false;
-				if ( $this->wikiRequestManager->getStatus() === 'declined' ) {
-					$message = 'createwiki-request-reopened';
-					$log = true;
-				}
+			if ( !$changes ) {
+				$this->wikiRequestManager->clearQueryBuilder();
+				$out->addHTML( Html::errorBox( $this->context->msg( 'createwiki-no-changes' )->escaped() ) );
+				return;
+			}
 
-				$comment = $this->context->msg( $message )->rawParams(
-					implode( "\n\n", $changes )
-				)->inContentLanguage()->escaped();
+			$message = 'createwiki-request-edited';
+			$log = false;
+			if ( $this->wikiRequestManager->getStatus() === 'declined' ) {
+				$message = 'createwiki-request-reopened';
+				$log = true;
+			}
 
-				$this->wikiRequestManager->addComment(
-					comment: $comment,
-					user: $user,
-					log: false,
-					type: 'comment'
-				);
+			$comment = $this->context->msg( $message )->rawParams(
+				implode( "\n\n", $changes )
+			)->inContentLanguage()->escaped();
 
-				$this->wikiRequestManager->setStatus( 'inreview' );
+			$this->wikiRequestManager->addComment(
+				comment: $comment,
+				user: $user,
+				log: false,
+				type: 'comment'
+			);
+
+			$this->wikiRequestManager->setStatus( 'inreview' );
 	
-				if ( $log ) {
-					$this->wikiRequestManager->log( $user, 'requestreopen' );
-				}
+			if ( $log ) {
+				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
+			$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-edit-success' )->escaped() ) );
+
 			return;
 		}
 
