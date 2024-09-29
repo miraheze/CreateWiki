@@ -182,6 +182,14 @@ class WikiRequestManager {
 		return $this->row->cw_timestamp;
 	}
 
+	public function getUrl(): string {
+		return $this->row->cw_url;
+	}
+
+	public function getDescription(): string {
+		return $this->row->cw_comment;
+	}
+
 	public function approve( UserIdentity $user, string $reason = null ): void {
 		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
 			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
