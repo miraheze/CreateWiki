@@ -127,7 +127,7 @@ class WikiRequestManager {
 			],
 		];
 
-		$this->notificationsManager->sendNotification( $notificationData, $notifyUsers );
+		$this->notificationsManager->sendNotification( $notificationData, $this->getInvolvedUsers() );
 	}
 
 	public function getComments(): array {
