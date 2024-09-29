@@ -44,7 +44,7 @@ class WikiRequest {
 	private array $involvedUsers = [];
 	private int $visibility = 0;
 
-	public function __construct( ?int $id ) {
+	public function __construct( int $id ) {
 		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
 		$this->wikiManagerFactory = MediaWikiServices::getInstance()->get( 'WikiManagerFactory' );
 
