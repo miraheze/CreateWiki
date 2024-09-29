@@ -208,7 +208,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$dbw->newInsertQueryBuilder()
-			->insertInto( 'import_requests' )
+			->insertInto( 'cw_requests' )
 			->ignore()
 			->row( [
 				'cw_comment' => $comment,
