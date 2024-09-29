@@ -4,16 +4,13 @@ namespace Miraheze\CreateWiki\Services;
 
 use JobSpecification;
 use ManualLogEntry;
-use MediaWiki\Config\Config;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
-use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
-use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use RuntimeException;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
@@ -34,7 +31,6 @@ class WikiRequestManager {
 		WikiManagerFactory $wikiManagerFactory,
 		ServiceOptions $options
 	) {
-
 	}
 
 	public function fromID( int $requestID ): void {
@@ -296,9 +292,9 @@ class WikiRequestManager {
 					)
 				),
 			]
-		);
-		$suppressionLogID = $suppressionLogEntry->insert();
-		$suppressionLogEntry->publish( $suppressionLogID );
+			);
+			$suppressionLogID = $suppressionLogEntry->insert();
+			$suppressionLogEntry->publish( $suppressionLogID );
 	}
 
 	public function suppress(
