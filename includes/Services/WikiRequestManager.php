@@ -345,6 +345,10 @@ class WikiRequestManager {
 		}
 	}
 
+	public function getDBname(): string {
+		return $this->row->cw_dbname;
+	}
+
 	public function getVisibility(): int {
 		return $this->row->cw_visibility;
 	}
