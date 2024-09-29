@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
+use ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Permissions\PermissionManager;
@@ -37,9 +38,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	 */
 	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
-			return $this->getOutput()->addHTML(
-				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
-			);
+			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
 		$this->setHeaders();
