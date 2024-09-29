@@ -287,7 +287,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
-			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			$this->getConfig()->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
 			'CreateWikiDisallowedSubdomains'
 		);
 
