@@ -525,13 +525,17 @@ class WikiRequestManager {
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
 		$this->changes[$field] = [
-			'old' => $oldValue,
-			'new' => $newValue
+			'old' => $this->escape( $oldValue ),
+			'new' => $this->escape( $newValue ),
 		];
 	}
 
 	public function getChanges(): array {
 		return $this->changes;
+	}
+
+	private function escape( string $text ): string {
+		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
 
 	public function tryAutoCreate(): void {
