@@ -54,7 +54,8 @@
 		"CreateWikiJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\CreateWikiJob",
 			"services": [
-				"WikiManagerFactory"
+				"WikiManagerFactory",
+				"WikiRequestManager"
 			],
 			"needsPage": false
 		},
@@ -62,7 +63,8 @@
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiAIJob",
 			"services": [
 				"ConfigFactory",
-				"CreateWikiHookRunner"
+				"CreateWikiHookRunner",
+				"WikiRequestManager"
 			],
 			"needsPage": false
 		},
