@@ -11,5 +11,6 @@ CREATE TABLE /*_*/cw_requests (
   cw_user INT(10) NOT NULL,
   cw_category VARCHAR(64) NOT NULL,
   cw_visibility TINYINT UNSIGNED NOT NULL DEFAULT '0',
+  cw_locked TINYINT UNSIGNED NOT NULL DEFAULT '0',
   cw_bio TINYINT UNSIGNED NOT NULL DEFAULT '0'
 ) /*$wgDBTableOptions*/;
