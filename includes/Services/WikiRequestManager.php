@@ -158,16 +158,16 @@ class WikiRequestManager {
 		return array_unique( array_merge( array_column( $this->getComments(), 'user' ), [ $this->getRequester() ] ) );
 	}
 
-	public function getStatus(): string {
-		return $this->status;
-	}
-
 	public function getVisibility(): int {
 		return $this->row->cw_visibility;
 	}
 
 	public function getRequester(): User {
 		return $this->userFactory->newFromId( $this->row->cw_user );
+	}
+
+	public function getStatus(): string {
+		return $this->row->request_status;
 	}
 
 	public function approve( UserIdentity $user, string $reason = null ): void {
