@@ -13,6 +13,7 @@ use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
@@ -21,6 +22,7 @@ class RequestWikiRequestViewer {
 
 	private Config $config;
 	private IContextSource $context;
+	private CreateWikiHookRunner $hookRunner;
 	private PermissionManager $permissionManager;
 	private WikiManagerFactory $wikiManagerFactory;
 	private WikiRequestManager $wikiRequestManager;
@@ -28,12 +30,14 @@ class RequestWikiRequestViewer {
 	public function __construct(
 		Config $config,
 		IContextSource $context,
+		CreateWikiHookRunner $hookRunner,
 		PermissionManager $permissionManager,
 		WikiManagerFactory $wikiManagerFactory,
 		WikiRequestManager $wikiRequestManager
 	) {
 		$this->config = $config;
 		$this->context = $context;
+		$this->hookRunner = $hookRunner;
 		$this->permissionManager = $permissionManager;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
