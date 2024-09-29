@@ -416,8 +416,8 @@ class RequestWikiRequestViewer {
 			// $this->wikiRequestManager->setPurpose( $formData['edit-purpose'] ?? '' );
 			// $this->wikiRequestManager->setDescription( $formData['edit-description'] );
 			$this->wikiRequestManager->setCategory( $formData['edit-category'] ?? '' );
-			$this->wikiRequestManager->setPrivate( (bool)$formData['edit-private'] ?? false );
-			$this->wikiRequestManager->setBio( (bool)$formData['edit-bio'] ?? false );
+			$this->wikiRequestManager->setPrivate( (bool)( $formData['edit-private'] ?? false ) );
+			$this->wikiRequestManager->setBio( (bool)( $formData['edit-bio'] ?? false ) );
 
 			$changes = $this->wikiRequestManager->getChanges();
 			if ( !$changes ) {
