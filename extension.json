@@ -157,7 +157,6 @@
 		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
 	},
 	"TestAutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\Tests\\Unit\\": "tests/phpunit/unit/",
 		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
 	"RestRoutes": [
