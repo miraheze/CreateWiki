@@ -399,9 +399,9 @@ class RequestWikiRequestViewer {
 				// TODO: can not edit already approved request message
 				return;
 			}
-	
+
 			$this->wikiRequestManager->startQueryBuilder();
-	
+
 			$this->wikiRequestManager->setSitename( $formData['edit-sitename'] );
 			$this->wikiRequestManager->setLanguage( $formData['edit-language'] );
 			// $this->wikiRequestManager->setPurpose( $formData['edit-purpose'] ?? '' );

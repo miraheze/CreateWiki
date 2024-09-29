@@ -406,14 +406,14 @@ class WikiRequestManager {
 	public function isBio(): bool {
 		return (bool)$this->row->cw_bio;
 	}
-	
+
 	public function startQueryBuilder(): void {
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
 			->where( [ 'cw_id' => $this->ID ] )
 			->caller( __METHOD__ );
 	}
-	
+
 	public function checkQueryBuilder(): void {
 		if ( !$this->queryBuilder ) {
 			throw new RuntimeException(
@@ -475,7 +475,6 @@ class WikiRequestManager {
 			$this->trackChange( 'status', $this->getStatus(), $status );
 			$this->queryBuilder->set( [ 'cw_status' => $status ] );
 		}
-
 	}
 
 	public function tryExecuteQueryBuilder(): void {
@@ -486,7 +485,7 @@ class WikiRequestManager {
 
 		$this->clearQueryBuilder();
 	}
-	
+
 	public function clearQueryBuilder(): void {
 		$this->queryBuilder = null;
 	}
