@@ -19,11 +19,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 	}
 
-	public function execute( $par ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
-			return $this->getOutput()->addHTML(
-				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
-			);
+			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
 		$request = $this->getRequest();
@@ -50,8 +51,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 	}
 
-	protected function getFormFields() {
-		$request = new WikiRequest( null );
+	/**
+	 * @inheritDoc
+	 */
+	protected function getFormFields(): array {
+		$request = new WikiRequest( id: null );
 
 		$formDescriptor = [
 			'subdomain' => [
@@ -159,7 +163,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return $formDescriptor;
 	}
 
-	public function onSubmit( array $formData ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function onSubmit( array $formData ): bool {
 		$request = new WikiRequest( id: null );
 		$subdomain = strtolower( $formData['subdomain'] );
 		$out = $this->getOutput();
@@ -216,7 +223,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function isValidReason( $reason, $allData ) {
+	public function isValidReason( ?string $reason ): bool|string {
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
 			'CreateWiki-disallowlist', '/', '/i'
 		);
@@ -236,7 +243,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function isAgreementChecked( bool $agreement ) {
+	public function isAgreementChecked( bool $agreement ): bool|StatusValue {
 		if ( !$agreement ) {
 			return StatusValue::newFatal( 'createwiki-error-agreement' );
 		}
@@ -244,11 +251,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return true;
 	}
 
-	protected function getDisplayFormat() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	protected function getGroupName() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getGroupName(): string {
 		return 'wikimanage';
 	}
 }
