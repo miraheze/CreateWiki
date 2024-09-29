@@ -500,10 +500,15 @@ class WikiRequestManager {
 		}
 
 		$this->clearQueryBuilder();
+		$this->clearChanges();
 	}
 
 	public function clearQueryBuilder(): void {
 		$this->queryBuilder = null;
+	}
+
+	public function clearChanges(): void {
+		$this->changes = [];
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
