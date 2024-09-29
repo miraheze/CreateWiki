@@ -15,7 +15,6 @@ class WikiInitialize {
 	public string $server;
 	public string $sitename;
 	public ?string $dbname = null;
-	public array $realms;
 	public array $wikiDBClusters = [];
 	public array $disabledExtensions = [];
 
@@ -32,11 +31,14 @@ class WikiInitialize {
 		$this->config = new SiteConfiguration();
 	}
 
-	public function setVariables( string $cacheDir, array $suffixes, array $siteMatch, array $realms = [] ) {
+	public function setVariables(
+		string $cacheDir,
+		array $suffixes,
+		array $siteMatch
+	): void {
 		$this->cacheDir = $cacheDir;
 		$this->config->suffixes = $suffixes;
 		$this->hostname = $_SERVER['HTTP_HOST'] ?? 'undefined';
-		$this->realms = $realms;
 
 		// Let's fake a database list - default config should suffice
 		if ( !file_exists( $this->cacheDir . '/databases.php' ) ) {
@@ -136,7 +138,7 @@ class WikiInitialize {
 		}
 	}
 
-	public function readCache() {
+	public function readCache(): void {
 		// If we don't have a cache file, let us exit here
 		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.php' ) ) {
 			return;
@@ -169,15 +171,7 @@ class WikiInitialize {
 			$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
 		}
 
-		$server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
 		$tags = [];
-
-		foreach ( $this->realms as $realmServer => $tag ) {
-			if ( preg_match( '/^(.*).' . $realmServer . '$/', $server ) ) {
-				$tags[] = $tag;
-			}
-		}
-
 		foreach ( ( $cacheArray['states'] ?? [] ) as $state => $value ) {
 			if ( $value !== 'exempt' && (bool)$value ) {
 				$tags[] = $state;
@@ -271,7 +265,7 @@ class WikiInitialize {
 		}
 	}
 
-	public function loadExtensions() {
+	public function loadExtensions(): void {
 		// If we don't have a cache file, let us exit here
 		if ( !file_exists( $this->cacheDir . '/' . $this->dbname . '.php' ) ) {
 			return;
