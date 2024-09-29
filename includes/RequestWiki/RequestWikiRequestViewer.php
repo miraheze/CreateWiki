@@ -262,11 +262,11 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[2] = $this->context->msg( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
-			$wm = $this->wikiManagerFactory->newInstance( $this->wikiRequestManager->dbname );
-			$wmError = $wm->checkDatabaseName( $this->wikiRequestManager->dbname, forRename: false );
+			$wikiManager = $this->wikiManagerFactory->newInstance( $this->wikiRequestManager->getDBname() );
+			$error = $wikiManager->checkDatabaseName( $this->wikiRequestManager->getDBname(), forRename: false );
 
-			if ( $wmError ) {
-				$this->context->getOutput()->addHTML( Html::errorBox( $wmError ) );
+			if ( $error ) {
+				$this->context->getOutput()->addHTML( Html::errorBox( $error ) );
 			}
 
 			$formDescriptor += [
