@@ -441,7 +441,7 @@ class RequestWikiRequestViewer {
 			);
 
 			$this->wikiRequestManager->setStatus( 'inreview' );
-	
+
 			if ( $log ) {
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
