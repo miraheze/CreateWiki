@@ -33,7 +33,7 @@ class RequestWikiRequestViewer {
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
-	public function getFormDescriptor() {
+	public function getFormDescriptor(): array {
 		$visibilityConds = [
 			0 => 'public',
 			1 => 'createwiki-deleterequest',
@@ -361,7 +361,7 @@ class RequestWikiRequestViewer {
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form
-	) {
+	): bool {
 		$out = $form->getContext()->getOutput();
 		$session = $form->getRequest()->getSession();
 		$user = $form->getUser();
