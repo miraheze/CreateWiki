@@ -42,6 +42,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
 			"services": [
 				"ConnectionProvider",
+				"CreateWikiHookRunner",
 				"PermissionManager",
 				"UserFactory",
 				"WikiManagerFactory",
