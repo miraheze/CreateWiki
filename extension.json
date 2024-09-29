@@ -33,7 +33,10 @@
 			]
 		},
 		"RequestWiki": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki"
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+			"services": [
+				"ConnectionProvider"
+			]
 		},
 		"RequestWikiQueue": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
