@@ -158,6 +158,191 @@ class WikiRequestManager {
 		return array_unique( array_merge( array_column( $this->getComments(), 'user' ), [ $this->getRequester() ] ) );
 	}
 
+	public function approve( User $user, string $comment ): void {
+		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
+			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
+			$jobQueueGroup->push(
+				new JobSpecification(
+					CreateWikiJob::JOB_NAME,
+					[
+						'id' => $this->ID,
+						'dbname' => $this->getDBname(),
+						'sitename' => $this->getSitename(),
+						'language' => $this->getLanguage(),
+						'private' => $this->isPrivate(),
+						'category' => $this->getCategory(),
+						'requester' => $this->getRequester()->getName(),
+						'creator' => $user->getName(),
+					]
+				)
+			);
+
+			$this->setStatus( 'approved' );
+
+			$this->addComment(
+				comment: 'Request approved. ' . $comment,
+				user: $user,
+				log: false,
+				type: 'comment'
+			);
+
+			$this->log( $user, 'requestapprove' );
+
+			if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
+				$this->tryAutoCreate();
+			}
+		} else {
+			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
+			// This runs checkDatabaseName and if it returns a
+			// non-null value it is returning an error.
+			$notCreated = $wikiManager->create(
+				$this->getSitename(),
+				$this->getLanguage(),
+				$this->isPrivate(),
+				$this->getCategory(),
+				$this->getRequester()->getName(),
+				$user->getName(),
+				"[[Special:RequestWikiQueue/{$this->ID}|Requested]]"
+			);
+
+			if ( $notCreated ) {
+				$this->log( $user, 'create-failure' );
+				throw new RuntimeException( $notCreated );
+			} else {
+				$this->setStatus( 'approved' );
+				$this->addComment(
+					comment: 'Request approved and wiki created. ' . $comment,
+					user: $user,
+					log: false,
+					type: 'comment'
+				);
+			}
+		}
+	}
+
+	public function decline( string $comment, User $user ): void {
+		if ( $this->getStatus() === 'approved' ) {
+			return;
+		}
+
+		$this->setStatus( 'declined' );
+
+		$this->addComment(
+			comment: $comment,
+			user: $user,
+			log: false,
+			type: 'declined'
+		);
+
+		$this->log( $user, 'requestdecline' );
+
+		if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
+			$this->tryAutoCreate();
+		}
+	}
+
+	public function onhold( string $comment, User $user ): void {
+		if ( $this->getStatus() === 'approved' ) {
+			return;
+		}
+	
+		$this->setStatus( 'onhold' );
+
+		$this->addComment(
+			comment: $comment,
+			user: $user,
+			log: false,
+			type: 'comment'
+		);
+
+		$this->log( $user, 'requestonhold' );
+	}
+
+	public function moredetails( string $comment, User $user ): void {
+		if ( $this->getStatus() === 'approved' ) {
+			return;
+		}
+
+		$this->setStatus( 'moredetails' );
+
+		$this->addComment(
+			comment: $comment,
+			user: $user,
+			log: false,
+			type: 'moredetails'
+		);
+
+		$this->log( $user, 'requestmoredetails' );
+	}
+
+	public function log( User $user, string $action ): void {
+		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
+		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
+
+		$logEntry = new ManualLogEntry( 'farmer', $action );
+
+		$logEntry->setPerformer( $user );
+		$logEntry->setTarget( $requestQueueLink );
+
+		$logEntry->setParameters(
+			[
+				'4::id' => Message::rawParam( $requestLink ),
+			]
+		);
+
+		$logID = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logID );
+	}
+
+	private function suppressionLog( User $user, string $action ): void {
+		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
+		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
+
+		$logEntry = new ManualLogEntry( 'farmersuppression', $action );
+
+		$logEntry->setPerformer( $user );
+		$logEntry->setTarget( $requestQueueLink );
+
+		$logEntry->setParameters(
+			[
+				'4::id' => Message::rawParam( $requestLink ),
+			]
+		);
+
+		$logID = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logID );
+	}
+
+	public function suppress(
+		User $user,
+		int $level,
+		bool $log
+	): void {
+		if ( $level === $this->visibility ) {
+			// Nothing to do, the wiki request already has the requested suppression level
+			return;
+		}
+
+		$this->setVisibility( $level );
+
+		if ( $log ) {
+			switch ( $level ) {
+				case 0:
+					$this->suppressionLog( $user, 'public' );
+					break;
+
+				case 1:
+					$this->suppressionLog( $user, 'delete' );
+					break;
+
+				case 2:
+					$this->suppressionLog( $user, 'suppress' );
+					break;
+			}
+		}
+	}
+
+	
 	public function getVisibility(): int {
 		return $this->row->cw_visibility;
 	}
@@ -220,204 +405,48 @@ class WikiRequestManager {
 		return (bool)$this->row->cw_bio;
 	}
 
-	public function approve( UserIdentity $user, string $reason = null ): void {
-		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
-			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
-			$jobQueueGroup->push(
-				new JobSpecification(
-					CreateWikiJob::JOB_NAME,
-					[
-						'id' => $this->id,
-						'dbname' => $this->dbname,
-						'sitename' => $this->sitename,
-						'language' => $this->language,
-						'private' => (bool)$this->private,
-						'category' => $this->category,
-						'requester' => $this->requester->getName(),
-						'creator' => $user->getName(),
-					]
-				)
-			);
-
-			$this->status = 'approved';
-			$this->save();
-			$this->addComment( 'Request approved. ' . ( $reason ?? '' ), $user, false );
-			$this->log( $user, 'requestapprove' );
-
-			if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
-				$this->tryAutoCreate();
-			}
-		} else {
-			$wm = $this->wikiManagerFactory->newInstance( $this->dbname );
-			// This runs checkDatabaseName and if it returns a
-			// non-null value it is returning an error.
-			$notCreated = $wm->create(
-				$this->sitename,
-				$this->language,
-				(bool)$this->private,
-				$this->category,
-				$this->requester->getName(),
-				$user->getName(),
-				"[[Special:RequestWikiQueue/{$this->id}|Requested]]"
-			);
-
-			if ( $notCreated ) {
-				$this->log( $user, 'create-failure' );
-				throw new RuntimeException( $notCreated );
-			} else {
-				$this->status = 'approved';
-				$this->save();
-
-				$this->addComment( 'Request approved and wiki created. ' . ( $reason ?? '' ), $user, false );
-			}
-		}
+	public function startAtomic( string $fname ): void {
+		$this->dbw->startAtomic( $fname );
 	}
 
-	public function decline( string $reason, UserIdentity $user ): void {
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'declined';
-		$this->save();
-
-		$this->addComment( $reason, $user, false, 'declined', [ $this->requester ] );
-
-		$notifyUsers = $this->involvedUsers;
-
-		unset(
-			$notifyUsers[$this->requester->getId()],
-			$notifyUsers[$user->getId()]
-		);
-
-		if ( $notifyUsers ) {
-			$this->sendNotification( $reason, $notifyUsers );
-		}
-
-		$this->log( $user, 'requestdecline' );
-
-		if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
-			$this->tryAutoCreate();
-		}
+	public function setPrivate( int $private ): void {
+		$this->dbw->newUpdateQueryBuilder()
+			->update( 'cw_requests' )
+			->set( [ 'cw_private' => $private ] )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ )
+			->execute();
+	}
+	
+	public function setVisibility( int $visibility ): void {
+		$this->dbw->newUpdateQueryBuilder()
+			->update( 'cw_requests' )
+			->set( [ 'cw_visibility' => $visibility ] )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ )
+			->execute();
+	}
+	
+	public function setCategory( string $category ): void {
+		$this->dbw->newUpdateQueryBuilder()
+			->update( 'cw_requests' )
+			->set( [ 'cw_category' => $category ] )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 
-	public function onhold( string $reason, UserIdentity $user ): void {
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'onhold';
-		$this->save();
-
-		$this->addComment( $reason, $user, true, 'comment', [ $this->requester ] );
-
-		$notifyUsers = $this->involvedUsers;
-
-		unset(
-			$notifyUsers[$this->requester->getId()],
-			$notifyUsers[$user->getId()]
-		);
-
-		if ( $notifyUsers ) {
-			$this->sendNotification( $reason, $notifyUsers );
-		}
-
-		$this->log( $user, 'requestonhold' );
+	public function setStatus( string $status ): void {
+		$this->dbw->newUpdateQueryBuilder()
+			->update( 'cw_requests' )
+			->set( [ 'cw_status' => $status ] )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 
-	public function moredetails( string $reason, UserIdentity $user ): void {
-		$this->status = ( $this->status == 'approved' ) ? 'approved' : 'moredetails';
-		$this->save();
-
-		$this->addComment( $reason, $user, false, 'moredetails', [ $this->requester ] );
-
-		$notifyUsers = $this->involvedUsers;
-
-		unset(
-			$notifyUsers[$this->requester->getId()],
-			$notifyUsers[$user->getId()]
-		);
-
-		if ( $notifyUsers ) {
-			$this->sendNotification( $reason, $notifyUsers );
-		}
-
-		$this->log( $user, 'requestmoredetails' );
-	}
-
-	public function log( UserIdentity $user, string $log ): void {
-		$logEntry = new ManualLogEntry( 'farmer', $log );
-		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID ) );
-
-		$logEntry->setParameters(
-			[
-				'4::id' => Message::rawParam(
-					$this->linkRenderer->makeKnownLink(
-						SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID ),
-						'#' . $this->ID
-					)
-				),
-			]
-		);
-
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
-	}
-
-	private function suppressionLog( UserIdentity $user, string $log ): void {
-		$suppressionLogEntry = new ManualLogEntry( 'farmersuppression', $log );
-		$suppressionLogEntry->setPerformer( $user );
-		$suppressionLogEntry->setTarget( SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID ) );
-		$suppressionLogEntry->setParameters(
-			[
-				'4::id' => Message::rawParam(
-					$this->linkRenderer->makeKnownLink(
-						SpecialPage::getTitleValueFor( 'RequestWikiQueue', $this->ID ),
-						'#' . $this->ID
-					)
-				),
-			]
-		);
-
-		$suppressionLogID = $suppressionLogEntry->insert();
-		$suppressionLogEntry->publish( $suppressionLogID );
-	}
-
-	public function suppress(
-		UserIdentity $user,
-		int $level,
-		bool $log = true
-	): void {
-		if ( $level === $this->visibility ) {
-			// Nothing to do, the wiki request already has the requested suppression level
-			return;
-		}
-		$this->visibility = $level;
-
-		$this->save();
-
-		if ( $log ) {
-			switch ( $level ) {
-				case 0:
-					$this->suppressionLog( $user, 'public' );
-					break;
-
-				case 1:
-					$this->suppressionLog( $user, 'delete' );
-					break;
-
-				case 2:
-					$this->suppressionLog( $user, 'suppress' );
-					break;
-			}
-		}
-	}
-
-	public function reopen( UserIdentity $user, bool $log = true ): void {
-		$status = $this->status;
-
-		$this->status = ( $status == 'approved' ) ? 'approved' : 'inreview';
-		$this->save();
-
-		if ( $log ) {
-			$this->addComment( 'Updated request.', $user, true );
-			if ( $status === 'declined' ) {
-				$this->log( $user, 'requestreopen' );
-			}
-		}
+	public function endAtomic( string $fname ): void {
+		$this->dbw->endAtomic( $fname );
 	}
 
 	public function tryAutoCreate(): void {
@@ -426,8 +455,8 @@ class WikiRequestManager {
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
-					'description' => $this->description,
-					'id' => $this->id,
+					'description' => $this->getDescription(),
+					'id' => $this->ID,
 				]
 			)
 		);
