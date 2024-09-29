@@ -51,7 +51,7 @@ class RequestWikiRequestViewer {
 		// but if we can't view the request, it also doesn't exist
 
 		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
-		if ( $this->request->getVisibility() >= 3 ) {
+		if ( $this->wikiRequestManager->getVisibility() >= 3 ) {
 			$this->context->getOutput()->addHTML(
 				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 			);
@@ -59,8 +59,8 @@ class RequestWikiRequestViewer {
 			return [];
 		}
 
-		if ( $visibilityConds[$this->request->getVisibility()] !== 'public' ) {
-			if ( !$this->permissionManager->userHasRight( $user, $visibilityConds[$this->request->getVisibility()] ) ) {
+		if ( $visibilityConds[$this->wikiRequestManager->getVisibility()] !== 'public' ) {
+			if ( !$this->permissionManager->userHasRight( $user, $visibilityConds[$this->wikiRequestManager->getVisibility()] ) ) {
 				$this->context->getOutput()->addHTML(
 					Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 				);
@@ -75,30 +75,30 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->request->sitename,
+				'default' => $this->wikiRequestManager->sitename,
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->request->url,
+				'default' => $this->wikiRequestManager->url,
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->request->language,
+				'default' => $this->wikiRequestManager->language,
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'request',
-				'default' => htmlspecialchars( $this->request->requester->getName() ) .
+				'default' => htmlspecialchars( $this->wikiRequestManager->requester->getName() ) .
 					Linker::userToolLinks(
-						$this->request->requester->getId(),
-						$this->request->requester->getName()
+						$this->wikiRequestManager->requester->getId(),
+						$this->wikiRequestManager->requester->getName()
 					),
 				'raw' => true,
 			],
@@ -107,7 +107,7 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'section' => 'request',
 				'default' => $this->context->getLanguage()->timeanddate(
-					$this->request->timestamp, true
+					$this->wikiRequestManager->timestamp, true
 				),
 			],
 			'status' => [
@@ -116,7 +116,7 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'section' => 'request',
 				'default' => $this->context->msg(
-					'requestwikiqueue-' . $this->request->getStatus()
+					'requestwikiqueue-' . $this->wikiRequestManager->getStatus()
 				)->text(),
 			],
 			'description' => [
@@ -125,12 +125,12 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'request',
-				'default' => $this->request->description,
+				'default' => $this->wikiRequestManager->description,
 				'raw' => true,
 			],
 		];
 
-		foreach ( $this->request->getComments() as $comment ) {
+		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
 				'type' => 'textarea',
 				'readonly' => true,
@@ -147,7 +147,7 @@ class RequestWikiRequestViewer {
 
 		if (
 			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
-			$user->getActorId() === $this->request->requester->getActorId()
+			$user->getActorId() === $this->wikiRequestManager->requester->getActorId()
 		) {
 			$formDescriptor += [
 				'comment' => [
@@ -166,20 +166,20 @@ class RequestWikiRequestViewer {
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => $this->request->sitename,
+					'default' => $this->wikiRequestManager->sitename,
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => $this->request->url,
+					'default' => $this->wikiRequestManager->url,
 					'validation-callback' => [ $this, 'isValidSubdomain' ],
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
 					'type' => 'language',
-					'default' => $this->request->language,
+					'default' => $this->wikiRequestManager->language,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				],
@@ -189,7 +189,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 					'rows' => 8,
 					'required' => true,
-					'default' => $this->request->description,
+					'default' => $this->wikiRequestManager->description,
 					'raw' => true,
 				],
 			];
@@ -199,7 +199,7 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
 					'options' => $this->config->get( 'CreateWikiCategories' ),
-					'default' => $this->request->category,
+					'default' => $this->wikiRequestManager->category,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				];
@@ -209,7 +209,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['edit-private'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
-					'default' => $this->request->private,
+					'default' => $this->wikiRequestManager->private,
 					'section' => 'edit',
 				];
 			}
@@ -218,7 +218,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['edit-bio'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
-					'default' => $this->request->bio,
+					'default' => $this->wikiRequestManager->bio,
 					'section' => 'edit',
 				];
 			}
@@ -228,7 +228,7 @@ class RequestWikiRequestViewer {
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
 					'options' => $this->config->get( 'CreateWikiPurposes' ),
-					'default' => trim( $this->request->purpose ),
+					'default' => trim( $this->wikiRequestManager->purpose ),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				];
@@ -257,8 +257,8 @@ class RequestWikiRequestViewer {
 				$visibilityOptions[2] = $this->context->msg( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
 			}
 
-			$wm = $this->wikiManagerFactory->newInstance( $this->request->dbname );
-			$wmError = $wm->checkDatabaseName( $this->request->dbname, forRename: false );
+			$wm = $this->wikiManagerFactory->newInstance( $this->wikiRequestManager->dbname );
+			$wmError = $wm->checkDatabaseName( $this->wikiRequestManager->dbname, forRename: false );
 
 			if ( $wmError ) {
 				$this->context->getOutput()->addHTML( Html::errorBox( $wmError ) );
@@ -279,7 +279,7 @@ class RequestWikiRequestViewer {
 						'requestwikiqueue-decline' => 'decline',
 						'requestwikiqueue-moredetails' => 'moredetails',
 					],
-					'default' => $this->request->getStatus(),
+					'default' => $this->wikiRequestManager->getStatus(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 					],
@@ -291,7 +291,7 @@ class RequestWikiRequestViewer {
 				'visibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $this->request->getVisibility() != 0 ) ? 1 : 0,
+					'default' => ( $this->wikiRequestManager->getVisibility() != 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
@@ -300,7 +300,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'revdelete-suppress-text',
 					'hide-if' => [ '!==', 'wpvisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
-					'default' => (string)$this->request->getVisibility(),
+					'default' => (string)$this->wikiRequestManager->getVisibility(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handle',
 				],
@@ -391,7 +391,7 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-comment'] ) ) {
 			if ( $session->get( 'previous_posted_comment' ) !== $formData['comment'] ) {
 				$session->set( 'previous_posted_comment', $formData['comment'] );
-				$this->request->addComment( $formData['comment'], $user );
+				$this->wikiRequestManager->addComment( $formData['comment'], $user );
 			} else {
 				$out->addHTML( Html::errorBox( $this->context->msg( 'createwiki-duplicate-comment' )->escaped() ) );
 				return false;
@@ -399,29 +399,29 @@ class RequestWikiRequestViewer {
 		} elseif ( isset( $formData['submit-edit'] ) ) {
 			$session->remove( 'previous_posted_comment' );
 
-			$this->request->sitename = $formData['edit-sitename'];
-			$this->request->language = $formData['edit-language'];
-			$this->request->purpose = $formData['edit-purpose'] ?? '';
-			$this->request->description = $formData['edit-description'];
-			$this->request->category = $formData['edit-category'] ?? '';
-			$this->request->private = $formData['edit-private'] ?? 0;
-			$this->request->bio = $formData['edit-bio'] ?? 0;
+			$this->wikiRequestManager->sitename = $formData['edit-sitename'];
+			$this->wikiRequestManager->language = $formData['edit-language'];
+			$this->wikiRequestManager->purpose = $formData['edit-purpose'] ?? '';
+			$this->wikiRequestManager->description = $formData['edit-description'];
+			$this->wikiRequestManager->category = $formData['edit-category'] ?? '';
+			$this->wikiRequestManager->private = $formData['edit-private'] ?? 0;
+			$this->wikiRequestManager->bio = $formData['edit-bio'] ?? 0;
 
-			$this->request->reopen( $form->getUser() );
+			$this->wikiRequestManager->reopen( $form->getUser() );
 		} elseif ( isset( $formData['submit-handle'] ) ) {
 			$session->remove( 'previous_posted_comment' );
 			if ( isset( $formData['visibility-options'] ) ) {
-				$this->request->suppress( $user, $formData['visibility-options'] );
+				$this->wikiRequestManager->suppress( $user, $formData['visibility-options'] );
 			}
 
 			if ( $formData['submission-action'] == 'approve' ) {
-				$this->request->approve( $user, $formData['reason'] );
+				$this->wikiRequestManager->approve( $user, $formData['reason'] );
 			} elseif ( $formData['submission-action'] == 'onhold' ) {
-				$this->request->onhold( $formData['reason'], $user );
+				$this->wikiRequestManager->onhold( $formData['reason'], $user );
 			} elseif ( $formData['submission-action'] == 'moredetails' ) {
-				$this->request->moredetails( $formData['reason'], $user );
+				$this->wikiRequestManager->moredetails( $formData['reason'], $user );
 			} else {
-				$this->request->decline( $formData['reason'], $user );
+				$this->wikiRequestManager->decline( $formData['reason'], $user );
 			}
 		}
 
