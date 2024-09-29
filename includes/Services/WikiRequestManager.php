@@ -407,6 +407,10 @@ class WikiRequestManager {
 		return (bool)$this->row->cw_bio;
 	}
 
+	public function isLocked(): bool {
+		return (bool)$this->row->cw_locked;
+	}
+
 	public function startQueryBuilder(): void {
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
@@ -435,6 +439,14 @@ class WikiRequestManager {
 		if ( $bio !== $this->isBio() ) {
 			$this->trackChange( 'bio', $this->isBio(), $bio );
 			$this->queryBuilder->set( [ 'cw_bio' => (int)$bio ] );
+		}
+	}
+
+	public function setLocked( bool $locked ): void {
+		$this->checkQueryBuilder();
+		if ( $locked !== $this->isLocked() ) {
+			$this->trackChange( 'locked', $this->isLocked(), $locked );
+			$this->queryBuilder->set( [ 'cw_locked' => (int)$locked ] );
 		}
 	}
 
