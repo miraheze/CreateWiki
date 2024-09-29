@@ -11,7 +11,6 @@ use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
-use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use RuntimeException;
@@ -245,7 +244,7 @@ class WikiRequestManager {
 		if ( $this->getStatus() === 'approved' ) {
 			return;
 		}
-	
+
 		$this->setStatus( 'onhold' );
 
 		$this->addComment(
@@ -342,7 +341,6 @@ class WikiRequestManager {
 		}
 	}
 
-	
 	public function getVisibility(): int {
 		return $this->row->cw_visibility;
 	}
@@ -417,7 +415,7 @@ class WikiRequestManager {
 			->caller( __METHOD__ )
 			->execute();
 	}
-	
+
 	public function setVisibility( int $visibility ): void {
 		$this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
@@ -426,7 +424,7 @@ class WikiRequestManager {
 			->caller( __METHOD__ )
 			->execute();
 	}
-	
+
 	public function setCategory( string $category ): void {
 		$this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
