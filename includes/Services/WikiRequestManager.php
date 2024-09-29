@@ -55,7 +55,7 @@ class WikiRequestManager {
 
 		$this->connectionProvider = $connectionProvider;
 		$this->notificationsManager = $notificationsManager;
-		$this->jobQueueGroupFactory = $jobQueueGroupFactor;
+		$this->jobQueueGroupFactory = $jobQueueGroupFactory;
 		$this->linkRenderer = $linkRenderer;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
