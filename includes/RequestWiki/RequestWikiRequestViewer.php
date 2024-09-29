@@ -82,14 +82,14 @@ class RequestWikiRequestViewer {
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->wikiRequestManager->url,
+				'default' => $this->wikiRequestManager->getUrl(),
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'type' => 'text',
 				'readonly' => true,
 				'section' => 'request',
-				'default' => $this->wikiRequestManager->language,
+				'default' => $this->wikiRequestManager->getLanguage(),
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
@@ -125,7 +125,7 @@ class RequestWikiRequestViewer {
 				'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'request',
-				'default' => $this->wikiRequestManager->description,
+				'default' => $this->wikiRequestManager->getDescription(),
 				'raw' => true,
 			],
 		];
@@ -152,13 +152,13 @@ class RequestWikiRequestViewer {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 8,
+					'rows' => 6,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
 				],
 				'submit-comment' => [
 					'type' => 'submit',
-					'default' => $this->context->msg( 'htmlform-submit' )->text(),
+					'buttonlabel-message' => 'htmlform-submit',
 					'section' => 'comments',
 				],
 				'edit-sitename' => [
@@ -173,13 +173,13 @@ class RequestWikiRequestViewer {
 					'type' => 'text',
 					'section' => 'edit',
 					'required' => true,
-					'default' => $this->wikiRequestManager->url,
+					'default' => $this->wikiRequestManager->getUrl(),
 					'validation-callback' => [ $this, 'isValidSubdomain' ],
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
 					'type' => 'language',
-					'default' => $this->wikiRequestManager->language,
+					'default' => $this->wikiRequestManager->getLanguage(),
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'edit',
 				],
@@ -187,9 +187,9 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-requestercomment',
 					'type' => 'textarea',
 					'section' => 'edit',
-					'rows' => 8,
+					'rows' => 6,
 					'required' => true,
-					'default' => $this->wikiRequestManager->description,
+					'default' => $this->wikiRequestManager->getDescription(),
 					'raw' => true,
 				],
 			];
