@@ -145,9 +145,14 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			true
 		);
 
+		$context->setRequest( $request );
+
+		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
+		$specialRequestWiki->setContext( $context );
+
 		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'miraheze.org' );
 
-		$status = $this->specialRequestWiki->onSubmit( $formData );
+		$status = $specialRequestWiki->onSubmit( $formData );
 		$this->assertInstanceOf( Status::class, $status );
 		$this->assertStatusGood( $status );
 	}
