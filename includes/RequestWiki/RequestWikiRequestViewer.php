@@ -438,11 +438,15 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setSitename( $formData['edit-sitename'] );
 			$this->wikiRequestManager->setLanguage( $formData['edit-language'] );
 			$this->wikiRequestManager->setUrl( $formData['edit-url'] );
-			// $this->wikiRequestManager->setPurpose( $formData['edit-purpose'] ?? '' );
-			// $this->wikiRequestManager->setDescription( $formData['edit-description'] );
 			$this->wikiRequestManager->setCategory( $formData['edit-category'] ?? '' );
 			$this->wikiRequestManager->setPrivate( (bool)( $formData['edit-private'] ?? false ) );
 			$this->wikiRequestManager->setBio( (bool)( $formData['edit-bio'] ?? false ) );
+
+			// We do this at once since they are both stored in cw_comment
+			$this->wikiRequestManager->setDescriptionAndPurpose(
+				$formData['edit-description'],
+				$formData['edit-purpose'] ?? ''
+			);
 
 			if ( !$this->wikiRequestManager->hasChanges() ) {
 				$this->wikiRequestManager->clearQueryBuilder();
