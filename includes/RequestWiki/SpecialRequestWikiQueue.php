@@ -51,12 +51,13 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$this->setHeaders();
 
-		if ( $par === null || $par === '' ) {
-			$this->doPagerStuff();
-		} else {
+		if ( $par ) {
 			$this->getOutput()->addBacklinkSubtitle( $this->getPageTitle() );
 			$this->lookupRequest( $par );
+			return;
 		}
+
+		$this->doPagerStuff();
 	}
 
 	private function doPagerStuff(): void {
