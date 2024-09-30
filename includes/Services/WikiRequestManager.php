@@ -24,7 +24,9 @@ class WikiRequestManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		'CreateWikiAIThreshold',
+		'CreateWikiDatabaseSuffix',
 		'CreateWikiGlobalWiki',
+		'CreateWikiSubdomain',
 		'CreateWikiUseJobQueue',
 	];
 
@@ -493,6 +495,25 @@ class WikiRequestManager {
 		if ( $language !== $this->getLanguage() ) {
 			$this->trackChange( 'language', $this->getLanguage(), $language );
 			$this->queryBuilder->set( [ 'cw_language' => $language ] );
+		}
+	}
+
+	public function setUrl( string $url ): void {
+		$this->checkQueryBuilder();
+		if ( $url !== $this->getUrl() ) {
+			$subdomain = strtolower( $url );
+			if ( strpos( $subdomain, $this->options->get( 'CreateWikiSubdomain' ) ) !== false ) {
+				$subdomain = str_replace( '.' . $this->options->get( 'CreateWikiSubdomain' ), '', $subdomain );
+			}
+
+			$dbname = $subdomain . $this->options->get( 'CreateWikiDatabaseSuffix' );
+			$url = $subdomain . '.' . $this->options->get( 'CreateWikiSubdomain' );
+
+			$this->trackChange( 'url', $this->getUrl(), $url );
+			$this->queryBuilder->set( [
+				'cw_dbname' => $dbname,
+				'cw_url' => $url,
+			] );
 		}
 	}
 
