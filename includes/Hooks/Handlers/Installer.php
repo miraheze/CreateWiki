@@ -21,6 +21,11 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		);
 
 		$updater->addExtensionTable(
+			'cw_history',
+			"$dir/cw_history.sql"
+		);
+
+		$updater->addExtensionTable(
 			'cw_wikis',
 			"$dir/cw_wikis.sql"
 		);
