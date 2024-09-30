@@ -152,5 +152,5 @@
 	"right-createwiki-suppressrequest": "Hide wiki requests from everyone",
 	"right-requestwiki": "Request wikis",
 	"createwiki-no-changes": "No changes made.",
-	"createwiki-request-edited" "Requested Edited $1"
+	"createwiki-request-edited": "Requested Edited $1"
 }
