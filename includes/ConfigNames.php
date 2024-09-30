@@ -74,4 +74,16 @@ class ConfigNames {
 	public const UseJobQueue = 'CreateWikiUseJobQueue';
 
 	public const UsePrivateWikis = 'CreateWikiUsePrivateWikis';
+
+	/**
+	 * RequestWiki config
+	 */
+
+	public const RequestWikiConfirmAgreement = 'RequestWikiConfirmAgreement';
+
+	public const RequestWikiConfirmEmail = 'RequestWikiConfirmEmail';
+
+	public const RequestWikiMinimumLength = 'RequestWikiMinimumLength';
+
+	public const RequestWikiUseDescriptions = 'RequestWikiUseDescriptions';
 }
