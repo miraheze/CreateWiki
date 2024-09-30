@@ -202,13 +202,13 @@ class WikiRequestManager {
 			// This runs checkDatabaseName and if it returns a
 			// non-null value it is returning an error.
 			$notCreated = $wikiManager->create(
-				$this->getSitename(),
-				$this->getLanguage(),
-				$this->isPrivate(),
-				$this->getCategory(),
-				$this->getRequester()->getName(),
-				$user->getName(),
-				"[[Special:RequestWikiQueue/{$this->ID}|Requested]]"
+				sitename: $this->getSitename(),
+				language: $this->getLanguage(),
+				private: $this->isPrivate(),
+				category: $this->getCategory(),
+				requester: $this->getRequester()->getName(),
+				actor: $user->getName(),
+				reason: "[[Special:RequestWikiQueue/{$this->ID}|Requested]]"
 			);
 
 			if ( $notCreated ) {
