@@ -499,6 +499,26 @@ class WikiRequestManager {
 		}
 	}
 
+	public function setDescriptionAndPurpose( string $description, string $purpose ): void {
+		$this->checkQueryBuilder();
+		if ( $description !== $this->getDescription() ) {
+			$this->trackChange( 'description', $this->getDescription(), $description );
+		}
+
+		if ( $purpose && $purpose !== $this->getPurpose() ) {
+			$this->trackChange( 'purpose', $this->getPurpose(), $purpose );
+		}
+
+		$newComment = '';
+		if ( $purpose ) {
+			$newComment .= "Purpose: $purpose\n";
+		}
+
+		$newComment .= $description;
+
+		$this->queryBuilder->set( [ 'cw_comment' => $newComment ] );
+	}
+
 	public function setUrl( string $url ): void {
 		$this->checkQueryBuilder();
 		if ( $url !== $this->getUrl() ) {
