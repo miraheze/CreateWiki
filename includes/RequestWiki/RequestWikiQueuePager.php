@@ -7,6 +7,7 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Wikimedia\Rdbms\IConnectionProvider;
