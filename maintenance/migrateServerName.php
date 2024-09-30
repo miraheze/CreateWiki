@@ -33,16 +33,12 @@ class MigrateServerName extends Maintenance {
 			$settingsArray = json_decode( $row->wiki_settings, true );
 
 			if ( isset( $settingsArray['wgServer'] ) ) {
-				$dbw->update(
-					'cw_wikis',
-					[
-						'wiki_url' => $settingsArray['wgServer']
-					],
-					[
-						'wiki_dbname' => $row->wiki_dbname
-					],
-					__METHOD__
-				);
+				$dbw->newUpdateQueryBuilder()
+					->update( 'cw_wikis' )
+					->set( [ 'wiki_url' => $settingsArray['wgServer'] ] )
+					->where( [ 'wiki_dbname' => $row->wiki_dbname ] )
+					->caller( __METHOD__ )
+					->execute();
 			}
 
 		}
