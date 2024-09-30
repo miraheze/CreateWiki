@@ -36,7 +36,7 @@ class PopulateWikiCreation extends Maintenance {
 		}
 
 		foreach ( $res as $row ) {
-			$DBname = $row->wiki_dbname;
+			$dbname = $row->wiki_dbname;
 
 			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::GlobalWiki ) );
 
@@ -45,7 +45,7 @@ class PopulateWikiCreation extends Maintenance {
 				->from( 'logging' )
 				->where( [
 					'log_action' => 'createwiki',
-					'log_params' => serialize( [ '4::wiki' => $DBname ] ),
+					'log_params' => serialize( [ '4::wiki' => $dbname ] ),
 				] )
 				->orderBy( 'log_timestamp', SelectQueryBuilder::SORT_DESC )
 				->caller( __METHOD__ )
@@ -54,22 +54,18 @@ class PopulateWikiCreation extends Maintenance {
 			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::Database ) );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
-				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );
+				$this->output( "ERROR: couldn't determine when {$dbname} was created!\n" );
 				continue;
 			}
 
-			$dbw->update(
-				'cw_wikis',
-				[
-					'wiki_creation' => $res->log_timestamp,
-				],
-				[
-					'wiki_dbname' => $DBname
-				],
-				__METHOD__
-			);
+			$dbw->newUpdateQueryBuilder()
+				->update( 'cw_wikis' )
+				->set( [ 'wiki_creation' => $res->log_timestamp ] )
+				->where( [ 'wiki_dbname' => $dbname ] )
+				->caller( __METHOD__ )
+				->execute();
 
-			$this->output( "Inserted {$res->log_timestamp} into wiki_creation column for db {$DBname}\n" );
+			$this->output( "Inserted {$res->log_timestamp} into wiki_creation column for db {$dbname}\n" );
 		}
 	}
 }
