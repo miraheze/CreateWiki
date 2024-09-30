@@ -164,6 +164,48 @@ class WikiRequestManager {
 		return array_unique( array_merge( array_column( $this->getComments(), 'user' ), [ $this->getRequester() ] ) );
 	}
 
+	public function addRequestHistory(
+		string $action,
+		string $details,
+		User $user
+	): void {
+		$this->dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_history' )
+			->row( [
+				'cw_id' => $this->ID,
+				'cw_history_action' => $action,
+				'cw_history_actor' => $user->getActorId(),
+				'cw_history_details' => $details,
+				'cw_history_timestamp' => $this->dbw->timestamp(),
+			] )
+			->caller( __METHOD__ )
+			->execute();
+	}
+
+	public function getRequestHistory(): array {
+		$res = $this->dbw->newSelectQueryBuilder()
+			->table( 'cw_history' )
+			->field( '*' )
+			->where( [ 'cw_id' => $this->ID ] )
+			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_DESC )
+			->caller( __METHOD__ )
+			->fetchResultSet();
+
+		$history = [];
+		foreach ( $res as $row ) {
+			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
+	
+			$history[] = [
+				'action' => $row->cw_history_action,
+				'details' => $row->cw_history_details,
+				'timestamp' => $row->cw_history_timestamp, 
+				'user' => $user,
+			];
+		}
+
+		return $history;
+	}
+
 	public function approve( User $user, string $comment ): void {
 		if ( $this->options->get( ConfigNames::UseJobQueue ) ) {
 			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
