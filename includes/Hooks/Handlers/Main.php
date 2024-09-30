@@ -96,7 +96,11 @@ class Main implements
 				$this->config->get( ConfigNames::GlobalWiki )
 			);
 
-			$ret = $variableCache[$magicWordId] = $dbr->selectRowCount( 'cw_requests', '*' );
+			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
+				->select( '*' )
+				->from( 'cw_requests' )
+				->caller( __METHOD__ )
+				->fetchRowCount();
 		}
 	}
 
