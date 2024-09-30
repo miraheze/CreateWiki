@@ -8,7 +8,7 @@ use OOUI\PanelLayout;
 
 class RequestWikiHistory {
 
-	public function showHistorySection(array $historyEntries, $out) {
+	public static function showHistorySection(array $historyEntries, $out) {
 
 		$historyFieldset = new FieldsetLayout([
 			'label' => 'History',
@@ -16,7 +16,7 @@ class RequestWikiHistory {
 				new LabelElement([
 					'label' => 'History of actions',
 				]),
-				$this->createHistoryTable($historyEntries),
+				self::createHistoryTable($historyEntries),
 			]
 		]);
 
@@ -24,7 +24,7 @@ class RequestWikiHistory {
 		$out->addHTML($historyFieldset->toHTML());
 	}
 
-	private function createHistoryTable($entries) {
+	private static function createHistoryTable($entries) {
 		// Start building the HTML table
 		$tableHTML = '<table class="oo-ui-table oo-ui-table-striped">';
 		$tableHTML .= '<thead><tr>';
