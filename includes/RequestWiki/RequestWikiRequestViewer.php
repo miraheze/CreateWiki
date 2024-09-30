@@ -17,8 +17,6 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use OOUI\TableWidget;
-use OOUI\FieldsetLayout;
 use UserNotLoggedIn;
 
 class RequestWikiRequestViewer {
@@ -143,68 +141,8 @@ class RequestWikiRequestViewer {
 				'raw' => true,
 			],
 		];
-	
-		// Add the history section/tab
-		$historyEntries = $this->wikiRequestManager->getRequestHistory();
-		$history = '';
-		foreach ( $historyEntries as $entry ) {
-			$history .= Html::element( 'div', [], $this->context->getLanguage()->timeanddate( $entry['timestamp'], true ) .
-				': ' . $entry['user']->getName() . ' - ' . $entry['action'] );
-		}
-		$formDescriptor['history'] = [
-			'type' => 'info',
-			'label-message' => 'requestwikiqueue-request-label-history',
-			'default' => $history,
-			'raw' => true,
-			'section' => 'history',
-		];
 
-		$historyEntries = $this->wikiRequestManager->getRequestHistory();
-		$historyRows = [];
-
-		foreach ( $historyEntries as $entry ) {
-			$historyRows[] = [
-				'timestamp' => $this->context->getLanguage()->timeanddate( $entry['timestamp'], true ),
-				'user' => $entry['user']->getName(),
-				'action' => $entry['action'],
-				'details' => $entry['details'],
-			];
-		}
-
-		$historyColumns = [
-			[
-				'header' => 'Timestamp',
-				'data' => 'timestamp',
-			],
-			[
-				'header' => 'User',
-				'data' => 'user',
-			],
-			[
-				'header' => 'Action',
-				'data' => 'action',
-			],
-			[
-				'header' => 'Details',
-				'data' => 'details',
-			],
-		];
-
-		$historyTable = new TableWidget( [
-			'columns' => $historyColumns,
-			'items' => $historyRows,
-		] );
-
-		$historyFieldset = new FieldsetLayout( [
-			'label' => 'History',
-			'items' => [ $historyTable ]
-		] );
-
-		$formDescriptor['history'] = [
-			'type' => 'raw',
-			'raw' => $historyFieldset,
-			'section' => 'history',
-		];
+		RequestWikiHistory::showHistorySection( $this->wikiRequestManager()->getRequestHistory(), $this->context->getOutput() );
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
