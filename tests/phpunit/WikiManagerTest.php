@@ -147,7 +147,11 @@ class WikiManagerTest extends MediaWikiIntegrationTestCase {
 	public function testRenameSuccess() {
 		$this->createWiki( 'renamewikilegacytest' );
 
-		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikilegacytest' ] );
+		$this->db->newDeleteQueryBuilder()
+			->deleteFrom( 'cw_wikis' )
+			->where( [ 'wiki_dbname' => 'renamewikilegacytest' ] )
+			->caller( __METHOD__ )
+			->execute();
 
 		$wikiManager = new WikiManager( 'createwikilegacytest', $this->getMockCreateWikiHookRunner() );
 
