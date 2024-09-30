@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\Services;
 
 use BagOStuff;
 use MediaWiki\Config\ServiceOptions;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use ObjectCacheFactory;
@@ -14,13 +15,13 @@ use Wikimedia\Rdbms\IReadableDatabase;
 class CreateWikiDataFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		'CreateWikiCacheDirectory',
-		'CreateWikiCacheType',
-		'CreateWikiDatabase',
-		'CreateWikiUseClosedWikis',
-		'CreateWikiUseExperimental',
-		'CreateWikiUseInactiveWikis',
-		'CreateWikiUsePrivateWikis',
+		ConfigNames::CacheDirectory,
+		ConfigNames::CacheType,
+		ConfigNames::Database,
+		ConfigNames::UseClosedWikis,
+		ConfigNames::UseExperimental,
+		ConfigNames::UseInactiveWikis,
+		ConfigNames::UsePrivateWikis,
 	];
 
 	private BagOStuff $cache;
@@ -61,11 +62,11 @@ class CreateWikiDataFactory {
 		$this->hookRunner = $hookRunner;
 		$this->options = $options;
 
-		$this->cache = $this->options->get( 'CreateWikiCacheType' ) ?
-			$objectCacheFactory->getInstance( $this->options->get( 'CreateWikiCacheType' ) ) :
+		$this->cache = $this->options->get( ConfigNames::CacheType ) ?
+			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
 			ObjectCache::getLocalClusterInstance();
 
-		$this->cacheDir = $this->options->get( 'CreateWikiCacheDirectory' );
+		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
 
 	/**
@@ -161,7 +162,7 @@ class CreateWikiDataFactory {
 		}
 
 		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( 'CreateWikiDatabase' )
+			$this->options->get( ConfigNames::Database )
 		);
 
 		$databaseList = $this->dbr->newSelectQueryBuilder()
@@ -213,7 +214,7 @@ class CreateWikiDataFactory {
 		}
 
 		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( 'CreateWikiDatabase' )
+			$this->options->get( ConfigNames::Database )
 		);
 
 		$row = $this->dbr->newSelectQueryBuilder()
@@ -229,20 +230,20 @@ class CreateWikiDataFactory {
 
 		$states = [];
 
-		if ( $this->options->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$states['private'] = (bool)$row->wiki_private;
 		}
 
-		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
+		if ( $this->options->get( ConfigNames::UseClosedWikis ) ) {
 			$states['closed'] = (bool)$row->wiki_closed;
 		}
 
-		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
+		if ( $this->options->get( ConfigNames::UseInactiveWikis ) ) {
 			$states['inactive'] = $row->wiki_inactive_exempt ? 'exempt' :
 				(bool)$row->wiki_inactive;
 		}
 
-		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
+		if ( $this->options->get( ConfigNames::UseExperimental ) ) {
 			$states['experimental'] = (bool)$row->wiki_experimental;
 		}
 
