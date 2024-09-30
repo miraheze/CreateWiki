@@ -23,15 +23,11 @@ class MigrateServerName extends Maintenance {
 	public function execute(): void {
 		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
 
-		$res = $dbw->select(
-			'cw_wikis',
-			[
-				'wiki_dbname',
-				'wiki_settings',
-			],
-			[],
-			__METHOD__
-		);
+		$res = $dbw->newSelectQueryBuilder()
+			->select( [ 'wiki_dbname', 'wiki_settings' ] )
+			->from( 'cw_wikis' )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		foreach ( $res as $row ) {
 			$settingsArray = json_decode( $row->wiki_settings, true );
