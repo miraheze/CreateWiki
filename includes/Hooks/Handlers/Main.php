@@ -110,7 +110,7 @@ class Main implements
 		$out
 	): void {
 		if ( $out->getTitle()->isSubpageOf( Title::newFromText( 'Special:RequestWikiQueue' ) ) ) {
-			$vars['CreateWikiCannedResponses'] = $this->config->get( ConfigNames::CannedResponses );
+			$vars[ConfigNames::CannedResponses] = $this->config->get( ConfigNames::CannedResponses );
 		}
 	}
 
