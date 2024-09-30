@@ -38,7 +38,7 @@ class RestWikiRequest extends SimpleHandler {
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv();
+		RestUtils::checkEnv( $this->config );
 		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
 		$visibilityConds = [
 			0 => 'public',
