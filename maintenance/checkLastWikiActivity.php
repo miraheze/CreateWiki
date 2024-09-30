@@ -43,20 +43,17 @@ class CheckLastWikiActivity extends Maintenance {
 
 	private function getTimestamp(): int {
 		$dbr = $this->getReplicaDB();
-		$row = $dbr->selectRow(
-			'recentchanges',
-			'rc_timestamp',
-			[
-				"rc_log_action != 'renameuser'",
-				"rc_log_action != 'newusers'"
-			],
-			__METHOD__,
-			[
-				'ORDER BY' => 'rc_timestamp DESC'
-			]
-		);
+		$timestamp = $dbr->newSelectQueryBuilder()
+			->select( 'MAX(rc_timestamp)' )
+			->from( 'recentchanges' )
+			->where( [
+				$dbr->expr( 'rc_log_type', '!=', 'renameuser' ),
+				$dbr->expr( 'rc_log_type', '!=', 'newusers' ),
+			] )
+			->caller( __METHOD__ )
+			->fetchField();
 
-		return $row ? $row->rc_timestamp : 0;
+		return (int)$timestamp;
 	}
 }
 
