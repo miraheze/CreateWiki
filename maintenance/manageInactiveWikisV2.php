@@ -6,6 +6,7 @@ $IP = getenv( 'MW_INSTALL_PATH' ) ?: __DIR__ . '/../../..';
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 /**
@@ -27,27 +28,27 @@ class ManageInactiveWikisV2 extends Maintenance {
 	}
 
 	public function execute(): void {
-		if ( !$this->getConfig()->get( 'CreateWikiEnableManageInactiveWikis' ) ) {
+		if ( !$this->getConfig()->get( ConfigNames::EnableManageInactiveWikis ) ) {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( ConfigNames::Database ) );
 
-		$res = $dbr->select(
-			'cw_wikis',
-			'wiki_dbname',
-			[
+		$res = $dbr->newSelectQueryBuilder()
+			->select( 'wiki_dbname' )
+			->from( 'cw_wikis' )
+			->where( [
 				'wiki_inactive_exempt' => 0,
 				'wiki_deleted' => 0,
-			],
-			__METHOD__
-		);
+			] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		foreach ( $res as $row ) {
 			$dbName = $row->wiki_dbname;
 			$remoteWiki = $remoteWikiFactory->newInstance( $dbName );
-			$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
+			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 
 			// Check if the wiki is inactive based on creation date
 			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
@@ -60,9 +61,9 @@ class ManageInactiveWikisV2 extends Maintenance {
 		string $dbName,
 		RemoteWikiFactory $remoteWiki
 	): bool {
-		$inactiveDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['inactive'];
-		$closeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['closed'];
-		$removeDays = (int)$this->getConfig()->get( 'CreateWikiStateDays' )['removed'];
+		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
+		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['closed'];
+		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['removed'];
 		$canWrite = $this->hasOption( 'write' );
 
 		/** @var CheckLastWikiActivity $activity */
