@@ -12,6 +12,7 @@ require_once "$IP/maintenance/Maintenance.php";
 use FileBackend;
 use Maintenance;
 use MediaWiki\MainConfigNames;
+use Miraheze\CreateWiki\ConfigNames;
 
 class SetContainersAccess extends Maintenance {
 
@@ -28,13 +29,13 @@ class SetContainersAccess extends Maintenance {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
-		$wiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+		$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
 			$this->getConfig()->get( MainConfigNames::DBname )
 		);
 
-		$isPrivate = $wiki->isPrivate();
+		$isPrivate = $remoteWiki->isPrivate();
 
-		foreach ( $this->getConfig()->get( 'CreateWikiContainers' ) as $zone => $status ) {
+		foreach ( $this->getConfig()->get( ConfigNames::Containers ) as $zone => $status ) {
 			$dir = $backend->getContainerStoragePath( $zone );
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';
