@@ -190,9 +190,9 @@ class WikiManagerFactory {
 			return $this->doCreateDatabase();
 		}
 
-		$this->cwdb->insert(
-			'cw_wikis',
-			[
+		$this->cwdb->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->row( [
 				'wiki_dbname' => $this->dbname,
 				'wiki_dbcluster' => $this->cluster,
 				'wiki_sitename' => $sitename,
@@ -200,8 +200,9 @@ class WikiManagerFactory {
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category,
-			]
-		);
+			] )
+			->caller( __METHOD__ )
+			->execute();
 
 		$this->doAfterCreate(
 			$sitename,
