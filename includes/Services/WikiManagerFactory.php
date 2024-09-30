@@ -83,16 +83,15 @@ class WikiManagerFactory {
 		);
 
 		// Check if the database exists in the cw_wikis table
-		$check = $this->cwdb->selectRow(
-			'cw_wikis',
-			'wiki_dbname',
-			[ 'wiki_dbname' => $dbname ],
-			__METHOD__
-		);
-
-		$hasClusters = $this->options->get( ConfigNames::DatabaseClusters );
+		$check = $this->cwdb->newSelectQueryBuilder()
+			->select( 'wiki_dbname' )
+			->from( 'cw_wikis' )
+			->where( [ 'wiki_dbname' => $dbname ] )
+			->caller( __METHOD__ )
+			->fetchRow();
 
 		if ( !$check ) {
+			$hasClusters = $this->options->get( ConfigNames::DatabaseClusters );
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
 				$lbFactory = $this->connectionProvider;
@@ -102,11 +101,12 @@ class WikiManagerFactory {
 				// Calculate the size of each cluster
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
-					$clusterSizes[$cluster] = $this->cwdb->selectRowCount(
-						'cw_wikis',
-						'*',
-						[ 'wiki_dbcluster' => $cluster ]
-					);
+					$clusterSizes[$cluster] = $this->cwdb->newSelectQueryBuilder()
+						->select( '*' )
+						->from( 'cw_wikis' )
+						->where( [ 'wiki_dbcluster' => $cluster ] )
+						->caller( __METHOD__ )
+						->fetchRowCount();
 				}
 
 				// Pick the cluster with the least number of databases
@@ -114,11 +114,12 @@ class WikiManagerFactory {
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
 				// Select a database in the chosen cluster
-				$clusterDBRow = $this->cwdb->selectRow(
-					'cw_wikis',
-					'wiki_dbname',
-					[ 'wiki_dbcluster' => $this->cluster ]
-				);
+				$clusterDBRow = $this->cwdb->newSelectQueryBuilder()
+					->select( 'wiki_dbname' )
+					->from( 'cw_wikis' )
+					->where( [ 'wiki_dbcluster' => $this->cluster ] )
+					->caller( __METHOD__ )
+					->fetchRow();
 
 				if ( !$clusterDBRow ) {
 					// Handle case where no database exists in the chosen cluster
