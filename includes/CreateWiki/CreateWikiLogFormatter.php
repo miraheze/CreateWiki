@@ -7,7 +7,6 @@ use LogFormatter;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
-use MediaWiki\Title\Title;
 
 class CreateWikiLogFormatter extends LogFormatter {
 
@@ -35,10 +34,10 @@ class CreateWikiLogFormatter extends LogFormatter {
 		if ( $subtype === 'requestwiki' ) {
 			$params[6] = str_replace( '#', '', $params[6] );
 
-			$params[6] = Message::rawParam( $this->linkRenderer->makeKnownLink(
-				Title::newFromText( SpecialPage::getTitleFor( 'RequestWikiQueue' ) . '/' . $params[6] ),
-				'#' . $params[6]
-			) );
+			$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', $params[6] );
+			$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$params[6]}" );
+
+			$params[6] = Message::rawParam( $requestLink );
 		}
 
 		return $params;
