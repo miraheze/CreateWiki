@@ -327,10 +327,11 @@ class WikiManagerFactory {
 		$data->deleteWikiData( $this->dbname );
 
 		foreach ( $this->tables as $table => $selector ) {
-			$this->cwdb->delete(
-				$table,
-				[ $selector => $this->dbname ]
-			);
+			$this->cwdb->newDeleteQueryBuilder()
+				->deleteFrom( $table )
+				->where( [ $selector => $this->dbname ] )
+				->caller( __METHOD__ )
+				->execute();
 		}
 
 		$this->recache();
