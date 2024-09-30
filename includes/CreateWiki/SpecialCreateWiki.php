@@ -6,6 +6,7 @@ use ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
@@ -24,7 +25,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
 			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
@@ -66,25 +67,25 @@ class SpecialCreateWiki extends FormSpecialPage {
 			],
 		];
 
-		if ( $this->getConfig()->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
 			];
 		}
 
-		if ( $this->getConfig()->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $this->getConfig()->get( 'CreateWikiCategories' ),
+				'options' => $this->getConfig()->get( ConfigNames::Categories ),
 				'default' => 'uncategorised',
 			];
 		}
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 8,
+			'rows' => 6,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'default' => $request->getVal( 'wpreason' ),
@@ -98,20 +99,20 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @inheritDoc
 	 */
 	public function onSubmit( array $formData ): bool {
-		if ( $this->getConfig()->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$private = $formData['private'];
 		} else {
 			$private = 0;
 		}
 
-		if ( $this->getConfig()->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
 			$category = $formData['category'];
 		} else {
 			$category = 'uncategorised';
 		}
 
-		$wm = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
-		$wm->create(
+		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
+		$wikiManager->create(
 			$formData['sitename'],
 			$formData['language'],
 			$private,
@@ -139,8 +140,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 			return true;
 		}
 
-		$wm = $this->wikiManagerFactory->newInstance( $dbname );
-		$check = $wm->checkDatabaseName( $dbname, forRename: false );
+		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
+		$check = $wikiManager->checkDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
 			// Will return a string — the error it received
