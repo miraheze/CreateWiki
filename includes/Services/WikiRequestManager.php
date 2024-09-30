@@ -555,8 +555,8 @@ class WikiRequestManager {
 		];
 	}
 
-	public function getChanges(): array {
-		return $this->changes;
+	public function hasChanges(): bool {
+		return (bool)$this->changes;
 	}
 
 	public function getChangeMessage(): string {
