@@ -85,7 +85,7 @@ class RequestWikiAIJob extends Job {
 	private function canAutoApprove(): bool {
 		$descriptionFilter = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
-			'CreateWikiAutoApprovalFilter'
+			ConfigNames::AutoApprovalFilter
 		);
 
 		if ( preg_match( $descriptionFilter, strtolower( $this->description ) ) ) {
