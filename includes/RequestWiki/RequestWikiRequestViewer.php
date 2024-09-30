@@ -443,8 +443,7 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setPrivate( (bool)( $formData['edit-private'] ?? false ) );
 			$this->wikiRequestManager->setBio( (bool)( $formData['edit-bio'] ?? false ) );
 
-			$changes = $this->wikiRequestManager->getChanges();
-			if ( !$changes ) {
+			if ( !$this->wikiRequestManager->hasChanges() ) {
 				$this->wikiRequestManager->clearQueryBuilder();
 				$out->addHTML( Html::errorBox( $this->context->msg( 'createwiki-no-changes' )->escaped() ) );
 				return;
