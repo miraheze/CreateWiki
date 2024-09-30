@@ -457,7 +457,7 @@ class RequestWikiRequestViewer {
 			}
 
 			$comment = $this->context->msg( $message )->rawParams(
-				"\n" . $this->wikiRequestManager->getChangeMessage()
+				$this->wikiRequestManager->getChangeMessage()
 			)->inContentLanguage()->escaped();
 
 			$this->wikiRequestManager->addComment(
