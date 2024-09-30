@@ -1,1 +1,0 @@
-ALTER TABLE cw_wikis MODIFY COLUMN wiki_inactive_exempt SMALLINT NOT NULL DEFAULT '0';
