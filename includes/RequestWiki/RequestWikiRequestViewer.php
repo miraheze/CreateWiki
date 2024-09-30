@@ -458,7 +458,7 @@ class RequestWikiRequestViewer {
 			}
 
 			$comment = $this->context->msg( $message )->rawParams(
-				implode( "\n\n", $changes )
+				$this->getChangeMessage()
 			)->inContentLanguage()->escaped();
 
 			$this->wikiRequestManager->addComment(
@@ -499,17 +499,6 @@ class RequestWikiRequestViewer {
 				$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
 			}
 		}
-
-		$out->addHTML(
-			Html::successBox(
-				Html::element(
-					'p',
-					[],
-					$this->context->msg( 'requestwiki-edit-success' )->plain()
-				),
-				'mw-notify-success'
-			)
-		);
 	}
 
 	public function isValidComment( ?string $comment, array $alldata ): bool|Message {
