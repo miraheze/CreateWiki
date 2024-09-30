@@ -148,7 +148,11 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testRenameSuccess() {
 		$this->createWiki( 'renamewikitest' );
 
-		$this->db->delete( 'cw_wikis', [ 'wiki_dbname' => 'renamewikitest' ] );
+		$this->db->newDeleteQueryBuilder()
+			->deleteFrom( 'cw_wikis' )
+			->where( [ 'wiki_dbname' => 'renamewikitest' ] )
+			->caller( __METHOD__ )
+			->execute();
 
 		$wikiManager = $this->getFactoryService()->newInstance( 'createwikitest' );
 
