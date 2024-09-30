@@ -6,7 +6,7 @@ CREATE TABLE /*_*/cw_requests (
   cw_private SMALLINT DEFAULT NULL,
   cw_sitename VARCHAR(128) NOT NULL,
   cw_status VARCHAR(16) DEFAULT NULL,
-  cw_timestamp varchar(32) NOT NULL,
+  cw_timestamp VARCHAR(32) NOT NULL,
   cw_url VARCHAR(96) NOT NULL,
   cw_user INT(10) NOT NULL,
   cw_category VARCHAR(64) NOT NULL,
