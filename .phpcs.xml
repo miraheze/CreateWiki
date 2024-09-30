@@ -2,7 +2,7 @@
 <ruleset>
 	<file>.</file>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
-		<exclude name="Generic.Files.LineLength.TooLong" />
+		<!--<exclude name="Generic.Files.LineLength.TooLong" />-->
 	</rule>
 	<rule ref="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma">
 		<severity>5</severity>
