@@ -3,11 +3,13 @@
 namespace Miraheze\CreateWiki\Tests;
 
 use ErrorPageError;
+use Generator;
 use MediaWiki\Context\DerivativeContext;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Status\Status;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
@@ -31,7 +33,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @inheritDoc
 	 */
-	protected function newSpecialPage() {
+	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
 			$services->getConnectionProvider()
@@ -50,14 +52,14 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::__construct
 	 */
-	public function testConstructor() {
+	public function testConstructor(): void {
 		$this->assertInstanceOf( SpecialRequestWiki::class, $this->specialRequestWiki );
 	}
 
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteNotLoggedIn() {
+	public function testExecuteNotLoggedIn(): void {
 		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->expectException( UserNotLoggedIn::class );
 		$this->specialRequestWiki->execute( '' );
@@ -66,7 +68,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteLoggedInEmailConfirmed() {
+	public function testExecuteLoggedInEmailConfirmed(): void {
 		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
@@ -91,7 +93,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteLoggedInEmailNotConfirmed() {
+	public function testExecuteLoggedInEmailNotConfirmed(): void {
 		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
@@ -116,7 +118,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::getFormFields
 	 */
-	public function testGetFormFields() {
+	public function testGetFormFields(): void {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
 			$this->specialRequestWiki
 		);
@@ -127,32 +129,11 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	}
 
 	/**
-	 * Data provider for testOnSubmit
-	 *
-	 * @return array
-	 */
-	public function onSubmitDataProvider() {
-		return [
-			[
-				[
-					'reason' => 'Test onSubmit()',
-					'subdomain' => 'example',
-					'sitename' => 'Example Wiki',
-					'language' => 'en',
-					'category' => 'uncategorised',
-				],
-				true,
-			],
-		];
-	}
-
-	/**
 	 * @dataProvider onSubmitDataProvider
 	 * @covers ::onSubmit
 	 * @param array $formData
-	 * @param bool $expected
 	 */
-	public function testOnSubmit( $formData, $expected ) {
+	public function testOnSubmit( array $formData ): void {
 		$context = new DerivativeContext( $this->specialRequestWiki->getContext() );
 		$user = $this->getMutableTestUser()->getUser();
 
@@ -166,11 +147,29 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'miraheze.org' );
 
-		$submitData = $this->specialRequestWiki->onSubmit( $formData );
-		$this->assertSame( $expected, $submitData );
+		$status = $this->specialRequestWiki->onSubmit( $formData );
+		$this->assertInstanceOf( Status::class, $status );
+		$this->assertStatusGood( $status );
 	}
 
-	private function setSessionUser( User $user, WebRequest $request ) {
+	/**
+	 * Data provider for testOnSubmit
+	 *
+	 * @return Generator
+	 */
+	public function onSubmitDataProvider(): Generator {
+		yield 'valid data' => [
+			[
+				'reason' => 'Test onSubmit()',
+				'subdomain' => 'example',
+				'sitename' => 'Example Wiki',
+				'language' => 'en',
+				'category' => 'uncategorised',
+			],
+		];
+	}
+
+	private function setSessionUser( User $user, WebRequest $request ): void {
 		RequestContext::getMain()->setUser( $user );
 		RequestContext::getMain()->setRequest( $request );
 		TestingAccessWrapper::newFromObject( $user )->mRequest = $request;
