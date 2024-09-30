@@ -122,7 +122,7 @@
 	"requestwikiqueue-declined": "Declined",
 	"requestwikiqueue-details": "Request details",
 	"requestwikiqueue-edit": "Edit request",
-	"requestwikiqueue-handle": "Handle request",
+	"requestwikiqueue-handling": "Handle request",
 	"requestwikiqueue-info": "You can use this form to search for wiki requests and sort by status.",
 	"requestwikiqueue-inreview": "In review",
 	"requestwikiqueue-moredetails": "Needs more details",
@@ -152,5 +152,5 @@
 	"right-createwiki-suppressrequest": "Hide wiki requests from everyone",
 	"right-requestwiki": "Request wikis",
 	"createwiki-no-changes": "No changes made.",
-	"createwiki-request-edited": "Requested Edited $1"
+	"createwiki-request-edited": "Request edited\n[Changes Made]\n$1"
 }
