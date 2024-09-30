@@ -38,7 +38,7 @@ class RequestWikiHistory {
 		// Loop through each entry and create table rows
 		foreach ($entries as $entry) {
 			$tableHTML .= '<tr>';
-			$tableHTML .= '<td>' . htmlspecialchars($this->context->getLanguage()->timeanddate($entry['timestamp'], true)) . '</td>';
+			$tableHTML .= '<td>' . htmlspecialchars($entry['timestamp']) . '</td>';
 			$tableHTML .= '<td>' . htmlspecialchars($entry['user']->getName()) . '</td>';
 			$tableHTML .= '<td>' . htmlspecialchars($entry['action']) . '</td>';
 			$tableHTML .= '<td>' . htmlspecialchars($entry['details']) . '</td>';
