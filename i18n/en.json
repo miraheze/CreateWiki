@@ -130,7 +130,7 @@
 	"requestwikiqueue-pager-status-approved": "approved",
 	"requestwikiqueue-pager-status-declined": "declined",
 	"requestwikiqueue-pager-status-inreview": "in review",
-	"requestwikiqueue-request-header-comment-withtimestamp": "Comment given by $1 at $2",
+	"requestwiki-header-comment-withtimestamp": "Comment given by $1 at $2",
 	"requestwikiqueue-request-header-description": "Wiki description:",
 	"requestwikiqueue-request-info-submission": "Here you can modify the visibility of the request, approve or decline the request as well as provide additional comments when doing so. If you mark the wiki as approved, it will be created automatically.",
 	"requestwikiqueue-request-label-action": "What do you want to do?",
@@ -150,5 +150,7 @@
 	"right-createwiki-deleterequest": "Delete wiki requests",
 	"right-createwiki-suppressionlog": "View the wiki request suppression log",
 	"right-createwiki-suppressrequest": "Hide wiki requests from everyone",
-	"right-requestwiki": "Request wikis"
+	"right-requestwiki": "Request wikis",
+	"createwiki-no-changes": "No changes made.",
+	"createwiki-request-edited" "Requested Edited $1"
 }
