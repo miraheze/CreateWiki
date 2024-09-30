@@ -559,6 +559,19 @@ class WikiRequestManager {
 		return $this->changes;
 	}
 
+	public function getChangeMessage(): string {
+		$messages = [];
+
+		foreach ( $this->changes as $field => $change ) {
+			$oldValue = $change['old'];
+			$newValue = $change['new'];
+
+			$messages[] = "Field '$field' changed from '$oldValue' to '$newValue'";
+		}
+
+		return implode( "\n", $messages );
+	}
+
 	private function escape( string $text ): string {
 		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
