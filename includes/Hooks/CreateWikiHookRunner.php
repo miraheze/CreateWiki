@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks;
 
 use MediaWiki\HookContainer\HookContainer;
+use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiHookRunner implements
 	CreateWikiCreationHook,
@@ -40,7 +41,11 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$cacheArray ): void {
+	public function onCreateWikiDataFactoryBuilder(
+		string $wiki,
+		IReadableDatabase $dbr,
+		array &$cacheArray
+	): void {
 		$this->container->run(
 			'CreateWikiDataFactoryBuilder',
 			[ $wiki, $dbr, &$cacheArray ]
@@ -56,7 +61,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiGenerateDatabaseLists( &$databaseLists ): void {
+	public function onCreateWikiGenerateDatabaseLists( array &$databaseLists ): void {
 		$this->container->run(
 			'CreateWikiGenerateDatabaseLists',
 			[ &$databaseLists ]
