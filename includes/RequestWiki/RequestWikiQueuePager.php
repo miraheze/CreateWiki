@@ -7,7 +7,6 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\Permissions\PermissionManager;
-use MediaWiki\Title\Title;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -83,14 +82,16 @@ class RequestWikiQueuePager extends TablePager {
 				$formatted = $row->cw_url;
 				break;
 			case 'cw_status':
-				$formatted = $this->linkRenderer->makeLink( Title::newFromText( "Special:RequestWikiQueue/{$row->cw_id}" ), $row->cw_status );
+				$formatted = $this->linkRenderer->makeLink(
+					SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
+					$row->cw_status
+				);
 				break;
 			case 'cw_language':
 				$formatted = $row->cw_language;
 				break;
 			default:
 				$formatted = "Unable to format $name";
-				break;
 		}
 
 		return $formatted;
@@ -146,6 +147,6 @@ class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public function isFieldSortable( $name ): bool {
-		return true;
+		return $name !== 'cw_user';
 	}
 }
