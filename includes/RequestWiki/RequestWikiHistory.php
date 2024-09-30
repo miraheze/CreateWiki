@@ -10,18 +10,18 @@ class RequestWikiHistory {
 
 	public static function showHistorySection(array $historyEntries, $out) {
 
-		$historyFieldset = new FieldsetLayout([
+		/*$historyFieldset = new FieldsetLayout([
 			'label' => 'History',
 			'items' => [
-				/*new LabelElement([
+				new LabelElement([
 					'label' => 'History of actions',
-				]),*/
+				]),
 				self::createHistoryTable($historyEntries),
 			]
-		]);
+		]);*/
 
 		// Add the fieldset to your output
-		$out->addHTML($historyFieldset->toHTML());
+		$out->addHTML(self::createHistoryTable($historyEntries));
 	}
 
 	private static function createHistoryTable($entries) {
