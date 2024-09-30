@@ -132,7 +132,7 @@ class RequestWikiRequestViewer {
 			],
 			'description' => [
 				'type' => 'textarea',
-				'rows' => 8,
+				'rows' => 6,
 				'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'details',
@@ -148,7 +148,7 @@ class RequestWikiRequestViewer {
 				'section' => 'comments',
 				'rows' => 6,
 				'label-message' => [
-					'requestwikiqueue-request-header-wikicreatorcomment-withtimestamp',
+					'requestwiki-header-comment-withtimestamp',
 					$comment['user']->getName(),
 					$this->context->getLanguage()->timeanddate( $comment['timestamp'], true ),
 				],
@@ -171,7 +171,7 @@ class RequestWikiRequestViewer {
 				],
 				'submit-comment' => [
 					'type' => 'submit',
-					'buttonlabel-message' => 'htmlform-submit',
+					'buttonlabel-message' => 'requestwiki-label-add-comment',
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'section' => 'comments',
 				],
@@ -201,7 +201,7 @@ class RequestWikiRequestViewer {
 					'section' => 'edit',
 				],
 				'edit-description' => [
-					'label-message' => 'requestwikiqueue-request-header-requestercomment',
+					'label-message' => 'requestwikiqueue-request-header-description',
 					'type' => 'textarea',
 					'section' => 'edit',
 					'rows' => 6,
@@ -258,7 +258,7 @@ class RequestWikiRequestViewer {
 
 			$formDescriptor['submit-edit'] = [
 				'type' => 'submit',
-				'buttonlabel-message' => 'requestwikiqueue-request-label-edit-wiki',
+				'buttonlabel-message' => 'requestwiki-label-edit-request',
 				'disabled' => $this->wikiRequestManager->isLocked(),
 				'section' => 'edit',
 			];
