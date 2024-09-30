@@ -12,6 +12,7 @@ require_once "$IP/maintenance/Maintenance.php";
 use ExtensionProcessor;
 use Maintenance;
 use MediaWiki\MainConfigNames;
+use Miraheze\CreateWiki\ConfigNames;
 
 class RebuildExtensionListCache extends Maintenance {
 
@@ -44,7 +45,7 @@ class RebuildExtensionListCache extends Maintenance {
 
 		$list = array_column( $data['credits'], 'path', 'name' );
 
-		$cacheDir = $this->getOption( 'cachedir', $this->getConfig()->get( 'CreateWikiCacheDirectory' ) );
+		$cacheDir = $this->getOption( 'cachedir', $this->getConfig()->get( ConfigNames::CacheDirectory ) );
 
 		$this->generateCache( $cacheDir, $list );
 	}
