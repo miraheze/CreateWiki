@@ -436,6 +436,7 @@ class RequestWikiRequestViewer {
 
 			$this->wikiRequestManager->setSitename( $formData['edit-sitename'] );
 			$this->wikiRequestManager->setLanguage( $formData['edit-language'] );
+			$this->wikiRequestManager->setUrl( $formData['edit-url'] );
 			// $this->wikiRequestManager->setPurpose( $formData['edit-purpose'] ?? '' );
 			// $this->wikiRequestManager->setDescription( $formData['edit-description'] );
 			$this->wikiRequestManager->setCategory( $formData['edit-category'] ?? '' );
