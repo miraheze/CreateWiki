@@ -9,15 +9,16 @@ use MediaWiki\Extension\Notifications\Model\Event;
 use MediaWiki\MainConfigNames;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
+use Miraheze\CreateWiki\ConfigNames;
 use UserMailer;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class CreateWikiNotificationsManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		'CreateWikiEmailNotifications',
-		'CreateWikiNotificationEmail',
-		'CreateWikiUseEchoNotifications',
+		ConfigNames::EmailNotifications,
+		ConfigNames::NotificationEmail,
+		ConfigNames::UseEchoNotifications,
 		MainConfigNames::PasswordSender,
 		MainConfigNames::Sitename,
 	];
@@ -54,7 +55,8 @@ class CreateWikiNotificationsManager {
 	 */
 	private function getFromName(): string {
 		if ( $this->type === 'closure' ) {
-			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )->inContentLanguage()->text();
+			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )
+				->inContentLanguage()->text();
 		}
 
 		if ( $this->type === 'wiki-creation' ) {
@@ -105,19 +107,16 @@ class CreateWikiNotificationsManager {
 	public function notifyBureaucrats( array $data, string $wiki ): void {
 		$dbr = $this->connectionProvider->getReplicaDatabase( $wiki );
 
-		$bureaucrats = $dbr->select(
-			[ 'user', 'user_groups' ],
-			[ 'user_email', 'user_name' ],
-			[ 'ug_group' => 'bureaucrat' ],
-			__METHOD__,
-			[],
-			[
-				'user_groups' => [
-					'INNER JOIN',
-					[ 'user_id=ug_user' ]
-				]
-			]
-		);
+		$bureaucrats = $dbr->newSelectQueryBuilder()
+			->select( [ 'user_email', 'user_name' ] )
+			->from( 'user_groups' )
+			->join( 'user', null, [ 'user_id=ug_user' ] )
+			->where( [
+				'ug_group' => 'bureaucrat',
+			] )
+			->distinct()
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		$emails = [];
 		foreach ( $bureaucrats as $user ) {
@@ -135,14 +134,14 @@ class CreateWikiNotificationsManager {
 		$this->type = $data['type'];
 
 		if (
-			$this->options->get( 'CreateWikiUseEchoNotifications' ) &&
+			$this->options->get( ConfigNames::UseEchoNotifications ) &&
 			in_array( $this->type, $this->getEchoTypes() )
 		) {
 			$this->sendEchoNotification( $data, $receivers );
 		}
 
 		if (
-			$this->options->get( 'CreateWikiEmailNotifications' ) &&
+			$this->options->get( ConfigNames::EmailNotifications ) &&
 			in_array( $this->type, $this->getEmailTypes() )
 		) {
 			$this->sendEmailNotification( $data, $receivers );
@@ -155,7 +154,8 @@ class CreateWikiNotificationsManager {
 	 */
 	private function sendEchoNotification( array $data, array $receivers ): void {
 		foreach ( $receivers as $receiver ) {
-			$user = is_object( $receiver ) ? $receiver : $this->userFactory->newFromName( $receiver );
+			$user = is_object( $receiver ) ? $receiver :
+				$this->userFactory->newFromName( $receiver );
 
 			if ( !$user ) {
 				continue;
@@ -184,7 +184,8 @@ class CreateWikiNotificationsManager {
 					continue;
 				}
 
-				$user = is_object( $receiver ) ? $receiver : $this->userFactory->newFromName( $receiver );
+				$user = is_object( $receiver ) ? $receiver :
+					$this->userFactory->newFromName( $receiver );
 
 				if ( !$user ) {
 					continue;
@@ -194,10 +195,17 @@ class CreateWikiNotificationsManager {
 			}
 
 			if ( in_array( $this->type, $this->notifyServerAdministratorsTypes() ) ) {
-				$notifyEmails[] = new MailAddress( $this->options->get( 'CreateWikiNotificationEmail' ), 'Server Administrators' );
+				$notifyEmails[] = new MailAddress(
+					$this->options->get( ConfigNames::NotificationEmail ),
+					'Server Administrators'
+				);
 			}
 
-			$from = new MailAddress( $this->options->get( MainConfigNames::PasswordSender ), $this->getFromName() );
+			$from = new MailAddress(
+				$this->options->get( MainConfigNames::PasswordSender ),
+				$this->getFromName()
+			);
+
 			UserMailer::send(
 				$notifyEmails,
 				$from,
