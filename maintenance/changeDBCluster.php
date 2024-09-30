@@ -31,12 +31,12 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$wiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+			$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
 				$this->getConfig()->get( MainConfigNames::DBname )
 			);
 
-			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
-			$wiki->commit();
+			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
+			$remoteWiki->commit();
 
 			return;
 		}
@@ -48,11 +48,11 @@ class ChangeDBCluster extends Maintenance {
 				continue;
 			}
 
-			$wiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )
+			$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )
 				->newInstance( $line );
 
-			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
-			$wiki->commit();
+			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
+			$remoteWiki->commit();
 		}
 	}
 }
