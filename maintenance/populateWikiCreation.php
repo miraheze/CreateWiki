@@ -11,6 +11,7 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 class PopulateWikiCreation extends Maintenance {
 
@@ -24,12 +25,11 @@ class PopulateWikiCreation extends Maintenance {
 	public function execute(): void {
 		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
 
-		$res = $dbw->select(
-			'cw_wikis',
-			'*',
-			[],
-			__METHOD__
-		);
+		$res = $dbw->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_wikis' )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		if ( !$res || !is_object( $res ) ) {
 			$this->fatalError( '$res was not set to a valid array.' );
@@ -40,18 +40,16 @@ class PopulateWikiCreation extends Maintenance {
 
 			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::GlobalWiki ) );
 
-			$res = $dbw->selectRow(
-				'logging',
-				'log_timestamp',
-				[
+			$res = $dbw->newSelectQueryBuilder()
+				->select( 'log_timestamp' )
+				->from( 'logging' )
+				->where( [
 					'log_action' => 'createwiki',
-					'log_params' => serialize( [ '4::wiki' => $DBname ] )
-				],
-				__METHOD__,
-				[
-					'ORDER BY' => 'log_timestamp DESC'
-				]
-			);
+					'log_params' => serialize( [ '4::wiki' => $DBname ] ),
+				] )
+				->orderBy( 'log_timestamp', SelectQueryBuilder::SORT_DESC )
+				->caller( __METHOD__ )
+				->fetchRow();
 
 			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::Database ) );
 
