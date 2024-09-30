@@ -556,7 +556,7 @@ class RequestWikiRequestViewer {
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
 			$this->config->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
-			'CreateWikiDisallowedSubdomains'
+			ConfigNames::DisallowedSubdomains
 		);
 
 		$database = $subdomain . $this->config->get( ConfigNames::DatabaseSuffix );
