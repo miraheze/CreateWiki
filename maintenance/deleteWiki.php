@@ -32,10 +32,10 @@ class DeleteWiki extends Maintenance {
 		}
 
 		if ( $this->hasOption( 'delete' ) ) {
-			$wm = $this->getServiceContainer()->get( 'WikiManagerFactory' )
+			$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
 				->newInstance( $dbname );
 
-			$delete = $wm->delete( force: true );
+			$delete = $wikiManager->delete( force: true );
 
 			if ( $delete ) {
 				$this->fatalError( $delete );
