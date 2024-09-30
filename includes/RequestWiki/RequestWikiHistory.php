@@ -13,9 +13,9 @@ class RequestWikiHistory {
 		$historyFieldset = new FieldsetLayout([
 			'label' => 'History',
 			'items' => [
-				new LabelElement([
+				/*new LabelElement([
 					'label' => 'History of actions',
-				]),
+				]),*/
 				self::createHistoryTable($historyEntries),
 			]
 		]);
