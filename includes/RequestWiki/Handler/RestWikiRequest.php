@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\RestUtils;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\IConnectionProvider;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 /**
  * Returns information related to a wiki request
@@ -51,14 +52,13 @@ class RestWikiRequest extends SimpleHandler {
 			$this->config->get( ConfigNames::GlobalWiki )
 		);
 
-		$wikiRequest = $dbr->selectRow(
-			'cw_requests',
-			'*',
-			[
-				'cw_id' => $requestID,
-			],
-			__METHOD__
-		);
+		$wikiRequest = $dbr->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_requests' )
+			->where( [ 'cw_id' => $requestID ] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
 		if ( $wikiRequest ) {
 			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
 			if ( $wikiRequest->cw_visibility >= 3 ) {
@@ -87,17 +87,15 @@ class RestWikiRequest extends SimpleHandler {
 				'bio' => (bool)$wikiRequest->cw_bio,
 				'visibility' => $wikiRequestVisibility,
 			];
-			$wikiRequestCwComments = $dbr->select(
-				'cw_comments',
-				'*',
-				[
-					'cw_id' => $requestID,
-				],
-				__METHOD__,
-				[
-					'cw_comment_timestamp DESC',
-				]
-			);
+
+			$wikiRequestCwComments = $dbr->newSelectQueryBuilder()
+				->select( '*' )
+				->from( 'cw_comments' )
+				->where( [ 'cw_id' => $requestID ] )
+				->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
+				->caller( __METHOD__ )
+				->fetchResultSet();
+
 			$wikiRequestComments = [];
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
