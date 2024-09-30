@@ -12,5 +12,9 @@ interface CreateWikiDataFactoryBuilderHook {
 	 * @param array &$cacheArray
 	 * @return void
 	 */
-	public function onCreateWikiDataFactoryBuilder( $wiki, $dbr, &$cacheArray ): void;
+	public function onCreateWikiDataFactoryBuilder(
+		string $wiki,
+		IReadableDatabase $dbr,
+		array &$cacheArray
+	): void;
 }
