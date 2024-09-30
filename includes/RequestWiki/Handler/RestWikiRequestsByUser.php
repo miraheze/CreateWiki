@@ -53,17 +53,14 @@ class RestWikiRequestsByUser extends SimpleHandler {
 
 		$wikiRequestsArray = [];
 		$userID = $this->userFactory->newFromName( $username )->getId();
-		$wikiRequests = $dbr->select(
-			'cw_requests',
-			[
-				'cw_id',
-				'cw_visibility',
-			],
-			[
-				'cw_user' => $userID,
-			],
-			__METHOD__
-		);
+
+		$wikiRequests = $dbr->newSelectQueryBuilder()
+			->select( [ 'cw_id', 'cw_visibility' ] )
+			->from( 'cw_requests' )
+			->where( [ 'cw_user' => $userID ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
+
 		if ( $wikiRequests ) {
 			foreach ( $wikiRequests as $wikiRequest ) {
 				// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
