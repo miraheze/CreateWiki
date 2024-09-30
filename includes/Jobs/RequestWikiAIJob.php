@@ -72,10 +72,16 @@ class RequestWikiAIJob extends Job {
 				( (int)round( $approveScore, 2 ) > $this->config->get( ConfigNames::AIThreshold ) ) &&
 				$this->canAutoApprove()
 			) {
+				// Start query builder so that it can set the status
+				$this->wikiRequestManager->startQueryBuilder();
+
 				$this->wikiRequestManager->approve(
 					user: User::newSystemUser( 'CreateWiki Extension' ),
 					comment: ''
 				);
+
+				// Execute query builder to commit the status change
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
 			}
 		}
 
