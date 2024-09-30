@@ -10,6 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\ConfigNames;
 
 class DeleteWikis extends Maintenance {
 
@@ -26,16 +27,14 @@ class DeleteWikis extends Maintenance {
 
 	public function execute(): void {
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( ConfigNames::Database ) );
 
-		$res = $dbr->select(
-			'cw_wikis',
-			'*',
-			[
-				'wiki_deleted' => 1
-			],
-			__METHOD__
-		);
+		$res = $dbr->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_wikis' )
+			->where( [ 'wiki_deleted' => 1 ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		$deletedWikis = [];
 
@@ -44,8 +43,8 @@ class DeleteWikis extends Maintenance {
 			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				$wm = $wikiManagerFactory->newInstance( $wiki );
-				$delete = $wm->delete( force: false );
+				$wikiManager = $wikiManagerFactory->newInstance( $wiki );
+				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
 					$this->output( "{$wiki}: {$delete}\n" );
