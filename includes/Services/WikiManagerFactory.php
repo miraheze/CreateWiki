@@ -351,11 +351,12 @@ class WikiManagerFactory {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
-			$this->cwdb->update(
-				$table,
-				[ $selector => $newDatabaseName ],
-				[ $selector => $this->dbname ]
-			);
+			$this->cwdb->newUpdateQueryBuilder()
+				->update( $table )
+				->set( [ $selector => $newDatabaseName ] )
+				->where( [ $selector => $this->dbname ] )
+				->caller( __METHOD__ )
+				->execute();
 		}
 
 		/**
