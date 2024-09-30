@@ -10,6 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\ConfigNames;
 
 class RenameWiki extends Maintenance {
 
@@ -40,14 +41,14 @@ class RenameWiki extends Maintenance {
 
 			$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
 			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-			$wm = $wikiManagerFactory->newInstance( $oldwiki );
-			$rename = $wm->rename( newDatabaseName: $newwiki );
+			$wikiManager = $wikiManagerFactory->newInstance( $oldwiki );
+			$rename = $wikiManager->rename( newDatabaseName: $newwiki );
 
 			if ( $rename ) {
 				$this->fatalError( $rename );
 			}
 
-			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
 
 			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
