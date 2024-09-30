@@ -480,6 +480,8 @@ class RequestWikiRequestViewer {
 		}
 
 		if ( isset( $formData['submit-handle'] ) ) {
+			$this->wikiRequestManager->startQueryBuilder();
+
 			if ( isset( $formData['handle-visibility-options'] ) ) {
 				$this->wikiRequestManager->suppress(
 					user: $user,
@@ -488,15 +490,42 @@ class RequestWikiRequestViewer {
 				);
 			}
 
-			if ( $formData['handle-action'] == 'approve' ) {
-				$this->wikiRequestManager->approve( $user, $formData['handle-comment'] );
-			} elseif ( $formData['handle-action'] == 'onhold' ) {
-				$this->wikiRequestManager->onhold( $formData['handle-comment'], $user );
-			} elseif ( $formData['handle-action'] == 'moredetails' ) {
-				$this->wikiRequestManager->moredetails( $formData['handle-comment'], $user );
-			} else {
-				$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
+			// Handle locking wiki request
+			if ( $this->wikiRequestManager->isLocked() !== (bool)$formData['handle-lock'] ) {
+				$this->wikiRequestManager->setLocked( (bool)$formData['handle-lock'] );
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				return;
 			}
+
+			/**
+			 * HANDLE STATUS UPDATES
+			 */
+
+			// Handle approve action
+			if ( $formData['handle-action'] === 'approve' ) {
+				// This will create the wiki
+				$this->wikiRequestManager->approve( $user, $formData['handle-comment'] );
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				return;
+			}
+
+			// Handle onhold action
+			if ( $formData['handle-action'] === 'onhold' ) {
+				$this->wikiRequestManager->onhold( $formData['handle-comment'], $user );
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				return;
+			}
+
+			// Handle moredetails action
+			if ( $formData['handle-action'] === 'moredetails' ) {
+				$this->wikiRequestManager->moredetails( $formData['handle-comment'], $user );
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				return;
+			}
+
+			// Handle decline action (the action we use if handle-action is none of the others)
+			$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
+			$this->wikiRequestManager->tryExecuteQueryBuilder();
 		}
 	}
 
