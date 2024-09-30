@@ -10,6 +10,7 @@ use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Status;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -27,7 +28,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) ) ) {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
 			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
@@ -40,7 +41,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( $this->getConfig()->get( 'RequestWikiConfirmEmail' ) && !$this->getUser()->isEmailConfirmed() ) {
+		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail ) && !$this->getUser()->isEmailConfirmed() ) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
@@ -65,7 +66,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'buttontype' => 'button',
 				'buttonflags' => [],
 				'buttonid' => 'inline-subdomain',
-				'buttondefault' => '.' . $this->getConfig()->get( 'CreateWikiSubdomain' ),
+				'buttondefault' => '.' . $this->getConfig()->get( ConfigNames::Subdomain ),
 				'label-message' => 'requestwiki-label-subdomain',
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
@@ -85,17 +86,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 			],
 		];
 
-		if ( $this->getConfig()->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'help-message' => 'createwiki-help-category',
-				'options' => $this->getConfig()->get( 'CreateWikiCategories' ),
+				'options' => $this->getConfig()->get( ConfigNames::Categories ),
 				'default' => 'uncategorised',
 			];
 		}
 
-		if ( $this->getConfig()->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
@@ -103,7 +104,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->getConfig()->get( 'CreateWikiShowBiographicalOption' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::ShowBiographicalOption ) ) {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
@@ -111,12 +112,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->getConfig()->get( 'CreateWikiPurposes' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Purposes ) ) {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
 				'help-message' => 'createwiki-help-purpose',
-				'options' => $this->getConfig()->get( 'CreateWikiPurposes' ),
+				'options' => $this->getConfig()->get( ConfigNames::Purposes ),
 			];
 		}
 
@@ -128,7 +129,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 8,
-			'minlength' => $this->getConfig()->get( 'RequestWikiMinimumLength' ) ?: false,
+			'minlength' => $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
@@ -140,7 +141,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'default' => $this->msg( 'requestwiki-label-guidance-post' ),
 		];
 
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) && $this->getConfig()->get( 'RequestWikiUseDescriptions' ) ) {
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) && $this->getConfig()->get( ConfigNames::RequestWikiUseDescriptions ) ) {
 			$formDescriptor['public-description'] = [
 				'type' => 'textarea',
 				'rows' => 2,
@@ -152,7 +153,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->getConfig()->get( 'RequestWikiConfirmAgreement' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
@@ -181,7 +182,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->getConfig()->get( 'CreateWikiGlobalWiki' )
+			$this->getConfig()->get( ConfigNames::GlobalWiki )
 		);
 
 		$duplicate = $dbw->newSelectQueryBuilder()
@@ -199,11 +200,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$subdomain = strtolower( $data['subdomain'] );
-		$dbname = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
-		$url = $subdomain . '.' . $this->getConfig()->get( 'CreateWikiSubdomain' );
+		$dbname = $subdomain . $this->getConfig()->get( ConfigNames::DatabaseSuffix );
+		$url = $subdomain . '.' . $this->getConfig()->get( ConfigNames::Subdomain );
 
 		$comment = $data['reason'];
-		if ( $this->getConfig()->get( 'CreateWikiPurposes' ) && ( $data['purpose'] ?? '' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Purposes ) && ( $data['purpose'] ?? '' ) ) {
 			$comment = implode( "\n", [ 'Purpose: ' . $data['purpose'], $data['reason'] ] );
 		}
 
@@ -280,18 +281,18 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->getConfig()->get( 'CreateWikiSubdomain' );
+		$configSubdomain = $this->getConfig()->get( ConfigNames::Subdomain );
 
 		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
 			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 		}
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
-			$this->getConfig()->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			$this->getConfig()->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
 			'CreateWikiDisallowedSubdomains'
 		);
 
-		$database = $subdomain . $this->getConfig()->get( 'CreateWikiDatabaseSuffix' );
+		$database = $subdomain . $this->getConfig()->get( ConfigNames::DatabaseSuffix );
 
 		if ( in_array( $database, $this->getConfig()->get( MainConfigNames::LocalDatabases ) ) ) {
 			return $this->msg( 'createwiki-error-subdomaintaken' );

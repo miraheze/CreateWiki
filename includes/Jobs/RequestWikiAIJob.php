@@ -6,6 +6,7 @@ use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\User\User;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
@@ -40,7 +41,7 @@ class RequestWikiAIJob extends Job {
 
 	public function run(): bool {
 		$this->wikiRequestManager->fromID( $this->id );
-		$modelFile = $this->config->get( 'CreateWikiPersistentModelFile' );
+		$modelFile = $this->config->get( ConfigNames::PersistentModelFile );
 
 		$pipeline = '';
 		$this->hookRunner->onCreateWikiReadPersistentModel( $pipeline );
@@ -67,8 +68,8 @@ class RequestWikiAIJob extends Job {
 			);
 
 			if (
-				is_int( $this->config->get( 'CreateWikiAIThreshold' ) ) &&
-				( (int)round( $approveScore, 2 ) > $this->config->get( 'CreateWikiAIThreshold' ) ) &&
+				is_int( $this->config->get( ConfigNames::AIThreshold ) ) &&
+				( (int)round( $approveScore, 2 ) > $this->config->get( ConfigNames::AIThreshold ) ) &&
 				$this->canAutoApprove()
 			) {
 				$this->wikiRequestManager->approve(
@@ -83,7 +84,7 @@ class RequestWikiAIJob extends Job {
 
 	private function canAutoApprove(): bool {
 		$descriptionFilter = CreateWikiRegexConstraint::regexFromArray(
-			$this->config->get( 'CreateWikiAutoApprovalFilter' ), '/(', ')+/',
+			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
 			'CreateWikiAutoApprovalFilter'
 		);
 

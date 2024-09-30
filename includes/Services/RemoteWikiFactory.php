@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
@@ -15,11 +16,11 @@ use Wikimedia\Rdbms\IReadableDatabase;
 class RemoteWikiFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		'CreateWikiDatabase',
-		'CreateWikiUseClosedWikis',
-		'CreateWikiUseExperimental',
-		'CreateWikiUseInactiveWikis',
-		'CreateWikiUsePrivateWikis',
+		ConfigNames::Database,
+		ConfigNames::UseClosedWikis,
+		ConfigNames::UseExperimental,
+		ConfigNames::UseInactiveWikis,
+		ConfigNames::UsePrivateWikis,
 	];
 
 	private CreateWikiDataFactory $dataFactory;
@@ -77,7 +78,7 @@ class RemoteWikiFactory {
 
 	public function newInstance( string $wiki ): self {
 		$this->dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( 'CreateWikiDatabase' )
+			$this->options->get( ConfigNames::Database )
 		);
 
 		$row = $this->dbr->newSelectQueryBuilder()
@@ -103,23 +104,23 @@ class RemoteWikiFactory {
 		$this->deleted = (bool)$row->wiki_deleted;
 		$this->locked = (bool)$row->wiki_locked;
 
-		if ( $this->options->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$this->private = (bool)$row->wiki_private;
 		}
 
-		if ( $this->options->get( 'CreateWikiUseClosedWikis' ) ) {
+		if ( $this->options->get( ConfigNames::UseClosedWikis ) ) {
 			$this->closed = (bool)$row->wiki_closed;
 			$this->closedTimestamp = $row->wiki_closed_timestamp;
 		}
 
-		if ( $this->options->get( 'CreateWikiUseInactiveWikis' ) ) {
+		if ( $this->options->get( ConfigNames::UseInactiveWikis ) ) {
 			$this->inactive = (bool)$row->wiki_inactive;
 			$this->inactiveTimestamp = $row->wiki_inactive_timestamp;
 			$this->inactiveExempt = (bool)$row->wiki_inactive_exempt;
 			$this->inactiveExemptReason = $row->wiki_inactive_exempt_reason ?? null;
 		}
 
-		if ( $this->options->get( 'CreateWikiUseExperimental' ) ) {
+		if ( $this->options->get( ConfigNames::UseExperimental ) ) {
 			$this->experimental = (bool)$row->wiki_experimental;
 		}
 
@@ -398,7 +399,7 @@ class RemoteWikiFactory {
 		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
 				$dbw = $this->connectionProvider->getPrimaryDatabase(
-					$this->options->get( 'CreateWikiDatabase' )
+					$this->options->get( ConfigNames::Database )
 				);
 
 				$dbw->newUpdateQueryBuilder()

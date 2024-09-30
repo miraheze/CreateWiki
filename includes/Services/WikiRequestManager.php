@@ -11,6 +11,7 @@ use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use RuntimeException;
@@ -23,11 +24,11 @@ use Wikimedia\Rdbms\UpdateQueryBuilder;
 class WikiRequestManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		'CreateWikiAIThreshold',
-		'CreateWikiDatabaseSuffix',
-		'CreateWikiGlobalWiki',
-		'CreateWikiSubdomain',
-		'CreateWikiUseJobQueue',
+		ConfigNames::AIThreshold,
+		ConfigNames::DatabaseSuffix,
+		ConfigNames::GlobalWiki,
+		ConfigNames::Subdomain,
+		ConfigNames::UseJobQueue,
 	];
 
 	private ServiceOptions $options;
@@ -69,7 +70,7 @@ class WikiRequestManager {
 
 	public function fromID( int $requestID ): void {
 		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( 'CreateWikiGlobalWiki' )
+			$this->options->get( ConfigNames::GlobalWiki )
 		);
 
 		$this->ID = $requestID;
@@ -164,7 +165,7 @@ class WikiRequestManager {
 	}
 
 	public function approve( User $user, string $comment ): void {
-		if ( $this->options->get( 'CreateWikiUseJobQueue' ) ) {
+		if ( $this->options->get( ConfigNames::UseJobQueue ) ) {
 			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 			$jobQueueGroup->push(
 				new JobSpecification(
@@ -193,7 +194,7 @@ class WikiRequestManager {
 
 			$this->log( $user, 'requestapprove' );
 
-			if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
+			if ( !is_int( $this->options->get( ConfigNames::AIThreshold ) ) ) {
 				$this->tryAutoCreate();
 			}
 		} else {
@@ -241,7 +242,7 @@ class WikiRequestManager {
 
 		$this->log( $user, 'requestdecline' );
 
-		if ( !is_int( $this->options->get( 'CreateWikiAIThreshold' ) ) ) {
+		if ( !is_int( $this->options->get( ConfigNames::AIThreshold ) ) ) {
 			$this->tryAutoCreate();
 		}
 	}
@@ -473,7 +474,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $category !== $this->getCategory() ) {
 			// TODO:
-			/* if ( !in_array( $category, $this->options->get( 'CreateWikiCategories' ) ) ) {
+			/* if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
 				throw new InvalidArgumentException( 'Can not set an unsupported category.' );
 			} */
 
@@ -502,12 +503,12 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $url !== $this->getUrl() ) {
 			$subdomain = strtolower( $url );
-			if ( strpos( $subdomain, $this->options->get( 'CreateWikiSubdomain' ) ) !== false ) {
-				$subdomain = str_replace( '.' . $this->options->get( 'CreateWikiSubdomain' ), '', $subdomain );
+			if ( strpos( $subdomain, $this->options->get( ConfigNames::Subdomain ) ) !== false ) {
+				$subdomain = str_replace( '.' . $this->options->get( ConfigNames::Subdomain ), '', $subdomain );
 			}
 
-			$dbname = $subdomain . $this->options->get( 'CreateWikiDatabaseSuffix' );
-			$url = $subdomain . '.' . $this->options->get( 'CreateWikiSubdomain' );
+			$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
+			$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
 
 			$this->trackChange( 'url', $this->getUrl(), $url );
 			$this->queryBuilder->set( [

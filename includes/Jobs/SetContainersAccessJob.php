@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Jobs;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
+use Miraheze\CreateWiki\ConfigNames;
 use RepoGroup;
 
 class SetContainersAccessJob extends Job {
@@ -34,7 +35,7 @@ class SetContainersAccessJob extends Job {
 		$repo = $this->repoGroup->getLocalRepo();
 
 		$backend = $repo->getBackend();
-		foreach ( $this->config->get( 'CreateWikiContainers' ) as $zone => $status ) {
+		foreach ( $this->config->get( ConfigNames::Containers ) as $zone => $status ) {
 			$dir = $backend->getContainerStoragePath( $zone );
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';

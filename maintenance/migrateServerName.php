@@ -10,6 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\ConfigNames;
 
 class MigrateServerName extends Maintenance {
 
@@ -20,7 +21,7 @@ class MigrateServerName extends Maintenance {
 	}
 
 	public function execute(): void {
-		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
 
 		$res = $dbw->select(
 			'cw_wikis',

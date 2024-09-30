@@ -9,6 +9,7 @@ use MediaWiki\Pager\TablePager;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\Title\Title;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\ConfigNames;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
@@ -35,7 +36,7 @@ class RequestWikiQueuePager extends TablePager {
 		parent::__construct( $context, $linkRenderer );
 
 		$this->mDb = $connectionProvider->getReplicaDatabase(
-			$config->get( 'CreateWikiGlobalWiki' )
+			$config->get( ConfigNames::GlobalWiki )
 		);
 
 		$this->linkRenderer = $linkRenderer;

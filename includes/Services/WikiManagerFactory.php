@@ -12,6 +12,7 @@ use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use RuntimeException;
 use Wikimedia\Rdbms\DBConnRef;
@@ -22,14 +23,14 @@ use Wikimedia\Rdbms\ILoadBalancer;
 class WikiManagerFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		'CreateWikiCollation',
-		'CreateWikiDatabase',
-		'CreateWikiDatabaseClusters',
-		'CreateWikiDatabaseSuffix',
-		'CreateWikiGlobalWiki',
-		'CreateWikiSQLfiles',
-		'CreateWikiStateDays',
-		'CreateWikiSubdomain',
+		ConfigNames::Collation,
+		ConfigNames::Database,
+		ConfigNames::DatabaseClusters,
+		ConfigNames::DatabaseSuffix,
+		ConfigNames::GlobalWiki,
+		ConfigNames::SQLFiles,
+		ConfigNames::StateDays,
+		ConfigNames::Subdomain,
 	];
 
 	private CreateWikiDataFactory $dataFactory;
@@ -78,7 +79,7 @@ class WikiManagerFactory {
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
 		$this->cwdb = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( 'CreateWikiDatabase' )
+			$this->options->get( ConfigNames::Database )
 		);
 
 		// Check if the database exists in the cw_wikis table
@@ -89,7 +90,7 @@ class WikiManagerFactory {
 			__METHOD__
 		);
 
-		$hasClusters = $this->options->get( 'CreateWikiDatabaseClusters' );
+		$hasClusters = $this->options->get( ConfigNames::DatabaseClusters );
 
 		if ( !$check ) {
 			if ( $hasClusters ) {
@@ -159,7 +160,7 @@ class WikiManagerFactory {
 		}
 
 		try {
-			$dbCollation = $this->options->get( 'CreateWikiCollation' );
+			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
 			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};" );
 		} catch ( Exception $e ) {
@@ -223,7 +224,7 @@ class WikiManagerFactory {
 		bool $notify,
 		bool $centralAuth
 	): void {
-		foreach ( $this->options->get( 'CreateWikiSQLfiles' ) as $sqlfile ) {
+		foreach ( $this->options->get( ConfigNames::SQLFiles ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
 		}
 
@@ -277,7 +278,7 @@ class WikiManagerFactory {
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $this->dbname, 0, -strlen( $this->options->get( 'CreateWikiDatabaseSuffix' ) ) ) . ".{$this->options->get( 'CreateWikiSubdomain' )}",
+					'wiki-url' => 'https://' . substr( $this->dbname, 0, -strlen( $this->options->get( ConfigNames::DatabaseSuffix ) ) ) . ".{$this->options->get( ConfigNames::Subdomain )}",
 					'sitename' => $sitename,
 				],
 				'subject' => $this->messageLocalizer->msg(
@@ -315,7 +316,7 @@ class WikiManagerFactory {
 		$deletedWiki = (bool)$row->wiki_deleted && (bool)$row->wiki_deleted_timestamp;
 
 		// Return error if: wiki is not deleted, force is not used & wiki
-		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->options->get( 'CreateWikiStateDays' )['deleted'] * 86400 ) ) ) {
+		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->options->get( ConfigNames::StateDays )['deleted'] * 86400 ) ) ) {
 			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
@@ -374,7 +375,7 @@ class WikiManagerFactory {
 		string $dbname,
 		bool $forRename
 	): ?string {
-		$suffix = $this->options->get( 'CreateWikiDatabaseSuffix' );
+		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
 		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
 		if ( !$suffixed ) {
 			return $this->messageLocalizer->msg(
@@ -411,7 +412,7 @@ class WikiManagerFactory {
 		}
 
 		$logDBConn = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( 'CreateWikiGlobalWiki' )
+			$this->options->get( ConfigNames::GlobalWiki )
 		);
 
 		$logEntry = new ManualLogEntry( $log, $action );
@@ -435,7 +436,7 @@ class WikiManagerFactory {
 
 	private function recache(): void {
 		$data = $this->dataFactory->newInstance(
-			$this->options->get( 'CreateWikiGlobalWiki' )
+			$this->options->get( ConfigNames::GlobalWiki )
 		);
 
 		$data->resetDatabaseLists( isNewChanges: true );

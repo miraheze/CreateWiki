@@ -11,6 +11,7 @@ use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Title\Title;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -62,8 +63,8 @@ class Main implements
 		$data = $this->dataFactory->newInstance( $dbName );
 		$data->syncCache();
 
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-			$cacheDir = $this->config->get( 'CreateWikiCacheDirectory' );
+		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
+			$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
 			if ( file_exists( $cacheDir . '/' . $dbName . '.php' ) ) {
 				$cacheArray = include $cacheDir . '/' . $dbName . '.php';
 				$isPrivate = (bool)$cacheArray['states']['private'];
@@ -92,7 +93,7 @@ class Main implements
 	) {
 		if ( $magicWordId === 'numberofwikirequests' ) {
 			$dbr = $this->connectionProvider->getReplicaDatabase(
-				$this->config->get( 'CreateWikiGlobalWiki' )
+				$this->config->get( ConfigNames::GlobalWiki )
 			);
 
 			$ret = $variableCache[$magicWordId] = $dbr->selectRowCount( 'cw_requests', '*' );
@@ -105,7 +106,7 @@ class Main implements
 		$out
 	): void {
 		if ( $out->getTitle()->isSubpageOf( Title::newFromText( 'Special:RequestWikiQueue' ) ) ) {
-			$vars['CreateWikiCannedResponses'] = $this->config->get( 'CreateWikiCannedResponses' );
+			$vars['CreateWikiCannedResponses'] = $this->config->get( ConfigNames::CannedResponses );
 		}
 	}
 

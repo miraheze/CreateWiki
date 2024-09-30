@@ -11,6 +11,7 @@ use MediaWiki\Linker\Linker;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -212,11 +213,11 @@ class RequestWikiRequestViewer {
 				],
 			];
 
-			if ( $this->config->get( 'CreateWikiCategories' ) ) {
+			if ( $this->config->get( ConfigNames::Categories ) ) {
 				$formDescriptor['edit-category'] = [
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
-					'options' => $this->config->get( 'CreateWikiCategories' ),
+					'options' => $this->config->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
@@ -224,7 +225,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+			if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
 				$formDescriptor['edit-private'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
@@ -234,7 +235,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( 'CreateWikiShowBiographicalOption' ) ) {
+			if ( $this->config->get( ConfigNames::ShowBiographicalOption ) ) {
 				$formDescriptor['edit-bio'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
@@ -244,11 +245,11 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( 'CreateWikiPurposes' ) ) {
+			if ( $this->config->get( ConfigNames::Purposes ) ) {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
-					'options' => $this->config->get( 'CreateWikiPurposes' ),
+					'options' => $this->config->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
@@ -339,12 +340,12 @@ class RequestWikiRequestViewer {
 				],
 			];
 
-			if ( $this->config->get( 'CreateWikiCannedResponses' ) ) {
+			if ( $this->config->get( ConfigNames::CannedResponses ) ) {
 				$formDescriptor['handle-comment']['type'] = 'selectorother';
-				$formDescriptor['handle-comment']['options'] = $this->config->get( 'CreateWikiCannedResponses' );
+				$formDescriptor['handle-comment']['options'] = $this->config->get( ConfigNames::CannedResponses );
 
 				$formDescriptor['handle-comment']['default'] = HTMLFormField::flattenOptions(
-					$this->config->get( 'CreateWikiCannedResponses' )
+					$this->config->get( ConfigNames::CannedResponses )
 				)[0];
 			} else {
 				$formDescriptor['handle-comment']['type'] = 'textarea';
@@ -543,18 +544,18 @@ class RequestWikiRequestViewer {
 		}
 
 		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->config->get( 'CreateWikiSubdomain' );
+		$configSubdomain = $this->config->get( ConfigNames::Subdomain );
 
 		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
 			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 		}
 
 		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
-			$this->config->get( 'CreateWikiDisallowedSubdomains' ), '/^(', ')+$/',
+			$this->config->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
 			'CreateWikiDisallowedSubdomains'
 		);
 
-		$database = $subdomain . $this->config->get( 'CreateWikiDatabaseSuffix' );
+		$database = $subdomain . $this->config->get( ConfigNames::DatabaseSuffix );
 
 		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
 			return $this->context->msg( 'createwiki-error-subdomaintaken' );

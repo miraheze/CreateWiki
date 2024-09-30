@@ -10,6 +10,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\ConfigNames;
 
 class PopulateWikiCreation extends Maintenance {
 
@@ -21,7 +22,7 @@ class PopulateWikiCreation extends Maintenance {
 	}
 
 	public function execute(): void {
-		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
 
 		$res = $dbw->select(
 			'cw_wikis',
@@ -37,7 +38,7 @@ class PopulateWikiCreation extends Maintenance {
 		foreach ( $res as $row ) {
 			$DBname = $row->wiki_dbname;
 
-			$dbw->selectDomain( $this->getConfig()->get( 'CreateWikiGlobalWiki' ) );
+			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::GlobalWiki ) );
 
 			$res = $dbw->selectRow(
 				'logging',
@@ -52,7 +53,7 @@ class PopulateWikiCreation extends Maintenance {
 				]
 			);
 
-			$dbw->selectDomain( $this->getConfig()->get( 'CreateWikiDatabase' ) );
+			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::Database ) );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
 				$this->output( "ERROR: couldn't determine when {$DBname} was created!\n" );
