@@ -304,11 +304,12 @@ class WikiManagerFactory {
 	public function delete( bool $force ): ?string {
 		$this->compileTables();
 
-		$row = $this->cwdb->selectRow(
-			'cw_wikis',
-			'*',
-			[ 'wiki_dbname' => $this->dbname ]
-		);
+		$row = $this->cwdb->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_wikis' )
+			->where( [ 'wiki_dbname' => $this->dbname ] )
+			->caller( __METHOD__ )
+			->fetchRow();
 
 		$deletionDate = $row->wiki_deleted_timestamp;
 		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
