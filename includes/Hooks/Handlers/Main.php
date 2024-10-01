@@ -11,6 +11,7 @@ use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Title\Title;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
@@ -69,8 +70,8 @@ class Main implements
 				$cacheArray = include $cacheDir . '/' . $dbName . '.php';
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
-				$wiki = $this->remoteWikiFactory->newInstance( $dbName );
-				$isPrivate = $wiki->isPrivate();
+				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbName );
+				$isPrivate = $remoteWiki->isPrivate();
 			}
 		}
 
@@ -102,6 +103,14 @@ class Main implements
 				->caller( __METHOD__ )
 				->fetchRowCount();
 		}
+
+		if ( $magicWordId === 'wikicreationdate' ) {
+			$remoteWiki = $this->remoteWikiFactory->newInstance(
+				WikiMap::getCurrentWikiId()
+			);
+
+			$ret = $variableCache[$magicWordId] = $remoteWiki->getCreationDate();
+		}
 	}
 
 	/** @inheritDoc */
@@ -117,5 +126,6 @@ class Main implements
 	/** @inheritDoc */
 	public function onGetMagicVariableIDs( &$variableIDs ) {
 		$variableIDs[] = 'numberofwikirequests';
+		$variableIDs[] = 'wikicreationdate';
 	}
 }
