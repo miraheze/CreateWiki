@@ -39,7 +39,7 @@ class RequestWikiFormUtils {
 		// Find the position of the target field
 		$pos = array_search( $afterKey, array_keys( $formDescriptor ) );
 
-		if ($pos === false) {
+		if ( $pos === false ) {
 			// If the target field is not found, add to the end
 			$formDescriptor[$newKey] = $newField;
 			return;
@@ -135,7 +135,7 @@ class RequestWikiFormUtils {
 
 		// Collect fields in the specified section
 		foreach ( $formDescriptor as $key => $field ) {
-			if ( ( $field['section'] ?? '' ) === $section) {
+			if ( ( $field['section'] ?? '' ) === $section ) {
 				$fieldsInSection[$key] = $field;
 				// Remove it from original position
 				unset( $formDescriptor[$key] );
@@ -143,7 +143,7 @@ class RequestWikiFormUtils {
 		}
 
 		// Add them back to the descriptor in the new order
-		foreach ($newOrder as $key) {
+		foreach ( $newOrder as $key ) {
 			if ( $fieldsInSection[$key] ?? false ) {
 				$formDescriptor[$key] = $fieldsInSection[$key];
 			}
