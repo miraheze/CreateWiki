@@ -10,7 +10,10 @@ use Wikimedia\Message\MessageValue;
 class RestUtils {
 
 	/**
-	 * Called from the REST handlers, checks that the current wiki is the global wiki and that the REST API is not disabled
+	 * Called from the REST handlers.
+	 *
+	 * Checks that the current wiki is the global wiki and
+	 * that the REST API is not disabled.
 	 */
 	public static function checkEnv( Config $config ): void {
 		if ( !WikiMap::isCurrentWikiId( $config->get( ConfigNames::GlobalWiki ) ) ) {
