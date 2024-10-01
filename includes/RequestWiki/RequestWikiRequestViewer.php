@@ -466,7 +466,7 @@ class RequestWikiRequestViewer {
 				return;
 			}
 
-			$message = 'createwiki-request-edited';
+			$message = 'createwiki-request-updated';
 			$log = false;
 			if ( $this->wikiRequestManager->getStatus() === 'declined' ) {
 				$message = 'createwiki-request-reopened';
