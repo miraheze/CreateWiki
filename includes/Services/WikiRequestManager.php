@@ -623,7 +623,7 @@ class WikiRequestManager {
 		}
 
 		if ( is_bool( $newValue ) ) {
-			$oldValue = json_encode( $newValue );
+			$newValue = json_encode( $newValue );
 		}
 
 		$this->changes[$field] = [
