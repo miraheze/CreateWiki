@@ -20,10 +20,7 @@ class CreateWikiHookRunner implements
 	CreateWikiWritePersistentModelHook
 {
 
-	/**
-	 * @var HookContainer
-	 */
-	private $container;
+	private HookContainer $container;
 
 	/**
 	 * @param HookContainer $container
