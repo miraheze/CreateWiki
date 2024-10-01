@@ -142,18 +142,6 @@ class RequestWikiRequestViewer {
 			],
 		];
 
-		foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
-			$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
-			$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
-				'type' => 'textarea',
-				'readonly' => true,
-				'section' => 'history',
-				'rows' => 6,
-				'label' => $entry['user']->getName() . ' | ' . $timestamp . ' | ' . ucfirst( $entry['action'] ),
-				'default' => $entry['details'],
-			];
-		}
-
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
 				'type' => 'textarea',
@@ -279,6 +267,17 @@ class RequestWikiRequestViewer {
 
 		// TODO: Should we really require (createwiki) to suppress wiki requests?
 		if ( $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock() ) {
+			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
+				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
+				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
+					'type' => 'textarea',
+					'readonly' => true,
+					'section' => 'history',
+					'rows' => 6,
+					'label' => $entry['user']->getName() . ' | ' . $timestamp . ' | ' . ucfirst( $entry['action'] ),
+					'default' => $entry['details'],
+				];
+			}
 
 			// You can't even get to this part in suppressed wiki requests without the appropiate userright, so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
@@ -466,14 +465,10 @@ class RequestWikiRequestViewer {
 				return;
 			}
 
-			$message = 'createwiki-request-updated';
-			$log = false;
-			if ( $this->wikiRequestManager->getStatus() === 'declined' ) {
-				$message = 'createwiki-request-reopened';
-				$log = true;
-			}
-
-			$comment = $this->context->msg( $message )->inContentLanguage()->escaped();
+			// Log if we are reopening the request
+			$log = $this->wikiRequestManager->getStatus() === 'declined';
+			$comment = $this->context->msg( 'createwiki-request-updated' )
+				->inContentLanguage()->escaped();
 
 			$this->wikiRequestManager->addComment(
 				comment: $comment,
@@ -482,6 +477,7 @@ class RequestWikiRequestViewer {
 				type: 'comment'
 			);
 
+			// Log the edit to request history
 			$this->wikiRequestManager->addRequestHistory(
 				action: 'edited',
 				details: $this->wikiRequestManager->getChangeMessage(),
