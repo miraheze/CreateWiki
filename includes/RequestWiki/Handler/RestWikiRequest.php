@@ -62,7 +62,9 @@ class RestWikiRequest extends SimpleHandler {
 		if ( $wikiRequest ) {
 			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
 			if ( $wikiRequest->cw_visibility >= 3 ) {
-				return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
+				return $this->getResponseFactory()->createLocalizedHttpError(
+					404, new MessageValue( 'requestwiki-unknown' )
+				);
 			}
 
 			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
@@ -70,7 +72,9 @@ class RestWikiRequest extends SimpleHandler {
 			if ( $wikiRequestVisibility !== 'public' ) {
 				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
 					// User does not have permission to view this request
-					return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						404, new MessageValue( 'requestwiki-unknown' )
+					);
 				}
 			}
 
@@ -104,10 +108,12 @@ class RestWikiRequest extends SimpleHandler {
 					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
+
 			// We now have all the data we need, add the comments to $response and return
 			$response['comments'] = $wikiRequestComments;
 			return $this->getResponseFactory()->createJson( $response );
 		}
+
 		// Request does not exist
 		return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 	}
