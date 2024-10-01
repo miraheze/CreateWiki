@@ -42,13 +42,13 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiDataFactoryBuilder(
-		string $dbname,
+		string $wiki,
 		IReadableDatabase $dbr,
 		array &$cacheArray
 	): void {
 		$this->container->run(
 			'CreateWikiDataFactoryBuilder',
-			[ $dbname, $dbr, &$cacheArray ]
+			[ $wiki, $dbr, &$cacheArray ]
 		);
 	}
 
