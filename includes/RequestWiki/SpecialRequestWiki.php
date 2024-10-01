@@ -41,7 +41,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkExecutePermissions( $this->getUser() );
 
-		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail ) && !$this->getUser()->isEmailConfirmed() ) {
+		if (
+			$this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail ) &&
+			!$this->getUser()->isEmailConfirmed()
+		) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
@@ -141,7 +144,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'default' => $this->msg( 'requestwiki-label-guidance-post' ),
 		];
 
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) && $this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) && $this->getConfig()->get( ConfigNames::RequestWikiUseDescriptions ) ) {
+		if (
+			ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) &&
+			$this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) &&
+			$this->getConfig()->get( ConfigNames::RequestWikiUseDescriptions )
+		) {
 			$formDescriptor['public-description'] = [
 				'type' => 'textarea',
 				'rows' => 2,
