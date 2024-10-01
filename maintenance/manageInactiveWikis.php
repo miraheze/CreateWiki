@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Generic.Files.LineLength.TooLong
+
 namespace Miraheze\CreateWiki\Maintenance;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
