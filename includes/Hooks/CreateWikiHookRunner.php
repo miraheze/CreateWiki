@@ -51,7 +51,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiDeletion( $cwdb, $dbname ): void {
+	public function onCreateWikiDeletion(
+		DBConnRef $cwdb,
+		string $dbname
+	): void {
 		$this->container->run(
 			'CreateWikiDeletion',
 			[ $cwdb, $dbname ]
