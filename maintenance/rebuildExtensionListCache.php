@@ -20,7 +20,9 @@ class RebuildExtensionListCache extends Maintenance {
 		parent::__construct();
 
 		$this->addDescription( 'Rebuild or generate extension-list cache file (either JSON or PHP based on config).' );
-		$this->addOption( 'cachedir', 'Path to the cachedir to use, otherwise defaults to the value of $wgCreateWikiCacheDirectory.', false );
+		$this->addOption( 'cachedir',
+			'Path to the cachedir to use, otherwise defaults to the value of $wgCreateWikiCacheDirectory.',
+		false );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
