@@ -2,7 +2,6 @@
 <ruleset>
 	<file>.</file>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki" />
-	</rule>
 	<rule ref="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma">
 		<severity>5</severity>
 	</rule>
