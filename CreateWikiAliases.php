@@ -5,7 +5,7 @@ $specialPageAliases = [];
 $specialPageAliases['en'] = [
 	'CreateWiki' => [ 'CreateWiki' ],
 	'RequestWiki' => [ 'RequestWiki' ],
-	'RequestWikiQueue' => [ 'RequestWikiQueue', 'RequestWikiEdit' ],
+	'RequestWikiQueue' => [ 'RequestWikiQueue' ],
 ];
 
 $specialPageAliases['vi'] = [
