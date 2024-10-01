@@ -497,7 +497,7 @@ class RequestWikiRequestViewer {
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
-			$out->addHTML( $this->getEditSuccessMessageBox() );
+			$out->addHTML( $this->getResponseMessageBox() );
 			return;
 		}
 
