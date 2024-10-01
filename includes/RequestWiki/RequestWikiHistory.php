@@ -6,6 +6,7 @@ use OOUI\FieldsetLayout;
 use OOUI\LabelElement;
 use OOUI\PanelLayout;
 use OOUI\Element;
+use OOUI\HtmlSnippet;
 
 class RequestWikiHistory {
 
@@ -47,7 +48,7 @@ class RequestWikiHistory {
         $tableHTML .= '</tbody></table>';
 
         $panel = new PanelLayout([
-            'content' => $tableHTML,
+            'content' => new HtmlSnippet( $tableHTML ),
             'classes' => ['oo-ui-panel', 'oo-ui-panel-framed'],
         ]);
 
