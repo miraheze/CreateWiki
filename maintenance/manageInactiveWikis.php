@@ -18,8 +18,8 @@ class ManageInactiveWikis extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 
-		$this->addOption( 'write', 'Actually make changes to wikis which are considered for the next stage in dormancy', false, false );
-		$this->addDescription( 'A script to find inactive wikis in a farm.' );
+		$this->addOption( 'write', 'Actually make changes to wikis which are considered for the next stage in $wgCreateWikiStateDays.', false, false );
+		$this->addDescription( 'A script to find inactive wikis in a wiki farm.' );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
@@ -166,10 +166,10 @@ class ManageInactiveWikis extends Maintenance {
 	private function notify( string $wiki ): void {
 		$notificationData = [
 			'type' => 'closure',
-			'subject' => wfMessage( 'miraheze-close-email-subject', $wiki )->inContentLanguage()->text(),
+			'subject' => wfMessage( 'createwiki-close-email-subject', $wiki )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
-				'text' => wfMessage( 'miraheze-close-email-body' )->inContentLanguage()->text(),
+				'html' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->text(),
+				'text' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->text(),
 			],
 		];
 
