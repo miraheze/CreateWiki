@@ -81,13 +81,21 @@ class RestWikiRequestsByUser extends SimpleHandler {
 			}
 
 			if ( count( $wikiRequestsArray ) === 0 ) {
-				// This user _has_ made wiki requests, but these are suppressed wiki requests and the user making this request doesn't have permission to view them
-				return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'createwiki-rest-usernowikirequests' ) );
+				// This user has made wiki requests, but these are
+				// suppressed wiki requests and the user making this
+				// request doesn't have permission to view them.
+				return $this->getResponseFactory()->createLocalizedHttpError(
+					404, new MessageValue( 'createwiki-rest-usernowikirequests' )
+				);
 			}
+
 			return $this->getResponseFactory()->createJson( $wikiRequestsArray );
 		}
+
 		// This user has never made a wiki request
-		return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'createwiki-rest-usernowikirequests' ) );
+		return $this->getResponseFactory()->createLocalizedHttpError(
+			404, new MessageValue( 'createwiki-rest-usernowikirequests' )
+		);
 	}
 
 	public function needsWriteAccess(): bool {
