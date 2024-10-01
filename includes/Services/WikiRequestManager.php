@@ -615,6 +615,17 @@ class WikiRequestManager {
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
+		// Make sure boolean values save to changes as a string
+		// We need this so that getChangeMessage properly displays them.
+
+		if ( is_bool( $oldValue ) ) {
+			$oldValue = json_encode( $oldValue );
+		}
+
+		if ( is_bool( $newValue ) ) {
+			$oldValue = json_encode( $newValue );
+		}
+
 		$this->changes[$field] = [
 			'old' => $this->escape( $oldValue ),
 			'new' => $this->escape( $newValue ),
