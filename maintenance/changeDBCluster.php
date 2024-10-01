@@ -20,7 +20,7 @@ class ChangeDBCluster extends Maintenance {
 		$this->addOption( 'db-cluster', 'Sets the wikis requested to a different db cluster.', true, true );
 
 		$this->addOption( 'file', 'Path to file where the wikinames are store. ' .
-			'Must be one wikidb name per line. (Optional, fallsback to current dbname)', 
+			'Must be one wikidb name per line. (Optional, fallsback to current dbname)',
 			false, true
 		);
 
