@@ -210,8 +210,7 @@ class WikiManagerFactory {
 			$requester,
 			$actor,
 			$reason,
-			notify: true,
-			centralAuth: true
+			notify: true
 		);
 
 		return null;
@@ -223,8 +222,7 @@ class WikiManagerFactory {
 		string $requester,
 		string $actor,
 		string $reason,
-		bool $notify,
-		bool $centralAuth
+		bool $notify
 	): void {
 		foreach ( $this->options->get( ConfigNames::SQLFiles ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
@@ -248,16 +246,14 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				if ( $centralAuth ) {
-					if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
-						Shell::makeScriptCommand(
-							MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
-							[
-								$requester,
-								'--wiki', $this->dbname
-							]
-						)->limits( $limits )->execute();
-					}
+				if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+					Shell::makeScriptCommand(
+						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+						[
+							$requester,
+							'--wiki', $this->dbname
+						]
+					)->limits( $limits )->execute();
 
 					Shell::makeScriptCommand(
 						MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
@@ -277,10 +273,16 @@ class WikiManagerFactory {
 		);
 
 		if ( $notify ) {
+			$domain = $this->options->get( ConfigNames::Subdomain );
+			$subdomain = substr(
+				$this->dbname, 0,
+				-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
+			);
+
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . substr( $this->dbname, 0, -strlen( $this->options->get( ConfigNames::DatabaseSuffix ) ) ) . ".{$this->options->get( ConfigNames::Subdomain )}",
+					'wiki-url' => 'https://' . $subdomain . '.' . $domain,
 					'sitename' => $sitename,
 				],
 				'subject' => $this->messageLocalizer->msg(
@@ -289,7 +291,7 @@ class WikiManagerFactory {
 				'body' => [
 					'html' => nl2br( $this->messageLocalizer->msg(
 						'createwiki-email-body'
-					)->inContentLanguage()->escaped() ),
+					)->inContentLanguage()->text() ),
 					'text' => $this->messageLocalizer->msg(
 						'createwiki-email-body'
 					)->inContentLanguage()->escaped(),
