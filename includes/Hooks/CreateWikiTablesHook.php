@@ -8,5 +8,5 @@ interface CreateWikiTablesHook {
 	 * @param array &$cTables
 	 * @return void
 	 */
-	public function onCreateWikiTables( &$cTables ): void;
+	public function onCreateWikiTables( array &$cTables ): void;
 }
