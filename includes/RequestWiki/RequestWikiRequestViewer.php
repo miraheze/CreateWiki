@@ -142,7 +142,12 @@ class RequestWikiRequestViewer {
 			],
 		];
 
-		RequestWikiHistory::showHistorySection( $this->wikiRequestManager->getRequestHistory(), $this->context->getOutput() );
+		$history = RequestWikiHistory::showHistorySection( $this->wikiRequestManager->getRequestHistory(), $this->context->getOutput() );
+		$formDescriptor['history'] = [
+			'type' => 'info',
+			'default' => $history,
+			'section' => 'history',
+		];
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
