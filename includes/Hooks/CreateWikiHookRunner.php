@@ -69,7 +69,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiReadPersistentModel( &$pipeline ): void {
+	public function onCreateWikiReadPersistentModel( string &$pipeline ): void {
 		$this->container->run(
 			'CreateWikiReadPersistentModel',
 			[ &$pipeline ]
@@ -85,7 +85,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiStateClosed( $dbname ): void {
+	public function onCreateWikiStateClosed( string $dbname ): void {
 		$this->container->run(
 			'CreateWikiStateClosed',
 			[ $dbname ]
@@ -93,7 +93,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiStateOpen( $dbname ): void {
+	public function onCreateWikiStateOpen( string $dbname ): void {
 		$this->container->run(
 			'CreateWikiStateOpen',
 			[ $dbname ]
@@ -101,7 +101,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiStatePrivate( $dbname ): void {
+	public function onCreateWikiStatePrivate( string $dbname ): void {
 		$this->container->run(
 			'CreateWikiStatePrivate',
 			[ $dbname ]
@@ -109,7 +109,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiStatePublic( $dbname ): void {
+	public function onCreateWikiStatePublic( string $dbname ): void {
 		$this->container->run(
 			'CreateWikiStatePublic',
 			[ $dbname ]
@@ -117,7 +117,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiTables( &$cTables ): void {
+	public function onCreateWikiTables( array &$cTables ): void {
 		$this->container->run(
 			'CreateWikiTables',
 			[ &$cTables ]
@@ -125,7 +125,7 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiWritePersistentModel( $pipeline ): bool {
+	public function onCreateWikiWritePersistentModel( string $pipeline ): bool {
 		return $this->container->run(
 			'CreateWikiWritePersistentModel',
 			[ $pipeline ]
