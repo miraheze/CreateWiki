@@ -318,10 +318,17 @@ class WikiManagerFactory {
 		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
 		$unixNow = (int)wfTimestamp( TS_UNIX, $this->dbw->timestamp() );
 
+		// Return error if the wiki is not deleted, force is not used, or the deletion grace period has not passed.
+		$deletionGracePeriod = (int)$this->options->get( ConfigNames::StateDays )['deleted'] * 86400;
 		$deletedWiki = (bool)$row->wiki_deleted && (bool)$row->wiki_deleted_timestamp;
 
-		// Return error if: wiki is not deleted, force is not used & wiki
-		if ( !$force && ( !$deletedWiki || ( $unixNow - $unixDeletion ) < ( (int)$this->options->get( ConfigNames::StateDays )['deleted'] * 86400 ) ) ) {
+		if (
+			!$force &&
+			(
+				!$deletedWiki ||
+				( $unixNow - $unixDeletion ) < $deletionGracePeriod
+			)
+		) {
 			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
