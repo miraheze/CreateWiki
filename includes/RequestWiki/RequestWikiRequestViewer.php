@@ -66,7 +66,9 @@ class RequestWikiRequestViewer {
 		}
 
 		if ( $visibilityConds[$this->wikiRequestManager->getVisibility()] !== 'public' ) {
-			if ( !$this->permissionManager->userHasRight( $user, $visibilityConds[$this->wikiRequestManager->getVisibility()] ) ) {
+			if ( !$this->permissionManager->userHasRight( $user,
+				$visibilityConds[$this->wikiRequestManager->getVisibility()]
+			) ) {
 				$this->context->getOutput()->addHTML(
 					Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 				);
@@ -286,11 +288,15 @@ class RequestWikiRequestViewer {
 			];
 
 			if ( $this->permissionManager->userHasRight( $user, 'createwiki-deleterequest' ) ) {
-				$visibilityOptions[1] = $this->context->msg( 'requestwikiqueue-request-label-visibility-delete' )->escaped();
+				$visibilityOptions[1] = $this->context->msg(
+					'requestwikiqueue-request-label-visibility-delete'
+				)->escaped();
 			}
 
 			if ( $this->permissionManager->userHasRight( $user, 'createwiki-suppressrequest' ) ) {
-				$visibilityOptions[2] = $this->context->msg( 'requestwikiqueue-request-label-visibility-suppress' )->escaped();
+				$visibilityOptions[2] = $this->context->msg(
+					'requestwikiqueue-request-label-visibility-suppress'
+				)->escaped();
 			}
 
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->wikiRequestManager->getDBname() );
