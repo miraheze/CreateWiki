@@ -638,6 +638,10 @@ class WikiRequestManager {
 		return implode( "\n", $messages );
 	}
 
+	public function reloadData(): void {
+		$this->fromID( $this->ID );
+	}
+
 	private function escape( string $text ): string {
 		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
