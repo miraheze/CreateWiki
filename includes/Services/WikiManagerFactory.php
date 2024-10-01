@@ -231,7 +231,7 @@ class WikiManagerFactory {
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
 
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $requester, $centralAuth ) {
+			function () use ( $requester ) {
 				$this->recache();
 
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
