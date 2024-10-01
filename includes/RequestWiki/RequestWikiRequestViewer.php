@@ -486,7 +486,7 @@ class RequestWikiRequestViewer {
 
 			$this->wikiRequestManager->addRequestHistory(
 				action: 'edited',
-				details: $comment,
+				details: $this->wikiRequestManager->getChangeMessage(),
 				user: $user
 			);
 
