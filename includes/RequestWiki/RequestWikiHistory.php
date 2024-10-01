@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 use OOUI\FieldsetLayout;
 use OOUI\LabelElement;
 use OOUI\PanelLayout;
+use OOUI\Element;
 
 class RequestWikiHistory {
 
@@ -12,8 +13,9 @@ class RequestWikiHistory {
         $historyFieldset = new FieldsetLayout([
             'label' => 'History',
             'items' => [
-                new LabelElement([
-                    'label' => 'History of actions',
+                new Element([
+                    'content' => 'History of actions',
+                    'classes' => ['oo-ui-labelElement'],
                 ]),
                 self::createHistoryTable($historyEntries),
             ]
@@ -48,7 +50,6 @@ class RequestWikiHistory {
             'classes' => ['oo-ui-panel', 'oo-ui-panel-framed'],
         ]);
 
-        // Return the completed panel markup
         return $panel->getMarkup();
     }
 }
