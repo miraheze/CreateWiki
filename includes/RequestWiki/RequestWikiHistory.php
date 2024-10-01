@@ -18,9 +18,7 @@ class RequestWikiHistory {
                     'content' => 'History of actions',
                     'classes' => ['oo-ui-labelElement'],
                 ]),
-                new Element([
-                    'content' => self::createHistoryTable($historyEntries),
-                ]),
+                self::createHistoryTable($historyEntries),
             ]
         ]);
 
@@ -53,6 +51,6 @@ class RequestWikiHistory {
             'classes' => ['oo-ui-panel', 'oo-ui-panel-framed'],
         ]);
 
-        return $panel->toString();
+        return $panel;
     }
 }
