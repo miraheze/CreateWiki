@@ -279,7 +279,8 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			// You can't even get to this part in suppressed wiki requests without the appropiate userright, so it is OK for the undelete/unsuppress option to be here
+			// You can't even get to this part in suppressed wiki requests without the appropiate userright,
+			// so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
 				0 => $this->context->msg( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
 			];
