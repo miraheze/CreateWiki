@@ -42,21 +42,21 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiDataFactoryBuilder(
-		string $wiki,
+		string $dbname,
 		IReadableDatabase $dbr,
 		array &$cacheArray
 	): void {
 		$this->container->run(
 			'CreateWikiDataFactoryBuilder',
-			[ $wiki, $dbr, &$cacheArray ]
+			[ $dbname, $dbr, &$cacheArray ]
 		);
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiDeletion( $cwdb, $wiki ): void {
+	public function onCreateWikiDeletion( $cwdb, $dbname ): void {
 		$this->container->run(
 			'CreateWikiDeletion',
-			[ $cwdb, $wiki ]
+			[ $cwdb, $dbname ]
 		);
 	}
 
