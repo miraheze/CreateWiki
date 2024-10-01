@@ -36,34 +36,28 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @inheritDoc
 	 */
 	protected function getFormFields(): array {
-		$par = $this->par;
-		$request = $this->getRequest();
-
 		$formDescriptor = [
 			'dbname' => [
 				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
-				'default' => $request->getVal( 'wpdbname' ) ?: $par,
 				'required' => true,
 				'validation-callback' => [ $this, 'isValidDatabase' ],
 			],
 			'requester' => [
 				'label-message' => 'createwiki-label-requester',
 				'type' => 'user',
-				'default' => $request->getVal( 'wprequester' ),
 				'exists' => true,
 				'required' => true,
 			],
 			'sitename' => [
 				'label-message' => 'createwiki-label-sitename',
 				'type' => 'text',
-				'default' => $request->getVal( 'wpsitename' ),
 				'size' => 20,
 			],
 			'language' => [
 				'type' => 'language',
 				'label-message' => 'createwiki-label-language',
-				'default' => $request->getVal( 'wplanguage' ) ?: 'en',
+				'default' => 'en',
 			],
 		];
 
@@ -88,7 +82,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'rows' => 6,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
-			'default' => $request->getVal( 'wpreason' ),
 			'required' => true,
 		];
 
