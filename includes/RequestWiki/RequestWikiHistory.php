@@ -21,7 +21,7 @@ class RequestWikiHistory {
             ]
         ]);
 
-        return $historyFieldset->getMarkup();
+        return $historyFieldset->toString();
     }
 
     private static function createHistoryTable(array $entries) {
@@ -50,6 +50,6 @@ class RequestWikiHistory {
             'classes' => ['oo-ui-panel', 'oo-ui-panel-framed'],
         ]);
 
-        return $panel->getMarkup();
+        return $panel->toString();
     }
 }
