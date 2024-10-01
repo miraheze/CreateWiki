@@ -10,6 +10,7 @@ use OOUI\Element;
 class RequestWikiHistory {
 
     public static function showHistorySection(array $historyEntries, $out) {
+        $out->enableOOUI();
         $historyFieldset = new FieldsetLayout([
             'label' => 'History',
             'items' => [
