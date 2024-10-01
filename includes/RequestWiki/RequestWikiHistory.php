@@ -8,46 +8,47 @@ use OOUI\PanelLayout;
 
 class RequestWikiHistory {
 
-	public static function showHistorySection(array $historyEntries, $out) {
+    public static function showHistorySection(array $historyEntries, $out) {
+        $historyFieldset = new FieldsetLayout([
+            'label' => 'History',
+            'items' => [
+                new LabelElement([
+                    'label' => 'History of actions',
+                ]),
+                self::createHistoryTable($historyEntries),
+            ]
+        ]);
 
-		/*$historyFieldset = new FieldsetLayout([
-			'label' => 'History',
-			'items' => [
-				new LabelElement([
-					'label' => 'History of actions',
-				]),
-				self::createHistoryTable($historyEntries),
-			]
-		]);*/
+        return $historyFieldset->getMarkup();
+    }
 
-		// Add the fieldset to your output
-		return self::createHistoryTable($historyEntries);
-	}
+    private static function createHistoryTable(array $entries) {
+        $tableHTML = '<table class="oo-ui-table oo-ui-table-striped">';
+        $tableHTML .= '<thead><tr>';
+        $tableHTML .= '<th>Timestamp</th>';
+        $tableHTML .= '<th>User</th>';
+        $tableHTML .= '<th>Action</th>';
+        $tableHTML .= '<th>Details</th>';
+        $tableHTML .= '</tr></thead>';
+        $tableHTML .= '<tbody>';
 
-	private static function createHistoryTable($entries) {
-		// Start building the HTML table
-		$tableHTML = '<table class="oo-ui-table oo-ui-table-striped">';
-		$tableHTML .= '<thead><tr>';
-		$tableHTML .= '<th>Timestamp</th>';
-		$tableHTML .= '<th>User</th>';
-		$tableHTML .= '<th>Action</th>';
-		$tableHTML .= '<th>Details</th>';
-		$tableHTML .= '</tr></thead>';
-		$tableHTML .= '<tbody>';
+        foreach ($entries as $entry) {
+            $tableHTML .= '<tr>';
+            $tableHTML .= '<td>' . htmlspecialchars($entry['timestamp']) . '</td>';
+            $tableHTML .= '<td>' . htmlspecialchars($entry['user']->getName()) . '</td>';
+            $tableHTML .= '<td>' . htmlspecialchars($entry['action']) . '</td>';
+            $tableHTML .= '<td>' . htmlspecialchars($entry['details']) . '</td>';
+            $tableHTML .= '</tr>';
+        }
 
-		// Loop through each entry and create table rows
-		foreach ($entries as $entry) {
-			$tableHTML .= '<tr>';
-			$tableHTML .= '<td>' . htmlspecialchars($entry['timestamp']) . '</td>';
-			$tableHTML .= '<td>' . htmlspecialchars($entry['user']->getName()) . '</td>';
-			$tableHTML .= '<td>' . htmlspecialchars($entry['action']) . '</td>';
-			$tableHTML .= '<td>' . htmlspecialchars($entry['details']) . '</td>';
-			$tableHTML .= '</tr>';
-		}
+        $tableHTML .= '</tbody></table>';
 
-		$tableHTML .= '</tbody></table>';
+        $panel = new PanelLayout([
+            'content' => $tableHTML,
+            'classes' => ['oo-ui-panel', 'oo-ui-panel-framed'],
+        ]);
 
-		// Return the completed table HTML
-		return $tableHTML;
-	}
+        // Return the completed panel markup
+        return $panel->getMarkup();
+    }
 }
