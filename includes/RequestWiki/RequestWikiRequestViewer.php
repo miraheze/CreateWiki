@@ -608,7 +608,6 @@ class RequestWikiRequestViewer {
 		// We use this to reduce code duplication
 		if ( $this->wikiRequestManager->hasChanges() ) {
 			$this->wikiRequestManager->clearChanges();
-			$this->wikiRequestManager->reloadData();
 			return Html::successBox(
 				$this->context->msg( 'requestwiki-edit-success' )->escaped()
 			);
