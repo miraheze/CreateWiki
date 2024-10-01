@@ -79,7 +79,9 @@ class WikiInitialize {
 		foreach ( $databasesArray['databases'] as $db => $data ) {
 			foreach ( $suffixes as $suffix ) {
 				if ( substr( $db, -strlen( $suffix ) ) == $suffix ) {
-					$this->config->settings['wgServer'][$db] = $data['u'] ?? 'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' . $suffixMatch[$suffix];
+					$this->config->settings['wgServer'][$db] = $data['u'] ??
+						'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' .
+						$suffixMatch[$suffix];
 				}
 			}
 
@@ -132,8 +134,10 @@ class WikiInitialize {
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
 
-		$this->server = $this->config->settings['wgServer'][$this->dbname] ?? $this->config->settings['wgServer']['default'];
-		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ?? $this->config->settings['wgSitename']['default'];
+		$this->server = $this->config->settings['wgServer'][$this->dbname] ??
+			$this->config->settings['wgServer']['default'];
+		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ??
+			$this->config->settings['wgSitename']['default'];
 
 		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
 			$this->missing = true;
@@ -150,7 +154,8 @@ class WikiInitialize {
 		$cacheArray = include $this->cacheDir . '/' . $this->dbname . '.php';
 
 		// Assign top level variables first
-		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'] ?? $this->config->settings['wgSitename']['default'];
+		$this->config->settings['wgSitename'][$this->dbname] = $cacheArray['core']['wgSitename'] ??
+			$this->config->settings['wgSitename']['default'];
 		$this->config->settings['wgLanguageCode'][$this->dbname] = $cacheArray['core']['wgLanguageCode'] ?? 'en';
 		if ( isset( $cacheArray['url'] ) && $cacheArray['url'] ) {
 			$this->config->settings['wgServer'][$this->dbname] = $cacheArray['url'];
@@ -166,11 +171,15 @@ class WikiInitialize {
 		}
 
 		if ( isset( $cacheArray['states']['inactive'] ) ) {
-			$this->config->settings['cwInactive'][$this->dbname] = ( ( $cacheArray['states']['inactive'] ?? false ) == 'exempt' ) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
+			$this->config->settings['cwInactive'][$this->dbname] = (
+				( $cacheArray['states']['inactive'] ?? false ) === 'exempt'
+			) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 		}
 
 		if ( isset( $cacheArray['states']['experimental'] ) ) {
-			$this->config->settings['cwExperimental'][$this->dbname] = (bool)( $cacheArray['states']['experimental'] ?? false );
+			$this->config->settings['cwExperimental'][$this->dbname] = (bool)(
+				$cacheArray['states']['experimental'] ?? false
+			);
 		}
 
 		$tags = [];
@@ -210,16 +219,21 @@ class WikiInitialize {
 		if ( isset( $cacheArray['namespaces'] ) ) {
 			foreach ( (array)$cacheArray['namespaces'] as $name => $ns ) {
 				$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
-				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] = $ns['searchable'];
-				$this->config->settings['wgNamespacesWithSubpages'][$this->dbname][(int)$ns['id']] = $ns['subpages'];
-				$this->config->settings['wgNamespaceContentModels'][$this->dbname][(int)$ns['id']] = $ns['contentmodel'];
+				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] =
+					$ns['searchable'];
+				$this->config->settings['wgNamespacesWithSubpages'][$this->dbname][(int)$ns['id']] =
+					$ns['subpages'];
+				$this->config->settings['wgNamespaceContentModels'][$this->dbname][(int)$ns['id']] =
+					$ns['contentmodel'];
 
 				if ( $ns['content'] ) {
 					$this->config->settings['wgContentNamespaces'][$this->dbname][] = (int)$ns['id'];
 				}
 
 				if ( $ns['protection'] ) {
-					$this->config->settings['wgNamespaceProtection'][$this->dbname][(int)$ns['id']] = [ $ns['protection'] ];
+					$this->config->settings['wgNamespaceProtection'][$this->dbname][(int)$ns['id']] = [
+						$ns['protection']
+					];
 				}
 
 				foreach ( (array)$ns['aliases'] as $alias ) {
