@@ -601,6 +601,6 @@ class RequestWikiRequestViewer {
 		// We use this to reduce code duplication
 		return Html::successBox(
 			$this->context->msg( 'requestwiki-edit-success' )->escaped()
-		)
+		);
 	}
 }
