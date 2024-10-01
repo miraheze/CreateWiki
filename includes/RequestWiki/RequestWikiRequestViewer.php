@@ -465,8 +465,6 @@ class RequestWikiRequestViewer {
 				return;
 			}
 
-			// Log if we are reopening the request
-			$log = $this->wikiRequestManager->getStatus() === 'declined';
 			$comment = $this->context->msg( 'createwiki-request-updated' )
 				->inContentLanguage()->escaped();
 
@@ -486,13 +484,13 @@ class RequestWikiRequestViewer {
 
 			$this->wikiRequestManager->setStatus( 'inreview' );
 
-			if ( $log ) {
+			// Log if we are reopening the request
+			if ( $this->wikiRequestManager->getStatus() === 'declined' ) {
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
-			$out->addHTML( Html::successBox( $this->context->msg( 'requestwiki-edit-success' )->escaped() ) );
-
+			$out->addHTML( $this->getEditSuccessMessageBox() );
 			return;
 		}
 
@@ -523,6 +521,7 @@ class RequestWikiRequestViewer {
 				// This will create the wiki
 				$this->wikiRequestManager->approve( $user, $formData['handle-comment'] );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				$out->addHTML( $this->getEditSuccessMessageBox() );
 				return;
 			}
 
@@ -530,6 +529,7 @@ class RequestWikiRequestViewer {
 			if ( $formData['handle-action'] === 'onhold' ) {
 				$this->wikiRequestManager->onhold( $formData['handle-comment'], $user );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				$out->addHTML( $this->getEditSuccessMessageBox() );
 				return;
 			}
 
@@ -537,12 +537,14 @@ class RequestWikiRequestViewer {
 			if ( $formData['handle-action'] === 'moredetails' ) {
 				$this->wikiRequestManager->moredetails( $formData['handle-comment'], $user );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				$out->addHTML( $this->getEditSuccessMessageBox() );
 				return;
 			}
 
 			// Handle decline action (the action we use if handle-action is none of the others)
 			$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
+			$out->addHTML( $this->getEditSuccessMessageBox() );
 		}
 	}
 
@@ -593,5 +595,12 @@ class RequestWikiRequestViewer {
 		}
 
 		return true;
+	}
+
+	private function getEditSuccessMessageBox(): string {
+		// We use this to reduce code duplication
+		return Html::successBox(
+			$this->context->msg( 'requestwiki-edit-success' )->escaped()
+		)
 	}
 }
