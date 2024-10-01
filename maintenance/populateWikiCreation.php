@@ -31,8 +31,8 @@ class PopulateWikiCreation extends Maintenance {
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
-		if ( !$res || !is_object( $res ) ) {
-			$this->fatalError( '$res was not set to a valid array.' );
+		if ( !$res->numRows() ) {
+			$this->fatalError( 'No rows found.' );
 		}
 
 		foreach ( $res as $row ) {
