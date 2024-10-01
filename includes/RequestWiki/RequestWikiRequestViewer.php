@@ -145,6 +145,7 @@ class RequestWikiRequestViewer {
 		$history = RequestWikiHistory::showHistorySection( $this->wikiRequestManager->getRequestHistory(), $this->context->getOutput() );
 		$formDescriptor['history'] = [
 			'type' => 'info',
+			'raw' => true,
 			'default' => $history,
 			'section' => 'history',
 		];
