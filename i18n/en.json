@@ -41,6 +41,8 @@
 	"createwiki-label-requester": "Requester:",
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-statuschangecomment": "Reason for this action:",
+	"createwiki-no-changes": "No changes made.",
+	"createwiki-request-updated": "Updated request.",
 	"createwiki-rest-disabled": "Access to the REST API for CreateWiki has been disabled in the settings for this wiki",
 	"createwiki-rest-usernowikirequests": "This user has not made any wiki requests",
 	"createwiki-success": "The wiki was successfully created.",
@@ -96,6 +98,7 @@
 	"requestwiki-error-invalidcomment": "Your wiki request contains an invalid character. Correct that and try again. If you need help, [[Help center|contact us]].",
 	"requestwiki-error-patient": "You have already requested a wiki! Please be patient, your request is being reviewed. If you need to request another wiki, try again later.",
 	"requestwiki-header": "Thank you for choosing Miraheze to host your wiki! To get started, please fill out this form so we can review your request.\nYour wiki request will be reviewed by a volunteer, and it can be tracked at the page that will be given when submitting your request.\n\nIf you want a custom domain for your wiki (i.e. not a standard .miraheze.org subdomain), please read [[Custom domains|this]] first. You must first choose a subdomain, and your custom domain will be configured afterwards.\n\nWhen you request a wiki, you automatically agree to our [[Content Policy|Content]] and [[Dormancy Policy]].",
+	"requestwiki-header-comment-withtimestamp": "Comment given by $1 at $2",
 	"requestwiki-help-guidance-post": "Thank you for choosing our service!",
 	"requestwiki-help-public-description": "Write a helpful description about your wiki. What does it focus on? Who is it geared to? This description is visible to the public via [[Special:WikiDiscover]].",
 	"requestwiki-label-add-comment": "Add Comment",
@@ -123,6 +126,7 @@
 	"requestwikiqueue-details": "Request details",
 	"requestwikiqueue-edit": "Edit request",
 	"requestwikiqueue-handling": "Handle request",
+	"requestwikiqueue-history": "Request history",
 	"requestwikiqueue-info": "You can use this form to search for wiki requests and sort by status.",
 	"requestwikiqueue-inreview": "In review",
 	"requestwikiqueue-moredetails": "Needs more details",
@@ -130,7 +134,6 @@
 	"requestwikiqueue-pager-status-approved": "approved",
 	"requestwikiqueue-pager-status-declined": "declined",
 	"requestwikiqueue-pager-status-inreview": "in review",
-	"requestwiki-header-comment-withtimestamp": "Comment given by $1 at $2",
 	"requestwikiqueue-request-header-description": "Wiki description:",
 	"requestwikiqueue-request-info-submission": "Here you can modify the visibility of the request, approve or decline the request as well as provide additional comments when doing so. If you mark the wiki as approved, it will be created automatically.",
 	"requestwikiqueue-request-label-action": "What do you want to do?",
@@ -150,8 +153,5 @@
 	"right-createwiki-deleterequest": "Delete wiki requests",
 	"right-createwiki-suppressionlog": "View the wiki request suppression log",
 	"right-createwiki-suppressrequest": "Hide wiki requests from everyone",
-	"right-requestwiki": "Request wikis",
-	"createwiki-no-changes": "No changes made.",
-	"createwiki-request-updated": "Updated request.",
-	"requestwikiqueue-history": "Request history"
+	"right-requestwiki": "Request wikis"
 }
