@@ -142,13 +142,21 @@ class RequestWikiRequestViewer {
 			],
 		];
 
-		$history = RequestWikiHistory::showHistorySection( $this->wikiRequestManager->getRequestHistory(), $this->context->getOutput() );
-		$formDescriptor['history'] = [
-			'type' => 'info',
-			'raw' => true,
-			'default' => $history,
-			'section' => 'history',
-		];
+		foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
+			$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
+				'type' => 'textarea',
+				'readonly' => true,
+				'section' => 'comments',
+				'rows' => 6,
+				'label-message' => $entry['action'],
+				'help-message' => [
+					'requestwiki-header-comment-withtimestamp',
+					$entry['user']->getName(),
+					$this->context->getLanguage()->timeanddate( $entry['timestamp'], true ),
+				],
+				'default' => $entry['details'],
+			];
+		}
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
