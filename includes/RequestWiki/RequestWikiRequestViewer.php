@@ -146,7 +146,7 @@ class RequestWikiRequestViewer {
 			$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
 				'type' => 'textarea',
 				'readonly' => true,
-				'section' => 'comments',
+				'section' => 'history',
 				'rows' => 6,
 				'label-message' => $entry['action'],
 				'help-message' => [
