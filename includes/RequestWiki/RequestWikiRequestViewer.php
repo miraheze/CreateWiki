@@ -276,7 +276,7 @@ class RequestWikiRequestViewer {
 					'readonly' => true,
 					'section' => 'history',
 					'rows' => 6,
-					'label' => $entry['user']->getName() . ' | ' . $timestamp . ' | ' . ucfirst( $entry['action'] ),
+					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
 					'default' => $entry['details'],
 				];
 			}
