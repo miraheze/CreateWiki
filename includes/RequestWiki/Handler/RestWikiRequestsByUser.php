@@ -61,7 +61,7 @@ class RestWikiRequestsByUser extends SimpleHandler {
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
-		if ( $wikiRequests ) {
+		if ( $wikiRequests->numRows() ) {
 			foreach ( $wikiRequests as $wikiRequest ) {
 				// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
 				if ( $wikiRequest->cw_visibility >= 3 ) {
