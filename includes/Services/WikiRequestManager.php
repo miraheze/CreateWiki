@@ -194,11 +194,11 @@ class WikiRequestManager {
 		$history = [];
 		foreach ( $res as $row ) {
 			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
-	
+
 			$history[] = [
 				'action' => $row->cw_history_action,
 				'details' => $row->cw_history_details,
-				'timestamp' => $row->cw_history_timestamp, 
+				'timestamp' => $row->cw_history_timestamp,
 				'user' => $user,
 			];
 		}
