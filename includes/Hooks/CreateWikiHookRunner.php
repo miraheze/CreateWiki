@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks;
 
 use MediaWiki\HookContainer\HookContainer;
+use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiHookRunner implements
@@ -74,10 +75,14 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiRename( $cwdb, $old, $new ): void {
+	public function onCreateWikiRename(
+		DBConnRef $cwdb,
+		string $oldDbName,
+		string $newDbName
+	): void {
 		$this->container->run(
 			'CreateWikiRename',
-			[ $cwdb, $old, $new ]
+			[ $cwdb, $oldDbName, $newDbName ]
 		);
 	}
 
