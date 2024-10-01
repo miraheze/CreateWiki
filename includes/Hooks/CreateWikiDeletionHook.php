@@ -8,8 +8,8 @@ interface CreateWikiDeletionHook {
 
 	/**
 	 * @param DBConnRef $cwdb
-	 * @param string $wiki dbname
+	 * @param string $dbname
 	 * @return void
 	 */
-	public function onCreateWikiDeletion( $cwdb, $wiki ): void;
+	public function onCreateWikiDeletion( $cwdb, $dbname ): void;
 }
