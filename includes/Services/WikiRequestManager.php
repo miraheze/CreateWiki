@@ -604,7 +604,6 @@ class WikiRequestManager {
 		}
 
 		$this->clearQueryBuilder();
-		$this->clearChanges();
 	}
 
 	public function clearQueryBuilder(): void {
