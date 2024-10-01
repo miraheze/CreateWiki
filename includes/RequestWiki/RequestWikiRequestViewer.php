@@ -607,6 +607,7 @@ class RequestWikiRequestViewer {
 	private function getResponseMessageBox(): string {
 		// We use this to reduce code duplication
 		if ( $this->wikiRequestManager->hasChanges() ) {
+			$this->wikiRequestManager->clearChanges();
 			return Html::successBox(
 				$this->context->msg( 'requestwiki-edit-success' )->escaped()
 			);
