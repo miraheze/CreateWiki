@@ -109,7 +109,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$specialRequestWiki->setContext( $testContext );
 		$this->expectException( ErrorPageError::class );
 		$this->expectExceptionMessageMatches(
-			'/Your email is not confirmed. To request wikis, please \[\[Special:ChangeEmail\|confirm an email\]\] first./'
+			'/Your email is not confirmed. To request wikis, please ' .
+  			' \[\[Special:ChangeEmail\|confirm an email\]\] first./'
 		);
 
 		$specialRequestWiki->execute( '' );
