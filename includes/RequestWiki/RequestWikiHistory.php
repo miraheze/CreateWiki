@@ -18,7 +18,7 @@ class RequestWikiHistory {
                     'content' => 'History of actions',
                     'classes' => ['oo-ui-labelElement'],
                 ]),
-                self::createHistoryTable($historyEntries),
+                //self::createHistoryTable($historyEntries),
             ]
         ]);
 
