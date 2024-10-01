@@ -152,5 +152,6 @@
 	"right-createwiki-suppressrequest": "Hide wiki requests from everyone",
 	"right-requestwiki": "Request wikis",
 	"createwiki-no-changes": "No changes made.",
-	"createwiki-request-updated": "Updated request."
+	"createwiki-request-updated": "Updated request.",
+	"requestwikiqueue-history": "Request history"
 }
