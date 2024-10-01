@@ -207,6 +207,10 @@ class WikiRequestManager {
 	}
 
 	public function approve( User $user, string $comment ): void {
+		if ( $this->getStatus() === 'approved' ) {
+			return;
+		}
+
 		if ( $this->options->get( ConfigNames::UseJobQueue ) ) {
 			$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 			$jobQueueGroup->push(
@@ -269,7 +273,7 @@ class WikiRequestManager {
 	}
 
 	public function decline( string $comment, User $user ): void {
-		if ( $this->getStatus() === 'approved' ) {
+		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'declined' ) {
 			return;
 		}
 
@@ -290,7 +294,7 @@ class WikiRequestManager {
 	}
 
 	public function onhold( string $comment, User $user ): void {
-		if ( $this->getStatus() === 'approved' ) {
+		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'onhold' ) {
 			return;
 		}
 
@@ -307,7 +311,7 @@ class WikiRequestManager {
 	}
 
 	public function moredetails( string $comment, User $user ): void {
-		if ( $this->getStatus() === 'approved' ) {
+		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'moredetails' ) {
 			return;
 		}
 
