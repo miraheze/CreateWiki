@@ -7,13 +7,13 @@ use Wikimedia\Rdbms\IReadableDatabase;
 interface CreateWikiDataFactoryBuilderHook {
 
 	/**
-	 * @param string $dbname
+	 * @param string $wiki
 	 * @param IReadableDatabase $dbr
 	 * @param array &$cacheArray
 	 * @return void
 	 */
 	public function onCreateWikiDataFactoryBuilder(
-		string $dbname,
+		string $wiki,
 		IReadableDatabase $dbr,
 		array &$cacheArray
 	): void;
