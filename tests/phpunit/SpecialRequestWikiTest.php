@@ -151,7 +151,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
 		$specialRequestWiki->setContext( $context );
 
-		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'miraheze.org' );
+		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'example.com' );
 
 		$status = $specialRequestWiki->onSubmit( $formData );
 		$this->assertInstanceOf( Status::class, $status );
