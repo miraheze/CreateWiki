@@ -21,7 +21,7 @@ class RequestWikiHistory {
 		]);*/
 
 		// Add the fieldset to your output
-		$out->addHTML(self::createHistoryTable($historyEntries));
+		return self::createHistoryTable($historyEntries);
 	}
 
 	private static function createHistoryTable($entries) {
