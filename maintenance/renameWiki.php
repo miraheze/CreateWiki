@@ -73,7 +73,7 @@ class RenameWiki extends Maintenance {
 			$wikiRename = implode( ' to ', $renamedWiki );
 
 			$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
-  				"just now {$user} has renamed the following wiki from CreateWiki and " .
+				"just now {$user} has renamed the following wiki from CreateWiki and " .
 				"associated extensions - From {$wikiRename}.";
 
 			$notificationData = [
