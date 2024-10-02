@@ -3,6 +3,8 @@
 namespace Miraheze\CreateWiki\Hooks;
 
 use MediaWiki\HookContainer\HookContainer;
+use MediaWiki\User\User;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IReadableDatabase;
 
@@ -18,7 +20,9 @@ class CreateWikiHookRunner implements
 	CreateWikiStatePrivateHook,
 	CreateWikiStatePublicHook,
 	CreateWikiTablesHook,
-	CreateWikiWritePersistentModelHook
+	CreateWikiWritePersistentModelHook,
+	RequestWikiFormDescriptorModifyHook,
+	RequestWikiQueueFormDescriptorModifyHook
 {
 
 	private HookContainer $container;
@@ -134,6 +138,26 @@ class CreateWikiHookRunner implements
 		return $this->container->run(
 			'CreateWikiWritePersistentModel',
 			[ $pipeline ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
+		return $this->container->run(
+			'RequestWikiFormDescriptorModify',
+			[ &$formDescriptor ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onRequestWikiQueueFormDescriptorModify(
+		array &$formDescriptor,
+		User $user,
+		WikiRequestManager $wikiRequestManager
+	): void {
+		return $this->container->run(
+			'RequestWikiQueueFormDescriptorModify',
+			[ &$formDescriptor, $user, $wikiRequestManager ]
 		);
 	}
 }
