@@ -31,6 +31,16 @@ class WikiRequestManager {
 		ConfigNames::UseJobQueue,
 	];
 
+	public const VISIBILITY_PUBLIC = 0;
+	public const VISIBILITY_DELETE_REQUEST = 1;
+	public const VISIBILITY_SUPPRESS_REQUEST = 2;
+
+	public const VISIBILITY_CONDS = [
+		self::VISIBILITY_PUBLIC => 'public',
+		self::VISIBILITY_DELETE_REQUEST => 'createwiki-deleterequest',
+		self::VISIBILITY_SUPPRESS_REQUEST => 'createwiki-suppressrequest',
+	];
+
 	private ServiceOptions $options;
 	private IDatabase $dbw;
 
@@ -379,15 +389,15 @@ class WikiRequestManager {
 
 		if ( $log ) {
 			switch ( $level ) {
-				case 0:
+				case self::VISIBILITY_PUBLIC:
 					$this->suppressionLog( $user, 'public' );
 					break;
 
-				case 1:
+				case self::VISIBILITY_DELETE_REQUEST:
 					$this->suppressionLog( $user, 'delete' );
 					break;
 
-				case 2:
+				case self::VISIBILITY_SUPPRESS_REQUEST:
 					$this->suppressionLog( $user, 'suppress' );
 					break;
 			}
