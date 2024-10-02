@@ -10,7 +10,7 @@ use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
-use MediaWiki\Title\Title;
+use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
@@ -118,7 +118,7 @@ class Main implements
 		&$vars,
 		$out
 	): void {
-		if ( $out->getTitle()->isSubpageOf( Title::newFromText( 'Special:RequestWikiQueue' ) ) ) {
+		if ( $out->getTitle()->isSubpageOf( SpecialPage::getTitleFor( 'RequestWikiQueue' ) ) ) {
 			$vars[ConfigNames::CannedResponses] = $this->config->get( ConfigNames::CannedResponses );
 		}
 	}
