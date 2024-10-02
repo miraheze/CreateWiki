@@ -11,6 +11,14 @@ class RequestWikiFormUtils {
 		return isset( $formDescriptor[$fieldKey] );
 	}
 
+	public static function addFieldToBeginning(
+		array &$formDescriptor,
+		string $newKey,
+		array $newField
+	): void {
+		$formDescriptor = [ $newKey => $newField ] + $formDescriptor;
+	}
+
 	public static function removeFieldByKey(
 		array &$formDescriptor,
 		string $key
