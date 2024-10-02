@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests;
+namespace Miraheze\CreateWiki\Tests\Services;
 
 use FatalError;
 use MediaWikiIntegrationTestCase;
