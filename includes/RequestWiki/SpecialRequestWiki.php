@@ -12,16 +12,23 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Status;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
 	private IConnectionProvider $connectionProvider;
+	private CreateWikiHookRunner $hookRunner;
 
-	public function __construct( IConnectionProvider $connectionProvider ) {
+	public function __construct(
+		IConnectionProvider $connectionProvider,
+		CreateWikiHookRunner $hookRunner
+	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
+
 		$this->connectionProvider = $connectionProvider;
+		$this->hookRunner = $hookRunner;
 	}
 
 	/**
@@ -169,6 +176,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'validation-callback' => [ $this, 'isAgreementChecked' ],
 			];
 		}
+
+		$this->hookRunner->onRequestWikiFormDescriptorModify( $formDescriptor );
 
 		return $formDescriptor;
 	}
