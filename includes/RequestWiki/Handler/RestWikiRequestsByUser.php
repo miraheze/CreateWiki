@@ -9,6 +9,7 @@ use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RestUtils;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -40,12 +41,8 @@ class RestWikiRequestsByUser extends SimpleHandler {
 
 	public function run( string $username ): Response {
 		RestUtils::checkEnv( $this->config );
-		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
-		$visibilityConds = [
-			0 => 'public',
-			1 => 'createwiki-deleterequest',
-			2 => 'createwiki-suppressrequest',
-		];
+
+		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
 
 		$dbr = $this->connectionProvider->getReplicaDatabase(
 			$this->config->get( ConfigNames::GlobalWiki )
