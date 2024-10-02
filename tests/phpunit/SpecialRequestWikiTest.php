@@ -13,6 +13,7 @@ use MediaWiki\Status\Status;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
 use SpecialPageTestBase;
 use UserNotLoggedIn;
@@ -36,7 +37,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
-			$services->getConnectionProvider()
+			$services->getConnectionProvider(),
+			$this->createMock( CreateWikiHookRunner::class )
 		);
 	}
 
