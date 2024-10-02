@@ -143,7 +143,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
-		return $this->container->run(
+		$this->container->run(
 			'RequestWikiFormDescriptorModify',
 			[ &$formDescriptor ]
 		);
@@ -155,7 +155,7 @@ class CreateWikiHookRunner implements
 		User $user,
 		WikiRequestManager $wikiRequestManager
 	): void {
-		return $this->container->run(
+		$this->container->run(
 			'RequestWikiQueueFormDescriptorModify',
 			[ &$formDescriptor, $user, $wikiRequestManager ]
 		);
