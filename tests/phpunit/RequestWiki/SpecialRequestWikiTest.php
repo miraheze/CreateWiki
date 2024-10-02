@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests;
+namespace Miraheze\CreateWiki\Tests\RequestWiki;
 
 use ErrorPageError;
 use Generator;
