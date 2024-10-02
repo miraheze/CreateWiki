@@ -239,7 +239,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
 
-		$this->assertNull( $this->createWiki( 'recreatewikitest' ) );
+		$this->assertNull( $this->createWiki( dbname: 'recreatewikitest', private: false ) );
 		$this->assertTrue( $this->wikiExists( 'recreatewikitest' ) );
 
 		$wikiManager->delete( force: true );
