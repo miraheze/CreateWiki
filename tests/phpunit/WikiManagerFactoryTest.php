@@ -84,7 +84,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::create
 	 */
-	public function testCreateSuccess() {
+	public function testCreateSuccess(): void {
 		$this->assertNull( $this->createWiki( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
 	}
@@ -92,7 +92,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::create
 	 */
-	public function testCreatePrivate() {
+	public function testCreatePrivate(): void {
 		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
 	}
@@ -100,7 +100,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::create
 	 */
-	public function testCreateExists() {
+	public function testCreateExists(): void {
 		$this->expectException( FatalError::class );
 		$this->expectExceptionMessage( 'Wiki \'createwikitest\' already exists.' );
 
@@ -111,7 +111,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::checkDatabaseName
 	 * @covers ::create
 	 */
-	public function testCreateErrors() {
+	public function testCreateErrors(): void {
 		$notsuffixed = wfMessage( 'createwiki-error-notsuffixed', 'test' )->parse();
 		$notalnum = wfMessage( 'createwiki-error-notalnum' )->parse();
 		$notlowercase = wfMessage( 'createwiki-error-notlowercase' )->parse();
@@ -125,7 +125,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::checkDatabaseName
 	 * @covers ::rename
 	 */
-	public function testRenameErrors() {
+	public function testRenameErrors(): void {
 		$wikiManager = $this->getFactoryService()->newInstance( 'createwikitest' );
 
 		$error = 'Can not rename createwikitest to renamewiki because: ';
@@ -145,7 +145,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::rename
 	 */
-	public function testRenameSuccess() {
+	public function testRenameSuccess(): void {
 		$this->createWiki( 'renamewikitest' );
 
 		$this->db->newDeleteQueryBuilder()
@@ -166,7 +166,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::delete
 	 */
-	public function testDeleteForce() {
+	public function testDeleteForce(): void {
 		$wikiManager = $this->getFactoryService()->newInstance( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( force: true ) );
@@ -178,7 +178,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::delete
 	 */
-	public function testDeleteIneligible() {
+	public function testDeleteIneligible(): void {
 		$this->createWiki( 'deletewikitest' );
 
 		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
@@ -200,7 +200,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::delete
 	 */
-	public function testDeleteEligible() {
+	public function testDeleteEligible(): void {
 		$wikiManager = $this->getFactoryService()->newInstance( 'deletewikitest' );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete( force: false ) );
 
@@ -229,7 +229,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 * @covers ::delete
 	 */
-	public function testDeleteRecreate() {
+	public function testDeleteRecreate(): void {
 		$this->createWiki( 'recreatewikitest' );
 
 		$wikiManager = $this->getFactoryService()->newInstance( 'recreatewikitest' );
@@ -250,9 +250,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @param string $dbname
 	 * @param bool $private
-	 * @return mixed
+	 * @return ?string
 	 */
-	private function createWiki( string $dbname, bool $private = false ) {
+	private function createWiki( string $dbname, bool $private = false ): ?string {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
