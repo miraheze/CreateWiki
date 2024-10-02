@@ -47,11 +47,7 @@ class RequestWikiRequestViewer {
 	public function getFormDescriptor(): array {
 		$user = $this->context->getUser();
 
-		$visibilityConds = [
-			0 => 'public',
-			1 => 'createwiki-deleterequest',
-			2 => 'createwiki-suppressrequest',
-		];
+		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
 
 		// if request isn't found, it doesn't exist
 		// but if we can't view the request, it also doesn't exist
