@@ -273,7 +273,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 */
 	private function wikiExists( string $dbname ): bool {
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
-
 		return $wikiManager->exists();
 	}
 }
