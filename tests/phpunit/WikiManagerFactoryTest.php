@@ -85,7 +85,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreateSuccess(): void {
-		$this->assertNull( $this->createWiki( 'createwikitest' ) );
+		$this->assertNull( $this->createWiki( dbname: 'createwikitest', private: false ) );
 		$this->assertTrue( $this->wikiExists( 'createwikitest' ) );
 	}
 
@@ -93,7 +93,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::create
 	 */
 	public function testCreatePrivate(): void {
-		$this->assertNull( $this->createWiki( 'createwikiprivatetest', true ) );
+		$this->assertNull( $this->createWiki( dbname: 'createwikiprivatetest', private: true ) );
 		$this->assertTrue( $this->wikiExists( 'createwikiprivatetest' ) );
 	}
 
@@ -104,7 +104,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->expectException( FatalError::class );
 		$this->expectExceptionMessage( 'Wiki \'createwikitest\' already exists.' );
 
-		$this->createWiki( 'createwikitest' );
+		$this->createWiki( dbname: 'createwikitest', private: false );
 	}
 
 	/**
@@ -116,9 +116,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$notalnum = wfMessage( 'createwiki-error-notalnum' )->parse();
 		$notlowercase = wfMessage( 'createwiki-error-notlowercase' )->parse();
 
-		$this->assertSame( $notsuffixed, $this->createWiki( 'createwiki' ) );
-		$this->assertSame( $notalnum, $this->createWiki( 'create.wikitest' ) );
-		$this->assertSame( $notlowercase, $this->createWiki( 'Createwikitest' ) );
+		$this->assertSame( $notsuffixed, $this->createWiki( dbname: 'createwiki', private: false ) );
+		$this->assertSame( $notalnum, $this->createWiki( dbname: 'create.wikitest', private: false ) );
+		$this->assertSame( $notlowercase, $this->createWiki( dbname: 'Createwikitest', private: false ) );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::rename
 	 */
 	public function testRenameSuccess(): void {
-		$this->createWiki( 'renamewikitest' );
+		$this->createWiki( dbname: 'renamewikitest', private: false );
 
 		$this->db->newDeleteQueryBuilder()
 			->deleteFrom( 'cw_wikis' )
@@ -179,7 +179,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteIneligible(): void {
-		$this->createWiki( 'deletewikitest' );
+		$this->createWiki( dbname: 'deletewikitest', private: false );
 
 		$remoteWiki = $this->getRemoteWikiFactory()->newInstance( 'deletewikitest' );
 
@@ -230,7 +230,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteRecreate(): void {
-		$this->createWiki( 'recreatewikitest' );
+		$this->createWiki( dbname: 'recreatewikitest', private: false );
 
 		$wikiManager = $this->getFactoryService()->newInstance( 'recreatewikitest' );
 
@@ -252,7 +252,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @param bool $private
 	 * @return ?string
 	 */
-	private function createWiki( string $dbname, bool $private = false ): ?string {
+	private function createWiki( string $dbname, bool $private ): ?string {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
