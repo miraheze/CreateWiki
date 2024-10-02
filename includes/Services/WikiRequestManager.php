@@ -92,7 +92,7 @@ class WikiRequestManager {
 		User $user,
 		bool $log,
 		string $type
-	) {
+	): void {
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_comments' )
 			->row( [
