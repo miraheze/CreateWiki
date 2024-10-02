@@ -25,18 +25,18 @@ class CreateWikiHookRunner implements
 	RequestWikiQueueFormDescriptorModifyHook
 {
 
-	private HookContainer $container;
+	private HookContainer $hookContainer;
 
 	/**
 	 * @param HookContainer $container
 	 */
-	public function __construct( HookContainer $container ) {
-		$this->container = $container;
+	public function __construct( HookContainer $hookContainer ) {
+		$this->hookContainer = $hookContainer;
 	}
 
 	/** @inheritDoc */
 	public function onCreateWikiCreation( string $dbname, bool $private ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiCreation',
 			[ $dbname, $private ]
 		);
@@ -48,7 +48,7 @@ class CreateWikiHookRunner implements
 		IReadableDatabase $dbr,
 		array &$cacheArray
 	): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiDataFactoryBuilder',
 			[ $wiki, $dbr, &$cacheArray ]
 		);
@@ -59,7 +59,7 @@ class CreateWikiHookRunner implements
 		DBConnRef $cwdb,
 		string $dbname
 	): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiDeletion',
 			[ $cwdb, $dbname ]
 		);
@@ -67,7 +67,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiGenerateDatabaseLists( array &$databaseLists ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiGenerateDatabaseLists',
 			[ &$databaseLists ]
 		);
@@ -75,7 +75,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiReadPersistentModel( string &$pipeline ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiReadPersistentModel',
 			[ &$pipeline ]
 		);
@@ -87,7 +87,7 @@ class CreateWikiHookRunner implements
 		string $oldDbName,
 		string $newDbName
 	): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiRename',
 			[ $cwdb, $oldDbName, $newDbName ]
 		);
@@ -95,7 +95,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiStateClosed( string $dbname ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiStateClosed',
 			[ $dbname ]
 		);
@@ -103,7 +103,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiStateOpen( string $dbname ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiStateOpen',
 			[ $dbname ]
 		);
@@ -111,7 +111,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiStatePrivate( string $dbname ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiStatePrivate',
 			[ $dbname ]
 		);
@@ -119,7 +119,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiStatePublic( string $dbname ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiStatePublic',
 			[ $dbname ]
 		);
@@ -127,7 +127,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiTables( array &$cTables ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'CreateWikiTables',
 			[ &$cTables ]
 		);
@@ -135,7 +135,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiWritePersistentModel( string $pipeline ): bool {
-		return $this->container->run(
+		return $this->hookContainer->run(
 			'CreateWikiWritePersistentModel',
 			[ $pipeline ]
 		);
@@ -143,7 +143,7 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'RequestWikiFormDescriptorModify',
 			[ &$formDescriptor ]
 		);
@@ -155,7 +155,7 @@ class CreateWikiHookRunner implements
 		User $user,
 		WikiRequestManager $wikiRequestManager
 	): void {
-		$this->container->run(
+		$this->hookContainer->run(
 			'RequestWikiQueueFormDescriptorModify',
 			[ &$formDescriptor, $user, $wikiRequestManager ]
 		);
