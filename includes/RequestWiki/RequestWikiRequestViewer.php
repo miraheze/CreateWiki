@@ -376,6 +376,12 @@ class RequestWikiRequestViewer {
 			}
 		}
 
+		$this->hookRunner->onRequestWikiQueueFormDescriptorModify(
+			$formDescriptor,
+			$user,
+			$this->wikiRequestManager
+		);
+
 		return $formDescriptor;
 	}
 
