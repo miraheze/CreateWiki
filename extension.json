@@ -35,7 +35,8 @@
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
 			"services": [
-				"ConnectionProvider"
+				"ConnectionProvider",
+				"CreateWikiHookRunner"
 			]
 		},
 		"RequestWikiQueue": {
