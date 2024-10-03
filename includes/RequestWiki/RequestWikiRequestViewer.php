@@ -302,6 +302,20 @@ class RequestWikiRequestViewer {
 				$this->context->getOutput()->addHTML( Html::errorBox( $error ) );
 			}
 
+			if ( $this->config->get( ConfigNames::RequestCountWarnThreshold ) ) {
+				$requestCount = count( $this->wikiRequestManager->getVisibleRequestsByUser(
+					$this->wikiRequestManager->getRequester(), $user
+				) );
+
+				if ( $requestCount >= $this->config->get( ConfigNames::RequestCountWarnThreshold ) ) {
+					$this->context->getOutput()->addHTML(
+						Html::warningBox( $this->context->msg( 'createwiki-error-requestcountwarn',
+							$requestCount, $this->wikiRequestManager->getRequester()->getName()
+						)->parse() )
+					);
+				}
+			}
+
 			$formDescriptor += [
 				'handle-info' => [
 					'type' => 'info',
