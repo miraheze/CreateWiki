@@ -57,12 +57,12 @@ class Main implements
 	}
 
 	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
-    		$testField = [
+			$testField = [
 			'label-message' => 'test',
 			'type' => 'text',
-		];
+			];
 
-		RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'sitename', 'test', $testField );
+			RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'sitename', 'test', $testField );
 	}
 
 	public function onRequestWikiQueueFormDescriptorModify(
@@ -70,14 +70,14 @@ class Main implements
 		User $user,
 		WikiRequestManager $wikiRequestManager
 	): void {
-    		$testField = [
+			$testField = [
 			'label-message' => 'test',
 			'type' => 'text',
 			'section' => 'edit',
 			'default' => $wikiRequestManager->getExtraFieldData( 'test' ),
-		];
+			];
 
-		RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'edit-sitename', 'edit-test', $testField );
+			RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'edit-sitename', 'edit-test', $testField );
 	}
 
 	/** @inheritDoc */
