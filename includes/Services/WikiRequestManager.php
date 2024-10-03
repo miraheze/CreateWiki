@@ -3,14 +3,17 @@
 namespace Miraheze\CreateWiki\Services;
 
 use JobSpecification;
+use InvalidArgumentException;
 use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
+use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
@@ -25,6 +28,7 @@ class WikiRequestManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::AIThreshold,
+		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
 		ConfigNames::Subdomain,
@@ -50,6 +54,7 @@ class WikiRequestManager {
 
 	private stdClass|bool $row;
 	private LinkRenderer $linkRenderer;
+	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private CreateWikiNotificationsManager $notificationsManager;
 	private IConnectionProvider $connectionProvider;
@@ -63,6 +68,7 @@ class WikiRequestManager {
 		CreateWikiNotificationsManager $notificationsManager,
 		JobQueueGroupFactory $jobQueueGroupFactory,
 		LinkRenderer $linkRenderer,
+		PermissionManager $permissionManager,
 		UserFactory $userFactory,
 		WikiManagerFactory $wikiManagerFactory,
 		ServiceOptions $options
@@ -73,6 +79,7 @@ class WikiRequestManager {
 		$this->notificationsManager = $notificationsManager;
 		$this->jobQueueGroupFactory = $jobQueueGroupFactory;
 		$this->linkRenderer = $linkRenderer;
+		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 		$this->options = $options;
@@ -99,7 +106,7 @@ class WikiRequestManager {
 
 	public function addComment(
 		string $comment,
-		User $user,
+		UserIdentity $user,
 		bool $log,
 		string $type
 	): void {
@@ -119,28 +126,6 @@ class WikiRequestManager {
 		if ( $log ) {
 			$this->log( $user, 'comment' );
 		}
-	}
-
-	private function sendNotification(
-		string $comment,
-		string $type,
-		User $user
-	): void {
-		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
-
-		$involvedUsers = array_values( array_filter(
-			array_diff( $this->getInvolvedUsers(), [ $user ] )
-		) );
-
-		$notificationData = [
-			'type' => "request-{$type}",
-			'extra' => [
-				'request-url' => $requestLink,
-				'comment' => $comment,
-			],
-		];
-
-		$this->notificationsManager->sendNotification( $notificationData, $involvedUsers );
 	}
 
 	public function getComments(): array {
@@ -168,6 +153,28 @@ class WikiRequestManager {
 		}
 
 		return $comments;
+	}
+
+	private function sendNotification(
+		string $comment,
+		string $type,
+		UserIdentity $user
+	): void {
+		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
+
+		$involvedUsers = array_values( array_filter(
+			array_diff( $this->getInvolvedUsers(), [ $user ] )
+		) );
+
+		$notificationData = [
+			'type' => "request-{$type}",
+			'extra' => [
+				'request-url' => $requestLink,
+				'comment' => $comment,
+			],
+		];
+
+		$this->notificationsManager->sendNotification( $notificationData, $involvedUsers );
 	}
 
 	public function getInvolvedUsers(): array {
@@ -214,6 +221,39 @@ class WikiRequestManager {
 		}
 
 		return $history;
+	}
+
+	public function getRequestsByUser(
+		UserIdentity $requester,
+		UserIdentity $user
+	): array {
+		$userID = $requester->getId();
+		$res = $this->dbw->newSelectQueryBuilder()
+			->select( [ 'cw_id', 'cw_visibility' ] )
+			->from( 'cw_requests' )
+			->where( [ 'cw_user' => $userID ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
+
+		if ( !$res->numRows() ) {
+			return [];
+		}
+
+		$requests = [];
+		foreach ( $res as $row ) {
+			if ( !$this->isAllowedVisibility( $row->cw_visibility, $user ) ) {
+				continue;
+			}
+
+			$visibility = self::VISIBILITY_CONDS[$row->cw_visibility];
+
+			$requests[] = [
+				'id' => (int)$row->cw_id,
+				'visibility' => $visibility,
+			];
+		}
+
+		return $requests;
 	}
 
 	public function approve( User $user, string $comment ): void {
@@ -337,7 +377,7 @@ class WikiRequestManager {
 		$this->log( $user, 'requestmoredetails' );
 	}
 
-	public function log( User $user, string $action ): void {
+	public function log( UserIdentity $user, string $action ): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
 		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
 
@@ -462,6 +502,24 @@ class WikiRequestManager {
 		return null;
 	}
 
+	public function isAllowedVisibility( int $visibility, UserIdentity $user ): bool {
+		// T12010: 3 is a legacy suppression level,
+		// treat is as a suppressed wiki request
+		// hidden from everyone.
+		if ( $visibility >= 3 ) {
+			return false;
+		}
+
+		// Everyone can view public requests.
+		if ( $visibility === self::VISIBILITY_PUBLIC ) {
+			return true;
+		}
+
+		return $this->permissionManager->userHasRight(
+			$user, self::VISIBILITY_CONDS[$visibility]
+		);
+	}
+
 	public function isPrivate(): bool {
 		return (bool)$this->row->cw_private;
 	}
@@ -516,10 +574,9 @@ class WikiRequestManager {
 	public function setVisibility( int $visibility ): void {
 		$this->checkQueryBuilder();
 		if ( $visibility !== $this->getVisibility() ) {
-			// TODO:
-			/* if ( !in_array( $visibility, self::VISIBILITIES ) ) {
+			if ( !in_array( $visibility, array_keys( self::VISIBILITY_CONDS ) ) ) {
 				throw new InvalidArgumentException( 'Can not set an unsupported visibility type.' );
-			} */
+			}
 
 			$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
 			$this->queryBuilder->set( [ 'cw_visibility' => $visibility ] );
@@ -529,10 +586,9 @@ class WikiRequestManager {
 	public function setCategory( string $category ): void {
 		$this->checkQueryBuilder();
 		if ( $category !== $this->getCategory() ) {
-			// TODO:
-			/* if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
+			if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
 				throw new InvalidArgumentException( 'Can not set an unsupported category.' );
-			} */
+			}
 
 			$this->trackChange( 'category', $this->getCategory(), $category );
 			$this->queryBuilder->set( [ 'cw_category' => $category ] );
