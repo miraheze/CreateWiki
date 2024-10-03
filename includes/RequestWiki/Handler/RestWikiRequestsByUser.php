@@ -12,84 +12,41 @@ use Miraheze\CreateWiki\RestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
- * Returns the IDs and suppression level of all wiki requests made by an user
+ * Returns the IDs and suppression level of all wiki requests made by a user
  * GET /createwiki/v0/wiki_requests/user/{username}
  */
 class RestWikiRequestsByUser extends SimpleHandler {
 
 	private Config $config;
-	private IConnectionProvider $connectionProvider;
 	private UserFactory $userFactory;
+	private WikiRequestManager $wikiRequestManager;
 
-	/**
-	 * @param ConfigFactory $configFactory
-	 * @param IConnectionProvider $connectionProvider
-	 * @param UserFactory $userFactory
-	 */
 	public function __construct(
 		ConfigFactory $configFactory,
-		IConnectionProvider $connectionProvider,
-		UserFactory $userFactory
+		UserFactory $userFactory,
+		WikiRequestManager $wikiRequestManager
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->connectionProvider = $connectionProvider;
 		$this->userFactory = $userFactory;
+		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( string $username ): Response {
 		RestUtils::checkEnv( $this->config );
 
-		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
-
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( ConfigNames::GlobalWiki )
+		$wikiRequests = $this->wikiRequestManager->getVisibleRequestsByUser(
+			$this->userFactory->newFromName( $username ),
+			$this->getAuthority()->getUser()
 		);
 
-		$wikiRequestsArray = [];
-		$userID = $this->userFactory->newFromName( $username )->getId();
-
-		$wikiRequests = $dbr->newSelectQueryBuilder()
-			->select( [ 'cw_id', 'cw_visibility' ] )
-			->from( 'cw_requests' )
-			->where( [ 'cw_user' => $userID ] )
-			->caller( __METHOD__ )
-			->fetchResultSet();
-
-		if ( $wikiRequests->numRows() ) {
-			foreach ( $wikiRequests as $wikiRequest ) {
-				// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
-				if ( $wikiRequest->cw_visibility >= 3 ) {
-					continue;
-				}
-
-				$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
-
-				if ( $wikiRequestVisibility !== 'public' ) {
-					if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
-						// User does not have permission to view this request
-						continue;
-					}
-				}
-
-				$wikiRequestsArray[] = [ 'id' => (int)$wikiRequest->cw_id, 'visibility' => $wikiRequestVisibility ];
-			}
-
-			if ( count( $wikiRequestsArray ) === 0 ) {
-				// This user has made wiki requests, but these are
-				// suppressed wiki requests and the user making this
-				// request doesn't have permission to view them.
-				return $this->getResponseFactory()->createLocalizedHttpError(
-					404, new MessageValue( 'createwiki-rest-usernowikirequests' )
-				);
-			}
-
-			return $this->getResponseFactory()->createJson( $wikiRequestsArray );
+		if ( $wikiRequests ) {
+			return $this->getResponseFactory()->createJson( $wikiRequests );
 		}
 
-		// This user has never made a wiki request
+		// This user has never made wiki requests or the current
+		// user can not view any of them.
 		return $this->getResponseFactory()->createLocalizedHttpError(
 			404, new MessageValue( 'createwiki-rest-usernowikirequests' )
 		);
