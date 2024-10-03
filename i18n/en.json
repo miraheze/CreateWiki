@@ -15,6 +15,7 @@
 	"createwiki-close-email-body": "Hello,\n\nThis email is to inform you that your wiki has been closed.",
 	"createwiki-close-email-sender": "noreply",
 	"createwiki-close-email-subject": "Your wiki ($1) has been closed",
+	"createwiki-comment-success": "Comment successfully added to this request.",
 	"createwiki-defaultmainpage": "__NOTOC__ Welcome to your new wiki! You may find the following link useful: [https://www.mediawiki.org/wiki/Help:Contents Help:Contents] on mediawiki.org",
 	"createwiki-defaultmainpage-summary": "Create main page",
 	"createwiki-desc": "An extension to easily create new wikis on a wiki farm.",
