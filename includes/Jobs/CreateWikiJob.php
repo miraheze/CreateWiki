@@ -25,6 +25,8 @@ class CreateWikiJob extends Job {
 	private string $requester;
 	private string $sitename;
 
+	private array $extra;
+
 	public function __construct(
 		array $params,
 		WikiManagerFactory $wikiManagerFactory,
@@ -35,6 +37,7 @@ class CreateWikiJob extends Job {
 		$this->category = $params['category'];
 		$this->creator = $params['creator'];
 		$this->dbname = $params['dbname'];
+		$this->extra = $params['extra'];
 		$this->id = $params['id'];
 		$this->language = $params['language'];
 		$this->private = $params['private'];
@@ -62,6 +65,7 @@ class CreateWikiJob extends Job {
 				category: $this->category,
 				requester: $this->requester,
 				actor: $this->creator,
+				extra: $this->extra,
 				reason: "[[Special:RequestWikiQueue/{$this->id}|Requested]]"
 			);
 
