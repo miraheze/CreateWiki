@@ -29,6 +29,7 @@
 	"createwiki-error-notalnum": "Used as error message when the database name entered does not contain non-alphanumeric characters.",
 	"createwiki-error-notlowercase": "Used as error message when the database name entered contains uppercase letters.",
 	"createwiki-error-notsuffixed": "Used as error message when the database name enter does not contain the suffix. $1 represents the allowed suffix.",
+	"createwiki-error-requestcountwarn": "Used as a warning message shown to users with the createwiki right when the requester has more than a certain amount of requests.",
 	"createwiki-help-private": "The word \"its\" refers to a wiki.",
 	"createwiki-help-sitename": "Don't translate \"Project\". Keep it written in English.",
 	"createwiki-label-category": "Used as a label for category.\n{{Identical|Category}}",
