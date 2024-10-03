@@ -34,7 +34,8 @@ class WikiManager {
 			$category,
 			$requester,
 			$actor,
-			$reason
+			$reason,
+			extra: []
 		);
 	}
 
