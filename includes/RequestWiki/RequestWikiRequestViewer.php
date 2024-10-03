@@ -552,7 +552,7 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->startQueryBuilder();
 
 			if ( isset( $formData['handle-visibility'] ) ) {
-				if ( $this->wikiRequestManager->getVisibility() !== $formData['handle-visibility'] ) {
+				if ( $this->wikiRequestManager->getVisibility() !== (int)$formData['handle-visibility'] ) {
 					$this->wikiRequestManager->suppress(
 						user: $user,
 						level: $formData['handle-visibility'],
