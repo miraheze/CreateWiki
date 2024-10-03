@@ -657,11 +657,6 @@ class WikiRequestManager {
 	public function setStatus( string $status ): void {
 		$this->checkQueryBuilder();
 		if ( $status !== $this->getStatus() ) {
-			// TODO:
-			/* if ( !in_array( $status, self::SUPPORTED_STATUSES ) ) {
-				throw new InvalidArgumentException( 'Can not set an unsupported status.' );
-			} */
-
 			$this->trackChange( 'status', $this->getStatus(), $status );
 			$this->queryBuilder->set( [ 'cw_status' => $status ] );
 		}
