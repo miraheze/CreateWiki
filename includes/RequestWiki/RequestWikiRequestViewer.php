@@ -179,7 +179,7 @@ class RequestWikiRequestViewer {
 				'edit-sitename' => [
 					'label-message' => 'requestwikiqueue-request-label-sitename',
 					'type' => 'text',
-					'section' => 'edit',
+					'section' => 'editing',
 					'required' => true,
 					'default' => $this->wikiRequestManager->getSitename(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
@@ -187,7 +187,7 @@ class RequestWikiRequestViewer {
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
 					'type' => 'text',
-					'section' => 'edit',
+					'section' => 'editing',
 					'required' => true,
 					'default' => $this->wikiRequestManager->getUrl(),
 					'validation-callback' => [ $this, 'isValidSubdomain' ],
@@ -199,12 +199,12 @@ class RequestWikiRequestViewer {
 					'default' => $this->wikiRequestManager->getLanguage(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'edit',
+					'section' => 'editing',
 				],
 				'edit-description' => [
 					'label-message' => 'requestwikiqueue-request-header-description',
 					'type' => 'textarea',
-					'section' => 'edit',
+					'section' => 'editing',
 					'rows' => 6,
 					'required' => true,
 					'default' => $this->wikiRequestManager->getDescription(),
@@ -221,7 +221,7 @@ class RequestWikiRequestViewer {
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'edit',
+					'section' => 'editing',
 				];
 			}
 
@@ -231,7 +231,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwiki-label-private',
 					'default' => $this->wikiRequestManager->isPrivate(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'section' => 'edit',
+					'section' => 'editing',
 				];
 			}
 
@@ -241,7 +241,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwiki-label-bio',
 					'default' => $this->wikiRequestManager->isBio(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'section' => 'edit',
+					'section' => 'editing',
 				];
 			}
 
@@ -253,7 +253,7 @@ class RequestWikiRequestViewer {
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
-					'section' => 'edit',
+					'section' => 'editing',
 				];
 			}
 
@@ -261,7 +261,7 @@ class RequestWikiRequestViewer {
 				'type' => 'submit',
 				'buttonlabel-message' => 'requestwiki-label-edit-request',
 				'disabled' => $this->wikiRequestManager->isLocked(),
-				'section' => 'edit',
+				'section' => 'editing',
 			];
 		}
 
@@ -429,7 +429,7 @@ class RequestWikiRequestViewer {
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
 
 		$formDescriptor = $this->getFormDescriptor();
-		$htmlForm = new CreateWikiOOUIForm( $formDescriptor, $this->context, 'requestwikiqueue' );
+		$htmlForm = new CreateWikiOOUIForm( $formDescriptor, $this->context, 'requestwikiqueue-section' );
 
 		$htmlForm->setId( 'createwiki-form' );
 		$htmlForm->suppressDefaultSubmit();
