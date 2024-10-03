@@ -536,6 +536,15 @@ class WikiRequestManager {
 		return (bool)$this->row->cw_locked;
 	}
 
+	public function getAllExtraData(): array {
+		return json_decode( $this->row->cw_extra ?: [], true );
+	}
+
+	public function getExtraFieldData( string $field ): mixed {
+		$extra = $this->getAllExtraData();
+		return $extra[$field] ?? null;
+	}
+
 	public function startQueryBuilder(): void {
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
@@ -651,6 +660,24 @@ class WikiRequestManager {
 				'cw_dbname' => $dbname,
 				'cw_url' => $url,
 			] );
+		}
+	}
+
+	public function setExtraFieldData( string $field, mixed $value ): void {
+		$this->checkQueryBuilder();
+		if ( $value !== $this->getExtraFieldData( $field ) ) {
+			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+
+			$extra = $this->getAllExtraData();
+			$extra[$field] = $value;
+
+			$newExtra = json_encode( $extra );
+
+			if ( !$newExtra ) {
+				throw new RuntimeException( 'Can not set invalid JSON data to cw_extra' );
+			}
+
+			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
 		}
 	}
 
