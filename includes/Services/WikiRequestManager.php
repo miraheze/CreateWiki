@@ -226,9 +226,13 @@ class WikiRequestManager {
 	public function getRequestsByUser(
 		UserIdentity $requester,
 		UserIdentity $user
-	): array {
+	): array { 
+		$dbr = $this->connectionProvider->getReplicaDatabase(
+			$this->options->get( ConfigNames::GlobalWiki )
+		);
+
 		$userID = $requester->getId();
-		$res = $this->dbw->newSelectQueryBuilder()
+		$res = $dbr->newSelectQueryBuilder()
 			->select( [ 'cw_id', 'cw_visibility' ] )
 			->from( 'cw_requests' )
 			->where( [ 'cw_user' => $userID ] )
@@ -574,7 +578,7 @@ class WikiRequestManager {
 	public function setVisibility( int $visibility ): void {
 		$this->checkQueryBuilder();
 		if ( $visibility !== $this->getVisibility() ) {
-			if ( !in_array( $visibility, array_keys( self::VISIBILITY_CONDS ) ) ) {
+			if ( !array_key_exists( $visibility, self::VISIBILITY_CONDS ) ) {
 				throw new InvalidArgumentException( 'Can not set an unsupported visibility type.' );
 			}
 
