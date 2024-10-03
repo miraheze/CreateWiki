@@ -13,6 +13,7 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use RuntimeException;
 use Status;
 use Wikimedia\Rdbms\IConnectionProvider;
 
@@ -20,6 +21,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	private IConnectionProvider $connectionProvider;
 	private CreateWikiHookRunner $hookRunner;
+
+	private array $extraFields = [];
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
@@ -177,6 +180,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 			];
 		}
 
+		// We store the original formDescriptor here so we
+		// can find any extra fields added via hook. We do this
+		// so we can store to the extraFields property and differentiate
+		// if we should store via cw_extra in onSubmit().
+		$baseFormDescriptor = $formDescriptor;
+
 		$this->hookRunner->onRequestWikiFormDescriptorModify( $formDescriptor );
 
 		return $formDescriptor;
@@ -224,6 +233,18 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$comment = implode( "\n", [ 'Purpose: ' . $data['purpose'], $data['reason'] ] );
 		}
 
+		$extraData = [];
+		foreach ( $this->extraFields as $field => $value ) {
+			if ( $data[$field] ?? false ) {
+				$extraData[$field] = $data[$field];
+			}
+		}
+
+		$jsonExtra = json_encode( $extraData );
+		if ( $jsonExtra === false ) {
+			throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
+		}
+
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
 			->ignore()
@@ -240,6 +261,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'cw_category' => $data['category'] ?? '',
 				'cw_visibility' => 0,
 				'cw_bio' => $data['bio'] ?? 0,
+				'cw_extra' => $jsonExtra,
 			] )
 			->caller( __METHOD__ )
 			->execute();
