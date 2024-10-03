@@ -263,7 +263,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		) );
 
 		return $wikiManager->create(
-			'TestWiki', 'en', $private, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test'
+			'TestWiki', 'en', $private, 'uncategorised',
+			$testUser->getName(), $testSysop->getName(),
+			'Test', []
 		);
 	}
 
