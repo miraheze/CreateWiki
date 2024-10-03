@@ -53,6 +53,8 @@ class ConfigNames {
 
 	public const Purposes = 'CreateWikiPurposes';
 
+	public const RequestCountWarnThreshold = 'CreateWikiRequestCountWarnThreshold';
+
 	public const ShowBiographicalOption = 'CreateWikiShowBiographicalOption';
 
 	public const SQLFiles = 'CreateWikiSQLfiles';
