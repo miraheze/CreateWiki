@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use JobSpecification;
 use InvalidArgumentException;
+use JobSpecification;
 use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
