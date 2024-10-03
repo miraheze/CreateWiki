@@ -65,7 +65,7 @@ class Main implements
 		RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'sitename', 'test', $testField );
 	}
 
-	public function RequestWikiQueueFormDescriptorModifyHook(
+	public function onRequestWikiQueueFormDescriptorModify(
 		array &$formDescriptor,
 		User $user,
 		WikiRequestManager $wikiRequestManager
