@@ -35,9 +35,17 @@ class RestWikiRequestsByUser extends SimpleHandler {
 	public function run( string $username ): Response {
 		RestUtils::checkEnv( $this->config );
 
+		$user = $this->userFactory->newFromName( $username );
+
+		if ( !$user ) {
+			// A non-existing user has no requests
+			return $this->getResponseFactory()->createLocalizedHttpError(
+				404, new MessageValue( 'createwiki-rest-usernowikirequests' )
+			);
+		}
+
 		$wikiRequests = $this->wikiRequestManager->getVisibleRequestsByUser(
-			$this->userFactory->newFromName( $username ),
-			$this->getAuthority()->getUser()
+			$user, $this->getAuthority()->getUser()
 		);
 
 		if ( $wikiRequests ) {
