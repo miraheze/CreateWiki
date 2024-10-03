@@ -561,6 +561,16 @@ class RequestWikiRequestViewer {
 			if ( $this->wikiRequestManager->isLocked() !== (bool)$formData['handle-lock'] ) {
 				$this->wikiRequestManager->setLocked( (bool)$formData['handle-lock'] );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				if ( $formData['handle-lock'] ) {
+					$out->addHTML( Html::successBox(
+						$this->context->msg( 'createwiki-success-locked' )->escaped()
+					) );
+					return;
+				}
+
+				$out->addHTML( Html::successBox(
+					$this->context->msg( 'createwiki-success-unlocked' )->escaped()
+				) );
 				return;
 			}
 
