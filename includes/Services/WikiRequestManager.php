@@ -673,8 +673,8 @@ class WikiRequestManager {
 
 			$newExtra = json_encode( $extra );
 
-			if ( !$newExtra ) {
-				throw new RuntimeException( 'Can not set invalid JSON data to cw_extra' );
+			if ( $newExtra === false ) {
+				throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
 			}
 
 			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
