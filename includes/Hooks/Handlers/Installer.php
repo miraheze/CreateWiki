@@ -46,5 +46,23 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			'cw_wikis',
 			"$dir/patches/patch-cw_wikis-update-smallint-to-tinyint.sql"
 		);
+
+		$updater->modifyExtensionField(
+			'cw_requests',
+			'cw_private',
+			"$dir/patches/patch-cw_requests-modify-cw_private.sql"
+		);
+
+		$updater->modifyExtensionField(
+			'cw_requests',
+			'cw_timestamp',
+			"$dir/patches/patch-cw_requests-modify-cw_timestamp.sql"
+		);
+
+		$updater->modifyExtensionField(
+			'cw_comments',
+			'cw_comment_timestamp',
+			"$dir/patches/patch-cw_comments-modify-cw_comment_timestamp.sql"
+		);
 	}
 }
