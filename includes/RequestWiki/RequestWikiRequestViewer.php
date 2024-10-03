@@ -347,17 +347,17 @@ class RequestWikiRequestViewer {
 					'label-message' => 'createwiki-label-statuschangecomment',
 					'section' => 'handling',
 				],
-				'handle-visibility' => [
+				'handle-changevisibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
 					'default' => ( $this->wikiRequestManager->getVisibility() !== 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handling',
 				],
-				'handle-visibility-options' => [
+				'handle-visibility' => [
 					'type' => 'radio',
 					'label-message' => 'revdelete-suppress-text',
-					'hide-if' => [ '!==', 'handle-visibility', '1' ],
+					'hide-if' => [ '!==', 'handle-changevisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
 					'default' => (string)$this->wikiRequestManager->getVisibility(),
 					'cssclass' => 'createwiki-infuse',
@@ -551,19 +551,21 @@ class RequestWikiRequestViewer {
 		if ( isset( $formData['submit-handle'] ) ) {
 			$this->wikiRequestManager->startQueryBuilder();
 
-			if ( isset( $formData['handle-visibility-options'] ) ) {
-				$this->wikiRequestManager->suppress(
-					user: $user,
-					level: $formData['handle-visibility-options'],
-					log: true
-				);
+			if ( isset( $formData['handle-visibility'] ) ) {
+				if ( $this->wikiRequestManager->getVisibility() !== (bool)$formData['handle-visibility'] ) {
+					$this->wikiRequestManager->suppress(
+						user: $user,
+						level: $formData['handle-visibility'],
+						log: true
+					);
 
-				// Log the visibility changed action to request history
-				$this->wikiRequestManager->addRequestHistory(
-					action: 'visibility changed',
-					details: 'The visibility of this request was changed.',
-					user: $user
-				);
+					// Log the visibility changed action to request history
+					$this->wikiRequestManager->addRequestHistory(
+						action: 'visibility changed',
+						details: 'The visibility of this request was changed.',
+						user: $user
+					);
+				}
 			}
 
 			// Handle locking wiki request
