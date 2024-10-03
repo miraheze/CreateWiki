@@ -342,6 +342,10 @@
 			"description": "Array. List of identified purposes to show when requesting a wiki.",
 			"value": []
 		},
+		"CreateWikiRequestCountWarnThreshold": {
+			"description": "Integer. Amount of wiki requests a user can have before being flagged. 0 to disable.",
+			"value": 0
+		},
 		"CreateWikiShowBiographicalOption": {
 			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
 			"value": false
