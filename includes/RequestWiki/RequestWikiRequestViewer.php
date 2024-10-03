@@ -435,7 +435,7 @@ class RequestWikiRequestViewer {
 		$htmlForm->suppressDefaultSubmit();
 		$htmlForm->setSubmitCallback(
 			function ( array $formData, HTMLForm $form ) {
-				return $this->submitForm( $formData, $this->extraFields, $form );
+				return $this->submitForm( $formData, $form );
 			}
 		);
 
@@ -444,7 +444,6 @@ class RequestWikiRequestViewer {
 
 	protected function submitForm(
 		array $formData,
-		array $extraFields,
 		HTMLForm $form
 	): void {
 		$user = $form->getUser();
@@ -495,7 +494,7 @@ class RequestWikiRequestViewer {
 				$formData['edit-purpose'] ?? ''
 			);
 
-			foreach ( $extraFields as $field => $value ) {
+			foreach ( $this->extraFields as $field => $value ) {
 				if ( $formData[$field] ?? false ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
