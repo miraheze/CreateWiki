@@ -73,7 +73,7 @@ class Main implements
 		$testField = [
 			'label-message' => 'test',
 			'type' => 'text',
-			'section' => 'edit',
+			'section' => 'editing',
 			'default' => $wikiRequestManager->getExtraFieldData( 'test' ),
 		];
 
