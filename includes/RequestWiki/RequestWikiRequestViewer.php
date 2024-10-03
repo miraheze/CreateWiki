@@ -496,7 +496,12 @@ class RequestWikiRequestViewer {
 
 			foreach ( $this->extraFields as $field => $value ) {
 				if ( $formData[$field] ?? false ) {
-					$this->wikiRequestManager->setExtraFieldData( $field, $formData[$field] );
+					$fieldKey = $field;
+					if ( str_starts_with( $field, 'edit-' ) ) {
+						$fieldKey = str_replace( 'edit-', '', $field );
+					}
+
+					$this->wikiRequestManager->setExtraFieldData( $fieldKey, $formData[$field] );
 				}
 			}
 
