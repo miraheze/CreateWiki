@@ -431,6 +431,14 @@
 		"echo-subscriptions-web-wiki-creation": true,
 		"echo-subscriptions-email-wiki-creation": false
 	},
+	"RateLimits": {
+		"requestwiki": {
+			"user": [
+				5,
+				60
+			]
+		}
+	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
 	],
