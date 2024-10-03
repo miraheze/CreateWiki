@@ -184,7 +184,8 @@ class WikiManagerFactory {
 		string $category,
 		string $requester,
 		string $actor,
-		string $reason
+		string $reason,
+		array $extra
 	): ?string {
 		if ( $this->doCreateDatabase() ) {
 			return $this->doCreateDatabase();
@@ -210,6 +211,7 @@ class WikiManagerFactory {
 			$requester,
 			$actor,
 			$reason,
+			$extra,
 			notify: true
 		);
 
@@ -222,6 +224,7 @@ class WikiManagerFactory {
 		string $requester,
 		string $actor,
 		string $reason,
+		array $extra,
 		bool $notify
 	): void {
 		foreach ( $this->options->get( ConfigNames::SQLFiles ) as $sqlfile ) {
@@ -231,7 +234,7 @@ class WikiManagerFactory {
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
 
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $requester ) {
+			function () use ( $requester, $extra ) {
 				$this->recache();
 
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
@@ -266,6 +269,10 @@ class WikiManagerFactory {
 							'--wiki', $this->dbname
 						]
 					)->limits( $limits )->execute();
+				}
+
+				if ( $extra ) {
+					$this->hookRunner->onCreateWikiAfterCreationWithExtraData( $extra, $this->dbname );
 				}
 			},
 			DeferredUpdates::POSTSEND,
