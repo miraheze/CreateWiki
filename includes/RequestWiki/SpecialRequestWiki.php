@@ -188,6 +188,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->hookRunner->onRequestWikiFormDescriptorModify( $formDescriptor );
 
+		// We get all the keys from $formDescriptor whose keys are
+		// absent from $baseFormDescriptor.
+		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
+
 		return $formDescriptor;
 	}
 
