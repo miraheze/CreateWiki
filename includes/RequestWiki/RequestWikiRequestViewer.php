@@ -558,13 +558,6 @@ class RequestWikiRequestViewer {
 						level: $formData['handle-visibility'],
 						log: true
 					);
-
-					// Log the visibility changed action to request history
-					$this->wikiRequestManager->addRequestHistory(
-						action: 'visibility changed',
-						details: 'The visibility of this request was changed.',
-						user: $user
-					);
 				}
 			}
 
@@ -573,25 +566,11 @@ class RequestWikiRequestViewer {
 				$this->wikiRequestManager->setLocked( (bool)$formData['handle-lock'] );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				if ( $formData['handle-lock'] ) {
-					// Log the lock action to request history
-					$this->wikiRequestManager->addRequestHistory(
-						action: 'locked',
-						details: 'This request was locked.',
-						user: $user
-					);
-
 					$out->addHTML( Html::successBox(
 						$this->context->msg( 'createwiki-success-locked' )->escaped()
 					) );
 					return;
 				}
-
-				// Log the unlock action to request history
-				$this->wikiRequestManager->addRequestHistory(
-					action: 'unlocked',
-					details: 'This request was unlocked.',
-					user: $user
-				);
 
 				$out->addHTML( Html::successBox(
 					$this->context->msg( 'createwiki-success-unlocked' )->escaped()
