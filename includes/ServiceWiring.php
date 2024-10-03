@@ -70,6 +70,7 @@ return [
 			$services->get( 'CreateWiki.NotificationsManager' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
+			$services->getPermissionManager(),
 			$services->getUserFactory(),
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
