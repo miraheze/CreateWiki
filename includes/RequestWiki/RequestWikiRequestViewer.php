@@ -404,6 +404,12 @@ class RequestWikiRequestViewer {
 		// absent from $baseFormDescriptor.
 		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
 
+		if ( $this->wikiRequestManager->isLocked() ) {
+			foreach ( $this->extraFields as $field => $value ) {
+				$formDescriptor[$field]['disabled'] = true;
+			}
+		}
+
 		return $formDescriptor;
 	}
 
