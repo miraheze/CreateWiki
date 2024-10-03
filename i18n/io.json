@@ -27,6 +27,7 @@
 	"echo-pref-tooltip-wiki-creation": "Informez me kande mea wiki kreesos.",
 	"echo-pref-tooltip-wiki-request-comment": "Informez me kande existos komento en mea demando pri wiki.",
 	"echo-pref-tooltip-wiki-request-declined": "Informez me se mea demando pri wiki ne aceptesos.",
+	"log-action-filter-farmer": "Tipo di agado:",
 	"logentry-farmer-requestdecline": "$1 refuzis la demando $4 pri wiki",
 	"logentry-farmer-requestreopen": "$1 riapertis la demando pri wiki $4",
 	"logentry-farmer-requestwiki": "$1 demandis la wiki \"$4\" (idiomo: $5; privata: $6) che $7",
