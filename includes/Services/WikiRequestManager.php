@@ -224,7 +224,7 @@ class WikiRequestManager {
 	}
 
 	public function getRequestsByUser(
-		UserIdentity $requester,
+		User $requester,
 		UserIdentity $user
 	): array { 
 		$dbr = $this->connectionProvider->getReplicaDatabase(
