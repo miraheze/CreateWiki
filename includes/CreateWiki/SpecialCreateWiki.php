@@ -106,13 +106,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
 		$wikiManager->create(
-			$formData['sitename'],
-			$formData['language'],
-			$private,
-			$category,
-			$formData['requester'],
-			$this->getContext()->getUser()->getName(),
-			$formData['reason']
+			sitename: $formData['sitename'],
+			language: $formData['language'],
+			private: $private,
+			category: $category,
+			requester: $formData['requester'],
+			actor: $this->getContext()->getUser()->getName(),
+			reason: $formData['reason'],
+			extra: []
 		);
 
 		$this->getOutput()->addHTML(
