@@ -28,6 +28,8 @@ class RequestWikiRequestViewer {
 	private WikiManagerFactory $wikiManagerFactory;
 	private WikiRequestManager $wikiRequestManager;
 
+	private array $extraFields = [];
+
 	public function __construct(
 		Config $config,
 		IContextSource $context,
@@ -386,11 +388,21 @@ class RequestWikiRequestViewer {
 			}
 		}
 
+		// We store the original formDescriptor here so we
+		// can find any extra fields added via hook. We do this
+		// so we can store to the extraFields property and differentiate
+		// if we should store via cw_extra in submitForm().
+		$baseFormDescriptor = $formDescriptor;
+
 		$this->hookRunner->onRequestWikiQueueFormDescriptorModify(
 			$formDescriptor,
 			$user,
 			$this->wikiRequestManager
 		);
+
+		// We get all the keys from $formDescriptor whose keys are
+		// absent from $baseFormDescriptor.
+		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
 
 		return $formDescriptor;
 	}
@@ -481,6 +493,12 @@ class RequestWikiRequestViewer {
 				$formData['edit-description'],
 				$formData['edit-purpose'] ?? ''
 			);
+
+			foreach ( $this->extraFields as $field => $value ) {
+				if ( $formData[$field] ?? false ) {
+					$this->wikiRequestManager->setExtraFieldData( $field, $formData[$field] );
+				}
+			}
 
 			if ( !$this->wikiRequestManager->hasChanges() ) {
 				$this->wikiRequestManager->clearQueryBuilder();
