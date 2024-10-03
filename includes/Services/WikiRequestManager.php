@@ -707,14 +707,14 @@ class WikiRequestManager {
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
-		// Make sure boolean values save to changes as a string
+		// Make sure boolean and null values save to changes as a string
 		// We need this so that getChangeMessage properly displays them.
 
-		if ( is_bool( $oldValue ) ) {
+		if ( is_bool( $oldValue ) || $oldValue === null ) {
 			$oldValue = json_encode( $oldValue );
 		}
 
-		if ( is_bool( $newValue ) ) {
+		if ( is_bool( $newValue ) || $newValue === null ) {
 			$newValue = json_encode( $newValue );
 		}
 
