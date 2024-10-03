@@ -90,7 +90,7 @@ class RestWikiRequestComment extends SimpleHandler {
 			log: true,
 			type: 'comment'
 		);
-		
+
 		return $this->getResponseFactory()->createNoContent();
 	}
 
