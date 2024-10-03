@@ -327,7 +327,7 @@ class WikiRequestManager {
 				category: $this->getCategory(),
 				requester: $this->getRequester()->getName(),
 				actor: $user->getName(),
-				extra: $this->getExtraFieldData(),
+				extra: $this->getAllExtraData(),
 				reason: "[[Special:RequestWikiQueue/{$this->ID}|Requested]]"
 			);
 
