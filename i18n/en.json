@@ -46,6 +46,8 @@
 	"createwiki-no-changes": "No changes made.",
 	"createwiki-request-updated": "Updated request.",
 	"createwiki-rest-disabled": "Access to the REST API for CreateWiki has been disabled in the settings for this wiki.",
+	"createwiki-rest-mustlogin": "You must login to perform this action",
+	"createwiki-rest-notallowed": "You're not allowed to perform this action",
 	"createwiki-rest-usernowikirequests": "This user has not made any wiki requests",
 	"createwiki-success": "The wiki was successfully created.",
 	"createwiki-wikinotglobalwiki": "The interfaces for CreateWiki are only available on the global wiki.",
