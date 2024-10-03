@@ -77,14 +77,20 @@ class RestWikiRequestComment extends SimpleHandler {
 			);
 		}
 
-		$comment = $this->getValidatedBody()['comment'];
+		$validatedBody = $this->getValidatedBody();
+
+		$comment = '';
+		if ( $validatedBody ) {
+			$comment = $validatedBody['comment'];
+		}
+
 		if ( !$comment || ctype_space( $comment ) ) {
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				400, new MessageValue( 'createwiki-rest-emptycomment' )
 			);
 		}
 
-		$commentWasPosted = $this->wikiRequestManager->addComment(
+		$this->wikiRequestManager->addComment(
 			comment: $comment,
 			user: $this->getAuthority()->getUser(),
 			log: true,
@@ -112,7 +118,8 @@ class RestWikiRequestComment extends SimpleHandler {
 		];
 	}
 
-	public function getBodyValidator( string $contentType ): BodyValidator {
+	/** @inheritDoc */
+	public function getBodyValidator( $contentType ): BodyValidator {
 		if ( $contentType !== 'application/json' ) {
 			return new UnsupportedContentTypeBodyValidator( $contentType );
 		}
