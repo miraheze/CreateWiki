@@ -27,6 +27,7 @@
 	"createwiki-error-notalnum": "The subdomain selected contains non-alphanumeric characters. Please try again.",
 	"createwiki-error-notlowercase": "The subdomain may not contain uppercase letters. Please try again.",
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix ('$1').",
+	"createwiki-error-requestcountwarn": "'''WARNING:''' [[User:$2|$2]] has already [[Special:Log/farmer/$2|requested]] $1 wikis.",
 	"createwiki-error-subdomaintaken": "The subdomain you requested is already taken. Select another subdomain and try again.",
 	"createwiki-help-agreement": "Failure to follow these policies may lead to wiki closure.",
 	"createwiki-help-bio": "Make sure to follow this farm's policy on covering people.",
