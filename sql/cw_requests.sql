@@ -3,7 +3,7 @@ CREATE TABLE /*_*/cw_requests (
   cw_comment TEXT DEFAULT NULL,
   cw_dbname VARCHAR(64) DEFAULT NULL,
   cw_language VARCHAR(12) NOT NULL,
-  cw_private TINYINT UNSIGNED DEFAULT NULL,
+  cw_private TINYINT UNSIGNED NOT NULL DEFAULT '0',
   cw_sitename VARCHAR(128) NOT NULL,
   cw_status VARCHAR(16) DEFAULT NULL,
   cw_timestamp BINARY(14) NOT NULL,
