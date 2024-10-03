@@ -223,7 +223,7 @@ class WikiRequestManager {
 		return $history;
 	}
 
-	public function getRequestsByUser(
+	public function getVisibleRequestsByUser(
 		User $requester,
 		UserIdentity $user
 	): array {
@@ -245,7 +245,7 @@ class WikiRequestManager {
 
 		$requests = [];
 		foreach ( $res as $row ) {
-			if ( !$this->isAllowedVisibility( $row->cw_visibility, $user ) ) {
+			if ( !$this->isVisibilityAllowed( $row->cw_visibility, $user ) ) {
 				continue;
 			}
 
@@ -258,6 +258,24 @@ class WikiRequestManager {
 		}
 
 		return $requests;
+	}
+
+	public function isVisibilityAllowed( int $visibility, UserIdentity $user ): bool {
+		// T12010: 3 is a legacy suppression level,
+		// treat is as a suppressed wiki request
+		// hidden from everyone.
+		if ( $visibility >= 3 ) {
+			return false;
+		}
+
+		// Everyone can view public requests.
+		if ( $visibility === self::VISIBILITY_PUBLIC ) {
+			return true;
+		}
+
+		return $this->permissionManager->userHasRight(
+			$user, self::VISIBILITY_CONDS[$visibility]
+		);
 	}
 
 	public function approve( User $user, string $comment ): void {
@@ -504,24 +522,6 @@ class WikiRequestManager {
 		}
 
 		return null;
-	}
-
-	public function isAllowedVisibility( int $visibility, UserIdentity $user ): bool {
-		// T12010: 3 is a legacy suppression level,
-		// treat is as a suppressed wiki request
-		// hidden from everyone.
-		if ( $visibility >= 3 ) {
-			return false;
-		}
-
-		// Everyone can view public requests.
-		if ( $visibility === self::VISIBILITY_PUBLIC ) {
-			return true;
-		}
-
-		return $this->permissionManager->userHasRight(
-			$user, self::VISIBILITY_CONDS[$visibility]
-		);
 	}
 
 	public function isPrivate(): bool {
