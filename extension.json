@@ -10,6 +10,7 @@
 	],
 	"url": "https://github.com/miraheze/CreateWiki",
 	"descriptionmsg": "createwiki-desc",
+	"namemsg": "createwiki-extensionname",
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
@@ -18,38 +19,21 @@
 			"php": ">= 8.0"
 		}
 	},
-	"AvailableRights": [
-		"createwiki",
-		"createwiki-deleterequest",
-		"createwiki-suppressionlog",
-		"createwiki-suppressrequest",
-		"requestwiki"
-	],
-	"SpecialPages": {
-		"CreateWiki": {
-			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
-			"services": [
-				"WikiManagerFactory"
-			]
-		},
-		"RequestWiki": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
-			"services": [
-				"ConnectionProvider",
-				"CreateWikiHookRunner"
-			]
-		},
-		"RequestWikiQueue": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
-			"services": [
-				"ConnectionProvider",
-				"CreateWikiHookRunner",
-				"PermissionManager",
-				"UserFactory",
-				"WikiManagerFactory",
-				"WikiRequestManager"
-			]
-		}
+	"MessagesDirs": {
+		"CreateWiki": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"CreateWikiAliases": "CreateWikiAliases.php",
+		"CreateWikiMagic": "CreateWikiMagic.php"
+	},
+	"AutoloadNamespaces": {
+		"Miraheze\\CreateWiki\\": "includes/",
+		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
+	},
+	"TestAutoloadNamespaces": {
+		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
 	"JobClasses": {
 		"CreateWikiJob": {
@@ -77,6 +61,35 @@
 			],
 			"needsPage": false
 		}
+	},
+	"GroupPermissions": {
+		"user": {
+			"requestwiki": true
+		}
+	},
+	"AvailableRights": [
+		"createwiki",
+		"createwiki-deleterequest",
+		"createwiki-suppressionlog",
+		"createwiki-suppressrequest",
+		"requestwiki"
+	],
+	"LogActionsHandlers": {
+		"farmer/createwiki": "LogFormatter",
+		"farmer/comment": "LogFormatter",
+		"farmer/create-failuire": "LogFormatter",
+		"farmer/requestapprove": "LogFormatter",
+		"farmer/requestdecline": "LogFormatter",
+		"farmer/requestmoredetails": "LogFormatter",
+		"farmer/requestonhold": "LogFormatter",
+		"farmer/requestreopen": "LogFormatter",
+		"farmer/requestwiki": {
+			"class": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+			"services": [
+				"LinkRenderer"
+			]
+		},
+		"farmersuppression/*": "LogFormatter"
 	},
 	"LogTypes": [
 		"farmer",
@@ -127,70 +140,32 @@
 			]
 		}
 	},
-	"LogActionsHandlers": {
-		"farmer/createwiki": "LogFormatter",
-		"farmer/comment": "LogFormatter",
-		"farmer/create-failuire": "LogFormatter",
-		"farmer/requestapprove": "LogFormatter",
-		"farmer/requestdecline": "LogFormatter",
-		"farmer/requestmoredetails": "LogFormatter",
-		"farmer/requestonhold": "LogFormatter",
-		"farmer/requestreopen": "LogFormatter",
-		"farmer/requestwiki": {
-			"class": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+	"SpecialPages": {
+		"CreateWiki": {
+			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
-				"LinkRenderer"
+				"WikiManagerFactory"
 			]
 		},
-		"farmersuppression/*": "LogFormatter"
-	},
-	"MessagesDirs": {
-		"CreateWiki": [
-			"i18n"
-		]
-	},
-	"ExtensionMessagesFiles": {
-		"CreateWikiAliases": "CreateWikiAliases.php",
-		"CreateWikiMagic": "CreateWikiMagic.php"
-	},
-	"AutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\": "includes/",
-		"Miraheze\\CreateWiki\\Maintenance\\": "maintenance/"
-	},
-	"TestAutoloadNamespaces": {
-		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
-	},
-	"RestRoutes": [
-		{
-			"path": "/createwiki/v0/wiki_request/{id}",
-			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
+		"RequestWiki": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
 			"services": [
-				"ConfigFactory",
 				"ConnectionProvider",
-				"UserFactory"
+				"CreateWikiHookRunner"
 			]
 		},
-		{
-			"path": "/createwiki/v0/wiki_request/{id}/comment",
-			"method": "POST",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
+		"RequestWikiQueue": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
 			"services": [
-				"ConfigFactory",
-				"WikiRequestManager"
-			]
-		},
-		{
-			"path": "/createwiki/v0/wiki_requests/user/{username}",
-			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
-			"services": [
-				"ConfigFactory",
+				"ConnectionProvider",
+				"CreateWikiHookRunner",
+				"PermissionManager",
 				"UserFactory",
+				"WikiManagerFactory",
 				"WikiRequestManager"
 			]
 		}
-	],
+	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": {
 			"handler": "Notifications"
@@ -237,6 +212,37 @@
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Notifications"
 		}
 	},
+	"RestRoutes": [
+		{
+			"path": "/createwiki/v0/wiki_request/{id}",
+			"method": "GET",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
+			"services": [
+				"ConfigFactory",
+				"ConnectionProvider",
+				"UserFactory"
+			]
+		},
+		{
+			"path": "/createwiki/v0/wiki_request/{id}/comment",
+			"method": "POST",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
+			"services": [
+				"ConfigFactory",
+				"WikiRequestManager"
+			]
+		},
+		{
+			"path": "/createwiki/v0/wiki_requests/user/{username}",
+			"method": "GET",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
+			"services": [
+				"ConfigFactory",
+				"UserFactory",
+				"WikiRequestManager"
+			]
+		}
+	],
 	"ResourceModules": {
 		"ext.createwiki.oouiform": {
 			"scripts": "ext.createwiki.oouiform.ooui.js",
