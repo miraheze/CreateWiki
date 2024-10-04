@@ -174,7 +174,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			'type' => 'closure',
 			'subject' => wfMessage( 'createwiki-close-email-subject', $dbName )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->text(),
+				'html' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->parse(),
 				'text' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->text(),
 			],
 		];
