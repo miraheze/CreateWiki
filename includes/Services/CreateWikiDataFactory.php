@@ -274,8 +274,8 @@ class CreateWikiDataFactory {
 	public function deleteWikiData( string $wiki ): void {
 		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
 
-		if ( file_exists( "{$this->cacheDir}/$wiki.php" ) ) {
-			unlink( "{$this->cacheDir}/$wiki.php" );
+		if ( file_exists( "{$this->cacheDir}/{$wiki}.php" ) ) {
+			unlink( "{$this->cacheDir}/{$wiki}.php" );
 		}
 	}
 
