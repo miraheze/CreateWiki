@@ -28,7 +28,7 @@ class ChangeDBCluster extends Maintenance {
 	}
 
 	public function execute(): void {
-		if ( (bool)$this->getOption( 'file' ) ) {
+		if ( $this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
 
 			if ( !$file ) {
