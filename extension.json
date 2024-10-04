@@ -91,6 +91,14 @@
 		},
 		"farmersuppression/*": "LogFormatter"
 	},
+	"LogHeaders": {
+		"farmer": "farmer-log-header",
+		"farmersuppression": "farmersuppression-log-header"
+	},
+	"LogNames": {
+		"farmer": "farmer-log-name",
+		"farmersuppression": "farmersuppression-log-name"
+	},
 	"LogTypes": [
 		"farmer",
 		"farmersuppression"
