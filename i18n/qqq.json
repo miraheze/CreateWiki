@@ -39,6 +39,7 @@
 	"createwiki-error-requestcountwarn": "Used as a warning message shown to users with the createwiki right when the requester has more than a certain amount of requests.",
 	"createwiki-error-subdomaintaken": "Error message shown when the requested subdomain is already taken.",
 	"createwiki-extensionname": "{{name}}",
+	"createwiki-help-agreement": "Help message for the 'agreement' checkbox in the wiki request form.",
 	"createwiki-help-bio": "Help message for the 'biographical' checkbox in the wiki request form.",
 	"createwiki-help-category": "Help message explaining the 'category' selection in the wiki request form.",
 	"createwiki-help-private": "The word \"its\" refers to a wiki.",
