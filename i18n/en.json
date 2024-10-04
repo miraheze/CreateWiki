@@ -23,6 +23,7 @@
 	"createwiki-email-body": "Hello!\n\nYou recently requested a wiki. We are pleased to inform you that it has been created!\n\nThank you for choosing us as your host! We wish you all the best on your new wiki adventure.",
 	"createwiki-email-subject": "Your new wiki ($1) has been created",
 	"createwiki-error-agreement": "You must agree to this service's terms.",
+	"createwiki-error-cannot-edit-approved": "You cannot edit a request that has already been approved.",
 	"createwiki-error-dbexists": "'''NOTE''': A wiki with this subdomain already exists.",
 	"createwiki-error-disallowed": "The subdomain you have requested is unavailable. Please select another subdomain.",
 	"createwiki-error-notalnum": "The subdomain selected contains non-alphanumeric characters. Please try again.",
