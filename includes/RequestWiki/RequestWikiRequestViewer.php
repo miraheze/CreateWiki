@@ -138,7 +138,6 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getDescription(),
-				'raw' => true,
 			],
 		];
 
@@ -157,10 +156,10 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if (
+		if ( !$user->getBlock() && (
 			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
 			$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId()
-		) {
+		) ) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
@@ -209,7 +208,6 @@ class RequestWikiRequestViewer {
 					'required' => true,
 					'default' => $this->wikiRequestManager->getDescription(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'raw' => true,
 				],
 			];
 
