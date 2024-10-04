@@ -296,9 +296,9 @@ class WikiManagerFactory {
 				'createwiki-email-subject', $sitename
 			)->inContentLanguage()->escaped(),
 			'body' => [
-				'html' => nl2br( $this->messageLocalizer->msg(
+				'html' => $this->messageLocalizer->msg(
 					'createwiki-email-body'
-				)->inContentLanguage()->text() ),
+				)->inContentLanguage()->parse(),
 				'text' => $this->messageLocalizer->msg(
 					'createwiki-email-body'
 				)->inContentLanguage()->text(),
