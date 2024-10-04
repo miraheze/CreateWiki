@@ -31,6 +31,7 @@
 	"createwiki-error-notsuffixed": "The database name doesn't end in a valid suffix ('$1').",
 	"createwiki-error-requestcountwarn": "'''WARNING:''' [[User:$2|$2]] has already [[Special:Log/farmer/$2|requested]] $1 wikis.",
 	"createwiki-error-subdomaintaken": "The subdomain you requested is already taken. Select another subdomain and try again.",
+	"createwiki-extensionname": "CreateWiki",
 	"createwiki-help-agreement": "Failure to follow these policies may lead to wiki closure.",
 	"createwiki-help-bio": "Make sure to follow this farm's policy on covering people.",
 	"createwiki-help-category": "The categorization of this wiki will reflect on places such as on global wiki directory.",
