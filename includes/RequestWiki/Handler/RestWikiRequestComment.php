@@ -41,7 +41,7 @@ class RestWikiRequestComment extends SimpleHandler {
 			);
 		}
 
-		$this->wikiRequestManager->fromID( $requestID );
+		$this->wikiRequestManager->loadFromID( $requestID );
 
 		if ( !$this->wikiRequestManager->exists() ) {
 			return $this->getResponseFactory()->createLocalizedHttpError(

@@ -85,7 +85,7 @@ class WikiRequestManager {
 		$this->options = $options;
 	}
 
-	public function fromID( int $requestID ): void {
+	public function loadFromID( int $requestID ): void {
 		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
 			$this->options->get( ConfigNames::GlobalWiki )
 		);

@@ -418,7 +418,7 @@ class RequestWikiRequestViewer {
 	 * @return ?CreateWikiOOUIForm
 	 */
 	public function getForm( int $requestID ): ?CreateWikiOOUIForm {
-		$this->wikiRequestManager->fromID( $requestID );
+		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
 
 		if ( $requestID === 0 || !$this->wikiRequestManager->exists() ) {

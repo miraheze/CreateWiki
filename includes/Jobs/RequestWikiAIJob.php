@@ -40,7 +40,7 @@ class RequestWikiAIJob extends Job {
 	}
 
 	public function run(): bool {
-		$this->wikiRequestManager->fromID( $this->id );
+		$this->wikiRequestManager->loadFromID( $this->id );
 		$modelFile = $this->config->get( ConfigNames::PersistentModelFile );
 
 		$pipeline = '';
