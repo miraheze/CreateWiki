@@ -138,17 +138,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testMarkInactive(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isInactive() );
+		$this->assertFalse( $remoteWiki->isInactive() );
 
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isInactive() );
+		$this->assertTrue( $remoteWiki->isInactive() );
 
 		$remoteWiki->markActive();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isInactive() );
+		$this->assertFalse( $remoteWiki->isInactive() );
 	}
 
 	/**
@@ -159,17 +159,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testMarkExempt(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isInactiveExempt() );
+		$this->assertFalse( $remoteWiki->isInactiveExempt() );
 
 		$remoteWiki->markExempt();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isInactiveExempt() );
+		$this->assertTrue( $remoteWiki->isInactiveExempt() );
 
 		$remoteWiki->unExempt();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isInactiveExempt() );
+		$this->assertFalse( $remoteWiki->isInactiveExempt() );
 	}
 
 	/**
@@ -195,17 +195,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testMarkPrivate(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
+		$this->assertFalse( $remoteWiki->isPrivate() );
 
 		$remoteWiki->markPrivate();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isPrivate() );
+		$this->assertTrue( $remoteWiki->isPrivate() );
 
 		$remoteWiki->markPublic();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isPrivate() );
+		$this->assertFalse( $remoteWiki->isPrivate() );
 	}
 
 	/**
@@ -215,17 +215,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testMarkClosed(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isClosed() );
+		$this->assertFalse( $remoteWiki->isClosed() );
 
 		$remoteWiki->markClosed();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isClosed() );
+		$this->assertTrue( $remoteWiki->isClosed() );
 
 		$remoteWiki->markActive();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isClosed() );
+		$this->assertFalse( $remoteWiki->isClosed() );
 	}
 
 	/**
@@ -236,17 +236,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testDelete(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
+		$this->assertFalse( $remoteWiki->isDeleted() );
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isDeleted() );
+		$this->assertTrue( $remoteWiki->isDeleted() );
 
 		$remoteWiki->undelete();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isDeleted() );
+		$this->assertFalse( $remoteWiki->isDeleted() );
 	}
 
 	/**
@@ -257,17 +257,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testLock(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isLocked() );
+		$this->assertFalse( $remoteWiki->isLocked() );
 
 		$remoteWiki->lock();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isLocked() );
+		$this->assertTrue( $remoteWiki->isLocked() );
 
 		$remoteWiki->unlock();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isLocked() );
+		$this->assertFalse( $remoteWiki->isLocked() );
 	}
 
 	/**
@@ -323,17 +323,17 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testMarkExperimental(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
+		$this->assertFalse( $remoteWiki->isExperimental() );
 
 		$remoteWiki->markExperimental();
 		$remoteWiki->commit();
 
-		$this->assertTrue( (bool)$remoteWiki->isExperimental() );
+		$this->assertTrue( $remoteWiki->isExperimental() );
 
 		$remoteWiki->unMarkExperimental();
 		$remoteWiki->commit();
 
-		$this->assertFalse( (bool)$remoteWiki->isExperimental() );
+		$this->assertFalse( $remoteWiki->isExperimental() );
 	}
 
 	/**
