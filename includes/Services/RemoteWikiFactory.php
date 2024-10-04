@@ -55,6 +55,7 @@ class RemoteWikiFactory {
 	private bool $experimental = false;
 	private ?string $inactiveExemptReason = null;
 
+	private ?int $deletedTimestamp;
 	private ?int $closedTimestamp = null;
 	private ?int $inactiveTimestamp = null;
 
@@ -103,6 +104,8 @@ class RemoteWikiFactory {
 
 		$this->deleted = (bool)$row->wiki_deleted;
 		$this->locked = (bool)$row->wiki_locked;
+
+		$this->deletedTimestamp = $row->wiki_deleted_timestamp;
 
 		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$this->private = (bool)$row->wiki_private;
@@ -293,6 +296,10 @@ class RemoteWikiFactory {
 			'wiki_deleted' => 0,
 			'wiki_deleted_timestamp' => null,
 		];
+	}
+
+	public function getDeletedTimestamp(): int {
+		return $this->deletedTimestamp ?? 0;
 	}
 
 	public function isLocked(): bool {
