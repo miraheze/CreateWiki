@@ -159,10 +159,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) &&
 			$this->getConfig()->get( ConfigNames::RequestWikiUseDescriptions )
 		) {
+			$maxLength = $this->getConfig()->get( 'WikiDiscoverDescriptionMaxLength' );
 			$formDescriptor['public-description'] = [
 				'type' => 'textarea',
 				'rows' => 2,
-				'maxlength' => $this->getConfig()->get( 'WikiDiscoverDescriptionMaxLength' ) ?? false,
+				'maxlength' => $maxLength ?: false,
 				'label-message' => 'requestwiki-label-public-description',
 				'help-message' => 'requestwiki-help-public-description',
 				'required' => true,
@@ -292,7 +293,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$logEntry->publish( $logID );
 
 		// On successful submission, redirect them to their request
-		header( 'Location: ' . $requestLink->getFullURL() );
+		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
 		return Status::newGood();
 	}
