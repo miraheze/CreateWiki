@@ -150,10 +150,6 @@ class WikiManagerFactory {
 	}
 
 	private function doCreateDatabase(): void {
-		if ( $this->exists() ) {
-			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
-		}
-
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
@@ -186,6 +182,10 @@ class WikiManagerFactory {
 		string $reason,
 		array $extra
 	): ?string {
+		if ( $this->exists() ) {
+			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
+		}
+
 		$checkErrors = $this->checkDatabaseName( $this->dbname, forRename: false );
 
 		if ( $checkErrors ) {
