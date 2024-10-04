@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\CreateWiki;
 
 use ErrorPageError;
 use MediaWiki\Html\Html;
+use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
@@ -125,13 +126,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	/**
-	 * @param ?string $dbname
-	 * @return bool|string
-	 */
-	public function isValidDatabase( ?string $dbname ): bool|string {
-		if ( $dbname === null ) {
-			return true;
+	public function isValidDatabase( ?string $dbname ): bool|string|Message {
+		if ( !$dbname || ctype_space( $dbname ) ) {
+			return $this->msg( 'htmlform-required' );
 		}
 
 		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
