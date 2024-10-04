@@ -7,6 +7,7 @@ use Job;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use MWExceptionHandler;
 
 class CreateWikiJob extends Job {
 
@@ -88,7 +89,7 @@ class CreateWikiJob extends Job {
 			$this->wikiRequestManager->addComment(
 				comment: 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(),
 				user: User::newSystemUser( 'CreateWiki Extension' ),
-				log: true,
+				log: false,
 				type: 'comment'
 			);
 
@@ -96,6 +97,8 @@ class CreateWikiJob extends Job {
 				user: User::newSystemUser( 'CreateWiki Extension' ),
 				action: 'create-failure'
 			);
+
+			MWExceptionHandler::logException( $e );
 
 			return true;
 		}
