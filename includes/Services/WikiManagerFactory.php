@@ -191,7 +191,7 @@ class WikiManagerFactory {
 		if ( $checkErrors ) {
 			return $checkErrors;
 		}
-		
+
 		$this->doCreateDatabase();
 
 		$this->cwdb->newInsertQueryBuilder()
