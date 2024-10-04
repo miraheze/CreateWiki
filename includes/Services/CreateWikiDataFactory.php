@@ -123,7 +123,7 @@ class CreateWikiDataFactory {
 		}
 
 		// Regenerate wiki data cache if the file does not exist or has no valid mtime
-		if ( $wikiMtime == 0 || $wikiMtime < $this->wikiTimestamp ) {
+		if ( $wikiMtime === 0 || $wikiMtime < $this->wikiTimestamp ) {
 			$this->resetWikiData( isNewChanges: false );
 		}
 	}
