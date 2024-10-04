@@ -126,7 +126,6 @@
 	"requestwiki-label-subdomain": "Select a subdomain for your wiki:",
 	"requestwiki-notloggedin": "Please log in to request a wiki.",
 	"requestwiki-placeholder-subdomain": "Insert your desired subdomain",
-	"requestwiki-request-locked": "This request has been locked. It can not be edited, and no comments can be added to it.",
 	"requestwiki-success": "Your wiki request ($1) was successfully submitted. Your request will be reviewed as soon as possible.",
 	"requestwiki-unknown": "No request exists with this ID.",
 	"requestwikiqueue": "Wiki requests queue",
