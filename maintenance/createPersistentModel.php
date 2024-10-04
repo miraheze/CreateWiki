@@ -11,6 +11,7 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Phpml\Classification\SVC;
 use Phpml\FeatureExtraction\StopWords\English;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
@@ -37,6 +38,7 @@ class CreatePersistentModel extends Maintenance {
 			->select( [ 'cw_comment', 'cw_status' ] )
 			->from( 'cw_requests' )
 			->where( [
+				'cw_visibility' => WikiRequestManager::VISIBILITY_PUBLIC,
 				'cw_status' => [ 'approved', 'declined' ],
 				'cw_language' => 'en',
 			] )
@@ -49,8 +51,9 @@ class CreatePersistentModel extends Maintenance {
 		$status = [];
 
 		foreach ( $res as $row ) {
-			if ( !in_array( strtolower( $row->cw_comment ), $comments ) ) {
-				$comments[] = strtolower( $row->cw_comment );
+			$comment = strtolower( $row->cw_comment );
+			if ( !in_array( $comment, $comments ) ) {
+				$comments[] = $comment;
 				$status[] = $row->cw_status;
 			}
 		}
