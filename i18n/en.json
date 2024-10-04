@@ -151,7 +151,6 @@
 	"requestwikiqueue-request-label-sitename": "Sitename",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-url": "URL",
-	"requestwikiqueue-request-label-visibility": "Mark this request's visibility as...",
 	"requestwikiqueue-request-label-visibility-all": "Publicly viewable",
 	"requestwikiqueue-request-label-visibility-delete": "Users with 'createwiki-deleterequest' permissions can view",
 	"requestwikiqueue-request-label-visibility-suppress": "Users with 'createwiki-suppressrequest' permissions can view",
