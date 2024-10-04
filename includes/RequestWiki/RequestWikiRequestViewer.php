@@ -479,7 +479,9 @@ class RequestWikiRequestViewer {
 
 		if ( isset( $formData['submit-edit'] ) ) {
 			if ( $this->wikiRequestManager->getStatus() === 'approved' ) {
-				// TODO: can not edit already approved request message
+				$out->addHTML( Html::errorBox(
+					$this->context->msg( 'createwiki-error-cannot-edit-approved' )->escaped()
+				) );
 				return;
 			}
 
