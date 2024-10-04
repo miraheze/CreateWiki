@@ -502,7 +502,7 @@ class RequestWikiRequestViewer {
 				if ( $formData[$field] ?? false ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
-						$fieldKey = str_replace( 'edit-', '', $field );
+						$fieldKey = str_replace( 'edit-', '', $field, 1 );
 					}
 
 					$this->wikiRequestManager->setExtraFieldData( $fieldKey, $formData[$field] );
