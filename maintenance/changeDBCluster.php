@@ -48,7 +48,7 @@ class ChangeDBCluster extends Maintenance {
 		for ( $linenum = 1; !feof( $file ); $linenum++ ) {
 			$line = trim( fgets( $file ) );
 
-			if ( $line == '' ) {
+			if ( $line === '' ) {
 				continue;
 			}
 
