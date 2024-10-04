@@ -211,7 +211,11 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertTrue( $remoteWiki->isDeleted() );
 
-		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp( TS_UNIX, $remoteWiki->getDeletedTimestamp() ) - ( 86400 * 8 ) );
+		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp(
+			TS_UNIX,
+			$remoteWiki->getDeletedTimestamp()
+		) - ( 86400 * 8 ) );
+
 		$this->db->newUpdateQueryBuilder()
 			->update( 'cw_wikis' )
 			->set( [ 'wiki_deleted_timestamp' => $eligibleTimestamp ] )
