@@ -149,15 +149,9 @@ class WikiManagerFactory {
 		return $this->exists;
 	}
 
-	public function doCreateDatabase(): ?string {
-		if ( $this->exists ) {
+	private function doCreateDatabase(): void {
+		if ( $this->exists() ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
-		}
-
-		$checkErrors = $this->checkDatabaseName( $this->dbname, forRename: false );
-
-		if ( $checkErrors ) {
-			return $checkErrors;
 		}
 
 		try {
@@ -169,12 +163,17 @@ class WikiManagerFactory {
 		}
 
 		if ( $this->lb ) {
+			// If we are using DatabaseClusters we will have an LB
+			// and we will use that which will use the clusters
+			// defined in $wgLBFactoryConf.
 			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
-		} else {
-			$this->dbw = $this->connectionProvider->getPrimaryDatabase( $this->dbname );
+			return;
 		}
 
-		return null;
+		// If we aren't using DatabaseClusters, we don't have an LB
+		// So we just connect to $this->dbname using the main
+		// database configuration.
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( $this->dbname );
 	}
 
 	public function create(
@@ -187,9 +186,13 @@ class WikiManagerFactory {
 		string $reason,
 		array $extra
 	): ?string {
-		if ( $this->doCreateDatabase() ) {
-			return $this->doCreateDatabase();
+		$checkErrors = $this->checkDatabaseName( $this->dbname, forRename: false );
+
+		if ( $checkErrors ) {
+			return $checkErrors;
 		}
+		
+		$this->doCreateDatabase();
 
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
@@ -211,21 +214,19 @@ class WikiManagerFactory {
 			$requester,
 			$actor,
 			$reason,
-			$extra,
-			notify: true
+			$extra
 		);
 
 		return null;
 	}
 
-	public function doAfterCreate(
+	private function doAfterCreate(
 		string $sitename,
 		bool $private,
 		string $requester,
 		string $actor,
 		string $reason,
-		array $extra,
-		bool $notify
+		array $extra
 	): void {
 		foreach ( $this->options->get( ConfigNames::SQLFiles ) as $sqlfile ) {
 			$this->dbw->sourceFile( $sqlfile );
@@ -279,36 +280,34 @@ class WikiManagerFactory {
 			$this->cwdb
 		);
 
-		if ( $notify ) {
-			$domain = $this->options->get( ConfigNames::Subdomain );
-			$subdomain = substr(
-				$this->dbname, 0,
-				-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-			);
+		$domain = $this->options->get( ConfigNames::Subdomain );
+		$subdomain = substr(
+			$this->dbname, 0,
+			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
+		);
 
-			$notificationData = [
-				'type' => 'wiki-creation',
-				'extra' => [
-					'wiki-url' => 'https://' . $subdomain . '.' . $domain,
-					'sitename' => $sitename,
-				],
-				'subject' => $this->messageLocalizer->msg(
-					'createwiki-email-subject', $sitename
-				)->inContentLanguage()->escaped(),
-				'body' => [
-					'html' => nl2br( $this->messageLocalizer->msg(
-						'createwiki-email-body'
-					)->inContentLanguage()->text() ),
-					'text' => $this->messageLocalizer->msg(
-						'createwiki-email-body'
-					)->inContentLanguage()->escaped(),
-				],
-			];
+		$notificationData = [
+			'type' => 'wiki-creation',
+			'extra' => [
+				'wiki-url' => 'https://' . $subdomain . '.' . $domain,
+				'sitename' => $sitename,
+			],
+			'subject' => $this->messageLocalizer->msg(
+				'createwiki-email-subject', $sitename
+			)->inContentLanguage()->escaped(),
+			'body' => [
+				'html' => nl2br( $this->messageLocalizer->msg(
+					'createwiki-email-body'
+				)->inContentLanguage()->text() ),
+				'text' => $this->messageLocalizer->msg(
+					'createwiki-email-body'
+				)->inContentLanguage()->text(),
+			],
+		];
 
-			$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
+		$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 
-			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
-		}
+		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
 	}
 
 	public function delete( bool $force ): ?string {
@@ -404,7 +403,7 @@ class WikiManagerFactory {
 			)->parse();
 		}
 
-		if ( !$forRename && $this->exists ) {
+		if ( !$forRename && $this->exists() ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
 		}
 
