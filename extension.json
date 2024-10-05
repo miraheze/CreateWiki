@@ -318,10 +318,6 @@
 			"description": "Array. LBFactory clusters which CreateWiki considers active.",
 			"value": []
 		},
-		"CreateWikiDatabaseClustersInactive": {
-			"description": "Array. LBFactory clusters which are not considered active for use of automatic loadbalancing.",
-			"value": []
-		},
 		"CreateWikiDatabaseSuffix": {
 			"description": "String. Database suffix.",
 			"value": "wiki"
