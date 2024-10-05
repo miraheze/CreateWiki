@@ -34,13 +34,8 @@ class RebuildExtensionListCache extends Maintenance {
 		), true );
 
 		$processor = new ExtensionProcessor();
-
 		foreach ( $queue as $path => $mtime ) {
-			$json = file_get_contents( $path );
-			$info = json_decode( $json, true );
-			$version = $info['manifest_version'] ?? 2;
-
-			$processor->extractInfo( $path, $info, $version );
+			$processor->extractInfoFromFile( $path );
 		}
 
 		$data = $processor->getExtractedInfo();
@@ -52,16 +47,11 @@ class RebuildExtensionListCache extends Maintenance {
 		$this->generateCache( $cacheDir, $list );
 	}
 
-	/**
-	 * Generate a PHP array cache file.
-	 *
-	 * @param string $cacheDir The cache directory.
-	 * @param array $list The extension list data.
-	 */
 	private function generateCache( string $cacheDir, array $list ): void {
 		$phpContent = "<?php\n\n" .
 			"/**\n * Auto-generated extension list cache.\n */\n\n" .
 			'return ' . var_export( $list, true ) . ";\n";
+
 		file_put_contents( "{$cacheDir}/extension-list.php", $phpContent, LOCK_EX );
 	}
 }
