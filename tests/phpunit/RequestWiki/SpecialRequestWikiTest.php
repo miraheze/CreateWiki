@@ -6,6 +6,7 @@ use ErrorPageError;
 use Generator;
 use MediaWiki\Context\DerivativeContext;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\SpecialPage\SpecialPage;
@@ -64,7 +65,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::execute
 	 */
 	public function testExecute() {
-		$performer = $this->getTestUser()->getAuthority();
+		$performer = $this->getTestUserAuthorityWithConfirmedEmail();
 		[ $html, ] = $this->executeSpecialPage( '', null, 'qqx', $performer );
 		$this->assertStringContainsString( '(requestwiki-text)', $html );
 	}
@@ -83,20 +84,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	public function testExecuteLoggedInEmailConfirmed(): void {
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
-		$user = $this->getTestUser()->getUser();
-		$user->setEmail( 'test@example.com' );
-		$user->setEmailAuthenticationTimestamp( wfTimestamp() );
-
-		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			$this->specialRequestWiki
-		);
-
-		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
-
-		$testContext->setUser( $user );
-		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
-
-		$specialRequestWiki->setContext( $testContext );
 
 		$this->assertNull( $specialRequestWiki->execute( '' ) );
 	}
@@ -190,5 +177,22 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		RequestContext::getMain()->setRequest( $request );
 		TestingAccessWrapper::newFromObject( $user )->mRequest = $request;
 		$request->getSession()->setUser( $user );
+	}
+
+	private function getTestUserAuthorityWithConfirmedEmail(): Authority {
+		$user = $this->getTestUser()->getUser();
+		$user->setEmail( 'test@example.com' );
+		$user->setEmailAuthenticationTimestamp( wfTimestamp() );
+
+		$testContext = new DerivativeContext(
+			$this->specialRequestWiki->getContext()
+		);
+
+		$testContext->setUser( $user );
+		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
+
+		$this->specialRequestWiki->setContext( $testContext );
+
+		return $testContext->getAuthority();
 	}
 }
