@@ -278,7 +278,7 @@ class WikiRequestManager {
 		);
 	}
 
-	public function approve( User $user, string $comment ): void {
+	public function approve( UserIdentity $user, string $comment ): void {
 		if ( $this->getStatus() === 'approved' ) {
 			return;
 		}
@@ -346,7 +346,7 @@ class WikiRequestManager {
 		}
 	}
 
-	public function decline( string $comment, User $user ): void {
+	public function decline( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'declined' ) {
 			return;
 		}
@@ -367,7 +367,7 @@ class WikiRequestManager {
 		}
 	}
 
-	public function onhold( string $comment, User $user ): void {
+	public function onhold( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'onhold' ) {
 			return;
 		}
@@ -384,7 +384,7 @@ class WikiRequestManager {
 		$this->log( $user, 'requestonhold' );
 	}
 
-	public function moredetails( string $comment, User $user ): void {
+	public function moredetails( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'moredetails' ) {
 			return;
 		}
@@ -420,7 +420,7 @@ class WikiRequestManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function suppressionLog( User $user, string $action ): void {
+	private function suppressionLog( UserIdentity $user, string $action ): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
 		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
 
@@ -440,7 +440,7 @@ class WikiRequestManager {
 	}
 
 	public function suppress(
-		User $user,
+		UserIdentity $user,
 		int $level,
 		bool $log
 	): void {
