@@ -22,7 +22,7 @@ use Wikimedia\TestingAccessWrapper;
 /**
  * @group CreateWiki
  * @group Database
- * @group Medium
+ * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki
  */
 class SpecialRequestWikiTest extends SpecialPageTestBase {
