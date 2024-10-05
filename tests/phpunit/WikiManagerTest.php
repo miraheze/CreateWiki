@@ -11,7 +11,7 @@ use Miraheze\CreateWiki\WikiManager;
 /**
  * @group CreateWiki
  * @group Database
- * @group Medium
+ * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\WikiManager
  */
 class WikiManagerTest extends MediaWikiIntegrationTestCase {
