@@ -25,8 +25,6 @@ class Main implements
 	LoginFormValidErrorMessagesHook,
 	ParserGetVariableValueSwitchHook,
 	MakeGlobalVariablesScriptHook,
-	RequestWikiFormDescriptorModifyHook,
-	RequestWikiQueueFormDescriptorModifyHook,
 	SetupAfterCacheHook,
 	UserGetReservedNamesHook
 {
