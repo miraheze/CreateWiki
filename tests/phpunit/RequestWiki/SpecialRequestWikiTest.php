@@ -47,6 +47,9 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		// T12639
 		$this->disableAutoCreateTempUser();
+		
+		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
+
 
 		$this->specialRequestWiki = $this->newSpecialPage();
 	}
@@ -79,7 +82,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::execute
 	 */
 	public function testExecuteLoggedInEmailConfirmed(): void {
-		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
 		$user = $this->getTestUser()->getUser();
@@ -104,7 +106,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::execute
 	 */
 	public function testExecuteLoggedInEmailNotConfirmed(): void {
-		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
