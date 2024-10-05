@@ -10,7 +10,7 @@ use Miraheze\CreateWiki\Services\WikiManagerFactory;
 /**
  * @group CreateWiki
  * @group Database
- * @group Medium
+ * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\Services\WikiManagerFactory
  */
 class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
