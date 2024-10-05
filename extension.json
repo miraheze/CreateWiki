@@ -338,10 +338,6 @@
 			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
 			"value": ""
 		},
-		"CreateWikiInactiveExemptReasonOptions": {
-			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
-			"value": []
-		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
 			"value": "root@localhost"
@@ -381,10 +377,6 @@
 		},
 		"CreateWikiUseClosedWikis": {
 			"description": "Boolean. Whether to implement front end logic for closing wikis.",
-			"value": false
-		},
-		"CreateWikiUseCustomDomains": {
-			"description": "Boolean. Whether to implement front end logic to handle requesting custom domains for wikis in RequestWiki.",
 			"value": false
 		},
 		"CreateWikiUseEchoNotifications": {
