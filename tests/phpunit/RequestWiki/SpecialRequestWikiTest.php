@@ -47,9 +47,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		// T12639
 		$this->disableAutoCreateTempUser();
-		
-		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 
+		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
 
 		$this->specialRequestWiki = $this->newSpecialPage();
 	}
