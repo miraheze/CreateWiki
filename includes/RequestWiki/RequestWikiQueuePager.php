@@ -132,7 +132,7 @@ class RequestWikiQueuePager extends TablePager {
 			$info['conds']['cw_user'] = $this->userFactory->newFromName( $this->requester )->getId();
 		}
 
-		if ( $this->status && $this->status != '*' ) {
+		if ( $this->status && $this->status !== '*' ) {
 			$info['conds']['cw_status'] = $this->status;
 		} elseif ( !$this->status ) {
 			$info['conds']['cw_status'] = 'inreview';
