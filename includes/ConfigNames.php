@@ -25,8 +25,6 @@ class ConfigNames {
 
 	public const Containers = 'CreateWikiContainers';
 
-	public const CustomDomainPage = 'CreateWikiCustomDomainPage';
-
 	public const Database = 'CreateWikiDatabase';
 
 	public const DatabaseClusters = 'CreateWikiDatabaseClusters';
