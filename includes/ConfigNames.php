@@ -41,8 +41,6 @@ class ConfigNames {
 
 	public const GlobalWiki = 'CreateWikiGlobalWiki';
 
-	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
-
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
 	public const PersistentModelFile = 'CreateWikiPersistentModelFile';
@@ -60,8 +58,6 @@ class ConfigNames {
 	public const Subdomain = 'CreateWikiSubdomain';
 
 	public const UseClosedWikis = 'CreateWikiUseClosedWikis';
-
-	public const UseCustomDomains = 'CreateWikiUseCustomDomains';
 
 	public const UseEchoNotifications = 'CreateWikiUseEchoNotifications';
 
