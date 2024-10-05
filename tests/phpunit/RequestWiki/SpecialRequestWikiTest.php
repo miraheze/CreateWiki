@@ -64,15 +64,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecute() {
-		$performer = $this->getTestUserAuthorityWithConfirmedEmail();
-		[ $html, ] = $this->executeSpecialPage( '', null, 'qqx', $performer );
-		$this->assertStringContainsString( '(requestwiki-text)', $html );
-	}
-
-	/**
-	 * @covers ::execute
-	 */
 	public function testExecuteNotLoggedIn() {
 		$this->expectException( UserNotLoggedIn::class );
 		$this->executeSpecialPage();
@@ -81,35 +72,24 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteLoggedInEmailConfirmed(): void {
-		$this->setGroupPermissions( 'user', 'requestwiki', true );
-
-		$this->assertNull( $specialRequestWiki->execute( '' ) );
+	public function testExecuteLoggedInEmailConfirmed() {
+		$performer = $this->getTestUserAuthorityWithConfirmedEmail();
+		[ $html, ] = $this->executeSpecialPage( '', null, 'qqx', $performer );
+		$this->assertStringContainsString( '(requestwiki-text)', $html );
 	}
 
 	/**
 	 * @covers ::execute
 	 */
 	public function testExecuteLoggedInEmailNotConfirmed(): void {
-		$this->setGroupPermissions( 'user', 'requestwiki', true );
-
-		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			$this->specialRequestWiki
-		);
-
-		$testContext = new DerivativeContext( $specialRequestWiki->getContext() );
-
-		$testContext->setUser( $this->getTestUser()->getUser() );
-		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
-
-		$specialRequestWiki->setContext( $testContext );
 		$this->expectException( ErrorPageError::class );
 		$this->expectExceptionMessageMatches(
 			'/Your email is not confirmed. To request wikis, please ' .
 			'\[\[Special:ChangeEmail\|confirm an email\]\] first./'
 		);
 
-		$specialRequestWiki->execute( '' );
+		$performer = $this->getTestUser()->getAuthority();
+		$this->executeSpecialPage( '', null, 'en', $performer );
 	}
 
 	/**
@@ -182,16 +162,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$user = $this->getTestUser()->getUser();
 		$user->setEmail( 'test@example.com' );
 		$user->setEmailAuthenticationTimestamp( wfTimestamp() );
-
-		$testContext = new DerivativeContext(
-			$this->specialRequestWiki->getContext()
-		);
-
-		$testContext->setUser( $user );
-		$testContext->setTitle( SpecialPage::getTitleFor( 'RequestWiki' ) );
-
-		$this->specialRequestWiki->setContext( $testContext );
-
-		return $testContext->getAuthority();
+		return $user;
 	}
 }
