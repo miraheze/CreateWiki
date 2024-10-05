@@ -54,8 +54,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkPermissions();
 
-		$this->getOutput()->addWikiMsg( 'requestwiki-header' );
-
 		$form = $this->getForm();
 		if ( $form->show() ) {
 			$this->onSuccess();
