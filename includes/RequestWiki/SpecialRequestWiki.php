@@ -15,6 +15,7 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use RuntimeException;
 use Status;
+use UserBlockedError;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
@@ -38,30 +39,22 @@ class SpecialRequestWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
-		}
-
-		$request = $this->getRequest();
-		$out = $this->getOutput();
-
 		$this->requireLogin( 'requestwiki-notloggedin' );
 		$this->setParameter( $par );
 		$this->setHeaders();
 
-		$this->checkExecutePermissions( $this->getUser() );
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
+			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
+		}
 
-		if (
-			$this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail ) &&
-			!$this->getUser()->isEmailConfirmed()
-		) {
+		$requiresConfirmedEmail = $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail );
+		if ( $requiresConfirmedEmail && !$this->getUser()->isEmailConfirmed() ) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
-		$out->addModules( [ 'mediawiki.special.userrights' ] );
-		$out->addModuleStyles( [ 'mediawiki.notification.convertmessagebox.styles' ] );
+		$this->checkPermissions();
 
-		$out->addWikiMsg( 'requestwiki-header' );
+		$this->getOutput()->addWikiMsg( 'requestwiki-header' );
 
 		$form = $this->getForm();
 		if ( $form->show() ) {
@@ -358,6 +351,18 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		return true;
+	}
+
+	public function checkPermissions(): void {
+		parent::checkPermissions();
+
+		$user = $this->getUser();
+		$block = $user->getBlock();
+		if ( $block && ( $block->isSitewide() || $block->appliesToRight( 'requestwiki' ) ) ) {
+			throw new UserBlockedError( $block, $user );
+		}
+
+		$this->checkReadOnly();
 	}
 
 	/**
