@@ -136,7 +136,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['guidance'] = [
 			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-label-guidance' ),
+			'default' => $this->msg( 'requestwiki-info-guidance' ),
 		];
 
 		$formDescriptor['reason'] = [
@@ -151,7 +151,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['post-reason-guidance'] = [
 			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-label-guidance-post' ),
+			'default' => $this->msg( 'requestwiki-info-guidance-post' ),
 		];
 
 		if (
