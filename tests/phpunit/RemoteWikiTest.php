@@ -12,7 +12,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 /**
  * @group CreateWiki
  * @group Database
- * @group Medium
+ * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\RemoteWiki
  */
 class RemoteWikiTest extends MediaWikiIntegrationTestCase {
