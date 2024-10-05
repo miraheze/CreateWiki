@@ -178,6 +178,9 @@
 		"BeforeCreateEchoEvent": {
 			"handler": "Notifications"
 		},
+		"GetAllBlockActions": {
+			"handler": "Main"
+		},
 		"GetMagicVariableIDs": {
 			"handler": "Main"
 		},
