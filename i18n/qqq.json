@@ -78,6 +78,7 @@
 	"farmer-log-name": "{{doc-logpage}}",
 	"farmersuppression-log-header": "Header for the farmersuppression log.",
 	"farmersuppression-log-name": "{{doc-logpage}}",
+	"ipb-action-requestwiki": "The label for the action select option on [[Special:Block]] to block a user from requesting wikis.",
 	"log-action-filter-farmer": "{{doc-log-action-filter-type|farmer}}\n{{identical|Type of action}}\n{{related|Log-action-filter}}",
 	"log-action-filter-farmer-comment": "{{doc-log-action-filter-action|farmer|comment}}",
 	"log-action-filter-farmer-create-failure": "{{doc-log-action-filter-action|farmer|create-failure}}",
