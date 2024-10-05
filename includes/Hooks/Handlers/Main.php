@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Hooks\Handlers;
 
+use MediaWiki\Block\Hook\GetAllBlockActionsHook;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Hook\GetMagicVariableIDsHook;
@@ -19,6 +20,7 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class Main implements
+	GetAllBlockActionsHook,
 	GetMagicVariableIDsHook,
 	LoginFormValidErrorMessagesHook,
 	ParserGetVariableValueSwitchHook,
@@ -56,6 +58,15 @@ class Main implements
 	/** @inheritDoc */
 	public function onUserGetReservedNames( &$reservedUsernames ) {
 		$reservedUsernames[] = 'CreateWiki Extension';
+	}
+
+	/** @inheritDoc */
+	public function onGetAllBlockActions( &$actions ) {
+		if ( !WikiMap::isCurrentWikiId( $this->config->get( ConfigNames::GlobalWiki ) ) ) {
+			return;
+		}
+
+		$actions[ 'requestwiki' ] = 150;
 	}
 
 	/** @inheritDoc */
