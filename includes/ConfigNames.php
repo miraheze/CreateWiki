@@ -31,8 +31,6 @@ class ConfigNames {
 
 	public const DatabaseClusters = 'CreateWikiDatabaseClusters';
 
-	public const DatabaseClustersInactive = 'CreateWikiDatabaseClustersInactive';
-
 	public const DatabaseSuffix = 'CreateWikiDatabaseSuffix';
 
 	public const DisableRESTAPI = 'CreateWikiDisableRESTAPI';
