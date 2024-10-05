@@ -61,10 +61,18 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteNotLoggedIn(): void {
-		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
+	public function testExecute() {
+		$performer = $this->getTestUser()->getAuthority();
+		[ $html, ] = $this->executeSpecialPage( '', null, 'qqx', $performer );
+		$this->assertStringContainsString( '(requestwiki-text)', $html );
+	}
+
+	/**
+	 * @covers ::execute
+	 */
+	public function testExecuteNotLoggedIn() {
 		$this->expectException( UserNotLoggedIn::class );
-		$this->specialRequestWiki->execute( '' );
+		$this->executeSpecialPage();
 	}
 
 	/**
