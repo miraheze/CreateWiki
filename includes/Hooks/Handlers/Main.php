@@ -12,7 +12,6 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
-use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
