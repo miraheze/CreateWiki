@@ -7,6 +7,8 @@ use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiFormUtils;
 
 /**
+ * @group CreateWiki
+ * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\RequestWikiFormUtils
  */
 class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
