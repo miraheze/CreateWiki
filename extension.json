@@ -306,10 +306,6 @@
 				"local-deleted": "private"
 			}
 		},
-		"CreateWikiCustomDomainPage": {
-			"description": "String. Page name to link to for more information on custom domains.",
-			"value": ""
-		},
 		"CreateWikiDatabase": {
 			"description": "String. Database name of where cw_wikis is stored.",
 			"value": ""
