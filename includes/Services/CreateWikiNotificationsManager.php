@@ -110,7 +110,7 @@ class CreateWikiNotificationsManager {
 		$bureaucrats = $dbr->newSelectQueryBuilder()
 			->select( [ 'user_email', 'user_name' ] )
 			->from( 'user_groups' )
-			->join( 'user', null, [ 'user_id=ug_user' ] )
+			->join( 'user', null, [ 'user_id = ug_user' ] )
 			->where( [
 				'ug_group' => 'bureaucrat',
 			] )
