@@ -58,7 +58,7 @@ class CreateWikiRegexConstraint {
 	private static function cleanLines( array $lines ): array {
 		return array_filter(
 			array_map( 'trim',
-				preg_replace( '/#.*$/', '', $lines )
+				preg_replace( '/^\s*#.*$/', '', $lines )
 			)
 		);
 	}
