@@ -193,13 +193,10 @@
 		"ParserGetVariableValueSwitch": {
 			"handler": "Main"
 		},
-		"RequestWikiFormDescriptorModify": {
-			"handler": "Main"
-		},
-		"RequestWikiQueueFormDescriptorModify": {
-			"handler": "Main"
-		},
 		"SetupAfterCache": {
+			"handler": "Main"
+		},
+		"UserGetReservedNames": {
 			"handler": "Main"
 		}
 	},
