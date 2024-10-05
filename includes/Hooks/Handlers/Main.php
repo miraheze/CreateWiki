@@ -11,15 +11,12 @@ use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\Hooks\RequestWikiFormDescriptorModifyHook;
-use Miraheze\CreateWiki\Hooks\RequestWikiQueueFormDescriptorModifyHook;
-use Miraheze\CreateWiki\RequestWiki\RequestWikiFormUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class Main implements
@@ -29,7 +26,8 @@ class Main implements
 	MakeGlobalVariablesScriptHook,
 	RequestWikiFormDescriptorModifyHook,
 	RequestWikiQueueFormDescriptorModifyHook,
-	SetupAfterCacheHook
+	SetupAfterCacheHook,
+	UserGetReservedNamesHook
 {
 
 	private Config $config;
@@ -56,28 +54,9 @@ class Main implements
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
-	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
-		$testField = [
-			'label-message' => 'test',
-			'type' => 'text',
-		];
-
-		RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'sitename', 'test', $testField );
-	}
-
-	public function onRequestWikiQueueFormDescriptorModify(
-		array &$formDescriptor,
-		User $user,
-		WikiRequestManager $wikiRequestManager
-	): void {
-		$testField = [
-			'label-message' => 'test',
-			'type' => 'text',
-			'section' => 'editing',
-			'default' => $wikiRequestManager->getExtraFieldData( 'test' ),
-		];
-
-		RequestWikiFormUtils::insertFieldAfter( $formDescriptor, 'edit-sitename', 'edit-test', $testField );
+	/** @inheritDoc */
+	public function onUserGetReservedNames( &$reservedUsernames ) {
+		$reservedUsernames[] = 'CreateWiki Extension';
 	}
 
 	/** @inheritDoc */
