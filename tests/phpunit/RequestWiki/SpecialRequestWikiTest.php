@@ -84,7 +84,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	public function testExecuteLoggedInEmailConfirmed(): void {
 		$this->setGroupPermissions( 'user', 'requestwiki', true );
 
-
 		$this->assertNull( $specialRequestWiki->execute( '' ) );
 	}
 
