@@ -71,6 +71,7 @@
 	"farmer-log-name": "Farmer log",
 	"farmersuppression-log-header": "This is a private log tracking usage of the wiki request suppression function",
 	"farmersuppression-log-name": "Suppressed wiki requests log",
+	"ipb-action-requestwiki": "Requesting wikis",
 	"log-action-filter-farmer": "Type of action:",
 	"log-action-filter-farmer-comment": "New comment on wiki request",
 	"log-action-filter-farmer-create-failure": "Issue encountered while creating wiki",
