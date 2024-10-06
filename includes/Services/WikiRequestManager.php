@@ -468,6 +468,10 @@ class WikiRequestManager {
 		}
 	}
 
+	public function getID(): int {
+		return $this->row->cw_id;
+	}
+
 	public function getDBname(): string {
 		return $this->row->cw_dbname;
 	}
