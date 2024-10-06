@@ -627,7 +627,7 @@ class RequestWikiRequestViewer {
 		if ( !isset( $alldata['submit-edit'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			// For example, we don't want an invalid subdomain to block
-			// adding a comment.
+			// adding a comment or declining the request.
 			return true;
 		}
 
