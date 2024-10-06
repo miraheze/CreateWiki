@@ -39,7 +39,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		$this->requireLogin( 'requestwiki-notloggedin' );
+		$this->requireNamedUser( 'requestwiki-notloggedin' );
 		$this->setParameter( $par );
 		$this->setHeaders();
 
