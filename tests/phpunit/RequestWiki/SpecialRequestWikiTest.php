@@ -63,7 +63,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteNotLoggedIn() {
+	public function testExecuteNotLoggedIn(): void {
 		$this->expectException( UserNotLoggedIn::class );
 		$this->executeSpecialPage();
 	}
@@ -71,7 +71,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::execute
 	 */
-	public function testExecuteLoggedInEmailConfirmed() {
+	public function testExecuteLoggedInEmailConfirmed(): void {
 		$performer = $this->getTestUserAuthorityWithConfirmedEmail();
 		[ $html, ] = $this->executeSpecialPage( '', null, 'qqx', $performer );
 		$this->assertStringContainsString( '(requestwiki-text)', $html );
