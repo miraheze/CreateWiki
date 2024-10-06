@@ -49,30 +49,15 @@ class RequestWikiRequestViewer {
 	public function getFormDescriptor(): array {
 		$user = $this->context->getUser();
 
-		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
-
-		// if request isn't found, it doesn't exist
-		// but if we can't view the request, it also doesn't exist
-
-		// T12010: 3 is a legacy suppression level, treat it as a suppressed request hidden from everyone
-		if ( $this->wikiRequestManager->getVisibility() >= 3 ) {
+		// If request isn't found, it doesn't exist, but if we
+		// can't view the request, it also doesn't exist.
+		$visibility = $this->wikiRequestManager->getVisibility();
+		if ( !$this->wikiRequestManager->isVisibilityAllowed( $visibility, $user ) ) {
 			$this->context->getOutput()->addHTML(
 				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
 			);
 
 			return [];
-		}
-
-		if ( $visibilityConds[$this->wikiRequestManager->getVisibility()] !== 'public' ) {
-			if ( !$this->permissionManager->userHasRight( $user,
-				$visibilityConds[$this->wikiRequestManager->getVisibility()]
-			) ) {
-				$this->context->getOutput()->addHTML(
-					Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
-				);
-
-				return [];
-			}
 		}
 
 		if ( $this->wikiRequestManager->isLocked() ) {
@@ -343,12 +328,13 @@ class RequestWikiRequestViewer {
 				],
 				'handle-comment' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
+					'validation-callback' => [ $this, 'isValidStatusComment' ],
 					'section' => 'handling',
 				],
 				'handle-changevisibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $this->wikiRequestManager->getVisibility() !== 0 ) ? 1 : 0,
+					'default' => ( $visibility !== 0 ) ? 1 : 0,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handling',
 				],
@@ -357,7 +343,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'revdelete-suppress-text',
 					'hide-if' => [ '!==', 'handle-changevisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
-					'default' => (string)$this->wikiRequestManager->getVisibility(),
+					'default' => (string)$visibility,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handling',
 				],
@@ -459,8 +445,12 @@ class RequestWikiRequestViewer {
 		$session = $form->getRequest()->getSession();
 
 		if ( isset( $formData['submit-comment'] ) ) {
-			if ( $session->get( 'previous_posted_comment' ) !== $formData['comment'] ) {
-				$session->set( 'previous_posted_comment', $formData['comment'] );
+			// Don't want to mess with some generic comments across requests.
+			// If it is a different request it is not a duplicate comment.
+			$ID = (string)$this->wikiRequestManager->getID();
+			$commentData = $ID . ':' . $formData['comment'];
+			if ( $session->get( 'previous_posted_comment' ) !== $commentData ) {
+				$session->set( 'previous_posted_comment', $commentData );
 				$this->wikiRequestManager->addComment(
 					comment: $formData['comment'],
 					user: $user,
@@ -617,6 +607,14 @@ class RequestWikiRequestViewer {
 
 	public function isValidComment( ?string $comment, array $alldata ): bool|Message {
 		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
+			return $this->context->msg( 'htmlform-required' );
+		}
+
+		return true;
+	}
+
+	public function isValidStatusComment( ?string $comment, array $alldata ): bool|Message {
+		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->context->msg( 'htmlform-required' );
 		}
 
