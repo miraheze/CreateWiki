@@ -77,7 +77,7 @@
 	"LogActionsHandlers": {
 		"farmer/createwiki": "LogFormatter",
 		"farmer/comment": "LogFormatter",
-		"farmer/create-failuire": "LogFormatter",
+		"farmer/create-failure": "LogFormatter",
 		"farmer/requestapprove": "LogFormatter",
 		"farmer/requestdecline": "LogFormatter",
 		"farmer/requestmoredetails": "LogFormatter",
