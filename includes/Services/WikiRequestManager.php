@@ -163,7 +163,10 @@ class WikiRequestManager {
 		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
 
 		$involvedUsers = array_values( array_filter(
-			array_diff( $this->getInvolvedUsers(), [ $user ] )
+			array_diff(
+				$this->getInvolvedUsers(),
+				[ $this->userFactory->newFromUserIdentity( $user ) ]
+			)
 		) );
 
 		$notificationData = [
