@@ -68,19 +68,19 @@ class RequestWikiQueuePager extends TablePager {
 		switch ( $name ) {
 			case 'cw_timestamp':
 				$language = $this->getLanguage();
-				$formatted = $language->timeanddate( $row->cw_timestamp, true );
+				$formatted = $this->escape( $language->timeanddate( $row->cw_timestamp, true ) );
 				break;
 			case 'cw_dbname':
-				$formatted = $row->cw_dbname;
+				$formatted = $this->escape( $row->cw_dbname );
 				break;
 			case 'cw_sitename':
-				$formatted = $row->cw_sitename;
+				$formatted = $this->escape( $row->cw_sitename );
 				break;
 			case 'cw_user':
-				$formatted = $this->userFactory->newFromId( $row->cw_user )->getName();
+				$formatted = $this->escape( $this->userFactory->newFromId( $row->cw_user )->getName() );
 				break;
 			case 'cw_url':
-				$formatted = $row->cw_url;
+				$formatted = $this->escape( $row->cw_url );
 				break;
 			case 'cw_status':
 				$formatted = $this->linkRenderer->makeLink(
@@ -89,13 +89,20 @@ class RequestWikiQueuePager extends TablePager {
 				);
 				break;
 			case 'cw_language':
-				$formatted = $row->cw_language;
+				$formatted = $this->escape( $row->cw_language );
 				break;
 			default:
-				$formatted = "Unable to format $name";
+				$formatted = $this->escape( "Unable to format {$name}" );
 		}
 
 		return $formatted;
+	}
+
+	/**
+	 * Safely HTML-escapes $value
+	 */
+	private function escape( string $value ): string {
+		return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
 	}
 
 	/** @inheritDoc */
