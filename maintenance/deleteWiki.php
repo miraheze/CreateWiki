@@ -10,9 +10,9 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use Miraheze\CreateWiki\WikiManager;
 
 class DeleteWiki extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 
@@ -24,7 +24,7 @@ class DeleteWiki extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$dbname = $this->getOption( 'deletewiki' );
 
 		if ( !$dbname ) {
@@ -32,12 +32,10 @@ class DeleteWiki extends Maintenance {
 		}
 
 		if ( $this->hasOption( 'delete' ) ) {
-			$wm = new WikiManager(
-				$dbname,
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
-			);
+			$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
+				->newInstance( $dbname );
 
-			$delete = $wm->delete( true );
+			$delete = $wikiManager->delete( force: true );
 
 			if ( $delete ) {
 				$this->fatalError( $delete );

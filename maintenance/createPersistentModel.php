@@ -10,6 +10,8 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
+use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Phpml\Classification\SVC;
 use Phpml\FeatureExtraction\StopWords\English;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
@@ -17,43 +19,41 @@ use Phpml\ModelManager;
 use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 class CreatePersistentModel extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
-		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiGlobalWiki' ) );
-
-		$res = $dbr->select(
-			'cw_requests',
-			[
-				'cw_comment',
-				'cw_status'
-			],
-			[
-				'cw_status' => [
-					'approved',
-					'declined'
-				],
-				'cw_language' => 'en'
-			],
-			__METHOD__,
-			[
-				'LIMIT' => 2500,
-				'ORDER BY' => 'cw_id DESC'
-			]
+	public function execute(): void {
+		$dbr = $this->getDB( DB_REPLICA, [],
+			$this->getConfig()->get( ConfigNames::GlobalWiki )
 		);
+
+		$res = $dbr->newSelectQueryBuilder()
+			->select( [ 'cw_comment', 'cw_status' ] )
+			->from( 'cw_requests' )
+			->where( [
+				'cw_visibility' => WikiRequestManager::VISIBILITY_PUBLIC,
+				'cw_status' => [ 'approved', 'declined' ],
+				'cw_language' => 'en',
+			] )
+			->orderBy( 'cw_id', SelectQueryBuilder::SORT_DESC )
+			->limit( 2500 )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		$comments = [];
 		$status = [];
 
 		foreach ( $res as $row ) {
-			if ( !in_array( strtolower( $row->cw_comment ), $comments ) ) {
-				$comments[] = strtolower( $row->cw_comment );
+			$comment = strtolower( $row->cw_comment );
+			if ( !in_array( $comment, $comments ) ) {
+				$comments[] = $comment;
 				$status[] = $row->cw_status;
 			}
 		}
@@ -83,7 +83,10 @@ class CreatePersistentModel extends Maintenance {
 		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
 		if ( !$hookRunner->onCreateWikiWritePersistentModel( serialize( $pipeline ) ) ) {
 			$modelManager = new ModelManager();
-			$modelManager->saveToFile( $pipeline, $this->getConfig()->get( 'CreateWikiPersistentModelFile' ) );
+			$modelManager->saveToFile(
+				$pipeline,
+				$this->getConfig()->get( ConfigNames::PersistentModelFile )
+			);
 		}
 	}
 }

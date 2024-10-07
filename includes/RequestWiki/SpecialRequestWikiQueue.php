@@ -2,42 +2,65 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use HTMLForm;
-use MediaWiki\Html\Html;
+use ErrorPageError;
+use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
-use Miraheze\CreateWiki\EntryPointUtils;
+use MediaWiki\User\UserFactory;
+use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	private IConnectionProvider $connectionProvider;
+	private CreateWikiHookRunner $hookRunner;
+	private PermissionManager $permissionManager;
+	private UserFactory $userFactory;
+	private WikiManagerFactory $wikiManagerFactory;
+	private WikiRequestManager $wikiRequestManager;
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	public function __construct(
+		IConnectionProvider $connectionProvider,
+		CreateWikiHookRunner $hookRunner,
+		PermissionManager $permissionManager,
+		UserFactory $userFactory,
+		WikiManagerFactory $wikiManagerFactory,
+		WikiRequestManager $wikiRequestManager
+	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 
+		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
+		$this->permissionManager = $permissionManager;
+		$this->userFactory = $userFactory;
+		$this->wikiManagerFactory = $wikiManagerFactory;
+		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
-	public function execute( $par ) {
-		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
-			return $this->getOutput()->addHTML(
-				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
-			);
+	/**
+	 * @param ?string $par
+	 */
+	public function execute( $par ): void {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
+			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
 		$this->setHeaders();
 
-		if ( $par === null || $par === '' ) {
-			$this->doPagerStuff();
-		} else {
+		if ( $par ) {
 			$this->getOutput()->addBacklinkSubtitle( $this->getPageTitle() );
-
 			$this->lookupRequest( $par );
+			return;
 		}
+
+		$this->doPagerStuff();
 	}
 
-	private function doPagerStuff() {
+	private function doPagerStuff(): void {
 		$requester = $this->getRequest()->getText( 'requester' );
 		$status = $this->getRequest()->getText( 'status' );
 		$dbname = $this->getRequest()->getText( 'dbname' );
@@ -77,31 +100,51 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
-		$htmlForm->setWrapperLegendMsg( 'requestwikiqueue-search-header' );
-		$htmlForm->setMethod( 'get' )->prepareForm()->displayForm( false );
+		$htmlForm
+			->setMethod( 'get' )
+			->setWrapperLegendMsg( 'requestwikiqueue-search-header' )
+			->setSubmitTextMsg( 'search' )
+			->prepareForm()
+			->displayForm( false );
 
-		$pager = new RequestWikiQueuePager( $this, $requester, $dbname, $status );
+		$pager = new RequestWikiQueuePager(
+			$this->getConfig(),
+			$this->getContext(),
+			$this->connectionProvider,
+			$this->getLinkRenderer(),
+			$this->permissionManager,
+			$this->userFactory,
+			$dbname,
+			$requester,
+			$status
+		);
+
 		$table = $pager->getFullOutput();
 
 		$this->getOutput()->addParserOutputContent( $table );
 	}
 
-	private function lookupRequest( $par ) {
-		$out = $this->getOutput();
+	private function lookupRequest( string $par ): void {
+		$requestViewer = new RequestWikiRequestViewer(
+			$this->getConfig(),
+			$this->getContext(),
+			$this->hookRunner,
+			$this->permissionManager,
+			$this->wikiManagerFactory,
+			$this->wikiRequestManager
+		);
 
-		$out->addModules( [ 'ext.createwiki.oouiform' ] );
+		$htmlForm = $requestViewer->getForm( (int)$par );
 
-		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
-		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
-		$out->addModules( [ 'mediawiki.special.userrights' ] );
-
-		$requestViewer = new RequestWikiRequestViewer( $this->hookRunner );
-		$htmlForm = $requestViewer->getForm( $par, $this->getContext() );
-
-		$htmlForm->show();
+		if ( $htmlForm ) {
+			$htmlForm->show();
+		}
 	}
 
-	protected function getGroupName() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getGroupName(): string {
 		return 'wikimanage';
 	}
 }

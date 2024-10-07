@@ -10,31 +10,36 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use Miraheze\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\ConfigNames;
 
 class DeleteWikis extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 
-		$this->addDescription( 'Allows complete deletion of wikis with args controlling deletion levels. Will never DROP a database!' );
+		$this->addDescription(
+			'Allows complete deletion of wikis with args controlling ' .
+			'deletion levels. Will never DROP a database!'
+		);
 
 		$this->addOption( 'delete', 'Actually performs deletions and not outputs wikis to be deleted', false );
-		$this->addArg( 'user', 'Username or reference name of the person running this script. Will be used in tracking and notification internally.', true );
+		$this->addArg( 'user', 'Username or reference name of the person running this script. ' .
+			'Will be used in tracking and notification internally.',
+		true );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
-		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+	public function execute(): void {
+		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( ConfigNames::Database ) );
 
-		$res = $dbr->select(
-			'cw_wikis',
-			'*',
-			[
-				'wiki_deleted' => 1
-			],
-			__METHOD__
-		);
+		$res = $dbr->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_wikis' )
+			->where( [ 'wiki_deleted' => 1 ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		$deletedWikis = [];
 
@@ -43,13 +48,8 @@ class DeleteWikis extends Maintenance {
 			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$wm = new WikiManager(
-					$wiki,
-					$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
-				);
-
-				$delete = $wm->delete();
+				$wikiManager = $wikiManagerFactory->newInstance( $wiki );
+				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
 					$this->output( "{$wiki}: {$delete}\n" );
@@ -68,14 +68,22 @@ class DeleteWikis extends Maintenance {
 		$user = $this->getArg( 0 );
 		$deletedWikis = implode( ', ', $deletedWikis );
 
+		$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
+			"just now {$user} has deleted the following wikis from the CreateWiki and " .
+			"associated extensions:\n{$deletedWikis}";
+
 		$notificationData = [
 			'type' => 'deletion',
 			'subject' => 'Wikis Deleted Notification',
-			'body' => "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$user} has deleted the following wikis from the CreateWiki and associated extensions:\n{$deletedWikis}",
+			'body' => $message,
 		];
 
 		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification( $notificationData );
+			->sendNotification(
+				data: $notificationData,
+				// No receivers, it will send to configured email
+				receivers: []
+			);
 	}
 }
 

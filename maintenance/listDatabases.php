@@ -13,6 +13,7 @@ use Maintenance;
 use MediaWiki\MainConfigNames;
 
 class ListDatabases extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 
@@ -20,7 +21,7 @@ class ListDatabases extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		foreach ( $this->getConfig()->get( MainConfigNames::LocalDatabases ) as $db ) {
 			$this->output( "$db\n" );
 		}

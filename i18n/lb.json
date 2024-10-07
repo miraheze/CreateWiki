@@ -6,24 +6,25 @@
 			"Volvox"
 		]
 	},
-	"createwiki-email-subject": "Är nei Miraheze-Wiki: $1",
+	"createwiki-email-subject": "Är nei Miraheze-Wiki ($1) gouf ugeluecht",
 	"createwiki-label-category": "Kategorie:",
 	"createwiki-label-dbname": "Numm vun der Datebank:",
 	"createwiki-label-language": "Sprooch:",
 	"createwiki-label-private": "Dës Wiki als privat markéieren",
-	"createwiki-label-reason": "Grond:",
+	"createwiki-label-reason": "Beschreift de Fokus oder den Zweck vun dëser Wiki:",
 	"createwiki-label-sitename": "Numm vum Site:",
 	"createwiki-success": "D'Wiki gouf ugeluecht.",
+	"farmer-log-name": "Logbuch vun dëser Lëscht vu Wikien",
 	"requestwiki": "Eng Wiki ufroen",
 	"requestwiki-label-language": "Sprooch:",
 	"requestwiki-label-purpose": "Den Zweck vun dëser Wiki ass...",
-	"requestwiki-label-sitename": "Numm vun der Wiki:",
+	"requestwiki-label-sitename": "Wéi gëtt den Numm vun dëser Wiki?",
 	"requestwikiqueue-approve": "Zoustëmmen",
 	"requestwikiqueue-decline": "Refuséieren",
-	"requestwikiqueue-handle": "Ufro verschaffen",
-	"requestwikiqueue-request": "Ufro",
+	"requestwikiqueue-request-header-description": "Wiki-Beschreiwung:",
 	"requestwikiqueue-request-label-comment": "Bemierkung:",
 	"requestwikiqueue-request-label-language": "Sprooch",
 	"requestwikiqueue-request-label-status": "Status",
-	"requestwikiqueue-request-label-url": "URL"
+	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-section-handling": "Ufro verschaffen"
 }

@@ -1,13 +1,25 @@
 <?xml version="1.0"?>
 <ruleset>
 	<file>.</file>
-	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
-		<exclude name="Generic.Files.LineLength.TooLong" />
-		<exclude name="MediaWiki.Commenting" />
-		<exclude name="MediaWiki.WhiteSpace.SpaceyParenthesis.SingleSpaceBeforeCloseParenthesis" />
-		<exclude name="MediaWiki.WhiteSpace.SpaceyParenthesis.SingleSpaceAfterOpenParenthesis" />
+	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki" />
+	<rule ref="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma">
+		<severity>5</severity>
 	</rule>
-	<arg name="bootstrap" value="./vendor/mediawiki/mediawiki-codesniffer/utils/bootstrap-ci.php"/>
-	<arg name="extensions" value="php"/>
-	<arg name="encoding" value="UTF-8"/>
+	<rule ref="Squiz.WhiteSpace.FunctionSpacing.BeforeFirst">
+		<severity>5</severity>
+	</rule>
+	<rule ref="Squiz.WhiteSpace.MemberVarSpacing.FirstIncorrect">
+		<severity>5</severity>
+	</rule>
+	<rule ref="MediaWiki.Classes.FullQualifiedClassName">
+		<severity>5</severity>
+		<properties>
+			<property name="allowMainNamespace" value="false" />
+			<property name="allowInheritance" value="false" />
+			<property name="allowFunctions" value="false" />
+		</properties>
+	</rule>
+	<arg name="bootstrap" value="./vendor/mediawiki/mediawiki-codesniffer/utils/bootstrap-ci.php" />
+	<arg name="extensions" value="php" />
+	<arg name="encoding" value="UTF-8" />
 </ruleset>

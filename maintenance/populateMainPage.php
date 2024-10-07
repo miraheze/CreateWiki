@@ -18,6 +18,7 @@ use MediaWiki\User\User;
 use WikitextContent;
 
 class PopulateMainPage extends Maintenance {
+
 	public function __construct() {
 		parent::__construct();
 
@@ -27,14 +28,30 @@ class PopulateMainPage extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$language = $this->getOption( 'lang', $this->getConfig()->get( MainConfigNames::LanguageCode ) );
+		$wikiPageFactory = $this->getServiceContainer()->getWikiPageFactory();
 
 		$mainPageName = wfMessage( 'mainpage' )->inLanguage( $language )->plain();
 		$title = Title::newFromText( $mainPageName );
-		$article = $this->getServiceContainer()->getWikiPageFactory()->newFromTitle( $title )->newPageUpdater( User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] ) );
-		$article->setContent( SlotRecord::MAIN, new WikitextContent( wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain() ) );
-		$article->saveRevision( CommentStoreComment::newUnsavedComment( wfMessage( 'createwiki-defaultmainpage-summary' )->inLanguage( $language )->plain() ), EDIT_SUPPRESS_RC );
+
+		$article = $wikiPageFactory->newFromTitle( $title )->newPageUpdater(
+			User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] )
+		);
+
+		$article->setContent(
+			SlotRecord::MAIN,
+			new WikitextContent(
+				wfMessage( 'createwiki-defaultmainpage' )->inLanguage( $language )->plain()
+			)
+		);
+
+		$article->saveRevision(
+			CommentStoreComment::newUnsavedComment(
+				wfMessage( 'createwiki-defaultmainpage-summary' )->inLanguage( $language )->plain()
+			),
+			EDIT_SUPPRESS_RC
+		);
 	}
 }
 

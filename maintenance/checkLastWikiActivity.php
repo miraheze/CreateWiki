@@ -15,7 +15,7 @@ use RebuildRecentchanges;
 
 class CheckLastWikiActivity extends Maintenance {
 
-	public $timestamp;
+	public int $timestamp;
 
 	public function __construct() {
 		parent::__construct();
@@ -24,7 +24,7 @@ class CheckLastWikiActivity extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$timestamp = $this->getTimestamp();
 		if ( $timestamp === 0 && SiteStats::edits() >= 2 ) {
 			$rebuildRC = $this->runChild(
@@ -42,21 +42,18 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	private function getTimestamp(): int {
-		$dbr = $this->getDB( DB_REPLICA );
-		$row = $dbr->selectRow(
-			'recentchanges',
-			'rc_timestamp',
-			[
-				"rc_log_action != 'renameuser'",
-				"rc_log_action != 'newusers'"
-			],
-			__METHOD__,
-			[
-				'ORDER BY' => 'rc_timestamp DESC'
-			]
-		);
+		$dbr = $this->getReplicaDB();
+		$timestamp = $dbr->newSelectQueryBuilder()
+			->select( 'MAX(rc_timestamp)' )
+			->from( 'recentchanges' )
+			->where( [
+				$dbr->expr( 'rc_log_type', '!=', 'renameuser' ),
+				$dbr->expr( 'rc_log_type', '!=', 'newusers' ),
+			] )
+			->caller( __METHOD__ )
+			->fetchField();
 
-		return $row ? $row->rc_timestamp : 0;
+		return (int)$timestamp;
 	}
 }
 

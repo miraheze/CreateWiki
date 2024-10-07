@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Afalau",
+			"Ceirios",
 			"John Lewis"
 		]
 	},
@@ -24,13 +25,12 @@
 	"createwiki-label-sitename": "Enw'r safle:",
 	"createwiki-success": "Roedd y wiki 'yn llwyddiannus.",
 	"echo-category-title-wiki-creation": "Creu wici",
-	"log-description-farmer": "Mae'r log hwn yn tracio creadigaethau wiki.",
+	"farmer-log-header": "Mae'r log hwn yn tracio creadigaethau wiki.",
 	"logentry-farmer-createwiki": "$1 greodd y wici \"$4\"",
 	"logentry-farmer-requestwiki": "$1 gofynnodd y wici \"$4\" (iaith: $5; preifat: $6) yn $7",
-	"notification-createwiki-wiki-creation-visitwiki-label": "Ymweld â'r wici",
 	"notification-createwiki-visit-request": "Gweld cais",
+	"notification-createwiki-wiki-creation-visitwiki-label": "Ymweld â'r wici",
 	"requestwiki": "Cais am wiki",
-	"requestwiki-header": "Diolch am ddewis Miraheze i gynnal eich wici! I ddechrau, llenwch y ffurflen isod er mwyn inni adolygu eich cais.\n\nBydd eich cais wici yn cael ei adolygu gan wirfoddolwr, a gellir ei dracio ar y dudalen a roddir wrth ichi gyflwyno'r cais.\n\nOs ydych chi eisiau parth arbennig ar gyfer eich wici (h.y. nid is-barth fel .miraheze.org), darllenwch y dudalen <span class=\"plainlinks\">[$1 hon]</span> yn gyntaf. Rhaid ichi ddewis is-barth yn gyntaf, a ffurfweddir eich parth arbennig wedyn.\n\nPan fyddwch yn gwneud cais am wici, rydych chi'n cytuno'n awtomatig i'n polisïau [[Content Policy|Cynnwys]] a [[Dormancy Policy|Segurdeb]].",
 	"requestwiki-label-language": "Iaith:",
 	"requestwiki-label-private": "Marcio'r wici hwn fel un preifat?",
 	"requestwiki-label-purpose": "Pwrpas y wici hwn yw...",
@@ -43,19 +43,17 @@
 	"requestwikiqueue-approved": "Wedi'i gymeradwyo",
 	"requestwikiqueue-decline": "Gwrthod",
 	"requestwikiqueue-declined": "Wedi'i wrthod",
-	"requestwikiqueue-edit": "Golygu cais",
-	"requestwikiqueue-handle": "Trin cais",
 	"requestwikiqueue-inreview": "O dan adolygiad",
 	"requestwikiqueue-onhold": "Ar saib",
 	"requestwikiqueue-pager-status-approved": "cymeradwyo",
 	"requestwikiqueue-pager-status-declined": "gwrthododd",
 	"requestwikiqueue-pager-status-inreview": "yn yr adolygiad",
-	"requestwikiqueue-request": "Cais",
-	"requestwikiqueue-request-header-requestercomment": "Gwnewch sylw a roddir gan y requester wici",
 	"requestwikiqueue-request-label-comment": "Sylw:",
 	"requestwikiqueue-request-label-language": "Iaith",
 	"requestwikiqueue-request-label-sitename": "Enw'r safle",
 	"requestwikiqueue-request-label-status": "Statws",
 	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-section-editing": "Golygu cais",
+	"requestwikiqueue-section-handling": "Trin cais",
 	"right-createwiki": "Creu wiciau"
 }

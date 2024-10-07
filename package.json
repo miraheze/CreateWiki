@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"scripts": {
-		"test": "npm -s run lint:js && npm -s run lint:styles",
+		"test": "npm -s run lint:js && npm -s run lint:styles && npm -s run lint:i18n",
 		"lint:fix:js": "npm -s run lint:js -- --fix",
 		"lint:fix:styles": "npm -s run lint:styles -- --fix",
 		"lint:js": "eslint --cache --max-warnings 0 .",
@@ -9,10 +9,10 @@
 		"lint:i18n": "banana-checker --requireLowerCase=0 i18n/"
 	},
 	"devDependencies": {
-		"eslint-config-wikimedia": "0.27.0",
+		"eslint-config-wikimedia": "0.28.2",
 		"grunt-banana-checker": "0.13.0",
 		"stylelint-config-idiomatic-order": "10.0.0",
-		"stylelint-config-wikimedia": "0.16.1"
+		"stylelint-config-wikimedia": "0.17.2"
 	},
 	"peerDependencies": {
 		"postcss-less": "6.0.0"

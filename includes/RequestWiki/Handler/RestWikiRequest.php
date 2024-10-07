@@ -4,12 +4,16 @@ namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
+use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RestUtils;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
-use Wikimedia\Rdbms\ILBFactory;
+use Wikimedia\Rdbms\IConnectionProvider;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 /**
  * Returns information related to a wiki request
@@ -17,52 +21,47 @@ use Wikimedia\Rdbms\ILBFactory;
  */
 class RestWikiRequest extends SimpleHandler {
 
-	/** @var Config */
-	private $config;
-
-	/** @var ILBFactory */
-	private $dbLoadBalancerFactory;
-
-	/** @var UserFactory */
-	private $userFactory;
+	private Config $config;
+	private IConnectionProvider $connectionProvider;
+	private UserFactory $userFactory;
 
 	/**
 	 * @param ConfigFactory $configFactory
-	 * @param ILBFactory $dbLoadBalancerFactory
+	 * @param IConnectionProvider $connectionProvider
 	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
 		ConfigFactory $configFactory,
-		ILBFactory $dbLoadBalancerFactory,
+		IConnectionProvider $connectionProvider,
 		UserFactory $userFactory
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
+		$this->connectionProvider = $connectionProvider;
 		$this->userFactory = $userFactory;
 	}
 
-	public function run( $requestID ) {
-		RestUtils::checkEnv();
-		// Should be kept in sync with RequestWikiRequestViewer's $visibilityConds
-		$visibilityConds = [
-			0 => 'public',
-			1 => 'createwiki-deleterequest',
-			2 => 'createwiki-suppressrequest',
-		];
-		$dbr = $this->dbLoadBalancerFactory->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )
-			->getMaintenanceConnectionRef( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
-		$wikiRequest = $dbr->selectRow(
-			'cw_requests',
-			'*',
-			[
-				'cw_id' => $requestID,
-			],
-			__METHOD__
+	public function run( int $requestID ): Response {
+		RestUtils::checkEnv( $this->config );
+
+		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
+
+		$dbr = $this->connectionProvider->getReplicaDatabase(
+			$this->config->get( ConfigNames::GlobalWiki )
 		);
+
+		$wikiRequest = $dbr->newSelectQueryBuilder()
+			->select( '*' )
+			->from( 'cw_requests' )
+			->where( [ 'cw_id' => $requestID ] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
 		if ( $wikiRequest ) {
 			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
 			if ( $wikiRequest->cw_visibility >= 3 ) {
-				return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
+				return $this->getResponseFactory()->createLocalizedHttpError(
+					404, new MessageValue( 'requestwiki-unknown' )
+				);
 			}
 
 			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
@@ -70,7 +69,9 @@ class RestWikiRequest extends SimpleHandler {
 			if ( $wikiRequestVisibility !== 'public' ) {
 				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
 					// User does not have permission to view this request
-					return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						404, new MessageValue( 'requestwiki-unknown' )
+					);
 				}
 			}
 
@@ -87,17 +88,15 @@ class RestWikiRequest extends SimpleHandler {
 				'bio' => (bool)$wikiRequest->cw_bio,
 				'visibility' => $wikiRequestVisibility,
 			];
-			$wikiRequestCwComments = $dbr->select(
-				'cw_comments',
-				'*',
-				[
-					'cw_id' => $requestID,
-				],
-				__METHOD__,
-				[
-					'cw_comment_timestamp DESC',
-				]
-			);
+
+			$wikiRequestCwComments = $dbr->newSelectQueryBuilder()
+				->select( '*' )
+				->from( 'cw_comments' )
+				->where( [ 'cw_id' => $requestID ] )
+				->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
+				->caller( __METHOD__ )
+				->fetchResultSet();
+
 			$wikiRequestComments = [];
 			foreach ( $wikiRequestCwComments as $comment ) {
 				$wikiRequestComments[] = [
@@ -106,19 +105,21 @@ class RestWikiRequest extends SimpleHandler {
 					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
 				];
 			}
+
 			// We now have all the data we need, add the comments to $response and return
 			$response['comments'] = $wikiRequestComments;
 			return $this->getResponseFactory()->createJson( $response );
 		}
+
 		// Request does not exist
 		return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
 	}
 
-	public function needsWriteAccess() {
+	public function needsWriteAccess(): bool {
 		return false;
 	}
 
-	public function getParamSettings() {
+	public function getParamSettings(): array {
 		return [
 			'id' => [
 				self::PARAM_SOURCE => 'path',

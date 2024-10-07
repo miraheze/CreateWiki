@@ -3,98 +3,113 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use MediaWiki\Config\Config;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Context\IContextSource;
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Pager\TablePager;
-use MediaWiki\Title\Title;
+use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\ConfigNames;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
 
-	/** @var Config */
-	private $config;
+	private LinkRenderer $linkRenderer;
+	private PermissionManager $permissionManager;
+	private UserFactory $userFactory;
 
-	/** @var string */
-	private $requester;
+	private string $dbname;
+	private string $requester;
+	private string $status;
 
-	/** @var string */
-	private $dbname;
+	public function __construct(
+		Config $config,
+		IContextSource $context,
+		IConnectionProvider $connectionProvider,
+		LinkRenderer $linkRenderer,
+		PermissionManager $permissionManager,
+		UserFactory $userFactory,
+		string $dbname,
+		string $requester,
+		string $status
+	) {
+		parent::__construct( $context, $linkRenderer );
 
-	/** @var string */
-	private $status;
+		$this->mDb = $connectionProvider->getReplicaDatabase(
+			$config->get( ConfigNames::GlobalWiki )
+		);
 
-	public function __construct( $page, $requester, $dbname, $status ) {
-		parent::__construct( $page->getContext(), $page->getLinkRenderer() );
+		$this->linkRenderer = $linkRenderer;
+		$this->permissionManager = $permissionManager;
+		$this->userFactory = $userFactory;
 
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->mDb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $this->config->get( 'CreateWikiGlobalWiki' ) )->getConnection( DB_REPLICA, [], $this->config->get( 'CreateWikiGlobalWiki' ) );
-		$this->requester = $requester;
 		$this->dbname = $dbname;
+		$this->requester = $requester;
 		$this->status = $status;
 	}
 
-	public function getFieldNames() {
-		static $headers = null;
-
-		$headers = [
-			'cw_timestamp' => 'requestwikiqueue-request-label-requested-date',
-			'cw_dbname' => 'createwiki-label-dbname',
-			'cw_sitename' => 'requestwikiqueue-request-label-sitename',
-			'cw_user' => 'requestwikiqueue-request-label-requester',
-			'cw_language' => 'requestwikiqueue-request-label-language',
-			'cw_url' => 'requestwikiqueue-request-label-url',
-			'cw_status' => 'requestwikiqueue-request-label-status',
+	/** @inheritDoc */
+	public function getFieldNames(): array {
+		return [
+			'cw_timestamp' => $this->msg( 'requestwikiqueue-request-label-requested-date' )->text(),
+			'cw_dbname' => $this->msg( 'createwiki-label-dbname' )->text(),
+			'cw_sitename' => $this->msg( 'requestwikiqueue-request-label-sitename' )->text(),
+			'cw_user' => $this->msg( 'requestwikiqueue-request-label-requester' )->text(),
+			'cw_language' => $this->msg( 'requestwikiqueue-request-label-language' )->text(),
+			'cw_url' => $this->msg( 'requestwikiqueue-request-label-url' )->text(),
+			'cw_status' => $this->msg( 'requestwikiqueue-request-label-status' )->text(),
 		];
-
-		foreach ( $headers as &$msg ) {
-			$msg = $this->msg( $msg )->text();
-		}
-
-		return $headers;
 	}
 
-	public function formatValue( $name, $value ) {
+	/** @inheritDoc */
+	public function formatValue( $name, $value ): string {
 		$row = $this->mCurrentRow;
-
-		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
-
-		$language = $this->getLanguage();
 
 		switch ( $name ) {
 			case 'cw_timestamp':
-				$formatted = $language->timeanddate( $row->cw_timestamp );
+				$language = $this->getLanguage();
+				$formatted = $this->escape( $language->timeanddate( $row->cw_timestamp, true ) );
 				break;
 			case 'cw_dbname':
-				$formatted = $row->cw_dbname;
+				$formatted = $this->escape( $row->cw_dbname );
 				break;
 			case 'cw_sitename':
-				$formatted = $row->cw_sitename;
+				$formatted = $this->escape( $row->cw_sitename );
 				break;
 			case 'cw_user':
-				$formatted = $userFactory->newFromId( $row->cw_user )->getName();
+				$formatted = $this->escape( $this->userFactory->newFromId( $row->cw_user )->getName() );
 				break;
 			case 'cw_url':
-				$formatted = $row->cw_url;
+				$formatted = $this->escape( $row->cw_url );
 				break;
 			case 'cw_status':
-				$formatted = MediaWikiServices::getInstance()->getLinkRenderer()->makeLink( Title::newFromText( "Special:RequestWikiQueue/{$row->cw_id}" ), $row->cw_status );
+				$formatted = $this->linkRenderer->makeLink(
+					SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
+					$row->cw_status
+				);
 				break;
 			case 'cw_language':
-				$formatted = $row->cw_language;
+				$formatted = $this->escape( $row->cw_language );
 				break;
 			default:
-				$formatted = "Unable to format $name";
-				break;
+				$formatted = $this->escape( "Unable to format {$name}" );
 		}
 
 		return $formatted;
 	}
 
-	public function getQueryInfo() {
+	/**
+	 * Safely HTML-escapes $value
+	 */
+	private function escape( string $value ): string {
+		return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
+	}
+
+	/** @inheritDoc */
+	public function getQueryInfo(): array {
 		$user = $this->getUser();
 
-		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
-
-		$visibility = $permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
+		$visibility = $this->permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
 
 		$info = [
 			'tables' => [
@@ -121,10 +136,10 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = $userFactory->newFromName( $this->requester )->getId();
+			$info['conds']['cw_user'] = $this->userFactory->newFromName( $this->requester )->getId();
 		}
 
-		if ( $this->status && $this->status != '*' ) {
+		if ( $this->status && $this->status !== '*' ) {
 			$info['conds']['cw_status'] = $this->status;
 		} elseif ( !$this->status ) {
 			$info['conds']['cw_status'] = 'inreview';
@@ -133,11 +148,13 @@ class RequestWikiQueuePager extends TablePager {
 		return $info;
 	}
 
-	public function getDefaultSort() {
+	/** @inheritDoc */
+	public function getDefaultSort(): string {
 		return 'cw_id';
 	}
 
-	public function isFieldSortable( $name ) {
-		return true;
+	/** @inheritDoc */
+	public function isFieldSortable( $name ): bool {
+		return $name !== 'cw_user';
 	}
 }
