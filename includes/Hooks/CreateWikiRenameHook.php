@@ -8,9 +8,13 @@ interface CreateWikiRenameHook {
 
 	/**
 	 * @param DBConnRef $cwdb
-	 * @param string $old dbname
-	 * @param string $new dbname
+	 * @param string $oldDbName
+	 * @param string $newDbName
 	 * @return void
 	 */
-	public function onCreateWikiRename( $cwdb, $old, $new ): void;
+	public function onCreateWikiRename(
+		DBConnRef $cwdb,
+		string $oldDbName,
+		string $newDbName
+	): void;
 }

@@ -3,32 +3,48 @@
 namespace Miraheze\CreateWiki\Notifications;
 
 use MediaWiki\Extension\Notifications\Formatters\EchoEventPresentationModel;
+use MediaWiki\Message\Message;
 
 class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 
-	public function getIconType() {
+	/**
+	 * @inheritDoc
+	 */
+	public function getIconType(): string {
 		return 'global';
 	}
 
-	public function getSubjectMessage() {
+	/**
+	 * @inheritDoc
+	 */
+	public function getSubjectMessage(): Message {
 		$msg = $this->msg( 'notification-createwiki-wiki-creation-email-subject' );
 		$msg->params( $this->event->getExtraParam( 'sitename', 0 ) );
 
 		return $msg;
 	}
 
-	public function getHeaderMessage() {
+	/**
+	 * @inheritDoc
+	 */
+	public function getHeaderMessage(): Message {
 		$msg = $this->msg( 'notification-header-wiki-creation' );
 		$msg->params( $this->event->getExtraParam( 'sitename', 0 ) );
 
 		return $msg;
 	}
 
-	public function getPrimaryLink() {
+	/**
+	 * @inheritDoc
+	 */
+	public function getPrimaryLink(): bool {
 		return false;
 	}
 
-	public function getSecondaryLinks() {
+	/**
+	 * @inheritDoc
+	 */
+	public function getSecondaryLinks(): array {
 		$visitLink = [
 			'url' => $this->event->getExtraParam( 'wiki-url', 0 ),
 			'label' => $this->msg( 'notification-createwiki-wiki-creation-visitwiki-label' )->text(),

@@ -11,7 +11,6 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
 use MediaWiki\MainConfigNames;
-use Miraheze\CreateWiki\RemoteWiki;
 
 class ChangeDBCluster extends Maintenance {
 
@@ -19,26 +18,29 @@ class ChangeDBCluster extends Maintenance {
 		parent::__construct();
 
 		$this->addOption( 'db-cluster', 'Sets the wikis requested to a different db cluster.', true, true );
-		$this->addOption( 'file', 'Path to file where the wikinames are store. Must be one wikidb name per line. (Optional, fallsback to current dbname)', false, true );
+
+		$this->addOption( 'file', 'Path to file where the wikinames are store. ' .
+			'Must be one wikidb name per line. (Optional, fallsback to current dbname)',
+			false, true
+		);
 
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
-		if ( (bool)$this->getOption( 'file' ) ) {
+	public function execute(): void {
+		if ( $this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
 
 			if ( !$file ) {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$wiki = new RemoteWiki(
-				$this->getConfig()->get( MainConfigNames::DBname ),
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+			$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+				$this->getConfig()->get( MainConfigNames::DBname )
 			);
 
-			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
-			$wiki->commit();
+			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
+			$remoteWiki->commit();
 
 			return;
 		}
@@ -46,17 +48,15 @@ class ChangeDBCluster extends Maintenance {
 		for ( $linenum = 1; !feof( $file ); $linenum++ ) {
 			$line = trim( fgets( $file ) );
 
-			if ( $line == '' ) {
+			if ( $line === '' ) {
 				continue;
 			}
 
-			$wiki = new RemoteWiki(
-				$line,
-				$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
-			);
+			$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )
+				->newInstance( $line );
 
-			$wiki->setDBCluster( $this->getOption( 'db-cluster' ) );
-			$wiki->commit();
+			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
+			$remoteWiki->commit();
 		}
 	}
 }

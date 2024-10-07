@@ -1,0 +1,2 @@
+ALTER TABLE /*_*/cw_requests
+  MODIFY cw_private TINYINT UNSIGNED NOT NULL DEFAULT '0';

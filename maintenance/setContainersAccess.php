@@ -12,7 +12,7 @@ require_once "$IP/maintenance/Maintenance.php";
 use FileBackend;
 use Maintenance;
 use MediaWiki\MainConfigNames;
-use Miraheze\CreateWiki\RemoteWiki;
+use Miraheze\CreateWiki\ConfigNames;
 
 class SetContainersAccess extends Maintenance {
 
@@ -25,18 +25,17 @@ class SetContainersAccess extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
-		$wiki = new RemoteWiki(
-			$this->getConfig()->get( MainConfigNames::DBname ),
-			$this->getServiceContainer()->get( 'CreateWikiHookRunner' )
+		$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+			$this->getConfig()->get( MainConfigNames::DBname )
 		);
 
-		$isPrivate = $wiki->isPrivate();
+		$isPrivate = $remoteWiki->isPrivate();
 
-		foreach ( $this->getConfig()->get( 'CreateWikiContainers' ) as $zone => $status ) {
+		foreach ( $this->getConfig()->get( ConfigNames::Containers ) as $zone => $status ) {
 			$dir = $backend->getContainerStoragePath( $zone );
 			$private = $status === 'private';
 			$publicPrivate = $status === 'public-private';
@@ -47,7 +46,11 @@ class SetContainersAccess extends Maintenance {
 		}
 	}
 
-	protected function prepareDirectory( FileBackend $backend, $dir, array $secure ) {
+	protected function prepareDirectory(
+		FileBackend $backend,
+		string $dir,
+		array $secure
+	): void {
 		// Create zone if it doesn't exist...
 		$this->output( "Making sure '$dir' exists..." );
 		$backend->clearCache( [ $dir ] );

@@ -5,9 +5,9 @@ namespace Miraheze\CreateWiki\Hooks;
 interface CreateWikiCreationHook {
 
 	/**
-	 * @param string $wiki dbname
+	 * @param string $dbname
 	 * @param bool $private
 	 * @return void
 	 */
-	public function onCreateWikiCreation( $wiki, $private ): void;
+	public function onCreateWikiCreation( string $dbname, bool $private ): void;
 }

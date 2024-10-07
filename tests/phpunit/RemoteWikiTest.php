@@ -2,8 +2,6 @@
 
 namespace Miraheze\CreateWiki\Tests;
 
-use MediaWiki\Config\SiteConfiguration;
-use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
@@ -14,7 +12,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 /**
  * @group CreateWiki
  * @group Database
- * @group Medium
+ * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\RemoteWiki
  */
 class RemoteWikiTest extends MediaWikiIntegrationTestCase {
@@ -22,16 +20,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$conf = new SiteConfiguration();
-		$conf->suffixes = [ 'test' ];
-
-		$this->setMwGlobals( 'wgConf', $conf );
+		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' );
 		$this->setMwGlobals( 'wgCreateWikiUseClosedWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
 		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
 		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
 
-		$db = MediaWikiServices::getInstance()->getDatabaseFactory()->create( 'mysql', [
+		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $GLOBALS['wgDBserver'],
 			'user' => 'root',
 		] );
@@ -44,13 +39,12 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		try {
-			$dbw = MediaWikiServices::getInstance()
-				->getDBLoadBalancer()
-				->getMaintenanceConnectionRef( DB_PRIMARY );
+			$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
 
-			$dbw->insert(
-				'cw_wikis',
-				[
+			$dbw->newInsertQueryBuilder()
+				->insertInto( 'cw_wikis' )
+				->ignore()
+				->row( [
 					'wiki_dbname' => 'wikidb',
 					'wiki_dbcluster' => 'c1',
 					'wiki_sitename' => 'TestWiki',
@@ -63,12 +57,10 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 					'wiki_locked' => (int)0,
 					'wiki_inactive' => (int)0,
 					'wiki_inactive_exempt' => (int)0,
-					'wiki_url' => 'http://127.0.0.1:9412'
-				],
-				__METHOD__,
-				[ 'IGNORE' ]
-			);
-
+					'wiki_url' => 'http://127.0.0.1:9412',
+				] )
+				->caller( __METHOD__ )
+				->execute();
 		} catch ( DBQueryError $e ) {
 			// Do nothing
 		}
@@ -310,12 +302,12 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testSetDBCluster() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
-		$this->assertNull( $remoteWiki->getDBCluster() );
+		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
 
-		$remoteWiki->setDBCluster( 'c1' );
+		$remoteWiki->setDBCluster( 'c2' );
 		$remoteWiki->commit();
 
-		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
+		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
 	}
 
 	/**
@@ -350,7 +342,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
 		$this->assertSame( 'test', $remoteWiki->getCategory() );
 		$this->assertSame( 'qqx', $remoteWiki->getLanguage() );
-		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
+		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
 	}
 
 	/**
@@ -361,6 +353,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
-		$wikiManager->create( 'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test' );
+		$wikiManager->create(
+			'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test'
+		);
 	}
 }

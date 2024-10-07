@@ -10,24 +10,32 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use Miraheze\CreateWiki\WikiManager;
+use Miraheze\CreateWiki\ConfigNames;
 
 class RenameWiki extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
 
-		$this->addDescription( 'Renames a wiki from it\'s original name to a new name. Will NOT perform core database operations so run AFTER new database exists and while old one still exists.' );
+		$this->addDescription(
+			'Renames a wiki from it\'s original name to a new name. ' .
+			'Will NOT perform core database operations so run AFTER new ' .
+			'database exists and while old one still exists.'
+		);
 
 		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.', false );
 		$this->addArg( 'oldwiki', 'Old wiki database name', true );
 		$this->addArg( 'newwiki', 'New wiki database name', true );
-		$this->addArg( 'user', 'Username or reference name of the person running this script. Will be used in tracking and notification internally.', true );
+
+		$this->addArg( 'user',
+			'Username or reference name of the person running this script. ' .
+			'Will be used in tracking and notification internally.',
+		true );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$oldwiki = $this->getArg( 0 );
 		$newwiki = $this->getArg( 1 );
 
@@ -40,15 +48,15 @@ class RenameWiki extends Maintenance {
 			$this->countDown( 10 );
 
 			$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
-			$wm = new WikiManager( $oldwiki, $hookRunner );
-
-			$rename = $wm->rename( $newwiki );
+			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+			$wikiManager = $wikiManagerFactory->newInstance( $oldwiki );
+			$rename = $wikiManager->rename( newDatabaseName: $newwiki );
 
 			if ( $rename ) {
 				$this->fatalError( $rename );
 			}
 
-			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( 'CreateWikiDatabase' ) );
+			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
 
 			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
@@ -64,14 +72,22 @@ class RenameWiki extends Maintenance {
 			$user = $this->getArg( 2 );
 			$wikiRename = implode( ' to ', $renamedWiki );
 
+			$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
+				"just now {$user} has renamed the following wiki from CreateWiki and " .
+				"associated extensions - From {$wikiRename}.";
+
 			$notificationData = [
 				'type' => 'wiki-rename',
 				'subject' => 'Wiki Rename Notification',
-				'body' => "Hello!\nThis is an automatic notification from CreateWiki notifying you that just now {$user} has renamed the following wiki from CreateWiki and associated extensions - From {$wikiRename}.",
+				'body' => $message,
 			];
 
 			$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
-				->sendNotification( $notificationData );
+				->sendNotification(
+					data: $notificationData,
+					// No receivers, it will send to configured email
+					receivers: []
+				);
 		}
 	}
 }

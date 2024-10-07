@@ -2,141 +2,157 @@
 
 namespace Miraheze\CreateWiki\CreateWiki;
 
-use MediaWiki\Config\Config;
+use ErrorPageError;
 use MediaWiki\Html\Html;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
-use Miraheze\CreateWiki\EntryPointUtils;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\WikiManager;
+use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
-	/** @var Config */
-	private $config;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	private WikiManagerFactory $wikiManagerFactory;
 
-	public function __construct( CreateWikiHookRunner $hookRunner ) {
+	/**
+	 * @param WikiManagerFactory $wikiManagerFactory
+	 */
+	public function __construct( WikiManagerFactory $wikiManagerFactory ) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
-
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
+		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
-	public function execute( $par ) {
-		if ( !EntryPointUtils::currentWikiIsGlobalWiki() ) {
-			return $this->getOutput()->addHTML(
-				Html::errorBox( $this->msg( 'createwiki-wikinotglobalwiki' )->escaped() )
-			);
+	/**
+	 * @param ?string $par
+	 */
+	public function execute( $par ): void {
+		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
+			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
 		}
 
 		parent::execute( $par );
 	}
 
-	protected function getFormFields() {
-		$par = $this->par;
-		$request = $this->getRequest();
-
+	/**
+	 * @inheritDoc
+	 */
+	protected function getFormFields(): array {
 		$formDescriptor = [
 			'dbname' => [
 				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
-				'default' => $request->getVal( 'wpdbname' ) ?: $par,
 				'required' => true,
-				'validation-callback' => [ $this, 'validateDBname' ],
+				'validation-callback' => [ $this, 'isValidDatabase' ],
 			],
 			'requester' => [
 				'label-message' => 'createwiki-label-requester',
 				'type' => 'user',
-				'default' => $request->getVal( 'wprequester' ),
 				'exists' => true,
 				'required' => true,
 			],
 			'sitename' => [
 				'label-message' => 'createwiki-label-sitename',
 				'type' => 'text',
-				'default' => $request->getVal( 'wpsitename' ),
 				'size' => 20,
 			],
 			'language' => [
 				'type' => 'language',
 				'label-message' => 'createwiki-label-language',
-				'default' => $request->getVal( 'wplanguage' ) ?: 'en',
+				'default' => 'en',
 			],
 		];
 
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'createwiki-label-private',
 			];
 		}
 
-		if ( $this->config->get( 'CreateWikiUseCategories' ) && $this->config->get( 'CreateWikiCategories' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
-				'options' => $this->config->get( 'CreateWikiCategories' ),
+				'options' => $this->getConfig()->get( ConfigNames::Categories ),
 				'default' => 'uncategorised',
 			];
 		}
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 8,
+			'rows' => 6,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
-			'default' => $request->getVal( 'wpreason' ),
 			'required' => true,
 		];
 
 		return $formDescriptor;
 	}
 
-	public function onSubmit( array $formData ) {
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function onSubmit( array $formData ): bool {
+		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$private = $formData['private'];
 		} else {
 			$private = 0;
 		}
 
-		if ( $this->config->get( 'CreateWikiUseCategories' ) ) {
+		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
 			$category = $formData['category'];
 		} else {
 			$category = 'uncategorised';
 		}
 
-		$wm = new WikiManager( $formData['dbname'], $this->hookRunner );
+		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
+		$wikiManager->create(
+			sitename: $formData['sitename'],
+			language: $formData['language'],
+			private: $private,
+			category: $category,
+			requester: $formData['requester'],
+			actor: $this->getContext()->getUser()->getName(),
+			reason: $formData['reason'],
+			extra: []
+		);
 
-		$wm->create( $formData['sitename'], $formData['language'], $private, $category, $formData['requester'], $this->getContext()->getUser()->getName(), $formData['reason'] );
-
-		$this->getOutput()->addHTML( Html::successBox( $this->msg( 'createwiki-success' )->escaped() ) );
+		$this->getOutput()->addHTML(
+			Html::successBox(
+				$this->msg( 'createwiki-success' )->escaped()
+			)
+		);
 
 		return true;
 	}
 
-	public function validateDBname( $DBname, $allData ) {
-		if ( $DBname === null ) {
-			return true;
+	public function isValidDatabase( ?string $dbname ): bool|string|Message {
+		if ( !$dbname || ctype_space( $dbname ) ) {
+			return $this->msg( 'htmlform-required' );
 		}
 
-		$wm = new WikiManager( $DBname, $this->hookRunner );
-
-		$check = $wm->checkDatabaseName( $DBname );
+		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
+		$check = $wikiManager->checkDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
+			// Will return a string — the error it received
 			return $check;
 		}
 
 		return true;
 	}
 
-	protected function getDisplayFormat() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	protected function getGroupName() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function getGroupName(): string {
 		return 'wikimanage';
 	}
 }

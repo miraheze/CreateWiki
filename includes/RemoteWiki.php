@@ -1,435 +1,183 @@
 <?php
 
+// phpcs:disable MediaWiki.Commenting.FunctionComment.MissingDocumentationPublic
+
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 class RemoteWiki {
 
-	public $changes = [];
-	public $log;
-	public $logParams = [];
-	public $newRows = [];
+	private RemoteWikiFactory $factory;
 
-	private $hooks = [];
-	private $config;
-	private $dbw;
-	private $dbname;
-	private $sitename;
-	private $language;
-	private $private;
-	private $creation;
-	private $url;
-	private $closed;
-	private $inactive;
-	private $inactiveExempt;
-	private $inactiveExemptReason;
-	private $deleted;
-	private $locked;
-	private $dbcluster;
-	private $category;
-	private $experimental;
-	/** @var CreateWikiHookRunner */
-	private $hookRunner;
+	public array $changes = [];
+	public array $logParams = [];
+	public array $newRows = [];
+
+	public ?string $log = null;
 
 	public function __construct( string $wiki, CreateWikiHookRunner $hookRunner ) {
-		$this->config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
-
-		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$this->dbw = $lbFactory->getMainLB( $this->config->get( 'CreateWikiDatabase' ) )
-			->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->config->get( 'CreateWikiDatabase' ) );
-
-		$wikiRow = $this->dbw->selectRow(
-			'cw_wikis',
-			'*',
-			[
-				'wiki_dbname' => $wiki
-			]
-		);
-
-		if ( !$wikiRow ) {
-			return;
-		}
-
-		$this->dbname = $wikiRow->wiki_dbname;
-		$this->sitename = $wikiRow->wiki_sitename;
-		$this->language = $wikiRow->wiki_language;
-		$this->creation = $wikiRow->wiki_creation;
-		$this->url = $wikiRow->wiki_url;
-		$this->deleted = $wikiRow->wiki_deleted_timestamp ?? 0;
-		$this->locked = $wikiRow->wiki_locked;
-		$this->dbcluster = $wikiRow->wiki_dbcluster;
-		$this->category = $wikiRow->wiki_category;
-
-		if ( $this->config->get( 'CreateWikiUsePrivateWikis' ) ) {
-			$this->private = $wikiRow->wiki_private;
-		}
-
-		if ( $this->config->get( 'CreateWikiUseClosedWikis' ) ) {
-			$this->closed = $wikiRow->wiki_closed_timestamp ?? 0;
-		}
-
-		if ( $this->config->get( 'CreateWikiUseInactiveWikis' ) ) {
-			$this->inactive = $wikiRow->wiki_inactive_timestamp ?? 0;
-			$this->inactiveExempt = $wikiRow->wiki_inactive_exempt;
-			$this->inactiveExemptReason = $wikiRow->wiki_inactive_exempt_reason ?? null;
-		}
-
-		if ( $this->config->get( 'CreateWikiUseExperimental' ) ) {
-			$this->experimental = $wikiRow->wiki_experimental;
-		}
+		$factory = MediaWikiServices::getInstance()->get( 'RemoteWikiFactory' );
+		$this->factory = $factory->newInstance( $wiki );
 	}
 
 	public function getCreationDate() {
-		return $this->creation;
+		return $this->factory->getCreationDate();
 	}
 
 	public function getDBname() {
-		return $this->dbname;
+		return $this->factory->getDBname();
 	}
 
 	public function getSitename() {
-		return $this->sitename;
+		return $this->factory->getSitename();
 	}
 
 	public function setSitename( string $sitename ) {
-		$this->changes['sitename'] = [
-			'old' => $this->sitename,
-			'new' => $sitename
-		];
-
-		$this->sitename = $sitename;
-		$this->newRows['wiki_sitename'] = $sitename;
+		$this->factory->setSitename( $sitename );
 	}
 
 	public function getLanguage() {
-		return $this->language;
+		return $this->factory->getLanguage();
 	}
 
 	public function setLanguage( string $lang ) {
-		$this->changes['language'] = [
-			'old' => $this->language,
-			'new' => $lang
-		];
-
-		$this->language = $lang;
-		$this->newRows['wiki_language'] = $lang;
+		$this->factory->setLanguage( $lang );
 	}
 
 	public function isInactive() {
-		return $this->inactive;
+		return $this->factory->isInactive();
 	}
 
 	public function markInactive() {
-		$this->changes['inactive'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->inactive = $this->dbw->timestamp();
-		$this->newRows += [
-			'wiki_inactive' => 1,
-			'wiki_inactive_timestamp' => $this->inactive
-		];
+		$this->factory->markInactive();
 	}
 
 	public function markActive() {
-		$this->changes['active'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->hooks[] = 'CreateWikiStateOpen';
-		$this->inactive = false;
-		$this->closed = false;
-		$this->newRows += [
-			'wiki_closed' => 0,
-			'wiki_closed_timestamp' => null,
-			'wiki_inactive' => 0,
-			'wiki_inactive_timestamp' => null
-		];
+		$this->factory->markActive();
 	}
 
 	public function isInactiveExempt() {
-		return $this->inactiveExempt;
+		return $this->factory->isInactiveExempt();
 	}
 
 	public function markExempt() {
-		$this->changes['inactive-exempt'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->inactiveExempt = true;
-		$this->newRows['wiki_inactive_exempt'] = true;
+		$this->factory->markExempt();
 	}
 
 	public function unExempt() {
-		$this->changes['inactive-exempt'] = [
-			'old' => 1,
-			'new' => 0
-		];
-
-		$this->inactiveExempt = false;
-		$this->newRows['wiki_inactive_exempt'] = false;
-
-		$this->inactiveExemptReason = null;
-		$this->newRows['wiki_inactive_exempt_reason'] = null;
+		$this->factory->unExempt();
 	}
 
 	public function setInactiveExemptReason( string $reason ) {
-		$reason = ( $reason == '' ) ? null : $reason;
-
-		$this->changes['inactive-exempt-reason'] = [
-			'old' => $this->inactiveExemptReason,
-			'new' => $reason
-		];
-
-		$this->inactiveExemptReason = $reason;
-		$this->newRows['wiki_inactive_exempt_reason'] = $reason;
+		$this->factory->setInactiveExemptReason( $reason );
 	}
 
 	public function getInactiveExemptReason() {
-		return $this->inactiveExemptReason;
+		return $this->factory->getInactiveExemptReason();
 	}
 
 	public function isPrivate() {
-		return $this->private;
+		return $this->factory->isPrivate();
 	}
 
 	public function markPrivate() {
-		$this->changes['private'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
-		$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
-			new SetContainersAccessJob( [ 'private' => true ] )
-		);
-
-		$this->hooks[] = 'CreateWikiStatePrivate';
-		$this->private = true;
-		$this->newRows['wiki_private'] = true;
+		$this->factory->markPrivate();
 	}
 
 	public function markPublic() {
-		$this->changes['public'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$jobQueueGroupFactory = MediaWikiServices::getInstance()->getJobQueueGroupFactory();
-		$jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
-			new SetContainersAccessJob( [ 'private' => false ] )
-		);
-
-		$this->hooks[] = 'CreateWikiStatePublic';
-		$this->private = false;
-		$this->newRows['wiki_private'] = false;
+		$this->factory->markPublic();
 	}
 
 	public function isClosed() {
-		return $this->closed;
+		return $this->factory->isClosed();
 	}
 
 	public function markClosed() {
-		$this->changes['closed'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->hooks[] = 'CreateWikiStateClosed';
-		$this->closed = $this->dbw->timestamp();
-		$this->newRows += [
-			'wiki_closed' => 1,
-			'wiki_closed_timestamp' => $this->closed,
-			'wiki_inactive' => 0,
-			'wiki_inactive_timestamp' => null
-		];
+		$this->factory->markClosed();
 	}
 
 	public function isDeleted() {
-		return $this->deleted;
+		return $this->factory->isDeleted();
 	}
 
 	public function delete() {
-		$this->changes['deleted'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->log = 'delete';
-		$this->deleted = $this->dbw->timestamp();
-		$this->newRows += [
-			'wiki_deleted' => 1,
-			'wiki_deleted_timestamp' => $this->deleted,
-			'wiki_closed' => 0,
-			'wiki_closed_timestamp' => null
-		];
+		$this->factory->delete();
 	}
 
 	public function undelete() {
-		$this->changes['deleted'] = [
-			'old' => 1,
-			'new' => 0
-		];
-
-		$this->log = 'undelete';
-		$this->deleted = false;
-		$this->newRows += [
-			'wiki_deleted' => 0,
-			'wiki_deleted_timestamp' => null
-		];
+		$this->factory->undelete();
 	}
 
 	public function isLocked() {
-		return $this->locked;
+		return $this->factory->isLocked();
 	}
 
 	public function lock() {
-		$this->changes['locked'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->log = 'lock';
-		$this->locked = true;
-		$this->newRows['wiki_locked'] = 1;
+		$this->factory->lock();
 	}
 
 	public function unlock() {
-		$this->changes['locked'] = [
-			'old' => 1,
-			'new' => 0
-		];
-
-		$this->log = 'unlock';
-		$this->locked = false;
-		$this->newRows['wiki_locked'] = 0;
+		$this->factory->unlock();
 	}
 
 	public function getCategory() {
-		return $this->category;
+		return $this->factory->getCategory();
 	}
 
 	public function setCategory( string $category ) {
-		$this->changes['category'] = [
-			'old' => $this->category,
-			'new' => $category
-		];
-
-		$this->category = $category;
-		$this->newRows['wiki_category'] = $category;
+		$this->factory->setCategory( $category );
 	}
 
 	public function getServerName() {
-		return $this->url;
+		return $this->factory->getServerName();
 	}
 
 	public function setServerName( string $server ) {
-		$server = ( $server == '' ) ? null : $server;
-
-		$this->changes['servername'] = [
-			'old' => $this->url,
-			'new' => $server
-		];
-
-		$this->url = $server;
-		$this->newRows['wiki_url'] = $server;
+		$this->factory->setServerName( $server );
 	}
 
 	public function getDBCluster() {
-		return $this->dbcluster;
+		return $this->factory->getDBCluster();
 	}
 
 	public function setDBCluster( string $dbcluster ) {
-		$this->changes['dbcluster'] = [
-			'old' => $this->dbcluster,
-			'new' => $dbcluster
-		];
-
-		$this->dbcluster = $dbcluster;
-		$this->newRows['wiki_dbcluster'] = $dbcluster;
+		$this->factory->setDBCluster( $dbcluster );
 	}
 
 	public function isExperimental() {
-		return $this->experimental;
+		return $this->factory->isExperimental();
 	}
 
 	public function markExperimental() {
-		$this->changes['experimental'] = [
-			'old' => 0,
-			'new' => 1
-		];
-
-		$this->experimental = true;
-		$this->newRows['wiki_experimental'] = true;
+		$this->factory->markExperimental();
 	}
 
 	public function unMarkExperimental() {
-		$this->changes['experimental'] = [
-			'old' => 1,
-			'new' => 0
-		];
-
-		$this->experimental = false;
-		$this->newRows['wiki_experimental'] = false;
+		$this->factory->unMarkExperimental();
 	}
 
 	public function commit() {
-		if ( !empty( $this->changes ) ) {
-			if ( $this->newRows ) {
-				$this->dbw->update(
-					'cw_wikis',
-					$this->newRows,
-					[
-						'wiki_dbname' => $this->dbname
-					]
-				);
+		if ( $this->changes ) {
+			foreach ( $this->changes as $field => $value ) {
+				$this->factory->trackChange( $field, $value['old'], $value['new'] );
 			}
 
-			foreach ( $this->hooks as $hook ) {
-				switch ( $hook ) {
-					case 'CreateWikiStateOpen':
-						$this->hookRunner->onCreateWikiStateOpen( $this->dbname );
-						break;
-					case 'CreateWikiStateClosed':
-						$this->hookRunner->onCreateWikiStateClosed( $this->dbname );
-						break;
-					case 'CreateWikiStatePublic':
-						$this->hookRunner->onCreateWikiStatePublic( $this->dbname );
-						break;
-					case 'CreateWikiStatePrivate':
-						$this->hookRunner->onCreateWikiStatePrivate( $this->dbname );
-						break;
-					default:
-						// TODO: throw exception
+			if ( $this->newRows ) {
+				foreach ( $this->newRows as $row => $value ) {
+					$this->factory->addNewRow( $row, $value );
 				}
 			}
 
-			if ( $this->config->get( 'CreateWikiUsePhpCache' ) ) {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$cWP = new CreateWikiPhp( $this->dbname, $this->hookRunner );
-
-				$cWP->resetDatabaseList();
-				$cWP->resetWiki();
-			} else {
-				// @phan-suppress-next-line SecurityCheck-PathTraversal
-				$cWJ = new CreateWikiJson( $this->dbname, $this->hookRunner );
-
-				$cWJ->resetDatabaseList();
-				$cWJ->resetWiki();
-			}
-
-			if ( $this->log === null ) {
-				$this->log = 'settings';
-				$this->logParams = [
-					'5::changes' => implode( ', ', array_keys( $this->changes ) )
-				];
+			if ( $this->log || $this->logParams ) {
+				$this->factory->makeLog( $this->log, $this->logParams );
 			}
 		}
+
+		$this->factory->commit();
+		$this->log = $this->factory->getLogAction();
+		$this->logParams = $this->factory->getLogParams();
 	}
 }
