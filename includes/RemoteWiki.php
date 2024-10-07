@@ -159,6 +159,10 @@ class RemoteWiki {
 		$this->factory->unMarkExperimental();
 	}
 
+	public function hasChanges() {
+		return $this->factory->hasChanges();
+	}
+
 	public function commit() {
 		if ( $this->changes ) {
 			foreach ( $this->changes as $field => $value ) {
