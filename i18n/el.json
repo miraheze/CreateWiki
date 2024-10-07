@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"NikosLikomitros",
-			"Nikosgranturismogt"
+			"Nikosgranturismogt",
+			"Omnipaedista"
 		]
 	},
 	"action-createwiki": "δημιουργία βίκι",
@@ -19,8 +20,8 @@
 	"createwiki-label-requester": "Αιτών:",
 	"createwiki-label-sitename": "Όνομα ιστοχώρου:",
 	"createwiki-success": "Το βίκι δημιουργήθηκε επιτυχώς",
+	"farmer-log-name": "Αρχείο της βικι-φάρμας",
 	"logentry-farmer-createwiki": "Ο $1 δημιούργησε το βίκι \"$4\"",
-	"log-name-farmer": "Μητρώο αγρότη",
 	"requestwiki": "Ζητήστε ένα βίκι",
 	"requestwiki-label-language": "Γλώσσα:",
 	"requestwiki-label-private": "Ιδιωτικό βίκι (μη αναγνώσιμο από τον καθένα):",
@@ -32,9 +33,7 @@
 	"requestwikiqueue-pager-status-approved": "Εγκεκριμένο",
 	"requestwikiqueue-pager-status-declined": "απορριμένο",
 	"requestwikiqueue-pager-status-inreview": "σε αναθεώρηση",
-	"requestwikiqueue-request": "Αίτημα",
 	"requestwikiqueue-request-label-comment": "Σχόλιο:",
-	"requestwikiqueue-request-label-edit-wiki": "Αίτημα επεξεργασίας βίκι",
 	"requestwikiqueue-request-label-language": "Γλώσσα",
 	"requestwikiqueue-request-label-requester": "Αιτών",
 	"requestwikiqueue-request-label-sitename": "Όνομα ιστοχώρου",

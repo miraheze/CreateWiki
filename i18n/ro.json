@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Andrei Stroe",
+			"Firilacroco",
 			"KlaudiuMihaila",
 			"Reception123"
 		]
@@ -19,12 +20,11 @@
 	"createwiki-label-requester": "Solicitant:",
 	"createwiki-label-sitename": "Nume de site:",
 	"createwiki-success": "Wiki-ul a fost creat cu success.",
-	"log-description-farmer": "Acest jurnal consemnează creările de wikiuri.",
+	"farmer-log-header": "Acest jurnal consemnează creările de wikiuri.",
+	"farmer-log-name": "Jurnal wiki fermă",
 	"logentry-farmer-createwiki": "$1 a creat wikiul \"$4\"",
 	"logentry-farmer-requestwiki": "$1 a cerut wikiul \"$4\" (limbă: $5; privat: $6) în $7",
-	"log-name-farmer": "Registrul wiki",
 	"requestwiki": "Cereți un wiki",
-	"requestwiki-header": "O să cereți un wiki pe Miraheze, excellent! Vă rugăm să completați formualrul următor.\n\nDacă vreti un domeniu separat citiți <span class=\"plainlinks\">[$1 acesta]</span> întâi.",
 	"requestwiki-label-language": "Limbă:",
 	"requestwiki-label-private": "Wiki privat (nu poate fi citit de oricine):",
 	"requestwiki-label-sitename": "Nume de wiki:",

@@ -16,6 +16,8 @@
 	"createwiki-label-private": "Merkañ ar wiki-mañ evel prevez",
 	"createwiki-label-sitename": "Anv al lec'hienn:",
 	"echo-category-title-wiki-creation": "Krouiñ ar wiki",
+	"farmer-log-header": "Hemañ zo un deizlevr eus ar c'hemmoù degaset d'ar feurm wiki.",
+	"farmer-log-name": "Deizlevr ar feurm wiki",
 	"log-action-filter-farmer-createwiki": "Wiki krouet",
 	"logentry-farmer-createwiki": "Krouet eo bet ar wiki \"$4\" gant $1",
 	"notification-createwiki-wiki-creation-email-subject": "Krouet eo bet ho wiki $1!",
@@ -30,7 +32,6 @@
 	"requestwikiqueue-approved": "Aprouet",
 	"requestwikiqueue-decline": "Nac'hañ",
 	"requestwikiqueue-declined": "Nac'het",
-	"requestwikiqueue-edit": "Goulenn da aozañ",
 	"requestwikiqueue-moredetails": "Muioc'h a vunudoù zo ezhomm",
 	"requestwikiqueue-pager-status-approved": "aprouet",
 	"requestwikiqueue-pager-status-declined": "nac'het",
@@ -41,5 +42,6 @@
 	"requestwikiqueue-request-label-status": "Statud",
 	"requestwikiqueue-request-label-url": "URL",
 	"requestwikiqueue-request-label-visibility-all": "A c'hall bezañ gwelet gant an holl",
+	"requestwikiqueue-section-editing": "Goulenn da aozañ",
 	"right-createwiki": "Krouiñ wikioù er feurm wiki"
 }
