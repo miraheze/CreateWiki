@@ -160,7 +160,7 @@ class RemoteWiki {
 	}
 
 	public function hasChanges() {
-		return $this->factory->hasChanges() || $this->changes;
+		return $this->factory->hasChanges() || (bool)$this->changes;
 	}
 
 	public function commit() {
