@@ -10,7 +10,7 @@ use RuntimeException;
 class MissingWikiError extends ErrorPageError {
 
 	public function __construct( string $msg, array $params ) {
-		if ( !self::isCommandLine() ) {
+		if ( self::isCommandLine() ) {
 			throw new RuntimeException(
 				wfMessage( $msg, $params )->inContentLanguage()->text()
 			);
