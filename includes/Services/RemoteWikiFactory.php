@@ -7,6 +7,7 @@ use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
@@ -90,7 +91,7 @@ class RemoteWikiFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			throw new InvalidArgumentException( "Wiki '$wiki' cannot be found." );
+			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $wiki ] );
 		}
 
 		$this->dbname = $wiki;
