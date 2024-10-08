@@ -33,6 +33,7 @@
 	"createwiki-error-cannot-edit-approved": "Error message when attempting to edit a wiki request that has already been approved.",
 	"createwiki-error-dbexists": "Used as error message when the database being created already exists.",
 	"createwiki-error-disallowed": "Error message displayed when a disallowed subdomain is entered in the wiki request form.",
+	"createwiki-error-missingwiki": "Error message given when a wiki does not exist. $1 is the wiki database name.",
 	"createwiki-error-notalnum": "Used as error message when the database name entered does not contain non-alphanumeric characters.",
 	"createwiki-error-notlowercase": "Used as error message when the database name entered contains uppercase letters.",
 	"createwiki-error-notsuffixed": "Used as error message when the database name enter does not contain the suffix. $1 represents the allowed suffix.",

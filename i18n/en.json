@@ -26,6 +26,7 @@
 	"createwiki-error-cannot-edit-approved": "You cannot edit a request that has already been approved.",
 	"createwiki-error-dbexists": "'''NOTE''': A wiki with this subdomain already exists.",
 	"createwiki-error-disallowed": "The subdomain you have requested is unavailable. Please select another subdomain.",
+	"createwiki-error-missingwiki": "The wiki '$1' does not exist.",
 	"createwiki-error-notalnum": "The subdomain you have selected contains non-alphanumeric characters. Please try again.",
 	"createwiki-error-notlowercase": "The subdomain may not contain uppercase letters. Please try again.",
 	"createwiki-error-notsuffixed": "The database name doesn't end with a valid suffix ('$1').",
