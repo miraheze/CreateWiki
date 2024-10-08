@@ -162,20 +162,33 @@ class WikiRequestManager {
 	): void {
 		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
 
-		$involvedUsers = array_values( array_filter(
+		$notifyUsers = array_values( array_filter(
 			array_diff(
 				$this->getInvolvedUsers(),
 				[ $this->userFactory->newFromUserIdentity( $user ) ]
 			)
 		) );
 
+		$finalType = $type;
+		if ( $type === 'onhold' ) {
+			// TODO: add an actual onhold type
+			$finalType = 'comment';
+		}
+
 		$notificationData = [
-			'type' => "request-{$type}",
+			'type' => "request-{$finalType}",
 			'extra' => [
 				'request-url' => $requestLink,
 				'comment' => $comment,
 			],
 		];
+
+		if ( $type !== 'comment' ) {
+			$notifyUsers = [ $this->getRequester() ];
+		} else {
+			unset();
+			$this->notificationsManager->sendNotification( $notificationData, $involvedUsers );
+		}
 
 		$this->notificationsManager->sendNotification( $notificationData, $involvedUsers );
 	}
