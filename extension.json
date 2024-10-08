@@ -413,11 +413,6 @@
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
 			"value": false
 		},
-		"RequestWiki": {
-			"description": "Boolean. Whether RequestWiki should be enabled or not.",
-			"public": true,
-			"value": true
-		},
 		"RequestWikiConfirmAgreement": {
 			"description": "Boolean. Require users to confirm they will abide by farm policies.",
 			"value": false
