@@ -39,32 +39,27 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function addDBDataOnce(): void {
-		try {
-			$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
-
-			$dbw->newInsertQueryBuilder()
-				->insertInto( 'cw_wikis' )
-				->ignore()
-				->row( [
-					'wiki_dbname' => 'wikidb',
-					'wiki_dbcluster' => 'c1',
-					'wiki_sitename' => 'TestWiki',
-					'wiki_language' => 'en',
-					'wiki_private' => (int)0,
-					'wiki_creation' => $dbw->timestamp(),
-					'wiki_category' => 'uncategorised',
-					'wiki_closed' => (int)0,
-					'wiki_deleted' => (int)0,
-					'wiki_locked' => (int)0,
-					'wiki_inactive' => (int)0,
-					'wiki_inactive_exempt' => (int)0,
-					'wiki_url' => 'http://127.0.0.1:9412',
-				] )
-				->caller( __METHOD__ )
-				->execute();
-		} catch ( DBQueryError $e ) {
-			// Do nothing
-		}
+		$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->ignore()
+			->row( [
+				'wiki_dbname' => 'wikidb',
+				'wiki_dbcluster' => 'c1',
+				'wiki_sitename' => 'TestWiki',
+				'wiki_language' => 'en',
+				'wiki_private' => (int)0,
+				'wiki_creation' => $dbw->timestamp(),
+				'wiki_category' => 'uncategorised',
+				'wiki_closed' => (int)0,
+				'wiki_deleted' => (int)0,
+				'wiki_locked' => (int)0,
+				'wiki_inactive' => (int)0,
+				'wiki_inactive_exempt' => (int)0,
+				'wiki_url' => 'http://127.0.0.1:9412',
+			] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 
 	/**
