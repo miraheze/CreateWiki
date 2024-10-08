@@ -15,7 +15,7 @@ class MissingWikiError extends ErrorPageError {
 				wfMessage( $msg, $params )->inContentLanguage()->escaped()
 			);
 		}
-			
+
 		$errorBody = new RawMessage( Html::errorBox( wfMessage( $msg, $params )->parse() ) );
 		parent::__construct( 'errorpagetitle', $errorBody, [] );
 	}
