@@ -5,7 +5,6 @@ namespace Miraheze\CreateWiki\Tests;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RemoteWiki;
-use Miraheze\CreateWiki\WikiManager;
 use Wikimedia\Rdbms\DBQueryError;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -352,9 +351,10 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
-		$wikiManager = new WikiManager( $dbname, $this->getMockCreateWikiHookRunner() );
+		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+		$wikiManager = $wikiManagerFactory->newInstance( $dbname );
 		$wikiManager->create(
-			'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test'
+			'TestWiki', 'en', 0, 'uncategorised', $testUser->getName(), $testSysop->getName(), 'Test', []
 		);
 	}
 }
