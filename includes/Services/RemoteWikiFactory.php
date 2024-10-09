@@ -105,7 +105,7 @@ class RemoteWikiFactory {
 		$this->deleted = (bool)$row->wiki_deleted;
 		$this->locked = (bool)$row->wiki_locked;
 
-		$this->deletedTimestamp = $row->wiki_deleted_timestamp;
+		$this->deletedTimestamp = (int)$row->wiki_deleted_timestamp;
 
 		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$this->private = (bool)$row->wiki_private;
@@ -113,12 +113,12 @@ class RemoteWikiFactory {
 
 		if ( $this->options->get( ConfigNames::UseClosedWikis ) ) {
 			$this->closed = (bool)$row->wiki_closed;
-			$this->closedTimestamp = $row->wiki_closed_timestamp;
+			$this->closedTimestamp = (int)$row->wiki_closed_timestamp;
 		}
 
 		if ( $this->options->get( ConfigNames::UseInactiveWikis ) ) {
 			$this->inactive = (bool)$row->wiki_inactive;
-			$this->inactiveTimestamp = $row->wiki_inactive_timestamp;
+			$this->inactiveTimestamp = (int)$row->wiki_inactive_timestamp;
 			$this->inactiveExempt = (bool)$row->wiki_inactive_exempt;
 			$this->inactiveExemptReason = $row->wiki_inactive_exempt_reason ?? null;
 		}
