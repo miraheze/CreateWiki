@@ -46,7 +46,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	 */
 	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 
 		$this->setHeaders();
