@@ -82,6 +82,7 @@
 	"log-action-filter-farmer-requestdecline": "Wiki request declined",
 	"log-action-filter-farmer-requestmoredetails": "More details requested",
 	"log-action-filter-farmer-requestonhold": "Wiki request placed on hold",
+	"log-action-filter-farmer-requestreopen": "Wiki request reopened",
 	"log-action-filter-farmer-requestwiki": "Wiki request opened",
 	"log-action-filter-farmersuppression": "Type of action:",
 	"log-action-filter-farmersuppression-delete": "Deleted wiki request",
