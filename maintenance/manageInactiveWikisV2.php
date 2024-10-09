@@ -155,11 +155,10 @@ class ManageInactiveWikisV2 extends Maintenance {
 				// $this->output( "{$dbName} is eligible for removal and now has been.\n" );
 				$this->output( "{$dbName} is eligible for removal, but deletion is currently disabled.\n" );
 			} else {
-				// $this->output(
-				//	"{$dbName} is eligible for removal. " .
-				//	"It was closed on {$remoteWiki->getClosedTimestamp()}.\n"
-				// );
-				$this->output( "{$dbName} is eligible for removal if --write is used, but deletion is disabled.\n" );
+				$this->output(
+					"{$dbName} is eligible for removal if --write is used. " .
+					"It was closed on {$remoteWiki->getClosedTimestamp()}.\n"
+				);
 			}
 		} else {
 			$this->output(
