@@ -44,7 +44,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setHeaders();
 
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 
 		$requiresConfirmedEmail = $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail );
