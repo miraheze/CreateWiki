@@ -108,7 +108,8 @@ class WikiRequestManager {
 		string $comment,
 		UserIdentity $user,
 		bool $log,
-		string $type
+		string $type,
+		array $notifyUsers
 	): void {
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_comments' )
@@ -121,7 +122,20 @@ class WikiRequestManager {
 			->caller( __METHOD__ )
 			->execute();
 
-		$this->sendNotification( $comment, $type, $user );
+		if ( !$notifyUsers ) {
+			// If notifyUsers is passed an empty array,
+			// notify all involved, except exclude the
+			// actor so that users don't get notified
+			// of their own actions.
+			$notifyUsers = array_values( array_filter(
+				array_diff(
+					$this->getInvolvedUsers(),
+					[ $this->userFactory->newFromUserIdentity( $user ) ]
+				)
+			) );
+		}
+
+		$this->sendNotification( $comment, $type, $notifyUsers );
 
 		if ( $log ) {
 			$this->log( $user, 'comment' );
@@ -158,16 +172,9 @@ class WikiRequestManager {
 	private function sendNotification(
 		string $comment,
 		string $type,
-		UserIdentity $user
+		array $notifyUsers
 	): void {
 		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
-
-		$involvedUsers = array_values( array_filter(
-			array_diff(
-				$this->getInvolvedUsers(),
-				[ $this->userFactory->newFromUserIdentity( $user ) ]
-			)
-		) );
 
 		$notificationData = [
 			'type' => "request-{$type}",
@@ -177,11 +184,21 @@ class WikiRequestManager {
 			],
 		];
 
-		$this->notificationsManager->sendNotification( $notificationData, $involvedUsers );
+		$this->notificationsManager->sendNotification( $notificationData, $notifyUsers );
 	}
 
 	public function getInvolvedUsers(): array {
 		return array_unique( array_merge( array_column( $this->getComments(), 'user' ), [ $this->getRequester() ] ) );
+	}
+
+	public function getFilteredInvolvedUsers( UserIdentity $actor ): array {
+		return array_values( array_filter(
+			array_diff(
+				$this->getInvolvedUsers(),
+				[ $this->getRequester() ],
+				[ $this->userFactory->newFromUserIdentity( $actor ) ]
+			)
+		) );
 	}
 
 	public function addRequestHistory(
@@ -311,7 +328,9 @@ class WikiRequestManager {
 				comment: 'Request approved. ' . $comment,
 				user: $user,
 				log: false,
-				type: 'comment'
+				type: 'comment',
+				// Use all involved users
+				notifyUsers: []
 			);
 
 			$this->log( $user, 'requestapprove' );
@@ -343,7 +362,9 @@ class WikiRequestManager {
 					comment: 'Request approved and wiki created. ' . $comment,
 					user: $user,
 					log: false,
-					type: 'comment'
+					type: 'comment',
+					// Use all involved users
+					notifyUsers: []
 				);
 			}
 		}
@@ -360,8 +381,21 @@ class WikiRequestManager {
 			comment: $comment,
 			user: $user,
 			log: false,
-			type: 'declined'
+			type: 'declined',
+			notifyUsers: [ $this->getRequester() ]
 		);
+
+		// We exclude the actor and the requester.
+		// The actor shouldn't be notified of own actions.
+		// The requester has already been notified via addComment.
+		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
+		if ( $notifyUsers ) {
+			$this->sendNotification(
+				comment: $comment,
+				type: 'comment',
+				notifyUsers: $notifyUsers
+			);
+		}
 
 		$this->log( $user, 'requestdecline' );
 
@@ -381,8 +415,21 @@ class WikiRequestManager {
 			comment: $comment,
 			user: $user,
 			log: false,
-			type: 'comment'
+			type: 'comment',
+			notifyUsers: [ $this->getRequester() ]
 		);
+
+		// We exclude the actor and the requester.
+		// The actor shouldn't be notified of own actions.
+		// The requester has already been notified via addComment.
+		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
+		if ( $notifyUsers ) {
+			$this->sendNotification(
+				comment: $comment,
+				type: 'comment',
+				notifyUsers: $notifyUsers
+			);
+		}
 
 		$this->log( $user, 'requestonhold' );
 	}
@@ -398,8 +445,21 @@ class WikiRequestManager {
 			comment: $comment,
 			user: $user,
 			log: false,
-			type: 'moredetails'
+			type: 'moredetails',
+			notifyUsers: [ $this->getRequester() ]
 		);
+
+		// We exclude the actor and the requester.
+		// The actor shouldn't be notified of own actions.
+		// The requester has already been notified via addComment.
+		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
+		if ( $notifyUsers ) {
+			$this->sendNotification(
+				comment: $comment,
+				type: 'comment',
+				notifyUsers: $notifyUsers
+			);
+		}
 
 		$this->log( $user, 'requestmoredetails' );
 	}

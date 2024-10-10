@@ -75,7 +75,9 @@ class CreateWikiJob extends Job {
 					comment: $notCreated,
 					user: User::newSystemUser( 'CreateWiki Extension' ),
 					log: false,
-					type: 'comment'
+					type: 'comment',
+					// Use all involved users
+					notifyUsers: []
 				);
 
 				$this->wikiRequestManager->log(
@@ -90,7 +92,9 @@ class CreateWikiJob extends Job {
 				comment: 'Exception experienced creating the wiki. Error is: ' . $e->getMessage(),
 				user: User::newSystemUser( 'CreateWiki Extension' ),
 				log: false,
-				type: 'comment'
+				type: 'comment',
+				// Use all involved users
+				notifyUsers: []
 			);
 
 			$this->wikiRequestManager->log(
@@ -107,7 +111,9 @@ class CreateWikiJob extends Job {
 			comment: 'Wiki created.',
 			user: User::newSystemUser( 'CreateWiki Extension' ),
 			log: false,
-			type: 'comment'
+			type: 'comment',
+			// Use all involved users
+			notifyUsers: []
 		);
 
 		return true;

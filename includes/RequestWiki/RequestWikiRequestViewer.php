@@ -455,7 +455,9 @@ class RequestWikiRequestViewer {
 					comment: $formData['comment'],
 					user: $user,
 					log: true,
-					type: 'comment'
+					type: 'comment',
+					// Use all involved users
+					notifyUsers: []
 				);
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
 				return;
@@ -515,7 +517,9 @@ class RequestWikiRequestViewer {
 				comment: $comment,
 				user: $user,
 				log: false,
-				type: 'comment'
+				type: 'comment',
+				// Use all involved users
+				notifyUsers: []
 			);
 
 			$isDeclined = $this->wikiRequestManager->getStatus() === 'declined';
