@@ -56,6 +56,7 @@
 	"createwiki-label-requester": "Used as a label for 'requester'.\n{{Identical|Requester}}",
 	"createwiki-label-sitename": "Used as a label for 'sitename'.\n{{Identical|Sitename}}",
 	"createwiki-label-statuschangecomment": "Label for the comment field when changing the status of a wiki request.",
+	"createwiki-label-wiki-tags": "Used as a label for 'wiki tags'.",
 	"createwiki-no-changes": "Error message displayed when no changes have been made to the wiki request.",
 	"createwiki-request-locked": "Message indicating that the wiki request is locked and cannot be edited or commented on.",
 	"createwiki-request-updated": "Comment sent to the wiki request when it has been updated.",
