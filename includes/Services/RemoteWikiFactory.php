@@ -394,6 +394,14 @@ class RemoteWikiFactory {
 		}
 	}
 
+	public function setLogAction( string $action ): void {
+		$this->log = $action;
+	}
+
+	public function addLogParam( string $param, mixed $value ): void {
+		$this->logParams[$param] = $value;
+	}
+
 	public function getLogAction(): ?string {
 		return $this->log;
 	}
