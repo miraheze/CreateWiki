@@ -94,7 +94,9 @@ class RestWikiRequestComment extends SimpleHandler {
 			comment: $comment,
 			user: $this->getAuthority()->getUser(),
 			log: true,
-			type: 'comment'
+			type: 'comment',
+			// Use all involved users
+			notifyUsers: []
 		);
 
 		return $this->getResponseFactory()->createNoContent();
