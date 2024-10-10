@@ -286,7 +286,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testSetServerName(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 
-		$this->assertNull( $remoteWiki->getServerName() );
+		$this->assertSame( '', $remoteWiki->getServerName() );
 
 		$remoteWiki->setServerName( 'http://127.0.0.1' );
 		$remoteWiki->commit();
