@@ -330,8 +330,8 @@ class RemoteWikiFactory {
 		$this->newRows['wiki_category'] = $category;
 	}
 
-	public function getServerName(): ?string {
-		return $this->url;
+	public function getServerName(): string {
+		return $this->url ?? '';
 	}
 
 	public function setServerName( string $server ): void {
