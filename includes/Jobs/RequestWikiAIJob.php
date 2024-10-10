@@ -64,7 +64,9 @@ class RequestWikiAIJob extends Job {
 				comment: 'Approval Score: ' . (string)round( $approveScore, 2 ),
 				user: User::newSystemUser( 'CreateWiki Extension' ),
 				log: false,
-				type: 'comment'
+				type: 'comment',
+				// Use all involved users
+				notifyUsers: []
 			);
 
 			if (
