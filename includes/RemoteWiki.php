@@ -131,14 +131,6 @@ class RemoteWiki {
 		$this->factory->setCategory( $category );
 	}
 
-	public function getWikiTags() {
-		return $this->factory->getWikiTags();
-	}
-
-	public function setWikiTags( string $wikitags ) {
-		$this->factory->setWikiTags( $wikitags );
-	}
-
 	public function getServerName() {
 		return $this->factory->getServerName();
 	}
