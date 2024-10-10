@@ -384,16 +384,6 @@ class RemoteWikiFactory {
 		$this->newRows[$row] = $value;
 	}
 
-	public function makeLog( ?string $type, ?array $params ): void {
-		if ( $type ) {
-			$this->log = $type;
-		}
-
-		if ( $params ) {
-			$this->logParams = $params;
-		}
-	}
-
 	public function setLogAction( string $action ): void {
 		$this->log = $action;
 	}
