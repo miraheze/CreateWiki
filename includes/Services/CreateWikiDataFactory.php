@@ -5,10 +5,10 @@ namespace Miraheze\CreateWiki\Services;
 use BagOStuff;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use ObjectCacheFactory;
-use UnexpectedValueException;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
@@ -225,7 +225,7 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			throw new UnexpectedValueException( "Wiki '{$this->wiki}' cannot be found." );
+			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $this->wiki ] );
 		}
 
 		$states = [];
