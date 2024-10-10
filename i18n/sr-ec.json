@@ -11,6 +11,7 @@
 	"action-createwiki": "правите викије",
 	"action-requestwiki": "захтевање викија",
 	"createwiki": "Направи викију",
+	"createwiki-close-email-subject": "Ваш вики ($1) је затворен.",
 	"createwiki-label-category": "Категорија:",
 	"createwiki-label-dbname": "Име базе података:",
 	"createwiki-label-language": "Језик:",

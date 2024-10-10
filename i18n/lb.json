@@ -6,6 +6,8 @@
 			"Volvox"
 		]
 	},
+	"createwiki-close-email-subject": "Är Wiki ($1) gouf zougemaach",
+	"createwiki-defaultmainpage-summary": "Haaptsäit uleeën",
 	"createwiki-email-subject": "Är nei Miraheze-Wiki ($1) gouf ugeluecht",
 	"createwiki-label-category": "Kategorie:",
 	"createwiki-label-dbname": "Numm vun der Datebank:",

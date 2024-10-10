@@ -53,7 +53,6 @@
 	"createwiki-error-notsuffixed": "データベース名の終わりに指定文字列 (「$1」) がありません。",
 	"createwiki-error-requestcountwarn": "'''警告:''' [[User:$2|$2]] はすでに$1個のウィキを[[Special:Log/farmer/$2|申請]]しています。",
 	"createwiki-error-subdomaintaken": "あなたが指定したサブドメインはすでに使用されています。別のサブドメインを選択して、もう一度お試しください。",
-	"createwiki-extensionname": "CreateWiki",
 	"createwiki-help-agreement": "これらのポリシーに従わない場合、ウィキが閉鎖される可能性があります。",
 	"createwiki-help-bio": "このファームの方針に必ず従ってください。",
 	"createwiki-help-category": "ウィキのカテゴリは、グローバルウィキディレクトリなどの場所に反映されます。",
