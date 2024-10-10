@@ -27,7 +27,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 */
 	public function execute( $par ): void {
 		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'createwiki-wikinotglobalwiki', 'createwiki-wikinotglobalwiki' );
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 
 		parent::execute( $par );

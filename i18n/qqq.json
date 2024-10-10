@@ -90,6 +90,7 @@
 	"log-action-filter-farmer-requestdecline": "{{doc-log-action-filter-action|farmer|requestdecline}}",
 	"log-action-filter-farmer-requestmoredetails": "{{doc-log-action-filter-action|farmer|requestmoredetails}}",
 	"log-action-filter-farmer-requestonhold": "{{doc-log-action-filter-action|farmer|requestonhold}}",
+	"log-action-filter-farmer-requestreopen": "{{doc-log-action-filter-action|farmer|requestreopen}}",
 	"log-action-filter-farmer-requestwiki": "{{doc-log-action-filter-action|farmer|requestwiki}}",
 	"log-action-filter-farmersuppression": "{{doc-log-action-filter-type|farmersuppression}}\n{{identical|Type of action}}\n{{related|Log-action-filter}}",
 	"log-action-filter-farmersuppression-delete": "{{doc-log-action-filter-action|farmersuppression|delete}}",
