@@ -286,7 +286,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testSetServerName() {
 		$remoteWiki = new RemoteWiki( 'remotewikitest', $this->getMockCreateWikiHookRunner() );
 
-		$this->assertNull( $remoteWiki->getServerName() );
+		$this->assertSame( '', $remoteWiki->getServerName() );
 
 		$remoteWiki->setServerName( 'http://127.0.0.1' );
 		$remoteWiki->commit();
