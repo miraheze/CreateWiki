@@ -49,9 +49,6 @@ class CreateWikiJob extends Job {
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function run(): bool {
 		$this->wikiRequestManager->loadFromID( $this->id );
 		$wikiManager = $this->wikiManagerFactory->newInstance( $this->dbname );
