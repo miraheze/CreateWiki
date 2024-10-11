@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCache;
 use ObjectCacheFactory;
+use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
@@ -106,10 +107,7 @@ class CreateWikiDataFactory {
 		// mtime will be 0 if the file does not exist as well, which means
 		// it will be generated.
 
-		$databasesMtime = 0;
-		if ( file_exists( "{$this->cacheDir}/databases.php" ) ) {
-			$databasesMtime = $this->getCachedDatabaseList()['mtime'] ?? 0;
-		}
+		$databasesMtime = $this->getCachedDatabaseList()['mtime'] ?? 0;
 
 		// Regenerate database list cache if the databases.php file does not
 		// exist or has no valid mtime
@@ -117,10 +115,7 @@ class CreateWikiDataFactory {
 			$this->resetDatabaseLists( isNewChanges: false );
 		}
 
-		$wikiMtime = 0;
-		if ( file_exists( "{$this->cacheDir}/{$this->wiki}.php" ) ) {
-			$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
-		}
+		$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
 
 		// Regenerate wiki data cache if the file does not exist or has no valid mtime
 		if ( $wikiMtime === 0 || $wikiMtime < $this->wikiTimestamp ) {
@@ -301,28 +296,44 @@ class CreateWikiDataFactory {
 	/**
 	 * Retrieves cached wiki data.
 	 *
-	 * @return ?array
+	 * @return array
 	 */
-	private function getCachedWikiData(): ?array {
+	private function getCachedWikiData(): array {
+		// Avoid using file_exists for performance reasons. Including the file directly leverages
+		// the opcode cache and prevents any file system access.
+		// We only handle failures if the include does not work.
+
 		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
-		if ( file_exists( $filePath ) ) {
-			return include $filePath;
+		$cacheData = AtEase::quietCall( static function ( $path ) {
+			return include $path;
+		}, $filePath );
+
+		if ( is_array( $cacheData ) ) {
+			return $cacheData;
 		}
 
-		return null;
+		return [ 'mtime' => 0 ];
 	}
 
 	/**
 	 * Retrieves cached database list.
 	 *
-	 * @return ?array
+	 * @return array
 	 */
-	private function getCachedDatabaseList(): ?array {
+	private function getCachedDatabaseList(): array {
+		// Avoid using file_exists for performance reasons. Including the file directly leverages
+		// the opcode cache and prevents any file system access.
+		// We only handle failures if the include does not work.
+
 		$filePath = "{$this->cacheDir}/databases.php";
-		if ( file_exists( $filePath ) ) {
-			return include $filePath;
+		$cacheData = AtEase::quietCall( static function ( $path ) {
+			return include $path;
+		}, $filePath );
+
+		if ( is_array( $cacheData ) ) {
+			return $cacheData;
 		}
 
-		return null;
+		return [ 'mtime' => 0 ];
 	}
 }
