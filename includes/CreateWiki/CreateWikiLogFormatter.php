@@ -12,10 +12,6 @@ class CreateWikiLogFormatter extends LogFormatter {
 
 	private LinkRenderer $linkRenderer;
 
-	/**
-	 * @param LogEntry $entry
-	 * @param LinkRenderer $linkRenderer
-	 */
 	public function __construct(
 		LogEntry $entry,
 		LinkRenderer $linkRenderer
@@ -24,9 +20,7 @@ class CreateWikiLogFormatter extends LogFormatter {
 		$this->linkRenderer = $linkRenderer;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getMessageParameters(): array {
 		$params = parent::getMessageParameters();
 		$subtype = $this->entry->getSubtype();
