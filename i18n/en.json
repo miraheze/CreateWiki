@@ -49,6 +49,7 @@
 	"createwiki-label-requester": "Requester:",
 	"createwiki-label-sitename": "Sitename:",
 	"createwiki-label-statuschangecomment": "Reason for this action:",
+	"createwiki-label-wiki-tags": "Wiki tags",
 	"createwiki-no-changes": "No changes made.",
 	"createwiki-request-locked": "This request has been locked. It cannot be edited, and no comments can be added to it.",
 	"createwiki-request-updated": "Updated request.",

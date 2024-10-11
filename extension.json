@@ -259,6 +259,16 @@
 				"oojs-ui-widgets"
 			]
 		},
+		"ext.createwiki.oouiform.wikiTags": {
+			"scripts": "ext.createwiki.oouiform.wikiTags.js",
+			"targets": [ "desktop", "mobile" ],
+			"messages": [
+				"createwiki-label-wiki-tags"
+			],
+			"dependencies": [
+				"oojs-ui-widgets"
+			]
+		},
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
 		}
@@ -274,6 +284,10 @@
 		},
 		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
+			"value": []
+		},
+		"CreateWikiAvailableTags": {
+			"description": "Array. List of available wiki tags. If set to an empty array, tags are disabled.",
 			"value": []
 		},
 		"CreateWikiCacheDirectory": {
