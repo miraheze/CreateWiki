@@ -34,12 +34,6 @@ class Main implements
 	private RemoteWikiFactory $remoteWikiFactory;
 	private IConnectionProvider $connectionProvider;
 
-	/**
-	 * @param ConfigFactory $configFactory
-	 * @param IConnectionProvider $connectionProvider
-	 * @param CreateWikiDataFactory $dataFactory
-	 * @param RemoteWikiFactory $remoteWikiFactory
-	 */
 	public function __construct(
 		ConfigFactory $configFactory,
 		IConnectionProvider $connectionProvider,
