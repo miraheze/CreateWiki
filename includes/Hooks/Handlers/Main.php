@@ -17,6 +17,7 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class Main implements
@@ -83,9 +84,18 @@ class Main implements
 		$data->syncCache();
 
 		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
+			// Avoid using file_exists for performance reasons. Including the file directly leverages
+			// the opcode cache and prevents any file system access.
+			// We only handle failures if the include does not work.
+
 			$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
-			if ( file_exists( $cacheDir . '/' . $dbName . '.php' ) ) {
-				$cacheArray = include $cacheDir . '/' . $dbName . '.php';
+
+			$cachePath = $cacheDir . '/' . $dbName . '.php';
+			$cacheArray = AtEase::quietCall( static function ( $path ) {
+				return include $path;
+			}, $cachePath );
+
+			if ( $cacheArray !== false ) {
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
 				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbName );
