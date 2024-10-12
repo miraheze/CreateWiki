@@ -97,12 +97,12 @@ class RequestWikiAIJob extends Job {
 			 *  - Set to 0 or any negative value
 			 *  - A non-numeric string (which casts to 0)
 			 *  - null or false (both cast to 0)
-			 * 
+			 *
 			 * Note: This check does not cover cases where AIThreshold is a positive numeric string,
 			 * as those will be cast to integers. However, this is such an edge case
 			 * and a case that would mean total misconfiguration of AIThreshold that
 			 * we don't actually care about it.
-			 * 
+			 *
 			 * While this should not be necessary in theory, it is included for added safety.
 			 *
 			 * TODO: Perhaps this should throw a ConfigException?
