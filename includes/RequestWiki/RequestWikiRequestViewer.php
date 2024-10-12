@@ -391,15 +391,18 @@ class RequestWikiRequestViewer {
 		// absent from $baseFormDescriptor.
 		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
 
-		// Need to make sure fields added via hook also adheres to proper permission checks
+		// Ensure extra fields added via hooks adhere to proper permission checks
 		foreach ( $this->extraFields as $field => $properties ) {
-			if ( ( $properties['type'] ?? '' ) !== 'info' && ( $properties['section'] ?? '' ) === 'details' ) {
-				// Always ensure readonly on details fields
+			$section = $properties['section'] ?? '';
+			$type = $properties['type'] ?? '';
+
+			if ( $type !== 'info' && $section === 'details' ) {
+				// Ensure readonly on details fields
 				$formDescriptor[$field]['readonly'] = true;
 				continue;
 			}
 
-			if ( ( $properties['section'] ?? '' ) === 'editing' ) {
+			if ( $section === 'editing' ) {
 				if ( !$canEditRequest ) {
 					unset( $formDescriptor[$field] );
 					continue;
@@ -409,7 +412,7 @@ class RequestWikiRequestViewer {
 				continue;
 			}
 
-			if ( !$canHandleRequest && ( $properties['section'] ?? '' ) === 'handling' ) {
+			if ( !$canHandleRequest && $section === 'handling' ) {
 				unset( $formDescriptor[$field] );
 			}
 		}
