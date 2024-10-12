@@ -141,10 +141,12 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( !$user->getBlock() && (
+		$canEditRequest = !$user->getBlock() && (
 			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
 			$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId()
-		) ) {
+		);
+
+		if ( $canEditRequest ) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
@@ -249,7 +251,8 @@ class RequestWikiRequestViewer {
 		}
 
 		// TODO: Should we really require (createwiki) to suppress wiki requests?
-		if ( $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock() ) {
+		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
+		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
 				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
@@ -388,9 +391,29 @@ class RequestWikiRequestViewer {
 		// absent from $baseFormDescriptor.
 		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
 
-		if ( $this->wikiRequestManager->isLocked() ) {
-			foreach ( $this->extraFields as $field => $value ) {
-				$formDescriptor[$field]['disabled'] = true;
+		// Ensure extra fields added via hooks adhere to proper permission checks
+		foreach ( $this->extraFields as $field => $properties ) {
+			$section = $properties['section'] ?? '';
+			$type = $properties['type'] ?? '';
+
+			if ( $type !== 'info' && $section === 'details' ) {
+				// Ensure readonly on details fields
+				$formDescriptor[$field]['readonly'] = true;
+				continue;
+			}
+
+			if ( $section === 'editing' ) {
+				if ( !$canEditRequest ) {
+					unset( $formDescriptor[$field] );
+					continue;
+				}
+
+				$formDescriptor[$field]['disabled'] = $this->wikiRequestManager->isLocked();
+				continue;
+			}
+
+			if ( !$canHandleRequest && $section === 'handling' ) {
+				unset( $formDescriptor[$field] );
 			}
 		}
 
