@@ -70,8 +70,8 @@ class RequestWikiAIJob extends Job {
 			);
 
 			if (
-				is_int( $this->config->get( ConfigNames::AIThreshold ) ) &&
-				( (int)round( $approveScore, 2 ) > $this->config->get( ConfigNames::AIThreshold ) ) &&
+				$this->config->get( ConfigNames::AIThreshold ) > 0 &&
+				round( $approveScore ) > $this->config->get( ConfigNames::AIThreshold ) &&
 				$this->canAutoApprove()
 			) {
 				// Start query builder so that it can set the status
