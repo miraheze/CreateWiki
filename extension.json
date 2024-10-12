@@ -323,7 +323,7 @@
 			"value": false
 		},
 		"CreateWikiDisallowedSubdomains": {
-			"description": "Array or string. Regexes to match for disallowed subdomains.",
+			"description": "Array. Regexes to match for disallowed subdomains.",
 			"value": []
 		},
 		"CreateWikiEmailNotifications": {
