@@ -281,8 +281,8 @@
 			"value": ""
 		},
 		"CreateWikiCacheType": {
-			"description": "String or false. Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
-			"value": false
+			"description": "Index from $wgObjectCaches. If set, this will be used instead of $wgMainCacheType for CreateWiki cache.",
+			"value": null
 		},
 		"CreateWikiCannedResponses": {
 			"description": "Array. An array of default responses to give. If this is enabled (not an empty array), free-text options are removed.",
