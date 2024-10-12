@@ -141,10 +141,12 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		if ( !$user->getBlock() && (
+		$canEditRequest = !$user->getBlock() && (
 			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
 			$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId()
-		) ) {
+		);
+
+		if ( $canEditRequest ) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
@@ -249,7 +251,8 @@ class RequestWikiRequestViewer {
 		}
 
 		// TODO: Should we really require (createwiki) to suppress wiki requests?
-		if ( $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock() ) {
+		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
+		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
 				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
@@ -388,9 +391,20 @@ class RequestWikiRequestViewer {
 		// absent from $baseFormDescriptor.
 		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
 
-		if ( $this->wikiRequestManager->isLocked() ) {
-			foreach ( $this->extraFields as $field => $value ) {
-				$formDescriptor[$field]['disabled'] = true;
+		// Need to make sure fields added via hook also adheres to proper permissions
+		foreach ( $this->extraFields as $field => $properties ) {
+			if ( ( $properties['section'] ?? '' ) === 'editing' ) {
+				if ( !$canEditRequest ) {
+					unset( $formDescriptor[$field] );
+					continue;
+				}
+
+				$formDescriptor[$field]['disabled'] = $this->wikiRequestManager->isLocked();
+				continue;
+			}
+
+			if ( !$canHandleRequest && ( $properties['section'] ?? '' ) === 'handling' ) {
+				unset( $formDescriptor[$field] );
 			}
 		}
 
