@@ -335,7 +335,7 @@ class WikiRequestManager {
 
 			$this->log( $user, 'requestapprove' );
 
-			if ( !is_int( $this->options->get( ConfigNames::AIThreshold ) ) ) {
+			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 				$this->tryAutoCreate();
 			}
 		} else {
@@ -399,7 +399,7 @@ class WikiRequestManager {
 
 		$this->log( $user, 'requestdecline' );
 
-		if ( !is_int( $this->options->get( ConfigNames::AIThreshold ) ) ) {
+		if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 			$this->tryAutoCreate();
 		}
 	}

@@ -269,8 +269,8 @@
 	},
 	"config": {
 		"CreateWikiAIThreshold": {
-			"description": "Integer or false. Minimum percentage point threshold for a request to be automatically created when acceptable.",
-			"value": false
+			"description": "Integer. Must be a positive integer. Minimum percentage point threshold for a request to be automatically approved when acceptable. 0 will disable auto approval.",
+			"value": 0
 		},
 		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes in request descriptions to never auto approve if matched.",

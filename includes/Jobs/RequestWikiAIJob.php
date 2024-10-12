@@ -70,8 +70,8 @@ class RequestWikiAIJob extends Job {
 			);
 
 			if (
-				is_int( $this->config->get( ConfigNames::AIThreshold ) ) &&
-				( (int)round( $approveScore, 2 ) > $this->config->get( ConfigNames::AIThreshold ) ) &&
+				$this->config->get( ConfigNames::AIThreshold ) > 0 &&
+				round( $approveScore ) >= $this->config->get( ConfigNames::AIThreshold ) &&
 				$this->canAutoApprove()
 			) {
 				// Start query builder so that it can set the status
@@ -91,6 +91,25 @@ class RequestWikiAIJob extends Job {
 	}
 
 	private function canAutoApprove(): bool {
+		if ( (int)$this->config->get( ConfigNames::AIThreshold ) <= 0 ) {
+			/*
+			 * Extra safeguard to ensure auto-approval does not occur when AIThreshold is:
+			 *  - Set to 0 or any negative value
+			 *  - A non-numeric string (which casts to 0)
+			 *  - null or false (both cast to 0)
+			 *
+			 * Note: This check does not cover cases where AIThreshold is a positive numeric string,
+			 * as those will be cast to integers. However, this is such an edge case
+			 * and a case that would mean total misconfiguration of AIThreshold that
+			 * we don't actually care about it.
+			 *
+			 * While this should not be necessary in theory, it is included for added safety.
+			 *
+			 * TODO: Perhaps this should throw a ConfigException?
+			 */
+			return false;
+		}
+
 		$descriptionFilter = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
 			ConfigNames::AutoApprovalFilter
