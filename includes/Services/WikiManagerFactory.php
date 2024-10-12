@@ -194,6 +194,18 @@ class WikiManagerFactory {
 
 		$this->doCreateDatabase();
 
+		$extraFields = [];
+		$this->hookRunner->onCreateWikiCreationExtraFields( $extraFields );
+
+		$filteredData = [];
+		foreach ( $extraFields as $field ) {
+			if ( array_key_exists( $field, $extra ) ) {
+				$filteredData[$field] = $extra[$field];
+			}
+		}
+
+		$extraData = json_encode( $filteredData ) ?: '[]';
+		
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
@@ -204,6 +216,7 @@ class WikiManagerFactory {
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category,
+				'wiki_extra' => $extraData,
 			] )
 			->caller( __METHOD__ )
 			->execute();
