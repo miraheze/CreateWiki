@@ -205,7 +205,7 @@ class WikiManagerFactory {
 		}
 
 		$extraData = json_encode( $filteredData ) ?: '[]';
-		
+
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
