@@ -63,7 +63,7 @@ class CreateWikiDataFactory {
 		$this->hookRunner = $hookRunner;
 		$this->options = $options;
 
-		$this->cache = $this->options->get( ConfigNames::CacheType ) ?
+		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
 			ObjectCache::getLocalClusterInstance();
 
