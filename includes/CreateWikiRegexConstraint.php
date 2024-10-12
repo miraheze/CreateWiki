@@ -119,34 +119,6 @@ class CreateWikiRegexConstraint {
 	}
 
 	/**
-	 * @param array|string $regex
-	 * @param string $start
-	 * @param string $end
-	 * @param string $name name of regex caller (config or message key) for logging
-	 * @return string
-	 */
-	public static function regexFromArrayOrString(
-		array|string $regex,
-		string $start,
-		string $end,
-		string $name
-	): string {
-		if ( is_array( $regex ) ) {
-			return self::regexFromArray( $regex, $start, $end, $name );
-		} else {
-			if ( StringUtils::isValidPCRERegex( $regex ) ) {
-				return $regex;
-			}
-
-			if ( $name !== '' ) {
-				self::warnInvalidRegex( $regex, $name );
-			}
-		}
-
-		return '';
-	}
-
-	/**
 	 * @param string $key
 	 * @param string $start prepend to the beginning of each regex line; used only for validation
 	 * @param string $end append to the end of each regex line; used only for validation
