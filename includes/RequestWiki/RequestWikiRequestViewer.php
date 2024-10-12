@@ -408,6 +408,7 @@ class RequestWikiRequestViewer {
 					continue;
 				}
 
+				$formDescriptor[$field]['cssclass'] = 'createwiki-infuse';
 				$formDescriptor[$field]['disabled'] = $this->wikiRequestManager->isLocked();
 				continue;
 			}
