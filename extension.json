@@ -327,11 +327,11 @@
 			"value": false
 		},
 		"CreateWikiEnableManageInactiveWikis": {
-			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
+			"description": "Boolean. Whether the manageInactiveWikis.php maintenance script be enabled. That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
 			"value": false
 		},
 		"CreateWikiEnableRESTAPI": {
-			"description": "Boolean. Should the RequestWiki REST API be enabled?",
+			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
 		},
 		"CreateWikiGlobalWiki": {
@@ -400,11 +400,11 @@
 			"value": false
 		},
 		"RequestWikiConfirmAgreement": {
-			"description": "Boolean. Require users to confirm they will abide by farm policies.",
+			"description": "Boolean. Whether to require users to confirm they will abide by farm policies.",
 			"value": false
 		},
 		"RequestWikiConfirmEmail": {
-			"description": "Boolean. Require users to confirm emails before being able to request wikis.",
+			"description": "Boolean. Whether to require users to confirm emails before being able to request wikis.",
 			"value": true
 		},
 		"RequestWikiMinimumLength": {
