@@ -31,13 +31,13 @@ class ConfigNames {
 
 	public const DatabaseSuffix = 'CreateWikiDatabaseSuffix';
 
-	public const DisableRESTAPI = 'CreateWikiDisableRESTAPI';
-
 	public const DisallowedSubdomains = 'CreateWikiDisallowedSubdomains';
 
 	public const EmailNotifications = 'CreateWikiEmailNotifications';
 
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
+
+	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
 
 	public const GlobalWiki = 'CreateWikiGlobalWiki';
 
