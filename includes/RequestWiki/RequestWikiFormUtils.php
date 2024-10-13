@@ -19,6 +19,14 @@ class RequestWikiFormUtils {
 		$formDescriptor = [ $newKey => $newField ] + $formDescriptor;
 	}
 
+	public static function addFieldToEnd(
+		array &$formDescriptor,
+		string $newKey,
+		array $newField
+	): void {
+		$formDescriptor += [ $newKey => $newField ];
+	}
+
 	public static function removeFieldByKey(
 		array &$formDescriptor,
 		string $key
