@@ -318,10 +318,6 @@
 			"description": "String. Database suffix.",
 			"value": "wiki"
 		},
-		"CreateWikiDisableRESTAPI": {
-			"description": "Boolean. If set to true, disable the REST API",
-			"value": false
-		},
 		"CreateWikiDisallowedSubdomains": {
 			"description": "Array. Regexes to match for disallowed subdomains.",
 			"value": []
@@ -333,6 +329,10 @@
 		"CreateWikiEnableManageInactiveWikis": {
 			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
 			"value": false
+		},
+		"CreateWikiEnableRESTAPI": {
+			"description": "Boolean. Should the RequestWiki REST API be enabled?",
+			"value": true
 		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
