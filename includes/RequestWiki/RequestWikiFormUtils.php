@@ -178,6 +178,19 @@ class RequestWikiFormUtils {
 		}
 	}
 
+	public static function unsetFieldProperty(
+		array &$formDescriptor,
+		string $fieldKey,
+		string $propertyKey
+	): void {
+		if (
+			isset( $formDescriptor[$fieldKey] ) &&
+			isset( $formDescriptor[$fieldKey][$propertyKey] )
+		) {
+			unset( $formDescriptor[$fieldKey][$propertyKey] );
+		}
+	}
+
 	public static function getFieldsInSection(
 		array &$formDescriptor,
 		string $section
