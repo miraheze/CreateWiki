@@ -126,14 +126,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	private function lookupRequest( string $par ): void {
 		// Lookup the request by the id (the current subpage)
 		// and then show the form for the request if it is found.
-		new RequestWikiRequestViewer(
+		( new RequestWikiRequestViewer(
 			$this->getConfig(),
 			$this->getContext(),
 			$this->hookRunner,
 			$this->permissionManager,
 			$this->wikiManagerFactory,
 			$this->wikiRequestManager
-		)->getForm( (int)$par )->show();
+		) )->getForm( (int)$par )->show();
 	}
 
 	/**
