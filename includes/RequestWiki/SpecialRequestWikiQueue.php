@@ -120,25 +120,20 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		);
 
 		$table = $pager->getFullOutput();
-
 		$this->getOutput()->addParserOutputContent( $table );
 	}
 
 	private function lookupRequest( string $par ): void {
-		$requestViewer = new RequestWikiRequestViewer(
+		// Lookup the request by the id (the current subpage)
+		// and then show the form for the request if it is found.
+		new RequestWikiRequestViewer(
 			$this->getConfig(),
 			$this->getContext(),
 			$this->hookRunner,
 			$this->permissionManager,
 			$this->wikiManagerFactory,
 			$this->wikiRequestManager
-		);
-
-		$htmlForm = $requestViewer->getForm( (int)$par );
-
-		if ( $htmlForm ) {
-			$htmlForm->show();
-		}
+		)->getForm( (int)$par )->show();
 	}
 
 	/**
