@@ -29,12 +29,6 @@ class CreateWikiNotificationsManager {
 	private UserFactory $userFactory;
 	private string $type;
 
-	/**
-	 * @param IConnectionProvider $connectionProvider
-	 * @param MessageLocalizer $messageLocalizer
-	 * @param ServiceOptions $options
-	 * @param UserFactory $userFactory
-	 */
 	public function __construct(
 		IConnectionProvider $connectionProvider,
 		MessageLocalizer $messageLocalizer,
@@ -50,9 +44,6 @@ class CreateWikiNotificationsManager {
 		$this->userFactory = $userFactory;
 	}
 
-	/**
-	 * @return string
-	 */
 	private function getFromName(): string {
 		if ( $this->type === 'closure' ) {
 			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )
@@ -66,9 +57,6 @@ class CreateWikiNotificationsManager {
 		return 'CreateWiki Notifications';
 	}
 
-	/**
-	 * @return array
-	 */
 	private function getEmailTypes(): array {
 		return [
 			'closure',
@@ -78,9 +66,6 @@ class CreateWikiNotificationsManager {
 		];
 	}
 
-	/**
-	 * @return array
-	 */
 	private function getEchoTypes(): array {
 		return [
 			'request-comment',
@@ -90,9 +75,6 @@ class CreateWikiNotificationsManager {
 		];
 	}
 
-	/**
-	 * @return array
-	 */
 	private function notifyServerAdministratorsTypes(): array {
 		return [
 			'deletion',
@@ -100,10 +82,6 @@ class CreateWikiNotificationsManager {
 		];
 	}
 
-	/**
-	 * @param array $data
-	 * @param string $wiki
-	 */
 	public function notifyBureaucrats( array $data, string $wiki ): void {
 		$dbr = $this->connectionProvider->getReplicaDatabase( $wiki );
 
@@ -126,10 +104,6 @@ class CreateWikiNotificationsManager {
 		$this->sendNotification( $data, $emails );
 	}
 
-	/**
-	 * @param array $data
-	 * @param array $receivers
-	 */
 	public function sendNotification( array $data, array $receivers ): void {
 		$this->type = $data['type'];
 
@@ -148,10 +122,6 @@ class CreateWikiNotificationsManager {
 		}
 	}
 
-	/**
-	 * @param array $data
-	 * @param array $receivers
-	 */
 	private function sendEchoNotification( array $data, array $receivers ): void {
 		foreach ( $receivers as $receiver ) {
 			$user = is_object( $receiver ) ? $receiver :
@@ -169,10 +139,6 @@ class CreateWikiNotificationsManager {
 		}
 	}
 
-	/**
-	 * @param array $data
-	 * @param array $receivers
-	 */
 	private function sendEmailNotification( array $data, array $receivers ): void {
 		DeferredUpdates::addCallableUpdate( function () use ( $data, $receivers ) {
 			$notifyEmails = [];
