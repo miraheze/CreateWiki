@@ -197,13 +197,8 @@ class WikiManagerFactory {
 		$extraFields = [];
 		$this->hookRunner->onCreateWikiCreationExtraFields( $extraFields );
 
-		$filteredData = [];
-		foreach ( $extraFields as $field ) {
-			if ( array_key_exists( $field, $extra ) ) {
-				$filteredData[$field] = $extra[$field];
-			}
-		}
-
+		// Filter $extra to only include keys present in $extraFields
+		$filteredData = array_intersect_key( $extra, array_flip( $extraFields ) );
 		$extraData = json_encode( $filteredData ) ?: '[]';
 
 		$this->cwdb->newInsertQueryBuilder()
