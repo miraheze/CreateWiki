@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use ErrorPageError;
-use ExtensionRegistry;
 use ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
@@ -144,23 +143,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'type' => 'info',
 			'default' => $this->msg( 'requestwiki-info-guidance-post' ),
 		];
-
-		if (
-			ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) &&
-			$this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) &&
-			$this->getConfig()->get( ConfigNames::RequestWikiUseDescriptions )
-		) {
-			$maxLength = $this->getConfig()->get( 'WikiDiscoverDescriptionMaxLength' );
-			$formDescriptor['public-description'] = [
-				'type' => 'textarea',
-				'rows' => 2,
-				'maxlength' => $maxLength ?: false,
-				'label-message' => 'requestwiki-label-public-description',
-				'help-message' => 'requestwiki-help-public-description',
-				'required' => true,
-				'validation-callback' => [ $this, 'isValidReason' ],
-			];
-		}
 
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
 			$formDescriptor['agreement'] = [

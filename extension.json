@@ -410,10 +410,6 @@
 		"RequestWikiMinimumLength": {
 			"description": "Integer. Minimum length for descriptions within wiki requests.",
 			"value": false
-		},
-		"RequestWikiUseDescriptions": {
-			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not. If WikiDiscover is not installed, this does nothing.",
-			"value": false
 		}
 	},
 	"ConfigRegistry": {
