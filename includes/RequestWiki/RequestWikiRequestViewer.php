@@ -310,12 +310,6 @@ class RequestWikiRequestViewer {
 					'default' => $this->context->msg( 'requestwikiqueue-request-info-submission' )->text(),
 					'section' => 'handling',
 				],
-				'handle-lock' => [
-					'type' => 'check',
-					'label-message' => 'createwiki-label-lock',
-					'default' => $this->wikiRequestManager->isLocked(),
-					'section' => 'handling',
-				],
 				'handle-action' => [
 					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-action',
@@ -332,6 +326,12 @@ class RequestWikiRequestViewer {
 				'handle-comment' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
 					'validation-callback' => [ $this, 'isValidStatusComment' ],
+					'section' => 'handling',
+				],
+				'handle-lock' => [
+					'type' => 'check',
+					'label-message' => 'createwiki-label-lock',
+					'default' => $this->wikiRequestManager->isLocked(),
 					'section' => 'handling',
 				],
 				'handle-changevisibility' => [
