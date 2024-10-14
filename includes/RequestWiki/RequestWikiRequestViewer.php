@@ -402,7 +402,7 @@ class RequestWikiRequestViewer {
 				continue;
 			}
 
-			if ( $section === 'editing' ) {
+			if ( $section === 'editing' || str_starts_with( $section, 'editing/' ) ) {
 				if ( !$canEditRequest ) {
 					unset( $formDescriptor[$field] );
 					continue;
