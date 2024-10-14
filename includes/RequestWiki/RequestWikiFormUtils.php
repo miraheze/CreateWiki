@@ -11,6 +11,33 @@ class RequestWikiFormUtils {
 		return isset( $formDescriptor[$fieldKey] );
 	}
 
+	public static function reorderSections(
+		array &$formDescriptor,
+		array $newSectionOrder
+	): void {
+		$sections = [];
+
+		foreach ( $formDescriptor as $key => $field ) {
+			$section = $field['section'] ?? null;
+			if ( $section ) {
+				$sections[$section][$key] = $field;
+			}
+		}
+
+		$formDescriptor = [];
+
+		foreach ( $newSectionOrder as $section ) {
+			if ( isset( $sections[$section] ) ) {
+				$formDescriptor += $sections[$section];
+				unset( $sections[$section] );
+			}
+		}
+
+		foreach ( $sections as $remainingFields ) {
+			$formDescriptor += $remainingFields;
+		}
+	}
+
 	public static function addFieldToBeginning(
 		array &$formDescriptor,
 		string $newKey,
