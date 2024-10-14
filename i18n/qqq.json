@@ -129,7 +129,6 @@
 	"requestwiki-label-edit-request": "Label for the 'Edit Request' button in the wiki request viewer.",
 	"requestwiki-label-language": "Used as a label for 'language'\n{{Identical|Language}}",
 	"requestwiki-label-private": "Used as a label for 'private'",
-	"requestwiki-label-public-description": "Label for the 'Public Description' field in the wiki request form.",
 	"requestwiki-label-purpose": "Label for the 'Purpose' dropdown in the wiki request form.",
 	"requestwiki-label-sitename": "Used as a label for 'sitename'",
 	"requestwiki-label-subdomain": "Used as a label for 'subdomain'",
