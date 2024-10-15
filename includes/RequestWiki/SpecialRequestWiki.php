@@ -166,9 +166,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->hookRunner->onRequestWikiFormDescriptorModify( $formDescriptor );
 
-		// We get all the keys from $formDescriptor whose keys are
-		// absent from $baseFormDescriptor.
-		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
+		// We get all the keys from $formDescriptor that are absent from $baseFormDescriptor,
+		// then filter out any fields where the 'save' property is set to false.
+		$this->extraFields = array_filter(
+			array_diff_key( $formDescriptor, $baseFormDescriptor ),
+			static function ( array $properties ): bool {
+				return ( $properties['save'] ?? null ) !== false;
+			}
+		);
 
 		return $formDescriptor;
 	}
