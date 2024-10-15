@@ -234,6 +234,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
+					'required' => true,
 					'options' => $this->config->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
