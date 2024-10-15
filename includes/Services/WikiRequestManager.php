@@ -780,11 +780,11 @@ class WikiRequestManager {
 		// Make sure boolean and null values save to changes as a string
 		// We need this so that getChangeMessage properly displays them.
 
-		if ( is_bool( $oldValue ) || $oldValue === null ) {
+		if ( is_bool( $oldValue ) || is_array( $oldValue ) || $oldValue === null ) {
 			$oldValue = json_encode( $oldValue );
 		}
 
-		if ( is_bool( $newValue ) || $newValue === null ) {
+		if ( is_bool( $newValue ) || is_array( $newValue ) || $newValue === null ) {
 			$newValue = json_encode( $newValue );
 		}
 
