@@ -53,6 +53,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkPermissions();
 
+		$this->getOutput()->addModuleStyles( [
+			'ext.createwiki.requestwiki.oouiform.styles',
+		] );
+
 		$form = $this->getForm();
 		if ( $form->show() ) {
 			$this->onSuccess();
