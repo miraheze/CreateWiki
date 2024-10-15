@@ -393,6 +393,10 @@ class RequestWikiRequestViewer {
 
 		// Ensure extra fields added via hooks adhere to proper permission checks
 		foreach ( $this->extraFields as $field => $properties ) {
+			if ( ( $properties['save'] ?? null ) === false ) {
+				unset( $this->extraFields[$field] );
+			}
+
 			$section = $properties['section'] ?? '';
 			$type = $properties['type'] ?? '';
 
