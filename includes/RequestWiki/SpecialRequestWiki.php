@@ -170,7 +170,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		// then filter out any fields where the 'save' property is set to false.
 		$this->extraFields = array_filter(
 			array_diff_key( $formDescriptor, $baseFormDescriptor ),
-			function ( array $properties ): bool {
+			static function ( array $properties ): bool {
 				return ( $properties['save'] ?? null ) !== false;
 			}
 		);
