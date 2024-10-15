@@ -217,7 +217,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$extraData = [];
 		foreach ( $this->extraFields as $field => $value ) {
-			if ( $data[$field] ?? false ) {
+			if ( isset( $data[$field] ) ) {
 				$extraData[$field] = $data[$field];
 			}
 		}

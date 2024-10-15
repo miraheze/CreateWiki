@@ -516,7 +516,7 @@ class RequestWikiRequestViewer {
 			);
 
 			foreach ( $this->extraFields as $field => $value ) {
-				if ( $formData[$field] ?? false ) {
+				if ( isset( $formData[$field] ) ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
 						// Remove edit- from the start of the field key
