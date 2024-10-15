@@ -124,6 +124,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
 				'help-message' => 'createwiki-help-purpose',
+				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Purposes ),
 			];
 		}
