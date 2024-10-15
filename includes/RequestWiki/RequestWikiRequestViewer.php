@@ -69,24 +69,24 @@ class RequestWikiRequestViewer {
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getSitename(),
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getUrl(),
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
-				'default' => $this->wikiRequestManager->getLanguage(),
+				'default' => LOCALE_GET_DISPLAY_NAME(
+					$this->wikiRequestManager->getLanguage(),
+					$this->wikiRequestManager->getLanguage()
+				),
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
@@ -109,17 +109,16 @@ class RequestWikiRequestViewer {
 			],
 			'status' => [
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->context->msg(
 					'requestwikiqueue-' . $this->wikiRequestManager->getStatus()
 				)->text(),
 			],
 			'description' => [
-				'type' => 'textarea',
-				'rows' => 6,
-				'readonly' => true,
+				'type' => 'info',
+				// 'rows' => 6,
+				// 'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getDescription(),
