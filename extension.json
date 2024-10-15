@@ -261,6 +261,9 @@
 		},
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
+		},
+		"ext.createwiki.requestwiki.oouiform.styles": {
+			"styles": "ext.createwiki.requestwiki.oouiform.ooui.less"
 		}
 	},
 	"ResourceFileModulePaths": {
