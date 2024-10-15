@@ -412,7 +412,9 @@ class RequestWikiRequestViewer {
 					continue;
 				}
 
-				$formDescriptor[$field]['disabled'] = $this->wikiRequestManager->isLocked();
+				if ( $this->wikiRequestManager->isLocked() ) {
+					$formDescriptor[$field]['disabled'] = true;
+				}
 				continue;
 			}
 
