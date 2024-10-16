@@ -733,18 +733,23 @@ class WikiRequestManager {
 		}
 	}
 
-	public function setExtraFieldData( string $field, mixed $value ): void {
+	public function setExtraFieldsData( array $fieldsData ): void {
 		$this->checkQueryBuilder();
-		if ( $value !== $this->getExtraFieldData( $field ) ) {
-			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+		$extra = $this->getAllExtraData();
 
-			$extra = $this->getAllExtraData();
-			$extra[$field] = $value;
+		$hasChanges = false;
+		foreach ( $fieldsData as $field => $value ) {
+			if ( $value !== $this->getExtraFieldData( $field ) ) {
+				$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+				$extra[$field] = $value;
+				$hasChanges = true;
+			}
+		}
 
+		if ( $hasChanges ) {
 			$newExtra = json_encode( $extra );
-
 			if ( $newExtra === false ) {
-				throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
+				throw new RuntimeException( 'Cannot set invalid JSON data to cw_extra.' );
 			}
 
 			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
@@ -801,11 +806,14 @@ class WikiRequestManager {
 	public function getChangeMessage(): string {
 		$messages = [];
 
+		$prefix = count( $this->changes ) > 1 ? '* ' : '';
 		foreach ( $this->changes as $field => $change ) {
-			$oldValue = $change['old'];
-			$newValue = $change['new'];
+			$oldValue = $this->formatValue( $change['old'] );
+			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "Field '$field' changed from '$oldValue' to '$newValue'";
+			$messages[] = "{$prefix}Field ''{$field}'' changed:\n" .
+				"*{$prefix}'''Old value''': {$oldValue}\n" .
+				"*{$prefix}'''New value''': {$newValue}";
 		}
 
 		return implode( "\n", $messages );
@@ -813,6 +821,21 @@ class WikiRequestManager {
 
 	private function escape( string $text ): string {
 		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
+	}
+
+	private function formatValue( string $value ): string {
+		$value = rtrim( $value );
+		$value = preg_replace( "/\n+/", "\n", $value );
+		$lines = explode( "\n", $value );
+
+		$prefix = count( $this->changes ) > 1 ? '*' : '';
+		foreach ( $lines as $index => $line ) {
+			if ( $index > 0 ) {
+				$lines[$index] = $prefix . ': ' . $line;
+			}
+		}
+
+		return implode( "\n", $lines );
 	}
 
 	public function tryAutoCreate(): void {

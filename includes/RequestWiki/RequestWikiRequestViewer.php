@@ -7,6 +7,8 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
+use MediaWiki\Language\RawMessage;
+use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
@@ -24,6 +26,7 @@ class RequestWikiRequestViewer {
 	private Config $config;
 	private IContextSource $context;
 	private CreateWikiHookRunner $hookRunner;
+	private LanguageNameUtils $languageNameUtils;
 	private PermissionManager $permissionManager;
 	private WikiManagerFactory $wikiManagerFactory;
 	private WikiRequestManager $wikiRequestManager;
@@ -34,6 +37,7 @@ class RequestWikiRequestViewer {
 		Config $config,
 		IContextSource $context,
 		CreateWikiHookRunner $hookRunner,
+		LanguageNameUtils $languageNameUtils,
 		PermissionManager $permissionManager,
 		WikiManagerFactory $wikiManagerFactory,
 		WikiRequestManager $wikiRequestManager
@@ -41,6 +45,7 @@ class RequestWikiRequestViewer {
 		$this->config = $config;
 		$this->context = $context;
 		$this->hookRunner = $hookRunner;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->permissionManager = $permissionManager;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
@@ -69,24 +74,24 @@ class RequestWikiRequestViewer {
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getSitename(),
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getUrl(),
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
-				'default' => $this->wikiRequestManager->getLanguage(),
+				'default' => $this->languageNameUtils->getLanguageName(
+					$this->wikiRequestManager->getLanguage(),
+					$this->context->getLanguage()->getCode()
+				),
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
@@ -109,35 +114,32 @@ class RequestWikiRequestViewer {
 			],
 			'status' => [
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->context->msg(
 					'requestwikiqueue-' . $this->wikiRequestManager->getStatus()
 				)->text(),
 			],
 			'description' => [
-				'type' => 'textarea',
-				'rows' => 6,
-				'readonly' => true,
+				'type' => 'info',
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'details',
-				'default' => $this->wikiRequestManager->getDescription(),
+				'default' => ( new RawMessage( $this->wikiRequestManager->getDescription() ) )->parse(),
+				'raw' => true,
 			],
 		];
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
-				'type' => 'textarea',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'comments',
-				'rows' => 6,
 				'label-message' => [
 					'requestwiki-header-comment-withtimestamp',
 					$comment['user']->getName(),
 					$this->context->getLanguage()->timeanddate( $comment['timestamp'], true ),
 				],
-				'default' => $comment['comment'],
+				'default' => ( new RawMessage( $comment['comment'] ) )->parse(),
+				'raw' => true,
 			];
 		}
 
@@ -150,10 +152,11 @@ class RequestWikiRequestViewer {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 6,
+					'rows' => 10,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
 					'validation-callback' => [ $this, 'isValidComment' ],
+					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'submit-comment' => [
@@ -191,8 +194,9 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-description',
 					'type' => 'textarea',
 					'section' => 'editing',
-					'rows' => 6,
+					'rows' => 10,
 					'required' => true,
+					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getDescription(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
@@ -257,12 +261,11 @@ class RequestWikiRequestViewer {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
 				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
-					'type' => 'textarea',
-					'readonly' => true,
+					'type' => 'info',
 					'section' => 'history',
-					'rows' => 6,
 					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
-					'default' => $entry['details'],
+					'default' => ( new RawMessage( nl2br( $entry['details'] ) ) )->parse(),
+					'raw' => true,
 				];
 			}
 
@@ -401,12 +404,6 @@ class RequestWikiRequestViewer {
 			$section = $properties['section'] ?? '';
 			$type = $properties['type'] ?? '';
 
-			if ( $type !== 'info' && $section === 'details' ) {
-				// Ensure readonly on details fields
-				$formDescriptor[$field]['readonly'] = true;
-				continue;
-			}
-
 			if ( $section === 'editing' || str_starts_with( $section, 'editing/' ) ) {
 				if ( !$canEditRequest ) {
 					unset( $formDescriptor[$field] );
@@ -522,17 +519,20 @@ class RequestWikiRequestViewer {
 				$formData['edit-purpose'] ?? ''
 			);
 
+			$extraData = [];
 			foreach ( $this->extraFields as $field => $value ) {
 				if ( isset( $formData[$field] ) ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
-						// Remove edit- from the start of the field key
+						// Remove 'edit-' from the start of the field key
 						$fieldKey = substr( $field, strlen( 'edit-' ) );
 					}
 
-					$this->wikiRequestManager->setExtraFieldData( $fieldKey, $formData[$field] );
+					$extraData[$fieldKey] = $formData[$field];
 				}
 			}
+
+			$this->wikiRequestManager->setExtraFieldsData( $extraData );
 
 			if ( !$this->wikiRequestManager->hasChanges() ) {
 				$this->wikiRequestManager->clearQueryBuilder();

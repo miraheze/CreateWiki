@@ -136,11 +136,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 6,
+			'rows' => 10,
 			'minlength' => $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
+			'useeditfont' => true,
 			'validation-callback' => [ $this, 'isValidReason' ],
 		];
 
