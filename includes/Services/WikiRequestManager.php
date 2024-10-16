@@ -805,7 +805,7 @@ class WikiRequestManager {
 			$oldValue = $change['old'];
 			$newValue = $change['new'];
 
-			$messages[] = "Field '$field' changed from '$oldValue' to '$newValue'";
+			$messages[] = "* Field '$field' changed from '$oldValue' to '$newValue'";
 		}
 
 		return implode( "\n", $messages );
