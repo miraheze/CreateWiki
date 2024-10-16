@@ -7,6 +7,7 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
+use MediaWiki\Language\RawMessage;
 use MediaWiki\Linker\Linker;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
@@ -117,11 +118,10 @@ class RequestWikiRequestViewer {
 			],
 			'description' => [
 				'type' => 'info',
-				// 'rows' => 6,
-				// 'readonly' => true,
 				'label-message' => 'requestwikiqueue-request-header-description',
 				'section' => 'details',
-				'default' => $this->wikiRequestManager->getDescription(),
+				'default' => ( new RawMessage( $this->wikiRequestManager->getDescription() ) )->parse(),
+				'raw' => true,
 			],
 		];
 
