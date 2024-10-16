@@ -8,6 +8,7 @@ use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
+use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
@@ -25,6 +26,7 @@ class RequestWikiRequestViewer {
 	private Config $config;
 	private IContextSource $context;
 	private CreateWikiHookRunner $hookRunner;
+	private LanguageNameUtils $languageNameUtils;
 	private PermissionManager $permissionManager;
 	private WikiManagerFactory $wikiManagerFactory;
 	private WikiRequestManager $wikiRequestManager;
@@ -35,6 +37,7 @@ class RequestWikiRequestViewer {
 		Config $config,
 		IContextSource $context,
 		CreateWikiHookRunner $hookRunner,
+		LanguageNameUtils $languageNameUtils,
 		PermissionManager $permissionManager,
 		WikiManagerFactory $wikiManagerFactory,
 		WikiRequestManager $wikiRequestManager
@@ -42,6 +45,7 @@ class RequestWikiRequestViewer {
 		$this->config = $config;
 		$this->context = $context;
 		$this->hookRunner = $hookRunner;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->permissionManager = $permissionManager;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
@@ -84,8 +88,7 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => LOCALE_GET_DISPLAY_NAME(
-					$this->wikiRequestManager->getLanguage(),
+				'default' => $this->languageNameUtils->getLanguageName(
 					$this->wikiRequestManager->getLanguage()
 				),
 			],
