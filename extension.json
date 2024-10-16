@@ -362,7 +362,7 @@
 			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
 			"value": false
 		},
-		"CreateWikiSQLfiles": {
+		"CreateWikiSQLFiles": {
 			"description": "Array. All SQLs to be loaded into every wiki by default.",
 			"value": []
 		},
