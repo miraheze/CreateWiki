@@ -404,12 +404,6 @@ class RequestWikiRequestViewer {
 			$section = $properties['section'] ?? '';
 			$type = $properties['type'] ?? '';
 
-			if ( $type !== 'info' && $section === 'details' ) {
-				// Ensure readonly on details fields
-				$formDescriptor[$field]['readonly'] = true;
-				continue;
-			}
-
 			if ( $section === 'editing' || str_starts_with( $section, 'editing/' ) ) {
 				if ( !$canEditRequest ) {
 					unset( $formDescriptor[$field] );
