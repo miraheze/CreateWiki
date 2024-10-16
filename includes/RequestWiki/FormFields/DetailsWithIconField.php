@@ -13,9 +13,12 @@ class DetailsWithIconField extends HTMLInfoField {
 	/** @inheritDoc */
 	public function __construct( $info ) {
 		$this->fieldCheck = $info['fieldCheck'] ?? false;
-		$info['raw'] = true;
+
 		$info['cssclass'] = 'mw-htmlform-field-HTMLInfoField';
 		$info['default'] = $this->getIconField();
+		$info['nodata'] = true;
+		$info['raw'] = true;
+
 		parent::__construct( $info );
 	}
 
