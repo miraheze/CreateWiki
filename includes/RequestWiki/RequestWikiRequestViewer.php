@@ -258,7 +258,7 @@ class RequestWikiRequestViewer {
 					'type' => 'info',
 					'section' => 'history',
 					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
-					'default' => ( new RawMessage( $entry['details'] ) )->parse(),
+					'default' => ( new RawMessage( nl2br( $entry['details'] ) ) )->parse(),
 					'raw' => true,
 				];
 			}
