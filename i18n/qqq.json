@@ -59,7 +59,7 @@
 	"createwiki-no-changes": "Error message displayed when no changes have been made to the wiki request.",
 	"createwiki-request-locked": "Message indicating that the wiki request is locked and cannot be edited or commented on.",
 	"createwiki-request-updated": "Comment sent to the wiki request when it has been updated.",
-	"createwiki-rest-disabled": "Returned from REST endpoints when $wgCreateWikiDisableRESTAPI is set to true",
+	"createwiki-rest-disabled": "Returned from REST endpoints when the REST API is disabled by disabling $wgCreateWikiEnableRESTAPI",
 	"createwiki-rest-mustlogin": "Returned from REST endpoints that require that the request be made by a logged-in user",
 	"createwiki-rest-notallowed": "Returned from REST endpoints when the user making this request is not authorized to perform the requested action",
 	"createwiki-rest-usernowikirequests": "Returned by the wiki_requests/user/{username} endpoint if the user has not made any wiki requests",

@@ -322,10 +322,6 @@
 			"description": "String. Database suffix.",
 			"value": "wiki"
 		},
-		"CreateWikiDisableRESTAPI": {
-			"description": "Boolean. If set to true, disable the REST API",
-			"value": false
-		},
 		"CreateWikiDisallowedSubdomains": {
 			"description": "Array. Regexes to match for disallowed subdomains.",
 			"value": []
@@ -335,8 +331,12 @@
 			"value": false
 		},
 		"CreateWikiEnableManageInactiveWikis": {
-			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
+			"description": "Boolean. Whether the manageInactiveWikis.php maintenance script be enabled. That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
 			"value": false
+		},
+		"CreateWikiEnableRESTAPI": {
+			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
+			"value": true
 		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
@@ -404,11 +404,11 @@
 			"value": false
 		},
 		"RequestWikiConfirmAgreement": {
-			"description": "Boolean. Require users to confirm they will abide by farm policies.",
+			"description": "Boolean. Whether to require users to confirm they will abide by farm policies.",
 			"value": false
 		},
 		"RequestWikiConfirmEmail": {
-			"description": "Boolean. Require users to confirm emails before being able to request wikis.",
+			"description": "Boolean. Whether to require users to confirm emails before being able to request wikis.",
 			"value": true
 		},
 		"RequestWikiMinimumLength": {
