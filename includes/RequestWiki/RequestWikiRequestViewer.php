@@ -151,10 +151,11 @@ class RequestWikiRequestViewer {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 6,
+					'rows' => 8,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
 					'validation-callback' => [ $this, 'isValidComment' ],
+					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'submit-comment' => [
@@ -192,8 +193,9 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-description',
 					'type' => 'textarea',
 					'section' => 'editing',
-					'rows' => 6,
+					'rows' => 8,
 					'required' => true,
+					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getDescription(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
