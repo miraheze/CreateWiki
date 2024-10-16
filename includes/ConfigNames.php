@@ -78,6 +78,4 @@ class ConfigNames {
 	public const RequestWikiConfirmEmail = 'RequestWikiConfirmEmail';
 
 	public const RequestWikiMinimumLength = 'RequestWikiMinimumLength';
-
-	public const RequestWikiUseDescriptions = 'RequestWikiUseDescriptions';
 }

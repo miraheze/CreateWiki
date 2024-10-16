@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
@@ -18,6 +19,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 	private IConnectionProvider $connectionProvider;
 	private CreateWikiHookRunner $hookRunner;
+	private LanguageNameUtils $languageNameUtils;
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private WikiManagerFactory $wikiManagerFactory;
@@ -26,6 +28,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	public function __construct(
 		IConnectionProvider $connectionProvider,
 		CreateWikiHookRunner $hookRunner,
+		LanguageNameUtils $languageNameUtils,
 		PermissionManager $permissionManager,
 		UserFactory $userFactory,
 		WikiManagerFactory $wikiManagerFactory,
@@ -35,6 +38,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
@@ -124,12 +128,14 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	private function lookupRequest( string $par ): void {
+		$this->getOutput()->enableOOUI();
 		// Lookup the request by the id (the current subpage)
 		// and then show the form for the request if it is found.
 		( new RequestWikiRequestViewer(
 			$this->getConfig(),
 			$this->getContext(),
 			$this->hookRunner,
+			$this->languageNameUtils,
 			$this->permissionManager,
 			$this->wikiManagerFactory,
 			$this->wikiRequestManager

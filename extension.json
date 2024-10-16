@@ -167,6 +167,7 @@
 			"services": [
 				"ConnectionProvider",
 				"CreateWikiHookRunner",
+				"LanguageNameUtils",
 				"PermissionManager",
 				"UserFactory",
 				"WikiManagerFactory",
@@ -261,6 +262,9 @@
 		},
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
+		},
+		"ext.createwiki.requestwiki.oouiform.styles": {
+			"styles": "ext.createwiki.requestwiki.oouiform.ooui.less"
 		}
 	},
 	"ResourceFileModulePaths": {
@@ -409,10 +413,6 @@
 		},
 		"RequestWikiMinimumLength": {
 			"description": "Integer. Minimum length for descriptions within wiki requests.",
-			"value": false
-		},
-		"RequestWikiUseDescriptions": {
-			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not. If WikiDiscover is not installed, this does nothing.",
 			"value": false
 		}
 	},
