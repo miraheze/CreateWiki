@@ -801,11 +801,12 @@ class WikiRequestManager {
 	public function getChangeMessage(): string {
 		$messages = [];
 
+		$prefix = count( $this->changes ) > 1 ? '* ' : '';
 		foreach ( $this->changes as $field => $change ) {
 			$oldValue = $change['old'];
 			$newValue = $change['new'];
 
-			$messages[] = "* Field '$field' changed from '$oldValue' to '$newValue'";
+			$messages[] = "{$prefix}Field '{$field}' changed from '{$oldValue}' to '{$newValue}'";
 		}
 
 		return implode( "\n", $messages );
