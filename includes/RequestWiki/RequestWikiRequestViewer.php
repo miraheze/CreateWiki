@@ -450,7 +450,7 @@ class RequestWikiRequestViewer {
 		$out->addModules( [ 'mediawiki.special.userrights' ] );
 		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
-		
+
 		$out->addModuleStyles( 'ext.wikiEditor.styles' );
 		$out->addModules( 'ext.wikiEditor' );
 
