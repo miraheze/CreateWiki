@@ -2,11 +2,11 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\FormFields;
 
-use MediaWiki\HTMLForm\HTMLFormField;
+use MediaWiki\HTMLForm\Field\HTMLInfoField;
 use OOUI\IconWidget;
 use OOUI\Tag;
 
-class DetailsWithIconField extends HTMLFormField {
+class DetailsWithIconField extends HTMLInfoField {
 
 	private bool $fieldCheck;
 
@@ -43,6 +43,6 @@ class DetailsWithIconField extends HTMLFormField {
 			);
 		}
 
-		return $icon . ' ' . $text;
+		return parent::getInputOOUI( $icon . ' ' . $text );
 	}
 }
