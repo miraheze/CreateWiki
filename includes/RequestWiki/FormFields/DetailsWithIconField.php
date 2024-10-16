@@ -13,6 +13,7 @@ class DetailsWithIconField extends HTMLInfoField {
 	/** @inheritDoc */
 	public function __construct( $info ) {
 		$this->fieldCheck = $info['fieldCheck'] ?? false;
+		$info['raw'] = true;
 		parent::__construct( $info );
 	}
 
