@@ -476,6 +476,9 @@ class RequestWikiRequestViewer {
 		$out = $form->getContext()->getOutput();
 		$session = $form->getRequest()->getSession();
 
+		$out->addModuleStyles( 'ext.wikiEditor.styles' );
+		$out->addModules( 'ext.wikiEditor' );
+
 		if ( isset( $formData['submit-comment'] ) ) {
 			// Don't want to mess with some generic comments across requests.
 			// If it is a different request it is not a duplicate comment.
