@@ -51,7 +51,7 @@ class ConfigNames {
 
 	public const ShowBiographicalOption = 'CreateWikiShowBiographicalOption';
 
-	public const SQLFiles = 'CreateWikiSQLfiles';
+	public const SQLFiles = 'CreateWikiSQLFiles';
 
 	public const StateDays = 'CreateWikiStateDays';
 
