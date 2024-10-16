@@ -134,7 +134,8 @@ class RequestWikiRequestViewer {
 					$comment['user']->getName(),
 					$this->context->getLanguage()->timeanddate( $comment['timestamp'], true ),
 				],
-				'default' => $comment['comment'],
+				'default' => ( new RawMessage( $comment['comment'] ) )->parse(),
+				'raw' => true,
 			];
 		}
 
@@ -254,12 +255,11 @@ class RequestWikiRequestViewer {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
 				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
-					'type' => 'textarea',
-					'readonly' => true,
+					'type' => 'info',
 					'section' => 'history',
-					'rows' => 6,
 					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
-					'default' => $entry['details'],
+					'default' => ( new RawMessage( $entry['details'] ) )->parse(),
+					'raw' => true,
 				];
 			}
 
