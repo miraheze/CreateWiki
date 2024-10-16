@@ -751,6 +751,29 @@ class WikiRequestManager {
 		}
 	}
 
+	public function setExtraFieldsData( array $fieldsData ): void {
+		$this->checkQueryBuilder();
+    
+		$extra = $this->getAllExtraData();
+		$hasChanges = false;
+		foreach ( $fieldsData as $field => $value ) {
+			if ( $value !== $this->getExtraFieldData( $field ) ) {
+				$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+				$extra[$field] = $value;
+				$hasChanges = true;
+			}
+		}
+
+		if ( $hasChanges ) {
+			$newExtra = json_encode( $extra );
+			if ( $newExtra === false ) {
+				throw new RuntimeException( 'Cannot set invalid JSON data to cw_extra.' );
+			}
+
+			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
+		}
+	}
+
 	public function setStatus( string $status ): void {
 		$this->checkQueryBuilder();
 		if ( $status !== $this->getStatus() ) {
