@@ -89,7 +89,8 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->languageNameUtils->getLanguageName(
-					$this->wikiRequestManager->getLanguage()
+					$this->wikiRequestManager->getLanguage(),
+					$this->context->getLanguage()->getCode()
 				),
 			],
 			'requester' => [
