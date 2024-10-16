@@ -167,6 +167,7 @@
 			"services": [
 				"ConnectionProvider",
 				"CreateWikiHookRunner",
+				"LanguageNameUtils",
 				"PermissionManager",
 				"UserFactory",
 				"WikiManagerFactory",
