@@ -17,6 +17,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
@@ -126,6 +127,12 @@ class RequestWikiRequestViewer {
 				'section' => 'details',
 				'default' => ( new RawMessage( $this->wikiRequestManager->getDescription() ) )->parse(),
 				'raw' => true,
+			],
+			'details-private' => [
+				'class' => DetailsWithIconField::class,
+				'label-message' => 'requestwikiqueue-request-header-description',
+				'section' => 'details',
+				'fieldCheck' => $this->wikiRequestManager->isPrivate(),
 			],
 		];
 
