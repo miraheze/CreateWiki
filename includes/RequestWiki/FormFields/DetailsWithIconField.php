@@ -15,14 +15,14 @@ class DetailsWithIconField extends HTMLInfoField {
 		$this->fieldCheck = $info['fieldCheck'] ?? false;
 
 		$info['cssclass'] = 'mw-htmlform-field-HTMLInfoField';
-		$info['default'] = $this->getIconField();
+		$info['default'] = $this->getFieldWithIcon();
 		$info['nodata'] = true;
 		$info['raw'] = true;
 
 		parent::__construct( $info );
 	}
 
-	public function getIconField(): string {
+	private function getFieldWithIcon(): string {
 		if ( $this->fieldCheck ) {
 			$icon = new IconWidget( [
 				'icon' => 'check',
