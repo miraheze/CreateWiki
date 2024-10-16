@@ -806,7 +806,7 @@ class WikiRequestManager {
 			$oldValue = $this->formatValue( $change['old'] );
 			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "{$prefix}Field '{$field}' changed:\n" .
+			$messages[] = "{$prefix}Field ''{$field}'' changed:\n" .
 				"*{$prefix}'''Old value''': {$oldValue}\n" .
 				"*{$prefix}'''New value''': {$newValue}";
 		}
