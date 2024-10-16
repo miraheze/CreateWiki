@@ -129,6 +129,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	private function lookupRequest( string $par ): void {
+		$this->getOutput()->enableOOUI();
 		$requestViewer = new RequestWikiRequestViewer(
 			$this->getConfig(),
 			$this->getContext(),
