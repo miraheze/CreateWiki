@@ -134,6 +134,12 @@ class RequestWikiRequestViewer {
 				'fieldCheck' => $this->wikiRequestManager->isPrivate(),
 				'section' => 'details',
 			],
+			'bio' => [
+				'class' => DetailsWithIconField::class,
+				'label-message' => 'requestwiki-label-bio',
+				'fieldCheck' => $this->wikiRequestManager->isBio(),
+				'section' => 'details',
+			],
 		];
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
