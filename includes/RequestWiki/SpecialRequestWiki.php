@@ -123,7 +123,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'help-message' => 'createwiki-help-purpose',
 				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Purposes ),
 			];
@@ -154,7 +153,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
-				'help-message' => 'requestwiki-help-agreement',
 				'required' => true,
 				'validation-callback' => [ $this, 'isAgreementChecked' ],
 			];
