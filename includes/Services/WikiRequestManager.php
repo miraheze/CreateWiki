@@ -806,7 +806,7 @@ class WikiRequestManager {
 			$oldValue = $change['old'];
 			$newValue = $change['new'];
 
-			$messages[] = "{$prefix}Field '{$field}' changed:\n*{$prefix}'''Old value''': {$oldValue}\n*{$prefix}'''New value''': {$newValue}";
+			$messages[] = "{$prefix}Field '{$field}' changed:\n*{$prefix}'''Old value''': {$this->formatValue( $oldValue )}\n*{$prefix}'''New value''': {$this->formatValue( $newValue )}";
 		}
 
 		return implode( "\n", $messages );
@@ -814,6 +814,20 @@ class WikiRequestManager {
 
 	private function escape( string $text ): string {
 		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
+	}
+
+	private function formatValue( string $value ): string {
+		$value = rtrim( $value );
+		$value = preg_replace( "/\n+/", "\n", $value );
+		$lines = explode( "\n", $value );
+
+		foreach ( $lines as $index => $line ) {
+			if ( $index > 0 ) {
+				$lines[$index] = '*: ' . $line;
+			}
+		}
+
+		return implode( "\n", $lines );
 	}
 
 	public function tryAutoCreate(): void {
