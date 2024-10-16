@@ -803,10 +803,10 @@ class WikiRequestManager {
 
 		$prefix = count( $this->changes ) > 1 ? '* ' : '';
 		foreach ( $this->changes as $field => $change ) {
-			$oldValue = $change['old'];
-			$newValue = $change['new'];
+			$oldValue = $this->formatValue( $change['old'] );
+			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "{$prefix}Field '{$field}' changed:\n*{$prefix}'''Old value''': {$this->formatValue( $oldValue )}\n*{$prefix}'''New value''': {$this->formatValue( $newValue )}";
+			$messages[] = "{$prefix}Field '{$field}' changed:\n*{$prefix}'''Old value''': {$oldValue}\n*{$prefix}'''New value''': {$newValue}";
 		}
 
 		return implode( "\n", $messages );
