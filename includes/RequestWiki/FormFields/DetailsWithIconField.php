@@ -15,6 +15,11 @@ class DetailsWithIconField extends HTMLFormField {
 		$this->fieldCheck = $info['fieldCheck'] ?? false;
 		parent::__construct( $info );
 	}
+	
+	/** @inheritDoc */
+	public function getInputHTML( $value ): string {
+		return '';
+	}
 
 	/** @inheritDoc */
 	public function getInputOOUI( $value ): string {
