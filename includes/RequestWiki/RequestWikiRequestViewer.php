@@ -566,7 +566,6 @@ class RequestWikiRequestViewer {
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
-			$this->wikiRequestManager->clearChanges();
 			$out->addHTML( $this->getResponseMessageBox() );
 			return;
 		}
