@@ -157,7 +157,6 @@ class RequestWikiRequestViewer {
 					'validation-callback' => [ $this, 'isValidComment' ],
 					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'id' => 'wpTextbox1',
 				],
 				'submit-comment' => [
 					'type' => 'submit',
@@ -450,9 +449,6 @@ class RequestWikiRequestViewer {
 		$out->addModules( [ 'mediawiki.special.userrights' ] );
 		$out->addModuleStyles( [ 'ext.createwiki.oouiform.styles' ] );
 		$out->addModuleStyles( [ 'oojs-ui-widgets.styles' ] );
-
-		$out->addModuleStyles( 'ext.wikiEditor.styles' );
-		$out->addModules( 'ext.wikiEditor' );
 
 		$formDescriptor = $this->getFormDescriptor();
 		$htmlForm = new CreateWikiOOUIForm( $formDescriptor, $this->context, 'requestwikiqueue-section' );
