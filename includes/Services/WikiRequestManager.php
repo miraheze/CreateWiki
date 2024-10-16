@@ -753,7 +753,7 @@ class WikiRequestManager {
 
 	public function setExtraFieldsData( array $fieldsData ): void {
 		$this->checkQueryBuilder();
-    
+
 		$extra = $this->getAllExtraData();
 		$hasChanges = false;
 		foreach ( $fieldsData as $field => $value ) {
