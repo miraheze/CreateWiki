@@ -735,7 +735,7 @@ class WikiRequestManager {
 
 	public function setExtraFieldData( string $field, mixed $value ): void {
 		$this->checkQueryBuilder();
-		if ( $value !== $this->getExtraFieldData( $field ) ) {
+		if ( $value != $this->getExtraFieldData( $field ) ) {
 			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
 
 			$extra = $this->getAllExtraData();
