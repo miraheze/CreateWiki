@@ -519,17 +519,20 @@ class RequestWikiRequestViewer {
 				$formData['edit-purpose'] ?? ''
 			);
 
+			$extraData = [];
 			foreach ( $this->extraFields as $field => $value ) {
 				if ( isset( $formData[$field] ) ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
-						// Remove edit- from the start of the field key
+						// Remove 'edit-' from the start of the field key
 						$fieldKey = substr( $field, strlen( 'edit-' ) );
 					}
 
-					$this->wikiRequestManager->setExtraFieldData( $fieldKey, $formData[$field] );
+					$extraData[$fieldKey] = $formData[$field];
 				}
 			}
+
+			$this->wikiRequestManager->setExtraFieldsData( $extraData );
 
 			if ( !$this->wikiRequestManager->hasChanges() ) {
 				$this->wikiRequestManager->clearQueryBuilder();
