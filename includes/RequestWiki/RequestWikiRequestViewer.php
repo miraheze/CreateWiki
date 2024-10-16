@@ -16,6 +16,7 @@ use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
@@ -59,11 +60,7 @@ class RequestWikiRequestViewer {
 		// can't view the request, it also doesn't exist.
 		$visibility = $this->wikiRequestManager->getVisibility();
 		if ( !$this->wikiRequestManager->isVisibilityAllowed( $visibility, $user ) ) {
-			$this->context->getOutput()->addHTML(
-				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
-			);
-
-			return [];
+			throw new UnknownRequestError();
 		}
 
 		if ( $this->wikiRequestManager->isLocked() ) {
@@ -439,18 +436,14 @@ class RequestWikiRequestViewer {
 
 	/**
 	 * @param int $requestID
-	 * @return ?CreateWikiOOUIForm
+	 * @return CreateWikiOOUIForm
 	 */
-	public function getForm( int $requestID ): ?CreateWikiOOUIForm {
+	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
 
 		if ( $requestID === 0 || !$this->wikiRequestManager->exists() ) {
-			$out->addHTML(
-				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
-			);
-
-			return null;
+			throw new UnknownRequestError();
 		}
 
 		$out->addModules( [ 'ext.createwiki.oouiform' ] );
