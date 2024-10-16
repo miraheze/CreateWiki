@@ -14,16 +14,11 @@ class DetailsWithIconField extends HTMLInfoField {
 	public function __construct( $info ) {
 		$this->fieldCheck = $info['fieldCheck'] ?? false;
 		$info['raw'] = true;
+		$info['default'] = $this->getIconField();
 		parent::__construct( $info );
 	}
 
-	/** @inheritDoc */
-	public function getInputHTML( $value ): string {
-		return '';
-	}
-
-	/** @inheritDoc */
-	public function getInputOOUI( $value ): string {
+	public function getIconField(): string {
 		if ( $this->fieldCheck ) {
 			$icon = new IconWidget( [
 				'icon' => 'check',
@@ -44,6 +39,6 @@ class DetailsWithIconField extends HTMLInfoField {
 			);
 		}
 
-		return parent::getInputOOUI( $icon . ' ' . $text );
+		return $icon . ' ' . $text;
 	}
 }
