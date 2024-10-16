@@ -821,7 +821,7 @@ class WikiRequestManager {
 		$value = preg_replace( "/\n+/", "\n", $value );
 		$lines = explode( "\n", $value );
 
-		$prefix = count( $this->changes ) > 1 ? '* ' : '';
+		$prefix = count( $this->changes ) > 1 ? '*' : '';
 		foreach ( $lines as $index => $line ) {
 			if ( $index > 0 ) {
 				$lines[$index] = $prefix . ': ' . $line;
