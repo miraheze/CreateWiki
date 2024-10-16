@@ -80,10 +80,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 6,
+			'rows' => 8,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
+			'useeditfont' => true,
 		];
 
 		return $formDescriptor;
