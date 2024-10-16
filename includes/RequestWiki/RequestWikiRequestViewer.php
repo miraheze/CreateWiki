@@ -127,10 +127,8 @@ class RequestWikiRequestViewer {
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
-				'type' => 'textarea',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'comments',
-				'rows' => 6,
 				'label-message' => [
 					'requestwiki-header-comment-withtimestamp',
 					$comment['user']->getName(),
