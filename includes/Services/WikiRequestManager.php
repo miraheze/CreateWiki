@@ -606,7 +606,7 @@ class WikiRequestManager {
 	}
 
 	public function getAllExtraData(): array {
-		return json_decode( $this->row->cw_extra ?: '[]', true );
+		return json_decode( $this->row->cw_extra ?? '[]', true );
 	}
 
 	public function getExtraFieldData( string $field ): mixed {
@@ -735,7 +735,7 @@ class WikiRequestManager {
 
 	public function setExtraFieldData( string $field, mixed $value ): void {
 		$this->checkQueryBuilder();
-		if ( $value != $this->getExtraFieldData( $field ) ) {
+		if ( $value !== $this->getExtraFieldData( $field ) ) {
 			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
 
 			$extra = $this->getAllExtraData();
