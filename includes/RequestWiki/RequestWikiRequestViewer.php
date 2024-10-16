@@ -128,11 +128,11 @@ class RequestWikiRequestViewer {
 				'default' => ( new RawMessage( $this->wikiRequestManager->getDescription() ) )->parse(),
 				'raw' => true,
 			],
-			'details-private' => [
+			'private' => [
 				'class' => DetailsWithIconField::class,
-				'label-message' => 'requestwikiqueue-request-header-description',
-				'section' => 'details',
+				'label-message' => 'requestwiki-label-private',
 				'fieldCheck' => $this->wikiRequestManager->isPrivate(),
+				'section' => 'details',
 			],
 		];
 
