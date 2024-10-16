@@ -151,7 +151,7 @@ class RequestWikiRequestViewer {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 8,
+					'rows' => 10,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
 					'validation-callback' => [ $this, 'isValidComment' ],
@@ -193,7 +193,7 @@ class RequestWikiRequestViewer {
 					'label-message' => 'requestwikiqueue-request-header-description',
 					'type' => 'textarea',
 					'section' => 'editing',
-					'rows' => 8,
+					'rows' => 10,
 					'required' => true,
 					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getDescription(),
