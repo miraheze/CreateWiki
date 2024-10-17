@@ -571,7 +571,7 @@ class WikiRequestManager {
 		return $this->row->cw_category;
 	}
 
-	public function getDescription(): string {
+	public function getReason(): string {
 		$comment = explode( "\n", $this->row->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
@@ -694,10 +694,10 @@ class WikiRequestManager {
 		}
 	}
 
-	public function setDescriptionAndPurpose( string $description, string $purpose ): void {
+	public function setReasonAndPurpose( string $reason, string $purpose ): void {
 		$this->checkQueryBuilder();
-		if ( $description !== $this->getDescription() ) {
-			$this->trackChange( 'description', $this->getDescription(), $description );
+		if ( $reason !== $this->getReason() ) {
+			$this->trackChange( 'reason', $this->getReason(), $reason );
 		}
 
 		if ( $purpose && $purpose !== $this->getPurpose() ) {
@@ -709,7 +709,7 @@ class WikiRequestManager {
 			$newComment .= "Purpose: $purpose\n";
 		}
 
-		$newComment .= $description;
+		$newComment .= $reason;
 
 		$this->queryBuilder->set( [ 'cw_comment' => $newComment ] );
 	}
