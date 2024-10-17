@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki\Tests\Services;
 
-use MediaWikiIntegrationTestCase;
 use MediaWiki\MainConfigNames;
+use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
