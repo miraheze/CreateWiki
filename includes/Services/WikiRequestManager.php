@@ -359,7 +359,7 @@ class WikiRequestManager {
 			} else {
 				$this->setStatus( 'approved' );
 				$this->addComment(
-					comment: 'Request approved and wiki created. ' . $comment,
+					comment: trim( 'Request approved and wiki created. ' . $comment ),
 					user: $user,
 					log: false,
 					type: 'comment',
@@ -844,8 +844,8 @@ class WikiRequestManager {
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
-					'reason' => $this->getReason(),
 					'id' => $this->ID,
+					'reason' => $this->getReason(),
 				]
 			)
 		);
