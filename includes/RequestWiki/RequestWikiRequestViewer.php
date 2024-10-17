@@ -120,7 +120,7 @@ class RequestWikiRequestViewer {
 			],
 			'reason' => [
 				'type' => 'info',
-				'label-message' => 'requestwikiqueue-request-header-reason',
+				'label-message' => 'requestwikiqueue-request-label-reason',
 				'section' => 'details',
 				'default' => ( new RawMessage( $this->wikiRequestManager->getReason() ) )->parse(),
 				'raw' => true,
@@ -201,7 +201,7 @@ class RequestWikiRequestViewer {
 					'section' => 'editing',
 				],
 				'edit-reason' => [
-					'label-message' => 'requestwikiqueue-request-header-reason',
+					'label-message' => 'requestwikiqueue-request-label-reason',
 					'type' => 'textarea',
 					'section' => 'editing',
 					'rows' => 10,
