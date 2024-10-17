@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki\Tests\Maintenance;
 
 use Generator;
-use MaintenanceBaseTestCase;
+use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Maintenance\ManageInactiveWikisV2;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
