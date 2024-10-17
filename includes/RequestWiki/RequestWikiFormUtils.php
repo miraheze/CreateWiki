@@ -16,12 +16,16 @@ class RequestWikiFormUtils {
 		array $newSectionOrder
 	): void {
 		$sections = [];
+		$noSectionFields = [];
 
 		foreach ( $formDescriptor as $key => $field ) {
 			$section = $field['section'] ?? null;
 			if ( $section ) {
 				$sections[$section][$key] = $field;
+				continue;
 			}
+
+			$noSectionFields[$key] = $field;
 		}
 
 		$formDescriptor = [];
@@ -36,6 +40,8 @@ class RequestWikiFormUtils {
 		foreach ( $sections as $remainingFields ) {
 			$formDescriptor += $remainingFields;
 		}
+
+		$formDescriptor += $noSectionFields;
 	}
 
 	public static function addFieldToBeginning(
