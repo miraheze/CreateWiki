@@ -325,7 +325,7 @@ class WikiRequestManager {
 			$this->setStatus( 'approved' );
 
 			$this->addComment(
-				comment: trim( 'Request approved. ' . $comment ),
+				comment: rtrim( 'Request approved. ' . $comment ),
 				user: $user,
 				log: false,
 				type: 'comment',
@@ -359,7 +359,7 @@ class WikiRequestManager {
 			} else {
 				$this->setStatus( 'approved' );
 				$this->addComment(
-					comment: trim( 'Request approved and wiki created. ' . $comment ),
+					comment: rtrim( 'Request approved and wiki created. ' . $comment ),
 					user: $user,
 					log: false,
 					type: 'comment',
