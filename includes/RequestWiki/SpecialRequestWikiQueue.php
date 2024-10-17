@@ -92,7 +92,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'type' => 'language',
 				'name' => 'language',
 				'label-message' => 'requestwikiqueue-request-label-language',
-				'default' => $language ?: $this->getContext()->getLanguageCode(),
+				'default' => $language ?: $this->getContext()->getLanguage()->getCode(),
 			],
 			'status' => [
 				'type' => 'select',
