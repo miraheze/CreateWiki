@@ -483,8 +483,8 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 			[ 'section1' ],
 			[
 				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
-				'field1' => [ 'type' => 'text' ],
 				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field1' => [ 'type' => 'text' ],
 			]
 		];
 	}
