@@ -43,6 +43,75 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::reorderSections
+	 * @dataProvider provideReorderSections
+	 */
+	public function testReorderSections(
+		array $formDescriptor,
+		array $newOrder,
+		array $expected
+	): void {
+		RequestWikiFormUtils::reorderSections( $formDescriptor, $newOrder );
+		$this->assertSame( $expected, $formDescriptor );
+	}
+
+	public function provideReorderSections(): Generator {
+		yield 'reorder fields by section' => [
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+				'field4' => [ 'type' => 'radio', 'section' => 'section3' ],
+			],
+			[ 'section2', 'section1' ],
+			[
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+				'field4' => [ 'type' => 'radio', 'section' => 'section3' ],
+			],
+		];
+
+		yield 'reorder with non-existing section' => [
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+			],
+			[ 'section3', 'section1' ],
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+			]
+		];
+
+		yield 'empty new order' => [
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+			],
+			[],
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+			]
+		];
+
+		yield 'fields with no section' => [
+			[
+				'field1' => [ 'type' => 'text' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+			],
+			[ 'section1' ],
+			[
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field1' => [ 'type' => 'text' ],
+			]
+		];
+	}
+
+	/**
 	 * @covers ::addFieldToBeginning
 	 * @dataProvider provideAddFieldToBeginning
 	 */
@@ -72,6 +141,41 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 				'field1' => [ 'type' => 'text' ],
 				'field2' => [ 'type' => 'checkbox' ]
 			]
+		];
+	}
+
+	/**
+	 * @covers ::addFieldToEnd
+	 * @dataProvider provideAddFieldToEnd
+	 */
+	public function testAddFieldToEnd(
+		array $formDescriptor,
+		string $newKey,
+		array $newField,
+		array $expected
+	): void {
+		RequestWikiFormUtils::addFieldToEnd( $formDescriptor, $newKey, $newField );
+		$this->assertSame( $expected, $formDescriptor );
+	}
+
+	public function provideAddFieldToEnd(): Generator {
+		yield 'add to empty form' => [
+			[],
+			'field1',
+			[ 'type' => 'text' ],
+			[ 'field1' => [ 'type' => 'text' ] ],
+		];
+
+		yield 'add to existing form' => [
+			[
+				'field1' => [ 'type' => 'text' ],
+			],
+			'field2',
+			[ 'type' => 'email' ],
+			[
+				'field1' => [ 'type' => 'text' ],
+				'field2' => [ 'type' => 'email' ],
+			],
 		];
 	}
 
@@ -387,144 +491,6 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::getFieldsInSection
-	 * @dataProvider provideGetFieldsInSection
-	 */
-	public function testGetFieldsInSection(
-		array $formDescriptor,
-		string $section,
-		array $expected
-	): void {
-		$result = RequestWikiFormUtils::getFieldsInSection( $formDescriptor, $section );
-		$this->assertSame( $expected, $result );
-	}
-
-	public function provideGetFieldsInSection(): Generator {
-		yield 'fields in section' => [
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section1' ],
-				'field3' => [ 'type' => 'email', 'section' => 'section2' ]
-			],
-			'section1',
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section1' ]
-			]
-		];
-
-		yield 'no fields in section' => [
-			[ 'field1' => [ 'type' => 'text', 'section' => 'section1' ] ],
-			'sectionX',
-			[]
-		];
-	}
-
-	/**
-	 * @covers ::reorderSections
-	 * @dataProvider provideReorderSections
-	 */
-	public function testReorderSections(
-		array $formDescriptor,
-		array $newOrder,
-		array $expected
-	): void {
-		RequestWikiFormUtils::reorderSections( $formDescriptor, $newOrder );
-		$this->assertSame( $expected, $formDescriptor );
-	}
-
-	public function provideReorderSections(): Generator {
-		yield 'reorder fields by section' => [
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
-				'field4' => [ 'type' => 'radio', 'section' => 'section3' ],
-			],
-			[ 'section2', 'section1' ],
-			[
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
-				'field4' => [ 'type' => 'radio', 'section' => 'section3' ],
-			],
-		];
-
-		yield 'reorder with non-existing section' => [
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-			],
-			[ 'section3', 'section1' ],
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-			]
-		];
-
-		yield 'empty new order' => [
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-			],
-			[],
-			[
-				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-			]
-		];
-
-		yield 'fields with no section' => [
-			[
-				'field1' => [ 'type' => 'text' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
-			],
-			[ 'section1' ],
-			[
-				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
-				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
-				'field1' => [ 'type' => 'text' ],
-			]
-		];
-	}
-
-	/**
-	 * @covers ::addFieldToEnd
-	 * @dataProvider provideAddFieldToEnd
-	 */
-	public function testAddFieldToEnd(
-		array $formDescriptor,
-		string $newKey,
-		array $newField,
-		array $expected
-	): void {
-		RequestWikiFormUtils::addFieldToEnd( $formDescriptor, $newKey, $newField );
-		$this->assertSame( $expected, $formDescriptor );
-	}
-
-	public function provideAddFieldToEnd(): Generator {
-		yield 'add to empty form' => [
-			[],
-			'field1',
-			[ 'type' => 'text' ],
-			[ 'field1' => [ 'type' => 'text' ] ],
-		];
-
-		yield 'add to existing form' => [
-			[
-				'field1' => [ 'type' => 'text' ],
-			],
-			'field2',
-			[ 'type' => 'email' ],
-			[
-				'field1' => [ 'type' => 'text' ],
-				'field2' => [ 'type' => 'email' ],
-			],
-		];
-	}
-
-	/**
 	 * @covers ::unsetFieldProperty
 	 * @dataProvider provideUnsetFieldProperty
 	 */
@@ -572,6 +538,40 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 			[
 				'field1' => [ 'type' => 'text' ],
 			],
+		];
+	}
+
+	/**
+	 * @covers ::getFieldsInSection
+	 * @dataProvider provideGetFieldsInSection
+	 */
+	public function testGetFieldsInSection(
+		array $formDescriptor,
+		string $section,
+		array $expected
+	): void {
+		$result = RequestWikiFormUtils::getFieldsInSection( $formDescriptor, $section );
+		$this->assertSame( $expected, $result );
+	}
+
+	public function provideGetFieldsInSection(): Generator {
+		yield 'fields in section' => [
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section1' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section2' ]
+			],
+			'section1',
+			[
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section1' ]
+			]
+		];
+
+		yield 'no fields in section' => [
+			[ 'field1' => [ 'type' => 'text', 'section' => 'section1' ] ],
+			'sectionX',
+			[]
 		];
 	}
 }
