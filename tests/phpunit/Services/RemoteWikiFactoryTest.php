@@ -3,6 +3,8 @@
 namespace Miraheze\CreateWiki\Tests\Services;
 
 use MediaWikiIntegrationTestCase;
+use MediaWiki\MainConfigNames;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -18,14 +20,16 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' );
-		$this->setMwGlobals( 'wgCreateWikiUseClosedWikis', true );
-		$this->setMwGlobals( 'wgCreateWikiUseExperimental', true );
-		$this->setMwGlobals( 'wgCreateWikiUseInactiveWikis', true );
-		$this->setMwGlobals( 'wgCreateWikiUsePrivateWikis', true );
+		$this->overrideConfigValues( [
+			ConfigNames::DatabaseSuffix => 'test',
+			ConfigNames::UseClosedWikis => true,
+			ConfigNames::UseExperimental => true,
+			ConfigNames::UseInactiveWikis => true,
+			ConfigNames::UsePrivateWikis => true,
+		] );
 
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS['wgDBserver'],
+			'host' => $GLOBALS[MainConfigNames::DBserver],
 			'user' => 'root',
 		] );
 
@@ -45,14 +49,14 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
-				'wiki_private' => (int)0,
+				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
 				'wiki_category' => 'uncategorised',
-				'wiki_closed' => (int)0,
-				'wiki_deleted' => (int)0,
-				'wiki_locked' => (int)0,
-				'wiki_inactive' => (int)0,
-				'wiki_inactive_exempt' => (int)0,
+				'wiki_closed' => 0,
+				'wiki_deleted' => 0,
+				'wiki_locked' => 0,
+				'wiki_inactive' => 0,
+				'wiki_inactive_exempt' => 0,
 				'wiki_url' => 'http://127.0.0.1:9412',
 			] )
 			->caller( __METHOD__ )
