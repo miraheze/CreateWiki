@@ -61,7 +61,7 @@ class RequestWikiAIJob extends Job {
 			$approveScore = $pipeline->getEstimator()->predictProbability( $token )[0]['approved'];
 
 			$this->wikiRequestManager->addComment(
-				comment: 'Approval Score: ' . (string)round( $approveScore, 2 ),
+				comment: "'''Approval Score''': " . (string)round( $approveScore, 2 ),
 				user: User::newSystemUser( 'CreateWiki Extension' ),
 				log: false,
 				type: 'comment',
@@ -79,6 +79,7 @@ class RequestWikiAIJob extends Job {
 
 				$this->wikiRequestManager->approve(
 					user: User::newSystemUser( 'CreateWiki Extension' ),
+					// Don't post any comment
 					comment: ''
 				);
 
