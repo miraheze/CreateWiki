@@ -434,41 +434,57 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function provideReorderSections(): Generator {
-		yield 'reorder existing sections' => [
+		yield 'reorder fields by section' => [
 			[
-				'section1' => [],
-				'section2' => [],
-				'section3' => [],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+				'field4' => [ 'type' => 'radio', 'section' => 'section3' ],
 			],
-			[ 'section3', 'section1', 'section2' ],
+			[ 'section2', 'section1' ],
 			[
-				'section3' => [],
-				'section1' => [],
-				'section2' => [],
-			]
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+				'field4' => [ 'type' => 'radio', 'section' => 'section3' ],
+			],
 		];
 
 		yield 'reorder with non-existing section' => [
 			[
-				'section1' => [],
-				'section2' => [],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
 			],
 			[ 'section3', 'section1' ],
 			[
-				'section1' => [],
-				'section2' => [],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
 			]
 		];
 
 		yield 'empty new order' => [
 			[
-				'section1' => [],
-				'section2' => [],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
 			],
 			[],
 			[
-				'section1' => [],
-				'section2' => [],
+				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+			]
+		];
+
+		yield 'fields with no section' => [
+			[
+				'field1' => [ 'type' => 'text' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+			],
+			[ 'section1' ],
+			[
+				'field3' => [ 'type' => 'email', 'section' => 'section1' ],
+				'field1' => [ 'type' => 'text' ],
+				'field2' => [ 'type' => 'checkbox', 'section' => 'section2' ],
 			]
 		];
 	}
