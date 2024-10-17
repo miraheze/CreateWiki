@@ -33,7 +33,7 @@ class ManageInactiveWikisV2Test extends MaintenanceBaseTestCase {
 	 * @dataProvider provideExecuteData
 	 */
 	public function testExecute( bool $writeOption, array $config ): void {
-		$this->setMwGlobals( $config );
+		$this->overrideConfigValues( $config );
 
 		if ( $writeOption ) {
 			$this->maintenance->setOption( 'write', true );
