@@ -95,19 +95,21 @@ class RequestWikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => htmlspecialchars( $this->wikiRequestManager->getRequester()->getName() ) .
-					Linker::userToolLinks(
-						$this->wikiRequestManager->getRequester()->getId(),
-						$this->wikiRequestManager->getRequester()->getName()
-					),
+				'default' => Linker::userLink(
+					$this->wikiRequestManager->getRequester()->getId(),
+					$this->wikiRequestManager->getRequester()->getName()
+				) . Linker::userToolLinks(
+					$this->wikiRequestManager->getRequester()->getId(),
+					$this->wikiRequestManager->getRequester()->getName()
+				),
 				'raw' => true,
 			],
 			'requestedDate' => [
 				'label-message' => 'requestwikiqueue-request-label-requested-date',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => $this->context->getLanguage()->timeanddate(
-					$this->wikiRequestManager->getTimestamp(), true
+				'default' => $this->context->getLanguage()->userTimeAndDate(
+					$this->wikiRequestManager->getTimestamp(), $user
 				),
 			],
 			'status' => [
@@ -146,7 +148,7 @@ class RequestWikiRequestViewer {
 				'label-message' => [
 					'requestwiki-header-comment-withtimestamp',
 					$comment['user']->getName(),
-					$this->context->getLanguage()->timeanddate( $comment['timestamp'], true ),
+					$this->context->getLanguage()->userTimeAndDate( $comment['timestamp'], $user ),
 				],
 				'default' => ( new RawMessage( $comment['comment'] ) )->parse(),
 				'raw' => true,
@@ -269,7 +271,7 @@ class RequestWikiRequestViewer {
 		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
 		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
-				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
+				$timestamp = $this->context->getLanguage()->userTimeAndDate( $entry['timestamp'], $user );
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
 					'type' => 'info',
 					'section' => 'history',
@@ -380,7 +382,7 @@ class RequestWikiRequestViewer {
 				)[0];
 			} else {
 				$formDescriptor['handle-comment']['type'] = 'textarea';
-				$formDescriptor['handle-comment']['rows'] = 6;
+				$formDescriptor['handle-comment']['rows'] = 10;
 			}
 
 			if ( $error ) {
