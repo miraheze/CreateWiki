@@ -103,7 +103,6 @@
 	"requestwikiqueue-pager-status-approved": "approvata",
 	"requestwikiqueue-pager-status-declined": "respinta",
 	"requestwikiqueue-pager-status-inreview": "In revisione",
-	"requestwikiqueue-request-header-description": "Descrizione wiki",
 	"requestwikiqueue-request-info-submission": "Qui tu puoi modificare la visibilità della richiesta, approvare o declinare la richiesta e fornire commenti aggiuntivi quando lo fai. Se tu contrassegni il wiki come approvato, verrà creato in automatico.",
 	"requestwikiqueue-request-label-action": "Cosa vuoi fare?",
 	"requestwikiqueue-request-label-comment": "Commento:",

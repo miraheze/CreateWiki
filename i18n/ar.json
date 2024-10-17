@@ -57,7 +57,6 @@
 	"requestwiki-label-edit-request": "تعديل الطلب",
 	"requestwiki-label-language": "اللغة:",
 	"requestwiki-label-private": "ويكي خاص (غير قابل للقراءة من قبل الجميع):",
-	"requestwiki-label-public-description": "قم بوصف الويكي الخاص بك للعامة:",
 	"requestwiki-label-sitename": "اسم الويكي:",
 	"requestwiki-label-subdomain": "النطاق الفرعي:",
 	"requestwiki-notloggedin": "عذرا، يجب <span class=\"plainlinks\">[$1 سجيل الدخول]</span> قبل أن تتمكن من طلب ويكي.",
