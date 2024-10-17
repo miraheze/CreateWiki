@@ -124,7 +124,7 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'label-message' => 'requestwikiqueue-request-label-reason',
 				'section' => 'details',
-				'default' => ( new RawMessage( $this->wikiRequestManager->getReason() ) )->parse(),
+				'default' => ( new RawMessage( nl2br( $this->wikiRequestManager->getReason() ) ) )->parse(),
 				'raw' => true,
 			],
 			'private' => [
@@ -150,7 +150,7 @@ class RequestWikiRequestViewer {
 					$comment['user']->getName(),
 					$this->context->getLanguage()->userTimeAndDate( $comment['timestamp'], $user ),
 				],
-				'default' => ( new RawMessage( $comment['comment'] ) )->parse(),
+				'default' => ( new RawMessage( nl2br( $comment['comment'] ) ) )->parse(),
 				'raw' => true,
 			];
 		}
