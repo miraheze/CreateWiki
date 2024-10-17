@@ -29,7 +29,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS[MainConfigNames::DBserver],
+			'host' => $this->getConfVar( MainConfigNames::DBserver ),
 			'user' => 'root',
 		] );
 
