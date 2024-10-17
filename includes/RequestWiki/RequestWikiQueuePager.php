@@ -150,7 +150,7 @@ class RequestWikiQueuePager extends TablePager {
 			$info['conds']['cw_dbname'] = $this->dbname;
 		}
 
-		if ( $this->language ) {
+		if ( $this->language && $this->language !== '*' ) {
 			$info['conds']['cw_language'] = $this->language;
 		}
 
