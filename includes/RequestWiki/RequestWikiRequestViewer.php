@@ -118,11 +118,11 @@ class RequestWikiRequestViewer {
 					'requestwikiqueue-' . $this->wikiRequestManager->getStatus()
 				)->text(),
 			],
-			'description' => [
+			'reason' => [
 				'type' => 'info',
-				'label-message' => 'requestwikiqueue-request-header-description',
+				'label-message' => 'requestwikiqueue-request-header-reason',
 				'section' => 'details',
-				'default' => ( new RawMessage( $this->wikiRequestManager->getDescription() ) )->parse(),
+				'default' => ( new RawMessage( $this->wikiRequestManager->getReason() ) )->parse(),
 				'raw' => true,
 			],
 			'private' => [
@@ -200,14 +200,14 @@ class RequestWikiRequestViewer {
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'editing',
 				],
-				'edit-description' => [
-					'label-message' => 'requestwikiqueue-request-header-description',
+				'edit-reason' => [
+					'label-message' => 'requestwikiqueue-request-header-reason',
 					'type' => 'textarea',
 					'section' => 'editing',
 					'rows' => 10,
 					'required' => true,
 					'useeditfont' => true,
-					'default' => $this->wikiRequestManager->getDescription(),
+					'default' => $this->wikiRequestManager->getReason(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 			];
@@ -520,8 +520,8 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setBio( (bool)( $formData['edit-bio'] ?? false ) );
 
 			// We do this at once since they are both stored in cw_comment
-			$this->wikiRequestManager->setDescriptionAndPurpose(
-				$formData['edit-description'],
+			$this->wikiRequestManager->setReasonAndPurpose(
+				$formData['edit-reason'],
 				$formData['edit-purpose'] ?? ''
 			);
 
