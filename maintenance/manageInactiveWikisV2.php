@@ -27,7 +27,6 @@ class ManageInactiveWikisV2 extends Maintenance {
 		);
 
 		$this->addDescription( 'Script to manage inactive wikis in a wiki farm.' );
-
 		$this->requireExtension( 'CreateWiki' );
 	}
 
