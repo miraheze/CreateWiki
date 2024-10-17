@@ -79,7 +79,7 @@ class RequestWikiAIJob extends Job {
 
 				$this->wikiRequestManager->approve(
 					user: User::newSystemUser( 'CreateWiki Extension' ),
-					// Don't post any comment
+					// Only post the default 'Request approved.' comment
 					comment: ''
 				);
 
