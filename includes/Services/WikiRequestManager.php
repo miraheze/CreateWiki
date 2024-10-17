@@ -844,7 +844,7 @@ class WikiRequestManager {
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
-					'description' => $this->getDescription(),
+					'reason' => $this->getReason(),
 					'id' => $this->ID,
 				]
 			)
