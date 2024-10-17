@@ -20,8 +20,8 @@ class RequestWikiAIJob extends Job {
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
 
-	private string $description;
 	private int $id;
+	private string $reason;
 
 	public function __construct(
 		array $params,
@@ -35,8 +35,8 @@ class RequestWikiAIJob extends Job {
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
 
-		$this->description = $params['description'];
 		$this->id = $params['id'];
+		$this->reason = $params['reason'];
 	}
 
 	public function run(): bool {
@@ -52,13 +52,13 @@ class RequestWikiAIJob extends Job {
 				$pipeline = $modelManager->restoreFromFile( $modelFile );
 			}
 
-			$tokenDescription = (array)strtolower( $this->description );
+			$token = (array)strtolower( $this->reason );
 
 			// @phan-suppress-next-line PhanUndeclaredMethod
-			$pipeline->transform( $tokenDescription );
+			$pipeline->transform( $token );
 
 			// @phan-suppress-next-line PhanUndeclaredMethod
-			$approveScore = $pipeline->getEstimator()->predictProbability( $tokenDescription )[0]['approved'];
+			$approveScore = $pipeline->getEstimator()->predictProbability( $token )[0]['approved'];
 
 			$this->wikiRequestManager->addComment(
 				comment: 'Approval Score: ' . (string)round( $approveScore, 2 ),
@@ -110,12 +110,12 @@ class RequestWikiAIJob extends Job {
 			return false;
 		}
 
-		$descriptionFilter = CreateWikiRegexConstraint::regexFromArray(
+		$filter = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
 			ConfigNames::AutoApprovalFilter
 		);
 
-		if ( preg_match( $descriptionFilter, strtolower( $this->description ) ) ) {
+		if ( preg_match( $filter, strtolower( $this->reason ) ) ) {
 			return false;
 		}
 
