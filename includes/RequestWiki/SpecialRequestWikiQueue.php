@@ -94,20 +94,22 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'default' => $language ?: '*',
 				'options' => [
-					'All' => '*',
+					// We cannot use options-messages here as otherwise
+					// it overrides all language options.
+					$this->msg( 'createwiki-label-all' )->text() => '*',
 				],
 			],
 			'status' => [
 				'type' => 'select',
 				'name' => 'status',
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'options' => [
-					'Unreviewed' => 'inreview',
-					'Approved' => 'approved',
-					'Declined' => 'declined',
-					'On hold (further review)' => 'onhold',
-					'Needs more details' => 'moredetails',
-					'All' => '*',
+				'options-messages' => [
+					'requestwikiqueue-inreview' => 'inreview',
+					'requestwikiqueue-approved' => 'approved',
+					'requestwikiqueue-declined' => 'declined',
+					'requestwikiqueue-onhold' => 'onhold',
+					'requestwikiqueue-moredetails' => 'moredetails',
+					'createwiki-label-all' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],
