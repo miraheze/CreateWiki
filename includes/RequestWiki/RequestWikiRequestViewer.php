@@ -584,10 +584,9 @@ class RequestWikiRequestViewer {
 				user: $user
 			);
 
-			$this->wikiRequestManager->setStatus( 'inreview' );
-
-			// Log if we are reopening the request
+			// Handle reopening the request if we should
 			if ( $canEditReopen ) {
+				$this->wikiRequestManager->setStatus( 'inreview' );
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
 
