@@ -560,11 +560,11 @@ class RequestWikiRequestViewer {
 				notifyUsers: []
 			);
 
-			$isDeclined = $this->wikiRequestManager->getStatus() === 'declined';
+			$canEditReopen = $this->wikiRequestManager->canEditReopen();
 
 			// Log the edit or reopen to request history
 			$this->wikiRequestManager->addRequestHistory(
-				action: $isDeclined ? 'reopened' : 'edited',
+				action: $canEditReopen ? 'reopened' : 'edited',
 				details: $this->wikiRequestManager->getChangeMessage(),
 				user: $user
 			);
@@ -572,7 +572,7 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setStatus( 'inreview' );
 
 			// Log if we are reopening the request
-			if ( $isDeclined ) {
+			if ( $canEditReopen ) {
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
 
