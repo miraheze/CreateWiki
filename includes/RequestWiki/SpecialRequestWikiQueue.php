@@ -94,7 +94,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'default' => $language ?: '*',
 				'options' => [
-					// We can not use options-messages here as otherwise
+					// We cannot use options-messages here as otherwise
 					// it overrides all language options.
 					$this->msg( 'createwiki-label-all' )->text() => '*',
 				],
