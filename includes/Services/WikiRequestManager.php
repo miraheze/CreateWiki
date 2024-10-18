@@ -35,6 +35,11 @@ class WikiRequestManager {
 		ConfigNames::UseJobQueue,
 	];
 
+	public const REOPEN_STATUS_CONDS = [
+		'declined' => [ 'edit' ],
+		'moredetails' => [ 'comment', 'edit' ],
+	];
+
 	public const VISIBILITY_PUBLIC = 0;
 	public const VISIBILITY_DELETE_REQUEST = 1;
 	public const VISIBILITY_SUPPRESS_REQUEST = 2;
@@ -529,6 +534,14 @@ class WikiRequestManager {
 					break;
 			}
 		}
+	}
+
+	public function canCommentReopen(): bool {
+		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+	}
+
+	public function canEditReopen(): bool {
+		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
 	}
 
 	public function getID(): int {
