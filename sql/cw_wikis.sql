@@ -18,7 +18,8 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_dbcluster VARCHAR(5) DEFAULT 'c1',
   wiki_category VARCHAR(64) NOT NULL,
   wiki_extensions MEDIUMTEXT NULL,
-  wiki_experimental TINYINT NOT NULL DEFAULT '0'
+  wiki_experimental TINYINT NOT NULL DEFAULT '0',
+  wiki_extra LONGTEXT NULL
 ) /*$wgDBTableOptions*/;
 
 CREATE INDEX /*i*/wiki_dbname ON /*_*/cw_wikis (wiki_dbname);
