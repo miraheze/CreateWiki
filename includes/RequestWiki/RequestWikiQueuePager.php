@@ -75,9 +75,9 @@ class RequestWikiQueuePager extends TablePager {
 
 		switch ( $name ) {
 			case 'cw_timestamp':
-				$formatted = $this->getLanguage()->userTimeAndDate(
+				$formatted = $this->escape( $this->getLanguage()->userTimeAndDate(
 					$row->cw_timestamp, $this->getUser()
-				);
+				) );
 				break;
 			case 'cw_dbname':
 				$formatted = $this->escape( $row->cw_dbname );
