@@ -93,21 +93,21 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'name' => 'language',
 				'label-message' => 'requestwikiqueue-request-label-language',
 				'default' => $language ?: '*',
-				'options' => [
-					'All' => '*',
+				'options-messages' => [
+					'createwiki-label-all' => '*',
 				],
 			],
 			'status' => [
 				'type' => 'select',
 				'name' => 'status',
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'options' => [
-					'Unreviewed' => 'inreview',
-					'Approved' => 'approved',
-					'Declined' => 'declined',
-					'On hold (further review)' => 'onhold',
-					'Needs more details' => 'moredetails',
-					'All' => '*',
+				'options-messages' => [
+					'requestwikiqueue-inreview' => 'inreview',
+					'requestwikiqueue-approved' => 'approved',
+					'requestwikiqueue-declined' => 'declined',
+					'requestwikiqueue-onhold' => 'onhold',
+					'requestwikiqueue-moredetails' => 'moredetails',
+					'createwiki-label-all' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],
