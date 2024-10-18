@@ -494,6 +494,19 @@ class RequestWikiRequestViewer {
 					// Use all involved users
 					notifyUsers: []
 				);
+
+				$canCommentReopen = $this->wikiRequestManager->canCommentReopen() &&
+					$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
+
+				// Handle reopening the request if we should
+				if ( $canCommentReopen ) {
+					$this->wikiRequestManager->startQueryBuilder();
+					$this->wikiRequestManager->setStatus( 'inreview' );
+					$this->wikiRequestManager->tryExecuteQueryBuilder();
+
+					$this->wikiRequestManager->log( $user, 'requestreopen' );
+				}
+
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
 				return;
 			}
