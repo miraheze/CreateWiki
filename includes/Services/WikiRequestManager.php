@@ -658,7 +658,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $visibility !== $this->getVisibility() ) {
 			if ( !array_key_exists( $visibility, self::VISIBILITY_CONDS ) ) {
-				throw new InvalidArgumentException( 'Can not set an unsupported visibility type.' );
+				throw new InvalidArgumentException( 'Cannot set an unsupported visibility type.' );
 			}
 
 			$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
@@ -670,7 +670,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $category !== $this->getCategory() ) {
 			if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
-				throw new InvalidArgumentException( 'Can not set an unsupported category.' );
+				throw new InvalidArgumentException( 'Cannot set an unsupported category.' );
 			}
 
 			$this->trackChange( 'category', $this->getCategory(), $category );
