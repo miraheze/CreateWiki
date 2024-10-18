@@ -65,9 +65,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	private function doPagerStuff(): void {
+		$dbname = $this->getRequest()->getText( 'dbname' );
+		$language = $this->getRequest()->getText( 'language' );
 		$requester = $this->getRequest()->getText( 'requester' );
 		$status = $this->getRequest()->getText( 'status' );
-		$dbname = $this->getRequest()->getText( 'dbname' );
 
 		$formDescriptor = [
 			'intro' => [
@@ -86,6 +87,15 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'exist' => true,
 				'default' => $requester,
+			],
+			'language' => [
+				'type' => 'language',
+				'name' => 'language',
+				'label-message' => 'requestwikiqueue-request-label-language',
+				'default' => $language ?: '*',
+				'options' => [
+					'All' => '*',
+				],
 			],
 			'status' => [
 				'type' => 'select',
@@ -115,10 +125,12 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->getConfig(),
 			$this->getContext(),
 			$this->connectionProvider,
+			$this->languageNameUtils,
 			$this->getLinkRenderer(),
 			$this->permissionManager,
 			$this->userFactory,
 			$dbname,
+			$language,
 			$requester,
 			$status
 		);
