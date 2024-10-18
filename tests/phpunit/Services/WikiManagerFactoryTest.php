@@ -3,7 +3,9 @@
 namespace Miraheze\CreateWiki\Tests\Services;
 
 use FatalError;
+use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
@@ -18,13 +20,15 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' );
-		$this->setMwGlobals( 'wgCreateWikiSQLFiles', [
-			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
+		$this->overrideConfigValues( [
+			ConfigNames::DatabaseSuffix => 'test',
+			ConfigNames::SQLFiles => [
+				MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
+			],
 		] );
 
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS['wgDBserver'],
+			'host' => $this->getConfVar( MainConfigNames::DBserver ),
 			'user' => 'root',
 		] );
 
@@ -48,14 +52,14 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
-				'wiki_private' => (int)0,
+				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
 				'wiki_category' => 'uncategorised',
-				'wiki_closed' => (int)0,
-				'wiki_deleted' => (int)0,
-				'wiki_locked' => (int)0,
-				'wiki_inactive' => (int)0,
-				'wiki_inactive_exempt' => (int)0,
+				'wiki_closed' => 0,
+				'wiki_deleted' => 0,
+				'wiki_locked' => 0,
+				'wiki_inactive' => 0,
+				'wiki_inactive_exempt' => 0,
 				'wiki_url' => 'http://127.0.0.1:9412',
 			] )
 			->caller( __METHOD__ )
