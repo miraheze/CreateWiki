@@ -3,7 +3,9 @@
 namespace Miraheze\CreateWiki\Tests\Services;
 
 use FatalError;
+use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
@@ -18,13 +20,15 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->setMwGlobals( 'wgCreateWikiDatabaseSuffix', 'test' );
-		$this->setMwGlobals( 'wgCreateWikiSQLFiles', [
-			MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
+		$this->overrideConfigValues( [
+			ConfigNames::DatabaseSuffix => 'test',
+			ConfigNames::SQLFiles => [
+				MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
+			],
 		] );
 
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
-			'host' => $GLOBALS['wgDBserver'],
+			'host' => $this->getConfVar( MainConfigNames::DBserver ),
 			'user' => 'root',
 		] );
 
