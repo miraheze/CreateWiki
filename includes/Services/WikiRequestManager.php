@@ -147,7 +147,7 @@ class WikiRequestManager {
 			->table( 'cw_comments' )
 			->field( '*' )
 			->where( [ 'cw_id' => $this->ID ] )
-			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
+			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
@@ -224,7 +224,7 @@ class WikiRequestManager {
 			->table( 'cw_history' )
 			->field( '*' )
 			->where( [ 'cw_id' => $this->ID ] )
-			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_DESC )
+			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
