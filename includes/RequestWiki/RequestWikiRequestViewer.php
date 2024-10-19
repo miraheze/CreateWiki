@@ -284,17 +284,19 @@ class RequestWikiRequestViewer {
 			// You can't even get to this part in suppressed wiki requests without the appropiate userright,
 			// so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
-				0 => $this->context->msg( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
+				WikiRequestManager::VISIBILITY_PUBLIC => $this->context->msg(
+					'requestwikiqueue-request-label-visibility-all'
+				)->escaped(),
 			];
 
 			if ( $this->permissionManager->userHasRight( $user, 'createwiki-deleterequest' ) ) {
-				$visibilityOptions[1] = $this->context->msg(
+				$visibilityOptions[WikiRequestManager::VISIBILITY_DELETE_REQUEST] = $this->context->msg(
 					'requestwikiqueue-request-label-visibility-delete'
 				)->escaped();
 			}
 
 			if ( $this->permissionManager->userHasRight( $user, 'createwiki-suppressrequest' ) ) {
-				$visibilityOptions[2] = $this->context->msg(
+				$visibilityOptions[WikiRequestManager::VISIBILITY_SUPPRESS_REQUEST] = $this->context->msg(
 					'requestwikiqueue-request-label-visibility-suppress'
 				)->escaped();
 			}
@@ -353,7 +355,7 @@ class RequestWikiRequestViewer {
 				'handle-changevisibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $visibility !== 0 ) ? 1 : 0,
+					'default' => $visibility !== WikiRequestManager::VISIBILITY_PUBLIC,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handling',
 				],
@@ -494,6 +496,19 @@ class RequestWikiRequestViewer {
 					// Use all involved users
 					notifyUsers: []
 				);
+
+				$canCommentReopen = $this->wikiRequestManager->canCommentReopen() &&
+					$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
+
+				// Handle reopening the request if we should
+				if ( $canCommentReopen ) {
+					$this->wikiRequestManager->startQueryBuilder();
+					$this->wikiRequestManager->setStatus( 'inreview' );
+					$this->wikiRequestManager->tryExecuteQueryBuilder();
+
+					$this->wikiRequestManager->log( $user, 'requestreopen' );
+				}
+
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
 				return;
 			}
@@ -560,19 +575,18 @@ class RequestWikiRequestViewer {
 				notifyUsers: []
 			);
 
-			$isDeclined = $this->wikiRequestManager->getStatus() === 'declined';
+			$canEditReopen = $this->wikiRequestManager->canEditReopen();
 
 			// Log the edit or reopen to request history
 			$this->wikiRequestManager->addRequestHistory(
-				action: $isDeclined ? 'reopened' : 'edited',
+				action: $canEditReopen ? 'reopened' : 'edited',
 				details: $this->wikiRequestManager->getChangeMessage(),
 				user: $user
 			);
 
-			$this->wikiRequestManager->setStatus( 'inreview' );
-
-			// Log if we are reopening the request
-			if ( $isDeclined ) {
+			// Handle reopening the request if we should
+			if ( $canEditReopen ) {
+				$this->wikiRequestManager->setStatus( 'inreview' );
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
 
