@@ -31,9 +31,6 @@
 	"requestwiki-label-subdomain": "Subdomeniu:",
 	"requestwiki-notloggedin": "Trebuie să <span class=\"plainlinks\">[$1 vă logați]</span> înainte să cereți un wiki.",
 	"requestwiki-success": "Cererea ($1) a fost trimisă.",
-	"requestwikiqueue-pager-status-approved": "aprobat",
-	"requestwikiqueue-pager-status-declined": "refuzat",
-	"requestwikiqueue-pager-status-inreview": "in așteptare",
 	"requestwikiqueue-request-label-comment": "Commentariu:",
 	"requestwikiqueue-request-label-status": "Status",
 	"requestwikiqueue-request-label-url": "URL"

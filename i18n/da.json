@@ -52,8 +52,6 @@
 	"requestwiki-label-sitename": "Navn på wiki:",
 	"requestwikiqueue-approve": "Godkend",
 	"requestwikiqueue-decline": "Afvis",
-	"requestwikiqueue-pager-status-approved": "godkendt",
-	"requestwikiqueue-pager-status-declined": "afslået",
 	"requestwikiqueue-request-label-action": "Marker denne anmodning som...",
 	"requestwikiqueue-request-label-comment": "Kommentar:",
 	"requestwikiqueue-request-label-language": "Sprog",
