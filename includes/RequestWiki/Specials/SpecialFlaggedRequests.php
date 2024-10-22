@@ -8,8 +8,8 @@ use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use MediaWiki\WikiMap\WikiMap;
-use Mirabeze\CreateWiki\RequestWiki\FlaggedRequestsPager;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\RequestWiki\FlaggedRequestsPager;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialFlaggedRequests extends SpecialPage {
