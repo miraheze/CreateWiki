@@ -11,7 +11,6 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\FlaggedRequestsPager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialFlaggedRequests extends SpecialPage {
@@ -20,14 +19,12 @@ class SpecialFlaggedRequests extends SpecialPage {
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
 		PermissionManager $permissionManager,
 		UserFactory $userFactory,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'FlaggedRequests', 'createwiki' );
 
@@ -35,7 +32,6 @@ class SpecialFlaggedRequests extends SpecialPage {
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**
@@ -72,8 +68,7 @@ class SpecialFlaggedRequests extends SpecialPage {
 			$this->getLinkRenderer(),
 			$this->permissionManager,
 			$this->userFactory,
-			$this->wikiManagerFactory,
-			$this->wikiRequestManager
+			$this->wikiManagerFactory
 		);
 
 		$table = $pager->getFullOutput();
