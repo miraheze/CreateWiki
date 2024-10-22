@@ -3,6 +3,7 @@ CREATE TABLE /*_*/cw_flags (
   cw_id INT NOT NULL,
   cw_flag_actor INT(10) NOT NULL,
   cw_flag_dbname VARCHAR(64) NOT NULL,
+  cw_flag_expiry BINARY(14) NOT NULL,
   cw_flag_reason TEXT NOT NULL,
   cw_flag_timestamp BINARY(14) NOT NULL,
   cw_flag_visibility TINYINT UNSIGNED NOT NULL,
