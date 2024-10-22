@@ -35,7 +35,7 @@ class SpecialFlaggedRequests extends SpecialPage {
 		WikiManagerFactory $wikiManagerFactory,
 		WikiRequestManager $wikiRequestManager
 	) {
-		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+		parent::__construct( 'RequestWikiQueue', 'createwiki' );
 
 		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
