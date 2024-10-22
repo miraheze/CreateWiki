@@ -76,7 +76,7 @@ class SpecialFlaggedWikis extends SpecialPage {
 				'label-message' => 'createwiki-flaggedwikis-label-new-expiry',
 				'default' => 0,
 				'options' => [
-					$this->msg( 'userrights-expiry-none' )->text() => 'infinity',
+					$this->msg( 'userrights-expiry-none' )->text() => 0,
 					$this->msg( 'userrights-expiry-othertime' )->text() => 'other',
 				] + $expiryOptions,
 				'filter-callback' => static fn ( mixed $expiry ): int =>
