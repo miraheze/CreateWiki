@@ -161,7 +161,8 @@
 				"ConnectionProvider",
 				"PermissionManager",
 				"UserFactory",
-				"WikiManagerFactory"
+				"WikiManagerFactory",
+				"WikiRequestManager"
 			]
 		},
 		"RequestWiki": {
