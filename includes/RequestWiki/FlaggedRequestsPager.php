@@ -52,9 +52,9 @@ class FlaggedRequestsPager extends TablePager {
 		return [
 			'cw_flag_timestamp' => $this->msg( 'createwiki-flaggedrequests-label-timestamp' )->text(),
 			'cw_id' => $this->msg( 'createwiki-flaggedrequests-label-request' )->text(),
-			'cw_flag_reason' => $this->msg( 'createwiki-flaggedrequests-label-reason' )->text(),
+			'cw_flag_dbname' => $this->msg( 'createwiki-flaggedrequests-label-wiki' )->text(),
 			'cw_flag_actor' => $this->msg( 'createwiki-flaggedrequests-label-actor' )->text(),
-			'cw_flag_dbname' => $this->msg( 'createwiki-label-dbname' )->text(),
+			'cw_flag_reason' => $this->msg( 'createwiki-flaggedrequests-label-reason' )->text(),
 		];
 	}
 
@@ -85,7 +85,7 @@ class FlaggedRequestsPager extends TablePager {
 				break;
 			case 'cw_flag_dbname':
 				$wikiManager = $this->wikiManagerFactory->newInstance( $row->cw_id );
-				if ( !$wikiManager->exists() ) {
+				if ( $wikiManager->exists() ) {
 					$this->wikiRequestManager->loadFromID( $row->cw_id );
 					// TODO: when we require 1.43, use LinkRenderer::makeExternalLink
 					$formatted = Html::element( 'a', [
