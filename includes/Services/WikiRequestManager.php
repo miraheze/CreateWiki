@@ -266,7 +266,7 @@ class WikiRequestManager {
 			->execute();
 	}
 
-	public function getFlaggedReason (): string {
+	public function getFlaggedReason(): string {
 		$row = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_flags' )
 			->field( 'cw_flag_reason' )
