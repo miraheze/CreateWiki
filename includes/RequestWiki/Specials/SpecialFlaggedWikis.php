@@ -73,7 +73,10 @@ class SpecialFlaggedWikis extends SpecialPage {
 			'expiry' => [
 				'type' => 'expiry',
 				'label-message' => 'createwiki-flaggedwikis-label-new-expiry',
-				'options' => $expiryOptions,
+				'options' => [
+					$this->msg( 'userrights-expiry-none' )->text() => 0,
+					$this->msg( 'userrights-expiry-othertime' )->text() => 'other',
+				] + $expiryOptions,
 			],
 			'submit' => [
 				'type' => 'submit',
