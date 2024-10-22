@@ -556,13 +556,6 @@ class RequestWikiRequestViewer {
 				$formData['edit-purpose'] ?? ''
 			);
 
-			if ( $formData['handle-flag'] ?? false ) {
-				$this->wikiRequestManager->addFlaggedRequest(
-					$formData['handle-flag-reason'],
-					$user
-				);
-			}
-
 			$extraData = [];
 			foreach ( $this->extraFields as $field => $value ) {
 				if ( isset( $formData[$field] ) ) {
@@ -627,6 +620,13 @@ class RequestWikiRequestViewer {
 						log: true
 					);
 				}
+			}
+
+			if ( $formData['handle-flag'] ?? false ) {
+				$this->wikiRequestManager->addFlaggedRequest(
+					$formData['handle-flag-reason'],
+					$user
+				);
 			}
 
 			// Handle locking wiki request
