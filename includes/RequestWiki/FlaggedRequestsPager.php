@@ -13,7 +13,6 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class FlaggedRequestsPager extends TablePager {
@@ -22,7 +21,6 @@ class FlaggedRequestsPager extends TablePager {
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
 		Config $config,
@@ -31,8 +29,7 @@ class FlaggedRequestsPager extends TablePager {
 		LinkRenderer $linkRenderer,
 		PermissionManager $permissionManager,
 		UserFactory $userFactory,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( $context, $linkRenderer );
 
@@ -44,7 +41,6 @@ class FlaggedRequestsPager extends TablePager {
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/** @inheritDoc */
@@ -69,10 +65,15 @@ class FlaggedRequestsPager extends TablePager {
 				) );
 				break;
 			case 'cw_id':
-				$formatted = $this->linkRenderer->makeLink(
-					SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
-					"#{$row->cw_id}"
-				);
+				if ( $row->cw_id > 0 ) {
+					$formatted = $this->linkRenderer->makeLink(
+						SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
+						"#{$row->cw_id}"
+					);
+					break;
+				}
+
+				$formatted = '-';
 				break;
 			case 'cw_flag_reason':
 				$formatted = $this->escape( $row->cw_flag_reason );
