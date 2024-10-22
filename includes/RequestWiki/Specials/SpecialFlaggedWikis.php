@@ -12,6 +12,7 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\FlaggedWikisPager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use XmlSelect;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialFlaggedWikis extends SpecialPage {
@@ -48,6 +49,10 @@ class SpecialFlaggedWikis extends SpecialPage {
 	}
 
 	private function doPagerStuff(): void {
+		$expiryOptionsMsg = $this->msg( 'userrights-expiry-options' )->inContentLanguage();
+		$expiryOptions = $expiryOptionsMsg->isDisabled()
+			? []
+			: XmlSelect::parseOptionsMessage( $expiryOptionsMsg->text() );
 		$formDescriptor = [
 			'intro' => [
 				'type' => 'info',
@@ -68,6 +73,7 @@ class SpecialFlaggedWikis extends SpecialPage {
 			'expiry' => [
 				'type' => 'expiry',
 				'label-message' => 'createwiki-flaggedwikis-label-new-expiry',
+				'options' => $expiryOptions,
 			],
 			'submit' => [
 				'type' => 'submit',
