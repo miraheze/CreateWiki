@@ -79,6 +79,8 @@ class SpecialFlaggedWikis extends SpecialPage {
 			}
 		);
 
+		$htmlForm->show();
+
 		$pager = new FlaggedWikisPager(
 			$this->getConfig(),
 			$this->getContext(),
