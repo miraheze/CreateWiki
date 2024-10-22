@@ -250,7 +250,7 @@ class WikiRequestManager {
 
 	public function addFlaggedRequest(
 		string $reason,
-		UserIdentity $actor
+		User $actor
 	): void {
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_flags' )
