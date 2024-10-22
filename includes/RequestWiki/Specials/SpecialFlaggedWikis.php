@@ -7,6 +7,7 @@ use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Specials\SpecialUserRights;
 use MediaWiki\User\UserFactory;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
@@ -73,10 +74,13 @@ class SpecialFlaggedWikis extends SpecialPage {
 			'expiry' => [
 				'type' => 'expiry',
 				'label-message' => 'createwiki-flaggedwikis-label-new-expiry',
+				'default' => 0,
 				'options' => [
 					$this->msg( 'userrights-expiry-none' )->text() => 0,
 					$this->msg( 'userrights-expiry-othertime' )->text() => 'other',
 				] + $expiryOptions,
+				'filter-callback' => static fn ( mixed $expiry ): int =>
+					(int)SpecialUserrights::expiryToTimestamp( $expiry ),
 			],
 			'submit' => [
 				'type' => 'submit',
