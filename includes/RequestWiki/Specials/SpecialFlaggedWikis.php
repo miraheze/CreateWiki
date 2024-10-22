@@ -128,7 +128,7 @@ class SpecialFlaggedWikis extends SpecialPage {
 				'cw_id' => 0,
 				'cw_flag_actor' => $this->getUser()->getActorId(),
 				'cw_flag_dbname' => $formData['dbname'],
-			   	'cw_flag_expiry' => $formData['expiry'],
+				'cw_flag_expiry' => $formData['expiry'],
 				'cw_flag_reason' => $formData['reason'],
 				'cw_flag_timestamp' => $dbw->timestamp(),
 				'cw_flag_visibility' => 0,
