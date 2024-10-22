@@ -72,16 +72,12 @@ class SpecialFlaggedWikis extends SpecialPage {
 		];
 
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
-		$htmlForm
-			->setMethod( 'get' )
-			->suppressDefaultSubmit()
-			->prepareForm()
-			->displayForm( false )
-			->setSubmitCallback(
-				function ( array $formData, HTMLForm $form ) {
-					return $this->submitForm( $formData, $form );
-				}
-			);
+		$htmlForm->suppressDefaultSubmit();
+		$htmlForm->setSubmitCallback(
+			function ( array $formData, HTMLForm $form ) {
+				return $this->submitForm( $formData, $form );
+			}
+		);
 
 		$pager = new FlaggedWikisPager(
 			$this->getConfig(),
