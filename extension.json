@@ -382,11 +382,18 @@
 		"CreateWikiStateDays": {
 			"description": "Array. Integer values in days when a wiki is deemed inactive, closed, removed (hidden) and deleted. Number of days passed since last change - not from initial inactivity.",
 			"value": {
-				"inactive": 45,
-				"closed": 15,
-				"removed": 120,
-				"deleted": 7
-			}
+				"no-edits": {
+					"inactive": 15,
+					"closed": 30,
+					"removed": 0,
+					"deleted": 0
+				},
+				"default": {
+					"inactive": 45,
+					"closed": 15,
+					"removed": 120,
+					"deleted": 7
+			}}
 		},
 		"CreateWikiSubdomain": {
 			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
