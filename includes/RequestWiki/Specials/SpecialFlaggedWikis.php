@@ -65,6 +65,10 @@ class SpecialFlaggedWikis extends SpecialPage {
 				'required' => true,
 				'validation-callback' => [ $this, 'isValidReason' ],
 			],
+			'expiry' => [
+				'type' => 'expiry',
+				'label-message' => 'createwiki-flaggedwikis-label-new-expiry',
+			],
 			'submit' => [
 				'type' => 'submit',
 				'buttonlabel-message' => 'createwiki-flaggedwikis-label-new-submit',
