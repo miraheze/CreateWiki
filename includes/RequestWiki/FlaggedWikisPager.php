@@ -112,6 +112,7 @@ class FlaggedWikisPager extends TablePager {
 
 	/** @inheritDoc */
 	public function getQueryInfo(): array {
+		$db = $this->getDatabase();
 		$user = $this->getUser();
 
 		$visibility = $this->permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
@@ -129,7 +130,7 @@ class FlaggedWikisPager extends TablePager {
 			],
 			'conds' => [
 				'cw_flag_visibility <= ' . $visibility,
-				'cw_flag_expiry >' . wfTimestampNow() ?: PHP_INT_MAX
+				$db->expr( 'cw_flag_expiry', '>', $db->timestamp() )
 			],
 			'joins_conds' => [],
 		];
