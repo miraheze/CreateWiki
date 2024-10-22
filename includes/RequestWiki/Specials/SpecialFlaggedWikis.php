@@ -12,8 +12,8 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\FlaggedWikisPager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
-use XmlSelect;
 use Wikimedia\Rdbms\IConnectionProvider;
+use XmlSelect;
 
 class SpecialFlaggedWikis extends SpecialPage {
 
