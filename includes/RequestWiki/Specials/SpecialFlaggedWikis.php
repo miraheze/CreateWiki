@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
