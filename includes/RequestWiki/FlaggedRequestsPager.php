@@ -70,8 +70,8 @@ class FlaggedRequestsPager extends TablePager {
 				break;
 			case 'cw_flag_actor':
 				$formatted = Linker::userLink(
-					$this->userFactory->newFromId( $row->cw_flag_actor )->getId(),
-					$this->userFactory->newFromId( $row->cw_flag_actor )->getName()
+					$this->userFactory->newFromActorId( $row->cw_flag_actor )->getId(),
+					$this->userFactory->newFromActorId( $row->cw_flag_actor )->getName()
 				);
 				break;
 			case 'cw_flag_reason':
