@@ -53,6 +53,7 @@ class SpecialFlaggedRequests extends SpecialPage {
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext() );
 		$htmlForm
 			->setMethod( 'get' )
+			->suppressDefaultSubmit()
 			->prepareForm()
 			->displayForm( false );
 
