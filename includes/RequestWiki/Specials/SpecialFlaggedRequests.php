@@ -23,7 +23,7 @@ class SpecialFlaggedRequests extends SpecialPage {
 		PermissionManager $permissionManager,
 		UserFactory $userFactory
 	) {
-		parent::__construct( 'RequestWikiQueue', 'createwiki' );
+		parent::__construct( 'FlaggedRequests', 'createwiki' );
 
 		$this->connectionProvider = $connectionProvider;
 		$this->permissionManager = $permissionManager;
