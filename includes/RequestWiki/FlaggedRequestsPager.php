@@ -85,12 +85,11 @@ class FlaggedRequestsPager extends TablePager {
 				break;
 			case 'cw_flag_dbname':
 				$wikiManager = $this->wikiManagerFactory->newInstance( $row->cw_id );
-				if ( $wikiManager->exists() ) {
-					$this->wikiRequestManager->loadFromID( $row->cw_id );
+				if ( !$wikiManager->exists() ) {
 					// TODO: when we require 1.43, use LinkRenderer::makeExternalLink
 					$formatted = Html::element( 'a', [
-						'href' => '//' . $this->wikiRequestManager->getUrl()
-					], $this->wikiRequestManager->getUrl() );
+						'href' => $wikiManager->getUrl()
+					], $wikiManager->getUrl() );
 					break;
 				}
 
