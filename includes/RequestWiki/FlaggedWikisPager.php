@@ -15,7 +15,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
 
-class FlaggedRequestsPager extends TablePager {
+class FlaggedWikisPager extends TablePager {
 
 	private LinkRenderer $linkRenderer;
 	private PermissionManager $permissionManager;
@@ -46,11 +46,11 @@ class FlaggedRequestsPager extends TablePager {
 	/** @inheritDoc */
 	public function getFieldNames(): array {
 		return [
-			'cw_flag_timestamp' => $this->msg( 'createwiki-flaggedrequests-label-timestamp' )->text(),
-			'cw_id' => $this->msg( 'createwiki-flaggedrequests-label-request' )->text(),
-			'cw_flag_dbname' => $this->msg( 'createwiki-flaggedrequests-label-wiki' )->text(),
-			'cw_flag_actor' => $this->msg( 'createwiki-flaggedrequests-label-actor' )->text(),
-			'cw_flag_reason' => $this->msg( 'createwiki-flaggedrequests-label-reason' )->text(),
+			'cw_flag_timestamp' => $this->msg( 'createwiki-flaggedwikis-label-timestamp' )->text(),
+			'cw_id' => $this->msg( 'createwiki-flaggedwikis-label-request' )->text(),
+			'cw_flag_dbname' => $this->msg( 'createwiki-flaggedwikis-label-wiki' )->text(),
+			'cw_flag_actor' => $this->msg( 'createwiki-flaggedwikis-label-actor' )->text(),
+			'cw_flag_reason' => $this->msg( 'createwiki-flaggedwikis-label-reason' )->text(),
 		];
 	}
 
