@@ -352,6 +352,20 @@ class RequestWikiRequestViewer {
 					'default' => $this->wikiRequestManager->isLocked(),
 					'section' => 'handling',
 				],
+				'handle-flag' => [
+					'type' => 'check',
+					'label-message' => 'createwiki-label-flag',
+					'default' => (bool)$this->wikiRequestManager->getFlaggedReason(),
+					'section' => 'handling',
+				],
+				'handle-flag-reason' => [
+					'type' => 'text',
+					'label-message' => 'createwiki-label-flag-reason',
+					'hide-if' => [ '!==', 'handle-flag', '1' ],
+					'default' => $this->wikiRequestManager->getFlaggedReason(),
+					'required' => true,
+					'section' => 'handling',
+				],
 				'handle-changevisibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
@@ -541,6 +555,13 @@ class RequestWikiRequestViewer {
 				$formData['edit-reason'],
 				$formData['edit-purpose'] ?? ''
 			);
+
+			if ( $formData['handle-flag'] ?? false ) {
+				$this->wikiRequestManager->addFlaggedRequest(
+					$formData['handle-flag-reason'],
+					$user
+				);
+			}
 
 			$extraData = [];
 			foreach ( $this->extraFields as $field => $value ) {
