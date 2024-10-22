@@ -131,7 +131,7 @@ class FlaggedWikisPager extends TablePager {
 			'conds' => [
 				'cw_flag_visibility <= ' . $visibility,
 				$db->expr( 'cw_flag_expiry', '=', 0 )
-					->or( 'cw_flag_expiry', '>', $db->getTimestamp() )
+					->or( 'cw_flag_expiry', '>', $db->timestamp() )
 			],
 			'joins_conds' => [],
 		];
