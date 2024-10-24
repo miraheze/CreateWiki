@@ -10,6 +10,7 @@ use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiHookRunner implements
 	CreateWikiAfterCreationWithExtraDataHook,
+	CreateWikiCreationExtraFieldsHook,
 	CreateWikiCreationHook,
 	CreateWikiDataFactoryBuilderHook,
 	CreateWikiDeletionHook,
@@ -40,6 +41,14 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'CreateWikiAfterCreationWithExtraData',
 			[ $extraData, $dbname ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiCreationExtraFields( array &$extraFields ): void {
+		$this->hookContainer->run(
+			'CreateWikiCreationExtraFields',
+			[ &$extraFields ]
 		);
 	}
 

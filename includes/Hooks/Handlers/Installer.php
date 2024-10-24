@@ -42,6 +42,12 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			"$dir/patches/patch-cw_requests-add-cw_extra.sql"
 		);
 
+		$updater->addExtensionField(
+			'cw_wikis',
+			'wiki_extra',
+			"$dir/patches/patch-cw_wikis-add-wiki_extra.sql"
+		);
+
 		$updater->modifyExtensionTable(
 			'cw_wikis',
 			"$dir/patches/patch-cw_wikis-update-smallint-to-tinyint.sql"
