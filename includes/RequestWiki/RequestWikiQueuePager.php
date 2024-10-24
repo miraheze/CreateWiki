@@ -4,6 +4,8 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
+use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\Permissions\PermissionManager;
@@ -14,11 +16,13 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
 
+	private LanguageNameUtils $languageNameUtils;
 	private LinkRenderer $linkRenderer;
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 
 	private string $dbname;
+	private string $language;
 	private string $requester;
 	private string $status;
 
@@ -26,10 +30,12 @@ class RequestWikiQueuePager extends TablePager {
 		Config $config,
 		IContextSource $context,
 		IConnectionProvider $connectionProvider,
+		LanguageNameUtils $languageNameUtils,
 		LinkRenderer $linkRenderer,
 		PermissionManager $permissionManager,
 		UserFactory $userFactory,
 		string $dbname,
+		string $language,
 		string $requester,
 		string $status
 	) {
@@ -39,11 +45,13 @@ class RequestWikiQueuePager extends TablePager {
 			$config->get( ConfigNames::GlobalWiki )
 		);
 
+		$this->languageNameUtils = $languageNameUtils;
 		$this->linkRenderer = $linkRenderer;
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 
 		$this->dbname = $dbname;
+		$this->language = $language;
 		$this->requester = $requester;
 		$this->status = $status;
 	}
@@ -63,12 +71,13 @@ class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public function formatValue( $name, $value ): string {
-		$row = $this->mCurrentRow;
+		$row = $this->getCurrentRow();
 
 		switch ( $name ) {
 			case 'cw_timestamp':
-				$language = $this->getLanguage();
-				$formatted = $this->escape( $language->timeanddate( $row->cw_timestamp, true ) );
+				$formatted = $this->escape( $this->getLanguage()->userTimeAndDate(
+					$row->cw_timestamp, $this->getUser()
+				) );
 				break;
 			case 'cw_dbname':
 				$formatted = $this->escape( $row->cw_dbname );
@@ -77,7 +86,10 @@ class RequestWikiQueuePager extends TablePager {
 				$formatted = $this->escape( $row->cw_sitename );
 				break;
 			case 'cw_user':
-				$formatted = $this->escape( $this->userFactory->newFromId( $row->cw_user )->getName() );
+				$formatted = Linker::userLink(
+					$this->userFactory->newFromId( $row->cw_user )->getId(),
+					$this->userFactory->newFromId( $row->cw_user )->getName()
+				);
 				break;
 			case 'cw_url':
 				$formatted = $this->escape( $row->cw_url );
@@ -85,11 +97,14 @@ class RequestWikiQueuePager extends TablePager {
 			case 'cw_status':
 				$formatted = $this->linkRenderer->makeLink(
 					SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
-					$row->cw_status
+					$this->msg( 'requestwikiqueue-' . $row->cw_status )->text()
 				);
 				break;
 			case 'cw_language':
-				$formatted = $this->escape( $row->cw_language );
+				$formatted = $this->languageNameUtils->getLanguageName(
+					$row->cw_language,
+					$this->getLanguage()->getCode()
+				);
 				break;
 			default:
 				$formatted = $this->escape( "Unable to format {$name}" );
@@ -133,6 +148,10 @@ class RequestWikiQueuePager extends TablePager {
 
 		if ( $this->dbname ) {
 			$info['conds']['cw_dbname'] = $this->dbname;
+		}
+
+		if ( $this->language && $this->language !== '*' ) {
+			$info['conds']['cw_language'] = $this->language;
 		}
 
 		if ( $this->requester ) {

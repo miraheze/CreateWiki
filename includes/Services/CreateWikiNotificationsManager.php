@@ -23,6 +23,25 @@ class CreateWikiNotificationsManager {
 		MainConfigNames::Sitename,
 	];
 
+	private const ECHO_TYPES = [
+		'request-comment',
+		'request-declined',
+		'request-moredetails',
+		'wiki-creation',
+	];
+
+	private const EMAIL_TYPES = [
+		'closure',
+		'deletion',
+		'wiki-creation',
+		'wiki-rename',
+	];
+
+	private const SERVER_ADMIN_TYPES = [
+		'deletion',
+		'wiki-rename',
+	];
+
 	private IConnectionProvider $connectionProvider;
 	private MessageLocalizer $messageLocalizer;
 	private ServiceOptions $options;
@@ -67,40 +86,6 @@ class CreateWikiNotificationsManager {
 	}
 
 	/**
-	 * @return array
-	 */
-	private function getEmailTypes(): array {
-		return [
-			'closure',
-			'deletion',
-			'wiki-creation',
-			'wiki-rename',
-		];
-	}
-
-	/**
-	 * @return array
-	 */
-	private function getEchoTypes(): array {
-		return [
-			'request-comment',
-			'request-declined',
-			'request-moredetails',
-			'wiki-creation',
-		];
-	}
-
-	/**
-	 * @return array
-	 */
-	private function notifyServerAdministratorsTypes(): array {
-		return [
-			'deletion',
-			'wiki-rename',
-		];
-	}
-
-	/**
 	 * @param array $data
 	 * @param string $wiki
 	 */
@@ -135,14 +120,14 @@ class CreateWikiNotificationsManager {
 
 		if (
 			$this->options->get( ConfigNames::UseEchoNotifications ) &&
-			in_array( $this->type, $this->getEchoTypes() )
+			in_array( $this->type, self::ECHO_TYPES )
 		) {
 			$this->sendEchoNotification( $data, $receivers );
 		}
 
 		if (
 			$this->options->get( ConfigNames::EmailNotifications ) &&
-			in_array( $this->type, $this->getEmailTypes() )
+			in_array( $this->type, self::EMAIL_TYPES )
 		) {
 			$this->sendEmailNotification( $data, $receivers );
 		}
@@ -194,7 +179,7 @@ class CreateWikiNotificationsManager {
 				$notifyEmails[] = MailAddress::newFromUser( $user );
 			}
 
-			if ( in_array( $this->type, $this->notifyServerAdministratorsTypes() ) ) {
+			if ( in_array( $this->type, self::SERVER_ADMIN_TYPES ) ) {
 				$notifyEmails[] = new MailAddress(
 					$this->options->get( ConfigNames::NotificationEmail ),
 					'Server Administrators'

@@ -35,6 +35,11 @@ class WikiRequestManager {
 		ConfigNames::UseJobQueue,
 	];
 
+	public const REOPEN_STATUS_CONDS = [
+		'declined' => [ 'edit' ],
+		'moredetails' => [ 'comment', 'edit' ],
+	];
+
 	public const VISIBILITY_PUBLIC = 0;
 	public const VISIBILITY_DELETE_REQUEST = 1;
 	public const VISIBILITY_SUPPRESS_REQUEST = 2;
@@ -325,7 +330,7 @@ class WikiRequestManager {
 			$this->setStatus( 'approved' );
 
 			$this->addComment(
-				comment: 'Request approved. ' . $comment,
+				comment: rtrim( 'Request approved. ' . $comment ),
 				user: $user,
 				log: false,
 				type: 'comment',
@@ -335,7 +340,7 @@ class WikiRequestManager {
 
 			$this->log( $user, 'requestapprove' );
 
-			if ( !is_int( $this->options->get( ConfigNames::AIThreshold ) ) ) {
+			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 				$this->tryAutoCreate();
 			}
 		} else {
@@ -359,7 +364,7 @@ class WikiRequestManager {
 			} else {
 				$this->setStatus( 'approved' );
 				$this->addComment(
-					comment: 'Request approved and wiki created. ' . $comment,
+					comment: rtrim( 'Request approved and wiki created. ' . $comment ),
 					user: $user,
 					log: false,
 					type: 'comment',
@@ -399,7 +404,7 @@ class WikiRequestManager {
 
 		$this->log( $user, 'requestdecline' );
 
-		if ( !is_int( $this->options->get( ConfigNames::AIThreshold ) ) ) {
+		if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 			$this->tryAutoCreate();
 		}
 	}
@@ -531,6 +536,14 @@ class WikiRequestManager {
 		}
 	}
 
+	public function canCommentReopen(): bool {
+		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+	}
+
+	public function canEditReopen(): bool {
+		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+	}
+
 	public function getID(): int {
 		return $this->row->cw_id;
 	}
@@ -571,7 +584,7 @@ class WikiRequestManager {
 		return $this->row->cw_category;
 	}
 
-	public function getDescription(): string {
+	public function getReason(): string {
 		$comment = explode( "\n", $this->row->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
@@ -658,7 +671,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $visibility !== $this->getVisibility() ) {
 			if ( !array_key_exists( $visibility, self::VISIBILITY_CONDS ) ) {
-				throw new InvalidArgumentException( 'Can not set an unsupported visibility type.' );
+				throw new InvalidArgumentException( 'Cannot set an unsupported visibility type.' );
 			}
 
 			$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
@@ -670,7 +683,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $category !== $this->getCategory() ) {
 			if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
-				throw new InvalidArgumentException( 'Can not set an unsupported category.' );
+				throw new InvalidArgumentException( 'Cannot set an unsupported category.' );
 			}
 
 			$this->trackChange( 'category', $this->getCategory(), $category );
@@ -694,10 +707,10 @@ class WikiRequestManager {
 		}
 	}
 
-	public function setDescriptionAndPurpose( string $description, string $purpose ): void {
+	public function setReasonAndPurpose( string $reason, string $purpose ): void {
 		$this->checkQueryBuilder();
-		if ( $description !== $this->getDescription() ) {
-			$this->trackChange( 'description', $this->getDescription(), $description );
+		if ( $reason !== $this->getReason() ) {
+			$this->trackChange( 'reason', $this->getReason(), $reason );
 		}
 
 		if ( $purpose && $purpose !== $this->getPurpose() ) {
@@ -709,7 +722,7 @@ class WikiRequestManager {
 			$newComment .= "Purpose: $purpose\n";
 		}
 
-		$newComment .= $description;
+		$newComment .= $reason;
 
 		$this->queryBuilder->set( [ 'cw_comment' => $newComment ] );
 	}
@@ -733,18 +746,23 @@ class WikiRequestManager {
 		}
 	}
 
-	public function setExtraFieldData( string $field, mixed $value ): void {
+	public function setExtraFieldsData( array $fieldsData ): void {
 		$this->checkQueryBuilder();
-		if ( $value !== $this->getExtraFieldData( $field ) ) {
-			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+		$extra = $this->getAllExtraData();
 
-			$extra = $this->getAllExtraData();
-			$extra[$field] = $value;
+		$hasChanges = false;
+		foreach ( $fieldsData as $field => $value ) {
+			if ( $value !== $this->getExtraFieldData( $field ) ) {
+				$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+				$extra[$field] = $value;
+				$hasChanges = true;
+			}
+		}
 
+		if ( $hasChanges ) {
 			$newExtra = json_encode( $extra );
-
 			if ( $newExtra === false ) {
-				throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
+				throw new RuntimeException( 'Cannot set invalid JSON data to cw_extra.' );
 			}
 
 			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
@@ -777,14 +795,14 @@ class WikiRequestManager {
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
-		// Make sure boolean and null values save to changes as a string
+		// Make sure boolean, array, and null values save to changes as a string
 		// We need this so that getChangeMessage properly displays them.
 
-		if ( is_bool( $oldValue ) || $oldValue === null ) {
+		if ( is_bool( $oldValue ) || is_array( $oldValue ) || $oldValue === null ) {
 			$oldValue = json_encode( $oldValue );
 		}
 
-		if ( is_bool( $newValue ) || $newValue === null ) {
+		if ( is_bool( $newValue ) || is_array( $newValue ) || $newValue === null ) {
 			$newValue = json_encode( $newValue );
 		}
 
@@ -801,11 +819,14 @@ class WikiRequestManager {
 	public function getChangeMessage(): string {
 		$messages = [];
 
+		$prefix = count( $this->changes ) > 1 ? '* ' : '';
 		foreach ( $this->changes as $field => $change ) {
-			$oldValue = $change['old'];
-			$newValue = $change['new'];
+			$oldValue = $this->formatValue( $change['old'] );
+			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "Field '$field' changed from '$oldValue' to '$newValue'";
+			$messages[] = "{$prefix}Field ''{$field}'' changed:\n" .
+				"*{$prefix}'''Old value''': {$oldValue}\n" .
+				"*{$prefix}'''New value''': {$newValue}";
 		}
 
 		return implode( "\n", $messages );
@@ -815,14 +836,29 @@ class WikiRequestManager {
 		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
 
+	private function formatValue( string $value ): string {
+		$value = rtrim( $value );
+		$value = preg_replace( "/\n+/", "\n", $value );
+		$lines = explode( "\n", $value );
+
+		$prefix = count( $this->changes ) > 1 ? '*' : '';
+		foreach ( $lines as $index => $line ) {
+			if ( $index > 0 ) {
+				$lines[$index] = $prefix . ': ' . $line;
+			}
+		}
+
+		return implode( "\n", $lines );
+	}
+
 	public function tryAutoCreate(): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
-					'description' => $this->getDescription(),
 					'id' => $this->ID,
+					'reason' => $this->getReason(),
 				]
 			)
 		);

@@ -167,6 +167,7 @@
 			"services": [
 				"ConnectionProvider",
 				"CreateWikiHookRunner",
+				"LanguageNameUtils",
 				"PermissionManager",
 				"UserFactory",
 				"WikiManagerFactory",
@@ -261,6 +262,9 @@
 		},
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
+		},
+		"ext.createwiki.requestwiki.oouiform.styles": {
+			"styles": "ext.createwiki.requestwiki.oouiform.ooui.less"
 		}
 	},
 	"ResourceFileModulePaths": {
@@ -269,8 +273,8 @@
 	},
 	"config": {
 		"CreateWikiAIThreshold": {
-			"description": "Integer or false. Minimum percentage point threshold for a request to be automatically created when acceptable.",
-			"value": false
+			"description": "Integer. Must be a positive integer. Minimum percentage point threshold for a request to be automatically approved when acceptable. 0 will disable auto approval.",
+			"value": 0
 		},
 		"CreateWikiAutoApprovalFilter": {
 			"description": "Array. Regexes in request descriptions to never auto approve if matched.",
@@ -281,8 +285,8 @@
 			"value": ""
 		},
 		"CreateWikiCacheType": {
-			"description": "String or false. Key from $wgObjectCaches to use for CreateWiki cache. If false, defaults to $wgMainCacheType.",
-			"value": false
+			"description": "Index from $wgObjectCaches. If set, this will be used instead of $wgMainCacheType for CreateWiki cache.",
+			"value": null
 		},
 		"CreateWikiCannedResponses": {
 			"description": "Array. An array of default responses to give. If this is enabled (not an empty array), free-text options are removed.",
@@ -318,12 +322,8 @@
 			"description": "String. Database suffix.",
 			"value": "wiki"
 		},
-		"CreateWikiDisableRESTAPI": {
-			"description": "Boolean. If set to true, disable the REST API",
-			"value": false
-		},
 		"CreateWikiDisallowedSubdomains": {
-			"description": "Array or string. Regexes to match for disallowed subdomains.",
+			"description": "Array. Regexes to match for disallowed subdomains.",
 			"value": []
 		},
 		"CreateWikiEmailNotifications": {
@@ -331,8 +331,12 @@
 			"value": false
 		},
 		"CreateWikiEnableManageInactiveWikis": {
-			"description": "Boolean. Should the manageInactiveWikis.php maintenance script be enabled? That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
+			"description": "Boolean. Whether the manageInactiveWikis.php maintenance script be enabled. That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
 			"value": false
+		},
+		"CreateWikiEnableRESTAPI": {
+			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
+			"value": true
 		},
 		"CreateWikiGlobalWiki": {
 			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
@@ -358,7 +362,7 @@
 			"description": "Boolean. Whether to show a biographical person option when requesting a wiki.",
 			"value": false
 		},
-		"CreateWikiSQLfiles": {
+		"CreateWikiSQLFiles": {
 			"description": "Array. All SQLs to be loaded into every wiki by default.",
 			"value": []
 		},
@@ -400,19 +404,15 @@
 			"value": false
 		},
 		"RequestWikiConfirmAgreement": {
-			"description": "Boolean. Require users to confirm they will abide by farm policies.",
+			"description": "Boolean. Whether to require users to confirm they will abide by farm policies.",
 			"value": false
 		},
 		"RequestWikiConfirmEmail": {
-			"description": "Boolean. Require users to confirm emails before being able to request wikis.",
+			"description": "Boolean. Whether to require users to confirm emails before being able to request wikis.",
 			"value": true
 		},
 		"RequestWikiMinimumLength": {
-			"description": "Integer. Minimum length for descriptions within wiki requests.",
-			"value": false
-		},
-		"RequestWikiUseDescriptions": {
-			"description": "Boolean. Whether to allow adding WikiDiscover descriptions from RequestWiki or not. If WikiDiscover is not installed, this does nothing.",
+			"description": "Integer. Minimum length for the reason field within RequestWiki.",
 			"value": false
 		}
 	},

@@ -11,12 +11,53 @@ class RequestWikiFormUtils {
 		return isset( $formDescriptor[$fieldKey] );
 	}
 
+	public static function reorderSections(
+		array &$formDescriptor,
+		array $newSectionOrder
+	): void {
+		$sections = [];
+		$noSectionFields = [];
+
+		foreach ( $formDescriptor as $key => $field ) {
+			$section = $field['section'] ?? null;
+			if ( $section ) {
+				$sections[$section][$key] = $field;
+				continue;
+			}
+
+			$noSectionFields[$key] = $field;
+		}
+
+		$formDescriptor = [];
+
+		foreach ( $newSectionOrder as $section ) {
+			if ( isset( $sections[$section] ) ) {
+				$formDescriptor += $sections[$section];
+				unset( $sections[$section] );
+			}
+		}
+
+		foreach ( $sections as $remainingFields ) {
+			$formDescriptor += $remainingFields;
+		}
+
+		$formDescriptor += $noSectionFields;
+	}
+
 	public static function addFieldToBeginning(
 		array &$formDescriptor,
 		string $newKey,
 		array $newField
 	): void {
 		$formDescriptor = [ $newKey => $newField ] + $formDescriptor;
+	}
+
+	public static function addFieldToEnd(
+		array &$formDescriptor,
+		string $newKey,
+		array $newField
+	): void {
+		$formDescriptor += [ $newKey => $newField ];
 	}
 
 	public static function removeFieldByKey(
@@ -175,6 +216,19 @@ class RequestWikiFormUtils {
 				$formDescriptor[$fieldKey],
 				$newProperties
 			);
+		}
+	}
+
+	public static function unsetFieldProperty(
+		array &$formDescriptor,
+		string $fieldKey,
+		string $propertyKey
+	): void {
+		if (
+			isset( $formDescriptor[$fieldKey] ) &&
+			isset( $formDescriptor[$fieldKey][$propertyKey] )
+		) {
+			unset( $formDescriptor[$fieldKey][$propertyKey] );
 		}
 	}
 

@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use ErrorPageError;
-use ExtensionRegistry;
 use ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
@@ -53,6 +52,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$this->checkPermissions();
+
+		$this->getOutput()->addModuleStyles( [
+			'ext.createwiki.requestwiki.oouiform.styles',
+		] );
 
 		$form = $this->getForm();
 		if ( $form->show() ) {
@@ -120,7 +123,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
-				'help-message' => 'createwiki-help-purpose',
+				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Purposes ),
 			];
 		}
@@ -132,11 +135,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
-			'rows' => 6,
+			'rows' => 10,
 			'minlength' => $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
+			'useeditfont' => true,
 			'validation-callback' => [ $this, 'isValidReason' ],
 		];
 
@@ -145,28 +149,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'default' => $this->msg( 'requestwiki-info-guidance-post' ),
 		];
 
-		if (
-			ExtensionRegistry::getInstance()->isLoaded( 'WikiDiscover' ) &&
-			$this->getConfig()->get( 'WikiDiscoverUseDescriptions' ) &&
-			$this->getConfig()->get( ConfigNames::RequestWikiUseDescriptions )
-		) {
-			$maxLength = $this->getConfig()->get( 'WikiDiscoverDescriptionMaxLength' );
-			$formDescriptor['public-description'] = [
-				'type' => 'textarea',
-				'rows' => 2,
-				'maxlength' => $maxLength ?: false,
-				'label-message' => 'requestwiki-label-public-description',
-				'help-message' => 'requestwiki-help-public-description',
-				'required' => true,
-				'validation-callback' => [ $this, 'isValidReason' ],
-			];
-		}
-
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
-				'help-message' => 'requestwiki-help-agreement',
 				'required' => true,
 				'validation-callback' => [ $this, 'isAgreementChecked' ],
 			];
@@ -180,9 +166,14 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->hookRunner->onRequestWikiFormDescriptorModify( $formDescriptor );
 
-		// We get all the keys from $formDescriptor whose keys are
-		// absent from $baseFormDescriptor.
-		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
+		// We get all the keys from $formDescriptor that are absent from $baseFormDescriptor,
+		// then filter out any fields where the 'save' property is set to false.
+		$this->extraFields = array_filter(
+			array_diff_key( $formDescriptor, $baseFormDescriptor ),
+			static function ( array $properties ): bool {
+				return ( $properties['save'] ?? null ) !== false;
+			}
+		);
 
 		return $formDescriptor;
 	}
@@ -231,7 +222,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$extraData = [];
 		foreach ( $this->extraFields as $field => $value ) {
-			if ( $data[$field] ?? false ) {
+			if ( isset( $data[$field] ) ) {
 				$extraData[$field] = $data[$field];
 			}
 		}
@@ -321,7 +312,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 		}
 
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
+		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArray(
 			$this->getConfig()->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
 			ConfigNames::DisallowedSubdomains
 		);

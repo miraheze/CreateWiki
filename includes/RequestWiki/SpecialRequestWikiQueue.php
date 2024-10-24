@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
@@ -18,6 +19,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 	private IConnectionProvider $connectionProvider;
 	private CreateWikiHookRunner $hookRunner;
+	private LanguageNameUtils $languageNameUtils;
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private WikiManagerFactory $wikiManagerFactory;
@@ -26,6 +28,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	public function __construct(
 		IConnectionProvider $connectionProvider,
 		CreateWikiHookRunner $hookRunner,
+		LanguageNameUtils $languageNameUtils,
 		PermissionManager $permissionManager,
 		UserFactory $userFactory,
 		WikiManagerFactory $wikiManagerFactory,
@@ -35,6 +38,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
@@ -61,9 +65,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	private function doPagerStuff(): void {
+		$dbname = $this->getRequest()->getText( 'dbname' );
+		$language = $this->getRequest()->getText( 'language' );
 		$requester = $this->getRequest()->getText( 'requester' );
 		$status = $this->getRequest()->getText( 'status' );
-		$dbname = $this->getRequest()->getText( 'dbname' );
 
 		$formDescriptor = [
 			'intro' => [
@@ -83,17 +88,28 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'exist' => true,
 				'default' => $requester,
 			],
+			'language' => [
+				'type' => 'language',
+				'name' => 'language',
+				'label-message' => 'requestwikiqueue-request-label-language',
+				'default' => $language ?: '*',
+				'options' => [
+					// We cannot use options-messages here as otherwise
+					// it overrides all language options.
+					$this->msg( 'createwiki-label-all' )->text() => '*',
+				],
+			],
 			'status' => [
 				'type' => 'select',
 				'name' => 'status',
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'options' => [
-					'Unreviewed' => 'inreview',
-					'Approved' => 'approved',
-					'Declined' => 'declined',
-					'On hold (further review)' => 'onhold',
-					'Needs more details' => 'moredetails',
-					'All' => '*',
+				'options-messages' => [
+					'requestwikiqueue-inreview' => 'inreview',
+					'requestwikiqueue-approved' => 'approved',
+					'requestwikiqueue-declined' => 'declined',
+					'requestwikiqueue-onhold' => 'onhold',
+					'requestwikiqueue-moredetails' => 'moredetails',
+					'createwiki-label-all' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],
@@ -111,34 +127,33 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->getConfig(),
 			$this->getContext(),
 			$this->connectionProvider,
+			$this->languageNameUtils,
 			$this->getLinkRenderer(),
 			$this->permissionManager,
 			$this->userFactory,
 			$dbname,
+			$language,
 			$requester,
 			$status
 		);
 
 		$table = $pager->getFullOutput();
-
 		$this->getOutput()->addParserOutputContent( $table );
 	}
 
 	private function lookupRequest( string $par ): void {
-		$requestViewer = new RequestWikiRequestViewer(
+		$this->getOutput()->enableOOUI();
+		// Lookup the request by the id (the current subpage)
+		// and then show the form for the request if it is found.
+		( new RequestWikiRequestViewer(
 			$this->getConfig(),
 			$this->getContext(),
 			$this->hookRunner,
+			$this->languageNameUtils,
 			$this->permissionManager,
 			$this->wikiManagerFactory,
 			$this->wikiRequestManager
-		);
-
-		$htmlForm = $requestViewer->getForm( (int)$par );
-
-		if ( $htmlForm ) {
-			$htmlForm->show();
-		}
+		) )->getForm( (int)$par )->show();
 	}
 
 	/**

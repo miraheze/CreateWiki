@@ -7,6 +7,8 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
+use MediaWiki\Language\RawMessage;
+use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
@@ -14,7 +16,9 @@ use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
@@ -24,6 +28,7 @@ class RequestWikiRequestViewer {
 	private Config $config;
 	private IContextSource $context;
 	private CreateWikiHookRunner $hookRunner;
+	private LanguageNameUtils $languageNameUtils;
 	private PermissionManager $permissionManager;
 	private WikiManagerFactory $wikiManagerFactory;
 	private WikiRequestManager $wikiRequestManager;
@@ -34,6 +39,7 @@ class RequestWikiRequestViewer {
 		Config $config,
 		IContextSource $context,
 		CreateWikiHookRunner $hookRunner,
+		LanguageNameUtils $languageNameUtils,
 		PermissionManager $permissionManager,
 		WikiManagerFactory $wikiManagerFactory,
 		WikiRequestManager $wikiRequestManager
@@ -41,6 +47,7 @@ class RequestWikiRequestViewer {
 		$this->config = $config;
 		$this->context = $context;
 		$this->hookRunner = $hookRunner;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->permissionManager = $permissionManager;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
@@ -53,11 +60,7 @@ class RequestWikiRequestViewer {
 		// can't view the request, it also doesn't exist.
 		$visibility = $this->wikiRequestManager->getVisibility();
 		if ( !$this->wikiRequestManager->isVisibilityAllowed( $visibility, $user ) ) {
-			$this->context->getOutput()->addHTML(
-				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
-			);
-
-			return [];
+			throw new UnknownRequestError();
 		}
 
 		if ( $this->wikiRequestManager->isLocked() ) {
@@ -69,89 +72,103 @@ class RequestWikiRequestViewer {
 		$formDescriptor = [
 			'sitename' => [
 				'label-message' => 'requestwikiqueue-request-label-sitename',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getSitename(),
 			],
 			'url' => [
 				'label-message' => 'requestwikiqueue-request-label-url',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getUrl(),
 			],
 			'language' => [
 				'label-message' => 'requestwikiqueue-request-label-language',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
-				'default' => $this->wikiRequestManager->getLanguage(),
+				'default' => $this->languageNameUtils->getLanguageName(
+					$this->wikiRequestManager->getLanguage(),
+					$this->context->getLanguage()->getCode()
+				),
 			],
 			'requester' => [
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => htmlspecialchars( $this->wikiRequestManager->getRequester()->getName() ) .
-					Linker::userToolLinks(
-						$this->wikiRequestManager->getRequester()->getId(),
-						$this->wikiRequestManager->getRequester()->getName()
-					),
+				'default' => Linker::userLink(
+					$this->wikiRequestManager->getRequester()->getId(),
+					$this->wikiRequestManager->getRequester()->getName()
+				) . Linker::userToolLinks(
+					$this->wikiRequestManager->getRequester()->getId(),
+					$this->wikiRequestManager->getRequester()->getName()
+				),
 				'raw' => true,
 			],
 			'requestedDate' => [
 				'label-message' => 'requestwikiqueue-request-label-requested-date',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => $this->context->getLanguage()->timeanddate(
-					$this->wikiRequestManager->getTimestamp(), true
+				'default' => $this->context->getLanguage()->userTimeAndDate(
+					$this->wikiRequestManager->getTimestamp(), $user
 				),
 			],
 			'status' => [
 				'label-message' => 'requestwikiqueue-request-label-status',
-				'type' => 'text',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->context->msg(
 					'requestwikiqueue-' . $this->wikiRequestManager->getStatus()
 				)->text(),
 			],
-			'description' => [
-				'type' => 'textarea',
-				'rows' => 6,
-				'readonly' => true,
-				'label-message' => 'requestwikiqueue-request-header-description',
+			'reason' => [
+				'type' => 'info',
+				'label-message' => 'requestwikiqueue-request-label-reason',
 				'section' => 'details',
-				'default' => $this->wikiRequestManager->getDescription(),
+				'default' => ( new RawMessage( nl2br( $this->wikiRequestManager->getReason() ) ) )->parse(),
+				'raw' => true,
+			],
+			'private' => [
+				'class' => DetailsWithIconField::class,
+				'label-message' => 'requestwiki-label-private',
+				'fieldCheck' => $this->wikiRequestManager->isPrivate(),
+				'section' => 'details',
+			],
+			'bio' => [
+				'class' => DetailsWithIconField::class,
+				'label-message' => 'requestwiki-label-bio',
+				'fieldCheck' => $this->wikiRequestManager->isBio(),
+				'section' => 'details',
 			],
 		];
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
 			$formDescriptor['comment' . $comment['timestamp'] ] = [
-				'type' => 'textarea',
-				'readonly' => true,
+				'type' => 'info',
 				'section' => 'comments',
-				'rows' => 6,
 				'label-message' => [
 					'requestwiki-header-comment-withtimestamp',
 					$comment['user']->getName(),
-					$this->context->getLanguage()->timeanddate( $comment['timestamp'], true ),
+					$this->context->getLanguage()->userTimeAndDate( $comment['timestamp'], $user ),
 				],
-				'default' => $comment['comment'],
+				'default' => ( new RawMessage( nl2br( $comment['comment'] ) ) )->parse(),
+				'raw' => true,
 			];
 		}
 
-		if ( !$user->getBlock() && (
+		$canEditRequest = !$user->getBlock() && (
 			$this->permissionManager->userHasRight( $user, 'createwiki' ) ||
 			$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId()
-		) ) {
+		);
+
+		if ( $canEditRequest ) {
 			$formDescriptor += [
 				'comment' => [
 					'type' => 'textarea',
-					'rows' => 6,
+					'rows' => 10,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
 					'validation-callback' => [ $this, 'isValidComment' ],
+					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'submit-comment' => [
@@ -185,13 +202,14 @@ class RequestWikiRequestViewer {
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'editing',
 				],
-				'edit-description' => [
-					'label-message' => 'requestwikiqueue-request-header-description',
+				'edit-reason' => [
+					'label-message' => 'requestwikiqueue-request-label-reason',
 					'type' => 'textarea',
 					'section' => 'editing',
-					'rows' => 6,
+					'rows' => 10,
 					'required' => true,
-					'default' => $this->wikiRequestManager->getDescription(),
+					'useeditfont' => true,
+					'default' => $this->wikiRequestManager->getReason(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 			];
@@ -232,6 +250,7 @@ class RequestWikiRequestViewer {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
+					'required' => true,
 					'options' => $this->config->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
@@ -249,33 +268,35 @@ class RequestWikiRequestViewer {
 		}
 
 		// TODO: Should we really require (createwiki) to suppress wiki requests?
-		if ( $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock() ) {
+		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
+		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
-				$timestamp = $this->context->getLanguage()->timeanddate( $entry['timestamp'], true );
+				$timestamp = $this->context->getLanguage()->userTimeAndDate( $entry['timestamp'], $user );
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
-					'type' => 'textarea',
-					'readonly' => true,
+					'type' => 'info',
 					'section' => 'history',
-					'rows' => 6,
 					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
-					'default' => $entry['details'],
+					'default' => ( new RawMessage( nl2br( $entry['details'] ) ) )->parse(),
+					'raw' => true,
 				];
 			}
 
 			// You can't even get to this part in suppressed wiki requests without the appropiate userright,
 			// so it is OK for the undelete/unsuppress option to be here
 			$visibilityOptions = [
-				0 => $this->context->msg( 'requestwikiqueue-request-label-visibility-all' )->escaped(),
+				WikiRequestManager::VISIBILITY_PUBLIC => $this->context->msg(
+					'requestwikiqueue-request-label-visibility-all'
+				)->escaped(),
 			];
 
 			if ( $this->permissionManager->userHasRight( $user, 'createwiki-deleterequest' ) ) {
-				$visibilityOptions[1] = $this->context->msg(
+				$visibilityOptions[WikiRequestManager::VISIBILITY_DELETE_REQUEST] = $this->context->msg(
 					'requestwikiqueue-request-label-visibility-delete'
 				)->escaped();
 			}
 
 			if ( $this->permissionManager->userHasRight( $user, 'createwiki-suppressrequest' ) ) {
-				$visibilityOptions[2] = $this->context->msg(
+				$visibilityOptions[WikiRequestManager::VISIBILITY_SUPPRESS_REQUEST] = $this->context->msg(
 					'requestwikiqueue-request-label-visibility-suppress'
 				)->escaped();
 			}
@@ -307,12 +328,6 @@ class RequestWikiRequestViewer {
 					'default' => $this->context->msg( 'requestwikiqueue-request-info-submission' )->text(),
 					'section' => 'handling',
 				],
-				'handle-lock' => [
-					'type' => 'check',
-					'label-message' => 'createwiki-label-lock',
-					'default' => $this->wikiRequestManager->isLocked(),
-					'section' => 'handling',
-				],
 				'handle-action' => [
 					'type' => 'radio',
 					'label-message' => 'requestwikiqueue-request-label-action',
@@ -331,10 +346,16 @@ class RequestWikiRequestViewer {
 					'validation-callback' => [ $this, 'isValidStatusComment' ],
 					'section' => 'handling',
 				],
+				'handle-lock' => [
+					'type' => 'check',
+					'label-message' => 'createwiki-label-lock',
+					'default' => $this->wikiRequestManager->isLocked(),
+					'section' => 'handling',
+				],
 				'handle-changevisibility' => [
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
-					'default' => ( $visibility !== 0 ) ? 1 : 0,
+					'default' => $visibility !== WikiRequestManager::VISIBILITY_PUBLIC,
 					'cssclass' => 'createwiki-infuse',
 					'section' => 'handling',
 				],
@@ -363,7 +384,7 @@ class RequestWikiRequestViewer {
 				)[0];
 			} else {
 				$formDescriptor['handle-comment']['type'] = 'textarea';
-				$formDescriptor['handle-comment']['rows'] = 6;
+				$formDescriptor['handle-comment']['rows'] = 10;
 			}
 
 			if ( $error ) {
@@ -388,9 +409,29 @@ class RequestWikiRequestViewer {
 		// absent from $baseFormDescriptor.
 		$this->extraFields = array_diff_key( $formDescriptor, $baseFormDescriptor );
 
-		if ( $this->wikiRequestManager->isLocked() ) {
-			foreach ( $this->extraFields as $field => $value ) {
-				$formDescriptor[$field]['disabled'] = true;
+		// Ensure extra fields added via hooks adhere to proper permission checks
+		foreach ( $this->extraFields as $field => $properties ) {
+			if ( ( $properties['save'] ?? null ) === false ) {
+				unset( $this->extraFields[$field] );
+			}
+
+			$section = $properties['section'] ?? '';
+			$type = $properties['type'] ?? '';
+
+			if ( $section === 'editing' || str_starts_with( $section, 'editing/' ) ) {
+				if ( !$canEditRequest ) {
+					unset( $formDescriptor[$field] );
+					continue;
+				}
+
+				if ( $this->wikiRequestManager->isLocked() ) {
+					$formDescriptor[$field]['disabled'] = true;
+				}
+				continue;
+			}
+
+			if ( !$canHandleRequest && $section === 'handling' ) {
+				unset( $formDescriptor[$field] );
 			}
 		}
 
@@ -399,18 +440,14 @@ class RequestWikiRequestViewer {
 
 	/**
 	 * @param int $requestID
-	 * @return ?CreateWikiOOUIForm
+	 * @return CreateWikiOOUIForm
 	 */
-	public function getForm( int $requestID ): ?CreateWikiOOUIForm {
+	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
 
 		if ( $requestID === 0 || !$this->wikiRequestManager->exists() ) {
-			$out->addHTML(
-				Html::errorBox( $this->context->msg( 'requestwiki-unknown' )->escaped() )
-			);
-
-			return null;
+			throw new UnknownRequestError();
 		}
 
 		$out->addModules( [ 'ext.createwiki.oouiform' ] );
@@ -459,6 +496,19 @@ class RequestWikiRequestViewer {
 					// Use all involved users
 					notifyUsers: []
 				);
+
+				$canCommentReopen = $this->wikiRequestManager->canCommentReopen() &&
+					$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
+
+				// Handle reopening the request if we should
+				if ( $canCommentReopen ) {
+					$this->wikiRequestManager->startQueryBuilder();
+					$this->wikiRequestManager->setStatus( 'inreview' );
+					$this->wikiRequestManager->tryExecuteQueryBuilder();
+
+					$this->wikiRequestManager->log( $user, 'requestreopen' );
+				}
+
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
 				return;
 			}
@@ -487,22 +537,25 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->setBio( (bool)( $formData['edit-bio'] ?? false ) );
 
 			// We do this at once since they are both stored in cw_comment
-			$this->wikiRequestManager->setDescriptionAndPurpose(
-				$formData['edit-description'],
+			$this->wikiRequestManager->setReasonAndPurpose(
+				$formData['edit-reason'],
 				$formData['edit-purpose'] ?? ''
 			);
 
+			$extraData = [];
 			foreach ( $this->extraFields as $field => $value ) {
-				if ( $formData[$field] ?? false ) {
+				if ( isset( $formData[$field] ) ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
-						// Remove edit- from the start of the field key
+						// Remove 'edit-' from the start of the field key
 						$fieldKey = substr( $field, strlen( 'edit-' ) );
 					}
 
-					$this->wikiRequestManager->setExtraFieldData( $fieldKey, $formData[$field] );
+					$extraData[$fieldKey] = $formData[$field];
 				}
 			}
+
+			$this->wikiRequestManager->setExtraFieldsData( $extraData );
 
 			if ( !$this->wikiRequestManager->hasChanges() ) {
 				$this->wikiRequestManager->clearQueryBuilder();
@@ -522,19 +575,18 @@ class RequestWikiRequestViewer {
 				notifyUsers: []
 			);
 
-			$isDeclined = $this->wikiRequestManager->getStatus() === 'declined';
+			$canEditReopen = $this->wikiRequestManager->canEditReopen();
 
 			// Log the edit or reopen to request history
 			$this->wikiRequestManager->addRequestHistory(
-				action: $isDeclined ? 'reopened' : 'edited',
+				action: $canEditReopen ? 'reopened' : 'edited',
 				details: $this->wikiRequestManager->getChangeMessage(),
 				user: $user
 			);
 
-			$this->wikiRequestManager->setStatus( 'inreview' );
-
-			// Log if we are reopening the request
-			if ( $isDeclined ) {
+			// Handle reopening the request if we should
+			if ( $canEditReopen ) {
+				$this->wikiRequestManager->setStatus( 'inreview' );
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
 			}
 
@@ -644,7 +696,7 @@ class RequestWikiRequestViewer {
 			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 		}
 
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArrayOrString(
+		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
 			ConfigNames::DisallowedSubdomains
 		);

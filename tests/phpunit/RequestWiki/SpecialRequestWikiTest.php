@@ -13,6 +13,7 @@ use MediaWiki\Status\Status;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
 use SpecialPageTestBase;
@@ -48,7 +49,9 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		// T12639
 		$this->disableAutoCreateTempUser();
 
-		$this->setMwGlobals( 'wgCreateWikiGlobalWiki', WikiMap::getCurrentWikiId() );
+		$this->overrideConfigValue(
+			ConfigNames::GlobalWiki, WikiMap::getCurrentWikiId()
+		);
 
 		$this->specialRequestWiki = $this->newSpecialPage();
 	}
@@ -126,7 +129,9 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
 		$specialRequestWiki->setContext( $context );
 
-		$this->setMwGlobals( 'wgCreateWikiSubdomain', 'example.com' );
+		$this->overrideConfigValue(
+			ConfigNames::Subdomain, 'example.com'
+		);
 
 		$status = $specialRequestWiki->onSubmit( $formData );
 		$this->assertInstanceOf( Status::class, $status );

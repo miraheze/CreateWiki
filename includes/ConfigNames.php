@@ -31,13 +31,13 @@ class ConfigNames {
 
 	public const DatabaseSuffix = 'CreateWikiDatabaseSuffix';
 
-	public const DisableRESTAPI = 'CreateWikiDisableRESTAPI';
-
 	public const DisallowedSubdomains = 'CreateWikiDisallowedSubdomains';
 
 	public const EmailNotifications = 'CreateWikiEmailNotifications';
 
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
+
+	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
 
 	public const GlobalWiki = 'CreateWikiGlobalWiki';
 
@@ -51,7 +51,7 @@ class ConfigNames {
 
 	public const ShowBiographicalOption = 'CreateWikiShowBiographicalOption';
 
-	public const SQLFiles = 'CreateWikiSQLfiles';
+	public const SQLFiles = 'CreateWikiSQLFiles';
 
 	public const StateDays = 'CreateWikiStateDays';
 
@@ -78,6 +78,4 @@ class ConfigNames {
 	public const RequestWikiConfirmEmail = 'RequestWikiConfirmEmail';
 
 	public const RequestWikiMinimumLength = 'RequestWikiMinimumLength';
-
-	public const RequestWikiUseDescriptions = 'RequestWikiUseDescriptions';
 }

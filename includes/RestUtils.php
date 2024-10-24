@@ -20,7 +20,7 @@ class RestUtils {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotglobalwiki' ), 403 );
 		}
 
-		if ( $config->get( ConfigNames::DisableRESTAPI ) ) {
+		if ( !$config->get( ConfigNames::EnableRESTAPI ) ) {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-rest-disabled' ), 403 );
 		}
 	}
