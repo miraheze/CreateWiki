@@ -52,7 +52,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 		foreach ( $res as $row ) {
 			$dbName = $row->wiki_dbname;
 			$remoteWiki = $remoteWikiFactory->newInstance( $dbName );
-			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
+			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['default']['inactive'];
 
 			// Check if the wiki is inactive based on creation date
 			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
@@ -65,11 +65,6 @@ class ManageInactiveWikisV2 extends Maintenance {
 		string $dbName,
 		RemoteWikiFactory $remoteWiki
 	): bool {
-		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
-		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['closed'];
-		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['removed'];
-		$canWrite = $this->hasOption( 'write' );
-
 		/** @var CheckLastWikiActivity $activity */
 		$activity = $this->runChild(
 			CheckLastWikiActivity::class,
@@ -82,6 +77,14 @@ class ManageInactiveWikisV2 extends Maintenance {
 		$activity->execute();
 
 		$lastActivityTimestamp = $activity->timestamp;
+
+		$track = ($lastActivityTimestamp != 0) ? 'default': 'no-edits'
+
+		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['inactive'];
+		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['closed'];
+		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['removed'];
+		$canWrite = $this->hasOption( 'write' );
+
 
 		// If the wiki is still active, mark it as active
 		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
