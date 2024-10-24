@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
@@ -11,6 +11,8 @@ use MediaWiki\User\UserFactory;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;

@@ -248,6 +248,49 @@ class WikiRequestManager {
 		return $history;
 	}
 
+	public function addFlaggedRequest(
+		string $reason,
+		User $actor
+	): void {
+		if ( !$this->isFlaggedRequest() ) {
+			$this->trackChange( 'flag', false, true );
+			$this->dbw->newInsertQueryBuilder()
+				->insertInto( 'cw_flags' )
+				->row( [
+					'cw_id' => $this->ID,
+					'cw_flag_actor' => $actor->getActorId(),
+					'cw_flag_dbname' => $this->getDBname(),
+					'cw_flag_reason' => $reason,
+					'cw_flag_timestamp' => $this->dbw->timestamp(),
+					'cw_flag_visibility' => $this->getVisibility(),
+				] )
+				->caller( __METHOD__ )
+				->execute();
+		}
+	}
+
+	public function getFlaggedReason(): string {
+		$row = $this->dbw->newSelectQueryBuilder()
+			->table( 'cw_flags' )
+			->field( 'cw_flag_reason' )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
+		return $row->cw_flag_reason ?: '';
+	}
+
+	public function isFlaggedRequest(): bool {
+		$row = $this->dbw->newSelectQueryBuilder()
+			->table( 'cw_flags' )
+			->field( 'cw_flag_id' )
+			->where( [ 'cw_id' => $this->ID ] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
+		return (bool)$row;
+	}
+
 	public function getVisibleRequestsByUser(
 		User $requester,
 		UserIdentity $user

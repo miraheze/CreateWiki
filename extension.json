@@ -155,15 +155,24 @@
 				"WikiManagerFactory"
 			]
 		},
+		"FlaggedWikis": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialFlaggedWikis",
+			"services": [
+				"ConnectionProvider",
+				"PermissionManager",
+				"UserFactory",
+				"WikiManagerFactory"
+			]
+		},
 		"RequestWiki": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
 				"ConnectionProvider",
 				"CreateWikiHookRunner"
 			]
 		},
 		"RequestWikiQueue": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"ConnectionProvider",
 				"CreateWikiHookRunner",
