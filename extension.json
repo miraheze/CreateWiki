@@ -384,7 +384,7 @@
 			"value": false
 		},
 		"CreateWikiUseEchoNotifications": {
-			"description": "Boolean. Whether to use Echo notifications (beta feature).",
+			"description": "Boolean. Whether to use Echo notifications.",
 			"value": false
 		},
 		"CreateWikiUseExperimental": {
