@@ -176,12 +176,6 @@ class WikiInitialize {
 			) ? 'exempt' : (bool)$cacheArray['states']['inactive'];
 		}
 
-		if ( isset( $cacheArray['states']['experimental'] ) ) {
-			$this->config->settings['cwExperimental'][$this->dbname] = (bool)(
-				$cacheArray['states']['experimental'] ?? false
-			);
-		}
-
 		$tags = [];
 		foreach ( ( $cacheArray['states'] ?? [] ) as $state => $value ) {
 			if ( $value !== 'exempt' && (bool)$value ) {
