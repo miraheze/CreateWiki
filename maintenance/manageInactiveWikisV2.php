@@ -78,13 +78,12 @@ class ManageInactiveWikisV2 extends Maintenance {
 
 		$lastActivityTimestamp = $activity->timestamp;
 
-		$track = ($lastActivityTimestamp != 0) ? 'default': 'no-edits'
+		$track = ( $lastActivityTimestamp !== 0 ) ? 'default': 'no-edits'
 
 		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['inactive'];
 		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['closed'];
 		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['removed'];
 		$canWrite = $this->hasOption( 'write' );
-
 
 		// If the wiki is still active, mark it as active
 		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {

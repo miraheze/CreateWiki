@@ -42,7 +42,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	private function getTimestamp(): int {
-		$default_id = $this->getServiceContainer->getUserFactory->newFromName("MediaWiki default")->getActorId()
+		$default_id = $this->getServiceContainer()->getUserFactory->newFromName("MediaWiki default")->getActorId();
 		$dbr = $this->getReplicaDB();
 		$timestamp = $dbr->newSelectQueryBuilder()
 			->select( 'MAX(rc_timestamp)' )
@@ -50,7 +50,7 @@ class CheckLastWikiActivity extends Maintenance {
 			->where( [
 				$dbr->expr( 'rc_log_type', '!=', 'renameuser' ),
 				$dbr->expr( 'rc_log_type', '!=', 'newusers' ),
-				$dbr->expr( 'rc_actor', '!=', $default_id) 
+				$dbr->expr( 'rc_actor', '!=', $default_id ),
 			] )
 			->caller( __METHOD__ )
 			->fetchField();
