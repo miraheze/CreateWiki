@@ -68,13 +68,13 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		$updater->dropExtensionField(
 			'cw_wikis',
 			'wiki_extensions',
- 			"$dir/patches/patch-cw_wikis-drop-wiki_extensions.sql"
+			"$dir/patches/patch-cw_wikis-drop-wiki_extensions.sql"
 		);
 
 		$updater->dropExtensionField(
 			'cw_wikis',
 			'wiki_settings',
- 			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql"
+			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql"
 		);
 	}
 }
