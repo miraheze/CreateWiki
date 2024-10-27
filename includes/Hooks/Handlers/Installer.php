@@ -64,5 +64,17 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			'cw_comment_timestamp',
 			"$dir/patches/patch-cw_comments-modify-cw_comment_timestamp.sql"
 		);
+
+		$updater->dropExtensionField(
+			'cw_wikis',
+			'wiki_extensions',
+			"$dir/patches/patch-cw_wikis-drop-wiki_extensions.sql"
+		);
+
+		$updater->dropExtensionField(
+			'cw_wikis',
+			'wiki_settings',
+			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql"
+		);
 	}
 }
