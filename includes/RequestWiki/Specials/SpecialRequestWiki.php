@@ -287,7 +287,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
 		if ( $minLength && mb_strlen( $reason ) < $minLength ) {
-			return $this->context->msg( 'requestwiki-error-minlength' )->numParams(
+			return $this->msg( 'requestwiki-error-minlength' )->numParams(
 				$minLength,
 				mb_strlen( $reason )
 			);
