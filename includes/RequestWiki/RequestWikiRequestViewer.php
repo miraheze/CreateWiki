@@ -671,7 +671,7 @@ class RequestWikiRequestViewer {
 		return true;
 	}
 
-	public function isValidReason( ?string $reason, array $alldata ): bool|Message {
+	public function isValidReason( ?string $reason, array $alldata ): bool|string|Message {
 		if ( !isset( $alldata['submit-edit'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			return true;
