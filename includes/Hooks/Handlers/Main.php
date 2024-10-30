@@ -132,6 +132,18 @@ class Main implements
 				->fetchRowCount();
 		}
 
+		if ( $magicWordId === 'numberofopenwikirequests' ) {
+			$dbr = $this->connectionProvider->getReplicaDatabase(
+				$this->config->get( ConfigNames::GlobalWiki )
+			);
+
+			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
+    				->select('*')
+    				->from('cw_requests')
+				->where( [ 'cw_status' => 'inreview' ] )
+    				->caller(__METHOD__)
+				->fetchRowCount();
+
 		if ( $magicWordId === 'wikicreationdate' ) {
 			$remoteWiki = $this->remoteWikiFactory->newInstance(
 				WikiMap::getCurrentWikiId()
@@ -154,6 +166,7 @@ class Main implements
 	/** @inheritDoc */
 	public function onGetMagicVariableIDs( &$variableIDs ) {
 		$variableIDs[] = 'numberofwikirequests';
+		$variableIDs[] = 'numberofopenwikirequests';
 		$variableIDs[] = 'wikicreationdate';
 	}
 }
