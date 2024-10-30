@@ -280,7 +280,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return Status::newGood();
 	}
 
-	public function isValidReason( ?string $reason ): bool|Message {
+	public function isValidReason( ?string $reason ): bool|string|Message {
 		if ( !$reason || ctype_space( $reason ) ) {
 			return $this->msg( 'htmlform-required' );
 		}
