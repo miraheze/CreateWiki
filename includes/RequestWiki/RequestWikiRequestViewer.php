@@ -685,8 +685,8 @@ class RequestWikiRequestViewer {
 		if ( $minLength && mb_strlen( $reason ) < $minLength ) {
 			return $this->context->msg( 'requestwiki-error-minlength' )->numParams(
 				$minLength,
-				mb_strlen( $reason )
-			);
+				strlen( $reason )
+			)->parse();
 		}
 
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
