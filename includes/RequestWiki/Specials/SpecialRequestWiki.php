@@ -286,11 +286,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
-		if ( $minLength && mb_strlen( $reason ) < $minLength ) {
+		if ( $minLength && strlen( $reason ) < $minLength ) {
 			return $this->msg( 'requestwiki-error-minlength' )->numParams(
 				$minLength,
-				mb_strlen( $reason )
-			);
+				strlen( $reason )
+			)->parse();
 		}
 
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
