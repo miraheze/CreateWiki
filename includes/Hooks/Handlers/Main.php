@@ -138,10 +138,10 @@ class Main implements
 			);
 
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-				->select('*')
-				->from('cw_requests')
+				->select( '*' )
+				->from( 'cw_requests' )
 				->where( [ 'cw_status' => 'inreview' ] )
-				->caller(__METHOD__)
+				->caller( __METHOD__ )
 				->fetchRowCount();
 
 		}
