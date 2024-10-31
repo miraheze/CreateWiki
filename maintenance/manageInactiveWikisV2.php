@@ -150,7 +150,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 				$this->output( "{$dbName} is inactive and should be closed.\n" );
 			}
 		} elseif ( $isInactive ) {
-			$this->output( "{$dbName} remains inactive but is not yet eligible for closure.\n" );
+			$this->output( "{$dbName} remains inactive and is not yet eligible for closure.\n" );
 		}
 	}
 
