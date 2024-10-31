@@ -150,20 +150,24 @@ class ManageInactiveWikisV2 extends Maintenance {
 		int $removeDays,
 		bool $canWrite
 	): void {
-		$isClosed = $remoteWiki->isClosed() && $remoteWiki->getClosedTimestamp();
-		if ( $isClosed && $remoteWiki->getClosedTimestamp() < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
+		$closedTimestamp = $remoteWiki->getClosedTimestamp();
+		$isClosed = $remoteWiki->isClosed() && $closedTimestamp;
+		if ( $isClosed && $closedTimestamp < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
 			if ( $canWrite ) {
 				// $remoteWiki->delete();
-				$this->output( "{$dbName} is eligible for removal and now has been.\n" );
+				$this->output(
+					"{$dbName} is eligible for removal and now has been. " .
+					"It was closed on {$closedTimestamp}.\n"
+				);
 			} else {
 				$this->output(
 					"{$dbName} is eligible for removal if --write is used. " .
-					"It was closed on {$remoteWiki->getClosedTimestamp()}.\n"
+					"It was closed on {$closedTimestamp}.\n"
 				);
 			}
 		} else {
 			$this->output(
-				"{$dbName} is closed but not yet eligible for deletion. " .
+				"{$dbName} was closed on {$closedTimestamp} but is not yet eligible for deletion. " .
 				"It may have been manually closed.\n"
 			);
 		}
