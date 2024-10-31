@@ -81,7 +81,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbName ) );
 		$activity->execute();
 
-		$lastActivityTimestamp = $activity->timestamp;
+		$lastActivityTimestamp = $activity->getTimestamp();
 
 		// If the wiki is still active, mark it as active
 		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
