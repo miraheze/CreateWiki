@@ -280,17 +280,18 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return Status::newGood();
 	}
 
-	public function isValidReason( ?string $reason ): bool|string|Message {
+	public function isValidReason( ?string $reason ): bool|Message {
 		if ( !$reason || ctype_space( $reason ) ) {
 			return $this->msg( 'htmlform-required' );
 		}
 
 		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
 		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
 			return $this->msg( 'requestwiki-error-minlength' )->numParams(
 				$minLength,
 				strlen( $reason )
-			)->parse();
+			);
 		}
 
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
