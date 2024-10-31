@@ -30,10 +30,10 @@ class Main implements
 	UserGetReservedNamesHook
 {
 
-private Config $config;
-private CreateWikiDataFactory $dataFactory;
-private RemoteWikiFactory $remoteWikiFactory;
-private IConnectionProvider $connectionProvider;
+	private Config $config;
+	private CreateWikiDataFactory $dataFactory;
+	private RemoteWikiFactory $remoteWikiFactory;
+	private IConnectionProvider $connectionProvider;
 
 	/**
 	 * @param ConfigFactory $configFactory
@@ -41,112 +41,114 @@ private IConnectionProvider $connectionProvider;
 	 * @param CreateWikiDataFactory $dataFactory
 	 * @param RemoteWikiFactory $remoteWikiFactory
 	 */
-public function __construct(
+	public function __construct(
 		ConfigFactory $configFactory,
 		IConnectionProvider $connectionProvider,
 		CreateWikiDataFactory $dataFactory,
 		RemoteWikiFactory $remoteWikiFactory
 	) {
-	$this->connectionProvider = $connectionProvider;
-	$this->dataFactory = $dataFactory;
-	$this->remoteWikiFactory = $remoteWikiFactory;
+		$this->connectionProvider = $connectionProvider;
+		$this->dataFactory = $dataFactory;
+		$this->remoteWikiFactory = $remoteWikiFactory;
 
-	$this->config = $configFactory->makeConfig( 'CreateWiki' );
-}
-
-	/** @inheritDoc */
-public function onUserGetReservedNames( &$reservedUsernames ) {
-	$reservedUsernames[] = 'CreateWiki Extension';
-}
-
-	/** @inheritDoc */
-public function onGetAllBlockActions( &$actions ) {
-	if ( !WikiMap::isCurrentWikiId( $this->config->get( ConfigNames::GlobalWiki ) ) ) {
-		return;
+		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
-	$actions[ 'requestwiki' ] = 150;
-}
+	/** @inheritDoc */
+	public function onUserGetReservedNames( &$reservedUsernames ) {
+		$reservedUsernames[] = 'CreateWiki Extension';
+	}
 
 	/** @inheritDoc */
-public function onLoginFormValidErrorMessages( array &$messages ) {
-	$messages[] = 'requestwiki-notloggedin';
-}
+	public function onGetAllBlockActions( &$actions ) {
+		if ( !WikiMap::isCurrentWikiId( $this->config->get( ConfigNames::GlobalWiki ) ) ) {
+			return;
+		}
+
+		$actions[ 'requestwiki' ] = 150;
+	}
 
 	/** @inheritDoc */
-public function onSetupAfterCache() {
-	global $wgGroupPermissions;
+	public function onLoginFormValidErrorMessages( array &$messages ) {
+		$messages[] = 'requestwiki-notloggedin';
+	}
 
-	$dbName = $this->config->get( MainConfigNames::DBname );
-	$isPrivate = false;
+	/** @inheritDoc */
+	public function onSetupAfterCache() {
+		global $wgGroupPermissions;
 
-	$data = $this->dataFactory->newInstance( $dbName );
-	$data->syncCache();
+		$dbName = $this->config->get( MainConfigNames::DBname );
+		$isPrivate = false;
 
-	if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
-		// Avoid using file_exists for performance reasons. Including the file directly leverages
-		// the opcode cache and prevents any file system access.
-		// We only handle failures if the include does not work.
+		$data = $this->dataFactory->newInstance( $dbName );
+		$data->syncCache();
 
-		$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
+		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
+			// Avoid using file_exists for performance reasons. Including the file directly leverages
+			// the opcode cache and prevents any file system access.
+			// We only handle failures if the include does not work.
 
-		$cachePath = $cacheDir . '/' . $dbName . '.php';
-		$cacheArray = AtEase::quietCall( static function ( $path ) {
-			return include $path;
-		}, $cachePath );
+			$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
 
-		if ( $cacheArray !== false ) {
-			$isPrivate = (bool)$cacheArray['states']['private'];
+			$cachePath = $cacheDir . '/' . $dbName . '.php';
+			$cacheArray = AtEase::quietCall( static function ( $path ) {
+				return include $path;
+			}, $cachePath );
+
+			if ( $cacheArray !== false ) {
+				$isPrivate = (bool)$cacheArray['states']['private'];
+			} else {
+				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbName );
+				$isPrivate = $remoteWiki->isPrivate();
+			}
+		}
+
+		// Safety Catch!
+		if ( $isPrivate ) {
+			$wgGroupPermissions['*']['read'] = false;
+			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
-			$remoteWiki = $this->remoteWikiFactory->newInstance( $dbName );
-			$isPrivate = $remoteWiki->isPrivate();
+			$wgGroupPermissions['*']['read'] = true;
 		}
 	}
 
-	// Safety Catch!
-	if ( $isPrivate ) {
-		$wgGroupPermissions['*']['read'] = false;
-		$wgGroupPermissions['sysop']['read'] = true;
-	} else {
-		$wgGroupPermissions['*']['read'] = true;
-	}
-}
-
 	/** @inheritDoc */
-public function onParserGetVariableValueSwitch(
+	public function onParserGetVariableValueSwitch(
 		$parser,
 		&$variableCache,
 		$magicWordId,
 		&$ret,
 		$frame
 	) {
-	if ( $magicWordId === 'numberofwikirequests' ) {
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( ConfigNames::GlobalWiki )
-		);
+		if ( $magicWordId === 'numberofwikirequests' ) {
+			$dbr = $this->connectionProvider->getReplicaDatabase(
+				$this->config->get( ConfigNames::GlobalWiki )
+			);
 
-		$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-			->select( '*' )
-			->from( 'cw_requests' )
-			->caller( __METHOD__ )
-			->fetchRowCount();
-	}
+			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
+				->select( '*' )
+				->from( 'cw_requests' )
+				->caller( __METHOD__ )
+				->fetchRowCount();
+		}
 
-	if ( $magicWordId === 'numberofopenwikirequests' ) {
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( ConfigNames::GlobalWiki )
-		);
+		if ( $magicWordId === 'numberofopenwikirequests' ) {
+			$dbr = $this->connectionProvider->getReplicaDatabase(
+				$this->config->get( ConfigNames::GlobalWiki )
+			);
 
-		$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-			->select( '*' )
-			->from( 'cw_requests' )
-			->where( [ 'cw_status' => 'inreview' ] )
-			->caller( __METHOD__ )
-			->fetchRowCount();
+			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
+				->select('*')
+				->from('cw_requests')
+				->where( [ 'cw_status' => 'inreview' ] )
+				->caller(__METHOD__)
+				->fetchRowCount();
+
+		}
 
 		if ( $magicWordId === 'wikicreationdate' ) {
 			$remoteWiki = $this->remoteWikiFactory->newInstance(
-			WikiMap::getCurrentWikiId()
+				WikiMap::getCurrentWikiId()
 			);
 
 			$ret = $variableCache[$magicWordId] = $remoteWiki->getCreationDate();
@@ -155,8 +157,8 @@ public function onParserGetVariableValueSwitch(
 
 	/** @inheritDoc */
 	public function onMakeGlobalVariablesScript(
-	&$vars,
-	$out
+		&$vars,
+		$out
 	): void {
 		if ( $out->getTitle()->isSubpageOf( SpecialPage::getTitleFor( 'RequestWikiQueue' ) ) ) {
 			$vars[ConfigNames::CannedResponses] = $this->config->get( ConfigNames::CannedResponses );
