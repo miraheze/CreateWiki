@@ -10,8 +10,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\SiteStats\SiteStats;
-use RebuildRecentchanges;
 
 class CheckLastWikiActivity extends Maintenance {
 
@@ -25,16 +23,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function execute(): void {
-		$timestamp = $this->getTimestamp();
-		if ( $timestamp === 0 && SiteStats::edits() >= 2 ) {
-			$rebuildRC = $this->runChild(
-				RebuildRecentchanges::class,
-				MW_INSTALL_PATH . '/maintenance/rebuildrecentchanges.php'
-			);
-			$rebuildRC->execute();
-			$timestamp = $this->getTimestamp();
-		}
-		$this->timestamp = $timestamp;
+		$this->timestamp = $this->getTimestamp();
 
 		if ( !$this->isQuiet() ) {
 			$this->output( (string)$this->timestamp );
