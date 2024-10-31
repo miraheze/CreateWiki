@@ -42,7 +42,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	private function getTimestamp(): int {
-		$dbr = $this->getReplicaDB();
+		$dbr = $this->getDB( DB_REPLICA );
 		$timestamp = $dbr->newSelectQueryBuilder()
 			->select( 'MAX(rc_timestamp)' )
 			->from( 'recentchanges' )
