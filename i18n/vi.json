@@ -5,7 +5,8 @@
 			"Minh Nguyen",
 			"NguyenHung",
 			"Pisceskaze",
-			"SongNgu.xyz"
+			"SongNgu.xyz",
+			"沈澄心"
 		]
 	},
 	"action-createwiki": "tạo wiki",
@@ -41,8 +42,8 @@
 	"createwiki-help-reason": "Vui lòng nhập một tóm lược đầy đủ mô tả chủ đề, phạm vi và mục đích của wiki bạn đang yêu cầu.",
 	"createwiki-help-sitename": "Đây sẽ là tên của wiki và tên của không gian tên 'Dự án'.",
 	"createwiki-help-subdomain": "Đây sẽ là URL của wiki.",
-	"createwiki-label-category": "Thể loại:",
-	"createwiki-label-dbname": "Tên cơ sở dữ liệu:",
+	"createwiki-label-category": "Thể loại",
+	"createwiki-label-dbname": "Tên cơ sở dữ liệu",
 	"createwiki-label-language": "Ngôn ngữ:",
 	"createwiki-label-lock": "Khóa yêu cầu này khỏi bị chỉnh sửa hoặc không được thêm bình luận vào yêu cầu này?",
 	"createwiki-label-private": "Đánh dấu wiki này là riêng tư",
