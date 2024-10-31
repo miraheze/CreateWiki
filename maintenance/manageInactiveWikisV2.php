@@ -88,6 +88,30 @@ class ManageInactiveWikisV2 extends Maintenance {
 			if ( $canWrite && $remoteWiki->isInactive() ) {
 				$remoteWiki->markActive();
 				$remoteWiki->commit();
+
+				$this->output( "{$dbName} has been marked as active.\n" );
+			}
+
+			return true;
+		}
+
+		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-{$closeDays} days" ) ) ) {
+			if ( $canWrite && $remoteWiki->isClosed() ) {
+				$remoteWiki->markActive();
+				$remoteWiki->commit();
+
+				$this->output( "{$dbName} has been marked as active.\n" );
+			}
+
+			return true;
+		}
+
+		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
+			if ( $canWrite && $remoteWiki->isDeleted() ) {
+				$remoteWiki->undelete();
+				$remoteWiki->commit();
+
+				$this->output( "{$dbName} has been undeleted.\n" );
 			}
 
 			return true;
