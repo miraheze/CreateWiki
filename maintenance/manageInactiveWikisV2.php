@@ -111,7 +111,17 @@ class ManageInactiveWikisV2 extends Maintenance {
 					$this->output( "{$dbName} should be closed. Last activity: {$lastActivityTimestamp}\n" );
 				}
 			} else {
-				// Otherwise, mark as inactive or notify if it's eligible for closure
+				if ( $lastActivityTimestamp < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
+					// Meets inactivity
+					if ( $canWrite ) {
+						$remoteWiki->markInactive();
+						$this->output( "{$dbName} was marked as inactive. Last activity: {$lastActivityTimestamp}\n" );
+					} else {
+						$this->output( "{$dbName} is inactive. Last activity: {$lastActivityTimestamp}\n" );
+					}
+				}
+
+				// Otherwise, mark as closed or notify if it's eligible for closure
 				$this->handleInactiveWiki( $dbName, $remoteWiki, $closeDays, $canWrite );
 			}
 		} else {
@@ -139,7 +149,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			} else {
 				$this->output( "{$dbName} is inactive and should be closed.\n" );
 			}
-		} else {
+		} elseif ( $isInactive ) {
 			$this->output( "{$dbName} remains inactive but is not yet eligible for closure.\n" );
 		}
 	}
