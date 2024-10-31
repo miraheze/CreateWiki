@@ -671,7 +671,7 @@ class RequestWikiRequestViewer {
 		return true;
 	}
 
-	public function isValidReason( ?string $reason, array $alldata ): bool|string|Message {
+	public function isValidReason( ?string $reason, array $alldata ): bool|Message {
 		if ( !isset( $alldata['submit-edit'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			return true;
@@ -683,10 +683,11 @@ class RequestWikiRequestViewer {
 
 		$minLength = $this->config->get( ConfigNames::RequestWikiMinimumLength );
 		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
 			return $this->context->msg( 'requestwiki-error-minlength' )->numParams(
 				$minLength,
 				strlen( $reason )
-			)->parse();
+			);
 		}
 
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
