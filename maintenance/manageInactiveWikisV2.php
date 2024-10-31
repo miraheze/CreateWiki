@@ -102,7 +102,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			// If the wiki is inactive and the inactive timestamp is older than close days
 			$inactiveTimestamp = $remoteWiki->getInactiveTimestamp();
 			$isInactive = $remoteWiki->isInactive() && $inactiveTimestamp;
-			if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-{$closeDays} days" ) ) ) {
+			if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-{$closeTime} days" ) ) ) {
 				if ( $canWrite ) {
 					$remoteWiki->markClosed();
 					$this->notify( $dbName );
