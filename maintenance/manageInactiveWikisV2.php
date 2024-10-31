@@ -117,7 +117,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 						$remoteWiki->markInactive();
 						$this->output( "{$dbName} was marked as inactive. Last activity: {$lastActivityTimestamp}\n" );
 					} else {
-						$this->output( "{$dbName} is inactive. Last activity: {$lastActivityTimestamp}\n" );
+						$this->output( "{$dbName} should be inactive. Last activity: {$lastActivityTimestamp}\n" );
 					}
 				}
 
