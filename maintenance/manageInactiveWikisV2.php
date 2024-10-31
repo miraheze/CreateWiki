@@ -177,7 +177,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			}
 		} else {
 			$this->output(
-				"{$dbName} was closed on {$closedTimestamp} but is not yet eligible for deletion. " .
+				"{$dbName} was closed on {$closedTimestamp} and is not yet eligible for deletion. " .
 				"It may have been manually closed.\n"
 			);
 		}
