@@ -10,12 +10,11 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 /**
- * This script is an experimental version of ManageInactiveWikis
- * It is designed to be a more readable/understandable and reliable version.
+ * Maintenance script for marking wikis as inactive, closed, and deleted
+ * based on the values set in $wgCreateWikiStateDays.
  *
  * @author Universal Omega
  */
-
 class ManageInactiveWikisV2 extends Maintenance {
 
 	public function __construct() {
@@ -111,7 +110,10 @@ class ManageInactiveWikisV2 extends Maintenance {
 					$this->output( "{$dbName} should be closed. Last activity: {$lastActivityTimestamp}\n" );
 				}
 			} else {
-				if ( !$remoteWiki->isInactive() && $lastActivityTimestamp < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
+				if (
+					!$isInactive &&
+					$lastActivityTimestamp < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) )
+				) {
 					// Meets inactivity
 					if ( $canWrite ) {
 						$remoteWiki->markInactive();
