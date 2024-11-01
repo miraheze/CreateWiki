@@ -1,13 +1,13 @@
 ( function () {
-	$( function () {
-		var tabs, previousTab, switchingNoHash;
+	$( () => {
+		let tabs, previousTab, switchingNoHash;
 
 		tabs = OO.ui.infuse( $( '.createwiki-tabs' ) );
 
 		tabs.$element.addClass( 'createwiki-tabs-infused' );
 
 		function enhancePanel( panel ) {
-			var $infuse = $( panel.$element ).find( '.createwiki-infuse' );
+			const $infuse = $( panel.$element ).find( '.createwiki-infuse' );
 			$infuse.each( function () {
 				try {
 					OO.ui.infuse( this );
@@ -24,7 +24,7 @@
 		}
 
 		function onTabPanelSet( panel ) {
-			var scrollTop, active;
+			let scrollTop, active;
 
 			if ( switchingNoHash ) {
 				return;
@@ -64,8 +64,8 @@
 		// Jump to correct section as indicated by the hash.
 		// This function is called onload and onhashchange.
 		function detectHash() {
-			var hash = location.hash,
-				matchedElement, $parentSection;
+			const hash = location.hash;
+			let matchedElement, $parentSection;
 			if ( hash.match( /^#mw-section-[\w-]+$/ ) ) {
 				mw.storage.session.remove( 'createwiki-prevTab' );
 				switchCreateWikiTab( hash.slice( 1 ) );
@@ -81,8 +81,8 @@
 			}
 		}
 
-		$( window ).on( 'hashchange', function () {
-			var hash = location.hash;
+		$( window ).on( 'hashchange', () => {
+			const hash = location.hash;
 			if ( hash.match( /^#mw-[\w-]+/ ) ) {
 				detectHash();
 			} else if ( hash === '' ) {
@@ -100,8 +100,8 @@
 			mw.storage.session.remove( 'createwiki-prevTab' );
 		}
 
-		$( '#createwiki-form' ).on( 'submit', function () {
-			var value = tabs.getCurrentTabPanelName();
+		$( '#createwiki-form' ).on( 'submit', () => {
+			const value = tabs.getCurrentTabPanelName();
 			mw.storage.session.set( 'createwiki-prevTab', value );
 		} );
 	} );
