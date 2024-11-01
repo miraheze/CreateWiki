@@ -43,26 +43,6 @@
 	border-color: #c8ccd1;
 }
 
-/* JavaScript enabled */
-.client-js .createwiki-tabs {
-	.oo-ui-tabPanelLayout {
-		// Panels don't need borders as the IndexLayout is inside a framed wrapper.
-		border: 0;
-
-		// Hide section legend, only used in nojs mode
-		> fieldset > legend {
-			display: none;
-		}
-	}
-
-	// Hide all but the first panel before infusion
-	&:not( .createwiki-tabs-infused ) {
-		.oo-ui-tabPanelLayout:not( :first-child ) {
-			display: none;
-		}
-	}
-}
-
 /* JavaScript disabled */
 .client-nojs {
 	// Disable .oo-ui-panelLayout-framed on outer wrapper
@@ -93,6 +73,26 @@
 		// Spacing between sections
 		> .oo-ui-menuLayout-content > .oo-ui-indexLayout-stackLayout > .oo-ui-tabPanelLayout:not( :last-child ) {
 			margin-bottom: 1em;
+		}
+	}
+}
+
+/* JavaScript enabled */
+.client-js .createwiki-tabs {
+	.oo-ui-tabPanelLayout {
+		// Panels don't need borders as the IndexLayout is inside a framed wrapper.
+		border: 0;
+
+		// Hide section legend, only used in nojs mode
+		> fieldset > legend {
+			display: none;
+		}
+	}
+
+	// Hide all but the first panel before infusion
+	&:not( .createwiki-tabs-infused ) {
+		.oo-ui-tabPanelLayout:not( :first-child ) {
+			display: none;
 		}
 	}
 }
