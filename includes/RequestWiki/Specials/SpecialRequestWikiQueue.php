@@ -98,7 +98,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'options' => [
 					// We cannot use options-messages here as otherwise
 					// it overrides all language options.
-					$this->msg( 'createwiki-label-all' )->text() => '*',
+					$this->msg( 'createwiki-label-all-languages' )->text() => '*',
 				],
 			],
 			'status' => [
@@ -111,7 +111,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'requestwikiqueue-declined' => 'declined',
 					'requestwikiqueue-onhold' => 'onhold',
 					'requestwikiqueue-moredetails' => 'moredetails',
-					'createwiki-label-all' => '*',
+					'createwiki-label-any-status' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],
