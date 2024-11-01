@@ -111,7 +111,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'requestwikiqueue-declined' => 'declined',
 					'requestwikiqueue-onhold' => 'onhold',
 					'requestwikiqueue-moredetails' => 'moredetails',
-					'createwiki-label-any-status' => '*',
+					'createwiki-label-all-statuses' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],
