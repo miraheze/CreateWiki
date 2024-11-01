@@ -1,9 +1,8 @@
 ( function () {
 	$( () => {
-		let tabs, previousTab, switchingNoHash;
+		let switchingNoHash;
 
-		tabs = OO.ui.infuse( $( '.createwiki-tabs' ) );
-
+		const tabs = OO.ui.infuse( $( '.createwiki-tabs' ) );
 		tabs.$element.addClass( 'createwiki-tabs-infused' );
 
 		function enhancePanel( panel ) {
@@ -24,17 +23,15 @@
 		}
 
 		function onTabPanelSet( panel ) {
-			let scrollTop, active;
-
 			if ( switchingNoHash ) {
 				return;
 			}
 			// Handle hash manually to prevent jumping,
 			// therefore save and restore scrollTop to prevent jumping.
-			scrollTop = $( window ).scrollTop();
+			const scrollTop = $( window ).scrollTop();
 			// Changing the hash apparently causes keyboard focus to be lost?
 			// Save and restore it. This makes no sense though.
-			active = document.activeElement;
+			const active = document.activeElement;
 			location.hash = '#' + panel.getName();
 			if ( active ) {
 				active.focus();
@@ -93,7 +90,7 @@
 			.trigger( 'hashchange' );
 
 		// Restore the active tab after saving
-		previousTab = mw.storage.session.get( 'createwiki-prevTab' );
+		const previousTab = mw.storage.session.get( 'createwiki-prevTab' );
 		if ( previousTab ) {
 			switchCreateWikiTab( previousTab, true );
 			// Deleting the key, the tab states should be reset until we press Save
