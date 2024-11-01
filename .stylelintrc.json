@@ -9,6 +9,7 @@
 	],
 	"reportNeedlessDisables": true,
 	"rules": {
+		"no-descending-specificity": null,
 		"selector-class-pattern": null,
 		"selector-max-id": null
 	}
