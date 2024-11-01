@@ -9,10 +9,6 @@
 	],
 	"reportNeedlessDisables": true,
 	"rules": {
-		"declaration-no-important": null,
-		"declaration-property-unit-disallowed-list": null,
-		"no-descending-specificity": null,
-		"selector-class-pattern": null,
-		"selector-max-id": null
+		"selector-class-pattern": null
 	}
 }
