@@ -285,6 +285,15 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return $this->msg( 'htmlform-required' );
 		}
 
+		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
+		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
+			return $this->msg( 'requestwiki-error-minlength' )->numParams(
+				$minLength,
+				strlen( $reason )
+			);
+		}
+
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
 			'CreateWiki-disallowlist', '/', '/i'
 		);
