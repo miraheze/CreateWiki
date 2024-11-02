@@ -122,6 +122,7 @@ class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public function getQueryInfo(): array {
+		$dbr = $this->getDatabase();
 		$user = $this->getUser();
 
 		$visibility = $this->permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
@@ -141,7 +142,7 @@ class RequestWikiQueuePager extends TablePager {
 				'cw_sitename',
 			],
 			'conds' => [
-				'cw_visibility <= ' . $visibility,
+				$dbr->expr( 'cw_visibility', '<=', $visibility ),
 			],
 			'joins_conds' => [],
 		];
