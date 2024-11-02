@@ -32,7 +32,7 @@ class DeleteWikis extends Maintenance {
 
 	public function execute(): void {
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( ConfigNames::Database ) );
+		$dbr = $this->getDB( DB_REPLICA, [], 'virtual-createwiki' );
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( '*' )

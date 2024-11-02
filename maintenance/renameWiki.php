@@ -56,7 +56,7 @@ class RenameWiki extends Maintenance {
 				$this->fatalError( $rename );
 			}
 
-			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
+			$dbw = $this->getDB( DB_PRIMARY, [], 'virtual-createwiki' );
 
 			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 

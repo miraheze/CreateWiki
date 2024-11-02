@@ -24,7 +24,6 @@ class WikiManagerFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::Collation,
-		ConfigNames::Database,
 		ConfigNames::DatabaseClusters,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
@@ -78,9 +77,7 @@ class WikiManagerFactory {
 	 */
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
-		$this->cwdb = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::Database )
-		);
+		$this->cwdb = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 
 		// Check if the database exists in the cw_wikis table
 		$check = $this->cwdb->newSelectQueryBuilder()

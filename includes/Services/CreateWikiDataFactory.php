@@ -18,7 +18,6 @@ class CreateWikiDataFactory {
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::CacheDirectory,
 		ConfigNames::CacheType,
-		ConfigNames::Database,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
@@ -156,9 +155,7 @@ class CreateWikiDataFactory {
 			return;
 		}
 
-		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( ConfigNames::Database )
-		);
+		$this->dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 
 		$databaseList = $this->dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
@@ -208,9 +205,7 @@ class CreateWikiDataFactory {
 			);
 		}
 
-		$this->dbr ??= $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( ConfigNames::Database )
-		);
+		$this->dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )

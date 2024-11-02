@@ -23,7 +23,7 @@ class PopulateWikiCreation extends Maintenance {
 	}
 
 	public function execute(): void {
-		$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
+		$dbw = $this->getDB( DB_PRIMARY, [], 'virtual-createwiki' );
 
 		$res = $dbw->newSelectQueryBuilder()
 			->select( '*' )
@@ -51,7 +51,7 @@ class PopulateWikiCreation extends Maintenance {
 				->caller( __METHOD__ )
 				->fetchRow();
 
-			$dbw->selectDomain( $this->getConfig()->get( ConfigNames::Database ) );
+			$dbw->selectDomain( 'virtual-createwiki' );
 
 			if ( !isset( $res ) || !isset( $res->log_timestamp ) ) {
 				$this->output( "ERROR: couldn't determine when {$dbname} was created!\n" );
