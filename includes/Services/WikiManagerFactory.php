@@ -139,10 +139,6 @@ class WikiManagerFactory {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
 			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};", __METHOD__ );
-
-			$lbFactory = $this->connectionProvider;
-			'@phan-var ILBFactory $lbFactory';
-			$lbFactory->redefineLocalDomain( $this->dbname );
 		} catch ( Exception $e ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
@@ -151,7 +147,7 @@ class WikiManagerFactory {
 			// If we are using DatabaseClusters we will have an LB
 			// and we will use that which will use the clusters
 			// defined in $wgLBFactoryConf.
-			$this->dbw = $this->lb->getConnection( DB_PRIMARY );
+			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
 			return;
 		}
 
