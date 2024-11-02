@@ -440,6 +440,10 @@
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
 	],
+	"DatabaseVirtualDomains": [
+		"virtual-createwiki",
+		"virtual-createwiki-global"
+	],
 	"load_composer_autoloader": true,
 	"manifest_version": 2
 }
