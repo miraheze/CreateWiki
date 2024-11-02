@@ -104,7 +104,6 @@ class SpecialFlaggedWikis extends SpecialPage {
 			$this->getContext(),
 			$this->connectionProvider,
 			$this->getLinkRenderer(),
-			$this->permissionManager,
 			$this->userFactory,
 			$this->wikiManagerFactory
 		);
