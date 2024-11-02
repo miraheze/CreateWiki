@@ -179,10 +179,6 @@ class WikiManagerFactory {
 
 		$this->doCreateDatabase();
 
-		if ( $this->dbw->getDBname() !== $this->dbname ) {
-			throw new FatalError( "Expected connection to '{$this->dbname}', not '{$this->dbw->getDBname()}'" );
-		}
-
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
