@@ -184,7 +184,7 @@ class WikiManagerFactory {
 		$this->doCreateDatabase();
 
 		if ( $this->dbw->getDBname() !== $this->dbname ) {
-			throw new FatalError( "Expected connection to '{$this->dbName}', not '{$this->dbw->getDBname()}'" );
+			throw new FatalError( "Expected connection to '{$this->dbname}', not '{$this->dbw->getDBname()}'" );
 		}
 
 		$this->cwdb->newInsertQueryBuilder()
