@@ -303,6 +303,18 @@ class WikiRequestManager {
 		);
 	}
 
+	public function getAllowedVisibilities( UserIdentity $user ): array {
+		$allowedVisibilities = [];
+
+		foreach ( self::VISIBILITY_CONDS as $visibility => $condition ) {
+			if ( $this->isVisibilityAllowed( $visibility, $user ) ) {
+				$allowedVisibilities[] = $visibility;
+			}
+		}
+
+		return $allowedVisibilities;
+	}
+
 	public function approve( UserIdentity $user, string $comment ): void {
 		if ( $this->getStatus() === 'approved' ) {
 			return;
