@@ -211,7 +211,6 @@ class RequestWikiRequestViewer {
 					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getReason(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'minlength' => $this->config->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
 					'validation-callback' => [ $this, 'isValidReason' ],
 				],
 			];
