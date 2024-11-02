@@ -113,22 +113,8 @@ class WikiManagerFactory {
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
-				// Select a database in the chosen cluster
-				$clusterDBRow = $this->cwdb->newSelectQueryBuilder()
-					->select( 'wiki_dbname' )
-					->from( 'cw_wikis' )
-					->where( [ 'wiki_dbcluster' => $this->cluster ] )
-					->caller( __METHOD__ )
-					->fetchRow();
-
-				if ( !$clusterDBRow ) {
-					// Handle case where no database exists in the chosen cluster
-					throw new RuntimeException( 'No databases found in the selected cluster: ' . $this->cluster );
-				}
-
-				$clusterDB = $clusterDBRow->wiki_dbname;
 				$this->lb = $lbs[$this->cluster];
-				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], $clusterDB );
+				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
@@ -153,7 +139,11 @@ class WikiManagerFactory {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
-			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};" );
+			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};", __METHOD__ );
+
+			$lbFactory = $this->connectionProvider;
+			'@phan-var ILBFactory $lbFactory';
+			$lbFactory->redefineLocalDomain( $this->dbname );
 		} catch ( Exception $e ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
@@ -162,7 +152,7 @@ class WikiManagerFactory {
 			// If we are using DatabaseClusters we will have an LB
 			// and we will use that which will use the clusters
 			// defined in $wgLBFactoryConf.
-			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
+			$this->dbw = $this->lb->getConnection( DB_PRIMARY );
 			return;
 		}
 
@@ -193,6 +183,10 @@ class WikiManagerFactory {
 		}
 
 		$this->doCreateDatabase();
+
+		if ( $this->dbw->getDBname() !== $this->dbname ) {
+			throw new FatalError( "Expected connection to '{$this->dbName}', not '{$this->dbw->getDBname()}'" );
+		}
 
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
