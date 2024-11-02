@@ -285,7 +285,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		return $wikiManager->exists();
 	}
 
-	private function setupLBFactory() {
+	private function setupLBFactory(): void {
 		wfLoadConfiguration();
 		$this->setMwGlobals( 'wgLBFactoryConf', [
 			'class' => LBFactoryMulti::class,
