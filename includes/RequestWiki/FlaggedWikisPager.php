@@ -8,7 +8,6 @@ use MediaWiki\Html\Html;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Pager\TablePager;
-use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\ConfigNames;
@@ -18,7 +17,6 @@ use Wikimedia\Rdbms\IConnectionProvider;
 class FlaggedWikisPager extends TablePager {
 
 	private LinkRenderer $linkRenderer;
-	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private WikiManagerFactory $wikiManagerFactory;
 
@@ -27,7 +25,6 @@ class FlaggedWikisPager extends TablePager {
 		IContextSource $context,
 		IConnectionProvider $connectionProvider,
 		LinkRenderer $linkRenderer,
-		PermissionManager $permissionManager,
 		UserFactory $userFactory,
 		WikiManagerFactory $wikiManagerFactory
 	) {
@@ -38,7 +35,6 @@ class FlaggedWikisPager extends TablePager {
 		);
 
 		$this->linkRenderer = $linkRenderer;
-		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
@@ -112,10 +108,7 @@ class FlaggedWikisPager extends TablePager {
 
 	/** @inheritDoc */
 	public function getQueryInfo(): array {
-		$db = $this->getDatabase();
-		$user = $this->getUser();
-
-		$visibility = $this->permissionManager->userHasRight( $user, 'createwiki' ) ? 1 : 0;
+		$dbr = $this->getDatabase();
 
 		$info = [
 			'tables' => [
@@ -129,9 +122,10 @@ class FlaggedWikisPager extends TablePager {
 				'cw_flag_timestamp',
 			],
 			'conds' => [
-				'cw_flag_visibility <= ' . $visibility,
-				$db->expr( 'cw_flag_expiry', '=', 0 )
-					->or( 'cw_flag_expiry', '>', $db->timestamp() )
+				// TODO: all allowed visibilities
+				$dbr->expr( 'cw_flag_visibility', '=', 0 ),
+				$dbr->expr( 'cw_flag_expiry', '=', 0 )
+					->or( 'cw_flag_expiry', '>', $dbr->timestamp() )
 			],
 			'joins_conds' => [],
 		];
