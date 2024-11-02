@@ -8,6 +8,7 @@ use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Wikimedia\Rdbms\LBFactoryMulti;
 
 /**
  * @group CreateWiki
@@ -21,6 +22,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		parent::setUp();
 
 		$this->overrideConfigValues( [
+			ConfigNames::DatabaseClusters => [ 'c1', 'c2' ],
 			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::SQLFiles => [
 				MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
@@ -30,6 +32,34 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
 			'host' => $this->getConfVar( MainConfigNames::DBserver ),
 			'user' => 'root',
+		] );
+
+		wfLoadConfiguration();
+		$this->overrideConfigValue( MainConfigNames::LBFactoryConf, [
+			'class' => LBFactoryMulti::class,
+			'secret' => $this->getConfVar( MainConfigNames::SecretKey ),
+			'sectionsByDB' => $this->getConfVar( 'WikiInitialize' )->wikiDBClusters,
+			'sectionLoads' => [
+				'DEFAULT' => [
+					'c1' => 0,
+				],
+				'c1' => [
+					'c1' => 0,
+				],
+				'c2' => [
+					'c2' => 0,
+				],
+			],
+			'serverTemplate' => [
+				'dbname' => $this->getConfVar( MainConfigNames::DBname ),
+				'user' => 'root',
+				'type' => 'mysql',
+				'flags' => DBO_DEFAULT | DBO_DEBUG,
+			],
+			'hostsByName' => [
+				'c1' => $this->getConfVar( MainConfigNames::DBserver ),
+				'c2' => $this->getConfVar( MainConfigNames::DBserver ),
+			],
 		] );
 
 		$db->begin();
