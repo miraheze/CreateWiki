@@ -34,34 +34,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			'user' => 'root',
 		] );
 
-		wfLoadConfiguration();
-		$this->overrideConfigValue( MainConfigNames::LBFactoryConf, [
-			'class' => LBFactoryMulti::class,
-			'secret' => $this->getConfVar( MainConfigNames::SecretKey ),
-			'sectionsByDB' => $this->getConfVar( 'WikiInitialize' )->wikiDBClusters,
-			'sectionLoads' => [
-				'DEFAULT' => [
-					'c1' => 0,
-				],
-				'c1' => [
-					'c1' => 0,
-				],
-				'c2' => [
-					'c2' => 0,
-				],
-			],
-			'serverTemplate' => [
-				'dbname' => $this->getConfVar( MainConfigNames::DBname ),
-				'user' => 'root',
-				'type' => 'mysql',
-				'flags' => DBO_DEFAULT | DBO_DEBUG,
-			],
-			'hostsByName' => [
-				'c1' => $this->getConfVar( MainConfigNames::DBserver ),
-				'c2' => $this->getConfVar( MainConfigNames::DBserver ),
-			],
-		] );
-
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatetest`.* TO 'wikiuser'@'localhost';" );
@@ -289,6 +261,8 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
+		$this->setupLBFactory();
+
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 
 		$this->setMwGlobals( 'wgLocalDatabases', array_merge(
@@ -309,5 +283,35 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	private function wikiExists( string $dbname ): bool {
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 		return $wikiManager->exists();
+	}
+
+	private function setupLBFactory() {
+		wfLoadConfiguration();
+		$this->setMwGlobals( 'wgLBFactoryConf', [
+			'class' => LBFactoryMulti::class,
+			'secret' => $this->getConfVar( MainConfigNames::SecretKey ),
+			'sectionsByDB' => $this->getConfVar( 'WikiInitialize' )->wikiDBClusters,
+			'sectionLoads' => [
+				'DEFAULT' => [
+					'c1' => 0,
+				],
+				'c1' => [
+					'c1' => 0,
+				],
+				'c2' => [
+					'c2' => 0,
+				],
+			],
+			'serverTemplate' => [
+				'dbname' => $this->getConfVar( MainConfigNames::DBname ),
+				'user' => 'root',
+				'type' => 'mysql',
+				'flags' => DBO_DEFAULT | DBO_DEBUG,
+			],
+			'hostsByName' => [
+				'c1' => $this->getConfVar( MainConfigNames::DBserver ),
+				'c2' => $this->getConfVar( MainConfigNames::DBserver ),
+			],
+		] );
 	}
 }
