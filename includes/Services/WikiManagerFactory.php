@@ -17,8 +17,8 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
-use Wikimedia\Rdbms\ILBFactory;
 use Wikimedia\Rdbms\ILoadBalancer;
+use Wikimedia\Rdbms\LBFactory;
 
 class WikiManagerFactory {
 
@@ -112,7 +112,7 @@ class WikiManagerFactory {
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
 				$lbFactory = $this->connectionProvider;
-				'@phan-var ILBFactory $lbFactory';
+				'@phan-var LBFactory $lbFactory';
 
 				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
 				$conf['sectionsByDB'][$this->dbname] = $this->cluster;
