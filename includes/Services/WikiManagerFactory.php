@@ -8,6 +8,7 @@ use FatalError;
 use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
@@ -30,6 +31,7 @@ class WikiManagerFactory {
 		ConfigNames::SQLFiles,
 		ConfigNames::StateDays,
 		ConfigNames::Subdomain,
+		MainConfigNames::LBFactoryConf,
 	];
 
 	private CreateWikiDataFactory $dataFactory;
@@ -92,11 +94,6 @@ class WikiManagerFactory {
 		if ( !$check ) {
 			$hasClusters = $this->options->get( ConfigNames::DatabaseClusters );
 			if ( $hasClusters ) {
-				// DB doesn't exist, and we have clusters
-				$lbFactory = $this->connectionProvider;
-				'@phan-var ILBFactory $lbFactory';
-				$lbs = $lbFactory->getAllMainLBs();
-
 				// Calculate the size of each cluster
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
@@ -111,6 +108,16 @@ class WikiManagerFactory {
 				// Pick the cluster with the least number of databases
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
+
+				// DB doesn't exist, and we have clusters
+				$lbFactory = $this->connectionProvider;
+
+				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
+				$conf['sectionsByDB'][$this->dbname] = $this->cluster;
+				$lbFactory->reconfigure( $conf );
+
+				'@phan-var ILBFactory $lbFactory';
+				$lbs = $lbFactory->getAllMainLBs();
 
 				$this->lb = $lbs[$this->cluster];
 				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
