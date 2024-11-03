@@ -94,6 +94,8 @@ class WikiManagerFactory {
 		if ( !$check ) {
 			$hasClusters = $this->options->get( ConfigNames::DatabaseClusters );
 			if ( $hasClusters ) {
+				// DB doesn't exist, and we have clusters
+
 				// Calculate the size of each cluster
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
@@ -109,14 +111,13 @@ class WikiManagerFactory {
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
-				// DB doesn't exist, and we have clusters
 				$lbFactory = $this->connectionProvider;
+				'@phan-var ILBFactory $lbFactory';
 
 				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
 				$conf['sectionsByDB'][$this->dbname] = $this->cluster;
 				$lbFactory->reconfigure( $conf );
 
-				'@phan-var ILBFactory $lbFactory';
 				$lbs = $lbFactory->getAllMainLBs();
 
 				$this->lb = $lbs[$this->cluster];
