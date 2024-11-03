@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Services;
 
+use ConfigException;
 use Exception;
 use ExtensionRegistry;
 use FatalError;
@@ -18,7 +19,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\ILoadBalancer;
-use Wikimedia\Rdbms\LBFactory;
+use Wikimedia\Rdbms\LBFactoryMulti;
 
 class WikiManagerFactory {
 
@@ -96,6 +97,13 @@ class WikiManagerFactory {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
 
+				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
+				if ( $conf['class'] !== LBFactoryMulti::class ) {
+					throw new ConfigException(
+						'Must use LBFactoryMulti when using clusters with CreateWiki.'
+					);
+				}
+
 				// Calculate the size of each cluster
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
@@ -111,12 +119,8 @@ class WikiManagerFactory {
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
-				$lbFactory = $this->connectionProvider;
-				'@phan-var LBFactory $lbFactory';
-
-				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
 				$conf['sectionsByDB'][$dbname] = $this->cluster;
-				$lbFactory->reconfigure( $conf );
+				$lbFactory = new LBFactoryMulti( $conf );
 
 				$lbs = $lbFactory->getAllMainLBs();
 
