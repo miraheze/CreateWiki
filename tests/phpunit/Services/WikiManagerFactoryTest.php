@@ -237,6 +237,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteRecreate(): void {
 		$this->createWiki( dbname: 'recreatewikitest', private: false );
 
+		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( 'recreatewikitest' );
 
 		$this->assertNull( $wikiManager->delete( force: true ) );
@@ -262,7 +263,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$this->setupLBFactory();
-
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 
 		$this->setMwGlobals( 'wgLocalDatabases', array_merge(
@@ -287,7 +287,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 	private function setupLBFactory(): void {
 		wfLoadConfiguration();
-		$this->setMwGlobals( 'wgLBFactoryConf', [
+		$this->overrideConfigValue( MainConfigNames::LBFactoryConf, [
 			'class' => LBFactoryMulti::class,
 			'secret' => $this->getConfVar( MainConfigNames::SecretKey ),
 			'sectionsByDB' => $this->getConfVar( 'WikiInitialize' )->wikiDBClusters,
