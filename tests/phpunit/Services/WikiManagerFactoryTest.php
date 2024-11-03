@@ -266,8 +266,8 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 
-		$this->setMwGlobals( 'wgLocalDatabases', array_merge(
-			[ $dbname ], $GLOBALS['wgLocalDatabases']
+		$this->overrideConfigValue( MainConfigNames::LocalDatabases, array_merge(
+			[ $dbname ], $this->getConfVar( MainConfigNames::LocalDatabases )
 		) );
 
 		return $wikiManager->create(
