@@ -168,6 +168,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteForce(): void {
+		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( force: true ) );
@@ -202,6 +203,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteEligible(): void {
+		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( 'deletewikitest' );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete( force: false ) );
 
@@ -237,7 +239,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testDeleteRecreate(): void {
 		$this->createWiki( dbname: 'recreatewikitest', private: false );
 
-		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( 'recreatewikitest' );
 
 		$this->assertNull( $wikiManager->delete( force: true ) );
