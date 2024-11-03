@@ -115,7 +115,7 @@ class WikiManagerFactory {
 				'@phan-var LBFactory $lbFactory';
 
 				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
-				$conf['sectionsByDB'][$this->dbname] = $this->cluster;
+				$conf['sectionsByDB'][$dbname] = $this->cluster;
 				$lbFactory->reconfigure( $conf );
 
 				$lbs = $lbFactory->getAllMainLBs();
