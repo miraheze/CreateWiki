@@ -97,8 +97,9 @@ class WikiManagerFactory {
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
 
-				$conf = $this->options->get( MainConfigNames::LBFactoryConf );
-				if ( $conf['class'] !== LBFactoryMulti::class ) {
+				// Make sure we are using LBFactoryMulti
+				$lbFactoryConf = $this->options->get( MainConfigNames::LBFactoryConf );
+				if ( $lbFactoryConf['class'] !== LBFactoryMulti::class ) {
 					throw new ConfigException(
 						'Must use LBFactoryMulti when using clusters with CreateWiki.'
 					);
@@ -119,11 +120,13 @@ class WikiManagerFactory {
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
-				$conf['sectionsByDB'][$dbname] = $this->cluster;
-				$lbFactory = new LBFactoryMulti( $conf );
+				// Make sure we set the new database in sectionsByDB early
+				// so that if the cluster is empty it is populated so that a new
+				// database can be created on an empty cluster.
+				$lbFactoryConf['sectionsByDB'][$dbname] = $this->cluster;
+				$lbFactoryMulti = new LBFactoryMulti( $lbFactoryConf );
 
-				$lbs = $lbFactory->getAllMainLBs();
-
+				$lbs = $lbFactoryMulti->getAllMainLBs();
 				$this->lb = $lbs[$this->cluster];
 				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
 			} else {
