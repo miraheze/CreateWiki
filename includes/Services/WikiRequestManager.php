@@ -31,6 +31,7 @@ class WikiRequestManager {
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
+		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
 	];
@@ -107,6 +108,71 @@ class WikiRequestManager {
 
 	public function exists(): bool {
 		return (bool)$this->row;
+	}
+
+	public function newRequest(
+		array $data,
+		array $extraData,
+		User $user
+	): int {
+		$dbw = $this->connectionProvider->getPrimaryDatabase(
+			$this->options->get( ConfigNames::GlobalWiki )
+		);
+
+		$subdomain = strtolower( $data['subdomain'] );
+		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
+		$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
+
+		$comment = $data['reason'];
+		if ( $this->options->get( ConfigNames::Purposes ) && ( $data['purpose'] ?? '' ) ) {
+			$comment = implode( "\n", [ 'Purpose: ' . $data['purpose'], $data['reason'] ] );
+		}
+
+		$jsonExtra = json_encode( $extraData );
+		if ( $jsonExtra === false ) {
+			throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
+		}
+
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_requests' )
+			->ignore()
+			->row( [
+				'cw_comment' => $comment,
+				'cw_dbname' => $dbname,
+				'cw_language' => $data['language'],
+				'cw_private' => $data['private'] ?? 0,
+				'cw_status' => 'inreview',
+				'cw_sitename' => $data['sitename'],
+				'cw_timestamp' => $dbw->timestamp(),
+				'cw_url' => $url,
+				'cw_user' => $user->getId(),
+				'cw_category' => $data['category'] ?? '',
+				'cw_visibility' => 0,
+				'cw_bio' => $data['bio'] ?? 0,
+				'cw_extra' => $jsonExtra,
+			] )
+			->caller( __METHOD__ )
+			->execute();
+
+		return $dbw->insertId();
+	}
+
+	public function isDuplicateRequest( string $dbname ): bool {
+		$dbw = $this->connectionProvider->getPrimaryDatabase(
+			$this->options->get( ConfigNames::GlobalWiki )
+		);
+
+		$duplicate = $dbw->newSelectQueryBuilder()
+			->table( 'cw_requests' )
+			->field( '*' )
+			->where( [
+				'cw_dbname' => $dbname,
+				'cw_status' => 'inreview',
+			] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
+		return (bool)$duplicate;
 	}
 
 	public function addComment(
