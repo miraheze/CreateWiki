@@ -31,6 +31,7 @@ class WikiRequestManager {
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
+		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
 	];
@@ -107,6 +108,77 @@ class WikiRequestManager {
 
 	public function exists(): bool {
 		return (bool)$this->row;
+	}
+
+	public function createNewRequestAndLog(
+		array $data,
+		array $extraData,
+		User $user
+	): void {
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
+			$this->options->get( ConfigNames::GlobalWiki )
+		);
+
+		$subdomain = strtolower( $data['subdomain'] );
+		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
+		$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
+
+		$comment = $data['reason'];
+		if ( $this->options->get( ConfigNames::Purposes ) && ( $data['purpose'] ?? '' ) ) {
+			$comment = implode( "\n", [ 'Purpose: ' . $data['purpose'], $data['reason'] ] );
+		}
+
+		$jsonExtra = json_encode( $extraData );
+		if ( $jsonExtra === false ) {
+			throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
+		}
+
+		$this->dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_requests' )
+			->ignore()
+			->row( [
+				'cw_comment' => $comment,
+				'cw_dbname' => $dbname,
+				'cw_language' => $data['language'],
+				'cw_private' => $data['private'] ?? 0,
+				'cw_status' => 'inreview',
+				'cw_sitename' => $data['sitename'],
+				'cw_timestamp' => $this->dbw->timestamp(),
+				'cw_url' => $url,
+				'cw_user' => $user->getId(),
+				'cw_category' => $data['category'] ?? '',
+				'cw_visibility' => 0,
+				'cw_bio' => $data['bio'] ?? 0,
+				'cw_extra' => $jsonExtra,
+			] )
+			->caller( __METHOD__ )
+			->execute();
+
+		$this->ID = $this->dbw->insertId();
+
+		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
+			$this->tryAutoCreate( $data['reason'] );
+		}
+
+		$this->logNewRequest( $data, $user );
+	}
+
+	public function isDuplicateRequest( string $sitename ): bool {
+		$dbw = $this->connectionProvider->getPrimaryDatabase(
+			$this->options->get( ConfigNames::GlobalWiki )
+		);
+
+		$duplicate = $dbw->newSelectQueryBuilder()
+			->table( 'cw_requests' )
+			->field( '*' )
+			->where( [
+				'cw_sitename' => $sitename,
+				'cw_status' => 'inreview',
+			] )
+			->caller( __METHOD__ )
+			->fetchRow();
+
+		return (bool)$duplicate;
 	}
 
 	public function addComment(
@@ -353,7 +425,7 @@ class WikiRequestManager {
 			$this->log( $user, 'requestapprove' );
 
 			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
-				$this->tryAutoCreate();
+				$this->tryAutoCreate( $this->getReason() );
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
@@ -417,7 +489,7 @@ class WikiRequestManager {
 		$this->log( $user, 'requestdecline' );
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
-			$this->tryAutoCreate();
+			$this->tryAutoCreate( $this->getReason() );
 		}
 	}
 
@@ -500,7 +572,34 @@ class WikiRequestManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function suppressionLog( UserIdentity $user, string $action ): void {
+	private function logNewRequest(
+		array $data,
+		UserIdentity $user
+	): void {
+		$requestWikiLink = SpecialPage::getTitleValueFor( 'RequestWiki' );
+		$logEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
+
+		$logEntry->setPerformer( $user );
+		$logEntry->setTarget( $requestWikiLink );
+		$logEntry->setComment( $data['reason'] );
+
+		$logEntry->setParameters(
+			[
+				'4::sitename' => $data['sitename'],
+				'5::language' => $data['language'],
+				'6::private' => (int)( $data['private'] ?? 0 ),
+				'7::id' => "#{$this->ID}",
+			]
+		);
+
+		$logID = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logID );
+	}
+
+	private function logSuppression(
+		UserIdentity $user,
+		string $action
+	): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
 		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
 
@@ -534,15 +633,15 @@ class WikiRequestManager {
 		if ( $log ) {
 			switch ( $level ) {
 				case self::VISIBILITY_PUBLIC:
-					$this->suppressionLog( $user, 'public' );
+					$this->logSuppression( $user, 'public' );
 					break;
 
 				case self::VISIBILITY_DELETE_REQUEST:
-					$this->suppressionLog( $user, 'delete' );
+					$this->logSuppression( $user, 'delete' );
 					break;
 
 				case self::VISIBILITY_SUPPRESS_REQUEST:
-					$this->suppressionLog( $user, 'suppress' );
+					$this->logSuppression( $user, 'suppress' );
 					break;
 			}
 		}
@@ -557,7 +656,7 @@ class WikiRequestManager {
 	}
 
 	public function getID(): int {
-		return $this->row->cw_id;
+		return $this->ID;
 	}
 
 	public function getDBname(): string {
@@ -863,14 +962,14 @@ class WikiRequestManager {
 		return implode( "\n", $lines );
 	}
 
-	public function tryAutoCreate(): void {
+	private function tryAutoCreate( string $reason ): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
-					'reason' => $this->getReason(),
+					'reason' => $reason,
 				]
 			)
 		);

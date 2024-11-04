@@ -98,6 +98,15 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
 			'virtual-createwiki',
+			'modifyField',
+			'cw_wikis',
+			'wiki_creation',
+			"$dir/patches/patch-cw_wikis-modify-wiki_creation-default.sql",
+			true,
+		] );
+
+		$updater->addExtensionUpdateOnVirtualDomain( [
+			'virtual-createwiki',
 			'dropField',
 			'cw_wikis',
 			'wiki_extensions',

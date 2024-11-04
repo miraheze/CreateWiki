@@ -41,7 +41,7 @@ class RemoteWikiFactory {
 	private string $language;
 	private string $dbcluster;
 	private string $category;
-	private ?string $creation;
+	private string $creation;
 	private ?string $url;
 
 	private bool $deleted;
@@ -127,7 +127,7 @@ class RemoteWikiFactory {
 		return $this;
 	}
 
-	public function getCreationDate(): ?string {
+	public function getCreationDate(): string {
 		return $this->creation;
 	}
 

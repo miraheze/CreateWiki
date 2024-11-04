@@ -2,23 +2,24 @@
 
 namespace Miraheze\CreateWiki\Services;
 
+use ConfigException;
 use Exception;
 use ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use RuntimeException;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
-use Wikimedia\Rdbms\ILBFactory;
 use Wikimedia\Rdbms\ILoadBalancer;
+use Wikimedia\Rdbms\LBFactoryMulti;
 
 class WikiManagerFactory {
 
@@ -30,6 +31,7 @@ class WikiManagerFactory {
 		ConfigNames::SQLFiles,
 		ConfigNames::StateDays,
 		ConfigNames::Subdomain,
+		MainConfigNames::LBFactoryConf,
 	];
 
 	private CreateWikiDataFactory $dataFactory;
@@ -91,9 +93,14 @@ class WikiManagerFactory {
 			$hasClusters = $this->options->get( ConfigNames::DatabaseClusters );
 			if ( $hasClusters ) {
 				// DB doesn't exist, and we have clusters
-				$lbFactory = $this->connectionProvider;
-				'@phan-var ILBFactory $lbFactory';
-				$lbs = $lbFactory->getAllMainLBs();
+
+				// Make sure we are using LBFactoryMulti
+				$lbFactoryConf = $this->options->get( MainConfigNames::LBFactoryConf );
+				if ( $lbFactoryConf['class'] !== LBFactoryMulti::class ) {
+					throw new ConfigException(
+						'Must use LBFactoryMulti when using clusters with CreateWiki.'
+					);
+				}
 
 				// Calculate the size of each cluster
 				$clusterSizes = [];
@@ -110,22 +117,15 @@ class WikiManagerFactory {
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
-				// Select a database in the chosen cluster
-				$clusterDBRow = $this->cwdb->newSelectQueryBuilder()
-					->select( 'wiki_dbname' )
-					->from( 'cw_wikis' )
-					->where( [ 'wiki_dbcluster' => $this->cluster ] )
-					->caller( __METHOD__ )
-					->fetchRow();
+				// Make sure we set the new database in sectionsByDB early
+				// so that if the cluster is empty it is populated so that a new
+				// database can be created on an empty cluster.
+				$lbFactoryConf['sectionsByDB'][$dbname] = $this->cluster;
+				$lbFactoryMulti = new LBFactoryMulti( $lbFactoryConf );
 
-				if ( !$clusterDBRow ) {
-					// Handle case where no database exists in the chosen cluster
-					throw new RuntimeException( 'No databases found in the selected cluster: ' . $this->cluster );
-				}
-
-				$clusterDB = $clusterDBRow->wiki_dbname;
+				$lbs = $lbFactoryMulti->getAllMainLBs();
 				$this->lb = $lbs[$this->cluster];
-				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], $clusterDB );
+				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
@@ -150,7 +150,7 @@ class WikiManagerFactory {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
-			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};" );
+			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};", __METHOD__ );
 		} catch ( Exception $e ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
