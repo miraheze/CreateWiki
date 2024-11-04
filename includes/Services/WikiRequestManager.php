@@ -159,8 +159,9 @@ class WikiRequestManager {
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
+		} elseif ( $this->options->get( ConfigNames::OpenAIAPIKey ) ) {
+			$this->evaluateWithChatGPT( $data['reason'] );
 		}
-
 		$this->logNewRequest( $data, $user );
 	}
 
@@ -428,7 +429,7 @@ class WikiRequestManager {
 			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 				$this->tryAutoCreate( $this->getReason() );
 			} elseif ( $this->options->get( ConfigNames::OpenAIAPIKey ) ) {
-				$this->evaluateWithChatGPT();
+				$this->evaluateWithChatGPT( $this->getReason() );
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
@@ -978,7 +979,7 @@ class WikiRequestManager {
 		);
 	}
 
-	public function evaluateWithChatGPT(): void {
+	private function evaluateWithChatGPT( string $reason ): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
@@ -986,19 +987,6 @@ class WikiRequestManager {
 				[
 					'id' => $this->ID,
 					'reason' => $reason,
-				]
-			)
-		);
-	}
-
-	public function evaluateWithChatGPT(): void {
-		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
-		$jobQueueGroup->push(
-			new JobSpecification(
-				RequestWikiRemoteAIJob::JOB_NAME,
-				[
-					'id' => $this->ID,
-					'reason' => $this->getReason(),
 				]
 			)
 		);
