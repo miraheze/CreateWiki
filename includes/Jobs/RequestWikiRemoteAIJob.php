@@ -67,6 +67,16 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
 				$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'Wiki request' . $this->id . 'automatically approved by AI decision.' );
+			} elseif ( $outcome === 'revise' ) {
+				$this->wikiRequestManager->moredetails(
+					user: User::newSystemUser( 'CreateWiki Extension' ),
+					comment: 'Your request needs further details.'
+				);
+			} elseif ( $outcome === 'reject' ) {
+				$this->wikiRequestManager->decline(
+					user: User::newSystemUser( 'CreateWiki Extension' ),
+					comment: 'We couldn\'t approve your request at this time.'
+				);
 			}
 		}
 
@@ -91,12 +101,7 @@ class RequestWikiRemoteAIJob extends Job {
 			__METHOD__
 		);
 
-		if ( !$threadResponse->isOK() ) {
-			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'Initial POST to OpenAI failed!' );
-			return null;
-		}
-
-		$threadData = json_decode( $threadResponse->getContent(), true );
+		$threadData = json_decode( $threadResponse, true );
 		$threadId = $threadData['id'] ?? null;
 
 		if ( !$threadId ) {
@@ -118,12 +123,12 @@ class RequestWikiRemoteAIJob extends Job {
 			__METHOD__
 		);
 
-		if ( !$runResponse->isOK() ) {
+		if ( $runResponse === null ) {
 			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a runResponse.' );
 			return null;
 		}
 
-		$runData = json_decode( $threadResponse->getContent(), true );
+		$runData = json_decode( $threadResponse, true );
 		$runId = $threadData['id'] ?? null;
 		if ( !$runId ) {
 			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a runId. Instead returned: {$runData}' );
@@ -148,12 +153,12 @@ class RequestWikiRemoteAIJob extends Job {
 				__METHOD__
 			);
 
-			if ( !$statusResponse->isOK() ) {
+			if ( $statusResponse === null ) {
 				$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a statusResponse.' );
 				return null;
 			}
 
-			$statusData = json_decode( $statusResponse->getContent(), true );
+			$statusData = json_decode( $statusResponse, true );
 			$status = $statusData['status'] ?? 'failed';
 
 			if ( $status === 'completed' ) {
@@ -178,15 +183,15 @@ class RequestWikiRemoteAIJob extends Job {
 			__METHOD__
 		);
 
-		if ( !$messagesResponse->isOK() ) {
+		if ( $messagesResponse === null ) {
 			$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'OpenAI did not return a messagesResponse.' );
 			return null;
 		}
 
-		$messagesData = json_decode( $messagesResponse->getContent(), true );
+		$messagesData = json_decode( $messagesResponse, true );
 		$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
 
-		// Step 6: Delete the thread
+/*		// Step 6: Delete the thread
 		$deleteThreadUrl = wfAppendQuery( "$baseApiUrl/threads/$threadId", [] );
 		$deleteResponse = $this->httpRequestFactory->delete(
 			$baseApiUrl . '/threads/' . $threadId,
@@ -200,11 +205,11 @@ class RequestWikiRemoteAIJob extends Job {
 			__METHOD__
 		);
 
-		if ( !$deleteResponse->isOK() ) {
+		if ( $deleteResponse === null ) {
 			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'Failed to delete thread {$threadId}.' );
 		} else {
 			$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'Successfully deleted {$threadId}.' );
-		}
+		}*/
 
 		// Assuming the response contains an "outcome" field for simplicity
 		return json_decode( $finalResponseContent, true );

@@ -17,6 +17,7 @@ use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
+use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
 use Wikimedia\Rdbms\IConnectionProvider;
