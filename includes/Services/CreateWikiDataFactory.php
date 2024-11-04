@@ -220,6 +220,11 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
+			if ( $this->wiki === $this->options->get( ConfigNames::GlobalWiki ) ) {
+				// Don't throw an exception if we have not yet populated the global wiki
+				return;
+			}
+
 			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $this->wiki ] );
 		}
 
