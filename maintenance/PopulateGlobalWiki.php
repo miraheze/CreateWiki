@@ -61,7 +61,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			->insertInto( 'cw_wikis' )
 			->row( [
 				'wiki_dbname' => $globalWiki,
-				'wiki_dbcluster' => $this->getOption( 'dbcluster', null ),
+				'wiki_dbcluster' => $this->getOption( 'dbcluster', $this->getDefaultCluster() ),
 				'wiki_sitename' => $this->getOption( 'sitename',
 					WikiMap::getWikiName( $globalWiki )
 				),
@@ -81,6 +81,11 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 
 	private function getGlobalWiki(): string {
 		return $this->getConfig()->get( ConfigNames::GlobalWiki );
+	}
+
+	private function getDefaultCluster(): ?string {
+		$clusters = $this->getConfig()->get( ConfigNames::DatabaseClusters );
+		return $clusters[0] ?? null;
 	}
 }
 
