@@ -66,7 +66,7 @@ class RequestWikiRemoteAIJob extends Job {
 				// Execute query builder to commit the status change
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$logger->debug( 'Wiki request' . $this-id . 'automatically approved by AI decision.' )
+				$logger->debug( 'Wiki request' . $this-id . 'automatically approved by AI decision.' );
 			}
 		}
 
@@ -92,7 +92,7 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 	
 		if (!$threadResponse->isOK()) {
-			$logger->error( 'Initial POST to OpenAI failed!' )
+			$logger->error( 'Initial POST to OpenAI failed!' );
 			return null;
 		}
 	
@@ -100,7 +100,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$threadId = $threadData['id'] ?? null;
 
 		if (!$threadId) {
-			$logger->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' )
+			$logger->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' );
 			return null;
 		}
 	
@@ -119,14 +119,14 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 	
 		if (!$runResponse->isOK()) {
-			$logger->error( 'OpenAI did not return a runResponse.' )
+			$logger->error( 'OpenAI did not return a runResponse.' );
 			return null;
 		}
 	
 		$runData = json_decode($threadResponse->getContent(), true);
 		$runId = $threadData['id'] ?? null;
 		if (!$runId) {
-			$logger->error( 'OpenAI did not return a runId. Instead returned: {$runData}' )
+			$logger->error( 'OpenAI did not return a runId. Instead returned: {$runData}' );
 			return null;
 		}
 
@@ -136,7 +136,7 @@ class RequestWikiRemoteAIJob extends Job {
 			sleep(3); // Add delay between polls to avoid excessive requests
 	
 
-			$logger->debug( 'Querying status of wiki request decision for ' . $runId )
+			$logger->debug( 'Querying status of wiki request decision for ' . $runId );
 
 			$statusResponse = $this->httpRequestFactory->get(
 				$baseApiUrl. '/threads/' . $threadId . '/runs/' . '$runId',
@@ -150,7 +150,7 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 	
 			if (!$statusResponse->isOK()) {
-				$logger->error( 'OpenAI did not return a statusResponse.' )
+				$logger->error( 'OpenAI did not return a statusResponse.' );
 				return null;
 			}
 	
@@ -158,10 +158,10 @@ class RequestWikiRemoteAIJob extends Job {
 			$status = $statusData['status'] ?? 'failed';
 	
 			if ($status === 'completed') {
-				$logger->debug( 'Run {$runId} was successful.' )
+				$logger->debug( 'Run {$runId} was successful.' );
 				break;
 			} elseif ($status === 'failed') {
-				$logger->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' )
+				$logger->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' );
 				return null;
 			}
 		}
@@ -180,7 +180,7 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		if (!$messagesResponse->isOK()) {
-			$logger->debug( 'OpenAI did not return a messagesResponse.' )
+			$logger->debug( 'OpenAI did not return a messagesResponse.' );
 			return null;
 		}
 
@@ -202,9 +202,9 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		if (!$deleteResponse->isOK()) {
-			$logger->error( 'Failed to delete thread {$threadId}.' )
+			$logger->error( 'Failed to delete thread {$threadId}.' );
 		} else {
-			$logger->debug( 'Successfully deleted {$threadId}.' )
+			$logger->debug( 'Successfully deleted {$threadId}.' );
 		}
 
 		// Assuming the response contains an "outcome" field for simplicity
