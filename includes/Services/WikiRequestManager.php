@@ -114,8 +114,8 @@ class WikiRequestManager {
 		array $data,
 		array $extraData,
 		User $user
-	): int {
-		$dbw = $this->connectionProvider->getPrimaryDatabase(
+	): void {
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
 			$this->options->get( ConfigNames::GlobalWiki )
 		);
 
@@ -133,7 +133,7 @@ class WikiRequestManager {
 			throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
 		}
 
-		$dbw->newInsertQueryBuilder()
+		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
 			->ignore()
 			->row( [
@@ -143,7 +143,7 @@ class WikiRequestManager {
 				'cw_private' => $data['private'] ?? 0,
 				'cw_status' => 'inreview',
 				'cw_sitename' => $data['sitename'],
-				'cw_timestamp' => $dbw->timestamp(),
+				'cw_timestamp' => $this->dbw->timestamp(),
 				'cw_url' => $url,
 				'cw_user' => $user->getId(),
 				'cw_category' => $data['category'] ?? '',
@@ -154,7 +154,8 @@ class WikiRequestManager {
 			->caller( __METHOD__ )
 			->execute();
 
-		return $dbw->insertId();
+		$this->ID = $this->dbw->insertId();
+		$this->logNewRequest( $data, $user );
 	}
 
 	public function isDuplicateRequest( string $sitename ): bool {
@@ -566,6 +567,32 @@ class WikiRequestManager {
 		$logEntry->publish( $logID );
 	}
 
+	private function logNewRequest(
+		array $data,
+		UserIdentity $user
+	): void {
+		$requestID = (string)$this->ID;
+		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID );
+
+		$logEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
+
+		$logEntry->setPerformer( $user );
+		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWiki' ) );
+		$logEntry->setComment( $data['reason'] );
+
+		$logEntry->setParameters(
+			[
+				'4::sitename' => $data['sitename'],
+				'5::language' => $data['language'],
+				'6::private' => (int)( $data['private'] ?? 0 ),
+				'7::id' => "#{$requestID}",
+			]
+		);
+
+		$logID = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logID );
+	}
+
 	private function suppressionLog( UserIdentity $user, string $action ): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
 		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
@@ -623,7 +650,7 @@ class WikiRequestManager {
 	}
 
 	public function getID(): int {
-		return $this->row->cw_id;
+		return $this->ID;
 	}
 
 	public function getDBname(): string {
