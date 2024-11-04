@@ -155,6 +155,11 @@ class WikiRequestManager {
 			->execute();
 
 		$this->ID = $this->dbw->insertId();
+		
+		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
+			$this->tryAutoCreate( $data['reason'] );
+		}
+
 		$this->logNewRequest( $data, $user );
 	}
 
@@ -420,7 +425,7 @@ class WikiRequestManager {
 			$this->log( $user, 'requestapprove' );
 
 			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
-				$this->tryAutoCreate();
+				$this->tryAutoCreate( $this->getReason() );
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
@@ -484,7 +489,7 @@ class WikiRequestManager {
 		$this->log( $user, 'requestdecline' );
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
-			$this->tryAutoCreate();
+			$this->tryAutoCreate( $this->getReason() );
 		}
 	}
 
@@ -957,14 +962,14 @@ class WikiRequestManager {
 		return implode( "\n", $lines );
 	}
 
-	public function tryAutoCreate(): void {
+	private function tryAutoCreate( string $reason ): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
-					'reason' => $this->getReason(),
+					'reason' => $reason,
 				]
 			)
 		);
