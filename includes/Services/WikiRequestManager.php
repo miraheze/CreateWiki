@@ -110,7 +110,7 @@ class WikiRequestManager {
 		return (bool)$this->row;
 	}
 
-	public function newRequest(
+	public function createNewRequestAndLog(
 		array $data,
 		array $extraData,
 		User $user
