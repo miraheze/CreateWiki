@@ -157,7 +157,7 @@ class WikiRequestManager {
 		return $dbw->insertId();
 	}
 
-	public function isDuplicateRequest( string $dbname ): bool {
+	public function isDuplicateRequest( string $sitename ): bool {
 		$dbw = $this->connectionProvider->getPrimaryDatabase(
 			$this->options->get( ConfigNames::GlobalWiki )
 		);
@@ -166,7 +166,7 @@ class WikiRequestManager {
 			->table( 'cw_requests' )
 			->field( '*' )
 			->where( [
-				'cw_dbname' => $dbname,
+				'cw_sitename' => $sitename,
 				'cw_status' => 'inreview',
 			] )
 			->caller( __METHOD__ )
