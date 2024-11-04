@@ -32,6 +32,7 @@ class WikiRequestManager {
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
+		ConfigNames::OpenAIAPIKey,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,

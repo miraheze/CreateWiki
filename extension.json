@@ -410,11 +410,11 @@
 		},
 		"CreateWikiOpenAIAPIKey": {
 			"description": "String. OpenAI API token.",
-			"value": null
+			"value": false
 		},
 		"CreateWikiOpenAIAssistantID": {
 			"description": "String. OpenAI API assistant ID.",
-			"value": null
+			"value": false
 		},
 		"CreateWikiUsePrivateWikis": {
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
