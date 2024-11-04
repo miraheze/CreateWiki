@@ -17,7 +17,7 @@
 	"createwiki-error-notalnum": "Ni all yr enw cronfa ddata cymeriadau nad ydynt yn alffaniwmerig.",
 	"createwiki-error-notlowercase": "Ni chaiff y gronfa ddata enw gynnwys llythrennau priflythyren.",
 	"createwiki-error-notsuffixed": "Nid yw'r enw cronfa ddata yn dod i ben mewn ôl-ddodiad dilys (ee 'wiki').",
-	"createwiki-label-all": "Popeth",
+	"createwiki-label-all-languages": "Popeth",
 	"createwiki-label-category": "Categori",
 	"createwiki-label-dbname": "Enw cronfa ddata",
 	"createwiki-label-language": "Iaith:",

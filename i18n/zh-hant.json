@@ -43,7 +43,7 @@
 	"createwiki-help-reason": "請輸入足夠的摘要，以描述您所申求 Wiki 的主題、範圍、與目的。",
 	"createwiki-help-sitename": "這將是 wiki 的名稱，與該「專案」命名空間的名稱。",
 	"createwiki-help-subdomain": "這將是該 wiki 的 URL。如果您希望設定自訂網域，您仍需要先選擇 Miraheze 子網域。請點選[[Special:MyLanguage/Custom domains|此處]]來了解更多資訊。",
-	"createwiki-label-all": "全部",
+	"createwiki-label-all-languages": "全部",
 	"createwiki-label-category": "分類",
 	"createwiki-label-dbname": "資料庫名稱",
 	"createwiki-label-language": "語言：",
