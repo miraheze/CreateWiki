@@ -74,7 +74,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			->caller( __METHOD__ )
 			->execute();
 
-		$this->output( "Populated global wiki {$globalWiki} into cw_wikis\n" );
+		$this->output( "Populated global wiki {$globalWiki} into cw_wikis.\n" );
 
 		return true;
 	}
