@@ -19,10 +19,13 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	public function __construct() {
 		parent::__construct();
 
+		$this->addDescription( 'Populates the initial global wiki into cw_wikis.' );
+
 		$this->addOption( 'category', 'The default category to use for the global wiki.' );
 		$this->addOption( 'dbcluster', 'The cluster to create the global wiki database at.' );
 		$this->addOption( 'language', 'The default language to use for the global wiki.' );
 		$this->addOption( 'sitename', 'The default sitename to use for the global wiki.' );
+
 		$this->requireExtension( 'CreateWiki' );
 	}
 
@@ -59,12 +62,10 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			->row( [
 				'wiki_dbname' => $globalWiki,
 				'wiki_dbcluster' => $this->getOption( 'dbcluster', null ),
-				'wiki_sitename' => $this->getOption(
-					'sitename',
+				'wiki_sitename' => $this->getOption( 'sitename',
 					WikiMap::getWikiName( $globalWiki )
 				),
-				'wiki_language' => $this->getOption(
-					'language',
+				'wiki_language' => $this->getOption( 'language',
 					$this->getConfig()->get( MainConfigNames::LanguageCode )
 				),
 				'wiki_private' => 0,
@@ -74,8 +75,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			->caller( __METHOD__ )
 			->execute();
 
-		$this->output( "Populated global wiki {$globalWiki} into cw_wikis.\n" );
-
+		$this->output( "Populated global wiki '{$globalWiki}' into cw_wikis.\n" );
 		return true;
 	}
 }
