@@ -20,7 +20,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
 	private HttpRequestFactory $httpRequestFactory;
-	private LoggerFactory $logger;
+	private LoggerInterface $logger;
 
 	private int $id;
 	private string $reason;
