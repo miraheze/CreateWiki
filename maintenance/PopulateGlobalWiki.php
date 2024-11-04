@@ -35,11 +35,17 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	}
 
 	protected function doDBUpdates(): bool {
-		$globalWiki = $this->getConfig()->get( ConfigNames::GlobalWiki );
+		$globalWiki = $this->getConfig()->has( ConfigNames::GlobalWiki ) ?
+			$this->getConfig()->get( ConfigNames::GlobalWiki ) :
+			$this->getConfig()->get( MainConfigNames::DBname );
+
+		$database = $this->getConfig()->has( ConfigNames::Database ) ?
+			$this->getConfig()->get( ConfigNames::Database ) :
+			$this->getConfig()->get( MainConfigNames::DBname );
 
 		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
 		$dbw = $connectionProvider->getPrimaryDatabase(
-			$this->getConfig()->get( ConfigNames::Database )
+			$database
 		);
 
 		$exists = $dbw->newSelectQueryBuilder()
