@@ -78,9 +78,6 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql"
 		);
 
-		$updater->addExtensionUpdate( [
-			'runMaintenance', PopulateGlobalWiki::class,
-			'extensions/CreateWiki/maintenance/PopulateGlobalWiki.php'
-		] );
+		$updater->addPostDatabaseUpdateMaintenance( PopulateGlobalWiki::class );
 	}
 }
