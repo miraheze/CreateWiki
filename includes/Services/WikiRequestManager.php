@@ -354,7 +354,7 @@ class WikiRequestManager {
 
 			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 				$this->tryAutoCreate();
-			} elseif ( $this->options->get( ConfigNames::UseChatGPT ) ) {
+			} elseif ( $this->options->get( ConfigNames::OpenAIAPIKey ) ) {
 				$this->evaluateWithChatGPT();
 			}
 		} else {

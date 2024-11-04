@@ -41,8 +41,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->id = $params['id'];
 		$this->reason = $params['reason'];
-    
-        $logger = LoggerFactory::getInstance( 'CreateWiki' );
+	
+		$logger = LoggerFactory::getInstance( 'CreateWiki' );
 	}
 
 	public function run(): bool {
@@ -66,35 +66,33 @@ class RequestWikiRemoteAIJob extends Job {
 				// Execute query builder to commit the status change
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-                $logger->debug( 'Wiki request' . $this-id . 'automatically approved by AI decision.' )
+				$logger->debug( 'Wiki request' . $this-id . 'automatically approved by AI decision.' )
 			}
-		} else {
-
-        }
+		}
 
 		return true;
 	}
 
 	private function queryChatGPT(string $reason): ?array {
-		$baseApiUrl = $this->config->get( ConfigNames::OpenAIAPIEndpoint );
+		$baseApiUrl = 'https://api.openai.com/v2/assistants';
 		$apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
 	
 		// Step 1: Create a new thread
 		$threadResponse = $this->httpRequestFactory->post(
-    		$baseApiUrl . '/threads',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                    'OpenAI-Beta' => 'assistants=v2'
-                ],
-                'postData' => json_encode([ "messages" => [[ "role" => "user", "content" => $reason ]]]),
-            ],
+			$baseApiUrl . '/threads',
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $apiKey,
+					'Content-Type' => 'application/json',
+					'OpenAI-Beta' => 'assistants=v2'
+				],
+				'postData' => json_encode([ "messages" => [[ "role" => "user", "content" => $reason ]]]),
+			],
 			__METHOD__
 		);
 	
 		if (!$threadResponse->isOK()) {
-            $logger->error( 'Initial POST to OpenAI failed!' )
+			$logger->error( 'Initial POST to OpenAI failed!' )
 			return null;
 		}
 	
@@ -102,33 +100,33 @@ class RequestWikiRemoteAIJob extends Job {
 		$threadId = $threadData['id'] ?? null;
 
 		if (!$threadId) {
-            $logger->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' )
+			$logger->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' )
 			return null;
 		}
 	
 		// Step 2: Run the message
 		$runResponse = $this->httpRequestFactory->post(
 			$baseApiUrl . '/threads/' . $threadId . '/run',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                    'OpenAI-Beta' => 'assistants=v2'
-                ],
-                'postData' => json_encode([ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ]),
-            ],
-            __METHOD__
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $apiKey,
+					'Content-Type' => 'application/json',
+					'OpenAI-Beta' => 'assistants=v2'
+				],
+				'postData' => json_encode([ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ]),
+			],
+			__METHOD__
 		);
 	
 		if (!$runResponse->isOK()) {
-            $logger->error( 'OpenAI did not return a runResponse.' )
+			$logger->error( 'OpenAI did not return a runResponse.' )
 			return null;
 		}
 	
-        $runData = json_decode($threadResponse->getContent(), true);
+		$runData = json_decode($threadResponse->getContent(), true);
 		$runId = $threadData['id'] ?? null;
 		if (!$runId) {
-            $logger->error( 'OpenAI did not return a runId. Instead returned: {$runData}' )
+			$logger->error( 'OpenAI did not return a runId. Instead returned: {$runData}' )
 			return null;
 		}
 
@@ -138,21 +136,21 @@ class RequestWikiRemoteAIJob extends Job {
 			sleep(3); // Add delay between polls to avoid excessive requests
 	
 
-            $logger->debug( 'Querying status of wiki request decision for ' . $runId )
+			$logger->debug( 'Querying status of wiki request decision for ' . $runId )
 
 			$statusResponse = $this->httpRequestFactory->get(
 				$baseApiUrl. '/threads/' . $threadId . '/runs/' . '$runId',
 				[
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $apiKey,
-                        'OpenAI-Beta' => 'assistants=v2'
-                    ],
-                ],
-                __METHOD__
+					'headers' => [
+						'Authorization' => 'Bearer ' . $apiKey,
+						'OpenAI-Beta' => 'assistants=v2'
+					],
+				],
+				__METHOD__
 			);
 	
 			if (!$statusResponse->isOK()) {
-                $logger->error( 'OpenAI did not return a statusResponse.' )
+				$logger->error( 'OpenAI did not return a statusResponse.' )
 				return null;
 			}
 	
@@ -160,56 +158,56 @@ class RequestWikiRemoteAIJob extends Job {
 			$status = $statusData['status'] ?? 'failed';
 	
 			if ($status === 'completed') {
-                $logger->debug( 'Run {$runId} was successful.' )
+				$logger->debug( 'Run {$runId} was successful.' )
 				break;
 			} elseif ($status === 'failed') {
-                $logger->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' )
+				$logger->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' )
 				return null;
 			}
 		}
 	
-        // Step 4: Query for messages in the thread to get the final response
-        $messagesResponse = $this->httpRequestFactory->get(
-            $baseApiUrl. '/threads/' . $threadId . '/messages',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                    'OpenAI-Beta' => 'assistants=v2'
-                ]
-                ],
-            __METHOD__
-        );
+		// Step 4: Query for messages in the thread to get the final response
+		$messagesResponse = $this->httpRequestFactory->get(
+			$baseApiUrl. '/threads/' . $threadId . '/messages',
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $apiKey,
+					'Content-Type' => 'application/json',
+					'OpenAI-Beta' => 'assistants=v2'
+				]
+				],
+			__METHOD__
+		);
 
-        if (!$messagesResponse->isOK()) {
-            $logger->debug( 'OpenAI did not return a messagesResponse.' )
-            return null;
-        }
+		if (!$messagesResponse->isOK()) {
+			$logger->debug( 'OpenAI did not return a messagesResponse.' )
+			return null;
+		}
 
-        $messagesData = json_decode($messagesResponse->getContent(), true);
-        $finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
+		$messagesData = json_decode($messagesResponse->getContent(), true);
+		$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
 
-        // Step 6: Delete the thread
-        $deleteThreadUrl = wfAppendQuery("$baseApiUrl/threads/$threadId", []);
-        $deleteResponse = $this->httpRequestFactory->delete(
-            $baseApiUrl . '/threads/' . $threadId,
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                    'OpenAI-Beta' => 'assistants=v2'
-                ]
-            ],
-            __METHOD__
-        );
+		// Step 6: Delete the thread
+		$deleteThreadUrl = wfAppendQuery("$baseApiUrl/threads/$threadId", []);
+		$deleteResponse = $this->httpRequestFactory->delete(
+			$baseApiUrl . '/threads/' . $threadId,
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $apiKey,
+					'Content-Type' => 'application/json',
+					'OpenAI-Beta' => 'assistants=v2'
+				]
+			],
+			__METHOD__
+		);
 
-        if (!$deleteResponse->isOK()) {
-            $logger->error( 'Failed to delete thread {$threadId}.' )
-        } else {
-            $logger->debug( 'Successfully deleted {$threadId}.' )
-        }
+		if (!$deleteResponse->isOK()) {
+			$logger->error( 'Failed to delete thread {$threadId}.' )
+		} else {
+			$logger->debug( 'Successfully deleted {$threadId}.' )
+		}
 
-        // Assuming the response contains an "outcome" field for simplicity
-        return json_decode($finalResponseContent, true);
+		// Assuming the response contains an "outcome" field for simplicity
+		return json_decode($finalResponseContent, true);
 	}
 }

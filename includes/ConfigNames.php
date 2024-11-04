@@ -43,8 +43,6 @@ class ConfigNames {
 
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
-	public const OpenAIAPIEndpoint = 'CreateWikiOpenAIAPIEndpoint';
-
 	public const OpenAIAPIKey = 'CreateWikiOpenAIAPIKey';
 
 	public const OpenAIAssistantID = 'CreateWikiOpenAIAssistantID';
@@ -62,8 +60,6 @@ class ConfigNames {
 	public const StateDays = 'CreateWikiStateDays';
 
 	public const Subdomain = 'CreateWikiSubdomain';
-
-	public const UseChatGPT = 'CreateWikiUseChatGPT';
 
 	public const UseClosedWikis = 'CreateWikiUseClosedWikis';
 
