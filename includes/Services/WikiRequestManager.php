@@ -155,7 +155,7 @@ class WikiRequestManager {
 			->execute();
 
 		$this->ID = $this->dbw->insertId();
-		
+
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
 		}
