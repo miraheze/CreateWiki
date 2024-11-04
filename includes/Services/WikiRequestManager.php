@@ -571,13 +571,11 @@ class WikiRequestManager {
 		array $data,
 		UserIdentity $user
 	): void {
-		$requestID = (string)$this->ID;
-		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID );
-
+		$requestWikiLink = SpecialPage::getTitleValueFor( 'RequestWiki' );
 		$logEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
 
 		$logEntry->setPerformer( $user );
-		$logEntry->setTarget( SpecialPage::getTitleFor( 'RequestWiki' ) );
+		$logEntry->setTarget( $requestWikiLink );
 		$logEntry->setComment( $data['reason'] );
 
 		$logEntry->setParameters(
@@ -585,7 +583,7 @@ class WikiRequestManager {
 				'4::sitename' => $data['sitename'],
 				'5::language' => $data['language'],
 				'6::private' => (int)( $data['private'] ?? 0 ),
-				'7::id' => "#{$requestID}",
+				'7::id' => "#{$this->ID}",
 			]
 		);
 
@@ -593,7 +591,10 @@ class WikiRequestManager {
 		$logEntry->publish( $logID );
 	}
 
-	private function suppressionLog( UserIdentity $user, string $action ): void {
+	private function logSuppression(
+		UserIdentity $user,
+		string $action
+	): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
 		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
 
@@ -627,15 +628,15 @@ class WikiRequestManager {
 		if ( $log ) {
 			switch ( $level ) {
 				case self::VISIBILITY_PUBLIC:
-					$this->suppressionLog( $user, 'public' );
+					$this->logSuppression( $user, 'public' );
 					break;
 
 				case self::VISIBILITY_DELETE_REQUEST:
-					$this->suppressionLog( $user, 'delete' );
+					$this->logSuppression( $user, 'delete' );
 					break;
 
 				case self::VISIBILITY_SUPPRESS_REQUEST:
-					$this->suppressionLog( $user, 'suppress' );
+					$this->logSuppression( $user, 'suppress' );
 					break;
 			}
 		}
