@@ -11,6 +11,7 @@ use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Psr\Log\LoggerInterface;
 
 class RequestWikiRemoteAIJob extends Job {
 
