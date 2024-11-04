@@ -39,6 +39,30 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		$db->commit();
 	}
 
+	public function addDBDataOnce(): void {
+		$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->ignore()
+			->row( [
+				'wiki_dbname' => 'wikidb',
+				'wiki_dbcluster' => 'c1',
+				'wiki_sitename' => 'TestWiki',
+				'wiki_language' => 'en',
+				'wiki_private' => 0,
+				'wiki_creation' => $dbw->timestamp(),
+				'wiki_category' => 'uncategorised',
+				'wiki_closed' => 0,
+				'wiki_deleted' => 0,
+				'wiki_locked' => 0,
+				'wiki_inactive' => 0,
+				'wiki_inactive_exempt' => 0,
+				'wiki_url' => 'http://127.0.0.1:9412',
+			] )
+			->caller( __METHOD__ )
+			->execute();
+	}
+
 	/**
 	 * @return RemoteWikiFactory
 	 */
