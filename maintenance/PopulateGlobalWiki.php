@@ -35,17 +35,11 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	}
 
 	protected function doDBUpdates(): bool {
-		$globalWiki = $this->getConfig()->has( ConfigNames::GlobalWiki ) ?
-			$this->getConfig()->get( ConfigNames::GlobalWiki ) :
-			$this->getConfig()->get( MainConfigNames::DBname );
-
-		$database = $this->getConfig()->has( ConfigNames::Database ) ?
-			$this->getConfig()->get( ConfigNames::Database ) :
-			$this->getConfig()->get( MainConfigNames::DBname );
+		$globalWiki = $this->getConfig()->get( ConfigNames::GlobalWiki );
 
 		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
 		$dbw = $connectionProvider->getPrimaryDatabase(
-			$database
+			$this->getConfig()->get( ConfigNames::Database )
 		);
 
 		$exists = $dbw->newSelectQueryBuilder()
@@ -79,6 +73,8 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			] )
 			->caller( __METHOD__ )
 			->execute();
+
+		$this->output( "Populated global wiki {$globalWiki} into cw_wikis\n" );
 
 		return true;
 	}
