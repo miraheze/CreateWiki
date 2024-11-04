@@ -30,7 +30,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	}
 
 	protected function getUpdateKey(): string {
-		return __CLASS__;
+		return __CLASS__ . ':' . $this->getGlobalWiki();
 	}
 
 	protected function updateSkippedMessage(): string {
@@ -38,7 +38,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	}
 
 	protected function doDBUpdates(): bool {
-		$globalWiki = $this->getConfig()->get( ConfigNames::GlobalWiki );
+		$globalWiki = $this->getGlobalWiki();
 
 		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
 		$dbw = $connectionProvider->getPrimaryDatabase(
@@ -77,6 +77,10 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 
 		$this->output( "Populated global wiki '{$globalWiki}' into cw_wikis.\n" );
 		return true;
+	}
+
+	private function getGlobalWiki(): string {
+		return $this->getConfig()->get( ConfigNames::GlobalWiki );
 	}
 }
 
