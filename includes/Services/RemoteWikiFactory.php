@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 class RemoteWikiFactory {
 
@@ -131,7 +132,7 @@ class RemoteWikiFactory {
 	}
 
 	public function getCreationDate(): string {
-		return $this->creation;
+		return $this->valid( $this->creation, __METHOD__ );
 	}
 
 	public function getDBname(): string {
@@ -187,8 +188,8 @@ class RemoteWikiFactory {
 		];
 	}
 
-	public function getInactiveTimestamp(): int {
-		return (int)$this->inactiveTimestamp;
+	public function getInactiveTimestamp(): ?string {
+		return $this->valid( $this->inactiveTimestamp, __METHOD__ );
 	}
 
 	public function isInactiveExempt(): bool {
@@ -274,8 +275,8 @@ class RemoteWikiFactory {
 		$this->hooks[] = 'CreateWikiStateClosed';
 	}
 
-	public function getClosedTimestamp(): int {
-		return (int)$this->closedTimestamp;
+	public function getClosedTimestamp(): ?string {
+		return $this->valid( $this->closedTimestamp, __METHOD__ );
 	}
 
 	public function isDeleted(): bool {
@@ -312,8 +313,8 @@ class RemoteWikiFactory {
 		];
 	}
 
-	public function getDeletedTimestamp(): int {
-		return (int)$this->deletedTimestamp;
+	public function getDeletedTimestamp(): ?string {
+		return $this->valid( $this->deletedTimestamp, __METHOD__ );
 	}
 
 	public function isLocked(): bool {
@@ -459,5 +460,23 @@ class RemoteWikiFactory {
 				];
 			}
 		}
+	}
+
+	private function valid( ?string $timestamp, string $fname ): ?string {
+		// Make sure we have a valid timestamp so that
+		// weird things don't happen if timestamp is wrong.
+
+		if ( $timestamp === null ) {
+			return null;
+		}
+
+		$ret = ConvertibleTimestamp::convert( TS_MW, $timestamp );
+		if ( !is_numeric( $ret ) ) {
+			throw new UnexpectedValueException(
+				"Invalid timestamp value given by {$fname}."
+			);
+		}
+
+		return $ret;
 	}
 }
