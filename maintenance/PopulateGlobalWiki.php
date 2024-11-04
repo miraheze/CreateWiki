@@ -41,9 +41,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 		$globalWiki = $this->getGlobalWiki();
 
 		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbw = $connectionProvider->getPrimaryDatabase(
-			$this->getConfig()->get( ConfigNames::Database )
-		);
+		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
