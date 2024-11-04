@@ -132,7 +132,7 @@ class RemoteWikiFactory {
 	}
 
 	public function getCreationDate(): string {
-		return $this->valid( $this->creation, __METHOD__ );
+		return $this->creation;
 	}
 
 	public function getDBname(): string {
