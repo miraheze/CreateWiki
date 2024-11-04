@@ -66,7 +66,7 @@ class RequestWikiRemoteAIJob extends Job {
 				// Execute query builder to commit the status change
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$loggerFactory->getInstance( 'CreateWiki' )->debug( 'Wiki request' . $this->id . 'automatically approved by AI decision.' );
+				$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'Wiki request' . $this->id . 'automatically approved by AI decision.' );
 			}
 		}
 
@@ -92,7 +92,7 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 	
 		if (!$threadResponse->isOK()) {
-			$loggerFactory->getInstance( 'CreateWiki' )->error( 'Initial POST to OpenAI failed!' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'Initial POST to OpenAI failed!' );
 			return null;
 		}
 	
@@ -100,7 +100,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$threadId = $threadData['id'] ?? null;
 
 		if (!$threadId) {
-			$loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' );
 			return null;
 		}
 	
@@ -119,14 +119,14 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 	
 		if (!$runResponse->isOK()) {
-			$loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a runResponse.' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a runResponse.' );
 			return null;
 		}
 	
 		$runData = json_decode($threadResponse->getContent(), true);
 		$runId = $threadData['id'] ?? null;
 		if (!$runId) {
-			$loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a runId. Instead returned: {$runData}' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a runId. Instead returned: {$runData}' );
 			return null;
 		}
 
@@ -136,7 +136,7 @@ class RequestWikiRemoteAIJob extends Job {
 			sleep(3); // Add delay between polls to avoid excessive requests
 	
 
-			$loggerFactory->getInstance( 'CreateWiki' )->debug( 'Querying status of wiki request decision for ' . $runId );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'Querying status of wiki request decision for ' . $runId );
 
 			$statusResponse = $this->httpRequestFactory->get(
 				$baseApiUrl. '/threads/' . $threadId . '/runs/' . '$runId',
@@ -150,7 +150,7 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 	
 			if (!$statusResponse->isOK()) {
-				$loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a statusResponse.' );
+				$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'OpenAI did not return a statusResponse.' );
 				return null;
 			}
 	
@@ -158,10 +158,10 @@ class RequestWikiRemoteAIJob extends Job {
 			$status = $statusData['status'] ?? 'failed';
 	
 			if ($status === 'completed') {
-				$loggerFactory->getInstance( 'CreateWiki' )->debug( 'Run {$runId} was successful.' );
+				$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'Run {$runId} was successful.' );
 				break;
 			} elseif ($status === 'failed') {
-				$loggerFactory->getInstance( 'CreateWiki' )->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' );
+				$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' );
 				return null;
 			}
 		}
@@ -180,7 +180,7 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		if (!$messagesResponse->isOK()) {
-			$loggerFactory->getInstance( 'CreateWiki' )->debug( 'OpenAI did not return a messagesResponse.' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'OpenAI did not return a messagesResponse.' );
 			return null;
 		}
 
@@ -202,9 +202,9 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		if (!$deleteResponse->isOK()) {
-			$loggerFactory->getInstance( 'CreateWiki' )->error( 'Failed to delete thread {$threadId}.' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->error( 'Failed to delete thread {$threadId}.' );
 		} else {
-			$loggerFactory->getInstance( 'CreateWiki' )->debug( 'Successfully deleted {$threadId}.' );
+			$this->loggerFactory->getInstance( 'CreateWiki' )->debug( 'Successfully deleted {$threadId}.' );
 		}
 
 		// Assuming the response contains an "outcome" field for simplicity
