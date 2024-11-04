@@ -264,7 +264,7 @@ class RemoteWikiFactory {
 		$this->closed = true;
 		$this->inactive = false;
 		$this->closedTimestamp = $this->dbr->timestamp();
-		$this->inactiveTimestamp = null,
+		$this->inactiveTimestamp = null;
 		$this->newRows += [
 			'wiki_closed' => 1,
 			'wiki_closed_timestamp' => $this->closedTimestamp,
