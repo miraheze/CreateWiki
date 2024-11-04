@@ -19,6 +19,7 @@ class CreateWikiDataFactory {
 		ConfigNames::CacheDirectory,
 		ConfigNames::CacheType,
 		ConfigNames::Database,
+		ConfigNames::GlobalWiki,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
