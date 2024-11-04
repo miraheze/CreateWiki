@@ -165,9 +165,10 @@ class RemoteWikiFactory {
 	public function markInactive(): void {
 		$this->trackChange( 'inactive', 0, 1 );
 		$this->inactive = true;
+		$this->inactiveTimestamp = $this->dbr->timestamp();
 		$this->newRows += [
 			'wiki_inactive' => 1,
-			'wiki_inactive_timestamp' => $this->dbr->timestamp(),
+			'wiki_inactive_timestamp' => $this->inactiveTimestamp,
 		];
 	}
 
@@ -176,6 +177,8 @@ class RemoteWikiFactory {
 		$this->hooks[] = 'CreateWikiStateOpen';
 		$this->inactive = false;
 		$this->closed = false;
+		$this->closedTimestamp = null;
+		$this->inactiveTimestamp = null;
 		$this->newRows += [
 			'wiki_closed' => 0,
 			'wiki_closed_timestamp' => null,
@@ -259,9 +262,12 @@ class RemoteWikiFactory {
 	public function markClosed(): void {
 		$this->trackChange( 'closed', 0, 1 );
 		$this->closed = true;
+		$this->inactive = false;
+		$this->closedTimestamp = $this->dbr->timestamp();
+		$this->inactiveTimestamp = null,
 		$this->newRows += [
 			'wiki_closed' => 1,
-			'wiki_closed_timestamp' => $this->dbr->timestamp(),
+			'wiki_closed_timestamp' => $this->closedTimestamp,
 			'wiki_inactive' => 0,
 			'wiki_inactive_timestamp' => null,
 		];
@@ -279,12 +285,19 @@ class RemoteWikiFactory {
 	public function delete(): void {
 		$this->trackChange( 'deleted', 0, 1 );
 		$this->log = 'delete';
+		$this->closed = false;
+		$this->inactive = false;
 		$this->deleted = true;
+		$this->deletedTimestamp = $this->dbr->timestamp();
+		$this->closedTimestamp = null;
+		$this->inactiveTimestamp = null;
 		$this->newRows += [
 			'wiki_deleted' => 1,
-			'wiki_deleted_timestamp' => $this->dbr->timestamp(),
+			'wiki_deleted_timestamp' => $this->deletedTimestamp,
 			'wiki_closed' => 0,
 			'wiki_closed_timestamp' => null,
+			'wiki_inactive' => 0,
+			'wiki_inactive_timestamp' => null,
 		];
 	}
 
