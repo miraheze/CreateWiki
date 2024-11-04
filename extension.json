@@ -53,6 +53,15 @@
 			],
 			"needsPage": false
 		},
+		"RequestWikiRemoteAIJob": {
+			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
+			"services": [
+				"ConfigFactory",
+				"CreateWikiHookRunner",
+				"WikiRequestManager"
+			],
+			"needsPage": false
+		},
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\SetContainersAccessJob",
 			"services": [
@@ -397,6 +406,22 @@
 		},
 		"CreateWikiUseJobQueue": {
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
+			"value": false
+		},
+		"OpenAIAPIEndpoint": {
+			"description": "String. URL endpoint for OpenAI's Assistants API.",
+			"value": "https://api.openai.com/v2/assistants"
+		},
+		"OpenAIAPIKey": {
+			"description": "String. OpenAI API token.",
+			"value": null
+		},
+		"OpenAIAssistantID": {
+			"description": "String. OpenAI API assistant ID.",
+			"value": null
+		},
+		"CreateWikiUseChatGPT": {
+			"description": "Boolean. Whether to use ChatGPT to evaluate wiki requests.",
 			"value": false
 		},
 		"CreateWikiUsePrivateWikis": {

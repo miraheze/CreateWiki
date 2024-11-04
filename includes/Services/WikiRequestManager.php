@@ -354,6 +354,8 @@ class WikiRequestManager {
 
 			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 				$this->tryAutoCreate();
+			} elseif ( $this->options->get( ConfigNames::UseChatGPT ) ) {
+				$this->evaluateWithChatGPT();
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
@@ -868,6 +870,19 @@ class WikiRequestManager {
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
+				[
+					'id' => $this->ID,
+					'reason' => $this->getReason(),
+				]
+			)
+		);
+	}
+
+	public function evaluateWithChatGPT(): void {
+		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
+		$jobQueueGroup->push(
+			new JobSpecification(
+				RequestWikiRemoteAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
 					'reason' => $this->getReason(),
