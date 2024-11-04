@@ -408,15 +408,15 @@
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
 			"value": false
 		},
-		"OpenAIAPIEndpoint": {
+		"CreateWikiOpenAIAPIEndpoint": {
 			"description": "String. URL endpoint for OpenAI's Assistants API.",
 			"value": "https://api.openai.com/v2/assistants"
 		},
-		"OpenAIAPIKey": {
+		"CreateWikiOpenAIAPIKey": {
 			"description": "String. OpenAI API token.",
 			"value": null
 		},
-		"OpenAIAssistantID": {
+		"CreateWikiOpenAIAssistantID": {
 			"description": "String. OpenAI API assistant ID.",
 			"value": null
 		},
