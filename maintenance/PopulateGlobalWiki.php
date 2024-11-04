@@ -11,7 +11,7 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use LoggedUpdateMaintenance;
 use MediaWiki\MainConfigNames;
-Use MediaWiki\WikiMap\WikiMap;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 
 class PopulateGlobalWiki extends LoggedUpdateMaintenance {
