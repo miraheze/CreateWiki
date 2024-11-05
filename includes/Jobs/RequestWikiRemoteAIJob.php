@@ -131,7 +131,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$runData = json_decode( $runResponse, true );
 		$runId = $runData['id'] ?? null;
-		
+
 		if ( !$runId ) {
 			$this->logger->error( 'OpenAI did not return a runId. Instead returned: ' . json_encode( $runData ) );
 			return null;

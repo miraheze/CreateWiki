@@ -131,7 +131,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		$this->overrideConfigValue( ConfigNames::Subdomain, 'example.com' );
 		$this->overrideConfigValue( ConfigNames::OpenAIAPIKey, 'test' );
-		
 
 		$status = $specialRequestWiki->onSubmit( $formData );
 		$this->assertInstanceOf( Status::class, $status );
