@@ -40,7 +40,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setParameter( $par );
 		$this->setHeaders();
 
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 

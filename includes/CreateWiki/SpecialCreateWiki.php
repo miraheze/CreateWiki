@@ -9,16 +9,20 @@ use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
+	private IConnectionProvider $connectionProvider;
 	private WikiManagerFactory $wikiManagerFactory;
 
-	/**
-	 * @param WikiManagerFactory $wikiManagerFactory
-	 */
-	public function __construct( WikiManagerFactory $wikiManagerFactory ) {
+	public function __construct(
+		IConnectionProvider $connectionProvider,
+		WikiManagerFactory $wikiManagerFactory
+	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
+
+		$this->connectionProvider = $connectionProvider;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
@@ -26,7 +30,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID()  ) ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 

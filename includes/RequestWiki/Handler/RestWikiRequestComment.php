@@ -13,6 +13,7 @@ use Miraheze\CreateWiki\RestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
  * Posts a comment to the specified wiki request
@@ -21,18 +22,21 @@ use Wikimedia\ParamValidator\ParamValidator;
 class RestWikiRequestComment extends SimpleHandler {
 
 	private Config $config;
+	private IConnectionProvider $connectionProvider;
 	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
 		ConfigFactory $configFactory,
+		IConnectionProvider $connectionProvider,
 		WikiRequestManager $wikiRequestManager
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$this->connectionProvider = $connectionProvider;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv( $this->config );
+		RestUtils::checkEnv( $this->config, $this->connectionProvider );
 
 		// Must be logged in to use this API
 		if ( !$this->getAuthority()->isNamed() ) {

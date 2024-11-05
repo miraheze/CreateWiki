@@ -27,7 +27,6 @@ class WikiManagerFactory {
 		ConfigNames::Collation,
 		ConfigNames::DatabaseClusters,
 		ConfigNames::DatabaseSuffix,
-		ConfigNames::GlobalWiki,
 		ConfigNames::SQLFiles,
 		ConfigNames::StateDays,
 		ConfigNames::Subdomain,
@@ -428,9 +427,7 @@ class WikiManagerFactory {
 			return;
 		}
 
-		$logDBConn = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$logDBConn = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-global' );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
@@ -452,9 +449,8 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$data = $this->dataFactory->newInstance(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		$data = $this->dataFactory->newInstance( $dbr->getDomainID() );
 
 		$data->resetDatabaseLists( isNewChanges: true );
 	}

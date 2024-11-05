@@ -30,7 +30,6 @@ class WikiRequestManager {
 		ConfigNames::AIThreshold,
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
-		ConfigNames::GlobalWiki,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
@@ -92,9 +91,7 @@ class WikiRequestManager {
 	}
 
 	public function loadFromID( int $requestID ): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-global' );
 
 		$this->ID = $requestID;
 
@@ -324,9 +321,7 @@ class WikiRequestManager {
 		User $requester,
 		UserIdentity $user
 	): array {
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
 
 		$userID = $requester->getId();
 		$res = $dbr->newSelectQueryBuilder()

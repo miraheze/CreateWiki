@@ -41,13 +41,11 @@ class RestWikiRequest extends SimpleHandler {
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv( $this->config );
+		RestUtils::checkEnv( $this->config, $this->connectionProvider );
 
 		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
 
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
 
 		$wikiRequest = $dbr->newSelectQueryBuilder()
 			->select( '*' )

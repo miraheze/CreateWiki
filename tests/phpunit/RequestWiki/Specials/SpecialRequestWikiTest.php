@@ -6,6 +6,7 @@ use ErrorPageError;
 use Generator;
 use MediaWiki\Context\DerivativeContext;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Request\WebRequest;
@@ -49,9 +50,9 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		// T12639
 		$this->disableAutoCreateTempUser();
 
-		$this->overrideConfigValue(
-			ConfigNames::GlobalWiki, WikiMap::getCurrentWikiId()
-		);
+		$this->overrideConfigValue( MainConfigNames::VirtualDomainsMapping, [
+				'virtual-createwiki-global' => [ 'db' => WikiMap::getCurrentWikiId() ],
+		] );
 
 		$this->specialRequestWiki = $this->newSpecialPage();
 	}

@@ -11,6 +11,7 @@ use Miraheze\CreateWiki\RestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
  * Returns the IDs and suppression level of all wiki requests made by a user
@@ -19,21 +20,24 @@ use Wikimedia\ParamValidator\ParamValidator;
 class RestWikiRequestsByUser extends SimpleHandler {
 
 	private Config $config;
+	private IConnectionProvider $connectionProvider;
 	private UserFactory $userFactory;
 	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
 		ConfigFactory $configFactory,
+		IConnectionProvider $connectionProvider,
 		UserFactory $userFactory,
 		WikiRequestManager $wikiRequestManager
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$this->connectionProvider = $connectionProvider;
 		$this->userFactory = $userFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( string $username ): Response {
-		RestUtils::checkEnv( $this->config );
+		RestUtils::checkEnv( $this->config, $this->connectionProvider );
 
 		$user = $this->userFactory->newFromName( $username );
 

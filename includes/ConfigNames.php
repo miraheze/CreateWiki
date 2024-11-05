@@ -37,8 +37,6 @@ class ConfigNames {
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
 
-	public const GlobalWiki = 'CreateWikiGlobalWiki';
-
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
 	public const PersistentModelFile = 'CreateWikiPersistentModelFile';
