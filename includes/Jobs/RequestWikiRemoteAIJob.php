@@ -110,7 +110,7 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function queryChatGPT( string $reason ): ?array {
-		$baseApiUrl = 'https://api.openai.com/v2/assistants';
+		$baseApiUrl = 'https://api.openai.com/v1';
 		$apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
 
 		// Step 1: Create a new thread
