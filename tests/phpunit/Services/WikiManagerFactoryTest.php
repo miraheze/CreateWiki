@@ -8,6 +8,7 @@ use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Wikimedia\Rdbms\LBFactoryMulti;
 
 /**
  * @group CreateWiki
@@ -21,6 +22,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		parent::setUp();
 
 		$this->overrideConfigValues( [
+			ConfigNames::DatabaseClusters => [ 'c1', 'c2' ],
 			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::SQLFiles => [
 				MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
@@ -166,6 +168,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteForce(): void {
+		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( 'renamewikitest' );
 
 		$this->assertNull( $wikiManager->delete( force: true ) );
@@ -200,6 +203,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::delete
 	 */
 	public function testDeleteEligible(): void {
+		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( 'deletewikitest' );
 		$this->assertSame( 'Wiki deletewikitest can not be deleted yet.', $wikiManager->delete( force: false ) );
 
@@ -259,10 +263,11 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
+		$this->setupLBFactory();
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 
-		$this->setMwGlobals( 'wgLocalDatabases', array_merge(
-			[ $dbname ], $GLOBALS['wgLocalDatabases']
+		$this->overrideConfigValue( MainConfigNames::LocalDatabases, array_merge(
+			[ $dbname ], $this->getConfVar( MainConfigNames::LocalDatabases )
 		) );
 
 		return $wikiManager->create(
@@ -279,5 +284,35 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	private function wikiExists( string $dbname ): bool {
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 		return $wikiManager->exists();
+	}
+
+	private function setupLBFactory(): void {
+		wfLoadConfiguration();
+		$this->overrideConfigValue( MainConfigNames::LBFactoryConf, [
+			'class' => LBFactoryMulti::class,
+			'secret' => $this->getConfVar( MainConfigNames::SecretKey ),
+			'sectionsByDB' => $this->getConfVar( 'WikiInitialize' )->wikiDBClusters,
+			'sectionLoads' => [
+				'DEFAULT' => [
+					'c1' => 0,
+				],
+				'c1' => [
+					'c1' => 0,
+				],
+				'c2' => [
+					'c2' => 0,
+				],
+			],
+			'serverTemplate' => [
+				'dbname' => $this->getConfVar( MainConfigNames::DBname ),
+				'user' => 'root',
+				'type' => 'mysql',
+				'flags' => DBO_DEFAULT | DBO_DEBUG,
+			],
+			'hostsByName' => [
+				'c1' => $this->getConfVar( MainConfigNames::DBserver ),
+				'c2' => $this->getConfVar( MainConfigNames::DBserver ),
+			],
+		] );
 	}
 }

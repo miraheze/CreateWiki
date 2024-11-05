@@ -1,37 +1,35 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
-use ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Status\Status;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use RuntimeException;
-use Status;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	private IConnectionProvider $connectionProvider;
 	private CreateWikiHookRunner $hookRunner;
+	private WikiRequestManager $wikiRequestManager;
 
 	private array $extraFields = [];
 
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiHookRunner $hookRunner
+		CreateWikiHookRunner $hookRunner,
+		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
-		$this->connectionProvider = $connectionProvider;
 		$this->hookRunner = $hookRunner;
+		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**
@@ -193,31 +191,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return Status::newFatal( 'actionthrottledtext' );
 		}
 
-		$dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->getConfig()->get( ConfigNames::GlobalWiki )
-		);
-
-		$duplicate = $dbw->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
-			->where( [
-				'cw_comment' => $data['reason'],
-				'cw_status' => 'inreview',
-			] )
-			->caller( __METHOD__ )
-			->fetchRow();
-
-		if ( (bool)$duplicate ) {
+		if ( $this->wikiRequestManager->isDuplicateRequest( $data['sitename'] ) ) {
 			return Status::newFatal( 'requestwiki-error-patient' );
-		}
-
-		$subdomain = strtolower( $data['subdomain'] );
-		$dbname = $subdomain . $this->getConfig()->get( ConfigNames::DatabaseSuffix );
-		$url = $subdomain . '.' . $this->getConfig()->get( ConfigNames::Subdomain );
-
-		$comment = $data['reason'];
-		if ( $this->getConfig()->get( ConfigNames::Purposes ) && ( $data['purpose'] ?? '' ) ) {
-			$comment = implode( "\n", [ 'Purpose: ' . $data['purpose'], $data['reason'] ] );
 		}
 
 		$extraData = [];
@@ -227,52 +202,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 			}
 		}
 
-		$jsonExtra = json_encode( $extraData );
-		if ( $jsonExtra === false ) {
-			throw new RuntimeException( 'Can not set invalid JSON data to cw_extra.' );
-		}
+		$this->wikiRequestManager->createNewRequestAndLog( $data, $extraData, $this->getUser() );
 
-		$dbw->newInsertQueryBuilder()
-			->insertInto( 'cw_requests' )
-			->ignore()
-			->row( [
-				'cw_comment' => $comment,
-				'cw_dbname' => $dbname,
-				'cw_language' => $data['language'],
-				'cw_private' => $data['private'] ?? 0,
-				'cw_status' => 'inreview',
-				'cw_sitename' => $data['sitename'],
-				'cw_timestamp' => $dbw->timestamp(),
-				'cw_url' => $url,
-				'cw_user' => $this->getUser()->getId(),
-				'cw_category' => $data['category'] ?? '',
-				'cw_visibility' => 0,
-				'cw_bio' => $data['bio'] ?? 0,
-				'cw_extra' => $jsonExtra,
-			] )
-			->caller( __METHOD__ )
-			->execute();
-
-		$requestID = (string)$dbw->insertId();
+		$requestID = (string)$this->wikiRequestManager->getID();
 		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID );
-
-		$logEntry = new ManualLogEntry( 'farmer', 'requestwiki' );
-
-		$logEntry->setPerformer( $this->getUser() );
-		$logEntry->setTarget( $this->getPageTitle() );
-		$logEntry->setComment( $data['reason'] );
-
-		$logEntry->setParameters(
-			[
-				'4::sitename' => $data['sitename'],
-				'5::language' => $data['language'],
-				'6::private' => (int)( $data['private'] ?? 0 ),
-				'7::id' => "#{$requestID}",
-			]
-		);
-
-		$logID = $logEntry->insert( $dbw );
-		$logEntry->publish( $logID );
 
 		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
@@ -283,6 +216,15 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function isValidReason( ?string $reason ): bool|Message {
 		if ( !$reason || ctype_space( $reason ) ) {
 			return $this->msg( 'htmlform-required' );
+		}
+
+		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
+		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
+			return $this->msg( 'requestwiki-error-minlength' )->numParams(
+				$minLength,
+				strlen( $reason )
+			);
 		}
 
 		$regexes = CreateWikiRegexConstraint::regexesFromMessage(

@@ -1,7 +1,7 @@
 {
 	"root": true,
 	"extends": [
-		"wikimedia/client-es5",
+		"wikimedia/client-es6",
 		"wikimedia/jquery",
 		"wikimedia/mediawiki"
 	],
@@ -26,6 +26,6 @@
 		"mediawiki/class-doc": "off"
 	},
 	"parserOptions": {
-		"ecmaVersion": 2021
+		"ecmaVersion": 2024
 	}
 }

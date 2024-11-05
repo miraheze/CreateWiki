@@ -10,12 +10,11 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 /**
- * This script is an experimental version of ManageInactiveWikis
- * It is designed to be a more readable/understandable and reliable version.
+ * Maintenance script for marking wikis as inactive, closed, and deleted
+ * based on the values set in $wgCreateWikiStateDays.
  *
  * @author Universal Omega
  */
-
 class ManageInactiveWikisV2 extends Maintenance {
 
 	public function __construct() {
@@ -76,7 +75,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbName ) );
 		$activity->execute();
 
-		$lastActivityTimestamp = $activity->timestamp;
+		$lastActivityTimestamp = $activity->getTimestamp();
 
 		$track = ( $lastActivityTimestamp !== 0 ) ? 'default': 'no-edits'
 
@@ -90,6 +89,8 @@ class ManageInactiveWikisV2 extends Maintenance {
 			if ( $canWrite && $remoteWiki->isInactive() ) {
 				$remoteWiki->markActive();
 				$remoteWiki->commit();
+
+				$this->output( "{$dbName} has been marked as active.\n" );
 			}
 
 			return true;
@@ -102,7 +103,7 @@ class ManageInactiveWikisV2 extends Maintenance {
 			// If the wiki is inactive and the inactive timestamp is older than close days
 			$inactiveTimestamp = $remoteWiki->getInactiveTimestamp();
 			$isInactive = $remoteWiki->isInactive() && $inactiveTimestamp;
-			if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-{$closeDays} days" ) ) ) {
+			if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-{$closeTime} days" ) ) ) {
 				if ( $canWrite ) {
 					$remoteWiki->markClosed();
 					$this->notify( $dbName );
@@ -111,7 +112,20 @@ class ManageInactiveWikisV2 extends Maintenance {
 					$this->output( "{$dbName} should be closed. Last activity: {$lastActivityTimestamp}\n" );
 				}
 			} else {
-				// Otherwise, mark as inactive or notify if it's eligible for closure
+				if (
+					!$isInactive &&
+					$lastActivityTimestamp < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) )
+				) {
+					// Meets inactivity
+					if ( $canWrite ) {
+						$remoteWiki->markInactive();
+						$this->output( "{$dbName} was marked as inactive. Last activity: {$lastActivityTimestamp}\n" );
+					} else {
+						$this->output( "{$dbName} should be inactive. Last activity: {$lastActivityTimestamp}\n" );
+					}
+				}
+
+				// Otherwise, mark as closed or notify if it's eligible for closure
 				$this->handleInactiveWiki( $dbName, $remoteWiki, $closeDays, $canWrite );
 			}
 		} else {
@@ -139,8 +153,8 @@ class ManageInactiveWikisV2 extends Maintenance {
 			} else {
 				$this->output( "{$dbName} is inactive and should be closed.\n" );
 			}
-		} else {
-			$this->output( "{$dbName} remains inactive but is not yet eligible for closure.\n" );
+		} elseif ( $isInactive ) {
+			$this->output( "{$dbName} remains inactive and is not yet eligible for closure.\n" );
 		}
 	}
 
@@ -150,21 +164,24 @@ class ManageInactiveWikisV2 extends Maintenance {
 		int $removeDays,
 		bool $canWrite
 	): void {
-		$isClosed = $remoteWiki->isClosed() && $remoteWiki->getClosedTimestamp();
-		if ( $isClosed && $remoteWiki->getClosedTimestamp() < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
+		$closedTimestamp = $remoteWiki->getClosedTimestamp();
+		$isClosed = $remoteWiki->isClosed() && $closedTimestamp;
+		if ( $isClosed && $closedTimestamp < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
 			if ( $canWrite ) {
-				// $remoteWiki->delete( force: false );
-				// $this->output( "{$dbName} is eligible for removal and now has been.\n" );
-				$this->output( "{$dbName} is eligible for removal, but deletion is currently disabled.\n" );
+				// $remoteWiki->delete();
+				$this->output(
+					"{$dbName} is eligible for removal and now has been. " .
+					"It was closed on {$closedTimestamp}.\n"
+				);
 			} else {
 				$this->output(
 					"{$dbName} is eligible for removal if --write is used. " .
-					"It was closed on {$remoteWiki->getClosedTimestamp()}.\n"
+					"It was closed on {$closedTimestamp}.\n"
 				);
 			}
 		} else {
 			$this->output(
-				"{$dbName} is closed but not yet eligible for deletion. " .
+				"{$dbName} was closed on {$closedTimestamp} and is not yet eligible for deletion. " .
 				"It may have been manually closed.\n"
 			);
 		}

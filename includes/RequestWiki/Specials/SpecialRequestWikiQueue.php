@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
@@ -11,6 +11,8 @@ use MediaWiki\User\UserFactory;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -96,7 +98,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'options' => [
 					// We cannot use options-messages here as otherwise
 					// it overrides all language options.
-					$this->msg( 'createwiki-label-all' )->text() => '*',
+					$this->msg( 'createwiki-label-all-languages' )->text() => '*',
 				],
 			],
 			'status' => [
@@ -109,7 +111,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 					'requestwikiqueue-declined' => 'declined',
 					'requestwikiqueue-onhold' => 'onhold',
 					'requestwikiqueue-moredetails' => 'moredetails',
-					'createwiki-label-all' => '*',
+					'createwiki-label-all-statuses' => '*',
 				],
 				'default' => $status ?: 'inreview',
 			],
@@ -129,8 +131,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->connectionProvider,
 			$this->languageNameUtils,
 			$this->getLinkRenderer(),
-			$this->permissionManager,
 			$this->userFactory,
+			$this->wikiRequestManager,
 			$dbname,
 			$language,
 			$requester,

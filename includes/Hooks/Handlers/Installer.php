@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
+use Miraheze\CreateWiki\Maintenance\PopulateGlobalWiki;
 
 class Installer implements LoadExtensionSchemaUpdatesHook {
 
@@ -64,5 +65,25 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			'cw_comment_timestamp',
 			"$dir/patches/patch-cw_comments-modify-cw_comment_timestamp.sql"
 		);
+
+		$updater->modifyExtensionField(
+			'cw_wikis',
+			'wiki_creation',
+			"$dir/patches/patch-cw_wikis-modify-wiki_creation-default.sql"
+		);
+
+		$updater->dropExtensionField(
+			'cw_wikis',
+			'wiki_extensions',
+			"$dir/patches/patch-cw_wikis-drop-wiki_extensions.sql"
+		);
+
+		$updater->dropExtensionField(
+			'cw_wikis',
+			'wiki_settings',
+			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql"
+		);
+
+		$updater->addPostDatabaseUpdateMaintenance( PopulateGlobalWiki::class );
 	}
 }

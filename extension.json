@@ -156,14 +156,14 @@
 			]
 		},
 		"RequestWiki": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWiki",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
-				"ConnectionProvider",
-				"CreateWikiHookRunner"
+				"CreateWikiHookRunner",
+				"WikiRequestManager"
 			]
 		},
 		"RequestWikiQueue": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\SpecialRequestWikiQueue",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"ConnectionProvider",
 				"CreateWikiHookRunner",
@@ -392,7 +392,7 @@
 			"value": false
 		},
 		"CreateWikiUseEchoNotifications": {
-			"description": "Boolean. Whether to use Echo notifications (beta feature).",
+			"description": "Boolean. Whether to use Echo notifications.",
 			"value": false
 		},
 		"CreateWikiUseExperimental": {
@@ -420,7 +420,7 @@
 			"value": true
 		},
 		"RequestWikiMinimumLength": {
-			"description": "Integer. Minimum length for descriptions within wiki requests.",
+			"description": "Integer. Minimum length for the reason field within RequestWiki.",
 			"value": false
 		}
 	},
