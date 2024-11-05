@@ -35,7 +35,7 @@
 	"createwiki-help-agreement": "এই নীতিগুলি অনুসরণ করতে ব্যর্থ হলে আপনার উইকি বন্ধ করে দেওয়া হতে পারে।",
 	"createwiki-help-category": "এই উইকির শ্রেণীবিভাগ বৈশ্বিক উইকি ডিরেক্টরির মতো জায়গাগুলিতে প্রতিফলিত হবে।",
 	"createwiki-help-subdomain": "এটি উইকির URLহবে।",
-	"createwiki-label-all": "সকল",
+	"createwiki-label-all-languages": "সকল",
 	"createwiki-label-category": "বিষয়শ্রেণী",
 	"createwiki-label-dbname": "ডেটাবেজ নাম",
 	"createwiki-label-language": "ভাষা:",

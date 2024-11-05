@@ -58,7 +58,7 @@
 	"createwiki-help-reason": "请输入充分的概述来描述您正在申请的wiki的主题、范围和用途。",
 	"createwiki-help-sitename": "这将是wiki及其“项目”命名空间的名称。",
 	"createwiki-help-subdomain": "这将是wiki的URL。",
-	"createwiki-label-all": "全部",
+	"createwiki-label-all-languages": "全部",
 	"createwiki-label-category": "分类",
 	"createwiki-label-dbname": "数据库名称",
 	"createwiki-label-language": "语言：",

@@ -34,7 +34,7 @@
 	"createwiki-help-reason": "Įveskite pakankamą santrauką, apibūdinančią jūsų prašomo viki temą, apimtį ir tikslą.",
 	"createwiki-help-sitename": "Tai bus viki pavadinimas ir jos „Projekto“ vardų srities pavadinimas.",
 	"createwiki-help-subdomain": "Tai bus viki URL.",
-	"createwiki-label-all": "Visi",
+	"createwiki-label-all-languages": "Visi",
 	"createwiki-label-category": "Kategorija",
 	"createwiki-label-dbname": "Duomenų bazės pavadinimas",
 	"createwiki-label-language": "Kalba:",

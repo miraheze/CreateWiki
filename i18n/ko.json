@@ -32,7 +32,7 @@
 	"createwiki-error-notsuffixed": "데이터베이스 이름이 유효한 접미사('$1')로 끝나지 않습니다.",
 	"createwiki-help-reason": "요청하는 위키의 주제, 범위 및 목적을 설명하는 충분한 요약을 입력하십시오.",
 	"createwiki-help-subdomain": "이것은 위키의 URL이 됩니다.",
-	"createwiki-label-all": "모두",
+	"createwiki-label-all-languages": "모두",
 	"createwiki-label-category": "분류",
 	"createwiki-label-dbname": "데이터베이스 이름",
 	"createwiki-label-language": "언어:",

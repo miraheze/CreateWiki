@@ -10,12 +10,8 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use MediaWiki\SiteStats\SiteStats;
-use RebuildRecentchanges;
 
 class CheckLastWikiActivity extends Maintenance {
-
-	public int $timestamp;
 
 	public function __construct() {
 		parent::__construct();
@@ -25,35 +21,34 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function execute(): void {
-		$timestamp = $this->getTimestamp();
-		if ( $timestamp === 0 && SiteStats::edits() >= 2 ) {
-			$rebuildRC = $this->runChild(
-				RebuildRecentchanges::class,
-				MW_INSTALL_PATH . '/maintenance/rebuildrecentchanges.php'
-			);
-			$rebuildRC->execute();
-			$timestamp = $this->getTimestamp();
-		}
-		$this->timestamp = $timestamp;
-
 		if ( !$this->isQuiet() ) {
-			$this->output( (string)$this->timestamp );
+			$this->output( (string)$this->getTimestamp() );
 		}
 	}
 
-	private function getTimestamp(): int {
-		$dbr = $this->getReplicaDB();
-		$timestamp = $dbr->newSelectQueryBuilder()
-			->select( 'MAX(rc_timestamp)' )
-			->from( 'recentchanges' )
+	public function getTimestamp(): int {
+		$dbr = $this->getDB( DB_REPLICA );
+
+		// Get the latest revision timestamp
+		$revTimestamp = $dbr->newSelectQueryBuilder()
+			->select( 'MAX(rev_timestamp)' )
+			->from( 'revision' )
+			->caller( __METHOD__ )
+			->fetchField();
+
+		// Get the latest logging timestamp
+		$logTimestamp = $dbr->newSelectQueryBuilder()
+			->select( 'MAX(log_timestamp)' )
+			->from( 'logging' )
 			->where( [
-				$dbr->expr( 'rc_log_type', '!=', 'renameuser' ),
-				$dbr->expr( 'rc_log_type', '!=', 'newusers' ),
+				$dbr->expr( 'log_type', '!=', 'renameuser' ),
+				$dbr->expr( 'log_type', '!=', 'newusers' ),
 			] )
 			->caller( __METHOD__ )
 			->fetchField();
 
-		return (int)$timestamp;
+		// Return the most recent timestamp in either revision or logging
+		return (int)max( $revTimestamp, $logTimestamp );
 	}
 }
 
