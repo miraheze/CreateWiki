@@ -7,7 +7,6 @@ use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;

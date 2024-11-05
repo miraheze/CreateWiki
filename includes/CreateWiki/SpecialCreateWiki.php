@@ -31,7 +31,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 */
 	public function execute( $par ): void {
 		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
-		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID()  ) ) {
+		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 
