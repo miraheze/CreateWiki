@@ -48,12 +48,15 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function run(): bool {
 		$this->wikiRequestManager->loadFromID( $this->id );
+		$this->logger->debug( 'Loaded request' . $this->id . 'for AI approval.' );
 
 		// Make API request to ChatGPT's Assistant API
+		$this->logger->debug( 'Began query to OpenAI for' . $this->id );
 		$apiResponse = $this->queryChatGPT( $this->reason );
 
 		if ( $apiResponse ) {
 			$outcome = $apiResponse['outcome'] ?? 'reject';
+			$this->logger->debug( 'AI outcome for' . $this->id . 'was' . $apiResponse['outcome'] );
 
 			if ( $outcome === 'approve' ) {
 				// Start query builder so that it can set the status
@@ -69,15 +72,38 @@ class RequestWikiRemoteAIJob extends Job {
 
 				$this->logger->debug( 'Wiki request' . $this->id . 'automatically approved by AI decision.' );
 			} elseif ( $outcome === 'revise' ) {
+				$this->wikiRequestManager->startQueryBuilder();
+
 				$this->wikiRequestManager->moredetails(
 					user: User::newSystemUser( 'CreateWiki Extension' ),
 					comment: 'Your request needs further details.'
 				);
+
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+
+				$this->logger->debug( 'Wiki request' . $this->id . 'needs more details.' );
 			} elseif ( $outcome === 'reject' ) {
+				$this->wikiRequestManager->startQueryBuilder();
+
 				$this->wikiRequestManager->decline(
 					user: User::newSystemUser( 'CreateWiki Extension' ),
 					comment: 'We couldn\'t approve your request at this time.'
 				);
+
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+
+				$this->logger->debug( 'Wiki request' . $this->id . 'rejected by AI decision.' );
+			} else {
+				$this->wikiRequestManager->addComment(
+					comment: rtrim( 'This request could not be automatically approved. Your request has been queued for manual review.' ),
+					user: User::newSystemUser( 'CreateWiki Extension' ),
+					log: false,
+					type: 'comment',
+					// Use all involved users
+					notifyUsers: []
+				);
+
+				$this->logger->debug( 'Wiki request' . $this->id . 'could not be approved. Check logs for details.' );
 			}
 		}
 
@@ -101,8 +127,10 @@ class RequestWikiRemoteAIJob extends Job {
 			],
 			__METHOD__
 		);
+		$this->logger->debug( 'Queried OpenAI for a decision.' );
 
 		$threadData = json_decode( $threadResponse, true );
+		$this->logger->debug( 'OpenAI replied with' . $threadData );
 		$threadId = $threadData['id'] ?? null;
 
 		if ( !$threadId ) {
@@ -123,6 +151,7 @@ class RequestWikiRemoteAIJob extends Job {
 			],
 			__METHOD__
 		);
+		$this->logger->debug( 'Queried OpenAI to run the message.' );
 
 		if ( $runResponse === null ) {
 			$this->logger->error( 'OpenAI did not return a runResponse.' );
@@ -130,6 +159,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		$runData = json_decode( $runResponse, true );
+		$this->logger->debug( 'OpenAI replied with' . $runData );
 		$runId = $runData['id'] ?? null;
 
 		if ( !$runId ) {
@@ -139,6 +169,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 		// Step 3: Poll the status of the run
 		$status = 'running';
+		$this->logger->debug( 'Status of run is ' . $status );
+
 		while ( $status === 'running' ) {
 			// Add delay between polls to avoid excessive requests
 			sleep( 3 );
@@ -162,6 +194,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			$statusData = json_decode( $statusResponse, true );
+			$this->logger->debug( 'OpenAI replied with' . $statusData );
 			$status = $statusData['status'] ?? 'failed';
 
 			if ( $status === 'completed' ) {
@@ -185,6 +218,7 @@ class RequestWikiRemoteAIJob extends Job {
 				],
 			__METHOD__
 		);
+		$this->logger->debug( 'Queried OpenAI for final descision message.' );
 
 		if ( $messagesResponse === null ) {
 			$this->logger->debug( 'OpenAI did not return a messagesResponse.' );
@@ -192,6 +226,8 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		$messagesData = json_decode( $messagesResponse, true );
+		$this->logger->debug( 'OpenAI replied with' . $messagesData );
+
 		$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
 
 /*		// Step 6: Delete the thread
