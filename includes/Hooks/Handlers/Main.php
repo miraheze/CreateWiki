@@ -78,10 +78,10 @@ class Main implements
 	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		$dbName = $this->config->get( MainConfigNames::DBname );
+		$dbname = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		$data = $this->dataFactory->newInstance( $dbName );
+		$data = $this->dataFactory->newInstance( $dbname );
 		$data->syncCache();
 
 		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
@@ -91,7 +91,7 @@ class Main implements
 
 			$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
 
-			$cachePath = $cacheDir . '/' . $dbName . '.php';
+			$cachePath = $cacheDir . '/' . $dbname . '.php';
 			$cacheArray = AtEase::quietCall( static function ( $path ) {
 				return include $path;
 			}, $cachePath );
@@ -99,7 +99,7 @@ class Main implements
 			if ( $cacheArray !== false ) {
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
-				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbName );
+				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbname );
 				$isPrivate = $remoteWiki->isPrivate();
 			}
 		}
