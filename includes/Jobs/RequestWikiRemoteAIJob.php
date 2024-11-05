@@ -20,7 +20,6 @@ class RequestWikiRemoteAIJob extends Job {
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
-	private HttpRequestFactory $httpRequestFactory;
 	private LoggerInterface $logger;
 
 	private int $id;
@@ -37,7 +36,6 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
-		$this->httpRequestFactory = $httpRequestFactory;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 
 		$this->id = $params['id'];
