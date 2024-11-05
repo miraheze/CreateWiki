@@ -5,12 +5,12 @@ namespace Miraheze\CreateWiki\Jobs;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
-use MediaWiki\Http\MWHttpRequest;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use MWHttpRequest;
 use Psr\Log\LoggerInterface;
 
 class RequestWikiRemoteAIJob extends Job {
