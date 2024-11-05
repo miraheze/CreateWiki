@@ -211,6 +211,7 @@ class RequestWikiRequestViewer {
 					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getReason(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
+					'validation-callback' => [ $this, 'isValidReason' ],
 				],
 			];
 
@@ -664,6 +665,40 @@ class RequestWikiRequestViewer {
 	public function isValidComment( ?string $comment, array $alldata ): bool|Message {
 		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->context->msg( 'htmlform-required' );
+		}
+
+		return true;
+	}
+
+	public function isValidReason( ?string $reason, array $alldata ): bool|Message {
+		if ( !isset( $alldata['submit-edit'] ) ) {
+			// If we aren't submitting an edit we don't want this to fail.
+			return true;
+		}
+
+		if ( !$reason || ctype_space( $reason ) ) {
+			return $this->context->msg( 'htmlform-required' );
+		}
+
+		$minLength = $this->config->get( ConfigNames::RequestWikiMinimumLength );
+		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
+			return $this->context->msg( 'requestwiki-error-minlength' )->numParams(
+				$minLength,
+				strlen( $reason )
+			);
+		}
+
+		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
+			'CreateWiki-disallowlist', '/', '/i'
+		);
+
+		foreach ( $regexes as $regex ) {
+			preg_match( '/' . $regex . '/i', $reason, $output );
+
+			if ( is_array( $output ) && count( $output ) >= 1 ) {
+				return $this->context->msg( 'requestwiki-error-invalidcomment' );
+			}
 		}
 
 		return true;

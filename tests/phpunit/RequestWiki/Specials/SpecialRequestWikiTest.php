@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests\RequestWiki;
+namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
 
 use ErrorPageError;
 use Generator;
@@ -15,7 +15,7 @@ use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki;
+use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use SpecialPageTestBase;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
@@ -24,7 +24,7 @@ use Wikimedia\TestingAccessWrapper;
  * @group CreateWiki
  * @group Database
  * @group medium
- * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\SpecialRequestWiki
+ * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki
  */
 class SpecialRequestWikiTest extends SpecialPageTestBase {
 
@@ -38,8 +38,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
-			$services->getConnectionProvider(),
-			$this->createMock( CreateWikiHookRunner::class )
+			$this->createMock( CreateWikiHookRunner::class ),
+			$services->get( 'WikiRequestManager' )
 		);
 	}
 

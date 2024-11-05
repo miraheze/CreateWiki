@@ -3,7 +3,7 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_sitename VARCHAR(128) NOT NULL,
   wiki_language VARCHAR(12) NOT NULL,
   wiki_private TINYINT NOT NULL,
-  wiki_creation BINARY(14) NULL,
+  wiki_creation BINARY(14) NOT NULL,
   wiki_url TEXT NULL,
   wiki_closed TINYINT NOT NULL DEFAULT '0',
   wiki_closed_timestamp BINARY(14) NULL,

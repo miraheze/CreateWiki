@@ -19,6 +19,7 @@ class CreateWikiDataFactory {
 		ConfigNames::CacheDirectory,
 		ConfigNames::CacheType,
 		ConfigNames::Database,
+		ConfigNames::GlobalWiki,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
@@ -220,6 +221,13 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
+			if ( $this->wiki === $this->options->get( ConfigNames::GlobalWiki ) ) {
+				// Don't throw an exception if we have not yet populated the
+				// global wiki, so that the PopulateGlobalWiki script can
+				// successfully populate it.
+				return;
+			}
+
 			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $this->wiki ] );
 		}
 
