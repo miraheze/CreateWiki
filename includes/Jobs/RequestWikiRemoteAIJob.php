@@ -5,7 +5,7 @@ namespace Miraheze\CreateWiki\Jobs;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
-use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\Http\MWHttpRequest;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
@@ -30,8 +30,7 @@ class RequestWikiRemoteAIJob extends Job {
 		array $params,
 		ConfigFactory $configFactory,
 		CreateWikiHookRunner $hookRunner,
-		WikiRequestManager $wikiRequestManager,
-		HttpRequestFactory $httpRequestFactory
+		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
@@ -114,22 +113,18 @@ class RequestWikiRemoteAIJob extends Job {
 		$apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
 
 		// Step 1: Create a new thread
-		$threadResponse = $this->httpRequestFactory->post(
-			$baseApiUrl . '/threads',
-			[
-				'headers' => [
-					'Authorization' => 'Bearer ' . $apiKey,
-					'Content-Type' => 'application/json',
-					'OpenAI-Beta' => 'assistants=v2'
-				],
-				'postData' => json_encode( [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ] ),
-			],
-			__METHOD__
-		);
+		$threadRequest = new MWHttpRequest( "$baseApiUrl/threads", [
+			'method' => 'POST',
+			'postData' => json_encode( [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ] ),
+		], __METHOD__ );
+		$threadRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
+		$threadRequest->setHeader( 'Content-Type', 'application/json' );
+		$threadRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
+
+		$threadResponse = $threadRequest->execute();
 		$this->logger->debug( 'Queried OpenAI for a decision.' );
 
 		$threadData = json_decode( $threadResponse, true );
-		$this->logger->debug( 'OpenAI replied with' . $threadData );
 		$threadId = $threadData['id'] ?? null;
 
 		if ( !$threadId ) {
@@ -138,27 +133,16 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Step 2: Run the message
-		$runResponse = $this->httpRequestFactory->post(
-			$baseApiUrl . '/threads/' . $threadId . '/run',
-			[
-				'headers' => [
-					'Authorization' => 'Bearer ' . $apiKey,
-					'Content-Type' => 'application/json',
-					'OpenAI-Beta' => 'assistants=v2'
-				],
-				'postData' => json_encode( [ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ] ),
-			],
-			__METHOD__
-		);
-		$this->logger->debug( 'Queried OpenAI to run the message.' );
+		$runRequest = new MWHttpRequest( "$baseApiUrl/threads/$threadId/run", [
+			'method' => 'POST',
+			'postData' => json_encode( [ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ] ),
+		], __METHOD__ );
+		$runRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
+		$runRequest->setHeader( 'Content-Type', 'application/json' );
+		$runRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
 
-		if ( $runResponse === null ) {
-			$this->logger->error( 'OpenAI did not return a runResponse.' );
-			return null;
-		}
-
+		$runResponse = $runRequest->execute();
 		$runData = json_decode( $runResponse, true );
-		$this->logger->debug( 'OpenAI replied with' . $runData );
 		$runId = $runData['id'] ?? null;
 
 		if ( !$runId ) {
@@ -168,88 +152,34 @@ class RequestWikiRemoteAIJob extends Job {
 
 		// Step 3: Poll the status of the run
 		$status = 'running';
-		$this->logger->debug( 'Status of run is ' . $status );
 
 		while ( $status === 'running' ) {
-			// Add delay between polls to avoid excessive requests
 			sleep( 3 );
 
-			$this->logger->debug( 'Querying status of wiki request decision for ' . $runId );
+			$statusRequest = new MWHttpRequest( "$baseApiUrl/threads/$threadId/runs/$runId", [], __METHOD__ );
+			$statusRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
+			$statusRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
 
-			$statusResponse = $this->httpRequestFactory->get(
-				$baseApiUrl . '/threads/' . $threadId . '/runs/' . $runId,
-				[
-					'headers' => [
-						'Authorization' => 'Bearer ' . $apiKey,
-						'OpenAI-Beta' => 'assistants=v2'
-					],
-				],
-				__METHOD__
-			);
-
-			if ( $statusResponse === null ) {
-				$this->logger->error( 'OpenAI did not return a statusResponse.' );
-				return null;
-			}
-
+			$statusResponse = $statusRequest->execute();
 			$statusData = json_decode( $statusResponse, true );
-			$this->logger->debug( 'OpenAI replied with' . $statusData );
 			$status = $statusData['status'] ?? 'failed';
 
-			if ( $status === 'completed' ) {
-				$this->logger->debug( 'Run {$runId} was successful.' );
-				break;
-			} elseif ( $status === 'failed' ) {
+			if ( $status === 'failed' ) {
 				$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
 				return null;
 			}
 		}
 
-		// Step 4: Query for messages in the thread to get the final response
-		$messagesResponse = $this->httpRequestFactory->get(
-			$baseApiUrl . '/threads/' . $threadId . '/messages',
-			[
-				'headers' => [
-					'Authorization' => 'Bearer ' . $apiKey,
-					'Content-Type' => 'application/json',
-					'OpenAI-Beta' => 'assistants=v2'
-				]
-				],
-			__METHOD__
-		);
-		$this->logger->debug( 'Queried OpenAI for final descision message.' );
+		// Step 4: Query for messages in the thread
+		$messagesRequest = new MWHttpRequest( "$baseApiUrl/threads/$threadId/messages", [], __METHOD__ );
+		$messagesRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
+		$messagesRequest->setHeader( 'Content-Type', 'application/json' );
+		$messagesRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
 
-		if ( $messagesResponse === null ) {
-			$this->logger->debug( 'OpenAI did not return a messagesResponse.' );
-			return null;
-		}
-
+		$messagesResponse = $messagesRequest->execute();
 		$messagesData = json_decode( $messagesResponse, true );
-		$this->logger->debug( 'OpenAI replied with' . $messagesData );
 
 		$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
-
-/*		// Step 6: Delete the thread
-		$deleteThreadUrl = wfAppendQuery( "$baseApiUrl/threads/$threadId", [] );
-		$deleteResponse = $this->httpRequestFactory->delete(
-			$baseApiUrl . '/threads/' . $threadId,
-			[
-				'headers' => [
-					'Authorization' => 'Bearer ' . $apiKey,
-					'Content-Type' => 'application/json',
-					'OpenAI-Beta' => 'assistants=v2'
-				]
-			],
-			__METHOD__
-		);
-
-		if ( $deleteResponse === null ) {
-			$this->logger->error( 'Failed to delete thread ' . $threadId . '.' );
-		} else {
-			$this->logger->debug( 'Successfully deleted {$threadId}.' );
-		}*/
-
-		// Assuming the response contains an "outcome" field for simplicity
 		return json_decode( $finalResponseContent, true );
 	}
 }
