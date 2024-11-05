@@ -15,7 +15,7 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
  *
  * @author Universal Omega
  */
-class ManageInactiveWikisV2 extends Maintenance {
+class ManageInactiveWikis extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
@@ -200,5 +200,5 @@ class ManageInactiveWikisV2 extends Maintenance {
 	}
 }
 
-$maintClass = ManageInactiveWikisV2::class;
+$maintClass = ManageInactiveWikis::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
