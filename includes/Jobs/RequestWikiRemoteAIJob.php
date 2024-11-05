@@ -106,7 +106,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$threadId = $threadData['id'] ?? null;
 
 		if ( !$threadId ) {
-			$this->logger->error( 'OpenAI did not return a threadId! Instead returned: {$threadData}' );
+			$this->logger->error( 'OpenAI did not return threadId! Instead returned: ' . json_encode( $threadData ) );
 			return null;
 		}
 
@@ -129,10 +129,11 @@ class RequestWikiRemoteAIJob extends Job {
 			return null;
 		}
 
-		$runData = json_decode( $threadResponse, true );
-		$runId = $threadData['id'] ?? null;
+		$runData = json_decode( $runResponse, true );
+		$runId = $runData['id'] ?? null;
+		
 		if ( !$runId ) {
-			$this->logger->error( 'OpenAI did not return a runId. Instead returned: {$runData}' );
+			$this->logger->error( 'OpenAI did not return a runId. Instead returned: ' . json_encode( $runData ) );
 			return null;
 		}
 
@@ -145,7 +146,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->logger->debug( 'Querying status of wiki request decision for ' . $runId );
 
 			$statusResponse = $this->httpRequestFactory->get(
-				$baseApiUrl . '/threads/' . $threadId . '/runs/' . '$runId',
+				$baseApiUrl . '/threads/' . $threadId . '/runs/' . $runId,
 				[
 					'headers' => [
 						'Authorization' => 'Bearer ' . $apiKey,
@@ -167,7 +168,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->logger->debug( 'Run {$runId} was successful.' );
 				break;
 			} elseif ( $status === 'failed' ) {
-				$this->logger->error( 'Run {$runId} failed! OpenAI returned: {$statusData}' );
+				$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
 				return null;
 			}
 		}
@@ -208,7 +209,7 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		if ( $deleteResponse === null ) {
-			$this->logger->error( 'Failed to delete thread {$threadId}.' );
+			$this->logger->error( 'Failed to delete thread ' . $threadId . '.' );
 		} else {
 			$this->logger->debug( 'Successfully deleted {$threadId}.' );
 		}*/
