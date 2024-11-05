@@ -59,8 +59,7 @@
 				"ConfigFactory",
 				"CreateWikiHookRunner",
 				"WikiRequestManager",
-				"HttpRequestFactory",
-				"LoggerFactory"
+				"HttpRequestFactory"
 			],
 			"needsPage": false
 		},
