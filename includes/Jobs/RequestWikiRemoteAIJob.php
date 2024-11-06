@@ -43,9 +43,18 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->wikiRequestManager = $wikiRequestManager;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 
-		$this->httpClient = new Client( [
+		$proxy = $this->config->get( 'HTTPProxy' );
+
+		$guzzleOptions = [
 			'base_uri' => 'https://api.openai.com/v1',
-		] );
+		];
+		
+		if ( !empty( $proxy ) ) {
+			$guzzleOptions['proxy'] = $proxy;
+		}
+
+		$this->httpClient = new Client( $guzzleOptions );
+		
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
