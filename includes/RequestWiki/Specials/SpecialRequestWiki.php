@@ -18,21 +18,21 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	private CreateWikiHookRunner $hookRunner;
 	private IConnectionProvider $connectionProvider;
+	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
 
 	private array $extraFields = [];
 
 	public function __construct(
-		CreateWikiHookRunner $hookRunner,
 		IConnectionProvider $connectionProvider,
+		CreateWikiHookRunner $hookRunner,
 		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
-		$this->hookRunner = $hookRunner;
 		$this->connectionProvider = $connectionProvider;
+		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
