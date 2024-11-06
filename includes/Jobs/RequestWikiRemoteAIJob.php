@@ -263,7 +263,6 @@ class RequestWikiRemoteAIJob extends Job {
 				'body' => $data,
 				'headers' => [
 					'Authorization' => 'Bearer ' . $this->apiKey,
-					'Content-Type'  => 'application/json',
 					'OpenAI-Beta'   => 'assistants=v2',
 				],
 			], [ 'reqTimeout' => '15' ]
