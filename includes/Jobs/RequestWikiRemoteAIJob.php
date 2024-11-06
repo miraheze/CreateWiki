@@ -21,6 +21,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
+	private HttpRequestFactory $httpRequestFactory
 	private LoggerInterface $logger;
 	private string $baseApiUrl;
 	private string $apiKey;
@@ -39,6 +40,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
+		$this->httpRequestFactory = $httpRequestFactory;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
@@ -256,7 +258,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger->debug( 'Creating request to OpenAI' );
 
 		// Create a multi-client
-		$request = HttpRequestFactory::createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
+		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
 			->run( [
 				'url' => $url,
 				'method' => $method,
