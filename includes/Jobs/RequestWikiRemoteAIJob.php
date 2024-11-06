@@ -82,7 +82,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 				$this->wikiRequestManager->approve(
 					user: User::newSystemUser( 'CreateWiki AI' ),
-					comment: 'Request automatically approved! \n\nReasoning: ' . $comment
+					comment: 'Request automatically approved with the following reasoning: ' . $comment
 				);
 
 				// Execute query builder to commit the status change
@@ -94,18 +94,18 @@ class RequestWikiRemoteAIJob extends Job {
 
 				$this->wikiRequestManager->moredetails(
 					user: User::newSystemUser( 'CreateWiki AI' ),
-					comment: 'This wiki request requires more details.\n\nReasoning: ' . $comment
+					comment: 'This wiki request requires more details. Here are some more details: ' . $comment
 				);
 
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
 				$this->logger->debug( 'Wiki request ' . $this->id . ' needs more details.\n\nReasoning: ' . $comment );
-			} elseif ( $outcome === 'reject' ) {
+			} elseif ( $outcome === 'decline' ) {
 				$this->wikiRequestManager->startQueryBuilder();
 
 				$this->wikiRequestManager->decline(
 					user: User::newSystemUser( 'CreateWiki AI' ),
-					comment: 'We couldn\'t approve your request at this time.\n\nReasoning: ' . $comment
+					comment: 'We couldn\'t approve your request at this time for the following reason: ' . $comment
 				);
 
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
