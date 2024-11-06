@@ -12,6 +12,7 @@ use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class RequestWikiRemoteAIJob extends Job {
@@ -33,16 +34,18 @@ class RequestWikiRemoteAIJob extends Job {
 		array $params,
 		ConfigFactory $configFactory,
 		CreateWikiHookRunner $hookRunner,
-		WikiRequestManager $wikiRequestManager,
-		Client $httpClient
+		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
-		$this->httpClient = $httpClient;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
+
+		$this->httpClient = new Client([
+			'base_uri' => 'https://api.openai.com/v1',
+		]);
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
@@ -167,7 +170,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 	}
 
-	private function createRequest( string $endpoint, string $method = 'GET', array $options = [] ): ?\Psr\Http\Message\ResponseInterface {
+	private function createRequest( string $endpoint, string $method = 'GET', array $options = [] ): ?ResponseInterface {
 		$url = $this->baseApiUrl . $endpoint;
 
 		// Set default headers and merge with any additional options
