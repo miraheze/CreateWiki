@@ -153,6 +153,10 @@ class RequestWikiRemoteAIJob extends Job {
 			$runData = json_decode( $runResponse->getBody()->getContents(), true );
 			$runId = $runData['id'] ?? null;
 
+			$this->logger->debug( 'Stage 2 for AI decision: Message ran.' );
+
+			$this->logger->debug( 'OpenAI returned for stage 2: ' . json_encode( $runData ) );
+
 			if ( !$runId ) {
 				$this->logger->error( 'OpenAI did not return a runId. Instead returned: ' . json_encode( $runData ) );
 				return null;
@@ -160,11 +164,19 @@ class RequestWikiRemoteAIJob extends Job {
 
 			// Step 3: Poll the status of the run
 			$status = 'running';
+
+			$this->logger->debug( 'Stage 3 for AI decision: Polling status...' );
+
 			while ( $status === 'running' ) {
 				sleep( 3 );
+				$this->logger->debug( 'Sleeping for 3 seconds...' );
+
 				$statusResponse = $this->createRequest( "/v1/threads/$threadId/runs/$runId" );
 				$statusData = json_decode( $statusResponse->getBody()->getContents(), true );
 				$status = $statusData['status'] ?? 'failed';
+				$this->logger->debug( 'Stage 3 for AI decision: Retrieved run status for ' . $runId );
+
+				$this->logger->debug( 'OpenAI returned for stage 3: ' . json_encode( $statusData ) );
 
 				if ( $status === 'failed' ) {
 					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
@@ -175,6 +187,10 @@ class RequestWikiRemoteAIJob extends Job {
 			// Step 4: Query for messages in the thread
 			$messagesResponse = $this->createRequest( "/v1/threads/$threadId/messages" );
 			$messagesData = json_decode( $messagesResponse->getBody()->getContents(), true );
+
+			$this->logger->debug( 'Stage 4 for AI decision: Queried for messages in ' . $threadId );
+
+			$this->logger->debug( 'OpenAI returned for stage 4: ' . json_encode( $messagesData ) );
 
 			$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
 			return json_decode( $finalResponseContent, true );
