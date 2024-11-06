@@ -71,7 +71,16 @@ class RequestWikiRemoteAIJob extends Job {
 		$apiResponse = $this->queryChatGPT( $this->reason );
 
 		if ( $apiResponse ) {
-			$outcome = $apiResponse['outcome'] ?? 'reject';
+			$data = json_decode($apiResponse, true);
+
+			if (isset($data['data'][0]['content'][0]['text']['value'])) {
+				$nestedJson = json_decode($data['data'][0]['content'][0]['text']['value'], true);
+
+				$outcome = $nestedJson['recommendation']['outcome'] ?? 'reject';
+			} else {
+				$outcome = 'reject'; // Default to 'reject' if structure is not as expected
+			}
+
 			$this->logger->debug( 'AI outcome for ' . $this->id . ' was ' . $apiResponse['outcome'] );
 
 			if ( $outcome === 'approve' ) {
