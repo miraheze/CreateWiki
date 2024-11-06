@@ -22,7 +22,7 @@ class CreateWikiDatabaseUtils {
 		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 	}
 
-	private function getGlobalWikiID(): bool|string {
+	public function getGlobalWikiID(): bool|string {
 		return $this->getGlobalWikiReplicaDB()->getDomainID();
 	}
 
