@@ -5,9 +5,9 @@ namespace Miraheze\CreateWiki\Jobs;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\User\User;
-use MediaWiki\Http\HttpRequestFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -183,7 +183,7 @@ class RequestWikiRemoteAIJob extends Job {
 			// Step 1: Create a new thread
 			$threadData = $this->createRequest( "/v1/threads", 'POST', [
 				"messages" => [ [ "role" => "user", "content" => $sanitizedReason ] ]
-			]);
+			] );
 
 			$threadId = $threadData['id'] ?? null;
 
@@ -199,7 +199,7 @@ class RequestWikiRemoteAIJob extends Job {
 			// Step 2: Run the message
 			$runData = $this->createRequest( "/v1/threads/$threadId/runs", 'POST', [
 				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistant']
-			]);
+			] );
 
 			$runId = $runData['id'] ?? null;
 
@@ -230,7 +230,7 @@ class RequestWikiRemoteAIJob extends Job {
 				if ( $status === 'in_progress' ) {
 					$status = 'running';
 				} elseif ( $status === 'failed' ) {
-					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData) );
+					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
 					return null;
 				}
 			}
