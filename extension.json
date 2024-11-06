@@ -159,6 +159,7 @@
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
+				"ConnectionProvider",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
 			]
