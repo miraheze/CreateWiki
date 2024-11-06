@@ -188,6 +188,6 @@ class RequestWikiRemoteAIJob extends Job {
 			'OpenAI-Beta'   => 'assistants=v2',
 		], $options['headers'] ?? [] );
 
-		return $this->httpClient->request( $method, $url, $options );
+		return $this->httpClient->request( $method, $endpoint, $options );
 	}
 }
