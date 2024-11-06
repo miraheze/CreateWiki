@@ -43,9 +43,9 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->wikiRequestManager = $wikiRequestManager;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 
-		$this->httpClient = new Client([
+		$this->httpClient = new Client( [
 			'base_uri' => 'https://api.openai.com/v1',
-		]);
+		] );
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
