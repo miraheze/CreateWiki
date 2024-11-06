@@ -39,6 +39,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
+			$services->getConnectionProvider(),
 			$this->createMock( CreateWikiHookRunner::class ),
 			$services->get( 'WikiRequestManager' )
 		);
