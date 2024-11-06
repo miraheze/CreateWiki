@@ -253,16 +253,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private function createRequest( string $endpoint, string $method = 'GET', array $data = [] ): ?array {
 		$url = $this->baseApiUrl . $endpoint;
 
-		$options = [
-			'method' => $method,
-			'headers' => [
-				'Authorization' => 'Bearer ' . $this->apiKey,
-				'Content-Type'  => 'application/json',
-				'OpenAI-Beta'   => 'assistants=v2',
-			],
-			'postData' => json_encode( $data ),
-			'proxy' => $this->config->get( 'HTTPProxy' ),
-		];
+		$this->logger->debug( 'Creating request to OpenAI' );
 
 		// Create a multi-client
 		$request = HttpRequestFactory::createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
@@ -275,11 +266,13 @@ class RequestWikiRemoteAIJob extends Job {
 					'Content-Type'  => 'application/json',
 					'OpenAI-Beta'   => 'assistants=v2',
 					],
-				],
+				], [ 'reqTimeout' => '15' ]
 			);
 
+		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . $request );
+
 		if ( $request['code'] !== 200 ) {
-			$this->logger->error( "Request to $url failed with status " . $request['code'] );
+			$this->logger->error( 'Request to $url failed with status ' . $request['code'] );
 			return null;
 		}
 
