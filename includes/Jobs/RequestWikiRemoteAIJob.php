@@ -266,7 +266,7 @@ class RequestWikiRemoteAIJob extends Job {
 	
 		// Create a multi-client
 		$request = HttpRequestFactory::createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
-			->run(
+			->run( [
 				'url' => $url,
 				'method' => $method,
 				'body' => json_encode( $data ),
