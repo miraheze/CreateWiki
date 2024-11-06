@@ -43,9 +43,7 @@ class ConfigNames {
 
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
-	public const OpenAIAPIKey = 'CreateWikiOpenAIAPIKey';
-
-	public const OpenAIAssistantID = 'CreateWikiOpenAIAssistantID';
+	public const OpenAIConfig = 'CreateWikiOpenAIConfig';
 
 	public const PersistentModelFile = 'CreateWikiPersistentModelFile';
 
