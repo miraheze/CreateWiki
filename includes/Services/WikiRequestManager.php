@@ -163,6 +163,7 @@ class WikiRequestManager {
 		} elseif ( $this->options->get( ConfigNames::OpenAIConfig )['apikey'] ) {
 			$this->evaluateWithChatGPT( $data['reason'] );
 		}
+
 		$this->logNewRequest( $data, $user );
 	}
 

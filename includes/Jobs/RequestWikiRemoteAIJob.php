@@ -2,18 +2,16 @@
 
 namespace Miraheze\CreateWiki\Jobs;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\User\User;
+use MediaWiki\Http\HttpRequestFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class RequestWikiRemoteAIJob extends Job {
@@ -23,7 +21,6 @@ class RequestWikiRemoteAIJob extends Job {
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
-	private Client $httpClient;
 	private LoggerInterface $logger;
 	private string $baseApiUrl;
 	private string $apiKey;
@@ -43,18 +40,6 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
-
-		$proxy = $this->config->get( 'HTTPProxy' );
-
-		$guzzleOptions = [
-			'base_uri' => 'https://api.openai.com/',
-		];
-
-		if ( $proxy ) {
-			$guzzleOptions['proxy'] = $proxy;
-		}
-
-		$this->httpClient = new Client( $guzzleOptions );
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'];
@@ -185,7 +170,7 @@ class RequestWikiRemoteAIJob extends Job {
 				}
 			}
 		} else {
-			$this->logger->debug( 'Wiki request ' . $this->id . ' was not auto evaluated because it hit the auto approval denylist.' );
+			$this->logger->debug( 'Wiki request ' . $this->id . ' was not auto-evaluated because it hit the auto-approval denylist.' );
 		}
 
 		return true;
@@ -196,11 +181,10 @@ class RequestWikiRemoteAIJob extends Job {
 			$sanitizedReason = trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
-			$threadResponse = $this->createRequest( "/v1/threads", 'POST', [
-				'json' => [ "messages" => [ [ "role" => "user", "content" => $sanitizedReason ] ] ],
-			] );
+			$threadData = $this->createRequest( "/v1/threads", 'POST', [
+				"messages" => [ [ "role" => "user", "content" => $sanitizedReason ] ]
+			]);
 
-			$threadData = json_decode( $threadResponse->getBody()->getContents(), true );
 			$threadId = $threadData['id'] ?? null;
 
 			$this->logger->debug( 'Stage 1 for AI decision: Created thread.' );
@@ -208,16 +192,15 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->logger->debug( 'OpenAI returned for stage 1: ' . json_encode( $threadData ) );
 
 			if ( !$threadId ) {
-				$this->logger->error( 'OpenAI did not return a threadId! Instead returned: ' . json_encode( $threadData ) );
+				$this->logger->error( 'OpenAI did not return a threadId!' );
 				return null;
 			}
 
 			// Step 2: Run the message
-			$runResponse = $this->createRequest( "/v1/threads/$threadId/runs", 'POST', [
-				'json' => [ "assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistant'] ],
-			] );
+			$runData = $this->createRequest( "/v1/threads/$threadId/runs", 'POST', [
+				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistant']
+			]);
 
-			$runData = json_decode( $runResponse->getBody()->getContents(), true );
 			$runId = $runData['id'] ?? null;
 
 			$this->logger->debug( 'Stage 2 for AI decision: Message ran.' );
@@ -225,22 +208,21 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->logger->debug( 'OpenAI returned for stage 2: ' . json_encode( $runData ) );
 
 			if ( !$runId ) {
-				$this->logger->error( 'OpenAI did not return a runId. Instead returned: ' . json_encode( $runData ) );
+				$this->logger->error( 'OpenAI did not return a runId.' );
 				return null;
 			}
 
 			// Step 3: Poll the status of the run
 			$status = 'running';
-
 			$this->logger->debug( 'Stage 3 for AI decision: Polling status...' );
 
 			while ( $status === 'running' ) {
 				sleep( 5 );
-				$this->logger->debug( 'Sleeping for 5 seconds...' );
 
-				$statusResponse = $this->createRequest( "/v1/threads/$threadId/runs/$runId" );
-				$statusData = json_decode( $statusResponse->getBody()->getContents(), true );
+				$this->logger->debug( 'Sleeping for 5 seconds...' );
+				$statusData = $this->createRequest( "/v1/threads/$threadId/runs/$runId" );
 				$status = $statusData['status'] ?? 'failed';
+
 				$this->logger->debug( 'Stage 3 for AI decision: Retrieved run status for ' . $runId );
 
 				$this->logger->debug( 'OpenAI returned for stage 3: ' . json_encode( $statusData ) );
@@ -248,14 +230,13 @@ class RequestWikiRemoteAIJob extends Job {
 				if ( $status === 'in_progress' ) {
 					$status = 'running';
 				} elseif ( $status === 'failed' ) {
-					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
+					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData) );
 					return null;
 				}
 			}
 
 			// Step 4: Query for messages in the thread
-			$messagesResponse = $this->createRequest( "/v1/threads/$threadId/messages" );
-			$messagesData = json_decode( $messagesResponse->getBody()->getContents(), true ) ?? '';
+			$messagesData = $this->createRequest( "/v1/threads/$threadId/messages" );
 
 			$this->logger->debug( 'Stage 4 for AI decision: Queried for messages in ' . $threadId );
 
@@ -263,23 +244,32 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
 			return json_decode( $finalResponseContent, true );
-		} catch ( RequestException $e ) {
+		} catch ( \Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
 			return null;
 		}
 	}
 
-	private function createRequest( string $endpoint, string $method = 'GET', array $options = [] ): ?ResponseInterface {
+	private function createRequest( string $endpoint, string $method = 'GET', array $data = [] ): ?array {
 		$url = $this->baseApiUrl . $endpoint;
 
-		// Set default headers and merge with any additional options
-		$options['headers'] = array_merge( [
-			'Authorization' => 'Bearer ' . $this->apiKey,
-			'Content-Type'  => 'application/json',
-			'OpenAI-Beta'   => 'assistants=v2',
-		], $options['headers'] ?? [] );
+		$options = [
+			'method' => $method,
+			'headers' => [
+				'Authorization' => 'Bearer ' . $this->apiKey,
+				'Content-Type'  => 'application/json',
+				'OpenAI-Beta'   => 'assistants=v2',
+			],
+			'postData' => json_encode( $data )
+		];
 
-		return $this->httpClient->request( $method, $endpoint, $options );
+		$response = HttpRequestFactory::create( $url, $options, __METHOD__ )->execute();
+		if ( $response->getStatusCode() !== 200 ) {
+			$this->logger->error( "Request to $url failed with status " . $response->getStatusCode() );
+			return null;
+		}
+
+		return json_decode( $response->getContent(), true );
 	}
 
 	private function canAutoApprove(): bool {

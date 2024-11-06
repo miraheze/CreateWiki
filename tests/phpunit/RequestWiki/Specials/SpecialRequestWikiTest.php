@@ -129,8 +129,9 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
 		$specialRequestWiki->setContext( $context );
 
-		$this->overrideConfigValue( ConfigNames::Subdomain, 'example.com' );
-		$this->overrideConfigValue( ConfigNames::OpenAIConfig, 'test' );
+		$this->overrideConfigValue( 
+			ConfigNames::Subdomain, 'example.com' 
+		);
 
 		$status = $specialRequestWiki->onSubmit( $formData );
 		$this->assertInstanceOf( Status::class, $status );
