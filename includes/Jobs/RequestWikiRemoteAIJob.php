@@ -71,49 +71,50 @@ class RequestWikiRemoteAIJob extends Job {
 		$apiResponse = $this->queryChatGPT( $this->reason );
 
 		if ( $apiResponse ) {
-			$outcome = $apiOutcome['recommendation']['outcome'] ?? 'reject';
+			$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
+			$comment = $apiResponse['recommendation']['public_comment'];
 
-			$this->logger->debug( 'AI outcome for ' . $this->id . ' was ' . $apiResponse['outcome'] );
+			$this->logger->debug( 'AI outcome for ' . $this->id . ' was ' . $outcome );
 
 			if ( $outcome === 'approve' ) {
 				// Start query builder so that it can set the status
 				$this->wikiRequestManager->startQueryBuilder();
 
 				$this->wikiRequestManager->approve(
-					user: User::newSystemUser( 'CreateWiki Extension' ),
-					comment: 'Request automatically approved!'
+					user: User::newSystemUser( 'CreateWiki AI' ),
+					comment: 'Request automatically approved! \n\nReasoning: ' . $comment
 				);
 
 				// Execute query builder to commit the status change
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$this->logger->debug( 'Wiki request ' . $this->id . ' automatically approved by AI decision.' );
+				$this->logger->debug( 'Wiki request ' . $this->id . ' automatically approved by AI decision!\n\nReasoning: ' . $comment );
 			} elseif ( $outcome === 'revise' ) {
 				$this->wikiRequestManager->startQueryBuilder();
 
 				$this->wikiRequestManager->moredetails(
-					user: User::newSystemUser( 'CreateWiki Extension' ),
-					comment: 'Your request needs further details.'
+					user: User::newSystemUser( 'CreateWiki AI' ),
+					comment: 'This wiki request requires more details.\n\nReasoning: ' . $comment
 				);
 
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$this->logger->debug( 'Wiki request ' . $this->id . ' needs more details.' );
+				$this->logger->debug( 'Wiki request ' . $this->id . ' needs more details.\n\nReasoning: ' . $comment );
 			} elseif ( $outcome === 'reject' ) {
 				$this->wikiRequestManager->startQueryBuilder();
 
 				$this->wikiRequestManager->decline(
-					user: User::newSystemUser( 'CreateWiki Extension' ),
-					comment: 'We couldn\'t approve your request at this time.'
+					user: User::newSystemUser( 'CreateWiki AI' ),
+					comment: 'We couldn\'t approve your request at this time.\n\nReasoning: ' . $comment
 				);
 
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$this->logger->debug( 'Wiki request' . $this->id . 'rejected by AI decision.' );
+				$this->logger->debug( 'Wiki request' . $this->id . 'rejected by AI decision.\n\nReasoning: ' . $comment );
 			} else {
 				$this->wikiRequestManager->addComment(
 					comment: rtrim( 'This request could not be automatically approved. Your request has been queued for manual review.' ),
-					user: User::newSystemUser( 'CreateWiki Extension' ),
+					user: User::newSystemUser( 'CreateWiki AI' ),
 					log: false,
 					type: 'comment',
 					// Use all involved users
