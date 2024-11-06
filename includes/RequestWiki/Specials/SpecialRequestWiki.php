@@ -14,21 +14,25 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
 	private CreateWikiHookRunner $hookRunner;
+	private IConnectionProvider $connectionProvider;
 	private WikiRequestManager $wikiRequestManager;
 
 	private array $extraFields = [];
 
 	public function __construct(
 		CreateWikiHookRunner $hookRunner,
+		IConnectionProvider $connectionProvider,
 		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
 		$this->hookRunner = $hookRunner;
+		$this->connectionProvider = $connectionProvider;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
