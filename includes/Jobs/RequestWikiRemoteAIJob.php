@@ -10,6 +10,7 @@ use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Http\Message\ResponseInterface;
@@ -49,7 +50,7 @@ class RequestWikiRemoteAIJob extends Job {
 			'base_uri' => 'https://api.openai.com/',
 		];
 
-		if ( !proxy ) {
+		if ( !$proxy ) {
 			$guzzleOptions['proxy'] = $proxy;
 		}
 
@@ -279,9 +280,14 @@ class RequestWikiRemoteAIJob extends Job {
 			ConfigNames::AutoApprovalFilter
 		);
 
+		$this->logger->debug( 'Checking ' $this->id . ' against the auto approval filter...' );
+
 		if ( preg_match( $filter, strtolower( $this->reason ) ) ) {
+			$this->logger->debug( $this->id . ' matched against the auto approval filter! Manual review is required' );
 			return false;
 		}
+
+		$this->logger->debug( $this->id . ' passed auto approval filter rveiew' );
 
 		return true;
 	}
