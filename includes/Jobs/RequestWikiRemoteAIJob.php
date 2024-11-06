@@ -280,7 +280,7 @@ class RequestWikiRemoteAIJob extends Job {
 			ConfigNames::AutoApprovalFilter
 		);
 
-		$this->logger->debug( 'Checking ' $this->id . ' against the auto approval filter...' );
+		$this->logger->debug( 'Checking ' . $this->id . ' against the auto approval filter...' );
 
 		if ( preg_match( $filter, strtolower( $this->reason ) ) ) {
 			$this->logger->debug( $this->id . ' matched against the auto approval filter! Manual review is required' );
