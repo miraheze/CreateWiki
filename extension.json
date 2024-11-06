@@ -408,13 +408,13 @@
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
 			"value": false
 		},
-		"CreateWikiOpenAIAPIKey": {
-			"description": "String. OpenAI API token.",
-			"value": false
-		},
-		"CreateWikiOpenAIAssistantID": {
-			"description": "String. OpenAI API assistant ID.",
-			"value": false
+		"CreateWikiOpenAIConfig": {
+			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
+			"value": {
+				"dryrun": true,
+				"assistant": false,
+				"apikey": false
+			}
 		},
 		"CreateWikiUsePrivateWikis": {
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",

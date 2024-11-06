@@ -32,7 +32,7 @@ class WikiRequestManager {
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
-		ConfigNames::OpenAIAPIKey,
+		ConfigNames::OpenAIConfig,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
@@ -160,7 +160,7 @@ class WikiRequestManager {
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
-		} elseif ( $this->options->get( ConfigNames::OpenAIAPIKey ) ) {
+		} elseif ( $this->options->get( ConfigNames::OpenAIConfig )['apikey'] ) {
 			$this->evaluateWithChatGPT( $data['reason'] );
 		}
 		$this->logNewRequest( $data, $user );
@@ -429,8 +429,6 @@ class WikiRequestManager {
 
 			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
 				$this->tryAutoCreate( $this->getReason() );
-			} elseif ( $this->options->get( ConfigNames::OpenAIAPIKey ) ) {
-				$this->evaluateWithChatGPT( $this->getReason() );
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
