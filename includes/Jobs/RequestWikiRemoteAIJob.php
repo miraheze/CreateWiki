@@ -292,7 +292,7 @@ class RequestWikiRemoteAIJob extends Job {
 			return false;
 		}
 
-		$this->logger->debug( $this->id . ' passed auto approval filter rveiew' );
+		$this->logger->debug( $this->id . ' passed auto approval filter review' );
 
 		return true;
 	}
