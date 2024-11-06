@@ -231,6 +231,7 @@
 			"services": [
 				"ConfigFactory",
 				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"UserFactory"
 			]
 		},
@@ -240,7 +241,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
 			"services": [
 				"ConfigFactory",
-				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"WikiRequestManager"
 			]
 		},
@@ -250,7 +251,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
 			"services": [
 				"ConfigFactory",
-				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"UserFactory",
 				"WikiRequestManager"
 			]

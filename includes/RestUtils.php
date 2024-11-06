@@ -5,8 +5,8 @@ namespace Miraheze\CreateWiki;
 use MediaWiki\Config\Config;
 use MediaWiki\Rest\LocalizedHttpException;
 use MediaWiki\WikiMap\WikiMap;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Wikimedia\Message\MessageValue;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class RestUtils {
 
@@ -18,10 +18,9 @@ class RestUtils {
 	 */
 	public static function checkEnv(
 		Config $config,
-		IConnectionProvider $connectionProvider
+		CreateWikiDatabaseUtils $databaseUtils
 	): void {
-		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
-		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
+		if ( !WikiMap::isCurrentWikiDbDomain( $databaseUtils->getGlobalWikiID() ) ) {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotglobalwiki' ), 403 );
 		}
 

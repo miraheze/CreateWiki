@@ -10,10 +10,10 @@ use MediaWiki\Rest\Validator\BodyValidator;
 use MediaWiki\Rest\Validator\JsonBodyValidator;
 use MediaWiki\Rest\Validator\UnsupportedContentTypeBodyValidator;
 use Miraheze\CreateWiki\RestUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
  * Posts a comment to the specified wiki request
@@ -22,21 +22,21 @@ use Wikimedia\Rdbms\IConnectionProvider;
 class RestWikiRequestComment extends SimpleHandler {
 
 	private Config $config;
-	private IConnectionProvider $connectionProvider;
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
 		ConfigFactory $configFactory,
-		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		WikiRequestManager $wikiRequestManager
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->connectionProvider = $connectionProvider;
+		$this->databaseUtils = $databaseUtils;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv( $this->config, $this->connectionProvider );
+		RestUtils::checkEnv( $this->config, $this->databaseUtils );
 
 		// Must be logged in to use this API
 		if ( !$this->getAuthority()->isNamed() ) {

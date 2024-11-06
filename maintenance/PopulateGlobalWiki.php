@@ -74,9 +74,8 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	}
 
 	private function getGlobalWiki(): string {
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
-		return $dbr->getDomainID();
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		return $databaseUtils->getGlobalWikiID();
 	}
 
 	private function getDefaultCluster(): ?string {

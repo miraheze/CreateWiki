@@ -8,6 +8,7 @@ use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RestUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -22,25 +23,23 @@ class RestWikiRequest extends SimpleHandler {
 
 	private Config $config;
 	private IConnectionProvider $connectionProvider;
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private UserFactory $userFactory;
 
-	/**
-	 * @param ConfigFactory $configFactory
-	 * @param IConnectionProvider $connectionProvider
-	 * @param UserFactory $userFactory
-	 */
 	public function __construct(
 		ConfigFactory $configFactory,
 		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		UserFactory $userFactory
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->connectionProvider = $connectionProvider;
+		$this->databaseUtils = $databaseUtils;
 		$this->userFactory = $userFactory;
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv( $this->config, $this->connectionProvider );
+		RestUtils::checkEnv( $this->config, $this->databaseUtils );
 
 		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
 
