@@ -71,15 +71,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$apiResponse = $this->queryChatGPT( $this->reason );
 
 		if ( $apiResponse ) {
-			$data = json_decode( $apiResponse, true );
-
-			if ( isset( $data['data'][0]['content'][0]['text']['value'] ) ) {
-				$nestedJson = json_decode( $data['data'][0]['content'][0]['text']['value'], true );
-
-				$outcome = $nestedJson['recommendation']['outcome'] ?? 'reject';
-			} else {
-				$outcome = 'reject'; // Default to 'reject' if structure is not as expected
-			}
+			$outcome = $apiOutcome['recommendation']['outcome'] ?? 'reject';
 
 			$this->logger->debug( 'AI outcome for ' . $this->id . ' was ' . $apiResponse['outcome'] );
 
@@ -137,9 +129,11 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function queryChatGPT( string $reason ): ?array {
 		try {
+			$sanitizedReason = trim( str_replace( ["\r\n", "\r"], "\n", $reason ) );
+
 			// Step 1: Create a new thread
 			$threadResponse = $this->createRequest( "/v1/threads", 'POST', [
-				'json' => [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ],
+				'json' => [ "messages" => [ [ "role" => "user", "content" => $sanitizedReason ] ] ],
 			] );
 
 			$threadData = json_decode( $threadResponse->getBody()->getContents(), true );
@@ -203,7 +197,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$this->logger->debug( 'OpenAI returned for stage 4: ' . json_encode( $messagesData ) );
 
-			$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
+			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'];
 			return json_decode( $finalResponseContent, true );
 		} catch ( RequestException $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
