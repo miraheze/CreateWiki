@@ -112,9 +112,7 @@ class WikiRequestManager {
 		array $extraData,
 		User $user
 	): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-global' );
 
 		$subdomain = strtolower( $data['subdomain'] );
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
@@ -161,10 +159,7 @@ class WikiRequestManager {
 	}
 
 	public function isDuplicateRequest( string $sitename ): bool {
-		$dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
-
+		$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-global' );
 		$duplicate = $dbw->newSelectQueryBuilder()
 			->table( 'cw_requests' )
 			->field( '*' )
