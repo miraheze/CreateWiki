@@ -129,7 +129,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function queryChatGPT( string $reason ): ?array {
 		try {
-			$sanitizedReason = trim( str_replace( ["\r\n", "\r"], "\n", $reason ) );
+			$sanitizedReason = trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
 			$threadResponse = $this->createRequest( "/v1/threads", 'POST', [
