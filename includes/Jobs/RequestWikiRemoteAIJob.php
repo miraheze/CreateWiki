@@ -260,13 +260,13 @@ class RequestWikiRemoteAIJob extends Job {
 			->run( [
 				'url' => $url,
 				'method' => $method,
-				'body' => json_encode( $data ),
-					'headers' => [
+				'body' => $data,
+				'headers' => [
 					'Authorization' => 'Bearer ' . $this->apiKey,
 					'Content-Type'  => 'application/json',
 					'OpenAI-Beta'   => 'assistants=v2',
-					],
-				], [ 'reqTimeout' => '15' ]
+				],
+			], [ 'reqTimeout' => '15' ]
 			);
 
 		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . $request );
