@@ -71,10 +71,10 @@ class RequestWikiRemoteAIJob extends Job {
 		$apiResponse = $this->queryChatGPT( $this->reason );
 
 		if ( $apiResponse ) {
-			$data = json_decode($apiResponse, true);
+			$data = json_decode( $apiResponse, true );
 
-			if (isset($data['data'][0]['content'][0]['text']['value'])) {
-				$nestedJson = json_decode($data['data'][0]['content'][0]['text']['value'], true);
+			if ( isset( $data['data'][0]['content'][0]['text']['value'] ) ) {
+				$nestedJson = json_decode( $data['data'][0]['content'][0]['text']['value'], true );
 
 				$outcome = $nestedJson['recommendation']['outcome'] ?? 'reject';
 			} else {
