@@ -252,7 +252,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function createRequest( string $endpoint, string $method = 'GET', array $data = [] ): ?array {
 		$url = $this->baseApiUrl . $endpoint;
-	
+
 		$options = [
 			'method' => $method,
 			'headers' => [
@@ -263,7 +263,7 @@ class RequestWikiRemoteAIJob extends Job {
 			'postData' => json_encode( $data ),
 			'proxy' => $this->config->get( 'HTTPProxy' ),
 		];
-	
+
 		// Create a multi-client
 		$request = HttpRequestFactory::createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
 			->run( [
@@ -277,12 +277,12 @@ class RequestWikiRemoteAIJob extends Job {
 					],
 				],
 			);
-		
+
 		if ( $request['code'] !== 200 ) {
 			$this->logger->error( "Request to $url failed with status " . $request['code'] );
 			return null;
 		}
-	
+
 		return json_decode( $request['body'], true );
 	}
 
