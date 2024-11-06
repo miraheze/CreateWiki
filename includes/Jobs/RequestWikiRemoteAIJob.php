@@ -2,9 +2,9 @@
 
 namespace Miraheze\CreateWiki\Jobs;
 
-use Job;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Logger\LoggerFactory;
@@ -23,7 +23,6 @@ class RequestWikiRemoteAIJob extends Job {
 	private WikiRequestManager $wikiRequestManager;
 	private Client $httpClient;
 	private LoggerInterface $logger;
-	
 
 	private int $id;
 	private string $reason;
@@ -116,7 +115,7 @@ class RequestWikiRemoteAIJob extends Job {
 			// Step 1: Create a new thread
 			$threadResponse = $this->createRequest( "/threads", 'POST', [
 				'json' => [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ],
-			]);
+			] );
 			$threadData = json_decode( $threadResponse->getBody()->getContents(), true );
 			$threadId = $threadData['id'] ?? null;
 
@@ -128,7 +127,7 @@ class RequestWikiRemoteAIJob extends Job {
 			// Step 2: Run the message
 			$runResponse = $this->createRequest( "/threads/$threadId/run", 'POST', [
 				'json' => [ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ],
-			]);
+			] );
 			$runData = json_decode( $runResponse->getBody()->getContents(), true );
 			$runId = $runData['id'] ?? null;
 
