@@ -260,7 +260,8 @@ class RequestWikiRemoteAIJob extends Job {
 				'Content-Type'  => 'application/json',
 				'OpenAI-Beta'   => 'assistants=v2',
 			],
-			'postData' => json_encode( $data )
+			'postData' => json_encode( $data ),
+			'proxy' => $this->config->get( 'HTTPProxy' )
 		];
 
 		$response = HttpRequestFactory::create( $url, $options, __METHOD__ )->execute();
