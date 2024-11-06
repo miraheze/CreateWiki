@@ -46,7 +46,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$proxy = $this->config->get( 'HTTPProxy' );
 
 		$guzzleOptions = [
-			'base_uri' => 'https://api.openai.com/v1',
+			'base_uri' => 'https://api.openai.com/',
 		];
 
 		if ( !empty( $proxy ) ) {
@@ -64,15 +64,15 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function run(): bool {
 		$this->wikiRequestManager->loadFromID( $this->id );
-		$this->logger->debug( 'Loaded request' . $this->id . 'for AI approval.' );
+		$this->logger->debug( 'Loaded request ' . $this->id . ' for AI approval.' );
 
 		// Make API request to ChatGPT's Assistant API
-		$this->logger->debug( 'Began query to OpenAI for' . $this->id );
+		$this->logger->debug( 'Began query to OpenAI for request ' . $this->id );
 		$apiResponse = $this->queryChatGPT( $this->reason );
 
 		if ( $apiResponse ) {
 			$outcome = $apiResponse['outcome'] ?? 'reject';
-			$this->logger->debug( 'AI outcome for' . $this->id . 'was' . $apiResponse['outcome'] );
+			$this->logger->debug( 'AI outcome for ' . $this->id . ' was ' . $apiResponse['outcome'] );
 
 			if ( $outcome === 'approve' ) {
 				// Start query builder so that it can set the status
@@ -86,7 +86,7 @@ class RequestWikiRemoteAIJob extends Job {
 				// Execute query builder to commit the status change
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$this->logger->debug( 'Wiki request' . $this->id . 'automatically approved by AI decision.' );
+				$this->logger->debug( 'Wiki request ' . $this->id . ' automatically approved by AI decision.' );
 			} elseif ( $outcome === 'revise' ) {
 				$this->wikiRequestManager->startQueryBuilder();
 
@@ -97,7 +97,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-				$this->logger->debug( 'Wiki request' . $this->id . 'needs more details.' );
+				$this->logger->debug( 'Wiki request ' . $this->id . ' needs more details.' );
 			} elseif ( $outcome === 'reject' ) {
 				$this->wikiRequestManager->startQueryBuilder();
 
@@ -119,7 +119,7 @@ class RequestWikiRemoteAIJob extends Job {
 					notifyUsers: []
 				);
 
-				$this->logger->debug( 'Wiki request' . $this->id . 'could not be approved. Check logs for details.' );
+				$this->logger->debug( 'Wiki request ' . $this->id . ' could not be approved. Check logs for details.' );
 			}
 		}
 
@@ -129,21 +129,27 @@ class RequestWikiRemoteAIJob extends Job {
 	private function queryChatGPT( string $reason ): ?array {
 		try {
 			// Step 1: Create a new thread
-			$threadResponse = $this->createRequest( "/threads", 'POST', [
+			$threadResponse = $this->createRequest( "/v1/threads", 'POST', [
 				'json' => [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ],
 			] );
+
 			$threadData = json_decode( $threadResponse->getBody()->getContents(), true );
 			$threadId = $threadData['id'] ?? null;
 
+			$this->logger->debug( 'Stage 1 for AI decision: Created thread.' );
+
+			$this->logger->debug( 'OpenAI returned for stage 1: ' . json_encode( $threadData ) );
+
 			if ( !$threadId ) {
-				$this->logger->error( 'OpenAI did not return threadId! Instead returned: ' . json_encode( $threadData ) );
-				return null;
+				$this->logger->error( 'OpenAI did not return a threadId! Instead returned: ' . json_encode( $threadData ) );
+				return false;
 			}
 
 			// Step 2: Run the message
-			$runResponse = $this->createRequest( "/threads/$threadId/run", 'POST', [
+			$runResponse = $this->createRequest( "/v1/threads/$threadId/run", 'POST', [
 				'json' => [ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ],
 			] );
+
 			$runData = json_decode( $runResponse->getBody()->getContents(), true );
 			$runId = $runData['id'] ?? null;
 
@@ -156,7 +162,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$status = 'running';
 			while ( $status === 'running' ) {
 				sleep( 3 );
-				$statusResponse = $this->createRequest( "/threads/$threadId/runs/$runId" );
+				$statusResponse = $this->createRequest( "/v1/threads/$threadId/runs/$runId" );
 				$statusData = json_decode( $statusResponse->getBody()->getContents(), true );
 				$status = $statusData['status'] ?? 'failed';
 
@@ -167,7 +173,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			// Step 4: Query for messages in the thread
-			$messagesResponse = $this->createRequest( "/threads/$threadId/messages" );
+			$messagesResponse = $this->createRequest( "/v1/threads/$threadId/messages" );
 			$messagesData = json_decode( $messagesResponse->getBody()->getContents(), true );
 
 			$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
