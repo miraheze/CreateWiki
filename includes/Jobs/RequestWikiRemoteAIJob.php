@@ -252,7 +252,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function createRequest( string $endpoint, string $method = 'GET', array $data = [] ): ?array {
 		$url = $this->baseApiUrl . $endpoint;
-
+	
 		$options = [
 			'method' => $method,
 			'headers' => [
@@ -261,16 +261,29 @@ class RequestWikiRemoteAIJob extends Job {
 				'OpenAI-Beta'   => 'assistants=v2',
 			],
 			'postData' => json_encode( $data ),
-			'proxy' => $this->config->get( 'HTTPProxy' )
+			'proxy' => $this->config->get( 'HTTPProxy' ),
 		];
-
-		$response = HttpRequestFactory::create( $url, $options, __METHOD__ )->execute();
-		if ( $response->getStatusCode() !== 200 ) {
-			$this->logger->error( "Request to $url failed with status " . $response->getStatusCode() );
+	
+		// Create a multi-client
+		$request = HttpRequestFactory::createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
+			->run(
+				'url' => $url,
+				'method' => $method,
+				'body' => json_encode( $data ),
+					'headers' => [
+					'Authorization' => 'Bearer ' . $this->apiKey,
+					'Content-Type'  => 'application/json',
+					'OpenAI-Beta'   => 'assistants=v2',
+					],
+				],
+			);
+		
+		if ( $request['code'] !== 200 ) {
+			$this->logger->error( "Request to $url failed with status " . $request['code'] );
 			return null;
 		}
-
-		return json_decode( $response->getContent(), true );
+	
+		return json_decode( $request['body'], true );
 	}
 
 	private function canAutoApprove(): bool {
