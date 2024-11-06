@@ -48,13 +48,12 @@ class RequestWikiRemoteAIJob extends Job {
 		$guzzleOptions = [
 			'base_uri' => 'https://api.openai.com/v1',
 		];
-		
+
 		if ( !empty( $proxy ) ) {
 			$guzzleOptions['proxy'] = $proxy;
 		}
 
 		$this->httpClient = new Client( $guzzleOptions );
-		
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
