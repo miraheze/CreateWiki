@@ -33,7 +33,8 @@ class RequestWikiRemoteAIJob extends Job {
 		array $params,
 		ConfigFactory $configFactory,
 		CreateWikiHookRunner $hookRunner,
-		WikiRequestManager $wikiRequestManager
+		WikiRequestManager $wikiRequestManager,
+		HttpRequestFactory $httpRequestFactory
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
