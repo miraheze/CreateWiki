@@ -168,8 +168,8 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->logger->debug( 'Stage 3 for AI decision: Polling status...' );
 
 			while ( $status === 'running' ) {
-				sleep( 3 );
-				$this->logger->debug( 'Sleeping for 3 seconds...' );
+				sleep( 5 );
+				$this->logger->debug( 'Sleeping for 5 seconds...' );
 
 				$statusResponse = $this->createRequest( "/v1/threads/$threadId/runs/$runId" );
 				$statusData = json_decode( $statusResponse->getBody()->getContents(), true );
@@ -178,7 +178,9 @@ class RequestWikiRemoteAIJob extends Job {
 
 				$this->logger->debug( 'OpenAI returned for stage 3: ' . json_encode( $statusData ) );
 
-				if ( $status === 'failed' ) {
+				if ( $status === 'in_progress' ) {
+					$status = 'running';
+				} elseif ( $status === 'failed' ) {
 					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
 					return null;
 				}
