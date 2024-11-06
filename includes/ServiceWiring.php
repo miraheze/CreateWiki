@@ -4,6 +4,7 @@ use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
@@ -22,6 +23,11 @@ return [
 				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
 			),
 			$services->getUserFactory()
+		);
+	},
+	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
+		return new CreateWikiDatabaseUtils(
+			$services->getConnectionProvider()
 		);
 	},
 	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
