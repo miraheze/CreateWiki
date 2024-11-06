@@ -3,6 +3,8 @@
 namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Logger\LoggerFactory;
@@ -10,7 +12,6 @@ use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use MWHttpRequest;
 use Psr\Log\LoggerInterface;
 
 class RequestWikiRemoteAIJob extends Job {
@@ -20,7 +21,9 @@ class RequestWikiRemoteAIJob extends Job {
 	private Config $config;
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
+	private Client $httpClient;
 	private LoggerInterface $logger;
+	
 
 	private int $id;
 	private string $reason;
@@ -29,13 +32,15 @@ class RequestWikiRemoteAIJob extends Job {
 		array $params,
 		ConfigFactory $configFactory,
 		CreateWikiHookRunner $hookRunner,
-		WikiRequestManager $wikiRequestManager
+		WikiRequestManager $wikiRequestManager,
+		Client $httpClient
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
+		$this->httpClient = $httpClient;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 
 		$this->id = $params['id'];
@@ -107,77 +112,67 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function queryChatGPT( string $reason ): ?array {
-		$baseApiUrl = 'https://api.openai.com/v1';
-		$apiKey = $this->config->get( ConfigNames::OpenAIAPIKey );
+		try {
+			// Step 1: Create a new thread
+			$threadResponse = $this->createRequest( "/threads", 'POST', [
+				'json' => [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ],
+			]);
+			$threadData = json_decode( $threadResponse->getBody()->getContents(), true );
+			$threadId = $threadData['id'] ?? null;
 
-		// Step 1: Create a new thread
-		$threadRequest = new MWHttpRequest( "$baseApiUrl/threads", [
-			'method' => 'POST',
-			'postData' => json_encode( [ "messages" => [ [ "role" => "user", "content" => $reason ] ] ] ),
-		], __METHOD__ );
-		$threadRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
-		$threadRequest->setHeader( 'Content-Type', 'application/json' );
-		$threadRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
-
-		$threadResponse = $threadRequest->execute();
-		$this->logger->debug( 'Queried OpenAI for a decision.' );
-
-		$threadData = json_decode( $threadResponse, true );
-		$threadId = $threadData['id'] ?? null;
-
-		if ( !$threadId ) {
-			$this->logger->error( 'OpenAI did not return threadId! Instead returned: ' . json_encode( $threadData ) );
-			return null;
-		}
-
-		// Step 2: Run the message
-		$runRequest = new MWHttpRequest( "$baseApiUrl/threads/$threadId/run", [
-			'method' => 'POST',
-			'postData' => json_encode( [ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ] ),
-		], __METHOD__ );
-		$runRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
-		$runRequest->setHeader( 'Content-Type', 'application/json' );
-		$runRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
-
-		$runResponse = $runRequest->execute();
-		$runData = json_decode( $runResponse, true );
-		$runId = $runData['id'] ?? null;
-
-		if ( !$runId ) {
-			$this->logger->error( 'OpenAI did not return a runId. Instead returned: ' . json_encode( $runData ) );
-			return null;
-		}
-
-		// Step 3: Poll the status of the run
-		$status = 'running';
-
-		while ( $status === 'running' ) {
-			sleep( 3 );
-
-			$statusRequest = new MWHttpRequest( "$baseApiUrl/threads/$threadId/runs/$runId", [], __METHOD__ );
-			$statusRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
-			$statusRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
-
-			$statusResponse = $statusRequest->execute();
-			$statusData = json_decode( $statusResponse, true );
-			$status = $statusData['status'] ?? 'failed';
-
-			if ( $status === 'failed' ) {
-				$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
+			if ( !$threadId ) {
+				$this->logger->error( 'OpenAI did not return threadId! Instead returned: ' . json_encode( $threadData ) );
 				return null;
 			}
+
+			// Step 2: Run the message
+			$runResponse = $this->createRequest( "/threads/$threadId/run", 'POST', [
+				'json' => [ "assistant_id" => $this->config->get( ConfigNames::OpenAIAssistantID ) ],
+			]);
+			$runData = json_decode( $runResponse->getBody()->getContents(), true );
+			$runId = $runData['id'] ?? null;
+
+			if ( !$runId ) {
+				$this->logger->error( 'OpenAI did not return a runId. Instead returned: ' . json_encode( $runData ) );
+				return null;
+			}
+
+			// Step 3: Poll the status of the run
+			$status = 'running';
+			while ( $status === 'running' ) {
+				sleep( 3 );
+				$statusResponse = $this->createRequest( "/threads/$threadId/runs/$runId" );
+				$statusData = json_decode( $statusResponse->getBody()->getContents(), true );
+				$status = $statusData['status'] ?? 'failed';
+
+				if ( $status === 'failed' ) {
+					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
+					return null;
+				}
+			}
+
+			// Step 4: Query for messages in the thread
+			$messagesResponse = $this->createRequest( "/threads/$threadId/messages" );
+			$messagesData = json_decode( $messagesResponse->getBody()->getContents(), true );
+
+			$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
+			return json_decode( $finalResponseContent, true );
+		} catch ( RequestException $e ) {
+			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
+			return null;
 		}
+	}
 
-		// Step 4: Query for messages in the thread
-		$messagesRequest = new MWHttpRequest( "$baseApiUrl/threads/$threadId/messages", [], __METHOD__ );
-		$messagesRequest->setHeader( 'Authorization', 'Bearer ' . $apiKey );
-		$messagesRequest->setHeader( 'Content-Type', 'application/json' );
-		$messagesRequest->setHeader( 'OpenAI-Beta', 'assistants=v2' );
+	private function createRequest( string $endpoint, string $method = 'GET', array $options = [] ): ?\Psr\Http\Message\ResponseInterface {
+		$url = $this->baseApiUrl . $endpoint;
 
-		$messagesResponse = $messagesRequest->execute();
-		$messagesData = json_decode( $messagesResponse, true );
+		// Set default headers and merge with any additional options
+		$options['headers'] = array_merge( [
+			'Authorization' => 'Bearer ' . $this->apiKey,
+			'Content-Type'  => 'application/json',
+			'OpenAI-Beta'   => 'assistants=v2',
+		], $options['headers'] ?? [] );
 
-		$finalResponseContent = $messagesData['messages'][0]['content'] ?? null;
-		return json_decode( $finalResponseContent, true );
+		return $this->httpClient->request( $method, $url, $options );
 	}
 }
