@@ -50,7 +50,7 @@ class RequestWikiRemoteAIJob extends Job {
 			'base_uri' => 'https://api.openai.com/',
 		];
 
-		if ( !$proxy ) {
+		if ( $proxy ) {
 			$guzzleOptions['proxy'] = $proxy;
 		}
 
@@ -89,6 +89,8 @@ class RequestWikiRemoteAIJob extends Job {
 							// Use all involved users
 							notifyUsers: []
 						);
+
+						$this->logger->debug( 'Dry run! ' . $this->id . ' was approved by AI decision but was not automatically created.' );
 					} elseif ( $outcome === 'revise' ) {
 						$this->wikiRequestManager->addComment(
 							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Revise.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
@@ -98,6 +100,8 @@ class RequestWikiRemoteAIJob extends Job {
 							// Use all involved users
 							notifyUsers: []
 						);
+
+						$this->logger->debug( 'Dry run! ' . $this->id . ' needs revision per AI decision but was not automatically marked.' );
 					} elseif ( $outcome === 'decline' ) {
 						$this->wikiRequestManager->addComment(
 							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Decline.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
@@ -107,6 +111,8 @@ class RequestWikiRemoteAIJob extends Job {
 							// Use all involved users
 							notifyUsers: []
 						);
+
+						$this->logger->debug( 'Dry run! ' . $this->id . ' was declined by AI decision but was not automatically rejected.' );
 					} elseif ( $outcome === 'manualreview' ) {
 						$this->wikiRequestManager->addComment(
 							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Manual review required.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
@@ -116,6 +122,8 @@ class RequestWikiRemoteAIJob extends Job {
 							// Use all involved users
 							notifyUsers: []
 						);
+
+						$this->logger->debug( 'Dry run! ' . $this->id . ' needs manual review.' );
 					} else {
 						$this->wikiRequestManager->addComment(
 							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Unknown.<br /><br />\'\'\'Reasoning\'\'\': Something went wrong. Check logs and try again.' ),
