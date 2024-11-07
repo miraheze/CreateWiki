@@ -101,7 +101,6 @@ class RequestWikiRemoteAIJob extends Job {
 		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
-
 		$this->logger->debug(
 			'AI decision for wiki request {id} was {outcome} with reasoning: {comment}',
 			[
