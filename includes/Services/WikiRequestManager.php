@@ -987,7 +987,7 @@ class WikiRequestManager {
 				[
 					'id' => $this->id,
 					'sitename' => $sitename,
-					'subdomain' => $subdomain
+					'subdomain' => $subdomain,
 					'reason' => $reason,
 				]
 			)
