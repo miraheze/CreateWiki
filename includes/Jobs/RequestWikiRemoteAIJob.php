@@ -233,7 +233,7 @@ class RequestWikiRemoteAIJob extends Job {
 						'runId' => $runId
 					]
 				);
-	
+
 				$this->logger->debug(
 					'OpenAI returned the following data for stage 3 of #{id}: {statusData}',
 					[
@@ -241,7 +241,7 @@ class RequestWikiRemoteAIJob extends Job {
 						'statusData' => json_encode( $statusData ),
 					]
 				);
-	
+
 				if ( $status === 'in_progress' ) {
 					$status = 'running';
 				} elseif ( $status === 'failed' ) {
