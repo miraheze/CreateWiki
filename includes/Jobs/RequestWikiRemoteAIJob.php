@@ -268,12 +268,12 @@ class RequestWikiRemoteAIJob extends Job {
 				'OpenAI-Beta'   => 'assistants=v2',
 			],
 		];
-		
+
 		if ( $method === 'POST' ) {
 			$requestOptions['body'] = json_encode( $data );
 		}
-		
-		$request = $this->httpRequestFactory->createMultiClient([ 'proxy' => $this->config->get( 'HTTPProxy' ) ])
+
+		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
 			->run(
 				$requestOptions,
 				[ 'reqTimeout' => '15' ]
