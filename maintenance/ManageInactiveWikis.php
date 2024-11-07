@@ -48,7 +48,8 @@ class ManageInactiveWikis extends Maintenance {
 			->fetchFieldValues();
 
 		foreach ( $wikis as $wiki ) {
-			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
+			$dbname = $row->wiki_dbname;
+			$remoteWiki = $remoteWikiFactory->newInstance( $dbname );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['default']['inactive'];
 
 			$remoteWiki->disableResetDatabaseLists();
