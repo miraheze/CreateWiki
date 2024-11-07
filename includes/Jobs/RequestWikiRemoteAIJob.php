@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
-use Language;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Http\HttpRequestFactory;
