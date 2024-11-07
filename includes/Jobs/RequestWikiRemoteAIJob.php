@@ -5,13 +5,12 @@ namespace Miraheze\CreateWiki\Jobs;
 use Exception;
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
-use MediaWiki\MediaWikiServices;
-use MediaWiki\Message\Message;
+use MediaWiki\MessageLocalizer;
+use MediaWiki\RequestContext;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -26,6 +25,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private WikiRequestManager $wikiRequestManager;
 	private HttpRequestFactory $httpRequestFactory;
 	private LoggerInterface $logger;
+	private MessageLocalizer $messageLocalizer;
 	private string $baseApiUrl;
 	private string $apiKey;
 
@@ -46,6 +46,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->wikiRequestManager = $wikiRequestManager;
 		$this->httpRequestFactory = $httpRequestFactory;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
+		$this->messageLocalizer = RequestContext::getMain()->msg();
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
@@ -57,26 +58,39 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	public function run(): bool {
-		$services = MediaWikiServices::getInstance();
-
 		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
-			$this->logger->debug( "OpenAI API key is missing! AI job cannot start." );
-			throw new ConfigException( 'OpenAI API key is missing! Cannot query API without it!' );
+			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );
+			$this->setLastError( 'OpenAI API key is missing! Cannot query API without it!' );
 		} elseif ( !$this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ) {
-			$this->logger->debug( "OpenAI Assistant ID is missing! AI job cannot start." );
-			throw new ConfigException( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
+			$this->logger->debug( 'OpenAI Assistant ID is missing! AI job cannot start.' );
+			$this->setLastError( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
 		}
 
 		$this->wikiRequestManager->loadFromID( $this->id );
-		$this->logger->debug( "Loaded request {$this->id} for AI approval." );
+		$this->logger->debug(
+			'Loaded request {id} for AI approval.',
+			[
+				'id' => $this->id
+			]
+		);
 
 		if ( !$this->canAutoApprove() ) {
-			$this->logger->debug( "Wiki request {$this->id} was not auto-evaluated due to denylist." );
+			$this->logger->debug(
+				'Wiki request {id} was not auto-evaluated! Request matched the denylist.',
+				[
+					'id' => $this->id
+				]
+			);
 			return true;
 		}
 
 		// Initiate OpenAI query for decision
-		$this->logger->info( "Querying OpenAI for decision on wiki request {$this->id}..." );
+		$this->logger->debug(
+			'Querying OpenAI for decision on wiki request {id}...',
+			[
+				'id' => $this->id
+			]
+		);
 		$apiResponse = $this->queryOpenAI( $this->sitename, $this->subdomain, $this->reason );
 
 		if ( !$apiResponse ) {
@@ -87,7 +101,15 @@ class RequestWikiRemoteAIJob extends Job {
 		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
-		$this->logger->info( "AI decision: {$outcome} for request {$this->id}. Comment: {$comment}" );
+
+		$this->logger->debug(
+			'AI decision for wiki request {id} was {outcome} with reasoning: {comment}',
+			[
+				'comment' => $comment,
+				'id' => $this->id,
+				'outcome' => $outcome
+			]
+		);
 
 		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
 			return $this->handleDryRun( $outcome, $comment );
@@ -96,13 +118,12 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 	}
 
-	private function handleDryRun( string $outcome, string $comment ): bool {
-		$services = MediaWikiServices::getInstance();
-		$outcomeMessage = Message::newFromKey( "requestwikiqueue-$outcome" )->text();
-		$commentText = Message::newFromKey( 'requestwiki-ai-decision-dryrun' )
+	private function handleDryRun( string $outcome, string $comment ): void {
+		$outcomeMessage = $this->messageLocalizer( 'requestwikiqueue-' . $outcome )->text();
+		$commentText = $this->messageLocalizer( 'requestwiki-ai-decision-dryrun' )
 		->params( $outcomeMessage, $comment )
-		->inLanguage( $services->getContentLanguage() )
-		->text();
+		->inContentLanguage()
+		->escaped();
 
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
@@ -113,30 +134,29 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		$dryRunMessages = [
-			'approve' => "Wiki request {$this->id} was approved by AI but not automatically created.",
-			'moredetails' => "Wiki request {$this->id} needs revision but was not automatically marked.",
-			'decline' => "Wiki request {$this->id} was declined by AI but not automatically marked.",
-			'onhold' => "Wiki request {$this->id} requires manual review.",
+			'approve' => 'Wiki request {id} was approved by AI but not automatically created.',
+			'moredetails' => 'Wiki request {id} needs revision but was not automatically marked.',
+			'decline' => 'Wiki request {id} was declined by AI but not automatically marked.',
+			'onhold' => 'Wiki request {id} requires manual review.',
 		];
 
 		$this->logger->debug(
-			"DRY RUN: " . ( $dryRunMessages[$outcome] ?? "Unknown outcome for request {$this->id}." ),
+			'DRY RUN: ' . ( $dryRunMessages[$outcome] ?? 'Unknown outcome for request {id}! Outcome was {outcome}.' ),
 			[
 				'id' => $this->id,
+				'outcome' => $outcome ?? 'Nothing returned',
 				'reasoning' => $comment,
 			]
 		);
-
-		return true;
 	}
 
-	private function handleLiveRun( string $outcome, string $comment ): bool {
+	private function handleLiveRun( string $outcome, string $comment ): void {
 		$services = MediaWikiServices::getInstance();
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
-		$commentText = Message::newFromKey( "requestwiki-ai-decision-$outcome" )
+		$commentText = $this->messageLocalizer( 'requestwiki-ai-decision-' . $outcome )
 		->params( $comment )
-		->inLanguage( $services->getContentLanguage() )
-		->text();
+		->inContentLanguage()
+		->escaped();
 
 		switch ( $outcome ) {
 			case 'approve':
@@ -146,7 +166,13 @@ class RequestWikiRemoteAIJob extends Job {
 					comment: $commentText
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$this->logger->debug( "Request {$this->id} auto-approved by AI.\nReason: $comment" );
+				$this->logger->debug(
+					'Wiki request {id} was automatically approved by AI decision with reason: {comment}',
+					[
+						'comment' => $comment,
+						'id' => $this->id
+					]
+				);
 				break;
 
 			case 'moredetails':
@@ -156,7 +182,13 @@ class RequestWikiRemoteAIJob extends Job {
 					comment: $commentText
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$this->logger->debug( "Request {$this->id} requires more details.\nReason: $comment" );
+				$this->logger->debug(
+					'Wiki request {id} requires more details. Rationale given: {comment}',
+					[
+						'comment' => $comment,
+						'id' => $this->id
+					]
+				);
 				break;
 
 			case 'decline':
@@ -166,10 +198,32 @@ class RequestWikiRemoteAIJob extends Job {
 					comment: $commentText
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$this->logger->debug( "Request {$this->id} declined by AI.\nReason: $comment" );
+				$this->logger->debug(
+					'Wiki request {id} was automatically declined by AI decision with reason: {comment}',
+					[
+						'comment' => $comment,
+						'id' => $this->id
+					]
+				);
 				break;
 
 			case 'onhold':
+				$this->wikiRequestManager->addComment(
+					comment: $commentText,
+					user: $systemUser,
+					log: false,
+					type: 'comment',
+					notifyUsers: []
+				);
+				$this->logger->debug(
+					'Wiki request {id} requires manual review and has been placed on hold with reason: {comment}',
+					[
+						'comment' => $comment,
+						'id' => $this->id
+					]
+				);
+				break;
+
 			default:
 				$this->wikiRequestManager->addComment(
 					comment: $commentText,
@@ -178,11 +232,14 @@ class RequestWikiRemoteAIJob extends Job {
 					type: 'comment',
 					notifyUsers: []
 				);
-				$this->logger->debug( "Request {$this->id} queued for manual review." );
-				break;
+				$this->logger->debug(
+					'Wiki request {id} recieved an unknown outcome with comment: {comment}',
+					[
+						'comment' => $comment,
+						'id' => $this->id
+					]
+				);
 		}
-
-		return true;
 	}
 
 	private function queryOpenAI( string $sitename, string $subdomain, string $reason ): ?array {
@@ -193,7 +250,7 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 
 			// Step 1: Create a new thread
-			$threadData = $this->createRequest( "/threads", 'POST', [
+			$threadData = $this->createRequest( '/threads', 'POST', [
 				"messages" => [ [ "role" => "user", "content" => $sanitizedReason ] ]
 			] );
 
@@ -201,7 +258,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$this->logger->debug( 'Stage 1 for AI decision: Created thread.' );
 
-			$this->logger->debug( 'OpenAI returned for stage 1: ' . json_encode( $threadData ) );
+			$this->logger->debug(
+				'OpenAI returned for stage 1 of {id}: {threadData}',
+				[
+					'id' => $this->id,
+					'comment' => json_encode( $threadData )
+				]
+			);
 
 			if ( !$threadId ) {
 				$this->logger->error( 'OpenAI did not return a threadId!' );
@@ -210,7 +273,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			// Step 2: Run the message
-			$runData = $this->createRequest( "/threads/$threadId/runs", 'POST', [
+			$runData = $this->createRequest( '/threads' . $threadId . '/runs', 'POST', [
 				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? ''
 			] );
 
@@ -231,8 +294,6 @@ class RequestWikiRemoteAIJob extends Job {
 				]
 			);
 
-			$this->logger->debug( 'OpenAI returned for stage 2: ' . json_encode( $runData ) );
-
 			if ( !$runId ) {
 				$this->logger->error( 'OpenAI did not return a runId!' );
 				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
@@ -247,7 +308,7 @@ class RequestWikiRemoteAIJob extends Job {
 				sleep( 5 );
 
 				$this->logger->debug( 'Sleeping for 5 seconds...' );
-				$statusData = $this->createRequest( "/threads/$threadId/runs/$runId" );
+				$statusData = $this->createRequest( '/threads/' . $threadId . '/runs/' . $runId, 'GET', [] );
 				$status = $statusData['status'] ?? 'failed';
 
 				$this->logger->debug(
@@ -285,7 +346,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			// Step 4: Query for messages in the thread
-			$messagesData = $this->createRequest( "/threads/$threadId/messages" );
+			$messagesData = $this->createRequest( '/threads/' . $threadId . '/messages', 'GET', [] );
 
 			$this->logger->debug(
 				'Stage 4 for AI decision of {id}: Queried for messages in thread {threadId}.',
@@ -312,7 +373,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 	}
 
-	private function createRequest( string $endpoint, string $method = 'GET', array $data = [] ): ?array {
+	private function createRequest( string $endpoint, string $method, array $data ): ?array {
 		$url = $this->baseApiUrl . $endpoint;
 
 		$this->logger->debug( 'Creating HTTP request to OpenAI...' );
