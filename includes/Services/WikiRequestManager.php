@@ -985,7 +985,7 @@ class WikiRequestManager {
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
 				[
-					'id' => $this->id,
+					'id' => $this->ID,
 					'sitename' => $sitename,
 					'subdomain' => $subdomain,
 					'reason' => $reason,
