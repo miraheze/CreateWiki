@@ -160,8 +160,8 @@ class WikiRequestManager {
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
-		} elseif ( $this->options->get( ConfigNames::OpenAIConfig )['apikey'] ) {
-			$this->evaluateWithChatGPT( $data['sitename'], $data['subdomain'], $data['reason'] );
+		} elseif ( $this->options->get( ConfigNames::OpenAIConfig )['apikey'] && $this->options->get( ConfigNames::OpenAIConfig )['assistantid'] ) {
+			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -979,7 +979,7 @@ class WikiRequestManager {
 		);
 	}
 
-	private function evaluateWithChatGPT( string $sitename, string $subdomain, string $reason ): void {
+	private function evaluateWithOpenAI( string $sitename, string $subdomain, string $reason ): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(

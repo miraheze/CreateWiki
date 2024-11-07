@@ -59,8 +59,10 @@ class RequestWikiRemoteAIJob extends Job {
 		$services = MediaWikiServices::getInstance();
 
 		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
+			$this->logger->debug( "OpenAI API key is missing! AI job cannot start." );
 			throw new ConfigException( 'OpenAI API key is missing! Cannot query API without it!' );
 		} elseif ( !$this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ) {
+			$this->logger->debug( "OpenAI Assistant ID is missing! AI job cannot start." );
 			throw new ConfigException( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
 		}
 
