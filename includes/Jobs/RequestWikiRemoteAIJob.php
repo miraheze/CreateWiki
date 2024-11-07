@@ -100,7 +100,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$dryRunMessages = [
 			'approve' => "Wiki request {$this->id} was approved by AI but not automatically created.",
-			'revise' => "Wiki request {$this->id} needs revision but was not automatically marked.",
+			'moredetails' => "Wiki request {$this->id} needs revision but was not automatically marked.",
 			'decline' => "Wiki request {$this->id} was declined by AI but not automatically marked.",
 			'onhold' => "Wiki request {$this->id} requires manual review.",
 		];
