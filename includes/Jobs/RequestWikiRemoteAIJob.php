@@ -282,6 +282,7 @@ class RequestWikiRemoteAIJob extends Job {
 			return json_decode( $finalResponseContent, true );
 		} catch ( \Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
+			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() )
 			return null;
 		}
 	}
