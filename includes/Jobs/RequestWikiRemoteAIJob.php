@@ -25,7 +25,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private WikiRequestManager $wikiRequestManager;
 	private HttpRequestFactory $httpRequestFactory;
 	private LoggerInterface $logger;
-	private Message $messageLocalizer;
+	private RequestContext $context;
 	private string $baseApiUrl;
 	private string $apiKey;
 
