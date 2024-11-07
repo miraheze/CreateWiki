@@ -51,39 +51,41 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function run(): bool {
 		$services = MediaWikiServices::getInstance();
-		$messageLocalizer = $services->getMessageLocalizerFactory()->createForLang($services->getContentLanguage());
+		$messageLocalizer = $services->getMessageLocalizerFactory()->createForLang( $services->getContentLanguage() );
 		$this->wikiRequestManager->loadFromID( $this->id );
-		$this->logger->debug("Loaded request {$this->id} for AI approval.");
-	
+		$this->logger->debug( "Loaded request {$this->id} for AI approval." );
+
 		if ( !$this->canAutoApprove() ) {
-			$this->logger->debug("Wiki request {$this->id} was not auto-evaluated due to denylist.");
+			$this->logger->debug( "Wiki request {$this->id} was not auto-evaluated due to denylist." );
 			return true;
 		}
-	
+
 		// Initiate OpenAI query for decision
 		$this->logger->info( "Querying OpenAI for decision on wiki request {$this->id}..." );
 		$apiResponse = $this->queryOpenAI( $this->reason );
-	
-		if (!$apiResponse) return true;
-	
+
+		if ( !$apiResponse ) {
+			return true;
+		}
+
 		// Extract response details with default fallbacks
 		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
-	
+
 		$this->logger->info( "AI decision: {$outcome} for request {$this->id}. Comment: {$comment}" );
-	
+
 		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
 			return $this->handleDryRun( $outcome, $comment, $messageLocalizer );
 		} else {
 			return $this->handleLiveRun( $outcome, $comment );
 		}
 	}
-	
+
 	private function handleDryRun( string $outcome, string $comment, MessageLocalizer $messageLocalizer ): bool {
 		$commentText = $messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
-			->rawParams( $messageLocalizer->msg("requestwikiqueue-$outcome")->text(), $comment )
+			->rawParams( $messageLocalizer->msg( "requestwikiqueue-$outcome" )->text(), $comment )
 			->text();
-	
+
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
 			user: User::newSystemUser( 'CreateWiki AI' ),
@@ -91,25 +93,25 @@ class RequestWikiRemoteAIJob extends Job {
 			type: 'comment',
 			notifyUsers: []
 		);
-	
+
 		$dryRunMessages = [
 			'approve' => "Wiki request {$this->id} was approved by AI but not automatically created.",
 			'revise' => "Wiki request {$this->id} needs revision but was not automatically marked.",
 			'decline' => "Wiki request {$this->id} was declined by AI but not automatically marked.",
 			'onhold' => "Wiki request {$this->id} requires manual review.",
 		];
-	
+
 		$this->logger->debug( "DRY RUN: " . ( $dryRunMessages[$outcome] ?? "Unknown outcome for request {$this->id}." ), [
 			'id' => $this->id,
 			'reasoning' => $comment,
-		]);
-	
+		] );
+
 		return true;
 	}
-	
+
 	private function handleLiveRun( string $outcome, string $comment ): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
-	
+
 		switch ( $outcome ) {
 			case 'approve':
 				$this->wikiRequestManager->startQueryBuilder();
@@ -118,9 +120,9 @@ class RequestWikiRemoteAIJob extends Job {
 					comment: "Request auto-approved with the following reason: $comment"
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$this->logger->debug("Request {$this->id} auto-approved by AI.\nReason: $comment");
+				$this->logger->debug( "Request {$this->id} auto-approved by AI.\nReason: $comment" );
 				break;
-	
+
 			case 'moredetails':
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->moredetails(
@@ -128,9 +130,9 @@ class RequestWikiRemoteAIJob extends Job {
 					comment: "This request requires more details before being approved: $comment"
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$this->logger->debug("Request {$this->id} requires more details.\nReason: $comment");
+				$this->logger->debug( "Request {$this->id} requires more details.\nReason: $comment" );
 				break;
-	
+
 			case 'decline':
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->decline(
@@ -138,9 +140,9 @@ class RequestWikiRemoteAIJob extends Job {
 					comment: "This request could not be approved for the follwing reason: $comment"
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$this->logger->debug("Request {$this->id} declined by AI.\nReason: $comment");
+				$this->logger->debug( "Request {$this->id} declined by AI.\nReason: $comment" );
 				break;
-	
+
 			case 'onhold':
 			default:
 				$this->wikiRequestManager->addComment(
@@ -150,12 +152,12 @@ class RequestWikiRemoteAIJob extends Job {
 					type: 'comment',
 					notifyUsers: []
 				);
-				$this->logger->debug("Request {$this->id} queued for manual review.");
+				$this->logger->debug( "Request {$this->id} queued for manual review." );
 				break;
 		}
-	
+
 		return true;
-	}	
+	}
 
 	private function queryOpenAI( string $reason ): ?array {
 		try {
