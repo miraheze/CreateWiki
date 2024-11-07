@@ -271,10 +271,10 @@ class RequestWikiRemoteAIJob extends Job {
 			], [ 'reqTimeout' => '15' ]
 			);
 
-		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . $request );
+		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . json_encode( $request ) );
 
 		if ( $request['code'] !== 200 ) {
-			$this->logger->error( 'Request to $url failed with status ' . $request['code'] );
+			$this->logger->error( 'Request to {$url} failed with status ' . json_encode( $request['code'] ) );
 			return null;
 		}
 
