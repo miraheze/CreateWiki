@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Jobs;
 
+use Exception;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigException;
@@ -118,10 +119,13 @@ class RequestWikiRemoteAIJob extends Job {
 			'onhold' => "Wiki request {$this->id} requires manual review.",
 		];
 
-		$this->logger->debug( "DRY RUN: " . ( $dryRunMessages[$outcome] ?? "Unknown outcome for request {$this->id}." ), [
-			'id' => $this->id,
-			'reasoning' => $comment,
-		] );
+		$this->logger->debug(
+			"DRY RUN: " . ( $dryRunMessages[$outcome] ?? "Unknown outcome for request {$this->id}." ),
+			[
+				'id' => $this->id,
+				'reasoning' => $comment,
+			]
+		);		
 
 		return true;
 	}
@@ -183,7 +187,10 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function queryOpenAI( string $sitename, string $subdomain, string $reason ): ?array {
 		try {
-			$sanitizedReason = "Wiki name: $sitename. Subdomain: $subdomain. Wiki request reason: " . trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
+			$sanitizedReason = "Wiki name: $sitename. Subdomain: $subdomain. Wiki request reason: " .
+				trim(
+					str_replace( [ "\r\n", "\r" ], "\n", $reason )
+				);
 
 			// Step 1: Create a new thread
 			$threadData = $this->createRequest( "/threads", 'POST', [
@@ -198,6 +205,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			if ( !$threadId ) {
 				$this->logger->error( 'OpenAI did not return a threadId!' );
+				$this->setLastError( 'Run ' . $this->id . ' failed. No threadId returned.' );
 				return null;
 			}
 
@@ -227,6 +235,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			if ( !$runId ) {
 				$this->logger->error( 'OpenAI did not return a runId!' );
+				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
 				return null;
 			}
 
@@ -268,6 +277,9 @@ class RequestWikiRemoteAIJob extends Job {
 							'statusData' => json_encode( $statusData )
 						]
 					);
+
+					$this->setLastError( 'Run ' . $runId . ' failed.' );
+
 					return null;
 				}
 			}
@@ -293,7 +305,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
 			return json_decode( $finalResponseContent, true );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
 			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() );
 			return null;
@@ -321,11 +333,16 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->logger->debug( 'POST request detected. Attaching POST data to body...' );
 		}
 
-		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( MainConfigNames::HTTPProxy ) ] )
-			->run(
-				$requestOptions,
-				[ 'reqTimeout' => 15 ]
-			);
+		$request = $this->httpRequestFactory->createMultiClient(
+			[
+				'proxy' => $this->config->get( MainConfigNames::HTTPProxy )
+			]
+		)->run(
+			$requestOptions,
+			[
+				'reqTimeout' => 15
+			]
+		);		
 
 			$this->logger->debug(
 				'HTTP request for {id} to OpenAI executed. Response was: {request}',
