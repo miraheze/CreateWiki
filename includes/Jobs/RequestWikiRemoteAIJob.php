@@ -82,14 +82,14 @@ class RequestWikiRemoteAIJob extends Job {
 			return $this->handleLiveRun( $outcome, $comment );
 		}
 	}
-	
+
 	private function handleDryRun( string $outcome, string $comment, Language $contentLanguage ): bool {
 		$outcomeMessage = Message::newFromKey( "requestwikiqueue-$outcome" )->text();
-   		$commentText = Message::newFromKey( 'requestwiki-ai-decision-dryrun' )
+		$commentText = Message::newFromKey( 'requestwiki-ai-decision-dryrun' )
 		->rawParams( $outcomeMessage, $comment )
 		->inLanguage( $contentLanguage )
 		->text();
-	
+
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
 			user: User::newSystemUser( 'CreateWiki AI' ),
