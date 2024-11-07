@@ -3,10 +3,10 @@
 namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
+use Language;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Language\Language;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
@@ -53,7 +53,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function run(): bool {
 		$services = MediaWikiServices::getInstance();
-		$contentLanguage = $services->getContentLanguage();
 
 		$this->wikiRequestManager->loadFromID( $this->id );
 		$this->logger->debug( "Loaded request {$this->id} for AI approval." );
@@ -78,17 +77,17 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger->info( "AI decision: {$outcome} for request {$this->id}. Comment: {$comment}" );
 
 		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
-			return $this->handleDryRun( $outcome, $comment, $contentLanguage );
+			return $this->handleDryRun( $outcome, $comment );
 		} else {
 			return $this->handleLiveRun( $outcome, $comment );
 		}
 	}
 
-	private function handleDryRun( string $outcome, string $comment, Language $contentLanguage ): bool {
+	private function handleDryRun( string $outcome, string $comment ): bool {
 		$outcomeMessage = Message::newFromKey( "requestwikiqueue-$outcome" )->text();
 		$commentText = Message::newFromKey( 'requestwiki-ai-decision-dryrun' )
-		->rawParams( $outcomeMessage, $comment )
-		->inLanguage( $contentLanguage )
+		->params( $outcomeMessage, $comment )
+		->inLanguage( $services->getContentLanguage() )
 		->text();
 
 		$this->wikiRequestManager->addComment(
@@ -116,13 +115,17 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function handleLiveRun( string $outcome, string $comment ): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
+		$commentText = Message::newFromKey( "requestwiki-ai-decision-$outcome" )
+		->params( $comment )
+		->inLanguage( $services->getContentLanguage() )
+		->text();
 
 		switch ( $outcome ) {
 			case 'approve':
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->approve(
 					user: $systemUser,
-					comment: "Request auto-approved with the following reason: $comment"
+					comment: $commentText
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug( "Request {$this->id} auto-approved by AI.\nReason: $comment" );
@@ -132,7 +135,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->moredetails(
 					user: $systemUser,
-					comment: "This request requires more details before being approved: $comment"
+					comment: $commentText
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug( "Request {$this->id} requires more details.\nReason: $comment" );
@@ -142,7 +145,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->decline(
 					user: $systemUser,
-					comment: "This request could not be approved for the follwing reason: $comment"
+					comment: $commentText
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug( "Request {$this->id} declined by AI.\nReason: $comment" );
@@ -151,7 +154,7 @@ class RequestWikiRemoteAIJob extends Job {
 			case 'onhold':
 			default:
 				$this->wikiRequestManager->addComment(
-					comment: "This request could not be automatically approved and has been queued for manual review.",
+					comment: $commentText
 					user: $systemUser,
 					log: false,
 					type: 'comment',
