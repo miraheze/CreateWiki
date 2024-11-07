@@ -153,7 +153,7 @@ class RequestWikiRemoteAIJob extends Job {
 			case 'onhold':
 			default:
 				$this->wikiRequestManager->addComment(
-					comment: $commentText
+					comment: $commentText,
 					user: $systemUser,
 					log: false,
 					type: 'comment',
@@ -193,12 +193,25 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$runId = $runData['id'] ?? null;
 
-			$this->logger->debug( 'Stage 2 for AI decision: Message ran.' );
+			$this->logger->debug(
+				'Stage 2 for AI decision of #{id}: Message ran.',
+				[
+					'id' => $this->id
+				]
+			);
+
+			$this->logger->debug(
+				'OpenAI returned the following data for stage 2 of #{id}: {runData}',
+				[
+					'id' => $this->id,
+					'runData' => json_encode( $runData ),
+				]
+			);
 
 			$this->logger->debug( 'OpenAI returned for stage 2: ' . json_encode( $runData ) );
 
 			if ( !$runId ) {
-				$this->logger->error( 'OpenAI did not return a runId.' );
+				$this->logger->error( 'OpenAI did not return a runId!' );
 				return null;
 			}
 
@@ -213,14 +226,33 @@ class RequestWikiRemoteAIJob extends Job {
 				$statusData = $this->createRequest( "/threads/$threadId/runs/$runId" );
 				$status = $statusData['status'] ?? 'failed';
 
-				$this->logger->debug( 'Stage 3 for AI decision: Retrieved run status for ' . $runId );
-
-				$this->logger->debug( 'OpenAI returned for stage 3: ' . json_encode( $statusData ) );
-
+				$this->logger->debug(
+					'Stage 2 for AI decision of #{id}: Retrieved run status for {runId}',
+					[
+						'id' => $this->id,
+						'runId' => $runId
+					]
+				);
+	
+				$this->logger->debug(
+					'OpenAI returned the following data for stage 3 of #{id}: {statusData}',
+					[
+						'id' => $this->id,
+						'statusData' => json_encode( $statusData ),
+					]
+				);
+	
 				if ( $status === 'in_progress' ) {
 					$status = 'running';
 				} elseif ( $status === 'failed' ) {
-					$this->logger->error( 'Run ' . $runId . ' failed! OpenAI returned: ' . json_encode( $statusData ) );
+					$this->logger->error(
+						'Run {runId} failed for #{id}! OpenAI returned {statusData}',
+						[
+							'id' => $this->id,
+							'runId' => $runid,
+							'statusData' => json_encode( $statusData )
+						]
+					);
 					return null;
 				}
 			}
@@ -228,9 +260,21 @@ class RequestWikiRemoteAIJob extends Job {
 			// Step 4: Query for messages in the thread
 			$messagesData = $this->createRequest( "/threads/$threadId/messages" );
 
-			$this->logger->debug( 'Stage 4 for AI decision: Queried for messages in ' . $threadId );
+			$this->logger->debug(
+				'Stage 4 for AI decision of #{id}: Queried for messages in thread {threadId}.',
+				[
+					'id' => $this->id,
+					'threadId' => $threadId
+				]
+			);
 
-			$this->logger->debug( 'OpenAI returned for stage 4: ' . json_encode( $messagesData ) );
+			$this->logger->debug(
+				'OpenAI returned the following data for stage 4 of #{id}: {messagesData}',
+				[
+					'id' => $this->id,
+					'messagesData' => json_encode( $messagesData ),
+				]
+			);
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
 			return json_decode( $finalResponseContent, true );
@@ -243,7 +287,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private function createRequest( string $endpoint, string $method = 'GET', array $data = [] ): ?array {
 		$url = $this->baseApiUrl . $endpoint;
 
-		$this->logger->debug( 'Creating request to OpenAI' );
+		$this->logger->debug( 'Creating HTTP request to OpenAI...' );
 
 		// Create a multi-client
 		$requestOptions = [
@@ -258,6 +302,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		if ( $method === 'POST' ) {
 			$requestOptions['body'] = json_encode( $data );
+			$this->logger->debug( 'POST request detected. Attaching POST data to body...' );
 		}
 
 		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( MainConfigNames::HTTPProxy ) ] )
@@ -266,7 +311,13 @@ class RequestWikiRemoteAIJob extends Job {
 				[ 'reqTimeout' => '15' ]
 			);
 
-		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . json_encode( $request ) );
+			$this->logger->debug(
+				'HTTP request for #{id} to OpenAI executed. Response was: {request}',
+				[
+					'id' => $this->id,
+					'request' => json_encode( $request )
+				]
+			);
 
 		if ( $request['code'] !== 200 ) {
 			$this->logger->error( 'Request to ' . $url . ' failed with status ' . json_encode( $request['code'] ) );
@@ -282,14 +333,29 @@ class RequestWikiRemoteAIJob extends Job {
 			ConfigNames::AutoApprovalFilter
 		);
 
-		$this->logger->debug( 'Checking ' . $this->id . ' against the auto approval filter...' );
+		$this->logger->debug(
+			'Checking wiki request #{id} against the auto approval denylist filter...',
+			[
+				'id' => $this->id
+			]
+		);
 
 		if ( preg_match( $filter, strtolower( $this->reason ) ) ) {
-			$this->logger->debug( $this->id . ' matched against the auto approval filter! Manual review is required' );
+			$this->logger->debug(
+				'Wiki request #{id} matched against the auto approval denylist filter! A manual review is required.',
+				[
+					'id' => $this->id
+				]
+			);
 			return false;
 		}
 
-		$this->logger->debug( $this->id . ' passed auto approval filter review' );
+		$this->logger->debug(
+			'Wiki request #{id} passed the auto approval filter review!',
+			[
+				'id' => $this->id
+			]
+		);
 
 		return true;
 	}
