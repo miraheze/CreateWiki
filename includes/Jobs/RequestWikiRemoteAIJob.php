@@ -251,7 +251,7 @@ class RequestWikiRemoteAIJob extends Job {
 						'Run {runId} failed for #{id}! OpenAI returned {statusData}',
 						[
 							'id' => $this->id,
-							'runId' => $runid,
+							'runId' => $runId,
 							'statusData' => json_encode( $statusData )
 						]
 					);
