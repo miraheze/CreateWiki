@@ -10,6 +10,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Message\Message;
 use MediaWiki\User\User;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
@@ -25,7 +26,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private WikiRequestManager $wikiRequestManager;
 	private HttpRequestFactory $httpRequestFactory;
 	private LoggerInterface $logger;
-	private MessageLocalizer $messageLocalizer;
+	private Message $messageLocalizer;
 	private string $baseApiUrl;
 	private string $apiKey;
 
@@ -46,7 +47,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->wikiRequestManager = $wikiRequestManager;
 		$this->httpRequestFactory = $httpRequestFactory;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
-		$this->messageLocalizer = RequestContext::getMain()->msg();
+		$this->context = RequestContext::getMain();
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
@@ -118,8 +119,8 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function handleDryRun( string $outcome, string $comment ): bool {
-		$outcomeMessage = $this->messageLocalizer( 'requestwikiqueue-' . $outcome )->text();
-		$commentText = $this->messageLocalizer( 'requestwiki-ai-decision-dryrun' )
+		$outcomeMessage = $this->context->msg( 'requestwikiqueue-' . $outcome )->text();
+		$commentText = $this->context->msg( 'requestwiki-ai-decision-dryrun' )
 		->params( $outcomeMessage, $comment )
 		->inContentLanguage()
 		->escaped();
@@ -153,7 +154,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private function handleLiveRun( string $outcome, string $comment ): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
-		$commentText = $this->messageLocalizer( 'requestwiki-ai-decision-' . $outcome )
+		$commentText = $this->context->msg( 'requestwiki-ai-decision-' . $outcome )
 		->params( $comment )
 		->inContentLanguage()
 		->escaped();
