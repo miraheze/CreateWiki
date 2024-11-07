@@ -263,7 +263,7 @@ class RequestWikiRemoteAIJob extends Job {
 			->run( [
 				'url' => $url,
 				'method' => $method,
-				'body' => json_encode ( $data ),
+				'body' => json_encode( $data ),
 				'headers' => [
 					'Authorization' => 'Bearer ' . $this->apiKey,
 					'Content-Type'  => 'application/json',
