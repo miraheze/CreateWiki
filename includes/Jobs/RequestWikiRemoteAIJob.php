@@ -9,6 +9,7 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Message\Message;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -51,7 +52,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function run(): bool {
 		$services = MediaWikiServices::getInstance();
-		$messageLocalizer = $services->getMessageLocalizerFactory()->createForLang( $services->getContentLanguage() );
+		$contentLanguage = $services->getContentLanguage();
+
 		$this->wikiRequestManager->loadFromID( $this->id );
 		$this->logger->debug( "Loaded request {$this->id} for AI approval." );
 
@@ -75,17 +77,19 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger->info( "AI decision: {$outcome} for request {$this->id}. Comment: {$comment}" );
 
 		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
-			return $this->handleDryRun( $outcome, $comment, $messageLocalizer );
+			return $this->handleDryRun( $outcome, $comment, $contentLanguage );
 		} else {
 			return $this->handleLiveRun( $outcome, $comment );
 		}
 	}
-
-	private function handleDryRun( string $outcome, string $comment, MessageLocalizer $messageLocalizer ): bool {
-		$commentText = $messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
-			->rawParams( $messageLocalizer->msg( "requestwikiqueue-$outcome" )->text(), $comment )
-			->text();
-
+	
+	private function handleDryRun( string $outcome, string $comment, Language $contentLanguage ): bool {
+		$outcomeMessage = Message::newFromKey( "requestwikiqueue-$outcome" )->text();
+   		$commentText = Message::newFromKey( 'requestwiki-ai-decision-dryrun' )
+		->rawParams( $outcomeMessage, $comment )
+		->inLanguage( $contentLanguage )
+		->text();
+	
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
 			user: User::newSystemUser( 'CreateWiki AI' ),
