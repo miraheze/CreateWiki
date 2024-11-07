@@ -184,7 +184,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$sanitizedReason = trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
-			$threadData = $this->createRequest( "/v1/threads", 'POST', [
+			$threadData = $this->createRequest( "/threads", 'POST', [
 				"messages" => [ [ "role" => "user", "content" => $sanitizedReason ] ]
 			] );
 
@@ -200,7 +200,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			// Step 2: Run the message
-			$runData = $this->createRequest( "/v1/threads/$threadId/runs", 'POST', [
+			$runData = $this->createRequest( "/threads/$threadId/runs", 'POST', [
 				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistant']
 			] );
 
@@ -223,7 +223,7 @@ class RequestWikiRemoteAIJob extends Job {
 				sleep( 5 );
 
 				$this->logger->debug( 'Sleeping for 5 seconds...' );
-				$statusData = $this->createRequest( "/v1/threads/$threadId/runs/$runId" );
+				$statusData = $this->createRequest( "/threads/$threadId/runs/$runId" );
 				$status = $statusData['status'] ?? 'failed';
 
 				$this->logger->debug( 'Stage 3 for AI decision: Retrieved run status for ' . $runId );
@@ -239,7 +239,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			// Step 4: Query for messages in the thread
-			$messagesData = $this->createRequest( "/v1/threads/$threadId/messages" );
+			$messagesData = $this->createRequest( "/threads/$threadId/messages" );
 
 			$this->logger->debug( 'Stage 4 for AI decision: Queried for messages in ' . $threadId );
 
@@ -274,7 +274,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . json_encode( $request ) );
 
 		if ( $request['code'] !== 200 ) {
-			$this->logger->error( 'Request to {$url} failed with status ' . json_encode( $request['code'] ) );
+			$this->logger->error( 'Request to ' . $url . ' failed with status ' . json_encode( $request['code'] ) );
 			return null;
 		}
 
