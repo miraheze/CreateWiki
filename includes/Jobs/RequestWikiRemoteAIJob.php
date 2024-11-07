@@ -6,11 +6,11 @@ use Exception;
 use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
-use MediaWiki\MessageLocalizer;
-use MediaWiki\RequestContext;
+use MessageLocalizer;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -117,7 +117,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 	}
 
-	private function handleDryRun( string $outcome, string $comment ): void {
+	private function handleDryRun( string $outcome, string $comment ): bool {
 		$outcomeMessage = $this->messageLocalizer( 'requestwikiqueue-' . $outcome )->text();
 		$commentText = $this->messageLocalizer( 'requestwiki-ai-decision-dryrun' )
 		->params( $outcomeMessage, $comment )
@@ -143,14 +143,15 @@ class RequestWikiRemoteAIJob extends Job {
 			'DRY RUN: ' . ( $dryRunMessages[$outcome] ?? 'Unknown outcome for request {id}! Outcome was {outcome}.' ),
 			[
 				'id' => $this->id,
-				'outcome' => $outcome ?? 'Nothing returned',
+				'outcome' => $outcome,
 				'reasoning' => $comment,
 			]
 		);
+
+		return true;
 	}
 
-	private function handleLiveRun( string $outcome, string $comment ): void {
-		$services = MediaWikiServices::getInstance();
+	private function handleLiveRun( string $outcome, string $comment ): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
 		$commentText = $this->messageLocalizer( 'requestwiki-ai-decision-' . $outcome )
 		->params( $comment )
@@ -239,6 +240,8 @@ class RequestWikiRemoteAIJob extends Job {
 					]
 				);
 		}
+
+		return true;
 	}
 
 	private function queryOpenAI( string $sitename, string $subdomain, string $reason ): ?array {
