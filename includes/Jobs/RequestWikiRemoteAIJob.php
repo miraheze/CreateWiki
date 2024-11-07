@@ -274,7 +274,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			// Step 2: Run the message
-			$runData = $this->createRequest( '/threads' . $threadId . '/runs', 'POST', [
+			$runData = $this->createRequest( '/threads/' . $threadId . '/runs', 'POST', [
 				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? ''
 			] );
 
