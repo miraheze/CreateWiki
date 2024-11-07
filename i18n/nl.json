@@ -42,6 +42,7 @@
 	"createwiki-help-sitename": "Dit wordt de naam van de wiki en de naam van de naamruimte Project.",
 	"createwiki-help-subdomain": "Dit wordt de URL van de wiki.",
 	"createwiki-label-all-languages": "Alle",
+	"createwiki-label-all-statuses": "Alle",
 	"createwiki-label-category": "Categorie",
 	"createwiki-label-dbname": "Databasenaam",
 	"createwiki-label-language": "Taal:",

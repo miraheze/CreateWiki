@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP = getenv( 'MW_INSTALL_PATH' ) ?: __DIR__ . '/../../..';
+$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
@@ -53,15 +53,16 @@ class ManageInactiveWikis extends Maintenance {
 			$remoteWiki = $remoteWikiFactory->newInstance( $dbname );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['default']['inactive']; 
 
+
 			// Check if the wiki is inactive based on creation date
 			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
-				$this->checkLastActivity( $dbName, $remoteWiki );
+				$this->checkLastActivity( $dbname, $remoteWiki );
 			}
 		}
 	}
 
 	private function checkLastActivity(
-		string $dbName,
+		string $dbname,
 		RemoteWikiFactory $remoteWiki
 	): bool {
 		/** @var CheckLastWikiActivity $activity */
@@ -72,7 +73,7 @@ class ManageInactiveWikis extends Maintenance {
 		'@phan-var CheckLastWikiActivity $activity';
 
 		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
-		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbName ) );
+		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbname ) );
 		$activity->execute();
 
 		$lastActivityTimestamp = $activity->getTimestamp();
@@ -90,7 +91,7 @@ class ManageInactiveWikis extends Maintenance {
 				$remoteWiki->markActive();
 				$remoteWiki->commit();
 
-				$this->output( "{$dbName} has been marked as active.\n" );
+				$this->output( "{$dbname} has been marked as active.\n" );
 			}
 
 			return true;
@@ -106,10 +107,10 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-{$closeTime} days" ) ) ) {
 				if ( $canWrite ) {
 					$remoteWiki->markClosed();
-					$this->notify( $dbName );
-					$this->output( "{$dbName} has been closed. Last activity: {$lastActivityTimestamp}\n" );
+					$this->notifyBureaucrats( $dbname );
+					$this->output( "{$dbname} has been closed. Last activity: {$lastActivityTimestamp}\n" );
 				} else {
-					$this->output( "{$dbName} should be closed. Last activity: {$lastActivityTimestamp}\n" );
+					$this->output( "{$dbname} should be closed. Last activity: {$lastActivityTimestamp}\n" );
 				}
 			} else {
 				if (
@@ -119,18 +120,18 @@ class ManageInactiveWikis extends Maintenance {
 					// Meets inactivity
 					if ( $canWrite ) {
 						$remoteWiki->markInactive();
-						$this->output( "{$dbName} was marked as inactive. Last activity: {$lastActivityTimestamp}\n" );
+						$this->output( "{$dbname} was marked as inactive. Last activity: {$lastActivityTimestamp}\n" );
 					} else {
-						$this->output( "{$dbName} should be inactive. Last activity: {$lastActivityTimestamp}\n" );
+						$this->output( "{$dbname} should be inactive. Last activity: {$lastActivityTimestamp}\n" );
 					}
 				}
 
 				// Otherwise, mark as closed or notify if it's eligible for closure
-				$this->handleInactiveWiki( $dbName, $remoteWiki, $closeDays, $canWrite );
+				$this->handleInactiveWiki( $dbname, $remoteWiki, $closeDays, $canWrite );
 			}
 		} else {
 			// Handle already closed wikis
-			$this->handleClosedWiki( $dbName, $remoteWiki, $removeDays, $canWrite );
+			$this->handleClosedWiki( $dbname, $remoteWiki, $removeDays, $canWrite );
 		}
 
 		$remoteWiki->commit();
@@ -138,7 +139,7 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	private function handleInactiveWiki(
-		string $dbName,
+		string $dbname,
 		RemoteWikiFactory $remoteWiki,
 		int $closeDays,
 		bool $canWrite
@@ -148,18 +149,18 @@ class ManageInactiveWikis extends Maintenance {
 		if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-{$closeDays} days" ) ) ) {
 			if ( $canWrite ) {
 				$remoteWiki->markClosed();
-				$this->notify( $dbName );
-				$this->output( "{$dbName} was inactive and is now closed.\n" );
+				$this->notifyBureaucrats( $dbname );
+				$this->output( "{$dbname} was inactive and is now closed.\n" );
 			} else {
-				$this->output( "{$dbName} is inactive and should be closed.\n" );
+				$this->output( "{$dbname} is inactive and should be closed.\n" );
 			}
 		} elseif ( $isInactive ) {
-			$this->output( "{$dbName} remains inactive and is not yet eligible for closure.\n" );
+			$this->output( "{$dbname} remains inactive and is not yet eligible for closure.\n" );
 		}
 	}
 
 	private function handleClosedWiki(
-		string $dbName,
+		string $dbname,
 		RemoteWikiFactory $remoteWiki,
 		int $removeDays,
 		bool $canWrite
@@ -170,27 +171,27 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $canWrite ) {
 				// $remoteWiki->delete();
 				$this->output(
-					"{$dbName} is eligible for removal and now has been. " .
+					"{$dbname} is eligible for removal and now has been. " .
 					"It was closed on {$closedTimestamp}.\n"
 				);
 			} else {
 				$this->output(
-					"{$dbName} is eligible for removal if --write is used. " .
+					"{$dbname} is eligible for removal if --write is used. " .
 					"It was closed on {$closedTimestamp}.\n"
 				);
 			}
 		} else {
 			$this->output(
-				"{$dbName} was closed on {$closedTimestamp} and is not yet eligible for deletion. " .
+				"{$dbname} was closed on {$closedTimestamp} and is not yet eligible for deletion. " .
 				"It may have been manually closed.\n"
 			);
 		}
 	}
 
-	private function notify( string $dbName ): void {
+	private function notifyBureaucrats( string $dbname ): void {
 		$notificationData = [
 			'type' => 'closure',
-			'subject' => wfMessage( 'createwiki-close-email-subject', $dbName )->inContentLanguage()->text(),
+			'subject' => wfMessage( 'createwiki-close-email-subject', $dbname )->inContentLanguage()->text(),
 			'body' => [
 				'html' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->parse(),
 				'text' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->text(),
@@ -198,7 +199,7 @@ class ManageInactiveWikis extends Maintenance {
 		];
 
 		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
-			->notifyBureaucrats( $notificationData, $dbName );
+			->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
 
