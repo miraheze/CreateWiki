@@ -125,7 +125,7 @@ class RequestWikiRemoteAIJob extends Job {
 				'id' => $this->id,
 				'reasoning' => $comment,
 			]
-		);		
+		);
 
 		return true;
 	}
@@ -342,7 +342,7 @@ class RequestWikiRemoteAIJob extends Job {
 			[
 				'reqTimeout' => 15
 			]
-		);		
+		);
 
 			$this->logger->debug(
 				'HTTP request for {id} to OpenAI executed. Response was: {request}',
