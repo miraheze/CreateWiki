@@ -83,6 +83,7 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function handleDryRun( string $outcome, string $comment ): bool {
+		$services = MediaWikiServices::getInstance();
 		$outcomeMessage = Message::newFromKey( "requestwikiqueue-$outcome" )->text();
 		$commentText = Message::newFromKey( 'requestwiki-ai-decision-dryrun' )
 		->params( $outcomeMessage, $comment )
@@ -113,6 +114,7 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function handleLiveRun( string $outcome, string $comment ): bool {
+		$services = MediaWikiServices::getInstance();
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
 		$commentText = Message::newFromKey( "requestwiki-ai-decision-$outcome" )
 		->params( $comment )
