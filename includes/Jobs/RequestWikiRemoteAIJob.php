@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
 use MediaWiki\Config\Config;
+use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
@@ -29,6 +30,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private int $id;
 	private string $reason;
+	private string $sitename;
+	private string $subdomain;
 
 	public function __construct(
 		array $params,
@@ -44,14 +47,22 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 
 		$this->baseApiUrl = 'https://api.openai.com/v1';
-		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'];
+		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
 
 		$this->id = $params['id'];
 		$this->reason = $params['reason'];
+		$this->sitename = $params['sitename'];
+		$this->subdomain = $params['subdomain'];
 	}
 
 	public function run(): bool {
 		$services = MediaWikiServices::getInstance();
+
+		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
+			throw new ConfigException( 'OpenAI API key is missing! Cannot query API without it!' );
+		} elseif ( !$this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ) {
+			throw new ConfigException( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
+		}
 
 		$this->wikiRequestManager->loadFromID( $this->id );
 		$this->logger->debug( "Loaded request {$this->id} for AI approval." );
@@ -63,7 +74,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		// Initiate OpenAI query for decision
 		$this->logger->info( "Querying OpenAI for decision on wiki request {$this->id}..." );
-		$apiResponse = $this->queryOpenAI( $this->reason );
+		$apiResponse = $this->queryOpenAI( $this->sitename, $this->subdomain, $this->reason );
 
 		if ( !$apiResponse ) {
 			return true;
@@ -168,9 +179,9 @@ class RequestWikiRemoteAIJob extends Job {
 		return true;
 	}
 
-	private function queryOpenAI( string $reason ): ?array {
+	private function queryOpenAI( string $sitename, string $subdomain, string $reason ): ?array {
 		try {
-			$sanitizedReason = trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
+			$sanitizedReason = "Wiki name: $sitename. Subdomain: $subdomain. Wiki request reason: " . trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
 			$threadData = $this->createRequest( "/threads", 'POST', [
@@ -190,20 +201,20 @@ class RequestWikiRemoteAIJob extends Job {
 
 			// Step 2: Run the message
 			$runData = $this->createRequest( "/threads/$threadId/runs", 'POST', [
-				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistantid']
+				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? ''
 			] );
 
 			$runId = $runData['id'] ?? null;
 
 			$this->logger->debug(
-				'Stage 2 for AI decision of #{id}: Message ran.',
+				'Stage 2 for AI decision of {id}: Message ran.',
 				[
 					'id' => $this->id
 				]
 			);
 
 			$this->logger->debug(
-				'OpenAI returned the following data for stage 2 of #{id}: {runData}',
+				'OpenAI returned the following data for stage 2 of {id}: {runData}',
 				[
 					'id' => $this->id,
 					'runData' => json_encode( $runData ),
@@ -229,7 +240,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$status = $statusData['status'] ?? 'failed';
 
 				$this->logger->debug(
-					'Stage 2 for AI decision of #{id}: Retrieved run status for {runId}',
+					'Stage 2 for AI decision of {id}: Retrieved run status for {runId}',
 					[
 						'id' => $this->id,
 						'runId' => $runId
@@ -237,7 +248,7 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 
 				$this->logger->debug(
-					'OpenAI returned the following data for stage 3 of #{id}: {statusData}',
+					'OpenAI returned the following data for stage 3 of {id}: {statusData}',
 					[
 						'id' => $this->id,
 						'statusData' => json_encode( $statusData ),
@@ -248,7 +259,7 @@ class RequestWikiRemoteAIJob extends Job {
 					$status = 'running';
 				} elseif ( $status === 'failed' ) {
 					$this->logger->error(
-						'Run {runId} failed for #{id}! OpenAI returned {statusData}',
+						'Run {runId} failed for {id}! OpenAI returned {statusData}',
 						[
 							'id' => $this->id,
 							'runId' => $runId,
@@ -263,7 +274,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$messagesData = $this->createRequest( "/threads/$threadId/messages" );
 
 			$this->logger->debug(
-				'Stage 4 for AI decision of #{id}: Queried for messages in thread {threadId}.',
+				'Stage 4 for AI decision of {id}: Queried for messages in thread {threadId}.',
 				[
 					'id' => $this->id,
 					'threadId' => $threadId
@@ -271,7 +282,7 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 
 			$this->logger->debug(
-				'OpenAI returned the following data for stage 4 of #{id}: {messagesData}',
+				'OpenAI returned the following data for stage 4 of {id}: {messagesData}',
 				[
 					'id' => $this->id,
 					'messagesData' => json_encode( $messagesData ),
@@ -311,11 +322,11 @@ class RequestWikiRemoteAIJob extends Job {
 		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( MainConfigNames::HTTPProxy ) ] )
 			->run(
 				$requestOptions,
-				[ 'reqTimeout' => '15' ]
+				[ 'reqTimeout' => 15 ]
 			);
 
 			$this->logger->debug(
-				'HTTP request for #{id} to OpenAI executed. Response was: {request}',
+				'HTTP request for {id} to OpenAI executed. Response was: {request}',
 				[
 					'id' => $this->id,
 					'request' => json_encode( $request )
@@ -337,7 +348,7 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		$this->logger->debug(
-			'Checking wiki request #{id} against the auto approval denylist filter...',
+			'Checking wiki request {id} against the auto approval denylist filter...',
 			[
 				'id' => $this->id
 			]
@@ -345,7 +356,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		if ( preg_match( $filter, strtolower( $this->reason ) ) ) {
 			$this->logger->debug(
-				'Wiki request #{id} matched against the auto approval denylist filter! A manual review is required.',
+				'Wiki request {id} matched against the auto approval denylist filter! A manual review is required.',
 				[
 					'id' => $this->id
 				]
@@ -354,7 +365,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		$this->logger->debug(
-			'Wiki request #{id} passed the auto approval filter review!',
+			'Wiki request {id} passed the auto approval filter review!',
 			[
 				'id' => $this->id
 			]

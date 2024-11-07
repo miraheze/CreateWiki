@@ -359,8 +359,8 @@
 			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
 			"value": {
 				"dryrun": true,
-				"assistantid": "",
-				"apikey": ""
+				"assistantid": null,
+				"apikey": null
 			}
 		},
 		"CreateWikiPersistentModelFile": {
