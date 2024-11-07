@@ -259,17 +259,24 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger->debug( 'Creating request to OpenAI' );
 
 		// Create a multi-client
-		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
-			->run( [
-				'url' => $url,
-				'method' => $method,
-				'body' => json_encode( $data ),
-				'headers' => [
-					'Authorization' => 'Bearer ' . $this->apiKey,
-					'Content-Type'  => 'application/json',
-					'OpenAI-Beta'   => 'assistants=v2',
-				],
-			], [ 'reqTimeout' => '15' ]
+		$requestOptions = [
+			'url' => $url,
+			'method' => $method,
+			'headers' => [
+				'Authorization' => 'Bearer ' . $this->apiKey,
+				'Content-Type'  => 'application/json',
+				'OpenAI-Beta'   => 'assistants=v2',
+			],
+		];
+		
+		if ( $method === 'POST' ) {
+			$requestOptions['body'] = json_encode( $data );
+		}
+		
+		$request = $this->httpRequestFactory->createMultiClient([ 'proxy' => $this->config->get( 'HTTPProxy' ) ])
+			->run(
+				$requestOptions,
+				[ 'reqTimeout' => '15' ]
 			);
 
 		$this->logger->debug( 'Requested created to OpenAI. Response was: ' . json_encode( $request ) );
