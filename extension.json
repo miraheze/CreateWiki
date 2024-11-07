@@ -57,7 +57,6 @@
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
 			"services": [
 				"ConfigFactory",
-				"CreateWikiHookRunner",
 				"WikiRequestManager",
 				"HttpRequestFactory"
 			],
@@ -356,6 +355,14 @@
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
 			"value": "root@localhost"
 		},
+		"CreateWikiOpenAIConfig": {
+			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
+			"value": {
+				"dryrun": true,
+				"assistantid": "",
+				"apikey": ""
+			}
+		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
 			"value": ""
@@ -408,14 +415,6 @@
 		"CreateWikiUseJobQueue": {
 			"description": "Boolean. Whether to defer intensive tasks to the jobqueue.",
 			"value": false
-		},
-		"CreateWikiOpenAIConfig": {
-			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
-			"value": {
-				"dryrun": true,
-				"assistant": false,
-				"apikey": false
-			}
 		},
 		"CreateWikiUsePrivateWikis": {
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",

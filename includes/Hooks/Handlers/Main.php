@@ -56,8 +56,8 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onUserGetReservedNames( &$reservedUsernames ) {
-		$reservedUsernames[] = 'CreateWiki Extension';
 		$reservedUsernames[] = 'CreateWiki AI';
+		$reservedUsernames[] = 'CreateWiki Extension';
 	}
 
 	/** @inheritDoc */

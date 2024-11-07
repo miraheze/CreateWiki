@@ -7,10 +7,11 @@ use MediaWiki\Config\Config;
 use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MainConfigNames;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
 
@@ -19,7 +20,6 @@ class RequestWikiRemoteAIJob extends Job {
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
 	private Config $config;
-	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
 	private HttpRequestFactory $httpRequestFactory;
 	private LoggerInterface $logger;
@@ -32,14 +32,12 @@ class RequestWikiRemoteAIJob extends Job {
 	public function __construct(
 		array $params,
 		ConfigFactory $configFactory,
-		CreateWikiHookRunner $hookRunner,
 		WikiRequestManager $wikiRequestManager,
 		HttpRequestFactory $httpRequestFactory
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
 		$this->httpRequestFactory = $httpRequestFactory;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
@@ -52,134 +50,114 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	public function run(): bool {
+		$services = MediaWikiServices::getInstance();
+		$messageLocalizer = $services->getMessageLocalizerFactory()->createForLang($services->getContentLanguage());
 		$this->wikiRequestManager->loadFromID( $this->id );
-		$this->logger->debug( 'Loaded request ' . $this->id . ' for AI approval.' );
-
-		// Check if auto approval can be done
-		if ( $this->canAutoApprove() ) {
-			// Make API request to ChatGPT's Assistant API
-			$this->logger->debug( 'Began query to OpenAI for request ' . $this->id );
-			$apiResponse = $this->queryChatGPT( $this->reason );
-
-			if ( $apiResponse ) {
-				$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
-				$comment = $apiResponse['recommendation']['public_comment'];
-
-				$this->logger->debug( 'AI outcome for ' . $this->id . ' was ' . $outcome );
-
-				if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
-					if ( $outcome === 'approve' ) {
-						$this->wikiRequestManager->addComment(
-							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Approve.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							log: false,
-							type: 'comment',
-							// Use all involved users
-							notifyUsers: []
-						);
-
-						$this->logger->debug( 'Dry run! ' . $this->id . ' was approved by AI decision but was not automatically created.' );
-					} elseif ( $outcome === 'revise' ) {
-						$this->wikiRequestManager->addComment(
-							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Revise.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							log: false,
-							type: 'comment',
-							// Use all involved users
-							notifyUsers: []
-						);
-
-						$this->logger->debug( 'Dry run! ' . $this->id . ' needs revision per AI decision but was not automatically marked.' );
-					} elseif ( $outcome === 'decline' ) {
-						$this->wikiRequestManager->addComment(
-							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Decline.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							log: false,
-							type: 'comment',
-							// Use all involved users
-							notifyUsers: []
-						);
-
-						$this->logger->debug( 'Dry run! ' . $this->id . ' was declined by AI decision but was not automatically rejected.' );
-					} elseif ( $outcome === 'manualreview' ) {
-						$this->wikiRequestManager->addComment(
-							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Manual review required.<br /><br />\'\'\'Reasoning\'\'\': ' . $comment ),
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							log: false,
-							type: 'comment',
-							// Use all involved users
-							notifyUsers: []
-						);
-
-						$this->logger->debug( 'Dry run! ' . $this->id . ' needs manual review.' );
-					} else {
-						$this->wikiRequestManager->addComment(
-							comment: rtrim( 'This is an experimental AI analysis. Wiki requesters can safely ignore this.<br /><br />\'\'\'Recommendation\'\'\': Unknown.<br /><br />\'\'\'Reasoning\'\'\': Something went wrong. Check logs and try again.' ),
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							log: false,
-							type: 'comment',
-							// Use all involved users
-							notifyUsers: []
-						);
-					}
-				} else {
-					if ( $outcome === 'approve' ) {
-						// Start query builder so that it can set the status
-						$this->wikiRequestManager->startQueryBuilder();
-
-						$this->wikiRequestManager->approve(
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							comment: 'Request automatically approved with the following reasoning: ' . $comment
-						);
-
-						// Execute query builder to commit the status change
-						$this->wikiRequestManager->tryExecuteQueryBuilder();
-
-						$this->logger->debug( 'Wiki request ' . $this->id . ' automatically approved by AI decision!\n\nReasoning: ' . $comment );
-					} elseif ( $outcome === 'revise' ) {
-						$this->wikiRequestManager->startQueryBuilder();
-
-						$this->wikiRequestManager->moredetails(
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							comment: 'This wiki request requires more details. Here are some more details: ' . $comment
-						);
-
-						$this->wikiRequestManager->tryExecuteQueryBuilder();
-
-						$this->logger->debug( 'Wiki request ' . $this->id . ' needs more details.\n\nReasoning: ' . $comment );
-					} elseif ( $outcome === 'decline' ) {
-						$this->wikiRequestManager->startQueryBuilder();
-
-						$this->wikiRequestManager->decline(
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							comment: 'We couldn\'t approve your request at this time for the following reason: ' . $comment
-						);
-
-						$this->wikiRequestManager->tryExecuteQueryBuilder();
-
-						$this->logger->debug( 'Wiki request' . $this->id . 'rejected by AI decision.\n\nReasoning: ' . $comment );
-					} else {
-						$this->wikiRequestManager->addComment(
-							comment: rtrim( 'This request could not be automatically approved. Your request has been queued for manual review.' ),
-							user: User::newSystemUser( 'CreateWiki AI' ),
-							log: false,
-							type: 'comment',
-							// Use all involved users
-							notifyUsers: []
-						);
-
-						$this->logger->debug( 'Wiki request ' . $this->id . ' could not be approved. Check logs for details.' );
-					}
-				}
-			}
-		} else {
-			$this->logger->debug( 'Wiki request ' . $this->id . ' was not auto-evaluated because it hit the auto-approval denylist.' );
+		$this->logger->debug("Loaded request {$this->id} for AI approval.");
+	
+		if ( !$this->canAutoApprove() ) {
+			$this->logger->debug("Wiki request {$this->id} was not auto-evaluated due to denylist.");
+			return true;
 		}
-
+	
+		// Initiate OpenAI query for decision
+		$this->logger->info( "Querying OpenAI for decision on wiki request {$this->id}..." );
+		$apiResponse = $this->queryOpenAI( $this->reason );
+	
+		if (!$apiResponse) return true;
+	
+		// Extract response details with default fallbacks
+		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
+		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
+	
+		$this->logger->info( "AI decision: {$outcome} for request {$this->id}. Comment: {$comment}" );
+	
+		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
+			return $this->handleDryRun( $outcome, $comment, $messageLocalizer );
+		} else {
+			return $this->handleLiveRun( $outcome, $comment );
+		}
+	}
+	
+	private function handleDryRun( string $outcome, string $comment, MessageLocalizer $messageLocalizer ): bool {
+		$commentText = $messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
+			->rawParams( $messageLocalizer->msg("requestwikiqueue-$outcome")->text(), $comment )
+			->text();
+	
+		$this->wikiRequestManager->addComment(
+			comment: $commentText,
+			user: User::newSystemUser( 'CreateWiki AI' ),
+			log: true,
+			type: 'comment',
+			notifyUsers: []
+		);
+	
+		$dryRunMessages = [
+			'approve' => "Wiki request {$this->id} was approved by AI but not automatically created.",
+			'revise' => "Wiki request {$this->id} needs revision but was not automatically marked.",
+			'decline' => "Wiki request {$this->id} was declined by AI but not automatically marked.",
+			'onhold' => "Wiki request {$this->id} requires manual review.",
+		];
+	
+		$this->logger->debug( "DRY RUN: " . ( $dryRunMessages[$outcome] ?? "Unknown outcome for request {$this->id}." ), [
+			'id' => $this->id,
+			'reasoning' => $comment,
+		]);
+	
 		return true;
 	}
+	
+	private function handleLiveRun( string $outcome, string $comment ): bool {
+		$systemUser = User::newSystemUser( 'CreateWiki AI' );
+	
+		switch ( $outcome ) {
+			case 'approve':
+				$this->wikiRequestManager->startQueryBuilder();
+				$this->wikiRequestManager->approve(
+					user: $systemUser,
+					comment: "Request auto-approved with the following reason: $comment"
+				);
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				$this->logger->debug("Request {$this->id} auto-approved by AI.\nReason: $comment");
+				break;
+	
+			case 'moredetails':
+				$this->wikiRequestManager->startQueryBuilder();
+				$this->wikiRequestManager->moredetails(
+					user: $systemUser,
+					comment: "This request requires more details before being approved: $comment"
+				);
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				$this->logger->debug("Request {$this->id} requires more details.\nReason: $comment");
+				break;
+	
+			case 'decline':
+				$this->wikiRequestManager->startQueryBuilder();
+				$this->wikiRequestManager->decline(
+					user: $systemUser,
+					comment: "This request could not be approved for the follwing reason: $comment"
+				);
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
+				$this->logger->debug("Request {$this->id} declined by AI.\nReason: $comment");
+				break;
+	
+			case 'onhold':
+			default:
+				$this->wikiRequestManager->addComment(
+					comment: "This request could not be automatically approved and has been queued for manual review.",
+					user: $systemUser,
+					log: false,
+					type: 'comment',
+					notifyUsers: []
+				);
+				$this->logger->debug("Request {$this->id} queued for manual review.");
+				break;
+		}
+	
+		return true;
+	}	
 
-	private function queryChatGPT( string $reason ): ?array {
+	private function queryOpenAI( string $reason ): ?array {
 		try {
 			$sanitizedReason = trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
@@ -201,7 +179,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			// Step 2: Run the message
 			$runData = $this->createRequest( "/threads/$threadId/runs", 'POST', [
-				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistant']
+				"assistant_id" => $this->config->get( ConfigNames::OpenAIConfig )['assistantid']
 			] );
 
 			$runId = $runData['id'] ?? null;
@@ -263,9 +241,9 @@ class RequestWikiRemoteAIJob extends Job {
 			'url' => $url,
 			'method' => $method,
 			'headers' => [
-				'Authorization' => 'Bearer ' . $this->apiKey,
-				'Content-Type'  => 'application/json',
-				'OpenAI-Beta'   => 'assistants=v2',
+				'Authorization'	=> 'Bearer ' . $this->apiKey,
+				'Content-Type'	=> 'application/json',
+				'OpenAI-Beta'	=> 'assistants=v2',
 			],
 		];
 
@@ -273,7 +251,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$requestOptions['body'] = json_encode( $data );
 		}
 
-		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( 'HTTPProxy' ) ] )
+		$request = $this->httpRequestFactory->createMultiClient( [ 'proxy' => $this->config->get( MainConfigNames::HTTPProxy ) ] )
 			->run(
 				$requestOptions,
 				[ 'reqTimeout' => '15' ]

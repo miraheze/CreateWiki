@@ -160,7 +160,7 @@ class WikiRequestManager {
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
-		} elseif ( $this->options->get( ConfigNames::OpenAIConfig )['apikey'] ) {
+		} elseif ( $this->options->get( ConfigNames::OpenAIConfig )['apikey'] ?? false ) {
 			$this->evaluateWithChatGPT( $data['reason'] );
 		}
 
