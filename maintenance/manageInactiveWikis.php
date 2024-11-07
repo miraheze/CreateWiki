@@ -147,12 +147,15 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $canWrite ) {
 				$remoteWiki->markClosed();
 				$this->notifyBureaucrats( $dbname );
-				$this->output( "{$dbname} was marked inactive on {$inactiveTimestamp} and is now closed.\n" );
+				$this->output( "{$dbname} was marked as inactive on {$inactiveTimestamp} and is now closed.\n" );
 			} else {
-				$this->output( "{$dbname} was marked inactive on {$inactiveTimestamp} and should be closed.\n" );
+				$this->output( "{$dbname} was marked as inactive on {$inactiveTimestamp} and should be closed.\n" );
 			}
 		} elseif ( $isInactive ) {
-			$this->output( "{$dbname} was marked inactive on {$inactiveTimestamp} but is not yet eligible for closure.\n" );
+			$this->output(
+				"{$dbname} was marked as inactive on {$inactiveTimestamp} " .
+				"but is not yet eligible for closure.\n"
+			);
 		}
 	}
 
