@@ -120,7 +120,7 @@
 	"requestwiki-ai-decision-approve": "Comment added to wiki requests upon approval containing the reasoning for its approval.",
 	"requestwiki-ai-decision-decline": "Comment added to wiki requests upon rejection containing the reasoning for its rejection.",
 	"requestwiki-ai-decision-dryrun": "Comment added to wiki requests when AI approvals are on dry run mode. Contains outcome and the reasoning for the action.",
-	"requestwiki-ai-decision-moredetails": "Comment added to wiki requests upon more details beingf requested containing the reasoning for requesting such details.",
+	"requestwiki-ai-decision-moredetails": "Comment added to wiki requests upon more details being requested containing the reasoning for requesting such details.",
 	"requestwiki-ai-decision-onhold": "Comment added to wiki requests upon being placed on hold containing the reasoning for such action.",
 	"requestwiki-edit-success": "Success message displayed when a wiki request is successfully edited.",
 	"requestwiki-error-emailnotconfirmed": "Error message shown when the user's email is not confirmed during a wiki request.",
