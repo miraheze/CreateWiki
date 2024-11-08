@@ -53,6 +53,15 @@
 			],
 			"needsPage": false
 		},
+		"RequestWikiRemoteAIJob": {
+			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
+			"services": [
+				"ConfigFactory",
+				"WikiRequestManager",
+				"HttpRequestFactory"
+			],
+			"needsPage": false
+		},
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\SetContainersAccessJob",
 			"services": [
@@ -345,6 +354,14 @@
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
 			"value": "root@localhost"
+		},
+		"CreateWikiOpenAIConfig": {
+			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
+			"value": {
+				"dryrun": true,
+				"assistantid": null,
+				"apikey": null
+			}
 		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
