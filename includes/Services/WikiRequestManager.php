@@ -982,7 +982,11 @@ class WikiRequestManager {
 		);
 	}
 
-	private function evaluateWithOpenAI( string $sitename, string $subdomain, string $reason ): void {
+	private function evaluateWithOpenAI(
+		string $sitename,
+		string $subdomain,
+		string $reason
+	): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
