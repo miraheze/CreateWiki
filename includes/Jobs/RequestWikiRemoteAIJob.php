@@ -129,7 +129,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
 			user: User::newSystemUser( 'CreateWiki AI' ),
-			log: true,
+			log: false,
 			type: 'comment',
 			notifyUsers: []
 		);
