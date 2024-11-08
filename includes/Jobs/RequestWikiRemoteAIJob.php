@@ -124,7 +124,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$commentText = $this->context->msg( 'requestwiki-ai-decision-dryrun' )
 		->params( $outcomeMessage, $comment )
 		->inContentLanguage()
-		->escaped();
+		->parse();
 
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
@@ -158,7 +158,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$commentText = $this->context->msg( 'requestwiki-ai-decision-' . $outcome )
 			->params( $comment )
 			->inContentLanguage()
-			->escaped();
+			->parse();
 
 		switch ( $outcome ) {
 			case 'approve':
