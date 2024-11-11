@@ -451,6 +451,11 @@ class WikiManagerFactory {
 
 		$cTables['cw_wikis'] = 'wiki_dbname';
 
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+			$cTables['localnames'] = 'ln_wiki';
+			$cTables['localuser'] = 'lu_wiki';
+		}
+
 		$this->tables = $cTables;
 	}
 
