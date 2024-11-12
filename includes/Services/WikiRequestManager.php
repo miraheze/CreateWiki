@@ -27,11 +27,9 @@ use Wikimedia\Rdbms\UpdateQueryBuilder;
 class WikiRequestManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		ConfigNames::AIThreshold,
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::GlobalWiki,
-		ConfigNames::OpenAIConfig,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
@@ -156,17 +154,6 @@ class WikiRequestManager {
 			->execute();
 
 		$this->ID = $this->dbw->insertId();
-
-		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
-			$this->tryAutoCreate( $data['reason'] );
-		} elseif (
-			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
-			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
-		) {
-			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
-		}
-
-		$this->logNewRequest( $data, $user );
 	}
 
 	public function isDuplicateRequest( string $sitename ): bool {
@@ -430,9 +417,6 @@ class WikiRequestManager {
 
 			$this->log( $user, 'requestapprove' );
 
-			if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
-				$this->tryAutoCreate( $this->getReason() );
-			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
 			// This runs checkDatabaseName and if it returns a
@@ -493,11 +477,6 @@ class WikiRequestManager {
 		}
 
 		$this->log( $user, 'requestdecline' );
-
-		if ( $this->options->get( ConfigNames::AIThreshold ) === 0 ) {
-			$this->tryAutoCreate( $this->getReason() );
-		}
-	}
 
 	public function onhold( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'onhold' ) {
