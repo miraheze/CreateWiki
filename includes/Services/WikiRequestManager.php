@@ -16,7 +16,6 @@ use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
-use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
@@ -967,19 +966,6 @@ class WikiRequestManager {
 		}
 
 		return implode( "\n", $lines );
-	}
-
-	private function tryAutoCreate( string $reason ): void {
-		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
-		$jobQueueGroup->push(
-			new JobSpecification(
-				RequestWikiAIJob::JOB_NAME,
-				[
-					'id' => $this->ID,
-					'reason' => $reason,
-				]
-			)
-		);
 	}
 
 	private function evaluateWithOpenAI(
