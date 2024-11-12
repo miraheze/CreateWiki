@@ -967,23 +967,4 @@ class WikiRequestManager {
 
 		return implode( "\n", $lines );
 	}
-
-	private function evaluateWithOpenAI(
-		string $sitename,
-		string $subdomain,
-		string $reason
-	): void {
-		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
-		$jobQueueGroup->push(
-			new JobSpecification(
-				RequestWikiRemoteAIJob::JOB_NAME,
-				[
-					'id' => $this->ID,
-					'sitename' => $sitename,
-					'subdomain' => $subdomain,
-					'reason' => $reason,
-				]
-			)
-		);
-	}
 }
