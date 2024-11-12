@@ -477,6 +477,7 @@ class WikiRequestManager {
 		}
 
 		$this->log( $user, 'requestdecline' );
+	}
 
 	public function onhold( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' || $this->getStatus() === 'onhold' ) {
