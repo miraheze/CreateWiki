@@ -307,7 +307,9 @@ class WikiManagerFactory {
 
 		$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 
-		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
+		if ( $actor !== '' ) {
+			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
+		}
 	}
 
 	public function delete( bool $force ): ?string {
