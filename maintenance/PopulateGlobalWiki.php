@@ -28,10 +28,6 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 		return __CLASS__ . ':' . $this->getGlobalWiki();
 	}
 
-	protected function updateSkippedMessage(): string {
-		return 'The global wiki has already been populated in cw_wikis.';
-	}
-
 	protected function doDBUpdates(): bool {
 		$globalWiki = $this->getGlobalWiki();
 
