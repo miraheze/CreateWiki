@@ -113,7 +113,7 @@
 	"requestwiki": "Een wiki aanvragen",
 	"requestwiki-ai-decision-approve": "Automatisch, met de redenering: $1",
 	"requestwiki-ai-decision-decline": "Deze aanvraag kon op dit moment niet worden ingewilligd om de volgende reden: $1",
-	"requestwiki-ai-decision-dryrun": "Dit is een experimentele KI-analyse. Wiki-aanvragers kunnen dit gerust negeren.\n\n'''Aanbeveling''': $1.\n\n'''Redenering''': $2",
+	"requestwiki-ai-decision-dryrun": "Dit is een experimentele AI-analyse. Wiki-aanvragers kunnen dit gerust negeren.\n\n'''Aanbeveling''': $1.\n\n'''Redenering''': $2",
 	"requestwiki-ai-decision-moredetails": "Voor deze aanvraag zijn meer details nodig voordat verdere beoordeling mogelijk is, om de volgende reden: $1",
 	"requestwiki-ai-decision-onhold": "Deze aanvraag kon niet automatisch worden ingewilligd en vereist een handmatige beoordeling.",
 	"requestwiki-edit-success": "Uw wijzigingen in dit wiki-verzoek zijn opgeslagen.",
