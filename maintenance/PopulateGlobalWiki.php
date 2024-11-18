@@ -7,7 +7,6 @@ require_once "$IP/maintenance/Maintenance.php";
 
 use LoggedUpdateMaintenance;
 use MediaWiki\MainConfigNames;
-use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 
 class PopulateGlobalWiki extends LoggedUpdateMaintenance {
@@ -27,10 +26,6 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 
 	protected function getUpdateKey(): string {
 		return __CLASS__ . ':' . $this->getGlobalWiki();
-	}
-
-	protected function updateSkippedMessage(): string {
-		return 'The global wiki has already been populated in cw_wikis.';
 	}
 
 	protected function doDBUpdates(): bool {
@@ -56,9 +51,7 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			->row( [
 				'wiki_dbname' => $globalWiki,
 				'wiki_dbcluster' => $this->getOption( 'dbcluster', $this->getDefaultCluster() ),
-				'wiki_sitename' => $this->getOption( 'sitename',
-					WikiMap::getWikiName( $globalWiki )
-				),
+				'wiki_sitename' => $this->getOption( 'sitename', 'Global Wiki' ),
 				'wiki_language' => $this->getOption( 'language',
 					$this->getConfig()->get( MainConfigNames::LanguageCode )
 				),

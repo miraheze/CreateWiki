@@ -17,6 +17,7 @@ use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
+use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -30,6 +31,7 @@ class WikiRequestManager {
 		ConfigNames::AIThreshold,
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
+		ConfigNames::OpenAIConfig,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
@@ -153,6 +155,11 @@ class WikiRequestManager {
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
+		} elseif (
+			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
+			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
+		) {
+			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -959,6 +966,25 @@ class WikiRequestManager {
 				RequestWikiAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
+					'reason' => $reason,
+				]
+			)
+		);
+	}
+
+	private function evaluateWithOpenAI(
+		string $sitename,
+		string $subdomain,
+		string $reason
+	): void {
+		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
+		$jobQueueGroup->push(
+			new JobSpecification(
+				RequestWikiRemoteAIJob::JOB_NAME,
+				[
+					'id' => $this->ID,
+					'sitename' => $sitename,
+					'subdomain' => $subdomain,
 					'reason' => $reason,
 				]
 			)
