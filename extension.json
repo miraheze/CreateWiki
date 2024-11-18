@@ -28,7 +28,7 @@
 		"CreateWikiMagic": "CreateWikiMagic.php"
 	},
 	"TranslationAliasesDirs": {
-		"CreateWikiAliases": "i18n/aliases/"
+		"CreateWikiAliases": "i18n/aliases"
 	},
 	"AutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\": "includes/",
