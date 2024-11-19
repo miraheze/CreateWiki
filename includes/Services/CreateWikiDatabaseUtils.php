@@ -4,8 +4,6 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Rdbms\IConnectionProvider;
-use Wikimedia\Rdbms\IDatabase;
-use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiDatabaseUtils {
 
