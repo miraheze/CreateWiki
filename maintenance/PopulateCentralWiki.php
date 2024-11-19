@@ -9,27 +9,27 @@ use LoggedUpdateMaintenance;
 use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\ConfigNames;
 
-class PopulateGlobalWiki extends LoggedUpdateMaintenance {
+class PopulateCentralWiki extends LoggedUpdateMaintenance {
 
 	public function __construct() {
 		parent::__construct();
 
-		$this->addDescription( 'Populates the initial global wiki into cw_wikis.' );
+		$this->addDescription( 'Populates the initial central wiki into cw_wikis.' );
 
-		$this->addOption( 'category', 'The default category to use for the global wiki.' );
-		$this->addOption( 'dbcluster', 'The cluster to create the global wiki database at.' );
-		$this->addOption( 'language', 'The default language to use for the global wiki.' );
-		$this->addOption( 'sitename', 'The default sitename to use for the global wiki.' );
+		$this->addOption( 'category', 'The default category to use for the central wiki.' );
+		$this->addOption( 'dbcluster', 'The cluster to create the central wiki database at.' );
+		$this->addOption( 'language', 'The default language to use for the central wiki.' );
+		$this->addOption( 'sitename', 'The default sitename to use for the central wiki.' );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
 
 	protected function getUpdateKey(): string {
-		return __CLASS__ . ':' . $this->getGlobalWiki();
+		return __CLASS__ . ':' . $this->getCentralWiki();
 	}
 
 	protected function doDBUpdates(): bool {
-		$globalWiki = $this->getGlobalWiki();
+		$centralWiki = $this->getCentralWiki();
 
 		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
 		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
@@ -37,19 +37,19 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
 			->from( 'cw_wikis' )
-			->where( [ 'wiki_dbname' => $globalWiki ] )
+			->where( [ 'wiki_dbname' => $centralWiki ] )
 			->caller( __METHOD__ )
 			->fetchRow();
 
 		if ( $exists ) {
-			// The global wiki is already populated.
+			// The central wiki is already populated.
 			return true;
 		}
 
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
-				'wiki_dbname' => $globalWiki,
+				'wiki_dbname' => $centralWiki,
 				'wiki_dbcluster' => $this->getOption( 'dbcluster', $this->getDefaultCluster() ),
 				'wiki_sitename' => $this->getOption( 'sitename', 'Global Wiki' ),
 				'wiki_language' => $this->getOption( 'language',
@@ -62,13 +62,13 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 			->caller( __METHOD__ )
 			->execute();
 
-		$this->output( "Populated global wiki '{$globalWiki}' into cw_wikis.\n" );
+		$this->output( "Populated central wiki '{$centralWiki}' into cw_wikis.\n" );
 		return true;
 	}
 
-	private function getGlobalWiki(): string {
+	private function getCentralWiki(): string {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		return $databaseUtils->getGlobalWikiID();
+		return $databaseUtils->getCentralWikiID();
 	}
 
 	private function getDefaultCluster(): ?string {
@@ -77,5 +77,5 @@ class PopulateGlobalWiki extends LoggedUpdateMaintenance {
 	}
 }
 
-$maintClass = PopulateGlobalWiki::class;
+$maintClass = PopulateCentralWiki::class;
 require_once RUN_MAINTENANCE_IF_MAIN;

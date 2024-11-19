@@ -29,11 +29,11 @@ class CreateWikiRestUtils {
 	/**
 	 * Called from the REST handlers.
 	 *
-	 * Checks that the current wiki is the global wiki and
+	 * Checks that the current wiki is the central wiki and
 	 * that the REST API is not disabled.
 	 */
 	public function checkEnv(): void {
-		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
 			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotcentralwiki' ), 403 );
 		}
 

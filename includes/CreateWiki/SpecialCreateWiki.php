@@ -29,7 +29,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 

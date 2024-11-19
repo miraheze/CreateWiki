@@ -13,12 +13,12 @@ class CreateWikiDatabaseUtils {
 		$this->connectionProvider = $connectionProvider;
 	}
 
-	public function getGlobalWikiID(): bool|string {
+	public function getCentralWikiID(): bool|string {
 		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 		return $dbr->getDomainID();
 	}
 
-	public function isCurrentWikiGlobal(): bool {
-		return WikiMap::isCurrentWikiDbDomain( $this->getGlobalWikiID() );
+	public function isCurrentWikiCentral(): bool {
+		return WikiMap::isCurrentWikiDbDomain( $this->getCentralWikiID() );
 	}
 }

@@ -43,7 +43,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setParameter( $par );
 		$this->setHeaders();
 
-		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
