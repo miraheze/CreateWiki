@@ -1,0 +1,13 @@
+{
+	"SpecialPageAliases": {
+		"CreateWiki": [
+			"CreateWiki"
+		],
+		"RequestWiki": [
+			"RequestWiki"
+		],
+		"RequestWikiQueue": [
+			"RequestWikiQueue"
+		]
+	}
+}

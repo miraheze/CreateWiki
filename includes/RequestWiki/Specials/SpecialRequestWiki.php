@@ -135,6 +135,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'type' => 'textarea',
 			'rows' => 10,
 			'minlength' => $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
+			'maxlength' => 4096,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
