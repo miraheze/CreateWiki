@@ -163,14 +163,14 @@
 		"CreateWiki": {
 			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
-				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"WikiManagerFactory"
 			]
 		},
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
-				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
 			]
