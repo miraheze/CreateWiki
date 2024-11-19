@@ -14,23 +14,8 @@ class CreateWikiDatabaseUtils {
 		$this->connectionProvider = $connectionProvider;
 	}
 
-	public function getCreateWikiPrimaryDB(): IDatabase {
-		return $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
-	}
-
-	public function getCreateWikiReplicaDB(): IReadableDatabase {
-		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
-	}
-
 	public function getGlobalWikiID(): bool|string {
-		return $this->getGlobalWikiReplicaDB()->getDomainID();
-	}
-
-	public function getGlobalWikiPrimaryDB(): IDatabase {
-		return $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-global' );
-	}
-
-	public function getGlobalWikiReplicaDB(): IReadableDatabase {
-		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		return $dbr->getDomainID();
 	}
 }
