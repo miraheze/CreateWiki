@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Rest\LocalizedHttpException;
-use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Wikimedia\Message\MessageValue;
 
