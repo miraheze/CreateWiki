@@ -2,13 +2,10 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\RestUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -19,25 +16,22 @@ use Wikimedia\ParamValidator\ParamValidator;
  */
 class RestWikiRequestsByUser extends SimpleHandler {
 
-	private Config $config;
-	private CreateWikiDatabaseUtils $databaseUtils;
+	private CreateWikiRestUtils $restUtils;
 	private UserFactory $userFactory;
 	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
-		ConfigFactory $configFactory,
-		CreateWikiDatabaseUtils $databaseUtils,
+		CreateWikiRestUtils $restUtils,
 		UserFactory $userFactory,
 		WikiRequestManager $wikiRequestManager
 	) {
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->databaseUtils = $databaseUtils;
+		$this->restUtils = $restUtils;
 		$this->userFactory = $userFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( string $username ): Response {
-		RestUtils::checkEnv( $this->config, $this->databaseUtils );
+		$this->restUtils->checkEnv();
 
 		$user = $this->userFactory->newFromName( $username );
 
