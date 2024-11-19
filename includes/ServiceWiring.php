@@ -7,6 +7,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
@@ -43,6 +44,15 @@ return [
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
+	},
+	'CreateWikiRestUtils' => static function ( MediaWikiServices $services ): CreateWikiRestUtils {
+		return new CreateWikiRestUtils(
+			$services->get( 'CreateWikiDatabaseUtils' ),
+			new ServiceOptions(
+				CreateWikiRestUtils::CONSTRUCTOR_OPTIONS,
+				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+			)
+		);
 	},
 	'RemoteWikiFactory' => static function ( MediaWikiServices $services ): RemoteWikiFactory {
 		return new RemoteWikiFactory(
