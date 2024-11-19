@@ -8,30 +8,29 @@ use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
-use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	private IConnectionProvider $connectionProvider;
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
 
 	private array $extraFields = [];
 
 	public function __construct(
-		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		CreateWikiHookRunner $hookRunner,
 		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
-		$this->connectionProvider = $connectionProvider;
+		$this->databaseUtils = $databaseUtils;
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
@@ -44,8 +43,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setParameter( $par );
 		$this->setHeaders();
 
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
-		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
+		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 
