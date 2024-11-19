@@ -324,10 +324,6 @@
 				"local-deleted": "private"
 			}
 		},
-		"CreateWikiDatabase": {
-			"description": "String. Database name of where cw_wikis is stored.",
-			"value": ""
-		},
 		"CreateWikiDatabaseClusters": {
 			"description": "Array. LBFactory clusters which CreateWiki considers active.",
 			"value": []
@@ -351,10 +347,6 @@
 		"CreateWikiEnableRESTAPI": {
 			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
-		},
-		"CreateWikiGlobalWiki": {
-			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
-			"value": ""
 		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
