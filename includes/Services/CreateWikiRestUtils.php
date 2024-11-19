@@ -34,16 +34,12 @@ class CreateWikiRestUtils {
 	 * that the REST API is not disabled.
 	 */
 	public function checkEnv(): void {
-		if ( !WikiMap::isCurrentWikiDbDomain( $this->databaseUtils->getGlobalWikiID() ) ) {
-			throw new LocalizedHttpException(
-				new MessageValue( 'createwiki-wikinotglobalwiki' ), 403
-			);
+		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
+			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotglobalwiki' ), 403 );
 		}
 
 		if ( !$this->options->get( ConfigNames::EnableRESTAPI ) ) {
-			throw new LocalizedHttpException(
-				new MessageValue( 'createwiki-rest-disabled' ), 403
-			);
+			throw new LocalizedHttpException( new MessageValue( 'createwiki-rest-disabled' ), 403 );
 		}
 	}
 }
