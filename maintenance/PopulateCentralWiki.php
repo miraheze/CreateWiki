@@ -51,7 +51,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 			->row( [
 				'wiki_dbname' => $centralWiki,
 				'wiki_dbcluster' => $this->getOption( 'dbcluster', $this->getDefaultCluster() ),
-				'wiki_sitename' => $this->getOption( 'sitename', 'Global Wiki' ),
+				'wiki_sitename' => $this->getOption( 'sitename', 'Central Wiki' ),
 				'wiki_language' => $this->getOption( 'language',
 					$this->getConfig()->get( MainConfigNames::LanguageCode )
 				),
