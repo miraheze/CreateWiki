@@ -27,7 +27,8 @@ class DeleteWikis extends Maintenance {
 
 	public function execute(): void {
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$dbr = $this->getDB( DB_REPLICA, [], 'virtual-createwiki' );
+		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
+		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( '*' )
