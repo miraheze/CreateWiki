@@ -179,6 +179,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"LanguageNameUtils",
 				"PermissionManager",
