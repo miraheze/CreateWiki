@@ -36,7 +36,8 @@ class ManageInactiveWikis extends Maintenance {
 		}
 
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$dbr = $this->getDB( DB_REPLICA, [], 'virtual-createwiki' );
+		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
+		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
