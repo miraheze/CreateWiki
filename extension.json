@@ -456,7 +456,7 @@
 	],
 	"DatabaseVirtualDomains": [
 		"virtual-createwiki",
-		"virtual-createwiki-global"
+		"virtual-createwiki-central"
 	],
 	"load_composer_autoloader": true,
 	"manifest_version": 2

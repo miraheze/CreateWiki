@@ -429,7 +429,7 @@ class WikiManagerFactory {
 			return;
 		}
 
-		$logDBConn = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-global' );
+		$logDBConn = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
@@ -451,7 +451,7 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 		$data = $this->dataFactory->newInstance( $dbr->getDomainID() );
 
 		$data->resetDatabaseLists( isNewChanges: true );

@@ -40,7 +40,7 @@ class RequestWikiQueuePager extends TablePager {
 	) {
 		parent::__construct( $context, $linkRenderer );
 
-		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$this->languageNameUtils = $languageNameUtils;
 		$this->linkRenderer = $linkRenderer;

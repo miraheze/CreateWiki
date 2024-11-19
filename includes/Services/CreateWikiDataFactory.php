@@ -215,7 +215,7 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			$globalDbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+			$globalDbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 			if ( $this->wiki === $globalDbr->getDomainID() ) {
 				// Don't throw an exception if we have not yet populated the
 				// global wiki, so that the PopulateGlobalWiki script can

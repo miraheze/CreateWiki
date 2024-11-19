@@ -61,7 +61,7 @@
 	"createwiki-success": "The wiki was successfully created.",
 	"createwiki-success-locked": "This request has been successfully locked. It can no longer be edited and comments cannot be added to it.",
 	"createwiki-success-unlocked": "This request has been successfully unlocked.",
-	"createwiki-wikinotglobalwiki": "The interfaces for CreateWiki are only available on the global wiki.",
+	"createwiki-wikinotcentralwiki": "The interfaces for CreateWiki are only available on the central wiki.",
 	"echo-category-title-request-comment": "Comment added to wiki request",
 	"echo-category-title-request-declined": "Wiki request declined",
 	"echo-category-title-request-moredetails": "Wiki request needs more details",

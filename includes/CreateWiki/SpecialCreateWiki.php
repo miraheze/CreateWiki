@@ -30,7 +30,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 */
 	public function execute( $par ): void {
 		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
-			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
 		parent::execute( $par );

@@ -37,7 +37,7 @@ class RestWikiRequest extends SimpleHandler {
 
 		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
 
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$wikiRequest = $dbr->newSelectQueryBuilder()
 			->select( '*' )

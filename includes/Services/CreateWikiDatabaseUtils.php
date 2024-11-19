@@ -14,7 +14,7 @@ class CreateWikiDatabaseUtils {
 	}
 
 	public function getGlobalWikiID(): bool|string {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 		return $dbr->getDomainID();
 	}
 

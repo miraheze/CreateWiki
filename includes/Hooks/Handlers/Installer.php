@@ -12,7 +12,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		$dir = __DIR__ . '/../../../sql';
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'addTable',
 			'cw_requests',
 			"$dir/cw_requests.sql",
@@ -20,7 +20,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'addTable',
 			'cw_comments',
 			"$dir/cw_comments.sql",
@@ -28,7 +28,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'addTable',
 			'cw_history',
 			"$dir/cw_history.sql",
@@ -44,7 +44,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'addField',
 			'cw_requests',
 			'cw_locked',
@@ -53,7 +53,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'addField',
 			'cw_requests',
 			'cw_extra',
@@ -70,7 +70,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'modifyField',
 			'cw_requests',
 			'cw_private',
@@ -79,7 +79,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'modifyField',
 			'cw_requests',
 			'cw_timestamp',
@@ -88,7 +88,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
-			'virtual-createwiki-global',
+			'virtual-createwiki-central',
 			'modifyField',
 			'cw_comments',
 			'cw_comment_timestamp',

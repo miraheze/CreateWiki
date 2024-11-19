@@ -34,7 +34,7 @@ class CreateWikiRestUtils {
 	 */
 	public function checkEnv(): void {
 		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
-			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotglobalwiki' ), 403 );
+			throw new LocalizedHttpException( new MessageValue( 'createwiki-wikinotcentralwiki' ), 403 );
 		}
 
 		if ( !$this->options->get( ConfigNames::EnableRESTAPI ) ) {
