@@ -2,8 +2,7 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Rest\LocalizedHttpException;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
@@ -11,15 +10,21 @@ use Wikimedia\Message\MessageValue;
 
 class CreateWikiRestUtils {
 
-	private Config $config;
+	public const CONSTRUCTOR_OPTIONS = [
+		ConfigNames::EnableRESTAPI,
+	];
+
 	private CreateWikiDatabaseUtils $databaseUtils;
+	private ServiceOptions $options;
 
 	public function __construct(
-		ConfigFactory $configFactory,
-		CreateWikiDatabaseUtils $databaseUtils
+		CreateWikiDatabaseUtils $databaseUtils,
+		ServiceOptions $options
 	) {
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
+
 		$this->databaseUtils = $databaseUtils;
+		$this->options = $options;
 	}
 
 	/**
@@ -35,7 +40,7 @@ class CreateWikiRestUtils {
 			);
 		}
 
-		if ( !$this->config->get( ConfigNames::EnableRESTAPI ) ) {
+		if ( !$this->options->get( ConfigNames::EnableRESTAPI ) ) {
 			throw new LocalizedHttpException(
 				new MessageValue( 'createwiki-rest-disabled' ), 403
 			);
