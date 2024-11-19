@@ -6,23 +6,22 @@ use ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
-use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
-	private IConnectionProvider $connectionProvider;
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct(
-		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 
-		$this->connectionProvider = $connectionProvider;
+		$this->databaseUtils = $databaseUtils;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
@@ -30,8 +29,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-global' );
-		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
+		if ( !$this->databaseUtils->isCurrentWikiGlobal() ) {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
 		}
 
