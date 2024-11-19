@@ -240,9 +240,8 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
 			"services": [
-				"ConfigFactory",
 				"ConnectionProvider",
-				"CreateWikiDatabaseUtils",
+				"CreateWikiRestUtils",
 				"UserFactory"
 			]
 		},
@@ -251,8 +250,7 @@
 			"method": "POST",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
 			"services": [
-				"ConfigFactory",
-				"CreateWikiDatabaseUtils",
+				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
 		},
@@ -261,8 +259,7 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
 			"services": [
-				"ConfigFactory",
-				"CreateWikiDatabaseUtils",
+				"CreateWikiRestUtils",
 				"UserFactory",
 				"WikiRequestManager"
 			]
