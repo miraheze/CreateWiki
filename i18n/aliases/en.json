@@ -3,6 +3,9 @@
 		"CreateWiki": [
 			"CreateWiki"
 		],
+		"FlaggedWikis": [
+			"FlaggedWikis"
+		],
 		"RequestWiki": [
 			"RequestWiki"
 		],
