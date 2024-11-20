@@ -17,6 +17,7 @@ use MediaWiki\User\UserIdentity;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
+use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -30,7 +31,7 @@ class WikiRequestManager {
 		ConfigNames::AIThreshold,
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
-		ConfigNames::GlobalWiki,
+		ConfigNames::OpenAIConfig,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
@@ -92,9 +93,7 @@ class WikiRequestManager {
 	}
 
 	public function loadFromID( int $requestID ): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$this->ID = $requestID;
 
@@ -115,9 +114,7 @@ class WikiRequestManager {
 		array $extraData,
 		User $user
 	): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$subdomain = strtolower( $data['subdomain'] );
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
@@ -158,16 +155,18 @@ class WikiRequestManager {
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
+		} elseif (
+			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
+			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
+		) {
+			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
 		}
 
 		$this->logNewRequest( $data, $user );
 	}
 
 	public function isDuplicateRequest( string $sitename ): bool {
-		$dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
-
+		$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 		$duplicate = $dbw->newSelectQueryBuilder()
 			->table( 'cw_requests' )
 			->field( '*' )
@@ -224,7 +223,7 @@ class WikiRequestManager {
 			->table( 'cw_comments' )
 			->field( '*' )
 			->where( [ 'cw_id' => $this->ID ] )
-			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
+			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
@@ -324,9 +323,7 @@ class WikiRequestManager {
 		User $requester,
 		UserIdentity $user
 	): array {
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$userID = $requester->getId();
 		$res = $dbr->newSelectQueryBuilder()
@@ -969,6 +966,25 @@ class WikiRequestManager {
 				RequestWikiAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
+					'reason' => $reason,
+				]
+			)
+		);
+	}
+
+	private function evaluateWithOpenAI(
+		string $sitename,
+		string $subdomain,
+		string $reason
+	): void {
+		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
+		$jobQueueGroup->push(
+			new JobSpecification(
+				RequestWikiRemoteAIJob::JOB_NAME,
+				[
+					'id' => $this->ID,
+					'sitename' => $sitename,
+					'subdomain' => $subdomain,
 					'reason' => $reason,
 				]
 			)

@@ -6,19 +6,22 @@ use ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
-use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private WikiManagerFactory $wikiManagerFactory;
 
-	/**
-	 * @param WikiManagerFactory $wikiManagerFactory
-	 */
-	public function __construct( WikiManagerFactory $wikiManagerFactory ) {
+	public function __construct(
+		CreateWikiDatabaseUtils $databaseUtils,
+		WikiManagerFactory $wikiManagerFactory
+	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
+
+		$this->databaseUtils = $databaseUtils;
 		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
@@ -26,8 +29,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
 		parent::execute( $par );

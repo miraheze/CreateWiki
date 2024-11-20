@@ -2,13 +2,10 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\RestUtils;
+use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -21,33 +18,26 @@ use Wikimedia\Rdbms\SelectQueryBuilder;
  */
 class RestWikiRequest extends SimpleHandler {
 
-	private Config $config;
 	private IConnectionProvider $connectionProvider;
+	private CreateWikiRestUtils $restUtils;
 	private UserFactory $userFactory;
 
-	/**
-	 * @param ConfigFactory $configFactory
-	 * @param IConnectionProvider $connectionProvider
-	 * @param UserFactory $userFactory
-	 */
 	public function __construct(
-		ConfigFactory $configFactory,
 		IConnectionProvider $connectionProvider,
+		CreateWikiRestUtils $restUtils,
 		UserFactory $userFactory
 	) {
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->connectionProvider = $connectionProvider;
+		$this->restUtils = $restUtils;
 		$this->userFactory = $userFactory;
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv( $this->config );
+		$this->restUtils->checkEnv();
 
 		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
 
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->config->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$wikiRequest = $dbr->newSelectQueryBuilder()
 			->select( '*' )

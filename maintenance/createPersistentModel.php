@@ -2,11 +2,7 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP = getenv( 'MW_INSTALL_PATH' );
-if ( $IP === false ) {
-	$IP = __DIR__ . '/../../..';
-}
-
+$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
@@ -30,9 +26,8 @@ class CreatePersistentModel extends Maintenance {
 	}
 
 	public function execute(): void {
-		$dbr = $this->getDB( DB_REPLICA, [],
-			$this->getConfig()->get( ConfigNames::GlobalWiki )
-		);
+		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
+		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( [ 'cw_comment', 'cw_status' ] )
