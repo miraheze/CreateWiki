@@ -31,7 +31,6 @@ class WikiRequestManager {
 		ConfigNames::AIThreshold,
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
-		ConfigNames::GlobalWiki,
 		ConfigNames::OpenAIConfig,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
@@ -94,9 +93,7 @@ class WikiRequestManager {
 	}
 
 	public function loadFromID( int $requestID ): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$this->ID = $requestID;
 
@@ -117,9 +114,7 @@ class WikiRequestManager {
 		array $extraData,
 		User $user
 	): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$subdomain = strtolower( $data['subdomain'] );
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
@@ -171,10 +166,7 @@ class WikiRequestManager {
 	}
 
 	public function isDuplicateRequest( string $sitename ): bool {
-		$dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
-
+		$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 		$duplicate = $dbw->newSelectQueryBuilder()
 			->table( 'cw_requests' )
 			->field( '*' )
@@ -331,9 +323,7 @@ class WikiRequestManager {
 		User $requester,
 		UserIdentity $user
 	): array {
-		$dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$userID = $requester->getId();
 		$res = $dbr->newSelectQueryBuilder()

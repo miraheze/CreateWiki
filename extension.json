@@ -163,12 +163,14 @@
 		"CreateWiki": {
 			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
+				"CreateWikiDatabaseUtils",
 				"WikiManagerFactory"
 			]
 		},
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
+				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
 			]
@@ -177,6 +179,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"LanguageNameUtils",
 				"PermissionManager",
@@ -238,8 +241,8 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
 			"services": [
-				"ConfigFactory",
 				"ConnectionProvider",
+				"CreateWikiRestUtils",
 				"UserFactory"
 			]
 		},
@@ -248,7 +251,7 @@
 			"method": "POST",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
 		},
@@ -257,7 +260,7 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiRestUtils",
 				"UserFactory",
 				"WikiRequestManager"
 			]
@@ -321,10 +324,6 @@
 				"local-deleted": "private"
 			}
 		},
-		"CreateWikiDatabase": {
-			"description": "String. Database name of where cw_wikis is stored.",
-			"value": ""
-		},
 		"CreateWikiDatabaseClusters": {
 			"description": "Array. LBFactory clusters which CreateWiki considers active.",
 			"value": []
@@ -348,10 +347,6 @@
 		"CreateWikiEnableRESTAPI": {
 			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
-		},
-		"CreateWikiGlobalWiki": {
-			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
-			"value": ""
 		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
@@ -458,6 +453,10 @@
 	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
+	],
+	"DatabaseVirtualDomains": [
+		"virtual-createwiki",
+		"virtual-createwiki-central"
 	],
 	"load_composer_autoloader": true,
 	"manifest_version": 2

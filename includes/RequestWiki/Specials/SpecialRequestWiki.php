@@ -8,26 +8,29 @@ use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
-use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private CreateWikiHookRunner $hookRunner;
 	private WikiRequestManager $wikiRequestManager;
 
 	private array $extraFields = [];
 
 	public function __construct(
+		CreateWikiDatabaseUtils $databaseUtils,
 		CreateWikiHookRunner $hookRunner,
 		WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 
+		$this->databaseUtils = $databaseUtils;
 		$this->hookRunner = $hookRunner;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
@@ -40,8 +43,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->setParameter( $par );
 		$this->setHeaders();
 
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
 		$requiresConfirmedEmail = $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail );
