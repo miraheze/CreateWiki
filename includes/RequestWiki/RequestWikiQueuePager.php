@@ -10,7 +10,6 @@ use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
 
@@ -41,9 +40,7 @@ class RequestWikiQueuePager extends TablePager {
 	) {
 		parent::__construct( $context, $linkRenderer );
 
-		$this->mDb = $connectionProvider->getReplicaDatabase(
-			$config->get( ConfigNames::GlobalWiki )
-		);
+		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$this->languageNameUtils = $languageNameUtils;
 		$this->linkRenderer = $linkRenderer;

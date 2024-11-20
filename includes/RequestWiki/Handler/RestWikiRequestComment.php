@@ -2,14 +2,12 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\Validator\BodyValidator;
 use MediaWiki\Rest\Validator\JsonBodyValidator;
 use MediaWiki\Rest\Validator\UnsupportedContentTypeBodyValidator;
-use Miraheze\CreateWiki\RestUtils;
+use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -20,19 +18,19 @@ use Wikimedia\ParamValidator\ParamValidator;
  */
 class RestWikiRequestComment extends SimpleHandler {
 
-	private Config $config;
+	private CreateWikiRestUtils $restUtils;
 	private WikiRequestManager $wikiRequestManager;
 
 	public function __construct(
-		ConfigFactory $configFactory,
+		CreateWikiRestUtils $restUtils,
 		WikiRequestManager $wikiRequestManager
 	) {
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
+		$this->restUtils = $restUtils;
 		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( int $requestID ): Response {
-		RestUtils::checkEnv( $this->config );
+		$this->restUtils->checkEnv();
 
 		// Must be logged in to use this API
 		if ( !$this->getAuthority()->isNamed() ) {

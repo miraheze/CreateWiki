@@ -62,7 +62,8 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onGetAllBlockActions( &$actions ) {
-		if ( !WikiMap::isCurrentWikiId( $this->config->get( ConfigNames::GlobalWiki ) ) ) {
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
 			return;
 		}
 
@@ -122,9 +123,7 @@ class Main implements
 		$frame
 	) {
 		if ( $magicWordId === 'numberofopenwikirequests' ) {
-			$dbr = $this->connectionProvider->getReplicaDatabase(
-				$this->config->get( ConfigNames::GlobalWiki )
-			);
+			$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )
@@ -135,9 +134,7 @@ class Main implements
 		}
 
 		if ( $magicWordId === 'numberofwikirequests' ) {
-			$dbr = $this->connectionProvider->getReplicaDatabase(
-				$this->config->get( ConfigNames::GlobalWiki )
-			);
+			$dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )

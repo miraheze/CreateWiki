@@ -6,7 +6,6 @@ $IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use Miraheze\CreateWiki\ConfigNames;
 
 class DeleteWikis extends Maintenance {
 
@@ -28,7 +27,8 @@ class DeleteWikis extends Maintenance {
 
 	public function execute(): void {
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$dbr = $this->getDB( DB_REPLICA, [], $this->getConfig()->get( ConfigNames::Database ) );
+		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
+		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( '*' )

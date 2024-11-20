@@ -25,8 +25,6 @@ class ConfigNames {
 
 	public const Containers = 'CreateWikiContainers';
 
-	public const Database = 'CreateWikiDatabase';
-
 	public const DatabaseClusters = 'CreateWikiDatabaseClusters';
 
 	public const DatabaseSuffix = 'CreateWikiDatabaseSuffix';
@@ -38,8 +36,6 @@ class ConfigNames {
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
-
-	public const GlobalWiki = 'CreateWikiGlobalWiki';
 
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
