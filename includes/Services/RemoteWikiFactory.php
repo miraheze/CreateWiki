@@ -16,7 +16,6 @@ use Wikimedia\Rdbms\IReadableDatabase;
 class RemoteWikiFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
-		ConfigNames::Database,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
@@ -79,9 +78,7 @@ class RemoteWikiFactory {
 	}
 
 	public function newInstance( string $wiki ): self {
-		$this->dbr = $this->connectionProvider->getReplicaDatabase(
-			$this->options->get( ConfigNames::Database )
-		);
+		$this->dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -442,9 +439,7 @@ class RemoteWikiFactory {
 	public function commit(): void {
 		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
-				$dbw = $this->connectionProvider->getPrimaryDatabase(
-					$this->options->get( ConfigNames::Database )
-				);
+				$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 
 				$dbw->newUpdateQueryBuilder()
 					->update( 'cw_wikis' )
