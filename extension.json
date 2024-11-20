@@ -171,6 +171,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialFlaggedWikis",
 			"services": [
 				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"PermissionManager",
 				"UserFactory",
 				"WikiManagerFactory"
