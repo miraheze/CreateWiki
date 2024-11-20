@@ -56,12 +56,14 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onUserGetReservedNames( &$reservedUsernames ) {
+		$reservedUsernames[] = 'CreateWiki AI';
 		$reservedUsernames[] = 'CreateWiki Extension';
 	}
 
 	/** @inheritDoc */
 	public function onGetAllBlockActions( &$actions ) {
-		if ( !WikiMap::isCurrentWikiId( $this->config->get( ConfigNames::GlobalWiki ) ) ) {
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
 			return;
 		}
 
@@ -77,10 +79,10 @@ class Main implements
 	public function onSetupAfterCache() {
 		global $wgGroupPermissions;
 
-		$dbName = $this->config->get( MainConfigNames::DBname );
+		$dbname = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		$data = $this->dataFactory->newInstance( $dbName );
+		$data = $this->dataFactory->newInstance( $dbname );
 		$data->syncCache();
 
 		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
@@ -90,7 +92,7 @@ class Main implements
 
 			$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
 
-			$cachePath = $cacheDir . '/' . $dbName . '.php';
+			$cachePath = $cacheDir . '/' . $dbname . '.php';
 			$cacheArray = AtEase::quietCall( static function ( $path ) {
 				return include $path;
 			}, $cachePath );
@@ -98,7 +100,7 @@ class Main implements
 			if ( $cacheArray !== false ) {
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
-				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbName );
+				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbname );
 				$isPrivate = $remoteWiki->isPrivate();
 			}
 		}
@@ -121,9 +123,7 @@ class Main implements
 		$frame
 	) {
 		if ( $magicWordId === 'numberofopenwikirequests' ) {
-			$dbr = $this->connectionProvider->getReplicaDatabase(
-				$this->config->get( ConfigNames::GlobalWiki )
-			);
+			$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )
@@ -134,9 +134,7 @@ class Main implements
 		}
 
 		if ( $magicWordId === 'numberofwikirequests' ) {
-			$dbr = $this->connectionProvider->getReplicaDatabase(
-				$this->config->get( ConfigNames::GlobalWiki )
-			);
+			$dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )

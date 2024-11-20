@@ -25,10 +25,8 @@ class WikiManagerFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::Collation,
-		ConfigNames::Database,
 		ConfigNames::DatabaseClusters,
 		ConfigNames::DatabaseSuffix,
-		ConfigNames::GlobalWiki,
 		ConfigNames::SQLFiles,
 		ConfigNames::StateDays,
 		ConfigNames::Subdomain,
@@ -80,9 +78,7 @@ class WikiManagerFactory {
 	 */
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
-		$this->cwdb = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::Database )
-		);
+		$this->cwdb = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 
 		// Check if the database exists in the cw_wikis table
 		$check = $this->cwdb->newSelectQueryBuilder()
@@ -301,7 +297,9 @@ class WikiManagerFactory {
 
 		$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 
-		$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
+		if ( $actor !== '' ) {
+			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
+		}
 	}
 
 	public function delete( bool $force ): ?string {
@@ -435,9 +433,7 @@ class WikiManagerFactory {
 			return;
 		}
 
-		$logDBConn = $this->connectionProvider->getPrimaryDatabase(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$logDBConn = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
@@ -459,9 +455,8 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$data = $this->dataFactory->newInstance(
-			$this->options->get( ConfigNames::GlobalWiki )
-		);
+		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		$data = $this->dataFactory->newInstance( $dbr->getDomainID() );
 
 		$data->resetDatabaseLists( isNewChanges: true );
 	}

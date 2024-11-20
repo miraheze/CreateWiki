@@ -25,8 +25,10 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"CreateWikiAliases": "CreateWikiAliases.php",
 		"CreateWikiMagic": "CreateWikiMagic.php"
+	},
+	"TranslationAliasesDirs": {
+		"CreateWikiAliases": "i18n/aliases"
 	},
 	"AutoloadNamespaces": {
 		"Miraheze\\CreateWiki\\": "includes/",
@@ -50,6 +52,15 @@
 				"ConfigFactory",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
+			],
+			"needsPage": false
+		},
+		"RequestWikiRemoteAIJob": {
+			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
+			"services": [
+				"ConfigFactory",
+				"WikiRequestManager",
+				"HttpRequestFactory"
 			],
 			"needsPage": false
 		},
@@ -152,6 +163,7 @@
 		"CreateWiki": {
 			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
 			"services": [
+				"CreateWikiDatabaseUtils",
 				"WikiManagerFactory"
 			]
 		},
@@ -167,6 +179,7 @@
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
+				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
 			]
@@ -175,6 +188,7 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"LanguageNameUtils",
 				"PermissionManager",
@@ -236,8 +250,8 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
 			"services": [
-				"ConfigFactory",
 				"ConnectionProvider",
+				"CreateWikiRestUtils",
 				"UserFactory"
 			]
 		},
@@ -246,7 +260,7 @@
 			"method": "POST",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
 		},
@@ -255,7 +269,7 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiRestUtils",
 				"UserFactory",
 				"WikiRequestManager"
 			]
@@ -319,10 +333,6 @@
 				"local-deleted": "private"
 			}
 		},
-		"CreateWikiDatabase": {
-			"description": "String. Database name of where cw_wikis is stored.",
-			"value": ""
-		},
 		"CreateWikiDatabaseClusters": {
 			"description": "Array. LBFactory clusters which CreateWiki considers active.",
 			"value": []
@@ -347,13 +357,17 @@
 			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
 		},
-		"CreateWikiGlobalWiki": {
-			"description": "String. Database name of the global wiki. This should be the wiki where the special pages should be enabled.",
-			"value": ""
-		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
 			"value": "root@localhost"
+		},
+		"CreateWikiOpenAIConfig": {
+			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
+			"value": {
+				"dryrun": true,
+				"assistantid": null,
+				"apikey": null
+			}
 		},
 		"CreateWikiPersistentModelFile": {
 			"description": "String. Location to a file that can be overwritten to contain a persistent machine learning model.",
@@ -448,6 +462,10 @@
 	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
+	],
+	"DatabaseVirtualDomains": [
+		"virtual-createwiki",
+		"virtual-createwiki-central"
 	],
 	"load_composer_autoloader": true,
 	"manifest_version": 2

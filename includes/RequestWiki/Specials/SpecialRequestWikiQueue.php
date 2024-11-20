@@ -8,11 +8,10 @@ use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use MediaWiki\WikiMap\WikiMap;
-use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -20,6 +19,7 @@ use Wikimedia\Rdbms\IConnectionProvider;
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	private IConnectionProvider $connectionProvider;
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private CreateWikiHookRunner $hookRunner;
 	private LanguageNameUtils $languageNameUtils;
 	private PermissionManager $permissionManager;
@@ -29,6 +29,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		CreateWikiHookRunner $hookRunner,
 		LanguageNameUtils $languageNameUtils,
 		PermissionManager $permissionManager,
@@ -39,6 +40,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 
 		$this->connectionProvider = $connectionProvider;
+		$this->databaseUtils = $databaseUtils;
 		$this->hookRunner = $hookRunner;
 		$this->languageNameUtils = $languageNameUtils;
 		$this->permissionManager = $permissionManager;
@@ -51,8 +53,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
 		$this->setHeaders();

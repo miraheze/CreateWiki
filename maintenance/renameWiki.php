@@ -2,15 +2,10 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP = getenv( 'MW_INSTALL_PATH' );
-if ( $IP === false ) {
-	$IP = __DIR__ . '/../../..';
-}
-
+$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
 use Maintenance;
-use Miraheze\CreateWiki\ConfigNames;
 
 class RenameWiki extends Maintenance {
 
@@ -56,7 +51,8 @@ class RenameWiki extends Maintenance {
 				$this->fatalError( $rename );
 			}
 
-			$dbw = $this->getDB( DB_PRIMARY, [], $this->getConfig()->get( ConfigNames::Database ) );
+			$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
+			$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 
 			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
