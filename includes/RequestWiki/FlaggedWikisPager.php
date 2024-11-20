@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\Linker\Linker;
@@ -21,7 +20,6 @@ class FlaggedWikisPager extends TablePager {
 	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct(
-		Config $config,
 		IContextSource $context,
 		IConnectionProvider $connectionProvider,
 		LinkRenderer $linkRenderer,
@@ -30,9 +28,7 @@ class FlaggedWikisPager extends TablePager {
 	) {
 		parent::__construct( $context, $linkRenderer );
 
-		$this->mDb = $connectionProvider->getReplicaDatabase(
-			$config->get( ConfigNames::GlobalWiki )
-		);
+		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
 		$this->linkRenderer = $linkRenderer;
 		$this->userFactory = $userFactory;
