@@ -9,9 +9,8 @@ use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Specials\SpecialUserRights;
 use MediaWiki\User\UserFactory;
-use MediaWiki\WikiMap\WikiMap;
-use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\FlaggedWikisPager;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
 use XmlSelect;
@@ -19,12 +18,14 @@ use XmlSelect;
 class SpecialFlaggedWikis extends SpecialPage {
 
 	private IConnectionProvider $connectionProvider;
+	private CreateWikiDatabaseUtils $databaseUtils;
 	private PermissionManager $permissionManager;
 	private UserFactory $userFactory;
 	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct(
 		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		PermissionManager $permissionManager,
 		UserFactory $userFactory,
 		WikiManagerFactory $wikiManagerFactory
@@ -32,6 +33,7 @@ class SpecialFlaggedWikis extends SpecialPage {
 		parent::__construct( 'FlaggedWikis', 'createwiki' );
 
 		$this->connectionProvider = $connectionProvider;
+		$this->databaseUtils = $databaseUtils;
 		$this->permissionManager = $permissionManager;
 		$this->userFactory = $userFactory;
 		$this->wikiManagerFactory = $wikiManagerFactory;
@@ -41,8 +43,8 @@ class SpecialFlaggedWikis extends SpecialPage {
 	 * @param ?string $par
 	 */
 	public function execute( $par ): void {
-		if ( !WikiMap::isCurrentWikiId( $this->getConfig()->get( ConfigNames::GlobalWiki ) ) ) {
-			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotglobalwiki' );
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
+			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
 		$this->setHeaders();
@@ -100,7 +102,6 @@ class SpecialFlaggedWikis extends SpecialPage {
 		$htmlForm->show();
 
 		$pager = new FlaggedWikisPager(
-			$this->getConfig(),
 			$this->getContext(),
 			$this->connectionProvider,
 			$this->getLinkRenderer(),
@@ -116,9 +117,7 @@ class SpecialFlaggedWikis extends SpecialPage {
 		array $formData,
 		HTMLForm $form
 	): void {
-		$dbw = $this->connectionProvider->getPrimaryDatabase(
-			$this->getConfig()->get( ConfigNames::GlobalWiki )
-		);
+		$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
 
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_flags' )
