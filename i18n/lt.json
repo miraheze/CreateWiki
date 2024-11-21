@@ -55,7 +55,7 @@
 	"createwiki-success": "Viki buvo sėkmingai sukurta.",
 	"createwiki-success-locked": "Ši užklausa sėkmingai užrakinta. Jos nebegalima redaguoti ir prie jos negalima pridėti komentarų.",
 	"createwiki-success-unlocked": "Ši užklausa sėkmingai atrakinta.",
-	"createwiki-wikinotglobalwiki": "CreateWiki sąsajos pasiekiamos tik pasauliniame viki.",
+	"createwiki-wikinotcentralwiki": "CreateWiki sąsajos pasiekiamos tik pasauliniame viki.",
 	"echo-category-title-request-comment": "Komentaras pridėtas prie viki užklausos",
 	"echo-category-title-request-declined": "Viki užklausa atmesta",
 	"echo-category-title-request-moredetails": "Viki užklausai reikia daugiau informacijos",

@@ -62,7 +62,7 @@
 	"createwiki-success": "אתר הוויקי נוצר בהצלחה.",
 	"createwiki-success-locked": "הבקשה הזאת ננעלה. אי־אפשר עוד לערוך אותה או להוסיף לה הערות.",
 	"createwiki-success-unlocked": "נעילת הבקשה הזאת בוטלה בהצלחה.",
-	"createwiki-wikinotglobalwiki": "הממשקים של CreateWiki זמינים רק בוויקי הגלובלי.",
+	"createwiki-wikinotcentralwiki": "הממשקים של CreateWiki זמינים רק בוויקי הגלובלי.",
 	"echo-category-title-request-comment": "נוספה הערה לבקשת ויקי",
 	"echo-category-title-request-declined": "בקשת הוויקי נדחתה",
 	"echo-category-title-request-moredetails": "בקשת הוויקי צריכה יותר פרטים",

@@ -63,7 +63,7 @@
 	"createwiki-success": "Wiki đã được tạo thành công.",
 	"createwiki-success-locked": "Yêu cầu này đã được khóa thành công. Nó không còn có thể được chỉnh sửa và bình luận không thể được thêm vào nó.",
 	"createwiki-success-unlocked": "Yêu cầu này đã được mở khóa thành công.",
-	"createwiki-wikinotglobalwiki": "Giao diện của CreateWiki chỉ khả dụng trên wiki toàn cục.",
+	"createwiki-wikinotcentralwiki": "Giao diện của CreateWiki chỉ khả dụng trên wiki toàn cục.",
 	"echo-category-title-request-comment": "Bình luận đã được thêm vào yêu cầu wiki",
 	"echo-category-title-request-declined": "Yêu cầu Wiki bị từ chối",
 	"echo-category-title-request-moredetails": "Yêu cầu wiki cần thêm thông tin chi tiết",

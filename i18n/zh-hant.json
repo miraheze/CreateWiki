@@ -56,7 +56,7 @@
 	"createwiki-rest-disabled": "此 wiki 的設定已停用對 CreateWiki REST API 的存取。",
 	"createwiki-rest-usernowikirequests": "此名使用者尚未有任何 wiki 請求。",
 	"createwiki-success": "已成功建立wiki。",
-	"createwiki-wikinotglobalwiki": "CreateWiki 介面僅在全域 wiki 上可用。",
+	"createwiki-wikinotcentralwiki": "CreateWiki 介面僅在全域 wiki 上可用。",
 	"echo-category-title-request-comment": "已於 wiki 申請留言",
 	"echo-category-title-request-declined": "已拒絕wiki申請",
 	"echo-category-title-request-moredetails": "Wiki 請求需要更多詳細資訊",

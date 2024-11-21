@@ -82,7 +82,7 @@
 	"createwiki-success": "ウィキは無事作成されました。",
 	"createwiki-success-locked": "この申請は正常にロックされました。編集したり、コメントを追加したりすることはできなくなります。",
 	"createwiki-success-unlocked": "この申請は正常にロック解除されました。",
-	"createwiki-wikinotglobalwiki": "CreateWiki のインターフェースはグローバルウィキでのみ使用できます。",
+	"createwiki-wikinotcentralwiki": "CreateWiki のインターフェースは中央ウィキでのみ使用できます。",
 	"echo-category-title-request-comment": "ウィキ申請のコメント追加",
 	"echo-category-title-request-declined": "ウィキ申請の拒否",
 	"echo-category-title-request-moredetails": "ウィキ申請の詳細要求",

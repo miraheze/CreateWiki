@@ -22,7 +22,7 @@
 	"createwiki-label-requester": "Pemohon:",
 	"createwiki-label-sitename": "Nama situs:",
 	"createwiki-success": "Wiki ini telah berhasil dibuat.",
-	"createwiki-wikinotglobalwiki": "Antarmuka untuk CreateWiki hanya tersedia di wiki global.",
+	"createwiki-wikinotcentralwiki": "Antarmuka untuk CreateWiki hanya tersedia di wiki global.",
 	"echo-category-title-request-declined": "Permintaan wiki ditolak",
 	"echo-category-title-request-moredetails": "Permintaan wiki memerlukan lebih banyak detail",
 	"farmer-log-header": "Ini adalah log perubahan yang dibuat di farm wiki.",

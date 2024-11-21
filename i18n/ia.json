@@ -55,7 +55,7 @@
 	"createwiki-success": "Le wiki ha essite create correctemente.",
 	"createwiki-success-locked": "Iste requesta ha essite serrate. Illo non pote plus esser modificate e non es plus possibile adder commentos a illo.",
 	"createwiki-success-unlocked": "Iste requesta ha essite disserrate.",
-	"createwiki-wikinotglobalwiki": "Le interfacies pro CreateWiki es solmente disponibile sur le wiki global.",
+	"createwiki-wikinotcentralwiki": "Le interfacies pro CreateWiki es solmente disponibile sur le wiki global.",
 	"echo-category-title-request-comment": "Commento addite al requesta wiki",
 	"echo-category-title-request-declined": "Requesta de wiki refusate",
 	"echo-category-title-request-moredetails": "Le requesta de wiki ha besonio de plus detalios",

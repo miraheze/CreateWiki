@@ -84,7 +84,7 @@
 	"createwiki-success": "Le wiki a bien été créé.",
 	"createwiki-success-locked": "Cette demande a été verrouillée avec succès. Elle ne peut plus être modifiée et aucun commentaire ne peut y être ajouté.",
 	"createwiki-success-unlocked": "Cette demande a bien été déverrouillée.",
-	"createwiki-wikinotglobalwiki": "Les interfaces pour CreateWiki ne sont disponibles que sur le wiki global.",
+	"createwiki-wikinotcentralwiki": "Les interfaces pour CreateWiki ne sont disponibles que sur le wiki central.",
 	"echo-category-title-request-comment": "Commentaire ajouté à la demande de wiki",
 	"echo-category-title-request-declined": "Requête du wiki rejetée",
 	"echo-category-title-request-moredetails": "La demande wiki nécessite plus de détails",

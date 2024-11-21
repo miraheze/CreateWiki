@@ -69,7 +69,7 @@
 	"createwiki-success": "Das Wiki wurde erfolgreich erstellt.",
 	"createwiki-success-locked": "Diese Anfrage wurde erfolgreich geschlossen. Diese kann nicht mehr bearbeitet oder kommentiert werden.",
 	"createwiki-success-unlocked": "Diese Anfrage wurde erfolgreich freigeschaltet.",
-	"createwiki-wikinotglobalwiki": "Die Schnittstellen für CreateWiki sind nur im globalen Wiki verfügbar.",
+	"createwiki-wikinotcentralwiki": "Die Schnittstellen für CreateWiki sind nur im globalen Wiki verfügbar.",
 	"echo-category-title-request-comment": "Kommentar zur Wiki-Anfrage hinzugefügt",
 	"echo-category-title-request-declined": "Wiki-Anfrage abgelehnt",
 	"echo-category-title-request-moredetails": "Wiki-Antrag braucht mehr Details",

@@ -80,7 +80,7 @@
 	"createwiki-success": "wiki已成功创建。",
 	"createwiki-success-locked": "已成功锁定此申请。它已无法被编辑和添加评论。",
 	"createwiki-success-unlocked": "已成功解锁此申请。",
-	"createwiki-wikinotglobalwiki": "CreateWiki界面仅在中央wiki可用。",
+	"createwiki-wikinotcentralwiki": "CreateWiki界面仅在中央wiki可用。",
 	"echo-category-title-request-comment": "wiki申请收到备注",
 	"echo-category-title-request-declined": "wiki申请遭拒",
 	"echo-category-title-request-moredetails": "wiki申请需要更多详情",

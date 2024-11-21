@@ -62,7 +62,7 @@
 	"createwiki-success": "De wiki is aangemaakt.",
 	"createwiki-success-locked": "Deze aanvraag is nu vergrendeld. Ze kan niet meer worden bewerkt en er kunnen geen opmerkingen aan worden toegevoegd.",
 	"createwiki-success-unlocked": "Deze aanvraag is nu ontgrendeld.",
-	"createwiki-wikinotglobalwiki": "De interfaces voor CreateWiki zijn alleen beschikbaar op de globale wiki.",
+	"createwiki-wikinotcentralwiki": "De interfaces voor CreateWiki zijn alleen beschikbaar op de centrale wiki.",
 	"echo-category-title-request-comment": "Commentaar aan wiki-aanvraag toegevoegd",
 	"echo-category-title-request-declined": "Wiki-aanvraag afgewezen",
 	"echo-category-title-request-moredetails": "Er zijn meer details nodig voor het wiki-verzoek",
