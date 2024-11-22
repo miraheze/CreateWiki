@@ -1009,7 +1009,7 @@ class WikiRequestManager {
 					'private' => $private,
 					'category' => $category,
 					'nsfw' => $nsfw,
-					'nswftext' => $nsfwtext
+					'nsfwtext' => $nsfwtext
 				]
 			)
 		);
