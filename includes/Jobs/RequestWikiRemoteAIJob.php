@@ -32,6 +32,13 @@ class RequestWikiRemoteAIJob extends Job {
 	private string $reason;
 	private string $sitename;
 	private string $subdomain;
+	private string $username;
+	private string $language;
+	private bool $bio;
+	private bool $private;
+	private string $category;
+	private bool $nsfw;
+	private string $nsfwtext;
 
 	public function __construct(
 		array $params,
@@ -54,6 +61,13 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->reason = $params['reason'];
 		$this->sitename = $params['sitename'];
 		$this->subdomain = $params['subdomain'];
+		$this->username = $params['username'];
+		$this->language = $params['language'];
+		$this->bio = $params['bio'];
+		$this->private = $params['private'];
+		$this->category = $params['category'];
+		$this->nsfw = $params['nsfw'];
+		$this->nsfwtext = $params['nsfwtext'];
 	}
 
 	public function run(): bool {
@@ -93,7 +107,18 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		$apiResponse = $this->queryOpenAI( $this->sitename, $this->subdomain, $this->reason );
+		$apiResponse = $this->queryOpenAI(
+			$this->sitename,
+			$this->subdomain,
+			$this->reason,
+			$this->username,
+			$this->language,
+			$this->bio,
+			$this->private,
+			$this->category,
+			$this->nsfw,
+			$this->nsfwtext
+		);
 
 		if ( !$apiResponse ) {
 			return true;
@@ -249,10 +274,25 @@ class RequestWikiRemoteAIJob extends Job {
 	private function queryOpenAI(
 		string $sitename,
 		string $subdomain,
-		string $reason
+		string $reason,
+		string $username,
+		string $language,
+		bool $bio,
+		bool $private,
+		string $category,
+		bool $nsfw,
+		string $nsfwtext
 	): ?array {
 		try {
-			$sanitizedReason = "Wiki name: $sitename. Subdomain: $subdomain. Wiki request reason: " .
+			$isBio = $bio ? "Yes" : "No";
+			$isPrivate = $private ? "Yes" : "No";
+			$isNsfw = $nsfw ? "Yes" . $nsfwtext : "No";
+			$nsfwReasonText = $nsfw ? "What type of NSFW content will it feature? '$nsfwtext'. " : "";
+
+			$sanitizedReason = "Wiki name: '$sitename'. Subdomain: '$subdomain'. Requester: '$username'. " .
+			"Language: '$language'. Focuses on real people/groups? '$isBio'. Private wiki? '$isPrivate'. " .
+			"Category: '$category'. Contains content that is not safe for work? '$isNsfw'. " .
+			$nsfwReasonText . "Wiki request reason: " .
 				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread

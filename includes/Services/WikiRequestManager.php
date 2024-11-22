@@ -159,7 +159,17 @@ class WikiRequestManager {
 			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
 			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
 		) {
-			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
+			$this->evaluateWithOpenAI( $data['sitename'],
+			$data['subdomain'],
+			$data['reason'],
+			$user->getName(),
+			$data['language'],
+			$data['bio'],
+			$data['private'] ?? 0,
+			$data['category'] ?? '',
+			$extraData['nsfw'] ?? 0,
+			$extraData['nsfwtext'] ?? ''
+			);
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -975,7 +985,14 @@ class WikiRequestManager {
 	private function evaluateWithOpenAI(
 		string $sitename,
 		string $subdomain,
-		string $reason
+		string $reason,
+		string $username,
+		string $language,
+		bool $bio,
+		bool $private,
+		string $category,
+		bool $nsfw,
+		string $nsfwtext
 	): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
@@ -986,6 +1003,13 @@ class WikiRequestManager {
 					'sitename' => $sitename,
 					'subdomain' => $subdomain,
 					'reason' => $reason,
+					'username' => $username,
+					'language' => $language,
+					'bio' => $bio,
+					'private' => $private,
+					'category' => $category,
+					'nsfw' => $nsfw,
+					'nswftext' => $nsfwtext
 				]
 			)
 		);
