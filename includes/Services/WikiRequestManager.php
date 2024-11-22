@@ -1000,16 +1000,16 @@ class WikiRequestManager {
 				RequestWikiRemoteAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
-					'sitename' => $sitename,
-					'subdomain' => $subdomain,
-					'reason' => $reason,
-					'username' => $username,
-					'language' => $language,
 					'bio' => $bio,
-					'private' => $private,
 					'category' => $category,
+					'language' => $language,
 					'nsfw' => $nsfw,
 					'nsfwtext' => $nsfwtext
+					'private' => $private,
+					'reason' => $reason,
+					'sitename' => $sitename,
+					'subdomain' => $subdomain,
+					'username' => $username,
 				]
 			)
 		);
