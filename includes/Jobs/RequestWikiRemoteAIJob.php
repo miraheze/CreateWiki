@@ -107,7 +107,7 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		$apiResponse = $this->queryOpenAI( 
+		$apiResponse = $this->queryOpenAI(
 			$this->sitename,
 			$this->subdomain,
 			$this->reason,
@@ -290,7 +290,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$nsfwReasonText = $nsfw ? "What type of NSFW content will it feature? '$nsfwtext'. " : "";
 
 			$sanitizedReason = "Wiki name: '$sitename'. Subdomain: '$subdomain'. Requester: '$username'. " .
-			"Language: '$language'. Focuses on real people/groups? '$isBio'. Private wiki? '$isPrivate'. " . 
+			"Language: '$language'. Focuses on real people/groups? '$isBio'. Private wiki? '$isPrivate'. " .
 			"Category: '$category'. Contains content that is not safe for work? '$isNsfw'. " .
 			$nsfwReasonText . "Wiki request reason: " .
 				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );

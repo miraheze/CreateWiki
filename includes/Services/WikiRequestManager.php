@@ -169,7 +169,7 @@ class WikiRequestManager {
 			$data['category'] ?? '',
 			$extraData['nsfw'] ?? 0,
 			$extraData['nsfwtext'] ?? ''
-		);
+			);
 		}
 
 		$this->logNewRequest( $data, $user );
