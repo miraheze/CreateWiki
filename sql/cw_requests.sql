@@ -17,3 +17,4 @@ CREATE TABLE /*_*/cw_requests (
 ) /*$wgDBTableOptions*/;
 
 CREATE INDEX /*i*/cw_status ON /*_*/cw_requests (cw_status);
+CREATE INDEX /*i*/cw_timestamp ON /*_*/cw_requests (cw_timestamp);
