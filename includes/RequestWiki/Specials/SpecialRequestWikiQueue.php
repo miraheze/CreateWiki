@@ -72,6 +72,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$dbname = $this->getRequest()->getText( 'dbname' );
 		$language = $this->getRequest()->getText( 'language' );
 		$requester = $this->getRequest()->getText( 'requester' );
+		$sort = $this->getRequest()->getText( 'sort' );
 		$status = $this->getRequest()->getText( 'status' );
 
 		$formDescriptor = [
@@ -138,6 +139,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$dbname,
 			$language,
 			$requester,
+			$sort,
 			$status
 		);
 
