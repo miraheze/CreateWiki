@@ -37,21 +37,18 @@ class RequestWikiQueuePager extends TablePager {
 		string $dbname,
 		string $language,
 		string $requester,
+		string $sort,
 		string $status
 	) {
 		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
-		$this->linkRenderer = $linkRenderer;
-
-		if ( $context->getRequest()->getText( 'sort', 'cw_timestamp' ) == 'cw_timestamp' ) {
-			$this->mDefaultDirection = IndexPager::DIR_DESCENDING;
-		} else {
-			$this->mDefaultDirection = IndexPager::DIR_ASCENDING;
-		}
+		$this->mDefaultDirection = ( $sort === '' || $sort === 'cw_timestamp' ) 
+			? IndexPager::DIR_DESCENDING 
+			: IndexPager::DIR_ASCENDING;
 
 		parent::__construct( $context, $linkRenderer );
 
 		$this->languageNameUtils = $languageNameUtils;
+		$this->linkRenderer = $linkRenderer;
 		$this->userFactory = $userFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
 
