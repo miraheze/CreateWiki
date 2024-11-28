@@ -16,6 +16,7 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
 
+	/** @inheritDoc */
 	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
 
 	private LanguageNameUtils $languageNameUtils;
