@@ -983,16 +983,16 @@ class WikiRequestManager {
 	}
 
 	private function evaluateWithOpenAI(
-		string $sitename,
-		string $subdomain,
-		string $reason,
-		string $username,
-		string $language,
 		bool $bio,
+		bool $nsfw,
 		bool $private,
 		string $category,
-		bool $nsfw,
-		string $nsfwtext
+		string $language,
+		string $nsfwtext,
+		string $reason,
+		string $sitename,
+		string $subdomain,
+		string $username
 	): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
@@ -1000,16 +1000,16 @@ class WikiRequestManager {
 				RequestWikiRemoteAIJob::JOB_NAME,
 				[
 					'id' => $this->ID,
+					'bio' => $bio,
+					'category' => $category,
+					'language' => $language,
+					'nsfw' => $nsfw,
+					'nsfwtext' => $nsfwtext,
+					'private' => $private,
+					'reason' => $reason,
 					'sitename' => $sitename,
 					'subdomain' => $subdomain,
-					'reason' => $reason,
-					'username' => $username,
-					'language' => $language,
-					'bio' => $bio,
-					'private' => $private,
-					'category' => $category,
-					'nsfw' => $nsfw,
-					'nsfwtext' => $nsfwtext
+					'username' => $username
 				]
 			)
 		);
