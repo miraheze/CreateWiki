@@ -16,6 +16,9 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
 
+	/** @inheritDoc */
+	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
+
 	private LanguageNameUtils $languageNameUtils;
 	private LinkRenderer $linkRenderer;
 	private UserFactory $userFactory;
@@ -41,16 +44,9 @@ class RequestWikiQueuePager extends TablePager {
 	) {
 		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
-		$this->linkRenderer = $linkRenderer;
-
-		if ( $context->getRequest()->getText( 'sort', 'cw_timestamp' ) == 'cw_timestamp' ) {
-			$this->mDefaultDirection = IndexPager::DIR_DESCENDING;
-		} else {
-			$this->mDefaultDirection = IndexPager::DIR_ASCENDING;
-		}
-
 		parent::__construct( $context, $linkRenderer );
 
+		$this->linkRenderer = $linkRenderer;
 		$this->languageNameUtils = $languageNameUtils;
 		$this->userFactory = $userFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
