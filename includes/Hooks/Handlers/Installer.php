@@ -36,6 +36,14 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
+			'virtual-createwiki-central',
+			'addTable',
+			'cw_flags',
+			"$dir/cw_flags.sql",
+			true,
+		] );
+
+		$updater->addExtensionUpdateOnVirtualDomain( [
 			'virtual-createwiki',
 			'addTable',
 			'cw_wikis',

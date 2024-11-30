@@ -167,6 +167,16 @@
 				"WikiManagerFactory"
 			]
 		},
+		"FlaggedWikis": {
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialFlaggedWikis",
+			"services": [
+				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
+				"PermissionManager",
+				"UserFactory",
+				"WikiManagerFactory"
+			]
+		},
 		"RequestWiki": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
