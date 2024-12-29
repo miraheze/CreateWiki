@@ -145,7 +145,7 @@ class WikiManagerFactory {
 		return $this->exists;
 	}
 
-	private function doCreateDatabase(): void {
+	public function doCreateDatabase(): void {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
