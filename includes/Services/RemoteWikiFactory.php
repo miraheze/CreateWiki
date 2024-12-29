@@ -163,10 +163,9 @@ class RemoteWikiFactory {
 		$this->trackChange( 'inactive', 0, 1 );
 		$this->inactive = true;
 		$this->inactiveTimestamp = $this->dbr->timestamp();
-		$this->newRows += [
-			'wiki_inactive' => 1,
-			'wiki_inactive_timestamp' => $this->inactiveTimestamp,
-		];
+
+		$this->newRows['wiki_inactive'] = 1;
+		$this->newRows['wiki_inactive_timestamp'] = $this->inactiveTimestamp;
 	}
 
 	public function markActive(): void {
@@ -176,12 +175,13 @@ class RemoteWikiFactory {
 		$this->closed = false;
 		$this->closedTimestamp = null;
 		$this->inactiveTimestamp = null;
-		$this->newRows += [
+
+		$this->newRows = array_merge( $this->newRows, [
 			'wiki_closed' => 0,
 			'wiki_closed_timestamp' => null,
 			'wiki_inactive' => 0,
 			'wiki_inactive_timestamp' => null,
-		];
+		] );
 	}
 
 	public function getInactiveTimestamp(): ?string {
@@ -226,9 +226,9 @@ class RemoteWikiFactory {
 
 	public function markPrivate(): void {
 		$this->trackChange( 'private', 0, 1 );
+		$this->hooks[] = 'CreateWikiStatePrivate';
 		$this->private = true;
 		$this->newRows['wiki_private'] = 1;
-		$this->hooks[] = 'CreateWikiStatePrivate';
 
 		$this->jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
 			new JobSpecification(
@@ -240,9 +240,9 @@ class RemoteWikiFactory {
 
 	public function markPublic(): void {
 		$this->trackChange( 'public', 0, 1 );
+		$this->hooks[] = 'CreateWikiStatePublic';
 		$this->private = false;
 		$this->newRows['wiki_private'] = 0;
-		$this->hooks[] = 'CreateWikiStatePublic';
 
 		$this->jobQueueGroupFactory->makeJobQueueGroup( $this->dbname )->push(
 			new JobSpecification(
@@ -258,17 +258,18 @@ class RemoteWikiFactory {
 
 	public function markClosed(): void {
 		$this->trackChange( 'closed', 0, 1 );
+		$this->hooks[] = 'CreateWikiStateClosed';
 		$this->closed = true;
 		$this->inactive = false;
 		$this->closedTimestamp = $this->dbr->timestamp();
 		$this->inactiveTimestamp = null;
-		$this->newRows += [
+
+		$this->newRows = array_merge( $this->newRows, [
 			'wiki_closed' => 1,
 			'wiki_closed_timestamp' => $this->closedTimestamp,
 			'wiki_inactive' => 0,
 			'wiki_inactive_timestamp' => null,
-		];
-		$this->hooks[] = 'CreateWikiStateClosed';
+		] );
 	}
 
 	public function getClosedTimestamp(): ?string {
@@ -288,14 +289,15 @@ class RemoteWikiFactory {
 		$this->deletedTimestamp = $this->dbr->timestamp();
 		$this->closedTimestamp = null;
 		$this->inactiveTimestamp = null;
-		$this->newRows += [
+
+		$this->newRows = array_merge( $this->newRows, [
 			'wiki_deleted' => 1,
 			'wiki_deleted_timestamp' => $this->deletedTimestamp,
 			'wiki_closed' => 0,
 			'wiki_closed_timestamp' => null,
 			'wiki_inactive' => 0,
 			'wiki_inactive_timestamp' => null,
-		];
+		] );
 	}
 
 	public function undelete(): void {
@@ -303,10 +305,9 @@ class RemoteWikiFactory {
 		$this->log = 'undelete';
 		$this->deleted = false;
 		$this->deletedTimestamp = null;
-		$this->newRows += [
-			'wiki_deleted' => 0,
-			'wiki_deleted_timestamp' => null,
-		];
+
+		$this->newRows['wiki_deleted'] = 0;
+		$this->newRows['wiki_deleted_timestamp'] = null;
 	}
 
 	public function getDeletedTimestamp(): ?string {
