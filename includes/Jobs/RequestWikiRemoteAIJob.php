@@ -28,17 +28,17 @@ class RequestWikiRemoteAIJob extends Job {
 	private string $baseApiUrl;
 	private string $apiKey;
 
+	private bool $bio;
+	private bool $nsfw;
+	private bool $private;
 	private int $id;
+	private string $category;
+	private string $language;
+	private string $nsfwtext;
 	private string $reason;
 	private string $sitename;
 	private string $subdomain;
 	private string $username;
-	private string $language;
-	private bool $bio;
-	private bool $private;
-	private string $category;
-	private bool $nsfw;
-	private string $nsfwtext;
 
 	public function __construct(
 		array $params,
@@ -57,17 +57,17 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
 
+		$this->bio = $params['bio'];
+		$this->category = $params['category'];
 		$this->id = $params['id'];
+		$this->language = $params['language'];
+		$this->nsfw = $params['nsfw'];
+		$this->nsfwtext = $params['nsfwtext'];
+		$this->private = $params['private'];
 		$this->reason = $params['reason'];
 		$this->sitename = $params['sitename'];
 		$this->subdomain = $params['subdomain'];
 		$this->username = $params['username'];
-		$this->language = $params['language'];
-		$this->bio = $params['bio'];
-		$this->private = $params['private'];
-		$this->category = $params['category'];
-		$this->nsfw = $params['nsfw'];
-		$this->nsfwtext = $params['nsfwtext'];
 	}
 
 	public function run(): bool {
@@ -108,16 +108,16 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		$apiResponse = $this->queryOpenAI(
+			$this->bio,
+			$this->category,
+			$this->language,
+			$this->nsfw,
+			$this->nsfwtext,
+			$this->private,
+			$this->reason,
 			$this->sitename,
 			$this->subdomain,
-			$this->reason,
-			$this->username,
-			$this->language,
-			$this->bio,
-			$this->private,
-			$this->category,
-			$this->nsfw,
-			$this->nsfwtext
+			$this->username
 		);
 
 		if ( !$apiResponse ) {
@@ -272,21 +272,21 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function queryOpenAI(
+		bool $bio,
+		string $category,
+		string $language,
+		bool $nsfw,
+		string $nsfwtext,
+		bool $private,
+		string $reason,
 		string $sitename,
 		string $subdomain,
-		string $reason,
-		string $username,
-		string $language,
-		bool $bio,
-		bool $private,
-		string $category,
-		bool $nsfw,
-		string $nsfwtext
+		string $username
 	): ?array {
 		try {
 			$isBio = $bio ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
-			$isNsfw = $nsfw ? "Yes" . $nsfwtext : "No";
+			$isNsfw = $nsfw ? "Yes" : "No";
 			$nsfwReasonText = $nsfw ? "What type of NSFW content will it feature? '$nsfwtext'. " : "";
 
 			$sanitizedReason = "Wiki name: '$sitename'. Subdomain: '$subdomain'. Requester: '$username'. " .
