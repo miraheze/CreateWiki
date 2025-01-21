@@ -159,11 +159,7 @@ class WikiRequestManager {
 			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
 			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
 		) {
-			$this->evaluateWithOpenAI(
-				$extraData ?? []
-				$data['subdomain'],
-				$user->getName()
-			);
+			$this->evaluateWithOpenAI();
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -986,20 +982,13 @@ class WikiRequestManager {
 		);
 	}
 
-	private function evaluateWithOpenAI(
-		array $extraData,
-		string $subdomain,
-		string $username,
-	): void {
+	private function evaluateWithOpenAI(): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
 				[
-					'id' => $this->ID,
-					'extraData' => $extraData,
-					'subdomain' => $subdomain,
-					'username' => $username,
+					'id' => $this->ID
 				]
 			)
 		);

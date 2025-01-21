@@ -117,7 +117,7 @@
 	"requestwiki-ai-decision-onhold": "This request could not be automatically approved and requires a manual review.",
 	"requestwiki-ai-error": "This request could not be automatically evaluated. Contact your system administrator for further information.",
 	"requestwiki-ai-error-reason": "This request could not be automatically evaluated and the reason has been logged. Contact your system administrator for further information.",
-	"requestwiki-ai-error-history-reason": "The following error was returned when evaluating the request through artificial intellegence:\n\n'$1'",
+	"requestwiki-ai-error-history-reason": "The following error was returned when evaluating the request through artificial intelligence:\n\n'$1'",
 	"requestwiki-edit-success": "Your changes to this wiki request have been successfully saved.",
 	"requestwiki-error-emailnotconfirmed": "Your email is not confirmed. To request wikis, please [[Special:ChangeEmail|confirm an email]] first.",
 	"requestwiki-error-invalidcomment": "Your wiki request contains an invalid character. Please correct that and try again.",

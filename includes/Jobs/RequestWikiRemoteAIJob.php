@@ -57,9 +57,6 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
 
 		$this->id = $params['id'];
-		$this->subdomain = $params['subdomain'];
-		$this->username = $params['username'];
-		$this->extraData = $params['extraData'];
 	}
 
 	public function run(): bool {
@@ -107,7 +104,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->wikiRequestManager->isPrivate(),
 			$this->wikiRequestManager->getReason(),
 			$this->wikiRequestManager->getSitename(),
-			substr( $this->wikiRequestManager->getDBname(), 0, -4 );,
+			substr( $this->wikiRequestManager->getDBname(), 0, -4 ),
 			$this->wikiRequestManager->getRequesterUsername(),
 			$this->wikiRequestManager->getVisibleRequestsByUser(
 				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
@@ -164,7 +161,7 @@ class RequestWikiRemoteAIJob extends Job {
 			'AI decision for wiki request {id} was {outcome} (with {confidence}% confidence) with reasoning: {comment}',
 			[
 				'comment' => $comment,
-				'confidence' > $confidence,
+				'confidence' => $confidence,
 				'id' => $this->id,
 				'outcome' => $outcome,
 			]
@@ -319,17 +316,21 @@ class RequestWikiRemoteAIJob extends Job {
 	): ?array {
 		try {
 			$isBio = $bio ? "Yes" : "No";
-			$isFork = $extraData['source'] ? "Yes" : "No";
-			$isNsfw = $extraData['nsfw'] ? "Yes" : "No";
+			$isFork = !empty($extraData['source']) ? "Yes" : "No";
+			$isNsfw = !empty($extraData['nsfw']) ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
-			$forkText = $extraData['sourceurl'] ? "This wiki is forking from this URL: '$extraData['sourceurl']'. " : "";
-			$nsfwReasonText = $extraData['nsfw'] ? "What type of NSFW content will it feature? '$extraData['nsfwtext']'. " : "";
-
-			$sanitizedReason = "Wiki name: '$sitename'. Subdomain: '$subdomain'. Requester: '$username'. " .
-			"Number of previous requests: '$userRequestsNum'. Language: '$language'. Focuses on real people/groups? '$isBio'. "
-			"Private wiki? '$isPrivate'. Category: '$category'. Contains content that is not safe for work? '$isNsfw'. " .
-			$nsfwReasonText . "Is this a fork of a wiki? '$forkText'. " . $forkText . "Wiki request description: " .
-				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
+			$forkText = !empty($extraData['sourceurl']) 
+				? "This wiki is forking from this URL: '{$extraData['sourceurl']}'. " 
+				: "";
+			$nsfwReasonText = !empty($extraData['nsfwtext']) 
+				? "What type of NSFW content will it feature? '{$extraData['nsfwtext']}'. " 
+				: "";
+	
+			$sanitizedReason = "Wiki name: '{$sitename}'. Subdomain: '{$subdomain}'. Requester: '{$username}'. " .
+				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. Focuses on real people/groups? '{$isBio}'. " .
+				"Private wiki? '{$isPrivate}'. Category: '{$category}'. Contains content that is not safe for work? '{$isNsfw}'. " .
+				$nsfwReasonText . $forkText . "Wiki request description: " .
+				trim(str_replace(["\r\n", "\r"], "\n", $reason));
 
 			// Step 1: Create a new thread
 			$threadData = $this->createRequest( '/threads', 'POST', [
