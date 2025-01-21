@@ -316,21 +316,21 @@ class RequestWikiRemoteAIJob extends Job {
 	): ?array {
 		try {
 			$isBio = $bio ? "Yes" : "No";
-			$isFork = !empty($extraData['source']) ? "Yes" : "No";
-			$isNsfw = !empty($extraData['nsfw']) ? "Yes" : "No";
+			$isFork = !empty( $extraData['source'] ) ? "Yes" : "No";
+			$isNsfw = !empty( $extraData['nsfw'] ) ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
-			$forkText = !empty($extraData['sourceurl']) 
-				? "This wiki is forking from this URL: '{$extraData['sourceurl']}'. " 
+			$forkText = !empty( $extraData['sourceurl'] )
+				? "This wiki is forking from this URL: '{$extraData['sourceurl']}'. "
 				: "";
-			$nsfwReasonText = !empty($extraData['nsfwtext']) 
-				? "What type of NSFW content will it feature? '{$extraData['nsfwtext']}'. " 
+			$nsfwReasonText = !empty( $extraData['nsfwtext'] )
+				? "What type of NSFW content will it feature? '{$extraData['nsfwtext']}'. "
 				: "";
-	
+
 			$sanitizedReason = "Wiki name: '{$sitename}'. Subdomain: '{$subdomain}'. Requester: '{$username}'. " .
 				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. Focuses on real people/groups? '{$isBio}'. " .
 				"Private wiki? '{$isPrivate}'. Category: '{$category}'. Contains content that is not safe for work? '{$isNsfw}'. " .
 				$nsfwReasonText . $forkText . "Wiki request description: " .
-				trim(str_replace(["\r\n", "\r"], "\n", $reason));
+				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
 			$threadData = $this->createRequest( '/threads', 'POST', [
