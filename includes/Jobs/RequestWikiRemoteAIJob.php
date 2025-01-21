@@ -37,8 +37,7 @@ class RequestWikiRemoteAIJob extends Job {
 	private bool $bio;
 	private bool $private;
 	private string $category;
-	private bool $nsfw;
-	private string $nsfwtext;
+	private array $extraData;
 
 	public function __construct(
 		array $params,
@@ -58,16 +57,9 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
 
 		$this->id = $params['id'];
-		$this->reason = $params['reason'];
-		$this->sitename = $params['sitename'];
 		$this->subdomain = $params['subdomain'];
 		$this->username = $params['username'];
-		$this->language = $params['language'];
-		$this->bio = $params['bio'];
-		$this->private = $params['private'];
-		$this->category = $params['category'];
-		$this->nsfw = $params['nsfw'];
-		$this->nsfwtext = $params['nsfwtext'];
+		$this->extraData = $params['extraData'];
 	}
 
 	public function run(): bool {
@@ -108,46 +100,87 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		$apiResponse = $this->queryOpenAI(
-			$this->sitename,
-			$this->subdomain,
-			$this->reason,
-			$this->username,
-			$this->language,
-			$this->bio,
-			$this->private,
-			$this->category,
-			$this->nsfw,
-			$this->nsfwtext
+			$this->wikiRequestManager->isBio(),
+			$this->wikiRequestManager->getCategory(),
+			$this->wikiRequestManager->getAllExtraData(),
+			$this->wikiRequestManager->getLanguage(),
+			$this->wikiRequestManager->isPrivate(),
+			$this->wikiRequestManager->getReason(),
+			$this->wikiRequestManager->getSitename(),
+			substr( $this->wikiRequestManager->getDBname(), 0, -4 );,
+			$this->wikiRequestManager->getRequesterUsername(),
+			$this->wikiRequestManager->getVisibleRequestsByUser(
+				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
+			)
 		);
 
 		if ( !$apiResponse ) {
+			$commentText = $this->context->msg( 'requestwiki-ai-error' )
+			->inContentLanguage()
+			->parse();
+	
+			$this->wikiRequestManager->addComment(
+				comment: $commentText,
+				user: User::newSystemUser( 'CreateWiki AI' ),
+				log: false,
+				type: 'comment',
+				notifyUsers: []
+			);
+
 			return true;
 		}
 
+		if ( $apiResponse['error'] ) {
+			$publicCommentText = $this->context->msg( 'requestwiki-ai-error-reason' )
+			->inContentLanguage()
+			->parse();
+
+			$requestHistoryComment = $this->context->msg( 'requestwiki-ai-error-history-reason' )
+			->params( $apiResponse['error'] )
+			->inContentLanguage()
+			->parse();
+
+			$this->wikiRequestManager->addRequestHistory(
+				action: 'ai-error',
+				details: $requestHistoryComment,
+				user: $user
+			);
+
+			$this->wikiRequestManager->addComment(
+				comment: $commentText,
+				user: User::newSystemUser( 'CreateWiki AI' ),
+				log: false,
+				type: 'comment',
+				notifyUsers: []
+			);
+		}
+
 		// Extract response details with default fallbacks
+		$confidence = $apiResponse['recommendation']['confidence'] ?? '0';
 		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
 		$this->logger->debug(
-			'AI decision for wiki request {id} was {outcome} with reasoning: {comment}',
+			'AI decision for wiki request {id} was {outcome} (with {confidence}% confidence) with reasoning: {comment}',
 			[
 				'comment' => $comment,
+				'confidence' > $confidence,
 				'id' => $this->id,
 				'outcome' => $outcome,
 			]
 		);
 
 		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
-			return $this->handleDryRun( $outcome, $comment );
+			return $this->handleDryRun( $outcome, $comment, $confidence );
 		}
 
-		return $this->handleLiveRun( $outcome, $comment );
+		return $this->handleLiveRun( $outcome, $comment, $confidence );
 	}
 
-	private function handleDryRun( string $outcome, string $comment ): bool {
+	private function handleDryRun( string $outcome, string $comment, int $confidence ): bool {
 		$outcomeMessage = $this->context->msg( 'requestwikiqueue-' . $outcome )->text();
 		$commentText = $this->context->msg( 'requestwiki-ai-decision-dryrun' )
-		->params( $outcomeMessage, $comment )
+		->params( $outcomeMessage, $comment, $confidence )
 		->inContentLanguage()
 		->parse();
 
@@ -178,10 +211,10 @@ class RequestWikiRemoteAIJob extends Job {
 		return true;
 	}
 
-	private function handleLiveRun( string $outcome, string $comment ): bool {
+	private function handleLiveRun( string $outcome, string $comment, int $confidence ): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
 		$commentText = $this->context->msg( 'requestwiki-ai-decision-' . $outcome )
-			->params( $comment )
+			->params( $comment, $confidence )
 			->inContentLanguage()
 			->parse();
 
@@ -194,9 +227,10 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
-					'Wiki request {id} was automatically approved by AI decision with reason: {comment}',
+					'Wiki request {id} was automatically approved by AI decision (with {confidence}% confidence) with reason: {comment}',
 					[
 						'comment' => $comment,
+						'confidence' => $confidence,
 						'id' => $this->id,
 					]
 				);
@@ -272,27 +306,29 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function queryOpenAI(
+		bool $bio,
+		string $category,
+		array $extraData,
+		string $language,
+		bool $private,
+		string $reason,
 		string $sitename,
 		string $subdomain,
-		string $reason,
 		string $username,
-		string $language,
-		bool $bio,
-		bool $private,
-		string $category,
-		bool $nsfw,
-		string $nsfwtext
+		int $userRequestsNum
 	): ?array {
 		try {
 			$isBio = $bio ? "Yes" : "No";
+			$isFork = $extraData['source'] ? "Yes" : "No";
+			$isNsfw = $extraData['nsfw'] ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
-			$isNsfw = $nsfw ? "Yes" . $nsfwtext : "No";
-			$nsfwReasonText = $nsfw ? "What type of NSFW content will it feature? '$nsfwtext'. " : "";
+			$forkText = $extraData['sourceurl'] ? "This wiki is forking from this URL: '$extraData['sourceurl']'. " : "";
+			$nsfwReasonText = $extraData['nsfw'] ? "What type of NSFW content will it feature? '$extraData['nsfwtext']'. " : "";
 
 			$sanitizedReason = "Wiki name: '$sitename'. Subdomain: '$subdomain'. Requester: '$username'. " .
-			"Language: '$language'. Focuses on real people/groups? '$isBio'. Private wiki? '$isPrivate'. " .
-			"Category: '$category'. Contains content that is not safe for work? '$isNsfw'. " .
-			$nsfwReasonText . "Wiki request reason: " .
+			"Number of previous requests: '$userRequestsNum'. Language: '$language'. Focuses on real people/groups? '$isBio'. "
+			"Private wiki? '$isPrivate'. Category: '$category'. Contains content that is not safe for work? '$isNsfw'. " .
+			$nsfwReasonText . "Is this a fork of a wiki? '$forkText'. " . $forkText . "Wiki request description: " .
 				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
@@ -318,7 +354,7 @@ class RequestWikiRemoteAIJob extends Job {
 			if ( !$threadId ) {
 				$this->logger->error( 'OpenAI did not return a threadId!' );
 				$this->setLastError( 'Run ' . $this->id . ' failed. No threadId returned.' );
-				return null;
+				return $threadData;
 			}
 
 			// Step 2: Run the message
@@ -346,7 +382,7 @@ class RequestWikiRemoteAIJob extends Job {
 			if ( !$runId ) {
 				$this->logger->error( 'OpenAI did not return a runId!' );
 				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
-				return null;
+				return $runData;
 			}
 
 			// Step 3: Poll the status of the run
@@ -391,7 +427,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 					$this->setLastError( 'Run ' . $runId . ' failed.' );
 
-					return null;
+					return $statusData;
 				}
 			}
 
