@@ -118,7 +118,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$commentText = $this->context->msg( 'requestwiki-ai-error' )
 			->inContentLanguage()
 			->parse();
-	
+
 			$this->wikiRequestManager->addComment(
 				comment: $commentText,
 				user: User::newSystemUser( 'CreateWiki AI' ),
