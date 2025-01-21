@@ -133,6 +133,7 @@ class CreateWikiDataFactory {
 	public function resetDatabaseLists( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
+			$this->databasesTimestamp = $mtime;
 			$this->cache->set(
 				$this->cache->makeGlobalKey( 'CreateWiki', 'databases' ),
 				$mtime
@@ -199,6 +200,7 @@ class CreateWikiDataFactory {
 	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
+			$this->wikiTimestamp = $mtime;
 			$this->cache->set(
 				$this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ),
 				$mtime
