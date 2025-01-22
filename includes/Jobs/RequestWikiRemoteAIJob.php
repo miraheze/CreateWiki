@@ -321,18 +321,31 @@ class RequestWikiRemoteAIJob extends Job {
 			$isNsfw = !empty( $extraData['nsfw'] ) ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
 			$forkText = !empty( $extraData['sourceurl'] )
-				? "This wiki is forking from this URL: '{$extraData['sourceurl']}'. "
+				? "This wiki is forking from this URL: \"" . htmlspecialchars($extraData['sourceurl'], ENT_QUOTES) . "\". "
 				: "";
 			$nsfwReasonText = !empty( $extraData['nsfwtext'] )
-				? "What type of NSFW content will it feature? '{$extraData['nsfwtext']}'. "
+				? "What type of NSFW content will it feature? \"" . htmlspecialchars($extraData['nsfwtext'], ENT_QUOTES) . "\". "
 				: "";
 
-			$sanitizedReason = "Wiki name: '{$sitename}'. Subdomain: '{$subdomain}'. Requester: '{$username}'. " .
-				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. " .
-				"Focuses on real people/groups? '{$isBio}'. Private wiki? '{$isPrivate}'. Category: '{$category}'. " .
-				"Contains content that is not safe for work? '{$isNsfw}'. " . $nsfwReasonText . $forkText .
-				"Wiki request description: " .
-				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
+			$sanitizedReason = sprintf(
+				'Wiki name: "%s". Subdomain: "%s". Requester: "%s". ' .
+				'Number of previous requests: "%d". Language: "%s". ' .
+				'Focuses on real people/groups? "%s". Private wiki? "%s". Category: "%s". ' .
+				'Contains content that is not safe for work? "%s". %s%s' .
+				'Wiki request description: %s',
+				htmlspecialchars($sitename, ENT_QUOTES),
+				htmlspecialchars($subdomain, ENT_QUOTES),
+				htmlspecialchars($username, ENT_QUOTES),
+				$userRequestsNum,
+				htmlspecialchars($language, ENT_QUOTES),
+				$isBio,
+				$isPrivate,
+				htmlspecialchars($category, ENT_QUOTES),
+				$isNsfw,
+				$nsfwReasonText,
+				$forkText,
+				htmlspecialchars(trim(str_replace(["\r\n", "\r"], "\n", $reason)), ENT_QUOTES)
+			);
 
 			// Step 1: Create a new thread
 			$threadData = $this->createRequest( '/threads', 'POST', [
