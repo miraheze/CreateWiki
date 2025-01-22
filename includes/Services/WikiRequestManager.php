@@ -369,7 +369,7 @@ class WikiRequestManager {
 
 		// CreateWiki AI should be able to see this.
 		// Additionally, the username is reserved.
-		if ( $user === 'CreateWiki AI' ) {
+		if ( $user->getName() === 'CreateWiki AI' ) {
 			return true;
 		}
 

@@ -106,9 +106,9 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->wikiRequestManager->getSitename(),
 			substr( $this->wikiRequestManager->getDBname(), 0, -4 ),
 			$this->wikiRequestManager->getRequesterUsername(),
-			$this->wikiRequestManager->getVisibleRequestsByUser(
+			count( $this->wikiRequestManager->getVisibleRequestsByUser(
 				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
-			)
+			) )
 		);
 
 		if ( !$apiResponse ) {
@@ -140,11 +140,11 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->wikiRequestManager->addRequestHistory(
 				action: 'ai-error',
 				details: $requestHistoryComment,
-				user: $user
+				user: User::newSystemUser( 'CreateWiki AI' )
 			);
 
 			$this->wikiRequestManager->addComment(
-				comment: $commentText,
+				comment: $publicCommentText,
 				user: User::newSystemUser( 'CreateWiki AI' ),
 				log: false,
 				type: 'comment',
