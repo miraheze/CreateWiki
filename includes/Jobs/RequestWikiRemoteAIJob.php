@@ -321,10 +321,10 @@ class RequestWikiRemoteAIJob extends Job {
 			$isNsfw = !empty( $extraData['nsfw'] ) ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
 			$forkText = !empty( $extraData['sourceurl'] )
-				? "This wiki is forking from this URL: \"" . htmlspecialchars($extraData['sourceurl'], ENT_QUOTES) . "\". "
+				? "This wiki is forking from this URL: \"" . htmlspecialchars( $extraData['sourceurl'], ENT_QUOTES ) . "\". "
 				: "";
 			$nsfwReasonText = !empty( $extraData['nsfwtext'] )
-				? "What type of NSFW content will it feature? \"" . htmlspecialchars($extraData['nsfwtext'], ENT_QUOTES) . "\". "
+				? "What type of NSFW content will it feature? \"" . htmlspecialchars( $extraData['nsfwtext'], ENT_QUOTES ) . "\". "
 				: "";
 
 			$sanitizedReason = sprintf(
@@ -333,18 +333,18 @@ class RequestWikiRemoteAIJob extends Job {
 				'Focuses on real people/groups? "%s". Private wiki? "%s". Category: "%s". ' .
 				'Contains content that is not safe for work? "%s". %s%s' .
 				'Wiki request description: %s',
-				htmlspecialchars($sitename, ENT_QUOTES),
-				htmlspecialchars($subdomain, ENT_QUOTES),
-				htmlspecialchars($username, ENT_QUOTES),
+				htmlspecialchars( $sitename, ENT_QUOTES ),
+				htmlspecialchars( $subdomain, ENT_QUOTES ),
+				htmlspecialchars( $username, ENT_QUOTES ),
 				$userRequestsNum,
-				htmlspecialchars($language, ENT_QUOTES),
+				htmlspecialchars( $language, ENT_QUOTES ),
 				$isBio,
 				$isPrivate,
-				htmlspecialchars($category, ENT_QUOTES),
+				htmlspecialchars( $category, ENT_QUOTES ),
 				$isNsfw,
 				$nsfwReasonText,
 				$forkText,
-				htmlspecialchars(trim(str_replace(["\r\n", "\r"], "\n", $reason)), ENT_QUOTES)
+				htmlspecialchars( trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) ), ENT_QUOTES )
 			);
 
 			// Step 1: Create a new thread
