@@ -321,10 +321,12 @@ class RequestWikiRemoteAIJob extends Job {
 			$isNsfw = !empty( $extraData['nsfw'] ) ? "Yes" : "No";
 			$isPrivate = $private ? "Yes" : "No";
 			$forkText = !empty( $extraData['sourceurl'] )
-				? "This wiki is forking from this URL: \"" . htmlspecialchars( $extraData['sourceurl'], ENT_QUOTES ) . "\". "
+				? "This wiki is forking from this URL: \"" .
+				htmlspecialchars( $extraData['sourceurl'], ENT_QUOTES ) . "\". "
 				: "";
 			$nsfwReasonText = !empty( $extraData['nsfwtext'] )
-				? "What type of NSFW content will it feature? \"" . htmlspecialchars( $extraData['nsfwtext'], ENT_QUOTES ) . "\". "
+				? "What type of NSFW content will it feature? \"" .
+				htmlspecialchars( $extraData['nsfwtext'], ENT_QUOTES ) . "\". "
 				: "";
 
 			$sanitizedReason = sprintf(
