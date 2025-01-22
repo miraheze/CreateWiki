@@ -328,7 +328,7 @@ class RequestWikiRemoteAIJob extends Job {
 				: "";
 
 			$sanitizedReason = "Wiki name: '{$sitename}'. Subdomain: '{$subdomain}'. Requester: '{$username}'. " .
-				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. " . 
+				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. " .
 				"Focuses on real people/groups? '{$isBio}'. Private wiki? '{$isPrivate}'. Category: '{$category}'. " .
 				"Contains content that is not safe for work? '{$isNsfw}'. " . $nsfwReasonText . $forkText .
 				"Wiki request description: " .
