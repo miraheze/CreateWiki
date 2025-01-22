@@ -224,7 +224,8 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
-					'Wiki request {id} was automatically approved by AI decision (with {confidence}% confidence) with reason: {comment}',
+					'Wiki request {id} was automatically approved by AI decision ' .
+					'(with {confidence}% confidence) with reason: {comment}',
 					[
 						'comment' => $comment,
 						'confidence' => $confidence,
@@ -327,9 +328,10 @@ class RequestWikiRemoteAIJob extends Job {
 				: "";
 
 			$sanitizedReason = "Wiki name: '{$sitename}'. Subdomain: '{$subdomain}'. Requester: '{$username}'. " .
-				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. Focuses on real people/groups? '{$isBio}'. " .
-				"Private wiki? '{$isPrivate}'. Category: '{$category}'. Contains content that is not safe for work? '{$isNsfw}'. " .
-				$nsfwReasonText . $forkText . "Wiki request description: " .
+				"Number of previous requests: '{$userRequestsNum}'. Language: '{$language}'. " . 
+				"Focuses on real people/groups? '{$isBio}'. Private wiki? '{$isPrivate}'. Category: '{$category}'. " .
+				"Contains content that is not safe for work? '{$isNsfw}'. " . $nsfwReasonText . $forkText .
+				"Wiki request description: " .
 				trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) );
 
 			// Step 1: Create a new thread
