@@ -113,8 +113,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 		if ( !$apiResponse ) {
 			$commentText = $this->context->msg( 'requestwiki-ai-error' )
-			->inContentLanguage()
-			->parse();
+				->inContentLanguage()
+				->parse();
 
 			$this->wikiRequestManager->addComment(
 				comment: $commentText,
@@ -129,13 +129,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		if ( $apiResponse['error'] ) {
 			$publicCommentText = $this->context->msg( 'requestwiki-ai-error-reason' )
-			->inContentLanguage()
-			->parse();
+				->inContentLanguage()
+				->parse();
 
 			$requestHistoryComment = $this->context->msg( 'requestwiki-ai-error-history-reason' )
-			->params( $apiResponse['error'] )
-			->inContentLanguage()
-			->parse();
+				->params( $apiResponse['error'] )
+				->inContentLanguage()
+				->parse();
 
 			$this->wikiRequestManager->addRequestHistory(
 				action: 'ai-error',
@@ -177,9 +177,9 @@ class RequestWikiRemoteAIJob extends Job {
 	private function handleDryRun( string $outcome, string $comment, int $confidence ): bool {
 		$outcomeMessage = $this->context->msg( 'requestwikiqueue-' . $outcome )->text();
 		$commentText = $this->context->msg( 'requestwiki-ai-decision-dryrun' )
-		->params( $outcomeMessage, $comment, $confidence )
-		->inContentLanguage()
-		->parse();
+			->params( $outcomeMessage, $comment, $confidence )
+			->inContentLanguage()
+			->parse();
 
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
