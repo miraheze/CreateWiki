@@ -153,7 +153,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$confidence = $apiResponse['recommendation']['confidence'] ?? '0';
+		$confidence = (int) ($apiResponse['recommendation']['confidence'] ?? 0);
 		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
@@ -530,6 +530,8 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function canAutoApprove(): bool {
+		$this->wikiRequestManager->loadFromID( $this->id );
+
 		$filter = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
 			ConfigNames::AutoApprovalFilter
@@ -542,7 +544,7 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		if ( preg_match( $filter, strtolower( $this->reason ) ) ) {
+		if ( preg_match( $filter, strtolower( $this->wikiRequestManager->getReason() ) ) ) {
 			$this->logger->debug(
 				'Wiki request {id} matched against the auto approval denylist filter! A manual review is required.',
 				[
