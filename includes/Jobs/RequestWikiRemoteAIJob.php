@@ -153,7 +153,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$confidence = (int) ($apiResponse['recommendation']['confidence'] ?? 0);
+		$confidence = (int)( $apiResponse['recommendation']['confidence'] ?? 0 );
 		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
