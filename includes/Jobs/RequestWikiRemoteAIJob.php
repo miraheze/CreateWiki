@@ -215,8 +215,7 @@ class RequestWikiRemoteAIJob extends Job {
 			->inContentLanguage()
 			->parse();
 
-		$unknownCommentText = $this->context->msg( 'requestwiki-ai-decision-unknown' )
-			->params( $comment, $confidence )
+		$unknownCommentText = $this->context->msg( 'requestwiki-ai-error' )
 			->inContentLanguage()
 			->parse();
 
