@@ -154,7 +154,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		// Extract response details with default fallbacks
 		$confidence = (int)( $apiResponse['recommendation']['confidence'] ?? 0 );
-		$outcome = $apiResponse['recommendation']['outcome'] ?? 'reject';
+		$outcome = $apiResponse['recommendation']['outcome'] ?? 'unknown';
 		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
 		$this->logger->debug(
@@ -215,6 +215,11 @@ class RequestWikiRemoteAIJob extends Job {
 			->inContentLanguage()
 			->parse();
 
+		$unknownCommentText = $this->context->msg( 'requestwiki-ai-decision-unknown' )
+			->params( $comment, $confidence )
+			->inContentLanguage()
+			->parse();
+
 		switch ( $outcome ) {
 			case 'approve':
 				$this->wikiRequestManager->startQueryBuilder();
@@ -267,13 +272,12 @@ class RequestWikiRemoteAIJob extends Job {
 				break;
 
 			case 'onhold':
-				$this->wikiRequestManager->addComment(
-					comment: $commentText,
+				$this->wikiRequestManager->startQueryBuilder();
+				$this->wikiRequestManager->onhold(
 					user: $systemUser,
-					log: false,
-					type: 'comment',
-					notifyUsers: []
+					comment: $commentText
 				);
+				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
 					'Wiki request {id} requires manual review and has been placed on hold with reason: {comment}',
 					[
@@ -285,7 +289,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			default:
 				$this->wikiRequestManager->addComment(
-					comment: $commentText,
+					comment: $unknownCommentText,
 					user: $systemUser,
 					log: false,
 					type: 'comment',
