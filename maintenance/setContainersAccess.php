@@ -6,8 +6,8 @@ $IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
 use FileBackend;
-use Maintenance;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 
 class SetContainersAccess extends Maintenance {
@@ -71,7 +71,7 @@ class SetContainersAccess extends Maintenance {
 			$this->output( "done.\n" );
 		} else {
 			$this->output( "failed.\n" );
-			print_r( $status->getErrors() );
+			print_r( $status->getMessages( 'error' ) );
 		}
 	}
 }

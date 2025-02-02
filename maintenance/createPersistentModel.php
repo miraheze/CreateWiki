@@ -5,7 +5,7 @@ namespace Miraheze\CreateWiki\Maintenance;
 $IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
-use Maintenance;
+use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Phpml\Classification\SVC;

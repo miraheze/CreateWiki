@@ -7,7 +7,6 @@ use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use ObjectCache;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\IConnectionProvider;
@@ -64,7 +63,7 @@ class CreateWikiDataFactory {
 
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
-			ObjectCache::getLocalClusterInstance();
+			$objectCacheFactory->getLocalClusterInstance();
 
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
