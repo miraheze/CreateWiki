@@ -7,7 +7,6 @@ use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use ObjectCache;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\IConnectionProvider;
