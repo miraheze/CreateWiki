@@ -71,7 +71,7 @@ class SetContainersAccess extends Maintenance {
 			$this->output( "done.\n" );
 		} else {
 			$this->output( "failed.\n" );
-			print_r( $status->getErrors() );
+			print_r( $status->getMessages( 'error' ) );
 		}
 	}
 }

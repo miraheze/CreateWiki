@@ -64,7 +64,7 @@ class CreateWikiDataFactory {
 
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
-			ObjectCache::getLocalClusterInstance();
+			$objectCacheFactory->getLocalClusterInstance();
 
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
