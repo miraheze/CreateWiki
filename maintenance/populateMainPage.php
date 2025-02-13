@@ -11,7 +11,7 @@ use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
-use WikitextContent;
+use MediaWiki\Content\WikitextContent;
 
 class PopulateMainPage extends Maintenance {
 

@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use BagOStuff;
+use Wikimedia\ObjectCache\BagOStuff;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;

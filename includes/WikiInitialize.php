@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki;
 
-use ExtensionProcessor;
-use ExtensionRegistry;
+use MediaWiki\Registration\ExtensionProcessor;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
 

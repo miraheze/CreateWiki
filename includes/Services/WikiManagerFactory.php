@@ -4,7 +4,7 @@ namespace Miraheze\CreateWiki\Services;
 
 use ConfigException;
 use Exception;
-use ExtensionRegistry;
+use MediaWiki\Registration\ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
