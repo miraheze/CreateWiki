@@ -159,7 +159,7 @@ class WikiRequestManager {
 			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
 			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
 		) {
-			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
+			$this->evaluateWithOpenAI();
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -407,6 +407,12 @@ class WikiRequestManager {
 
 		// Everyone can view public requests.
 		if ( $visibility === self::VISIBILITY_PUBLIC ) {
+			return true;
+		}
+
+		// CreateWiki AI should be able to see this.
+		// Additionally, the username is reserved.
+		if ( $user->getName() === 'CreateWiki AI' ) {
 			return true;
 		}
 
@@ -709,6 +715,10 @@ class WikiRequestManager {
 
 	public function getRequester(): User {
 		return $this->userFactory->newFromId( $this->row->cw_user );
+	}
+
+	public function getRequesterUsername(): string {
+		return $this->userFactory->newFromId( $this->row->cw_user )->getName();
 	}
 
 	public function getStatus(): string {
@@ -1015,20 +1025,13 @@ class WikiRequestManager {
 		);
 	}
 
-	private function evaluateWithOpenAI(
-		string $sitename,
-		string $subdomain,
-		string $reason
-	): void {
+	private function evaluateWithOpenAI(): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
 				[
-					'id' => $this->ID,
-					'sitename' => $sitename,
-					'subdomain' => $subdomain,
-					'reason' => $reason,
+					'id' => $this->ID
 				]
 			)
 		);

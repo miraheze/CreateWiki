@@ -5,8 +5,8 @@ namespace Miraheze\CreateWiki\Maintenance;
 $IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
 require_once "$IP/maintenance/Maintenance.php";
 
-use LoggedUpdateMaintenance;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Maintenance\LoggedUpdateMaintenance;
 use Miraheze\CreateWiki\ConfigNames;
 
 class PopulateCentralWiki extends LoggedUpdateMaintenance {

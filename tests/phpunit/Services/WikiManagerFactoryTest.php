@@ -21,11 +21,16 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		$sqlPath = '/maintenance/tables-generated.sql';
+		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
+			$sqlPath = '/sql/mysql/tables-generated.sql';
+		}
+
 		$this->overrideConfigValues( [
 			ConfigNames::DatabaseClusters => [ 'c1', 'c2' ],
 			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::SQLFiles => [
-				MW_INSTALL_PATH . '/maintenance/tables-generated.sql',
+				MW_INSTALL_PATH . $sqlPath,
 			],
 		] );
 

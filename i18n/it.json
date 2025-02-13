@@ -84,7 +84,7 @@
 	"notification-header-request-declined": "La tua richiesta è stata rifiutata per il seguente motivo:",
 	"notification-header-wiki-creation": "Il tuo wiki <strong>$1</strong> è stato creato!",
 	"requestwiki": "Richiedi un wiki",
-	"requestwiki-ai-decision-moredetails": "Questa richiesta richiede ulteriori dettagli prima di poter essere ulteriormente valutata, per il seguente motivo: $1",
+	"requestwiki-ai-decision-moredetails": "Questa richiesta richiede ulteriori dettagli prima di poter essere ulteriormente valutata, per il seguente motivo: \"$1\"",
 	"requestwiki-edit-success": "Le tue modifiche a questa richiesta di wiki sono state salvate con successo.",
 	"requestwiki-error-invalidcomment": "La tua richiesta di wiki contiene un carattere non valido. Correggilo e riprova.",
 	"requestwiki-error-patient": "Hai già richiesto un wiki! Per favore, abbi pazienza, la tua richiesta è in fase di revisione. Se hai bisogno di richiedere un altro wiki, prova di nuovo più tardi.",

@@ -58,7 +58,7 @@
 	"createwiki-success": "Уики сәтті жасалды.",
 	"createwiki-success-locked": "Өтініш сәтті құлыпталды. Енді оны өзгертуге және оған түсініктеме қосуға болмайды.",
 	"createwiki-success-unlocked": "Өтініш сәтті құлыптан шығарылды.",
-	"createwiki-wikinotglobalwiki": "CreateWiki интерфейстері тек ғаламдық уикиде қолжетімді.",
+	"createwiki-wikinotcentralwiki": "CreateWiki интерфейстері тек ғаламдық уикиде қолжетімді.",
 	"echo-category-title-request-comment": "Уики сұрауына пікір қосылды",
 	"echo-category-title-request-declined": "Уики сұрауы қабылданбады",
 	"echo-category-title-request-moredetails": "Уики сұрауыңызға қосымша мәліметтер қажет.",

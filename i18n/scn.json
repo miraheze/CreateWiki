@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Ajeje Brazorf"
+			"Ajeje Brazorf",
+			"GianAntonucci"
 		]
 	},
 	"action-createwiki": "criari wiki",
 	"createwiki": "Crea nu wiki",
-	"createwiki-defaultmainpage-summary": "Crea pàggina principali",
+	"createwiki-defaultmainpage-summary": "Crea a pàggina mastra",
 	"createwiki-email-subject": "Lu tò wiki novu di Miraheze: $1",
 	"createwiki-label-category": "Catigurìa:",
 	"createwiki-label-dbname": "Nomu dû databbasi:",

@@ -2,14 +2,13 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use BagOStuff;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use ObjectCache;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
+use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
@@ -64,7 +63,7 @@ class CreateWikiDataFactory {
 
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
-			ObjectCache::getLocalClusterInstance();
+			$objectCacheFactory->getLocalClusterInstance();
 
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
@@ -133,6 +132,7 @@ class CreateWikiDataFactory {
 	public function resetDatabaseLists( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
+			$this->databasesTimestamp = $mtime;
 			$this->cache->set(
 				$this->cache->makeGlobalKey( 'CreateWiki', 'databases' ),
 				$mtime
@@ -199,6 +199,7 @@ class CreateWikiDataFactory {
 	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
+			$this->wikiTimestamp = $mtime;
 			$this->cache->set(
 				$this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ),
 				$mtime

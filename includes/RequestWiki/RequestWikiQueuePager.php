@@ -7,6 +7,7 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Pager\IndexPager;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
@@ -14,6 +15,9 @@ use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
+
+	/** @inheritDoc */
+	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
 
 	private LanguageNameUtils $languageNameUtils;
 	private LinkRenderer $linkRenderer;
@@ -38,12 +42,12 @@ class RequestWikiQueuePager extends TablePager {
 		string $requester,
 		string $status
 	) {
-		parent::__construct( $context, $linkRenderer );
-
 		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
-		$this->languageNameUtils = $languageNameUtils;
+		parent::__construct( $context, $linkRenderer );
+
 		$this->linkRenderer = $linkRenderer;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->userFactory = $userFactory;
 		$this->wikiRequestManager = $wikiRequestManager;
 
@@ -167,7 +171,7 @@ class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public function getDefaultSort(): string {
-		return 'cw_id';
+		return 'cw_timestamp';
 	}
 
 	/** @inheritDoc */
