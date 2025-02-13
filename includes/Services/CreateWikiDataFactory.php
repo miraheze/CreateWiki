@@ -2,13 +2,13 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use Wikimedia\ObjectCache\BagOStuff;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
+use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 

@@ -4,12 +4,12 @@ namespace Miraheze\CreateWiki\Services;
 
 use ConfigException;
 use Exception;
-use MediaWiki\Registration\ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
