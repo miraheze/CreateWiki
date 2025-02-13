@@ -9,11 +9,11 @@ use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Specials\SpecialUserRights;
 use MediaWiki\User\UserFactory;
+use MediaWiki\Xml\XmlSelect;
 use Miraheze\CreateWiki\RequestWiki\FlaggedWikisPager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\IConnectionProvider;
-use XmlSelect;
 
 class SpecialFlaggedWikis extends SpecialPage {
 
