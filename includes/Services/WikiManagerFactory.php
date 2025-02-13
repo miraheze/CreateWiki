@@ -276,16 +276,10 @@ class WikiManagerFactory {
 			$this->cwdb
 		);
 
-		$domain = $this->options->get( ConfigNames::Subdomain );
-		$subdomain = substr(
-			$this->dbname, 0,
-			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-		);
-
 		$notificationData = [
 			'type' => 'wiki-creation',
 			'extra' => [
-				'wiki-url' => 'https://' . $subdomain . '.' . $domain,
+				'wiki-url' => $this->getUrl(),
 				'sitename' => $sitename,
 			],
 			'subject' => $this->messageLocalizer->msg(
@@ -414,6 +408,16 @@ class WikiManagerFactory {
 		}
 
 		return null;
+	}
+
+	public function getUrl(): string {
+		$domain = $this->options->get( ConfigNames::Subdomain );
+		$subdomain = substr(
+			$this->dbname, 0,
+			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
+		);
+
+		return 'https://' . $subdomain . '.' . $domain;
 	}
 
 	private function logEntry(
