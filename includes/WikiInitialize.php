@@ -2,10 +2,10 @@
 
 namespace Miraheze\CreateWiki;
 
-use ExtensionProcessor;
-use ExtensionRegistry;
 use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
+use MediaWiki\Registration\ExtensionProcessor;
+use MediaWiki\Registration\ExtensionRegistry;
 
 class WikiInitialize {
 
