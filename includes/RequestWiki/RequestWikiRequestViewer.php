@@ -71,7 +71,7 @@ class RequestWikiRequestViewer {
 
 		$formDescriptor = [
 			'sitename' => [
-				'label-message' => 'requestwikiqueue-request-label-sitename',
+				'label-message' => 'requestwikiqueue-request-label-wikiname',
 				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->wikiRequestManager->getSitename(),
@@ -178,7 +178,7 @@ class RequestWikiRequestViewer {
 					'section' => 'comments',
 				],
 				'edit-sitename' => [
-					'label-message' => 'requestwikiqueue-request-label-sitename',
+					'label-message' => 'requestwikiqueue-request-label-wikiname',
 					'type' => 'text',
 					'section' => 'editing',
 					'required' => true,

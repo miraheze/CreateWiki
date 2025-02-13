@@ -54,7 +54,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'required' => true,
 			],
 			'sitename' => [
-				'label-message' => 'createwiki-label-sitename',
+				'label-message' => 'createwiki-label-wikiname',
 				'type' => 'text',
 				'size' => 20,
 			],

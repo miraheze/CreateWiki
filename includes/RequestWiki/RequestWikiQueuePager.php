@@ -62,7 +62,7 @@ class RequestWikiQueuePager extends TablePager {
 		return [
 			'cw_timestamp' => $this->msg( 'requestwikiqueue-request-label-requested-date' )->text(),
 			'cw_dbname' => $this->msg( 'createwiki-label-dbname' )->text(),
-			'cw_sitename' => $this->msg( 'requestwikiqueue-request-label-sitename' )->text(),
+			'cw_sitename' => $this->msg( 'requestwikiqueue-request-label-wikiname' )->text(),
 			'cw_user' => $this->msg( 'requestwikiqueue-request-label-requester' )->text(),
 			'cw_language' => $this->msg( 'requestwikiqueue-request-label-language' )->text(),
 			'cw_url' => $this->msg( 'requestwikiqueue-request-label-url' )->text(),
