@@ -396,8 +396,8 @@ class RequestWikiRemoteAIJob extends Job {
 					'OpenAI did not return a runId for request #{id}! AI execution aborted.',
 				[
 					'id' => $this->id,
-				]
-			);
+					]
+				);
 				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
 				return $runData;
 			}
