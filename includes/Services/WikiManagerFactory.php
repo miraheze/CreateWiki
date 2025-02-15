@@ -33,17 +33,8 @@ class WikiManagerFactory {
 		MainConfigNames::LBFactoryConf,
 	];
 
-	private CreateWikiDataFactory $dataFactory;
-	private CreateWikiHookRunner $hookRunner;
-	private CreateWikiNotificationsManager $notificationsManager;
-
-	private IConnectionProvider $connectionProvider;
-	private MessageLocalizer $messageLocalizer;
-	private UserFactory $userFactory;
 	private DBConnRef $dbw;
 	private DBConnRef $cwdb;
-
-	private ServiceOptions $options;
 
 	private ?ILoadBalancer $lb = null;
 
@@ -54,23 +45,15 @@ class WikiManagerFactory {
 	private ?string $cluster = null;
 
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiDataFactory $dataFactory,
-		CreateWikiHookRunner $hookRunner,
-		CreateWikiNotificationsManager $notificationsManager,
-		UserFactory $userFactory,
-		MessageLocalizer $messageLocalizer,
-		ServiceOptions $options
+		private IConnectionProvider $connectionProvider,
+		private CreateWikiDataFactory $dataFactory,
+		private CreateWikiHookRunner $hookRunner,
+		private CreateWikiNotificationsManager $notificationsManager,
+		private UserFactory $userFactory,
+		private MessageLocalizer $messageLocalizer,
+		private ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->dataFactory = $dataFactory;
-		$this->hookRunner = $hookRunner;
-		$this->messageLocalizer = $messageLocalizer;
-		$this->notificationsManager = $notificationsManager;
-		$this->options = $options;
-		$this->userFactory = $userFactory;
 	}
 
 	/**
