@@ -52,44 +52,25 @@ class WikiRequestManager {
 		self::VISIBILITY_SUPPRESS_REQUEST => 'createwiki-suppressrequest',
 	];
 
-	private ServiceOptions $options;
 	private IDatabase $dbw;
-
-	private ?UpdateQueryBuilder $queryBuilder = null;
-
-	private WikiManagerFactory $wikiManagerFactory;
-
 	private stdClass|bool $row;
-	private LinkRenderer $linkRenderer;
-	private PermissionManager $permissionManager;
-	private UserFactory $userFactory;
-	private CreateWikiNotificationsManager $notificationsManager;
-	private IConnectionProvider $connectionProvider;
-	private JobQueueGroupFactory $jobQueueGroupFactory;
 
 	private int $ID;
 	private array $changes = [];
 
+	private ?UpdateQueryBuilder $queryBuilder = null;
+
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiNotificationsManager $notificationsManager,
-		JobQueueGroupFactory $jobQueueGroupFactory,
-		LinkRenderer $linkRenderer,
-		PermissionManager $permissionManager,
-		UserFactory $userFactory,
-		WikiManagerFactory $wikiManagerFactory,
-		ServiceOptions $options
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
+		private readonly LinkRenderer $linkRenderer,
+		private readonly PermissionManager $permissionManager,
+		private readonly UserFactory $userFactory,
+		private readonly WikiManagerFactory $wikiManagerFactory,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->notificationsManager = $notificationsManager;
-		$this->jobQueueGroupFactory = $jobQueueGroupFactory;
-		$this->linkRenderer = $linkRenderer;
-		$this->permissionManager = $permissionManager;
-		$this->userFactory = $userFactory;
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->options = $options;
 	}
 
 	public function loadFromID( int $requestID ): void {
@@ -159,7 +140,7 @@ class WikiRequestManager {
 			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
 			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
 		) {
-			$this->evaluateWithOpenAI( $data['sitename'], $data['subdomain'], $data['reason'] );
+			$this->evaluateWithOpenAI();
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -364,6 +345,12 @@ class WikiRequestManager {
 
 		// Everyone can view public requests.
 		if ( $visibility === self::VISIBILITY_PUBLIC ) {
+			return true;
+		}
+
+		// CreateWiki AI should be able to see this.
+		// Additionally, the username is reserved.
+		if ( $user->getName() === 'CreateWiki AI' ) {
 			return true;
 		}
 
@@ -666,6 +653,10 @@ class WikiRequestManager {
 
 	public function getRequester(): User {
 		return $this->userFactory->newFromId( $this->row->cw_user );
+	}
+
+	public function getRequesterUsername(): string {
+		return $this->userFactory->newFromId( $this->row->cw_user )->getName();
 	}
 
 	public function getStatus(): string {
@@ -972,20 +963,13 @@ class WikiRequestManager {
 		);
 	}
 
-	private function evaluateWithOpenAI(
-		string $sitename,
-		string $subdomain,
-		string $reason
-	): void {
+	private function evaluateWithOpenAI(): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
 				[
-					'id' => $this->ID,
-					'sitename' => $sitename,
-					'subdomain' => $subdomain,
-					'reason' => $reason,
+					'id' => $this->ID
 				]
 			)
 		);

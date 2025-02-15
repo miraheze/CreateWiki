@@ -3,6 +3,7 @@
 		"authors": [
 			"Ahmed Alyamoor",
 			"Bassem JARKAS",
+			"Cigaryno",
 			"HendSalah16",
 			"Meno25",
 			"Mohammed Qays",
@@ -25,6 +26,8 @@
 	"createwiki-error-notalnum": "يحتوي المجال الفرعي الذي حددته على أحرف غير أبجدية رقمية. يرجى المحاولة مرة أخرى.",
 	"createwiki-error-notlowercase": "لا يجوز أن يحتوي المجال الفرعي على أحرف كبيرة. يرجى المحاولة مرة أخرى.",
 	"createwiki-error-notsuffixed": "لا ينتهي اسم قاعدة البيانات بلاحقة صالحة (' $1 ').",
+	"createwiki-label-all-languages": "الكل",
+	"createwiki-label-all-statuses": "الكل",
 	"createwiki-label-category": "تصنيف",
 	"createwiki-label-dbname": "اسم قاعدة البيانات",
 	"createwiki-label-language": "اللغة:",

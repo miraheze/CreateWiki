@@ -2,14 +2,13 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use BagOStuff;
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use ObjectCache;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
+use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
@@ -24,17 +23,14 @@ class CreateWikiDataFactory {
 		ConfigNames::UsePrivateWikis,
 	];
 
-	private BagOStuff $cache;
-	private CreateWikiHookRunner $hookRunner;
-	private IConnectionProvider $connectionProvider;
+	private readonly BagOStuff $cache;
 	private IReadableDatabase $dbr;
-	private ServiceOptions $options;
 
 	/** @var string The wiki database name. */
 	private string $wiki;
 
 	/** @var string The directory path for cache files. */
-	private string $cacheDir;
+	private readonly string $cacheDir;
 
 	/** @var int The cached timestamp for the databases list. */
 	private int $databasesTimestamp;
@@ -42,29 +38,17 @@ class CreateWikiDataFactory {
 	/** @var int The cached timestamp for the wiki information. */
 	private int $wikiTimestamp;
 
-	/**
-	 * CreateWikiDataFactory constructor.
-	 *
-	 * @param IConnectionProvider $connectionProvider
-	 * @param ObjectCacheFactory $objectCacheFactory
-	 * @param CreateWikiHookRunner $hookRunner
-	 * @param ServiceOptions $options
-	 */
 	public function __construct(
-		IConnectionProvider $connectionProvider,
 		ObjectCacheFactory $objectCacheFactory,
-		CreateWikiHookRunner $hookRunner,
-		ServiceOptions $options
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 
-		$this->connectionProvider = $connectionProvider;
-		$this->hookRunner = $hookRunner;
-		$this->options = $options;
-
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
-			ObjectCache::getLocalClusterInstance();
+			$objectCacheFactory->getLocalClusterInstance();
 
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
@@ -133,6 +117,7 @@ class CreateWikiDataFactory {
 	public function resetDatabaseLists( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
+			$this->databasesTimestamp = $mtime;
 			$this->cache->set(
 				$this->cache->makeGlobalKey( 'CreateWiki', 'databases' ),
 				$mtime
@@ -199,6 +184,7 @@ class CreateWikiDataFactory {
 	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
+			$this->wikiTimestamp = $mtime;
 			$this->cache->set(
 				$this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ),
 				$mtime

@@ -21,3 +21,4 @@ CREATE TABLE /*_*/cw_wikis (
 ) /*$wgDBTableOptions*/;
 
 CREATE INDEX /*i*/wiki_dbname ON /*_*/cw_wikis (wiki_dbname);
+CREATE INDEX /*i*/wiki_dbcluster ON /*_*/cw_wikis (wiki_dbcluster);

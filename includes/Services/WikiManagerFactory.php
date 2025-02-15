@@ -2,14 +2,14 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use ConfigException;
 use Exception;
-use ExtensionRegistry;
 use FatalError;
 use ManualLogEntry;
+use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
@@ -33,17 +33,8 @@ class WikiManagerFactory {
 		MainConfigNames::LBFactoryConf,
 	];
 
-	private CreateWikiDataFactory $dataFactory;
-	private CreateWikiHookRunner $hookRunner;
-	private CreateWikiNotificationsManager $notificationsManager;
-
-	private IConnectionProvider $connectionProvider;
-	private MessageLocalizer $messageLocalizer;
-	private UserFactory $userFactory;
 	private DBConnRef $dbw;
 	private DBConnRef $cwdb;
-
-	private ServiceOptions $options;
 
 	private ?ILoadBalancer $lb = null;
 
@@ -54,23 +45,15 @@ class WikiManagerFactory {
 	private ?string $cluster = null;
 
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiDataFactory $dataFactory,
-		CreateWikiHookRunner $hookRunner,
-		CreateWikiNotificationsManager $notificationsManager,
-		UserFactory $userFactory,
-		MessageLocalizer $messageLocalizer,
-		ServiceOptions $options
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly UserFactory $userFactory,
+		private readonly MessageLocalizer $messageLocalizer,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->dataFactory = $dataFactory;
-		$this->hookRunner = $hookRunner;
-		$this->messageLocalizer = $messageLocalizer;
-		$this->notificationsManager = $notificationsManager;
-		$this->options = $options;
-		$this->userFactory = $userFactory;
 	}
 
 	/**
@@ -145,7 +128,7 @@ class WikiManagerFactory {
 		return $this->exists;
 	}
 
-	private function doCreateDatabase(): void {
+	public function doCreateDatabase(): void {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );

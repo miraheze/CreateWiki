@@ -15,3 +15,6 @@ CREATE TABLE /*_*/cw_requests (
   cw_bio TINYINT UNSIGNED NOT NULL DEFAULT '0',
   cw_extra LONGTEXT NULL
 ) /*$wgDBTableOptions*/;
+
+CREATE INDEX /*i*/cw_status ON /*_*/cw_requests (cw_status);
+CREATE INDEX /*i*/cw_timestamp ON /*_*/cw_requests (cw_timestamp);

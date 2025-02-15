@@ -10,18 +10,11 @@ use MediaWiki\SpecialPage\SpecialPage;
 
 class CreateWikiLogFormatter extends LogFormatter {
 
-	private LinkRenderer $linkRenderer;
-
-	/**
-	 * @param LogEntry $entry
-	 * @param LinkRenderer $linkRenderer
-	 */
 	public function __construct(
 		LogEntry $entry,
-		LinkRenderer $linkRenderer
+		private readonly LinkRenderer $linkRenderer
 	) {
 		parent::__construct( $entry );
-		$this->linkRenderer = $linkRenderer;
 	}
 
 	/**

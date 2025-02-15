@@ -13,17 +13,11 @@ class CreateWikiRestUtils {
 		ConfigNames::EnableRESTAPI,
 	];
 
-	private CreateWikiDatabaseUtils $databaseUtils;
-	private ServiceOptions $options;
-
 	public function __construct(
-		CreateWikiDatabaseUtils $databaseUtils,
-		ServiceOptions $options
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->databaseUtils = $databaseUtils;
-		$this->options = $options;
 	}
 
 	/**

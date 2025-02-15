@@ -33,8 +33,8 @@ return [
 	},
 	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
 		return new CreateWikiDataFactory(
-			$services->getConnectionProvider(),
 			$services->getObjectCacheFactory(),
+			$services->getConnectionProvider(),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
 				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,

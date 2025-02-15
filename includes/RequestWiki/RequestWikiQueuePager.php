@@ -2,11 +2,11 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Pager\IndexPager;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
@@ -15,42 +15,23 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
 
-	private LanguageNameUtils $languageNameUtils;
-	private LinkRenderer $linkRenderer;
-	private UserFactory $userFactory;
-	private WikiRequestManager $wikiRequestManager;
-
-	private string $dbname;
-	private string $language;
-	private string $requester;
-	private string $status;
+	/** @inheritDoc */
+	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
 
 	public function __construct(
-		Config $config,
 		IContextSource $context,
 		IConnectionProvider $connectionProvider,
-		LanguageNameUtils $languageNameUtils,
-		LinkRenderer $linkRenderer,
-		UserFactory $userFactory,
-		WikiRequestManager $wikiRequestManager,
-		string $dbname,
-		string $language,
-		string $requester,
-		string $status
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly LinkRenderer $linkRenderer,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly string $dbname,
+		private readonly string $language,
+		private readonly string $requester,
+		private readonly string $status
 	) {
-		parent::__construct( $context, $linkRenderer );
-
 		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
-		$this->languageNameUtils = $languageNameUtils;
-		$this->linkRenderer = $linkRenderer;
-		$this->userFactory = $userFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
-
-		$this->dbname = $dbname;
-		$this->language = $language;
-		$this->requester = $requester;
-		$this->status = $status;
+		parent::__construct( $context, $linkRenderer );
 	}
 
 	/** @inheritDoc */
@@ -167,7 +148,7 @@ class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public function getDefaultSort(): string {
-		return 'cw_id';
+		return 'cw_timestamp';
 	}
 
 	/** @inheritDoc */
