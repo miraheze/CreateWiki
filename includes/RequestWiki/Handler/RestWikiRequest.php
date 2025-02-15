@@ -18,18 +18,11 @@ use Wikimedia\Rdbms\SelectQueryBuilder;
  */
 class RestWikiRequest extends SimpleHandler {
 
-	private IConnectionProvider $connectionProvider;
-	private CreateWikiRestUtils $restUtils;
-	private UserFactory $userFactory;
-
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiRestUtils $restUtils,
-		UserFactory $userFactory
+		private IConnectionProvider $connectionProvider,
+		private CreateWikiRestUtils $restUtils,
+		private UserFactory $userFactory
 	) {
-		$this->connectionProvider = $connectionProvider;
-		$this->restUtils = $restUtils;
-		$this->userFactory = $userFactory;
 	}
 
 	public function run( int $requestID ): Response {
