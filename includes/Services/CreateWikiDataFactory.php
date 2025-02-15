@@ -39,8 +39,8 @@ class CreateWikiDataFactory {
 	private int $wikiTimestamp;
 
 	public function __construct(
+		ObjectCacheFactory $objectCacheFactory,
 		private readonly IConnectionProvider $connectionProvider,
-		private readonly ObjectCacheFactory $objectCacheFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly ServiceOptions $options
 	) {
