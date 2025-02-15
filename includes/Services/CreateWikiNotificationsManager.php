@@ -45,10 +45,10 @@ class CreateWikiNotificationsManager {
 	private string $type;
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private MessageLocalizer $messageLocalizer,
-		private ServiceOptions $options,
-		private UserFactory $userFactory
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly MessageLocalizer $messageLocalizer,
+		private readonly ServiceOptions $options,
+		private readonly UserFactory $userFactory
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

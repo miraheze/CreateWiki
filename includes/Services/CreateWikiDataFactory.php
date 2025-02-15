@@ -23,14 +23,14 @@ class CreateWikiDataFactory {
 		ConfigNames::UsePrivateWikis,
 	];
 
-	private BagOStuff $cache;
+	private readonly BagOStuff $cache;
 	private IReadableDatabase $dbr;
 
 	/** @var string The wiki database name. */
 	private string $wiki;
 
 	/** @var string The directory path for cache files. */
-	private string $cacheDir;
+	private readonly string $cacheDir;
 
 	/** @var int The cached timestamp for the databases list. */
 	private int $databasesTimestamp;
@@ -39,10 +39,10 @@ class CreateWikiDataFactory {
 	private int $wikiTimestamp;
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private ObjectCacheFactory $objectCacheFactory,
-		private CreateWikiHookRunner $hookRunner,
-		private ServiceOptions $options
+		ObjectCacheFactory $objectCacheFactory,
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 

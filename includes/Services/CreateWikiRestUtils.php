@@ -14,8 +14,8 @@ class CreateWikiRestUtils {
 	];
 
 	public function __construct(
-		private CreateWikiDatabaseUtils $databaseUtils,
-		private ServiceOptions $options
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

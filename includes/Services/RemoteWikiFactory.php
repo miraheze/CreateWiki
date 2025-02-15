@@ -54,11 +54,11 @@ class RemoteWikiFactory {
 	private ?string $log = null;
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private CreateWikiDataFactory $dataFactory,
-		private CreateWikiHookRunner $hookRunner,
-		private JobQueueGroupFactory $jobQueueGroupFactory,
-		private ServiceOptions $options
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

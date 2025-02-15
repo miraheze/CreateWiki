@@ -20,15 +20,15 @@ class RequestWikiQueuePager extends TablePager {
 
 	public function __construct(
 		IContextSource $context,
-		private IConnectionProvider $connectionProvider,
-		private LanguageNameUtils $languageNameUtils,
-		private LinkRenderer $linkRenderer,
-		private UserFactory $userFactory,
-		private WikiRequestManager $wikiRequestManager,
-		private string $dbname,
-		private string $language,
-		private string $requester,
-		private string $status
+		IConnectionProvider $connectionProvider,
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly LinkRenderer $linkRenderer,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly string $dbname,
+		private readonly string $language,
+		private readonly string $requester,
+		private readonly string $status
 	) {
 		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 		parent::__construct( $context, $linkRenderer );

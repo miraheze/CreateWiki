@@ -61,14 +61,14 @@ class WikiRequestManager {
 	private ?UpdateQueryBuilder $queryBuilder = null;
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private CreateWikiNotificationsManager $notificationsManager,
-		private JobQueueGroupFactory $jobQueueGroupFactory,
-		private LinkRenderer $linkRenderer,
-		private PermissionManager $permissionManager,
-		private UserFactory $userFactory,
-		private WikiManagerFactory $wikiManagerFactory,
-		private ServiceOptions $options
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
+		private readonly LinkRenderer $linkRenderer,
+		private readonly PermissionManager $permissionManager,
+		private readonly UserFactory $userFactory,
+		private readonly WikiManagerFactory $wikiManagerFactory,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

@@ -19,9 +19,9 @@ use Wikimedia\Rdbms\SelectQueryBuilder;
 class RestWikiRequest extends SimpleHandler {
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private CreateWikiRestUtils $restUtils,
-		private UserFactory $userFactory
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiRestUtils $restUtils,
+		private readonly UserFactory $userFactory
 	) {
 	}
 
