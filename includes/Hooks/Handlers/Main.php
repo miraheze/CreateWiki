@@ -31,26 +31,13 @@ class Main implements
 {
 
 	private Config $config;
-	private CreateWikiDataFactory $dataFactory;
-	private RemoteWikiFactory $remoteWikiFactory;
-	private IConnectionProvider $connectionProvider;
 
-	/**
-	 * @param ConfigFactory $configFactory
-	 * @param IConnectionProvider $connectionProvider
-	 * @param CreateWikiDataFactory $dataFactory
-	 * @param RemoteWikiFactory $remoteWikiFactory
-	 */
 	public function __construct(
 		ConfigFactory $configFactory,
-		IConnectionProvider $connectionProvider,
-		CreateWikiDataFactory $dataFactory,
-		RemoteWikiFactory $remoteWikiFactory
+		private IConnectionProvider $connectionProvider,
+		private CreateWikiDataFactory $dataFactory,
+		private RemoteWikiFactory $remoteWikiFactory
 	) {
-		$this->connectionProvider = $connectionProvider;
-		$this->dataFactory = $dataFactory;
-		$this->remoteWikiFactory = $remoteWikiFactory;
-
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
