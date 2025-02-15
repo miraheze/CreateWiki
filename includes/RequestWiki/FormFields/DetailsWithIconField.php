@@ -8,7 +8,7 @@ use OOUI\Tag;
 
 class DetailsWithIconField extends HTMLInfoField {
 
-	private bool $fieldCheck;
+	private readonly bool $fieldCheck;
 
 	/** @inheritDoc */
 	public function __construct( $info ) {

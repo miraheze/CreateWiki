@@ -16,16 +16,16 @@ class RequestWikiAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiAIJob';
 
-	private Config $config;
+	private readonly Config $config;
 
-	private int $id;
-	private string $reason;
+	private readonly int $id;
+	private readonly string $reason;
 
 	public function __construct(
 		array $params,
 		ConfigFactory $configFactory,
-		private CreateWikiHookRunner $hookRunner,
-		private WikiRequestManager $wikiRequestManager
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 

@@ -30,13 +30,13 @@ class Main implements
 	UserGetReservedNamesHook
 {
 
-	private Config $config;
+	private readonly Config $config;
 
 	public function __construct(
 		ConfigFactory $configFactory,
-		private IConnectionProvider $connectionProvider,
-		private CreateWikiDataFactory $dataFactory,
-		private RemoteWikiFactory $remoteWikiFactory
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}

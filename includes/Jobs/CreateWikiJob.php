@@ -13,22 +13,22 @@ class CreateWikiJob extends Job {
 
 	public const JOB_NAME = 'CreateWikiJob';
 
-	private int $id;
-	private bool $private;
+	private readonly int $id;
+	private readonly bool $private;
 
-	private string $category;
-	private string $creator;
-	private string $dbname;
-	private string $language;
-	private string $requester;
-	private string $sitename;
+	private readonly string $category;
+	private readonly string $creator;
+	private readonly string $dbname;
+	private readonly string $language;
+	private readonly string $requester;
+	private readonly string $sitename;
 
-	private array $extra;
+	private readonly array $extra;
 
 	public function __construct(
 		array $params,
-		private WikiManagerFactory $wikiManagerFactory,
-		private WikiRequestManager $wikiRequestManager
+		private readonly WikiManagerFactory $wikiManagerFactory,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 

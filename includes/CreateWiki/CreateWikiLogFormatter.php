@@ -12,7 +12,7 @@ class CreateWikiLogFormatter extends LogFormatter {
 
 	public function __construct(
 		LogEntry $entry,
-		private LinkRenderer $linkRenderer
+		private readonly LinkRenderer $linkRenderer
 	) {
 		parent::__construct( $entry );
 	}

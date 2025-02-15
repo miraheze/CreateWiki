@@ -20,28 +20,20 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private Config $config;
-	private LoggerInterface $logger;
-	private RequestContext $context;
-	private string $baseApiUrl;
-	private string $apiKey;
+	private readonly Config $config;
+	private readonly LoggerInterface $logger;
+	private readonly RequestContext $context;
 
-	private int $id;
-	private string $reason;
-	private string $sitename;
-	private string $subdomain;
-	private string $username;
-	private string $language;
-	private bool $bio;
-	private bool $private;
-	private string $category;
-	private array $extraData;
+	private readonly string $apiKey;
+	private readonly string $baseApiUrl;
+
+	private readonly int $id;
 
 	public function __construct(
 		array $params,
 		ConfigFactory $configFactory,
-		private WikiRequestManager $wikiRequestManager,
-		private HttpRequestFactory $httpRequestFactory
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly HttpRequestFactory $httpRequestFactory
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
@@ -49,8 +41,8 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 		$this->context = RequestContext::getMain();
 
-		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
+		$this->baseApiUrl = 'https://api.openai.com/v1';
 
 		$this->id = $params['id'];
 	}
