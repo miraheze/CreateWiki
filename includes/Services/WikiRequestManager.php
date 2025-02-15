@@ -57,7 +57,7 @@ class WikiRequestManager {
 
 	private int $ID;
 	private array $changes = [];
-	
+
 	private ?UpdateQueryBuilder $queryBuilder = null;
 
 	public function __construct(

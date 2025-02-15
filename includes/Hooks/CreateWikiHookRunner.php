@@ -28,7 +28,8 @@ class CreateWikiHookRunner implements
 
 	public function __construct(
 		private HookContainer $hookContainer
-	) {}
+	) {
+	}
 
 	/** @inheritDoc */
 	public function onCreateWikiAfterCreationWithExtraData( array $extraData, string $dbname ): void {
