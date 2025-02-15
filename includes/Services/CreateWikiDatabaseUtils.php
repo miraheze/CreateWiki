@@ -7,10 +7,9 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class CreateWikiDatabaseUtils {
 
-	private IConnectionProvider $connectionProvider;
-
-	public function __construct( IConnectionProvider $connectionProvider ) {
-		$this->connectionProvider = $connectionProvider;
+	public function __construct(
+		private IConnectionProvider $connectionProvider
+	) {
 	}
 
 	public function getCentralWikiID(): bool|string {

@@ -52,44 +52,25 @@ class WikiRequestManager {
 		self::VISIBILITY_SUPPRESS_REQUEST => 'createwiki-suppressrequest',
 	];
 
-	private ServiceOptions $options;
 	private IDatabase $dbw;
-
-	private ?UpdateQueryBuilder $queryBuilder = null;
-
-	private WikiManagerFactory $wikiManagerFactory;
-
 	private stdClass|bool $row;
-	private LinkRenderer $linkRenderer;
-	private PermissionManager $permissionManager;
-	private UserFactory $userFactory;
-	private CreateWikiNotificationsManager $notificationsManager;
-	private IConnectionProvider $connectionProvider;
-	private JobQueueGroupFactory $jobQueueGroupFactory;
 
 	private int $ID;
 	private array $changes = [];
 
+	private ?UpdateQueryBuilder $queryBuilder = null;
+
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiNotificationsManager $notificationsManager,
-		JobQueueGroupFactory $jobQueueGroupFactory,
-		LinkRenderer $linkRenderer,
-		PermissionManager $permissionManager,
-		UserFactory $userFactory,
-		WikiManagerFactory $wikiManagerFactory,
-		ServiceOptions $options
+		private IConnectionProvider $connectionProvider,
+		private CreateWikiNotificationsManager $notificationsManager,
+		private JobQueueGroupFactory $jobQueueGroupFactory,
+		private LinkRenderer $linkRenderer,
+		private PermissionManager $permissionManager,
+		private UserFactory $userFactory,
+		private WikiManagerFactory $wikiManagerFactory,
+		private ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->notificationsManager = $notificationsManager;
-		$this->jobQueueGroupFactory = $jobQueueGroupFactory;
-		$this->linkRenderer = $linkRenderer;
-		$this->permissionManager = $permissionManager;
-		$this->userFactory = $userFactory;
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->options = $options;
 	}
 
 	public function loadFromID( int $requestID ): void {

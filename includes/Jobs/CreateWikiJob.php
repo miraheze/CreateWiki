@@ -13,9 +13,6 @@ class CreateWikiJob extends Job {
 
 	public const JOB_NAME = 'CreateWikiJob';
 
-	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
-
 	private int $id;
 	private bool $private;
 
@@ -30,8 +27,8 @@ class CreateWikiJob extends Job {
 
 	public function __construct(
 		array $params,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		private WikiManagerFactory $wikiManagerFactory,
+		private WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
@@ -44,9 +41,6 @@ class CreateWikiJob extends Job {
 		$this->private = $params['private'];
 		$this->requester = $params['requester'];
 		$this->sitename = $params['sitename'];
-
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**

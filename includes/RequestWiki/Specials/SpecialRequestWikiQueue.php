@@ -18,35 +18,17 @@ use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
-	private IConnectionProvider $connectionProvider;
-	private CreateWikiDatabaseUtils $databaseUtils;
-	private CreateWikiHookRunner $hookRunner;
-	private LanguageNameUtils $languageNameUtils;
-	private PermissionManager $permissionManager;
-	private UserFactory $userFactory;
-	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
-
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiDatabaseUtils $databaseUtils,
-		CreateWikiHookRunner $hookRunner,
-		LanguageNameUtils $languageNameUtils,
-		PermissionManager $permissionManager,
-		UserFactory $userFactory,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		private IConnectionProvider $connectionProvider,
+		private CreateWikiDatabaseUtils $databaseUtils,
+		private CreateWikiHookRunner $hookRunner,
+		private LanguageNameUtils $languageNameUtils,
+		private PermissionManager $permissionManager,
+		private UserFactory $userFactory,
+		private WikiManagerFactory $wikiManagerFactory,
+		private WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->databaseUtils = $databaseUtils;
-		$this->hookRunner = $hookRunner;
-		$this->languageNameUtils = $languageNameUtils;
-		$this->permissionManager = $permissionManager;
-		$this->userFactory = $userFactory;
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**
@@ -128,7 +110,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			->displayForm( false );
 
 		$pager = new RequestWikiQueuePager(
-			$this->getConfig(),
 			$this->getContext(),
 			$this->connectionProvider,
 			$this->languageNameUtils,

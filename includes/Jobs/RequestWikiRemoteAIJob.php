@@ -21,8 +21,6 @@ class RequestWikiRemoteAIJob extends Job {
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
 	private Config $config;
-	private WikiRequestManager $wikiRequestManager;
-	private HttpRequestFactory $httpRequestFactory;
 	private LoggerInterface $logger;
 	private RequestContext $context;
 	private string $baseApiUrl;
@@ -42,14 +40,12 @@ class RequestWikiRemoteAIJob extends Job {
 	public function __construct(
 		array $params,
 		ConfigFactory $configFactory,
-		WikiRequestManager $wikiRequestManager,
-		HttpRequestFactory $httpRequestFactory
+		private WikiRequestManager $wikiRequestManager,
+		private HttpRequestFactory $httpRequestFactory
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->wikiRequestManager = $wikiRequestManager;
-		$this->httpRequestFactory = $httpRequestFactory;
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 		$this->context = RequestContext::getMain();
 

@@ -25,32 +25,17 @@ use UserNotLoggedIn;
 
 class RequestWikiRequestViewer {
 
-	private Config $config;
-	private IContextSource $context;
-	private CreateWikiHookRunner $hookRunner;
-	private LanguageNameUtils $languageNameUtils;
-	private PermissionManager $permissionManager;
-	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
-
 	private array $extraFields = [];
 
 	public function __construct(
-		Config $config,
-		IContextSource $context,
-		CreateWikiHookRunner $hookRunner,
-		LanguageNameUtils $languageNameUtils,
-		PermissionManager $permissionManager,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		private Config $config,
+		private IContextSource $context,
+		private CreateWikiHookRunner $hookRunner,
+		private LanguageNameUtils $languageNameUtils,
+		private PermissionManager $permissionManager,
+		private WikiManagerFactory $wikiManagerFactory,
+		private WikiRequestManager $wikiRequestManager
 	) {
-		$this->config = $config;
-		$this->context = $context;
-		$this->hookRunner = $hookRunner;
-		$this->languageNameUtils = $languageNameUtils;
-		$this->permissionManager = $permissionManager;
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function getFormDescriptor(): array {

@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
@@ -19,42 +18,20 @@ class RequestWikiQueuePager extends TablePager {
 	/** @inheritDoc */
 	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
 
-	private LanguageNameUtils $languageNameUtils;
-	private LinkRenderer $linkRenderer;
-	private UserFactory $userFactory;
-	private WikiRequestManager $wikiRequestManager;
-
-	private string $dbname;
-	private string $language;
-	private string $requester;
-	private string $status;
-
 	public function __construct(
-		Config $config,
 		IContextSource $context,
-		IConnectionProvider $connectionProvider,
-		LanguageNameUtils $languageNameUtils,
-		LinkRenderer $linkRenderer,
-		UserFactory $userFactory,
-		WikiRequestManager $wikiRequestManager,
-		string $dbname,
-		string $language,
-		string $requester,
-		string $status
+		private IConnectionProvider $connectionProvider,
+		private LanguageNameUtils $languageNameUtils,
+		private LinkRenderer $linkRenderer,
+		private UserFactory $userFactory,
+		private WikiRequestManager $wikiRequestManager,
+		private string $dbname,
+		private string $language,
+		private string $requester,
+		private string $status
 	) {
 		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
 		parent::__construct( $context, $linkRenderer );
-
-		$this->linkRenderer = $linkRenderer;
-		$this->languageNameUtils = $languageNameUtils;
-		$this->userFactory = $userFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
-
-		$this->dbname = $dbname;
-		$this->language = $language;
-		$this->requester = $requester;
-		$this->status = $status;
 	}
 
 	/** @inheritDoc */

@@ -15,15 +15,10 @@ use Wikimedia\ParamValidator\ParamValidator;
  */
 class RestWikiRequestComment extends SimpleHandler {
 
-	private CreateWikiRestUtils $restUtils;
-	private WikiRequestManager $wikiRequestManager;
-
 	public function __construct(
-		CreateWikiRestUtils $restUtils,
-		WikiRequestManager $wikiRequestManager
+		private CreateWikiRestUtils $restUtils,
+		private WikiRequestManager $wikiRequestManager
 	) {
-		$this->restUtils = $restUtils;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( int $requestID ): Response {
