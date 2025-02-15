@@ -110,7 +110,6 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			->displayForm( false );
 
 		$pager = new RequestWikiQueuePager(
-			$this->getConfig(),
 			$this->getContext(),
 			$this->connectionProvider,
 			$this->languageNameUtils,
