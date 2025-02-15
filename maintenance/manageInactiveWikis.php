@@ -54,7 +54,6 @@ class ManageInactiveWikis extends Maintenance {
 			$remoteWiki = $remoteWikiFactory->newInstance( $dbname );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['no-edits']['inactive']; 
 
-
 			// Check if the wiki is inactive based on creation date
 			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
 				$this->checkLastActivity( $dbname, $remoteWiki );
