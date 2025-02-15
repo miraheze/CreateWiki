@@ -52,14 +52,13 @@ class WikiRequestManager {
 		self::VISIBILITY_SUPPRESS_REQUEST => 'createwiki-suppressrequest',
 	];
 
-	private ServiceOptions $options;
 	private IDatabase $dbw;
-
-	private ?UpdateQueryBuilder $queryBuilder = null;
 	private stdClass|bool $row;
 
 	private int $ID;
 	private array $changes = [];
+	
+	private ?UpdateQueryBuilder $queryBuilder = null;
 
 	public function __construct(
 		private IConnectionProvider $connectionProvider,
