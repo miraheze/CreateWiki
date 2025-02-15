@@ -19,7 +19,10 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function getTimestamp(): int {
-		$defaultId = $this->getServiceContainer->getUserFactory->newFromName( 'MediaWiki default' )->getActorId();
+		$defaultActor = $this->getServiceContainer()->getUserFactory()
+			->newFromName( 'MediaWiki default' )
+			->getActorId();
+
 		$dbr = $this->getDB( DB_REPLICA );
 
 		// Get the latest revision timestamp
@@ -38,7 +41,7 @@ class CheckLastWikiActivity extends Maintenance {
 			->where( [
 				$dbr->expr( 'log_type', '!=', 'renameuser' ),
 				$dbr->expr( 'log_type', '!=', 'newusers' ),
-				$dbr->expr( 'rc_actor', '!=', $defaultId ),
+				$dbr->expr( 'log_actor', '!=', $defaultActor ),
 			] )
 			->orderBy( 'log_timestamp', SelectQueryBuilder::SORT_DESC )
 			->limit( 1 )
