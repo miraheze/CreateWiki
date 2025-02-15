@@ -24,10 +24,10 @@ class CreateWikiDataFactory {
 	];
 
 	private readonly BagOStuff $cache;
-	private readonly IReadableDatabase $dbr;
+	private IReadableDatabase $dbr;
 
 	/** @var string The wiki database name. */
-	private readonly string $wiki;
+	private string $wiki;
 
 	/** @var string The directory path for cache files. */
 	private readonly string $cacheDir;
