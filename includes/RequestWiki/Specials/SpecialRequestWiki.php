@@ -17,22 +17,14 @@ use UserBlockedError;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
-	private CreateWikiDatabaseUtils $databaseUtils;
-	private CreateWikiHookRunner $hookRunner;
-	private WikiRequestManager $wikiRequestManager;
-
 	private array $extraFields = [];
 
 	public function __construct(
-		CreateWikiDatabaseUtils $databaseUtils,
-		CreateWikiHookRunner $hookRunner,
-		WikiRequestManager $wikiRequestManager
+		private CreateWikiDatabaseUtils $databaseUtils,
+		private CreateWikiHookRunner $hookRunner,
+		private WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
-
-		$this->databaseUtils = $databaseUtils;
-		$this->hookRunner = $hookRunner;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**
