@@ -22,14 +22,7 @@ class RemoteWikiFactory {
 		ConfigNames::UsePrivateWikis,
 	];
 
-	private CreateWikiDataFactory $dataFactory;
-	private CreateWikiHookRunner $hookRunner;
-
-	private IConnectionProvider $connectionProvider;
 	private IReadableDatabase $dbr;
-
-	private JobQueueGroupFactory $jobQueueGroupFactory;
-	private ServiceOptions $options;
 
 	private array $changes = [];
 	private array $logParams = [];
@@ -61,19 +54,13 @@ class RemoteWikiFactory {
 	private ?string $log = null;
 
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiDataFactory $dataFactory,
-		CreateWikiHookRunner $hookRunner,
-		JobQueueGroupFactory $jobQueueGroupFactory,
-		ServiceOptions $options
+		private IConnectionProvider $connectionProvider,
+		private CreateWikiDataFactory $dataFactory,
+		private CreateWikiHookRunner $hookRunner,
+		private JobQueueGroupFactory $jobQueueGroupFactory,
+		private ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->dataFactory = $dataFactory;
-		$this->connectionProvider = $connectionProvider;
-		$this->hookRunner = $hookRunner;
-		$this->jobQueueGroupFactory = $jobQueueGroupFactory;
-		$this->options = $options;
 	}
 
 	public function newInstance( string $wiki ): self {
