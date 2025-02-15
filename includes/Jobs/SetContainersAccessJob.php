@@ -13,21 +13,19 @@ class SetContainersAccessJob extends Job {
 	public const JOB_NAME = 'SetContainersAccessJob';
 
 	private Config $config;
-	private RepoGroup $repoGroup;
 
 	private bool $isPrivate;
 
 	public function __construct(
 		array $params,
 		ConfigFactory $configFactory,
-		RepoGroup $repoGroup
+		private RepoGroup $repoGroup
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
 		$this->isPrivate = $params['private'];
 
 		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->repoGroup = $repoGroup;
 	}
 
 	public function run(): bool {
