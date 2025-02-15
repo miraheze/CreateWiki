@@ -24,10 +24,7 @@ class CreateWikiDataFactory {
 	];
 
 	private BagOStuff $cache;
-	private CreateWikiHookRunner $hookRunner;
-	private IConnectionProvider $connectionProvider;
 	private IReadableDatabase $dbr;
-	private ServiceOptions $options;
 
 	/** @var string The wiki database name. */
 	private string $wiki;
@@ -41,25 +38,13 @@ class CreateWikiDataFactory {
 	/** @var int The cached timestamp for the wiki information. */
 	private int $wikiTimestamp;
 
-	/**
-	 * CreateWikiDataFactory constructor.
-	 *
-	 * @param IConnectionProvider $connectionProvider
-	 * @param ObjectCacheFactory $objectCacheFactory
-	 * @param CreateWikiHookRunner $hookRunner
-	 * @param ServiceOptions $options
-	 */
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		ObjectCacheFactory $objectCacheFactory,
-		CreateWikiHookRunner $hookRunner,
-		ServiceOptions $options
+		private IConnectionProvider $connectionProvider,
+		private ObjectCacheFactory $objectCacheFactory,
+		private CreateWikiHookRunner $hookRunner,
+		private ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->hookRunner = $hookRunner;
-		$this->options = $options;
 
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
