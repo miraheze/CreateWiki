@@ -19,14 +19,14 @@ use Wikimedia\Rdbms\IConnectionProvider;
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private CreateWikiDatabaseUtils $databaseUtils,
-		private CreateWikiHookRunner $hookRunner,
-		private LanguageNameUtils $languageNameUtils,
-		private PermissionManager $permissionManager,
-		private UserFactory $userFactory,
-		private WikiManagerFactory $wikiManagerFactory,
-		private WikiRequestManager $wikiRequestManager
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly PermissionManager $permissionManager,
+		private readonly UserFactory $userFactory,
+		private readonly WikiManagerFactory $wikiManagerFactory,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 	}

@@ -20,9 +20,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 	private array $extraFields = [];
 
 	public function __construct(
-		private CreateWikiDatabaseUtils $databaseUtils,
-		private CreateWikiHookRunner $hookRunner,
-		private WikiRequestManager $wikiRequestManager
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 	}

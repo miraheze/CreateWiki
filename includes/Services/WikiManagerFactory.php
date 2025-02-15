@@ -45,13 +45,13 @@ class WikiManagerFactory {
 	private ?string $cluster = null;
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider,
-		private CreateWikiDataFactory $dataFactory,
-		private CreateWikiHookRunner $hookRunner,
-		private CreateWikiNotificationsManager $notificationsManager,
-		private UserFactory $userFactory,
-		private MessageLocalizer $messageLocalizer,
-		private ServiceOptions $options
+		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly UserFactory $userFactory,
+		private readonly MessageLocalizer $messageLocalizer,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

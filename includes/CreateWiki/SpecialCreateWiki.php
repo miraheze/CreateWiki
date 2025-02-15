@@ -13,8 +13,8 @@ use Miraheze\CreateWiki\Services\WikiManagerFactory;
 class SpecialCreateWiki extends FormSpecialPage {
 
 	public function __construct(
-		private CreateWikiDatabaseUtils $databaseUtils,
-		private WikiManagerFactory $wikiManagerFactory
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 	}

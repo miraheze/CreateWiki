@@ -27,7 +27,7 @@ class CreateWikiHookRunner implements
 {
 
 	public function __construct(
-		private HookContainer $hookContainer
+		private readonly HookContainer $hookContainer
 	) {
 	}
 

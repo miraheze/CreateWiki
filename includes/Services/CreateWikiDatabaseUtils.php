@@ -8,7 +8,7 @@ use Wikimedia\Rdbms\IConnectionProvider;
 class CreateWikiDatabaseUtils {
 
 	public function __construct(
-		private IConnectionProvider $connectionProvider
+		private readonly IConnectionProvider $connectionProvider
 	) {
 	}
 

@@ -28,13 +28,13 @@ class RequestWikiRequestViewer {
 	private array $extraFields = [];
 
 	public function __construct(
-		private Config $config,
-		private IContextSource $context,
-		private CreateWikiHookRunner $hookRunner,
-		private LanguageNameUtils $languageNameUtils,
-		private PermissionManager $permissionManager,
-		private WikiManagerFactory $wikiManagerFactory,
-		private WikiRequestManager $wikiRequestManager
+		private readonly Config $config,
+		private readonly IContextSource $context,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly PermissionManager $permissionManager,
+		private readonly WikiManagerFactory $wikiManagerFactory,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 	}
 
