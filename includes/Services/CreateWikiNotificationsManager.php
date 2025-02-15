@@ -42,31 +42,15 @@ class CreateWikiNotificationsManager {
 		'wiki-rename',
 	];
 
-	private IConnectionProvider $connectionProvider;
-	private MessageLocalizer $messageLocalizer;
-	private ServiceOptions $options;
-	private UserFactory $userFactory;
 	private string $type;
 
-	/**
-	 * @param IConnectionProvider $connectionProvider
-	 * @param MessageLocalizer $messageLocalizer
-	 * @param ServiceOptions $options
-	 * @param UserFactory $userFactory
-	 */
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		MessageLocalizer $messageLocalizer,
-		ServiceOptions $options,
-		UserFactory $userFactory
+		private IConnectionProvider $connectionProvider,
+		private MessageLocalizer $messageLocalizer,
+		private ServiceOptions $options,
+		private UserFactory $userFactory
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->messageLocalizer = $messageLocalizer;
-
-		$this->options = $options;
-		$this->userFactory = $userFactory;
 	}
 
 	/**
