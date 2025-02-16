@@ -15,6 +15,7 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\AtEase\AtEase;
@@ -35,6 +36,7 @@ class Main implements
 	public function __construct(
 		ConfigFactory $configFactory,
 		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
@@ -49,8 +51,7 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onGetAllBlockActions( &$actions ) {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
 			return;
 		}
 
