@@ -1,6 +1,6 @@
 CREATE TABLE /*_*/cw_history (
   cw_history_id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
-  cw_id INT NOT NULL,
+  cw_id BIGINT UNSIGNED NOT NULL,
   cw_history_action VARCHAR(50) NOT NULL,
   cw_history_actor INT(10) NOT NULL,
   cw_history_details BLOB NOT NULL,
