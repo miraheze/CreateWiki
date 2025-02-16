@@ -227,6 +227,7 @@
 			"services": [
 				"ConfigFactory",
 				"ConnectionProvider",
+				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"
 			]
