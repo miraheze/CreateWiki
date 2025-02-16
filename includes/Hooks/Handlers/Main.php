@@ -51,7 +51,8 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onGetAllBlockActions( &$actions ) {
-		if ( !$this->databaseUtils->isCurrentWikiCentral() ) ) {
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
+			)
 			return;
 		}
 
