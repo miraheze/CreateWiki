@@ -50,7 +50,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->disableAutoCreateTempUser();
 
 		$this->overrideConfigValue( MainConfigNames::VirtualDomainsMapping, [
-				'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
+			'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
 		] );
 
 		$this->specialRequestWiki = $this->newSpecialPage();
