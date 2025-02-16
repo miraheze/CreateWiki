@@ -31,7 +31,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	use TempUserTestTrait;
 
-	private SpecialRequestWiki $specialRequestWiki;
+	private readonly SpecialRequestWiki $specialRequestWiki;
 
 	/** @inheritDoc */
 	protected function newSpecialPage(): SpecialRequestWiki {
