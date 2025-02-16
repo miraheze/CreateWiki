@@ -56,9 +56,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getFormFields(): array {
 		$formDescriptor = [
 			'subdomain' => [
@@ -172,9 +170,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function onSubmit( array $data ): Status {
 		$token = $this->getRequest()->getVal( 'wpEditToken' );
 		$userToken = $this->getContext()->getCsrfTokenSet();
@@ -292,16 +288,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->checkReadOnly();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wikimanage';
 	}

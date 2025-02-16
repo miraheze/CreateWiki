@@ -17,9 +17,7 @@ class CreateWikiLogFormatter extends LogFormatter {
 		parent::__construct( $entry );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getMessageParameters(): array {
 		$params = parent::getMessageParameters();
 		$subtype = $this->entry->getSubtype();

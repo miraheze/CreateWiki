@@ -33,9 +33,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	private SpecialRequestWiki $specialRequestWiki;
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(

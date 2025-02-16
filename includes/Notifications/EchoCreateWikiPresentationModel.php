@@ -7,16 +7,12 @@ use MediaWiki\Message\Message;
 
 class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getIconType(): string {
 		return 'global';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getSubjectMessage(): Message {
 		$msg = $this->msg( 'notification-createwiki-wiki-creation-email-subject' );
 		$msg->params( $this->event->getExtraParam( 'sitename', 0 ) );
@@ -24,9 +20,7 @@ class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 		return $msg;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getHeaderMessage(): Message {
 		$msg = $this->msg( 'notification-header-wiki-creation' );
 		$msg->params( $this->event->getExtraParam( 'sitename', 0 ) );
@@ -34,16 +28,12 @@ class EchoCreateWikiPresentationModel extends EchoEventPresentationModel {
 		return $msg;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getPrimaryLink(): bool {
 		return false;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getSecondaryLinks(): array {
 		$visitLink = [
 			'url' => $this->event->getExtraParam( 'wiki-url', 0 ),

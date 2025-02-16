@@ -141,9 +141,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		) )->getForm( (int)$par )->show();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wikimanage';
 	}

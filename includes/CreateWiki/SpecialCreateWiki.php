@@ -30,9 +30,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		parent::execute( $par );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getFormFields(): array {
 		$formDescriptor = [
 			'dbname' => [
@@ -87,9 +85,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function onSubmit( array $formData ): bool {
 		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$private = $formData['private'];
@@ -140,16 +136,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wikimanage';
 	}
