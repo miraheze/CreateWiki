@@ -19,7 +19,6 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\AtEase\AtEase;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class Main implements
 	GetAllBlockActionsHook,
@@ -35,7 +34,6 @@ class Main implements
 
 	public function __construct(
 		ConfigFactory $configFactory,
-		private readonly IConnectionProvider $connectionProvider,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly RemoteWikiFactory $remoteWikiFactory
@@ -111,8 +109,7 @@ class Main implements
 		$frame
 	) {
 		if ( $magicWordId === 'numberofopenwikirequests' ) {
-			$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
+			$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )
 				->from( 'cw_requests' )
@@ -122,8 +119,7 @@ class Main implements
 		}
 
 		if ( $magicWordId === 'numberofwikirequests' ) {
-			$dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
+			$dbr ??= $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )
 				->from( 'cw_requests' )
