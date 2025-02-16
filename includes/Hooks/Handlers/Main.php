@@ -52,7 +52,6 @@ class Main implements
 	/** @inheritDoc */
 	public function onGetAllBlockActions( &$actions ) {
 		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
-			)
 			return;
 		}
 
