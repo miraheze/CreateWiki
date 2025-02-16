@@ -15,6 +15,7 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\AtEase\AtEase;
