@@ -25,7 +25,7 @@ class CreateWikiDatabaseUtils {
 	public function getCentralWikiReplicaDB(): IReadableDatabase {
 		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 	}
-	
+
 	public function getGlobalPrimaryDB(): IDatabase {
 		return $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 	}
