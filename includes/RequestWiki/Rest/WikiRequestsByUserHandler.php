@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Handler;
+namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
@@ -14,7 +14,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Returns the IDs and suppression level of all wiki requests made by a user
  * GET /createwiki/v0/wiki_requests/user/{username}
  */
-class RestWikiRequestsByUser extends SimpleHandler {
+class WikiRequestsByUserHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
