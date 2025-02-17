@@ -4,13 +4,10 @@ namespace Miraheze\CreateWiki\RequestWiki\Handler;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
-use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
-use Wikimedia\Rdbms\IConnectionProvider;
-use Wikimedia\Rdbms\SelectQueryBuilder;
 
 /**
  * Returns information related to a wiki request
@@ -19,83 +16,59 @@ use Wikimedia\Rdbms\SelectQueryBuilder;
 class RestWikiRequest extends SimpleHandler {
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
-		private readonly CreateWikiRestUtils $restUtils,
-		private readonly UserFactory $userFactory
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly CreateWikiRestUtils $restUtils
 	) {
 	}
 
 	public function run( int $requestID ): Response {
 		$this->restUtils->checkEnv();
 
-		$visibilityConds = WikiRequestManager::VISIBILITY_CONDS;
+		$this->wikiRequestManager->loadFromID( $requestID );
 
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
-		$wikiRequest = $dbr->newSelectQueryBuilder()
-			->select( '*' )
-			->from( 'cw_requests' )
-			->where( [ 'cw_id' => $requestID ] )
-			->caller( __METHOD__ )
-			->fetchRow();
-
-		if ( $wikiRequest ) {
-			// T12010: 3 is a legacy suppression level, treat is as a suppressed wiki request
-			if ( $wikiRequest->cw_visibility >= 3 ) {
-				return $this->getResponseFactory()->createLocalizedHttpError(
-					404, new MessageValue( 'requestwiki-unknown' )
-				);
-			}
-
-			$wikiRequestVisibility = $visibilityConds[$wikiRequest->cw_visibility];
-
-			if ( $wikiRequestVisibility !== 'public' ) {
-				if ( !$this->getAuthority()->isAllowed( $wikiRequestVisibility ) ) {
-					// User does not have permission to view this request
-					return $this->getResponseFactory()->createLocalizedHttpError(
-						404, new MessageValue( 'requestwiki-unknown' )
-					);
-				}
-			}
-
-			$response = [
-				'comment' => $wikiRequest->cw_comment,
-				'dbname' => $wikiRequest->cw_dbname,
-				'language' => $wikiRequest->cw_language,
-				'sitename' => $wikiRequest->cw_sitename,
-				'status' => $wikiRequest->cw_status,
-				'timestamp' => wfTimestamp( TS_ISO_8601, $wikiRequest->cw_timestamp ),
-				'url' => $wikiRequest->cw_url,
-				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
-				'category' => $wikiRequest->cw_category,
-				'bio' => (bool)$wikiRequest->cw_bio,
-				'visibility' => $wikiRequestVisibility,
-			];
-
-			$wikiRequestCwComments = $dbr->newSelectQueryBuilder()
-				->select( '*' )
-				->from( 'cw_comments' )
-				->where( [ 'cw_id' => $requestID ] )
-				->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
-				->caller( __METHOD__ )
-				->fetchResultSet();
-
-			$wikiRequestComments = [];
-			foreach ( $wikiRequestCwComments as $comment ) {
-				$wikiRequestComments[] = [
-					'comment' => $comment->cw_comment,
-					'timestamp' => wfTimestamp( TS_ISO_8601, $comment->cw_comment_timestamp ),
-					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
-				];
-			}
-
-			// We now have all the data we need, add the comments to $response and return
-			$response['comments'] = $wikiRequestComments;
-			return $this->getResponseFactory()->createJson( $response );
+		if ( !$this->wikiRequestManager->exists() ) {
+			return $this->getResponseFactory()->createLocalizedHttpError(
+				404, new MessageValue( 'requestwiki-unknown' )
+			);
 		}
 
-		// Request does not exist
-		return $this->getResponseFactory()->createLocalizedHttpError( 404, new MessageValue( 'requestwiki-unknown' ) );
+		if ( !$this->wikiRequestManager->isVisibilityAllowed(
+			$this->wikiRequestManager->getVisibility(),
+			$this->getAuthority()->getUser()
+		) ) {
+			return $this->getResponseFactory()->createLocalizedHttpError(
+				404, new MessageValue( 'requestwiki-unknown' )
+			);
+		}
+
+		$response = [
+			'reason' => $this->wikiRequestManager->getReason(),
+			'purpose' => $this->wikiRequestManager->getPurpose(),
+			'dbname' => $this->wikiRequestManager->getDBname(),
+			'language' => $this->wikiRequestManager->getLanguage(),
+			'sitename' => $this->wikiRequestManager->getSitename(),
+			'status' => $this->wikiRequestManager->getStatus(),
+			'timestamp' => wfTimestamp( TS_ISO_8601, $this->wikiRequestManager->getTimestamp() ),
+			'url' => $this->wikiRequestManager->getUrl(),
+			'requester' => $this->wikiRequestManager->getRequester()->getName(),
+			'category' => $this->wikiRequestManager->getCategory(),
+			'bio' => $this->wikiRequestManager->isBio(),
+			'visibility' => $this->wikiRequestManager->getVisibility(),
+		];
+
+		$comments = $this->wikiRequestManager->getComments();
+		$formattedComments = array_map(
+			static fn ( array $comment ): array => [
+				'comment' => $comment['comment'],
+				'timestamp' => wfTimestamp( TS_ISO_8601, $comment['timestamp'] ),
+				'user' => $comment['user']->getName(),
+			],
+			$comments
+		);
+
+		// We now have all the data we need, add the comments to $response and return
+		$response['comments'] = $formattedComments;
+		return $this->getResponseFactory()->createJson( $response );
 	}
 
 	public function needsWriteAccess(): bool {
