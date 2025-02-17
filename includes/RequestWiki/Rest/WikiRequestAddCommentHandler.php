@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Handler;
+namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
@@ -13,7 +13,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Posts a comment to the specified wiki request
  * POST /createwiki/v0/wiki_request/{id}/comment
  */
-class RestWikiRequestComment extends SimpleHandler {
+class WikiRequestAddCommentHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,

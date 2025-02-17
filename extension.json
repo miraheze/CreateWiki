@@ -238,30 +238,30 @@
 	},
 	"RestRoutes": [
 		{
-			"path": "/createwiki/v0/wiki_request/{id}",
+			"path": "/createwiki/v0/wiki_requests/user/{username}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\UserWikiRequestsHandler",
 			"services": [
 				"CreateWikiRestUtils",
+				"UserFactory",
 				"WikiRequestManager"
 			]
 		},
 		{
 			"path": "/createwiki/v0/wiki_request/{id}/comment",
 			"method": "POST",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestAddCommentHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
 		},
 		{
-			"path": "/createwiki/v0/wiki_requests/user/{username}",
+			"path": "/createwiki/v0/wiki_request/{id}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestInfoHandler",
 			"services": [
 				"CreateWikiRestUtils",
-				"UserFactory",
 				"WikiRequestManager"
 			]
 		}

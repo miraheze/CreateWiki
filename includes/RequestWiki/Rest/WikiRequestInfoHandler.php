@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Handler;
+namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
@@ -13,7 +13,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Returns information related to a wiki request
  * GET /createwiki/v0/wiki_request/{id}
  */
-class RestWikiRequest extends SimpleHandler {
+class WikiRequestInfoHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
