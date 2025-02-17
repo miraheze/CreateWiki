@@ -14,7 +14,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Returns the IDs and suppression level of all wiki requests made by a user
  * GET /createwiki/v0/wiki_requests/user/{username}
  */
-class WikiRequestsByUserHandler extends SimpleHandler {
+class UserWikiRequestsHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,

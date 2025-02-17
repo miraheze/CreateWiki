@@ -13,7 +13,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Returns information related to a wiki request
  * GET /createwiki/v0/wiki_request/{id}
  */
-class WikiRequestHandler extends SimpleHandler {
+class WikiRequestInfoHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
