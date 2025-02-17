@@ -31,8 +31,8 @@ class Main implements
 {
 
 	public function __construct(
-		private readonly Config $config,
 		private readonly IConnectionProvider $connectionProvider,
+		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly RemoteWikiFactory $remoteWikiFactory
