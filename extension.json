@@ -242,9 +242,8 @@
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
 			"services": [
-				"ConnectionProvider",
 				"CreateWikiRestUtils",
-				"UserFactory"
+				"WikiRequestManager"
 			]
 		},
 		{
