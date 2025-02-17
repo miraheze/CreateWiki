@@ -16,8 +16,8 @@ use Wikimedia\ParamValidator\ParamValidator;
 class RestWikiRequest extends SimpleHandler {
 
 	public function __construct(
-		private readonly WikiRequestManager $wikiRequestManager,
-		private readonly CreateWikiRestUtils $restUtils
+		private readonly CreateWikiRestUtils $restUtils,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 	}
 
