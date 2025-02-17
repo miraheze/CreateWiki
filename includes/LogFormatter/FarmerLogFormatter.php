@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\CreateWiki;
+namespace Miraheze\CreateWiki\LogFormatter;
 
 use LogEntry;
 use LogFormatter;
@@ -8,7 +8,7 @@ use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 
-class CreateWikiLogFormatter extends LogFormatter {
+class FarmerLogFormatter extends LogFormatter {
 
 	public function __construct(
 		LogEntry $entry,
