@@ -93,7 +93,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->wikiRequestManager->getReason(),
 			$this->wikiRequestManager->getSitename(),
 			substr( $this->wikiRequestManager->getDBname(), 0, -4 ),
-			$this->wikiRequestManager->getRequesterUsername(),
+			$this->wikiRequestManager->getRequester()->getName(),
 			count( $this->wikiRequestManager->getVisibleRequestsByUser(
 				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
 			) )
