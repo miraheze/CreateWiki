@@ -40,7 +40,7 @@ class RequestWikiQueuePager extends TablePager {
 			'cw_timestamp' => $this->msg( 'requestwikiqueue-request-label-requested-date' )->text(),
 			'cw_dbname' => $this->msg( 'createwiki-label-dbname' )->text(),
 			'cw_sitename' => $this->msg( 'requestwikiqueue-request-label-sitename' )->text(),
-			'cw_user' => $this->msg( 'requestwikiqueue-request-label-requester' )->text(),
+			'cw_actor' => $this->msg( 'requestwikiqueue-request-label-requester' )->text(),
 			'cw_language' => $this->msg( 'requestwikiqueue-request-label-language' )->text(),
 			'cw_url' => $this->msg( 'requestwikiqueue-request-label-url' )->text(),
 			'cw_status' => $this->msg( 'requestwikiqueue-request-label-status' )->text(),
@@ -63,10 +63,10 @@ class RequestWikiQueuePager extends TablePager {
 			case 'cw_sitename':
 				$formatted = $this->escape( $row->cw_sitename );
 				break;
-			case 'cw_user':
+			case 'cw_actor':
 				$formatted = Linker::userLink(
-					$this->userFactory->newFromId( $row->cw_user )->getId(),
-					$this->userFactory->newFromId( $row->cw_user )->getName()
+					$this->userFactory->newFromActorId( $row->cw_actor )->getId(),
+					$this->userFactory->newFromActorId( $row->cw_actor )->getName()
 				);
 				break;
 			case 'cw_url':
@@ -114,7 +114,7 @@ class RequestWikiQueuePager extends TablePager {
 				'cw_timestamp',
 				'cw_dbname',
 				'cw_language',
-				'cw_user',
+				'cw_actor',
 				'cw_status',
 				'cw_url',
 				'cw_sitename',
@@ -134,7 +134,7 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = $this->userFactory->newFromName( $this->requester )->getId();
+			$info['conds']['cw_actor'] = $this->userFactory->newFromName( $this->requester )->getActorId();
 		}
 
 		if ( $this->status && $this->status !== '*' ) {
@@ -153,6 +153,6 @@ class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public function isFieldSortable( $name ): bool {
-		return $name !== 'cw_user';
+		return $name !== 'cw_actor';
 	}
 }
