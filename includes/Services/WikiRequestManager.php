@@ -657,10 +657,6 @@ class WikiRequestManager {
 		return $this->userFactory->newFromActorId( $this->row->cw_actor );
 	}
 
-	public function getRequesterUsername(): string {
-		return $this->userFactory->newFromActorId( $this->row->cw_actor )->getName();
-	}
-
 	public function getStatus(): string {
 		return $this->row->cw_status;
 	}
