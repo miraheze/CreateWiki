@@ -11,6 +11,7 @@ use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\ActorNormalization;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
@@ -61,6 +62,7 @@ class WikiRequestManager {
 	private ?UpdateQueryBuilder $queryBuilder = null;
 
 	public function __construct(
+		private readonly ActorNormalization $actorNormalization,
 		private readonly IConnectionProvider $connectionProvider,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
@@ -174,7 +176,7 @@ class WikiRequestManager {
 				'cw_id' => $this->ID,
 				'cw_comment' => $comment,
 				'cw_comment_timestamp' => $this->dbw->timestamp(),
-				'cw_comment_actor' => $user->getActorId(),
+				'cw_comment_actor' => $this->actorNormalization->acquireActorId( $user, $this->dbw ),
 			] )
 			->caller( __METHOD__ )
 			->execute();
