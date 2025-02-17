@@ -655,10 +655,6 @@ class WikiRequestManager {
 		return $this->userFactory->newFromId( $this->row->cw_user );
 	}
 
-	public function getRequesterUsername(): string {
-		return $this->userFactory->newFromId( $this->row->cw_user )->getName();
-	}
-
 	public function getStatus(): string {
 		return $this->row->cw_status;
 	}
