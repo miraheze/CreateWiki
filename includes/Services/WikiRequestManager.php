@@ -348,12 +348,6 @@ class WikiRequestManager {
 			return true;
 		}
 
-		// CreateWiki AI should be able to see this.
-		// Additionally, the username is reserved.
-		if ( $user->getName() === 'CreateWiki AI' ) {
-			return true;
-		}
-
 		return $this->permissionManager->userHasRight(
 			$user, self::VISIBILITY_CONDS[$visibility]
 		);
