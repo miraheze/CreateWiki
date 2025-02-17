@@ -13,7 +13,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Posts a comment to the specified wiki request
  * POST /createwiki/v0/wiki_request/{id}/comment
  */
-class WikiRequestCommentHandler extends SimpleHandler {
+class WikiRequestAddCommentHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
