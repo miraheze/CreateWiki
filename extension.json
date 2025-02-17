@@ -249,7 +249,7 @@
 		{
 			"path": "/createwiki/v0/wiki_request/{id}/comment",
 			"method": "POST",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestAddCommentHandler",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestCommentHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"WikiRequestManager"
