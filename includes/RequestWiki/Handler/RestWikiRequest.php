@@ -66,7 +66,7 @@ class RestWikiRequest extends SimpleHandler {
 				'status' => $wikiRequest->cw_status,
 				'timestamp' => wfTimestamp( TS_ISO_8601, $wikiRequest->cw_timestamp ),
 				'url' => $wikiRequest->cw_url,
-				'requester' => $this->userFactory->newFromId( $wikiRequest->cw_user )->getName(),
+				'requester' => $this->userFactory->newFromActorId( $wikiRequest->cw_actor )->getName(),
 				'category' => $wikiRequest->cw_category,
 				'bio' => (bool)$wikiRequest->cw_bio,
 				'visibility' => $wikiRequestVisibility,
@@ -85,7 +85,7 @@ class RestWikiRequest extends SimpleHandler {
 				$wikiRequestComments[] = [
 					'comment' => $comment->cw_comment,
 					'timestamp' => wfTimestamp( TS_ISO_8601, $comment->cw_comment_timestamp ),
-					'user' => $this->userFactory->newFromId( $comment->cw_comment_user )->getName(),
+					'user' => $this->userFactory->newFromActorId( $comment->cw_comment_actor )->getName(),
 				];
 			}
 
