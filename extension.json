@@ -95,7 +95,7 @@
 		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": {
-			"class": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+			"class": "Miraheze\\CreateWiki\\LogFormatter\\FarmerLogFormatter",
 			"services": [
 				"LinkRenderer"
 			]
@@ -161,7 +161,7 @@
 	},
 	"SpecialPages": {
 		"CreateWiki": {
-			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
+			"class": "Miraheze\\CreateWiki\\Specials\\SpecialCreateWiki",
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"WikiManagerFactory"

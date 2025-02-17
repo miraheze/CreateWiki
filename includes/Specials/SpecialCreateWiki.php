@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\CreateWiki;
+namespace Miraheze\CreateWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\Html\Html;
