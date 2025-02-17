@@ -199,7 +199,7 @@ class ManageInactiveWikis extends Maintenance {
 			],
 		];
 
-		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
+		$this->getServiceContainer()->get( 'CreateWikiNotificationsManager' )
 			->notifyBureaucrats( $notificationData, $dbname );
 	}
 }

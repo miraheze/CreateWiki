@@ -14,19 +14,6 @@ use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 return [
-	'CreateWiki.NotificationsManager' => static function (
-		MediaWikiServices $services
-	): CreateWikiNotificationsManager {
-		return new CreateWikiNotificationsManager(
-			$services->getConnectionProvider(),
-			RequestContext::getMain(),
-			new ServiceOptions(
-				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
-			),
-			$services->getUserFactory()
-		);
-	},
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
 		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 	},
@@ -48,6 +35,19 @@ return [
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
+	},
+	'CreateWikiNotificationsManager' => static function (
+		MediaWikiServices $services
+	): CreateWikiNotificationsManager {
+		return new CreateWikiNotificationsManager(
+			$services->getConnectionProvider(),
+			RequestContext::getMain(),
+			new ServiceOptions(
+				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
+				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+			),
+			$services->getUserFactory()
+		);
 	},
 	'CreateWikiRestUtils' => static function ( MediaWikiServices $services ): CreateWikiRestUtils {
 		return new CreateWikiRestUtils(
@@ -75,7 +75,7 @@ return [
 			$services->getConnectionProvider(),
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
-			$services->get( 'CreateWiki.NotificationsManager' ),
+			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
 			new ServiceOptions(
@@ -87,7 +87,7 @@ return [
 	'WikiRequestManager' => static function ( MediaWikiServices $services ): WikiRequestManager {
 		return new WikiRequestManager(
 			$services->getConnectionProvider(),
-			$services->get( 'CreateWiki.NotificationsManager' ),
+			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
