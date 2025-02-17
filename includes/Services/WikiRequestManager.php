@@ -123,7 +123,7 @@ class WikiRequestManager {
 				'cw_sitename' => $data['sitename'],
 				'cw_timestamp' => $this->dbw->timestamp(),
 				'cw_url' => $url,
-				'cw_user' => $user->getId(),
+				'cw_actor' => $user->getActorId(),
 				'cw_category' => $data['category'] ?? '',
 				'cw_visibility' => 0,
 				'cw_bio' => $data['bio'] ?? 0,
@@ -174,7 +174,7 @@ class WikiRequestManager {
 				'cw_id' => $this->ID,
 				'cw_comment' => $comment,
 				'cw_comment_timestamp' => $this->dbw->timestamp(),
-				'cw_comment_user' => $user->getId(),
+				'cw_comment_actor' => $user->getActorId(),
 			] )
 			->caller( __METHOD__ )
 			->execute();
@@ -214,7 +214,7 @@ class WikiRequestManager {
 
 		$comments = [];
 		foreach ( $res as $row ) {
-			$user = $this->userFactory->newFromId( $row->cw_comment_user );
+			$user = $this->userFactory->newFromActorId( $row->cw_comment_actor );
 
 			$comments[] = [
 				'comment' => $row->cw_comment,
@@ -306,11 +306,11 @@ class WikiRequestManager {
 	): array {
 		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 
-		$userID = $requester->getId();
+		$requesterActorId = $requester->getActorId();
 		$res = $dbr->newSelectQueryBuilder()
 			->select( [ 'cw_id', 'cw_visibility' ] )
 			->from( 'cw_requests' )
-			->where( [ 'cw_user' => $userID ] )
+			->where( [ 'cw_actor' => $requesterActorId ] )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
@@ -652,11 +652,11 @@ class WikiRequestManager {
 	}
 
 	public function getRequester(): User {
-		return $this->userFactory->newFromId( $this->row->cw_user );
+		return $this->userFactory->newFromActorId( $this->row->cw_actor );
 	}
 
 	public function getRequesterUsername(): string {
-		return $this->userFactory->newFromId( $this->row->cw_user )->getName();
+		return $this->userFactory->newFromActorId( $this->row->cw_actor )->getName();
 	}
 
 	public function getStatus(): string {
