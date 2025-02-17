@@ -3,6 +3,7 @@
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
+use Miraheze\CreateWiki\Config;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
@@ -25,6 +26,9 @@ return [
 			),
 			$services->getUserFactory()
 		);
+	},
+	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
+		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 	},
 	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
 		return new CreateWikiDatabaseUtils(
