@@ -10,6 +10,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Permissions\UltimateAuthority;
 use MediaWiki\User\User;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
@@ -95,7 +96,8 @@ class RequestWikiRemoteAIJob extends Job {
 			substr( $this->wikiRequestManager->getDBname(), 0, -4 ),
 			$this->wikiRequestManager->getRequester()->getName(),
 			count( $this->wikiRequestManager->getVisibleRequestsByUser(
-				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
+				$this->wikiRequestManager->getRequester(),
+				( new UltimateAuthority( User::newSystemUser( 'CreateWiki AI' ) ) )->getUser()
 			) )
 		);
 
