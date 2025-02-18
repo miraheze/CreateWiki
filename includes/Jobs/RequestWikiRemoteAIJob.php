@@ -5,7 +5,6 @@ namespace Miraheze\CreateWiki\Jobs;
 use Exception;
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
@@ -22,7 +21,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private readonly Config $config;
 	private readonly LoggerInterface $logger;
 	private readonly MessageLocalizer $messageLocalizer;
 
@@ -32,13 +30,12 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function __construct(
 		array $params,
-		ConfigFactory $configFactory,
+		private readonly Config $config,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly HttpRequestFactory $httpRequestFactory
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 		$this->messageLocalizer = RequestContext::getMain();
 

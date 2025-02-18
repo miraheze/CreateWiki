@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -16,14 +15,12 @@ class RequestWikiAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiAIJob';
 
-	private readonly Config $config;
-
 	private readonly int $id;
 	private readonly string $reason;
 
 	public function __construct(
 		array $params,
-		ConfigFactory $configFactory,
+		private readonly Config $config,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
@@ -31,8 +28,6 @@ class RequestWikiAIJob extends Job {
 
 		$this->id = $params['id'];
 		$this->reason = $params['reason'];
-
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public function run(): bool {
