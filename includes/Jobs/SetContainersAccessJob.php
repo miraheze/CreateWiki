@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use RepoGroup;
 
@@ -12,18 +11,15 @@ class SetContainersAccessJob extends Job {
 
 	public const JOB_NAME = 'SetContainersAccessJob';
 
-	private readonly Config $config;
 	private readonly bool $isPrivate;
 
 	public function __construct(
 		array $params,
-		ConfigFactory $configFactory,
+		private readonly Config $config,
 		private readonly RepoGroup $repoGroup
 	) {
 		parent::__construct( self::JOB_NAME, $params );
-
 		$this->isPrivate = $params['private'];
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public function run(): bool {
