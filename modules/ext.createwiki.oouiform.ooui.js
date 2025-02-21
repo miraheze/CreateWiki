@@ -98,9 +98,12 @@
 			mw.storage.session.remove( 'createwiki-prevTab' );
 		}
 
-		$( '#createwiki-form' ).on( 'submit', () => {
+		// onSubmit callback
+		const onSubmit = function () {
 			const value = tabs.getCurrentTabPanelName();
 			mw.storage.session.set( 'createwiki-prevTab', value );
-		} );
+		};
+
+		$( '#createwiki-form' ).on( 'submit', onSubmit );
 	} );
 }() );
