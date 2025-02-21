@@ -4,9 +4,7 @@
 		"stylelint-config-wikimedia/support-modern",
 		"stylelint-config-wikimedia/mediawiki"
 	],
-	"ignoreFiles": [
-		"vendor/**"
-	],
+	"ignoreFiles": [ "vendor/**" ],
 	"reportNeedlessDisables": true,
 	"rules": {
 		"no-descending-specificity": null,
