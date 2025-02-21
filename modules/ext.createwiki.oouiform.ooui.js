@@ -2,7 +2,8 @@
 	$( () => {
 		let switchingNoHash;
 
-		const tabs = OO.ui.infuse( $( '.createwiki-tabs' ) );
+		const $tabs = $( '.createwiki-tabs' );
+		const tabs = OO.ui.infuse( $tabs );
 		tabs.$element.addClass( 'createwiki-tabs-infused' );
 
 		function enhancePanel( panel ) {
@@ -82,7 +83,8 @@
 			if ( hash.match( /^#mw-[\w-]+/ ) ) {
 				detectHash();
 			} else if ( hash === '' ) {
-				switchCreateWikiTab( $( '[id*=mw-section-]' ).attr( 'id' ), true );
+				const $section = $( '[id*=mw-section-]' );
+				switchCreateWikiTab( $section.attr( 'id' ), true );
 			}
 		} )
 			// Run the function immediately to select the proper tab on startup.
