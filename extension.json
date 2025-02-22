@@ -226,7 +226,6 @@
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Main",
 			"services": [
 				"ConfigFactory",
-				"ConnectionProvider",
 				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"
