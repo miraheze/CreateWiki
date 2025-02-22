@@ -40,7 +40,7 @@ return [
 		MediaWikiServices $services
 	): CreateWikiNotificationsManager {
 		return new CreateWikiNotificationsManager(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
@@ -72,7 +72,7 @@ return [
 	},
 	'WikiManagerFactory' => static function ( MediaWikiServices $services ): WikiManagerFactory {
 		return new WikiManagerFactory(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
