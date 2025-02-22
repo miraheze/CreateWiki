@@ -10,8 +10,8 @@ use MediaWiki\Pager\IndexPager;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class RequestWikiQueuePager extends TablePager {
 
@@ -20,7 +20,7 @@ class RequestWikiQueuePager extends TablePager {
 
 	public function __construct(
 		IContextSource $context,
-		IConnectionProvider $connectionProvider,
+		CreateWikiDatabaseUtils $databaseUtils,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly UserFactory $userFactory,
@@ -30,7 +30,7 @@ class RequestWikiQueuePager extends TablePager {
 		private readonly string $requester,
 		private readonly string $status
 	) {
-		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		$this->mDb = $databaseUtils->getCentralWikiReplicaDB();
 		parent::__construct( $context, $linkRenderer );
 	}
 
