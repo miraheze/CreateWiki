@@ -431,7 +431,7 @@
 		}
 	},
 	"ConfigRegistry": {
-		"CreateWiki": "Miraheze\\CreateWiki\\Config::newInstance"
+		"CreateWiki": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
 	},
 	"DefaultUserOptions": {
 		"echo-subscriptions-web-request-comment": true,
