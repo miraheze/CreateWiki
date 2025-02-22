@@ -31,8 +31,8 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	protected function doDBUpdates(): bool {
 		$centralWiki = $this->getCentralWiki();
 
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
