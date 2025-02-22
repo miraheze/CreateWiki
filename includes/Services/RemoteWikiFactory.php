@@ -10,7 +10,6 @@ use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
 class RemoteWikiFactory {
@@ -54,7 +53,7 @@ class RemoteWikiFactory {
 	private ?string $log = null;
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
@@ -64,7 +63,7 @@ class RemoteWikiFactory {
 	}
 
 	public function newInstance( string $wiki ): self {
-		$this->dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -402,7 +401,7 @@ class RemoteWikiFactory {
 	public function commit(): void {
 		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
-				$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+				$dbw = $this->databaseUtils->getGlobalPrimaryDB();
 
 				$dbw->newUpdateQueryBuilder()
 					->update( 'cw_wikis' )
