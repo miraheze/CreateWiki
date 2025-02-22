@@ -34,6 +34,14 @@ class CreateWikiDatabaseUtils {
 		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 	}
 
+	public function getRemoteWikiPrimaryDB( string $wiki ): IDatabase {
+		return $this->connectionProvider->getPrimaryDatabase( $wiki );
+	}
+
+	public function getRemoteWikiReplicaDB( string $wiki ): IReadableDatabase {
+		return $this->connectionProvider->getReplicaDatabase( $wiki );
+	}
+
 	public function isCurrentWikiCentral(): bool {
 		return WikiMap::isCurrentWikiDbDomain( $this->getCentralWikiID() );
 	}
