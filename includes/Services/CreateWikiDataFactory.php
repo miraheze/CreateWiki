@@ -9,7 +9,6 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiDataFactory {
@@ -40,7 +39,7 @@ class CreateWikiDataFactory {
 
 	public function __construct(
 		ObjectCacheFactory $objectCacheFactory,
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly ServiceOptions $options
 	) {
@@ -140,7 +139,7 @@ class CreateWikiDataFactory {
 			return;
 		}
 
-		$this->dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
 
 		$databaseList = $this->dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
@@ -191,7 +190,7 @@ class CreateWikiDataFactory {
 			);
 		}
 
-		$this->dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
 
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -201,8 +200,7 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			$centralDbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-			if ( $this->wiki === $centralDbr->getDomainID() ) {
+			if ( $this->databaseUtils->isRemoteWikiCentral( $this->wiki ) ) {
 				// Don't throw an exception if we have not yet populated the
 				// central wiki, so that the PopulateCentralWiki script can
 				// successfully populate it.
