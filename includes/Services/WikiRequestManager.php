@@ -20,7 +20,6 @@ use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
@@ -61,7 +60,7 @@ class WikiRequestManager {
 	private ?UpdateQueryBuilder $queryBuilder = null;
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		private readonly LinkRenderer $linkRenderer,
@@ -74,7 +73,7 @@ class WikiRequestManager {
 	}
 
 	public function loadFromID( int $requestID ): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
+		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 
 		$this->ID = $requestID;
 
@@ -95,7 +94,7 @@ class WikiRequestManager {
 		array $extraData,
 		User $user
 	): void {
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
+		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 
 		$subdomain = strtolower( $data['subdomain'] );
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
@@ -147,8 +146,8 @@ class WikiRequestManager {
 	}
 
 	public function isDuplicateRequest( string $sitename ): bool {
-		$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
-		$duplicate = $dbw->newSelectQueryBuilder()
+		$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
+		$duplicate = $dbr->newSelectQueryBuilder()
 			->table( 'cw_requests' )
 			->field( '*' )
 			->where( [
@@ -304,7 +303,7 @@ class WikiRequestManager {
 		User $requester,
 		UserIdentity $user
 	): array {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 
 		$userID = $requester->getId();
 		$res = $dbr->newSelectQueryBuilder()
