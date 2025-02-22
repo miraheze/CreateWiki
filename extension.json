@@ -49,7 +49,7 @@
 		"RequestWikiAIJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiAIJob",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
 			],
@@ -58,7 +58,7 @@
 		"RequestWikiRemoteAIJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"WikiRequestManager",
 				"HttpRequestFactory"
 			],
@@ -67,7 +67,7 @@
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\SetContainersAccessJob",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"RepoGroup"
 			],
 			"needsPage": false
@@ -225,8 +225,8 @@
 		"Main": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Main",
 			"services": [
-				"ConfigFactory",
 				"ConnectionProvider",
+				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"

@@ -1,5 +1,6 @@
 <?php
 
+use MediaWiki\Config\Config;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
@@ -13,6 +14,9 @@ use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 return [
+	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
+		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
+	},
 	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
 		return new CreateWikiDatabaseUtils(
 			$services->getConnectionProvider()
@@ -25,7 +29,7 @@ return [
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
 				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+				$services->get( 'CreateWikiConfig' )
 			)
 		);
 	},
@@ -40,7 +44,7 @@ return [
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+				$services->get( 'CreateWikiConfig' )
 			),
 			$services->getUserFactory()
 		);
@@ -50,7 +54,7 @@ return [
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			new ServiceOptions(
 				CreateWikiRestUtils::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+				$services->get( 'CreateWikiConfig' )
 			)
 		);
 	},
@@ -62,7 +66,7 @@ return [
 			$services->getJobQueueGroupFactory(),
 			new ServiceOptions(
 				RemoteWikiFactory::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+				$services->get( 'CreateWikiConfig' )
 			)
 		);
 	},
@@ -76,7 +80,7 @@ return [
 			RequestContext::getMain(),
 			new ServiceOptions(
 				WikiManagerFactory::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+				$services->get( 'CreateWikiConfig' )
 			)
 		);
 	},
@@ -91,7 +95,7 @@ return [
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
 				WikiRequestManager::CONSTRUCTOR_OPTIONS,
-				$services->getConfigFactory()->makeConfig( 'CreateWiki' )
+				$services->get( 'CreateWikiConfig' )
 			)
 		);
 	},
