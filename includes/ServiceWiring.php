@@ -25,7 +25,7 @@ return [
 	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
 		return new CreateWikiDataFactory(
 			$services->getObjectCacheFactory(),
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
 				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,
