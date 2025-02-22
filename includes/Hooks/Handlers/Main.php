@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Block\Hook\GetAllBlockActionsHook;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
@@ -30,15 +29,12 @@ class Main implements
 	UserGetReservedNamesHook
 {
 
-	private readonly Config $config;
-
 	public function __construct(
-		ConfigFactory $configFactory,
+		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	/** @inheritDoc */

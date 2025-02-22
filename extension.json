@@ -49,7 +49,7 @@
 		"RequestWikiAIJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiAIJob",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"CreateWikiHookRunner",
 				"WikiRequestManager"
 			],
@@ -58,7 +58,7 @@
 		"RequestWikiRemoteAIJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"WikiRequestManager",
 				"HttpRequestFactory"
 			],
@@ -67,7 +67,7 @@
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\SetContainersAccessJob",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"RepoGroup"
 			],
 			"needsPage": false
@@ -95,7 +95,7 @@
 		"farmer/requestonhold": "LogFormatter",
 		"farmer/requestreopen": "LogFormatter",
 		"farmer/requestwiki": {
-			"class": "Miraheze\\CreateWiki\\CreateWiki\\CreateWikiLogFormatter",
+			"class": "Miraheze\\CreateWiki\\LogFormatter\\FarmerLogFormatter",
 			"services": [
 				"LinkRenderer"
 			]
@@ -161,7 +161,7 @@
 	},
 	"SpecialPages": {
 		"CreateWiki": {
-			"class": "Miraheze\\CreateWiki\\CreateWiki\\SpecialCreateWiki",
+			"class": "Miraheze\\CreateWiki\\Specials\\SpecialCreateWiki",
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"WikiManagerFactory"
@@ -225,7 +225,7 @@
 		"Main": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Main",
 			"services": [
-				"ConfigFactory",
+				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"
@@ -237,31 +237,30 @@
 	},
 	"RestRoutes": [
 		{
-			"path": "/createwiki/v0/wiki_request/{id}",
+			"path": "/createwiki/v0/wiki_requests/user/{username}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequest",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\UserWikiRequestsHandler",
 			"services": [
-				"ConnectionProvider",
 				"CreateWikiRestUtils",
-				"UserFactory"
+				"UserFactory",
+				"WikiRequestManager"
 			]
 		},
 		{
 			"path": "/createwiki/v0/wiki_request/{id}/comment",
 			"method": "POST",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestComment",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestAddCommentHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
 		},
 		{
-			"path": "/createwiki/v0/wiki_requests/user/{username}",
+			"path": "/createwiki/v0/wiki_request/{id}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Handler\\RestWikiRequestsByUser",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestInfoHandler",
 			"services": [
 				"CreateWikiRestUtils",
-				"UserFactory",
 				"WikiRequestManager"
 			]
 		}

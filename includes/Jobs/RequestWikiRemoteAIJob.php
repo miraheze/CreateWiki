@@ -5,11 +5,11 @@ namespace Miraheze\CreateWiki\Jobs;
 use Exception;
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Permissions\UltimateAuthority;
 use MediaWiki\User\User;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
@@ -21,7 +21,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private readonly Config $config;
 	private readonly LoggerInterface $logger;
 	private readonly MessageLocalizer $messageLocalizer;
 
@@ -31,13 +30,12 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public function __construct(
 		array $params,
-		ConfigFactory $configFactory,
+		private readonly Config $config,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly HttpRequestFactory $httpRequestFactory
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 		$this->messageLocalizer = RequestContext::getMain();
 
@@ -93,9 +91,10 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->wikiRequestManager->getReason(),
 			$this->wikiRequestManager->getSitename(),
 			substr( $this->wikiRequestManager->getDBname(), 0, -4 ),
-			$this->wikiRequestManager->getRequesterUsername(),
+			$this->wikiRequestManager->getRequester()->getName(),
 			count( $this->wikiRequestManager->getVisibleRequestsByUser(
-				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
+				$this->wikiRequestManager->getRequester(),
+				( new UltimateAuthority( User::newSystemUser( 'CreateWiki AI' ) ) )->getUser()
 			) )
 		);
 
