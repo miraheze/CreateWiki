@@ -60,7 +60,7 @@ return [
 	},
 	'RemoteWikiFactory' => static function ( MediaWikiServices $services ): RemoteWikiFactory {
 		return new RemoteWikiFactory(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->getJobQueueGroupFactory(),
@@ -86,7 +86,7 @@ return [
 	},
 	'WikiRequestManager' => static function ( MediaWikiServices $services ): WikiRequestManager {
 		return new WikiRequestManager(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
