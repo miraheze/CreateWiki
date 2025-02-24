@@ -86,6 +86,7 @@ return [
 	},
 	'WikiRequestManager' => static function ( MediaWikiServices $services ): WikiRequestManager {
 		return new WikiRequestManager(
+			$services->getActorNormalization(),
 			$services->getConnectionProvider(),
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->getJobQueueGroupFactory(),
