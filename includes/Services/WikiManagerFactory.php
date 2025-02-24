@@ -8,6 +8,7 @@ use ManualLogEntry;
 use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Installer\DatabaseUpdater;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
@@ -172,6 +173,9 @@ class WikiManagerFactory {
 		}
 
 		$this->doCreateDatabase();
+
+		$updater = DatabaseUpdater::newForDB( $this->dbw, true );
+		$this->dbw->setSchemaVars( $updater->getSchemaVars() );
 
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
