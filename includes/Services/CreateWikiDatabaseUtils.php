@@ -9,15 +9,19 @@ use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiDatabaseUtils {
 
-	private ?string $centralWikiID = null;
+	private string $centralWikiID = '';
 
 	public function __construct(
 		private readonly IConnectionProvider $connectionProvider
 	) {
 	}
 
-	public function getCentralWikiID(): ?string {
-		return $this->centralWikiID ??= $this->getCentralWikiReplicaDB()->getDomainID() ?: null;
+	public function getCentralWikiID(): string {
+		if ( !$this->centralWikiID ) {
+			$this->centralWikiID = $this->getCentralWikiReplicaDB()->getDomainID() ?: '';
+		}
+
+		return $this->centralWikiID;
 	}
 
 	public function getCentralWikiPrimaryDB(): IDatabase {
