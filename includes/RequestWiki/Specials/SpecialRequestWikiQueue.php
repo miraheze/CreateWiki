@@ -14,12 +14,10 @@ use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly LanguageNameUtils $languageNameUtils,
@@ -111,7 +109,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$pager = new RequestWikiQueuePager(
 			$this->getContext(),
-			$this->connectionProvider,
+			$this->databaseUtils,
 			$this->languageNameUtils,
 			$this->getLinkRenderer(),
 			$this->userFactory,

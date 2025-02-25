@@ -25,7 +25,7 @@ return [
 	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
 		return new CreateWikiDataFactory(
 			$services->getObjectCacheFactory(),
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
 				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,
@@ -40,7 +40,7 @@ return [
 		MediaWikiServices $services
 	): CreateWikiNotificationsManager {
 		return new CreateWikiNotificationsManager(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
@@ -60,7 +60,7 @@ return [
 	},
 	'RemoteWikiFactory' => static function ( MediaWikiServices $services ): RemoteWikiFactory {
 		return new RemoteWikiFactory(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->getJobQueueGroupFactory(),
@@ -72,7 +72,7 @@ return [
 	},
 	'WikiManagerFactory' => static function ( MediaWikiServices $services ): WikiManagerFactory {
 		return new WikiManagerFactory(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
@@ -86,7 +86,7 @@ return [
 	},
 	'WikiRequestManager' => static function ( MediaWikiServices $services ): WikiRequestManager {
 		return new WikiRequestManager(
-			$services->getConnectionProvider(),
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),

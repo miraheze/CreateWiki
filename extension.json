@@ -178,7 +178,6 @@
 		"RequestWikiQueue": {
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
-				"ConnectionProvider",
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"LanguageNameUtils",
@@ -225,7 +224,6 @@
 		"Main": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Main",
 			"services": [
-				"ConnectionProvider",
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",

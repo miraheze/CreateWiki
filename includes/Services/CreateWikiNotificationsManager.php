@@ -11,7 +11,6 @@ use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use UserMailer;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class CreateWikiNotificationsManager {
 
@@ -45,7 +44,7 @@ class CreateWikiNotificationsManager {
 	private string $type;
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options,
 		private readonly UserFactory $userFactory
@@ -74,7 +73,7 @@ class CreateWikiNotificationsManager {
 	 * @param string $wiki
 	 */
 	public function notifyBureaucrats( array $data, string $wiki ): void {
-		$dbr = $this->connectionProvider->getReplicaDatabase( $wiki );
+		$dbr = $this->databaseUtils->getRemoteWikiReplicaDB( $wiki );
 
 		$bureaucrats = $dbr->newSelectQueryBuilder()
 			->select( [ 'user_email', 'user_name' ] )

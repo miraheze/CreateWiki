@@ -40,7 +40,8 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function addDBDataOnce(): void {
-		$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->ignore()

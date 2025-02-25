@@ -35,9 +35,10 @@ class ManageInactiveWikis extends Maintenance {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+
+		$dbr = $databaseUtils->getGlobalReplicaDB();
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )

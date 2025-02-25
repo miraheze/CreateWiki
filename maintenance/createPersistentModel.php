@@ -26,8 +26,8 @@ class CreatePersistentModel extends Maintenance {
 	}
 
 	public function execute(): void {
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$dbr = $databaseUtils->getCentralWikiReplicaDB();
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( [ 'cw_comment', 'cw_status' ] )

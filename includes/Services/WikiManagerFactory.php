@@ -17,7 +17,6 @@ use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Wikimedia\Rdbms\DBConnRef;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 
@@ -45,7 +44,7 @@ class WikiManagerFactory {
 	private ?string $cluster = null;
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
@@ -61,7 +60,7 @@ class WikiManagerFactory {
 	 */
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
-		$this->cwdb = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+		$this->cwdb = $this->databaseUtils->getGlobalPrimaryDB();
 
 		// Check if the database exists in the cw_wikis table
 		$check = $this->cwdb->newSelectQueryBuilder()
@@ -114,7 +113,7 @@ class WikiManagerFactory {
 			}
 		} else {
 			// DB exists
-			$newDbw = $this->connectionProvider->getPrimaryDatabase( $dbname );
+			$newDbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -148,7 +147,7 @@ class WikiManagerFactory {
 		// If we aren't using DatabaseClusters, we don't have an LB
 		// So we just connect to $this->dbname using the main
 		// database configuration.
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase( $this->dbname );
+		$this->dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
 	}
 
 	public function create(
@@ -412,7 +411,7 @@ class WikiManagerFactory {
 			return;
 		}
 
-		$logDBConn = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
+		$logDBConn = $this->databaseUtils->getCentralWikiPrimaryDB();
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
@@ -434,9 +433,8 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-		$data = $this->dataFactory->newInstance( $dbr->getDomainID() );
-
+		$centralWiki = $this->databaseUtils->getCentralWikiID();
+		$data = $this->dataFactory->newInstance( $centralWiki );
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
 }
