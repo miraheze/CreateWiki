@@ -9,13 +9,15 @@ use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiDatabaseUtils {
 
+	private ?string $centralWikiID = null;
+
 	public function __construct(
 		private readonly IConnectionProvider $connectionProvider
 	) {
 	}
 
-	public function getCentralWikiID(): bool|string {
-		return $this->getCentralWikiReplicaDB()->getDomainID();
+	public function getCentralWikiID(): ?string {
+		return $this->centralWikiID ??= $this->getCentralWikiReplicaDB()->getDomainID() ?: null;
 	}
 
 	public function getCentralWikiPrimaryDB(): IDatabase {
@@ -43,7 +45,8 @@ class CreateWikiDatabaseUtils {
 	}
 
 	public function isCurrentWikiCentral(): bool {
-		return WikiMap::isCurrentWikiDbDomain( $this->getCentralWikiID() );
+		static $isCentral = null;
+		return $isCentral ??= WikiMap::isCurrentWikiDbDomain( $this->getCentralWikiID() );
 	}
 
 	public function isRemoteWikiCentral( string $wiki ): bool {
