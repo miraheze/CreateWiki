@@ -58,10 +58,10 @@ class RequestWikiQueuePager extends TablePager {
 				) );
 				break;
 			case 'cw_dbname':
-				$formatted = $this->escape( $row->cw_dbname );
+				$formatted = $this->escape( $row->cw_dbname ?? '' );
 				break;
 			case 'cw_sitename':
-				$formatted = $this->escape( $row->cw_sitename );
+				$formatted = $this->escape( $row->cw_sitename ?? '' );
 				break;
 			case 'cw_user':
 				$formatted = Linker::userLink(
@@ -70,7 +70,7 @@ class RequestWikiQueuePager extends TablePager {
 				);
 				break;
 			case 'cw_url':
-				$formatted = $this->escape( $row->cw_url );
+				$formatted = $this->escape( $row->cw_url ?? '' );
 				break;
 			case 'cw_status':
 				$formatted = $this->linkRenderer->makeLink(
