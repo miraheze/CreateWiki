@@ -62,7 +62,6 @@ return [
 	'CreateWikiValidator' => static function ( MediaWikiServices $services ): CreateWikiValidator {
 		return new CreateWikiValidator(
 			RequestContext::getMain(),
-			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
 				CreateWikiValidator::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
