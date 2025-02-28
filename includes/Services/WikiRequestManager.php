@@ -97,8 +97,13 @@ class WikiRequestManager {
 		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 
 		$subdomain = strtolower( $data['subdomain'] );
+		$configSubdomain = $this->options->get( ConfigNames::Subdomain );
+		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
+			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
+		}
+
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
-		$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
+		$url = $subdomain . '.' . $configSubdomain;
 
 		$comment = $data['reason'];
 		if ( $this->options->get( ConfigNames::Purposes ) && ( $data['purpose'] ?? '' ) ) {
@@ -819,12 +824,13 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $url !== $this->getUrl() ) {
 			$subdomain = strtolower( $url );
-			if ( strpos( $subdomain, $this->options->get( ConfigNames::Subdomain ) ) !== false ) {
-				$subdomain = str_replace( '.' . $this->options->get( ConfigNames::Subdomain ), '', $subdomain );
+			$configSubdomain = $this->options->get( ConfigNames::Subdomain );
+			if ( strpos( $subdomain, $configSubdomain ) !== false ) {
+				$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 			}
 
 			$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
-			$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
+			$url = $subdomain . '.' . $configSubdomain;
 
 			$this->trackChange( 'url', $this->getUrl(), $url );
 			$this->queryBuilder->set( [
