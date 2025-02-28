@@ -87,6 +87,7 @@ return [
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
+			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
