@@ -137,7 +137,8 @@ class Main implements
 		&$vars,
 		$out
 	): void {
-		if ( $out->getTitle()->isSubpageOf( SpecialPage::getTitleFor( 'RequestWikiQueue' ) ) ) {
+		$title = $out->getTitle();
+		if ( $title && $title->isSubpageOf( SpecialPage::getTitleFor( 'RequestWikiQueue' ) ) ) {
 			$vars[ConfigNames::CannedResponses] = $this->config->get( ConfigNames::CannedResponses );
 		}
 	}
