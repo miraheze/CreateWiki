@@ -285,7 +285,7 @@ class RequestWikiRequestViewer {
 				)->escaped();
 			}
 
-			$error = $this->validator->checkDatabaseName(
+			$error = $this->validator->validateDatabaseName(
 				$this->wikiRequestManager->getDBname(),
 				forRename: false
 			);

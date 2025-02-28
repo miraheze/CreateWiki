@@ -115,7 +115,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::checkDatabaseName
 	 * @covers ::create
 	 */
 	public function testCreateErrors(): void {
@@ -129,7 +128,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::checkDatabaseName
 	 * @covers ::rename
 	 */
 	public function testRenameErrors(): void {

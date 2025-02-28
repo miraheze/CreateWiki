@@ -26,7 +26,7 @@ class CreateWikiValidator {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	public function checkDatabaseName(
+	public function validateDatabaseName(
 		string $dbname,
 		bool $forRename
 	): ?string {
@@ -58,7 +58,7 @@ class CreateWikiValidator {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
 
-		$check = $this->checkDatabaseName( $dbname, forRename: false );
+		$check = $this->validateDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
 			// Will return a string — the error it received

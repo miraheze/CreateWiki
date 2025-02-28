@@ -408,7 +408,7 @@ class WikiRequestManager {
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
-			// This runs checkDatabaseName and if it returns a
+			// This runs validateDatabaseName and if it returns a
 			// non-null value it is returning an error.
 			$notCreated = $wikiManager->create(
 				sitename: $this->getSitename(),

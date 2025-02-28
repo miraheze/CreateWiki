@@ -166,7 +166,7 @@ class WikiManagerFactory {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
-		$checkErrors = $this->validator->checkDatabaseName(
+		$checkErrors = $this->validator->validateDatabaseName(
 			$this->dbname, forRename: false
 		);
 
@@ -345,7 +345,7 @@ class WikiManagerFactory {
 
 		$this->compileTables();
 
-		$error = $this->validator->checkDatabaseName(
+		$error = $this->validator->validateDatabaseName(
 			dbname: $newDatabaseName,
 			forRename: true
 		);
