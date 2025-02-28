@@ -14,6 +14,7 @@ class CreateWikiValidator {
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::DatabaseSuffix,
 		ConfigNames::DisallowedSubdomains,
+		ConfigNames::RequestWikiMinimumLength,
 		ConfigNames::Subdomain,
 		MainConfigNames::LocalDatabases,
 	];
@@ -37,6 +38,31 @@ class CreateWikiValidator {
 		if ( $check ) {
 			// Will return a string — the error it received
 			return $check;
+		}
+
+		return true;
+	}
+
+	public function isValidReason( ?string $reason, array $alldata ): bool|Message {
+		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-reason'] ) ) {
+			// If we aren't submitting an edit we don't want this to fail.
+			return true;
+		}
+
+		if ( !$reason || ctype_space( $reason ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		$minLength = $this->options->get( ConfigNames::RequestWikiMinimumLength );
+		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
+			return $this->messageLocalizer->msg( 'requestwiki-error-minlength' )->numParams(
+				$minLength, strlen( $reason )
+			);
+		}
+
+		if ( $this->isDisallowedRegex( $reason ) ) {
+			return $this->messageLocalizer->msg( 'requestwiki-error-invalidcomment' );
 		}
 
 		return true;
@@ -92,5 +118,21 @@ class CreateWikiValidator {
 			$this->options->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
 			ConfigNames::DisallowedSubdomains
 		);
+	}
+
+	private function isDisallowedRegex( string $text ): bool {
+		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
+			'CreateWiki-disallowlist', '/', '/i'
+		);
+
+		foreach ( $regexes as $regex ) {
+			preg_match( '/' . $regex . '/i', $text, $output );
+
+			if ( is_array( $output ) && count( $output ) >= 1 ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
