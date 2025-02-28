@@ -18,7 +18,6 @@ use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
-use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
 
@@ -33,7 +32,6 @@ class RequestWikiRequestViewer {
 		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
-		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 	}
@@ -287,8 +285,10 @@ class RequestWikiRequestViewer {
 				)->escaped();
 			}
 
-			$wikiManager = $this->wikiManagerFactory->newInstance( $this->wikiRequestManager->getDBname() );
-			$error = $wikiManager->checkDatabaseName( $this->wikiRequestManager->getDBname(), forRename: false );
+			$error = $this->validator->checkDatabaseName(
+				$this->wikiRequestManager->getDBname(),
+				forRename: false
+			);
 
 			if ( $error ) {
 				$this->context->getOutput()->addHTML( Html::errorBox( $error ) );
