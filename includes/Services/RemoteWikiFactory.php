@@ -73,7 +73,7 @@ class RemoteWikiFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $wiki ] );
+			throw new MissingWikiError( $wiki );
 		}
 
 		$this->dbname = $wiki;
