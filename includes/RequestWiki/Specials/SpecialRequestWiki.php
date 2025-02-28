@@ -134,7 +134,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
-			'validation-callback' => [ $this, 'isValidReason' ],
+			'validation-callback' => [ $this->reason, 'isValidReason' ],
 		];
 
 		$formDescriptor['post-reason-guidance'] = [
@@ -204,35 +204,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
 		return Status::newGood();
-	}
-
-	public function isValidReason( ?string $reason ): bool|Message {
-		if ( !$reason || ctype_space( $reason ) ) {
-			return $this->msg( 'htmlform-required' );
-		}
-
-		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
-		if ( $minLength && strlen( $reason ) < $minLength ) {
-			// This will automatically call ->parse().
-			return $this->msg( 'requestwiki-error-minlength' )->numParams(
-				$minLength,
-				strlen( $reason )
-			);
-		}
-
-		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
-			'CreateWiki-disallowlist', '/', '/i'
-		);
-
-		foreach ( $regexes as $regex ) {
-			preg_match( '/' . $regex . '/i', $reason, $output );
-
-			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return $this->msg( 'requestwiki-error-invalidcomment' );
-			}
-		}
-
-		return true;
 	}
 
 	public function isAgreementChecked( bool $agreement ): bool|Message {
