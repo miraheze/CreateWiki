@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
@@ -54,6 +55,16 @@ return [
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			new ServiceOptions(
 				CreateWikiRestUtils::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
+	},
+	'CreateWikiValidator' => static function ( MediaWikiServices $services ): CreateWikiValidator {
+		return new CreateWikiValidator(
+			RequestContext::getMain(),
+			$services->get( 'WikiManagerFactory' ),
+			new ServiceOptions(
+				CreateWikiValidator::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			)
 		);
