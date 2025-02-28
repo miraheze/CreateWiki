@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
 
@@ -22,6 +23,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
@@ -69,7 +71,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
-				'validation-callback' => [ $this, 'isValidSubdomain' ],
+				'validation-callback' => [ $this->validator, 'isValidSubdomain' ],
 			],
 			'sitename' => [
 				'type' => 'text',
@@ -229,40 +231,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 			if ( is_array( $output ) && count( $output ) >= 1 ) {
 				return $this->msg( 'requestwiki-error-invalidcomment' );
 			}
-		}
-
-		return true;
-	}
-
-	public function isValidSubdomain( ?string $subdomain ): bool|Message {
-		if ( !$subdomain || ctype_space( $subdomain ) ) {
-			return $this->msg( 'htmlform-required' );
-		}
-
-		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->getConfig()->get( ConfigNames::Subdomain );
-
-		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
-		}
-
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArray(
-			$this->getConfig()->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
-			ConfigNames::DisallowedSubdomains
-		);
-
-		$database = $subdomain . $this->getConfig()->get( ConfigNames::DatabaseSuffix );
-
-		if ( in_array( $database, $this->getConfig()->get( MainConfigNames::LocalDatabases ) ) ) {
-			return $this->msg( 'createwiki-error-subdomaintaken' );
-		}
-
-		if ( !ctype_alnum( $subdomain ) ) {
-			return $this->msg( 'createwiki-error-notalnum' );
-		}
-
-		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			return $this->msg( 'createwiki-error-disallowed' );
 		}
 
 		return true;
