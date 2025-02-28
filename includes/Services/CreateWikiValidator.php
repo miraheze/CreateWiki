@@ -26,7 +26,7 @@ class CreateWikiValidator {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	public function isValidDatabase( ?string $dbname ): bool|Message {
+	public function isValidDatabase( ?string $dbname ): bool|string|Message {
 		if ( !$dbname || ctype_space( $dbname ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
