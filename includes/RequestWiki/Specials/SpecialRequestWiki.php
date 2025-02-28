@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
-use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
