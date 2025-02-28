@@ -8,12 +8,14 @@ use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiValidator $validator,
 		private readonly WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
@@ -37,7 +39,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
 				'required' => true,
-				'validation-callback' => [ $this, 'isValidDatabase' ],
+				'validation-callback' => [ $this->validator, 'isValidDatabase' ],
 			],
 			'requester' => [
 				'label-message' => 'createwiki-label-requester',
@@ -116,22 +118,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 				$this->msg( 'createwiki-success' )->escaped()
 			)
 		);
-
-		return true;
-	}
-
-	public function isValidDatabase( ?string $dbname ): bool|string|Message {
-		if ( !$dbname || ctype_space( $dbname ) ) {
-			return $this->msg( 'htmlform-required' );
-		}
-
-		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
-		$check = $wikiManager->checkDatabaseName( $dbname, forRename: false );
-
-		if ( $check ) {
-			// Will return a string — the error it received
-			return $check;
-		}
 
 		return true;
 	}
