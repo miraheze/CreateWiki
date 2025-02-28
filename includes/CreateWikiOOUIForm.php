@@ -48,9 +48,9 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	public function getBody() {
 		$tabPanels = [];
 		foreach ( $this->mFieldTree as $key => $val ) {
+			$key = (string)$key;
 			if ( !is_array( $val ) ) {
 				wfDebug( __METHOD__ . " encountered a field not attached to a section: '{$key}'" );
-
 				continue;
 			}
 
