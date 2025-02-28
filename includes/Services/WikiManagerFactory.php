@@ -48,6 +48,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly CreateWikiValidator $validator,
 		private readonly ExtensionRegistry $extensionRegistry,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
@@ -165,7 +166,9 @@ class WikiManagerFactory {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
-		$checkErrors = $this->checkDatabaseName( $this->dbname, forRename: false );
+		$checkErrors = $this->validator->checkDatabaseName(
+			$this->dbname, forRename: false
+		);
 
 		if ( $checkErrors ) {
 			return $checkErrors;
@@ -342,7 +345,10 @@ class WikiManagerFactory {
 
 		$this->compileTables();
 
-		$error = $this->checkDatabaseName( dbname: $newDatabaseName, forRename: true );
+		$error = $this->validator->checkDatabaseName(
+			dbname: $newDatabaseName,
+			forRename: true
+		);
 
 		if ( $error ) {
 			return "Can not rename {$this->dbname} to {$newDatabaseName} because: {$error}";
@@ -368,33 +374,6 @@ class WikiManagerFactory {
 		$this->recache();
 
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
-
-		return null;
-	}
-
-	public function checkDatabaseName(
-		string $dbname,
-		bool $forRename
-	): ?string {
-		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
-		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
-		if ( !$suffixed ) {
-			return $this->messageLocalizer->msg(
-				'createwiki-error-notsuffixed', $suffix
-			)->parse();
-		}
-
-		if ( !$forRename && $this->exists() ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
-		}
-
-		if ( !ctype_alnum( $dbname ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' )->parse();
-		}
-
-		if ( strtolower( $dbname ) !== $dbname ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notlowercase' )->parse();
-		}
 
 		return null;
 	}
