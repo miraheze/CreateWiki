@@ -19,6 +19,7 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
@@ -31,6 +32,7 @@ class RequestWikiRequestViewer {
 		private readonly Config $config,
 		private readonly IContextSource $context,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
 		private readonly WikiManagerFactory $wikiManagerFactory,
@@ -176,7 +178,7 @@ class RequestWikiRequestViewer {
 					'section' => 'editing',
 					'required' => true,
 					'default' => $this->wikiRequestManager->getUrl(),
-					'validation-callback' => [ $this, 'isValidSubdomain' ],
+					'validation-callback' => [ $this->validator, 'isValidSubdomain' ],
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'edit-language' => [
@@ -692,47 +694,6 @@ class RequestWikiRequestViewer {
 	public function isValidStatusComment( ?string $comment, array $alldata ): bool|Message {
 		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->context->msg( 'htmlform-required' );
-		}
-
-		return true;
-	}
-
-	public function isValidSubdomain( ?string $subdomain, array $alldata ): bool|Message {
-		if ( !isset( $alldata['submit-edit'] ) ) {
-			// If we aren't submitting an edit we don't want this to fail.
-			// For example, we don't want an invalid subdomain to block
-			// adding a comment or declining the request.
-			return true;
-		}
-
-		if ( !$subdomain || ctype_space( $subdomain ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->config->get( ConfigNames::Subdomain );
-
-		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
-		}
-
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArray(
-			$this->config->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
-			ConfigNames::DisallowedSubdomains
-		);
-
-		$database = $subdomain . $this->config->get( ConfigNames::DatabaseSuffix );
-
-		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
-			return $this->context->msg( 'createwiki-error-subdomaintaken' );
-		}
-
-		if ( !ctype_alnum( $subdomain ) ) {
-			return $this->context->msg( 'createwiki-error-notalnum' );
-		}
-
-		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			return $this->context->msg( 'createwiki-error-disallowed' );
 		}
 
 		return true;
