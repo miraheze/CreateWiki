@@ -19,7 +19,7 @@ class CreateWikiValidator {
 	];
 
 	public function __construct(
-		private readonly MessageLocalizer $messageLocalizer, 
+		private readonly MessageLocalizer $messageLocalizer,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly ServiceOptions $options
 	) {
@@ -83,7 +83,7 @@ class CreateWikiValidator {
 		return $subdomain;
 	}
 
-	private function databaseExists( string $database ): bool  {
+	private function databaseExists( string $database ): bool {
 		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ) );
 	}
 
