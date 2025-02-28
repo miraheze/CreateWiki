@@ -21,10 +21,36 @@ class CreateWikiValidator {
 
 	public function __construct(
 		private readonly MessageLocalizer $messageLocalizer,
-		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
+	}
+
+	public function checkDatabaseName(
+		string $dbname,
+		bool $forRename
+	): ?string {
+		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
+		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
+		if ( !$suffixed ) {
+			return $this->messageLocalizer->msg(
+				'createwiki-error-notsuffixed', $suffix
+			)->parse();
+		}
+
+		if ( !$forRename && $this->databaseExists( $dbname ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
+		}
+
+		if ( !ctype_alnum( $dbname ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' )->parse();
+		}
+
+		if ( strtolower( $dbname ) !== $dbname ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notlowercase' )->parse();
+		}
+
+		return null;
 	}
 
 	public function isValidDatabase( ?string $dbname ): bool|string|Message {
@@ -32,8 +58,7 @@ class CreateWikiValidator {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
 
-		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
-		$check = $wikiManager->checkDatabaseName( $dbname, forRename: false );
+		$check = $this->checkDatabaseName( $dbname, forRename: false );
 
 		if ( $check ) {
 			// Will return a string — the error it received
