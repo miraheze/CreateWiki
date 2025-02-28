@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\Html\Html;
-use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
