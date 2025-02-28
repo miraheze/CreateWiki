@@ -26,31 +26,42 @@ class CreateWikiValidator {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	public function validateDatabaseName(
-		string $dbname,
-		bool $forRename
-	): ?string {
-		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
-		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
-		if ( !$suffixed ) {
-			return $this->messageLocalizer->msg(
-				'createwiki-error-notsuffixed', $suffix
-			)->parse();
+	private function databaseExists( string $database ): bool {
+		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ) );
+	}
+
+	private function getDisallowedSubdomains(): string {
+		return CreateWikiRegexConstraint::regexFromArray(
+			$this->options->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
+			ConfigNames::DisallowedSubdomains
+		);
+	}
+
+	private function isDisallowedRegex( string $text ): bool {
+		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
+			'CreateWiki-disallowlist', '/', '/i'
+		);
+
+		foreach ( $regexes as $regex ) {
+			preg_match( '/' . $regex . '/i', $text, $output );
+
+			if ( is_array( $output ) && count( $output ) >= 1 ) {
+				return true;
+			}
 		}
 
-		if ( !$forRename && $this->databaseExists( $dbname ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
+		return false;
+	}
+
+	public function getValidSubdomain( string $subdomain ): string {
+		$subdomain = strtolower( $subdomain );
+		$configSubdomain = $this->options->get( ConfigNames::Subdomain );
+
+		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
+			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 		}
 
-		if ( !ctype_alnum( $dbname ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' )->parse();
-		}
-
-		if ( strtolower( $dbname ) !== $dbname ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notlowercase' )->parse();
-		}
-
-		return null;
+		return $subdomain;
 	}
 
 	public function isValidDatabase( ?string $dbname ): bool|string|Message {
@@ -123,41 +134,30 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function getValidSubdomain( string $subdomain ): string {
-		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->options->get( ConfigNames::Subdomain );
-
-		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
+	public function validateDatabaseName(
+		string $dbname,
+		bool $forRename
+	): ?string {
+		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
+		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
+		if ( !$suffixed ) {
+			return $this->messageLocalizer->msg(
+				'createwiki-error-notsuffixed', $suffix
+			)->parse();
 		}
 
-		return $subdomain;
-	}
-
-	private function databaseExists( string $database ): bool {
-		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ) );
-	}
-
-	private function getDisallowedSubdomains(): string {
-		return CreateWikiRegexConstraint::regexFromArray(
-			$this->options->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
-			ConfigNames::DisallowedSubdomains
-		);
-	}
-
-	private function isDisallowedRegex( string $text ): bool {
-		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
-			'CreateWiki-disallowlist', '/', '/i'
-		);
-
-		foreach ( $regexes as $regex ) {
-			preg_match( '/' . $regex . '/i', $text, $output );
-
-			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return true;
-			}
+		if ( !$forRename && $this->databaseExists( $dbname ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
 		}
 
-		return false;
+		if ( !ctype_alnum( $dbname ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' )->parse();
+		}
+
+		if ( strtolower( $dbname ) !== $dbname ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notlowercase' )->parse();
+		}
+
+		return null;
 	}
 }
