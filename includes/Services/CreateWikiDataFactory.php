@@ -209,7 +209,7 @@ class CreateWikiDataFactory {
 				return;
 			}
 
-			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $this->wiki ] );
+			throw new MissingWikiError( $this->wiki );
 		}
 
 		$states = [];
