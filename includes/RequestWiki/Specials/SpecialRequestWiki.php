@@ -134,7 +134,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
-			'validation-callback' => [ $this->reason, 'isValidReason' ],
+			'validation-callback' => [ $this->validator, 'isValidReason' ],
 		];
 
 		$formDescriptor['post-reason-guidance'] = [
