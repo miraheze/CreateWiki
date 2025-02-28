@@ -18,7 +18,7 @@ class CreateWikiValidator {
 	];
 
 	public function __construct(
-		private readonly MessageLocalizer $messageLocalizer
+		private readonly MessageLocalizer $messageLocalizer, 
 		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly ServiceOptions $options
 	) {
