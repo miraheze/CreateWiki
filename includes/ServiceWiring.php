@@ -100,6 +100,7 @@ return [
 		return new WikiRequestManager(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
+			$services->get( 'CreateWikiValidator' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
