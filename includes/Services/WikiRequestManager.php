@@ -97,7 +97,7 @@ class WikiRequestManager {
 	): void {
 		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 
-		$subdomain = $this->validator->getFilteredSubdomain( $data['subdomain'] );
+		$subdomain = $this->validator->getValidSubdomain( $data['subdomain'] );
 
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
 		$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
@@ -820,7 +820,7 @@ class WikiRequestManager {
 	public function setUrl( string $url ): void {
 		$this->checkQueryBuilder();
 		if ( $url !== $this->getUrl() ) {
-			$subdomain = $this->validator->getFilteredSubdomain( $url );
+			$subdomain = $this->validator->getValidSubdomain( $url );
 
 			$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
 			$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );

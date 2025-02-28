@@ -80,7 +80,7 @@ class CreateWikiValidator {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
 
-		$subdomain = $this->getFilteredSubdomain( $subdomain );
+		$subdomain = $this->getValidSubdomain( $subdomain );
 		$database = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
 
 		if ( $this->databaseExists( $database ) ) {
@@ -98,7 +98,7 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function getFilteredSubdomain( string $subdomain ): string {
+	public function getValidSubdomain( string $subdomain ): string {
 		$subdomain = strtolower( $subdomain );
 		$configSubdomain = $this->options->get( ConfigNames::Subdomain );
 
