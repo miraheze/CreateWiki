@@ -48,6 +48,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly ExtensionRegistry $extensionRegistry,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options
@@ -228,7 +229,7 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
 						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
 						[
