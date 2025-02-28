@@ -76,6 +76,7 @@ return [
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
+			$services->getExtensionRegistry(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
 			new ServiceOptions(
