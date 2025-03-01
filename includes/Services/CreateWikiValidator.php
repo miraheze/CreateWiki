@@ -26,10 +26,6 @@ class CreateWikiValidator {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	private function databaseExists( string $database ): bool {
-		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ) );
-	}
-
 	private function getDisallowedSubdomains(): string {
 		return CreateWikiRegexConstraint::regexFromArray(
 			$this->options->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
@@ -51,6 +47,10 @@ class CreateWikiValidator {
 		}
 
 		return false;
+	}
+
+	public function databaseExists( string $database ): bool {
+		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ) );
 	}
 
 	public function getValidSubdomain( string $subdomain ): string {
@@ -136,7 +136,7 @@ class CreateWikiValidator {
 
 	public function validateDatabaseName(
 		string $dbname,
-		bool $forRename
+		bool $exists
 	): ?string {
 		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
 		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
@@ -146,7 +146,7 @@ class CreateWikiValidator {
 			)->parse();
 		}
 
-		if ( !$forRename && $this->databaseExists( $dbname ) ) {
+		if ( !$exists ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
 		}
 
