@@ -251,7 +251,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->overrideConfigValue( MainConfigNames::LocalDatabases, array_values(
 			array_filter(
 				$this->getConfVar( MainConfigNames::LocalDatabases ),
-				fn ( string $db ): bool => $db !== $dbname
+				fn ( string $db ): bool => $db !== 'recreatewikitest'
 			)
 		) );
 
