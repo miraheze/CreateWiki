@@ -348,8 +348,7 @@ class WikiManagerFactory {
 
 		$error = $this->validator->validateDatabaseName(
 			dbname: $newDatabaseName,
-			// We don't want to check if it exists since
-			// it won't yet as we are renaming to it.
+			// It shouldn't ever exist yet as we are renaming to it.
 			exists: false
 		);
 
