@@ -139,7 +139,7 @@ class CreateWikiValidator {
 		bool $exists
 	): ?string {
 		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
-		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
+		$suffixed = str_ends_with( $dbname, $suffix );
 		if ( !$suffixed ) {
 			return $this->messageLocalizer->msg(
 				'createwiki-error-notsuffixed', $suffix
