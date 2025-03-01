@@ -246,6 +246,15 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$wikiManager = $this->getFactoryService()->newInstance( 'recreatewikitest' );
 
 		$this->assertNull( $wikiManager->delete( force: true ) );
+
+		// Remove from LocalDatabases after deletion
+		$this->overrideConfigValue( MainConfigNames::LocalDatabases, array_values(
+			array_filter(
+				$this->getConfVar( MainConfigNames::LocalDatabases ),
+				fn ( string $db ): bool => $db !== $dbname
+			)
+		) );
+
 		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
 
 		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
