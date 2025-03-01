@@ -285,10 +285,10 @@ class RequestWikiRequestViewer {
 				)->escaped();
 			}
 
-			$error = $this->validator->validateDatabaseName(
-				$this->wikiRequestManager->getDBname(),
-				forRename: false
-			);
+			$dbname = $this->wikiRequestManager->getDBname();
+			$exists = $this->validator->databaseExists( $dbname );
+
+			$error = $this->validator->validateDatabaseName( $dbname, $exists );
 
 			if ( $error ) {
 				$this->context->getOutput()->addHTML( Html::errorBox( $error ) );
