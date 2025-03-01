@@ -69,7 +69,7 @@ class CreateWikiValidator {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
 
-		$check = $this->validateDatabaseName( $dbname, forRename: false );
+		$check = $this->validateDatabaseName( $dbname, $this->databaseExists( $dbname ) );
 
 		if ( $check ) {
 			// Will return a string — the error it received
