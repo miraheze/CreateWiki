@@ -146,7 +146,7 @@ class CreateWikiValidator {
 			)->parse();
 		}
 
-		if ( !$exists ) {
+		if ( $exists ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
 		}
 
