@@ -35,21 +35,21 @@ class SpecialCreateWiki extends FormSpecialPage {
 	protected function getFormFields(): array {
 		$formDescriptor = [
 			'dbname' => [
-				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
+				'label-message' => 'createwiki-label-dbname',
 				'required' => true,
-				'validation-callback' => [ $this->validator, 'isValidDatabase' ],
+				'validation-callback' => [ $this->validator, 'validateDatabaseEntry' ],
 			],
 			'requester' => [
-				'label-message' => 'createwiki-label-requester',
 				'type' => 'user',
 				'exists' => true,
+				'label-message' => 'createwiki-label-requester',
 				'required' => true,
 			],
 			'sitename' => [
-				'label-message' => 'createwiki-label-sitename',
 				'type' => 'text',
-				'size' => 20,
+				'label-message' => 'createwiki-label-sitename',
+				'required' => true,
 			],
 			'language' => [
 				'type' => 'language',
@@ -78,7 +78,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'type' => 'textarea',
 			'rows' => 10,
 			'label-message' => 'createwiki-label-reason',
-			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
 		];
@@ -88,16 +87,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	public function onSubmit( array $formData ): bool {
+		$private = 0;
 		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
 			$private = $formData['private'];
-		} else {
-			$private = 0;
 		}
 
+		$category = 'uncategorised';
 		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
 			$category = $formData['category'];
-		} else {
-			$category = 'uncategorised';
 		}
 
 		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );

@@ -150,7 +150,7 @@ class RequestWikiRequestViewer {
 					'rows' => 10,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
-					'validation-callback' => [ $this, 'isValidComment' ],
+					'validation-callback' => [ $this, 'validateComment' ],
 					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
@@ -174,7 +174,7 @@ class RequestWikiRequestViewer {
 					'section' => 'editing',
 					'required' => true,
 					'default' => $this->wikiRequestManager->getUrl(),
-					'validation-callback' => [ $this->validator, 'isValidSubdomain' ],
+					'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
 				'edit-language' => [
@@ -194,7 +194,7 @@ class RequestWikiRequestViewer {
 					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getReason(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'validation-callback' => [ $this->validator, 'isValidReason' ],
+					'validation-callback' => [ $this->validator, 'validateReason' ],
 				],
 			];
 
@@ -251,7 +251,6 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		// TODO: Should we really require (createwiki) to suppress wiki requests?
 		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
 		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
@@ -329,7 +328,7 @@ class RequestWikiRequestViewer {
 				],
 				'handle-comment' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
-					'validation-callback' => [ $this, 'isValidStatusComment' ],
+					'validation-callback' => [ $this, 'validateStatusComment' ],
 					'section' => 'handling',
 				],
 				'handle-lock' => [
@@ -647,7 +646,7 @@ class RequestWikiRequestViewer {
 		}
 	}
 
-	public function isValidComment( ?string $comment, array $alldata ): bool|Message {
+	public function validateComment( ?string $comment, array $alldata ): bool|Message {
 		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->context->msg( 'htmlform-required' );
 		}
@@ -655,7 +654,7 @@ class RequestWikiRequestViewer {
 		return true;
 	}
 
-	public function isValidStatusComment( ?string $comment, array $alldata ): bool|Message {
+	public function validateStatusComment( ?string $comment, array $alldata ): bool|Message {
 		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->context->msg( 'htmlform-required' );
 		}

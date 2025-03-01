@@ -64,22 +64,7 @@ class CreateWikiValidator {
 		return $subdomain;
 	}
 
-	public function isValidDatabase( ?string $dbname ): bool|string|Message {
-		if ( !$dbname || ctype_space( $dbname ) ) {
-			return $this->messageLocalizer->msg( 'htmlform-required' );
-		}
-
-		$check = $this->validateDatabaseName( $dbname, $this->databaseExists( $dbname ) );
-
-		if ( $check ) {
-			// Will return a string — the error it received
-			return $check;
-		}
-
-		return true;
-	}
-
-	public function isValidReason( ?string $reason, array $alldata ): bool|Message {
+	public function validateReason( ?string $reason, array $alldata ): bool|Message {
 		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-reason'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			return true;
@@ -104,7 +89,7 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function isValidSubdomain( ?string $subdomain, array $alldata ): bool|Message {
+	public function validateSubdomain( ?string $subdomain, array $alldata ): bool|Message {
 		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-url'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			// For example, we don't want an invalid subdomain to block
@@ -129,6 +114,21 @@ class CreateWikiValidator {
 
 		if ( preg_match( $this->getDisallowedSubdomains(), $subdomain ) ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-disallowed' );
+		}
+
+		return true;
+	}
+
+	public function validateDatabaseEntry( ?string $dbname ): bool|string|Message {
+		if ( !$dbname || ctype_space( $dbname ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		$check = $this->validateDatabaseName( $dbname, $this->databaseExists( $dbname ) );
+
+		if ( $check ) {
+			// Will return a string — the error it received
+			return $check;
 		}
 
 		return true;

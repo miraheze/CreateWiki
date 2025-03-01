@@ -69,7 +69,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
-				'validation-callback' => [ $this->validator, 'isValidSubdomain' ],
+				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 			],
 			'sitename' => [
 				'type' => 'text',
@@ -133,7 +133,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
-			'validation-callback' => [ $this->validator, 'isValidReason' ],
+			'validation-callback' => [ $this->validator, 'validateReason' ],
 		];
 
 		$formDescriptor['post-reason-guidance'] = [
@@ -145,8 +145,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
-				'required' => true,
-				'validation-callback' => [ $this, 'isAgreementChecked' ],
+				'validation-callback' => [ $this, 'validateAgreement' ],
 			];
 		}
 
@@ -205,7 +204,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return Status::newGood();
 	}
 
-	public function isAgreementChecked( bool $agreement ): bool|Message {
+	public function validateAgreement( bool $agreement ): bool|Message {
 		if ( !$agreement ) {
 			return $this->msg( 'createwiki-error-agreement' );
 		}
