@@ -350,7 +350,7 @@ class WikiManagerFactory {
 			dbname: $newDatabaseName,
 			// We don't want to check if it exists since
 			// it won't yet as we are renaming to it.
-			exists: true
+			exists: false
 		);
 
 		if ( $error ) {
