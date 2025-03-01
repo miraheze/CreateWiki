@@ -167,7 +167,8 @@ class WikiManagerFactory {
 		}
 
 		$checkErrors = $this->validator->validateDatabaseName(
-			$this->dbname, forRename: false
+			dbname: $this->dbname,
+			exists: $this->exists()
 		);
 
 		if ( $checkErrors ) {
@@ -347,7 +348,9 @@ class WikiManagerFactory {
 
 		$error = $this->validator->validateDatabaseName(
 			dbname: $newDatabaseName,
-			forRename: true
+			// We don't want to check if it exists since
+			// it won't yet as we are renaming to it.
+			exists: true
 		);
 
 		if ( $error ) {
