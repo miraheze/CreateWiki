@@ -94,11 +94,13 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function provideValidateReasonData(): Generator {
-		yield 'not submitting edit' => [ 'any reason', [ 'edit-reason' => 'test' ], true ];
-		yield 'empty reason no data' => [ '', [], 'parsed' ];
-		yield 'empty reason' => [ '', [ 'submit-edit' => true ], 'parsed' ];
-		yield 'short reason' => [ 'short', [ 'submit-edit' => true ], 'parsed' ];
-		yield 'valid reason' => [ 'this is a valid reason', [ 'submit-edit' => true ], true ];
+		yield 'not submitting edit via edit-reason' => [ 'any reason', [ 'edit-reason' => 'test' ], true ];
+		yield 'empty reason with submit-edit' => [ '', [ 'submit-edit' => true ], 'parsed' ];
+		yield 'short reason with submit-edit' => [ 'short', [ 'submit-edit' => true ], 'parsed' ];
+		yield 'valid reason with submit-edit' => [ 'this is a valid reason', [ 'submit-edit' => true ], true ];
+		yield 'whitespace reason with submit-edit' => [ '   ', [ 'submit-edit' => true ], 'parsed' ];
+		yield 'valid reason without submit-edit or edit keys' => [ 'this is valid reason', [], true ];
+		yield 'short reason without submit-edit or edit keys' => [ 'short', [], 'parsed' ];
 	}
 
 	/**
@@ -124,13 +126,20 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function provideValidateSubdomainData(): Generator {
-		yield 'not submitting edit' => [ 'anything', [ 'edit-url' => 'test' ], true ];
-		yield 'empty subdomain no data' => [ '', [], 'error' ];
-		yield 'empty subdomain' => [ '', [ 'submit-edit' => true ], 'error' ];
-		yield 'database exists' => [ 'exist.example.org', [ 'submit-edit' => true ], 'error' ];
-		yield 'non alnum subdomain' => [ 'sub#', [ 'submit-edit' => true ], 'error' ];
-		yield 'disallowed subdomain' => [ 'badsub', [ 'submit-edit' => true ], 'error' ];
-		yield 'valid subdomain' => [ 'validsub', [ 'submit-edit' => true ], true ];
+		yield 'not submitting edit via edit-url' => [ 'anything', [ 'edit-url' => 'test' ], true ];
+		yield 'empty subdomain with submit-edit' => [ '', [ 'submit-edit' => true ], 'error' ];
+		yield 'database exists with submit-edit' => [ 'exist.example.org', [ 'submit-edit' => true ], 'error' ];
+		yield 'non alnum subdomain with submit-edit' => [ 'sub#', [ 'submit-edit' => true ], 'error' ];
+		yield 'disallowed subdomain with submit-edit' => [ 'badsub', [ 'submit-edit' => true ], 'error' ];
+		yield 'valid subdomain with submit-edit' => [ 'validsub', [ 'submit-edit' => true ], true ];
+		yield 'uppercase disallowed subdomain with submit-edit' => [ 'BADSUB', [ 'submit-edit' => true ], 'error' ];
+		yield 'subdomain with config domain included with submit-edit' => [ 'sub.example.org', [ 'submit-edit' => true ], true ];
+		yield 'subdomain with spaces with submit-edit' => [ '   ', [ 'submit-edit' => true ], 'error' ];
+		yield 'valid subdomain without submit-edit or edit keys' => [ 'validsub', [], true ];
+		yield 'empty subdomain without submit-edit or edit keys' => [ '', [], 'error' ];
+		yield 'database exists without submit-edit or edit keys' => [ 'exist.example.org', [], 'error' ];
+		yield 'non alnum subdomain without submit-edit or edit keys' => [ 'sub#', [], 'error' ];
+		yield 'disallowed subdomain without submit-edit or edit keys' => [ 'badsub', [], 'error' ];
 	}
 
 	/**
