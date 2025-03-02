@@ -30,7 +30,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		$options->method( 'get' )->willReturnCallback( static function ( string $key ): mixed {
 			switch ( $key ) {
 				case ConfigNames::DatabaseSuffix:
-					return '_db';
+					return 'db';
 				case ConfigNames::Subdomain:
 					return 'example.org';
 				case ConfigNames::DisallowedSubdomains:
@@ -38,7 +38,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 				case ConfigNames::RequestWikiMinimumLength:
 					return 10;
 				case MainConfigNames::LocalDatabases:
-					return [ 'exist_db' ];
+					return [ 'existdb' ];
 				default:
 					return null;
 			}
@@ -55,8 +55,8 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::databaseExists
 	 */
 	public function testDatabaseExists(): void {
-		$this->assertTrue( $this->validator->databaseExists( 'exist_db' ) );
-		$this->assertFalse( $this->validator->databaseExists( 'nonexist_db' ) );
+		$this->assertTrue( $this->validator->databaseExists( 'existdb' ) );
+		$this->assertFalse( $this->validator->databaseExists( 'nonexistdb' ) );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateDatabaseEntry( $dbname );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertNull( $result );
 		} else {
 			$this->assertIsString( $result->parse() );
 		}
@@ -154,7 +154,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 	public function provideValidateDatabaseEntryData(): Generator {
 		yield 'empty dbname' => [ '', 'parsed' ];
-		yield 'valid dbname' => [ 'valid_db', true ];
+		yield 'valid dbname' => [ 'validdb', true ];
 	}
 
 	/**
@@ -181,9 +181,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 	public function provideValidateDatabaseNameData(): Generator {
 		yield 'not suffixed' => [ 'dbname', false, 'error' ];
-		yield 'database exists' => [ 'valid_db', true, 'error' ];
-		yield 'not alnum' => [ 'valid_db!', false, 'error' ];
-		yield 'not lowercase' => [ 'Valid_db', false, 'error' ];
-		yield 'valid dbname' => [ 'valid_db', false, null ];
+		yield 'database exists' => [ 'validdb', true, 'error' ];
+		yield 'not alnum' => [ 'validdb!', false, 'error' ];
+		yield 'not lowercase' => [ 'Validdb', false, 'error' ];
+		yield 'valid dbname' => [ 'validdb', false, null ];
 	}
 }
