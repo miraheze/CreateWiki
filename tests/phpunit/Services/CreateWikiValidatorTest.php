@@ -146,7 +146,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateDatabaseEntry( $dbname );
 		if ( $expected === true ) {
-			$this->assertNull( $result );
+			$this->assertTrue( $result );
 		} else {
 			$this->assertIsString( $result->parse() );
 		}
