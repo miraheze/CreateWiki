@@ -95,6 +95,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 	public function provideValidateReasonData(): Generator {
 		yield 'not submitting edit' => [ 'any reason', [ 'edit-reason' => 'test' ], true ];
+		yield 'empty reason no data' => [ '', [], 'parsed' ];
 		yield 'empty reason' => [ '', [ 'submit-edit' => true ], 'parsed' ];
 		yield 'short reason' => [ 'short', [ 'submit-edit' => true ], 'parsed' ];
 		yield 'valid reason' => [ 'this is a valid reason', [ 'submit-edit' => true ], true ];
@@ -124,6 +125,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 	public function provideValidateSubdomainData(): Generator {
 		yield 'not submitting edit' => [ 'anything', [ 'edit-url' => 'test' ], true ];
+		yield 'empty subdomain no data' => [ '', [], 'error' ];
 		yield 'empty subdomain' => [ '', [ 'submit-edit' => true ], 'error' ];
 		yield 'database exists' => [ 'exist.example.org', [ 'submit-edit' => true ], 'error' ];
 		yield 'non alnum subdomain' => [ 'sub#', [ 'submit-edit' => true ], 'error' ];
