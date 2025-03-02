@@ -87,22 +87,12 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	public function onSubmit( array $formData ): bool {
-		$private = 0;
-		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
-			$private = $formData['private'];
-		}
-
-		$category = 'uncategorised';
-		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
-			$category = $formData['category'];
-		}
-
 		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
 		$wikiManager->create(
 			sitename: $formData['sitename'],
 			language: $formData['language'],
-			private: $private,
-			category: $category,
+			private: $formData['private'] ?? 0,
+			category: $formData['category'] ?? 'uncategorised',
 			requester: $formData['requester'],
 			actor: $this->getContext()->getUser()->getName(),
 			reason: $formData['reason'],
