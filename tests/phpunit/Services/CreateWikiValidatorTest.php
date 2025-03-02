@@ -13,7 +13,6 @@ use Miraheze\CreateWiki\Services\CreateWikiValidator;
 
 /**
  * @group CreateWiki
- * @group Database
  * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\Services\CreateWikiValidator
  */
