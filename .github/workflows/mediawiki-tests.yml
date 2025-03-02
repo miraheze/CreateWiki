@@ -17,6 +17,7 @@ jobs:
             php: 8.1
             php-docker: 81
             composer-test: true
+            codecov: false
             experimental: false
 
           # Latest MediaWiki master - PHP 8.1
@@ -24,8 +25,8 @@ jobs:
             php: 8.1
             php-docker: 81
             composer-test: false
-            experimental: true
             codecov: true
+            experimental: true
 
     with:
       mw: ${{ matrix.mw }}
