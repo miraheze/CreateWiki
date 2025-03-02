@@ -17,7 +17,7 @@ jobs:
             php: 8.1
             php-docker: 81
             composer-test: true
-            codecov: false
+            coverage: false
             experimental: false
 
           # Latest MediaWiki master - PHP 8.1
@@ -25,7 +25,7 @@ jobs:
             php: 8.1
             php-docker: 81
             composer-test: false
-            codecov: true
+            coverage: true
             experimental: true
 
     with:
@@ -34,7 +34,7 @@ jobs:
       php-docker: ${{ matrix.php-docker }}
       experimental: ${{ matrix.experimental }}
       composer-test: ${{ matrix.composer-test }}
-      codecov: ${{ matrix.codecov }}
+      coverage: ${{ matrix.coverage }}
 
     secrets: inherit
 
