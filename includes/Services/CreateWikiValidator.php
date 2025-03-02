@@ -39,9 +39,7 @@ class CreateWikiValidator {
 		);
 
 		foreach ( $regexes as $regex ) {
-			preg_match( '/' . $regex . '/i', $text, $output );
-
-			if ( is_array( $output ) && count( $output ) >= 1 ) {
+			if ( preg_match( '/' . $regex . '/i', $text ) ) {
 				return true;
 			}
 		}
