@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-mediawiki-tests-workflow:
-    uses: miraheze/.github/.github/workflows/mediawiki-tests.yml@master
+    uses: miraheze/.github/.github/workflows/mediawiki-tests.yml@codecov
     strategy:
       matrix:
         include:
@@ -25,6 +25,7 @@ jobs:
             php-docker: 81
             composer-test: false
             experimental: true
+            codecov: true
 
     with:
       mw: ${{ matrix.mw }}
@@ -32,6 +33,7 @@ jobs:
       php-docker: ${{ matrix.php-docker }}
       experimental: ${{ matrix.experimental }}
       composer-test: ${{ matrix.composer-test }}
+      codecov: ${{ matrix.codecov }}
 
     secrets: inherit
 
