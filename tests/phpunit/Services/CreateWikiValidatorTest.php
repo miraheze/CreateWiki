@@ -133,7 +133,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		yield 'disallowed subdomain with submit-edit' => [ 'badsub', [ 'submit-edit' => true ], 'error' ];
 		yield 'valid subdomain with submit-edit' => [ 'validsub', [ 'submit-edit' => true ], true ];
 		yield 'uppercase disallowed subdomain with submit-edit' => [ 'BADSUB', [ 'submit-edit' => true ], 'error' ];
-		yield 'subdomain with config domain included with submit-edit' => [ 'sub.example.org', [ 'submit-edit' => true ], true ];
+		yield 'subdomain with config domain included with submit-edit' => [
+			'sub.example.org', [ 'submit-edit' => true ], true
+		];
 		yield 'subdomain with spaces with submit-edit' => [ '   ', [ 'submit-edit' => true ], 'error' ];
 		yield 'valid subdomain without submit-edit or edit keys' => [ 'validsub', [], true ];
 		yield 'empty subdomain without submit-edit or edit keys' => [ '', [], 'error' ];
