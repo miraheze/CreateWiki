@@ -87,7 +87,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		if ( is_bool( $expected ) ) {
 			$this->assertSame( $expected, $result );
 		} elseif ( $expected === 'parsed' ) {
-			$this->assertIsString( $result );
+			$this->assertIsString( $result->parse() );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );
 		}
@@ -148,7 +148,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		if ( $expected === true ) {
 			$this->assertTrue( $result );
 		} else {
-			$this->assertIsString( $result );
+			$this->assertIsString( $result->parse() );
 		}
 	}
 
