@@ -28,7 +28,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		$this->messageLocalizer = $this->createMock( MessageLocalizer::class );
 
 		$options = $this->createMock( ServiceOptions::class );
-		$options->method( 'get' )->will( $this->returnCallback( static function ( string $key ): mixed {
+		$options->method( 'get' )->willReturnCallback( static function ( string $key ): mixed {
 			switch ( $key ) {
 				case ConfigNames::DatabaseSuffix:
 					return '_db';
@@ -43,7 +43,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 				default:
 					return null;
 			}
-		} ) );
+		} );
 
 		$options->method( 'assertRequiredOptions' )->willReturn( null );
 		$this->validator = new CreateWikiValidator(
