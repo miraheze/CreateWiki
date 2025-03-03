@@ -1,4 +1,3 @@
-
 name: Call reusable MediaWiki tests
 
 on:
@@ -19,7 +18,7 @@ jobs:
             php-docker: 81
             composer-test: true
             coverage: false
-            experimental: false
+            experimental: true
 
           # Latest MediaWiki master - PHP 8.1
           - mw: 'master'
