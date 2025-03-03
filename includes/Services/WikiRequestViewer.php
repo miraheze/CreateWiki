@@ -17,8 +17,6 @@ use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
-use Miraheze\CreateWiki\Services\CreateWikiValidator;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
 
 class WikiRequestViewer {
