@@ -41,7 +41,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'cw_sitename' => 'Test Wiki',
 				'cw_timestamp' => $dbw->timestamp(),
 				'cw_url' => 'test.example.org',
-				'cw_user' => self::$user,
+				'cw_user' => self::$user->getId(),
 				'cw_category' => 'uncategorised',
 				'cw_visibility' => WikiRequestManager::VISIBILITY_PUBLIC,
 				'cw_bio' => 0,
@@ -123,6 +123,8 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::addComment
 	 * @covers ::getComments
+	 * @covers ::log
+	 * @covers ::sendNotification
 	 */
 	public function testComments(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
@@ -131,7 +133,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 		$manager->addComment(
 			comment: 'Test',
 			user: $this->getTestUser()->getUser(),
-			log: false,
+			log: true,
 			type: 'comment',
 			// Use all involved users
 			notifyUsers: []
