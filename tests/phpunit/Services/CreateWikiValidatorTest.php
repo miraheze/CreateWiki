@@ -63,6 +63,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getValidSubdomain
 	 */
 	public function testGetValidSubdomain(): void {
+		$this->assertEquals( 'sub', $this->validator->getValidSubdomain( 'sub.example.org.example.org' ) );
 		$this->assertEquals( 'sub', $this->validator->getValidSubdomain( 'sub.example.org' ) );
 		$this->assertEquals( 'sub', $this->validator->getValidSubdomain( 'sub' ) );
 	}
