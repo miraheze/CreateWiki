@@ -169,7 +169,7 @@
 			]
 		},
 		"RequestWiki": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
+			"class": "Miraheze\\CreateWiki\\Specials\\SpecialRequestWiki",
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
@@ -178,7 +178,7 @@
 			]
 		},
 		"RequestWikiQueue": {
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
+			"class": "Miraheze\\CreateWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"LanguageNameUtils",
@@ -238,7 +238,7 @@
 		{
 			"path": "/createwiki/v0/wiki_requests/user/{username}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\UserWikiRequestsHandler",
+			"class": "Miraheze\\CreateWiki\\RestHandlers\\UserWikiRequestsHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"UserFactory",
@@ -248,7 +248,7 @@
 		{
 			"path": "/createwiki/v0/wiki_request/{id}/comment",
 			"method": "POST",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestAddCommentHandler",
+			"class": "Miraheze\\CreateWiki\\RestHandlers\\WikiRequestAddCommentHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"WikiRequestManager"
@@ -257,7 +257,7 @@
 		{
 			"path": "/createwiki/v0/wiki_request/{id}",
 			"method": "GET",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\WikiRequestInfoHandler",
+			"class": "Miraheze\\CreateWiki\\RestHandlers\\WikiRequestInfoHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"WikiRequestManager"

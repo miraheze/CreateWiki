@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Specials;
+namespace Miraheze\CreateWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\Message\Message;

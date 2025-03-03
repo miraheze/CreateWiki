@@ -1,15 +1,15 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests\RequestWiki;
+namespace Miraheze\CreateWiki\Tests;
 
 use Generator;
 use MediaWikiIntegrationTestCase;
-use Miraheze\CreateWiki\RequestWiki\RequestWikiFormUtils;
+use Miraheze\CreateWiki\RequestWikiFormUtils;
 
 /**
  * @group CreateWiki
  * @group medium
- * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\RequestWikiFormUtils
+ * @coversDefaultClass \Miraheze\CreateWiki\RequestWikiFormUtils
  */
 class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 

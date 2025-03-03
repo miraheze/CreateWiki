@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\FormFields;
+namespace Miraheze\CreateWiki\FormFields;
 
 use MediaWiki\HTMLForm\Field\HTMLInfoField;
 use OOUI\IconWidget;
