@@ -7,26 +7,21 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
-use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
-use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Miraheze\CreateWiki\Services\WikiRequestViewer;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiHookRunner $hookRunner,
-		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
-		private readonly PermissionManager $permissionManager,
 		private readonly UserFactory $userFactory,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly WikiRequestViewer $wikiRequestViewer
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 	}
@@ -130,15 +125,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getOutput()->enableOOUI();
 		// Lookup the request by the id (the current subpage)
 		// and then show the form for the request if it is found.
-		( new RequestWikiRequestViewer(
-			$this->getConfig(),
-			$this->getContext(),
-			$this->hookRunner,
-			$this->validator,
-			$this->languageNameUtils,
-			$this->permissionManager,
-			$this->wikiRequestManager
-		) )->getForm( (int)$par )->show();
+		$this->wikiRequestViewer->getForm( (int)$par )->show();
 	}
 
 	/** @inheritDoc */
