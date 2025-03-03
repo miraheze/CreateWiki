@@ -92,18 +92,13 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::addComment
 	 * @covers ::getComments
 	 */
-	public function testGetComments(): void {
+	public function testComments(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertArrayEquals( [], $manager->getComments() );
-	}
 
-	/**
-	 * @covers ::addComment
-	 */
-	public function testAddComment(): void {
-		$manager = $this->getWikiRequestManager( id: 1 );
 		$manager->addComment(
 			comment: 'Test',
 			user: $this->getTestUser()->getUser(),
@@ -117,18 +112,13 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::addRequestHistory
 	 * @covers ::getRequestHistory
 	 */
-	public function testGetRequestHistory(): void {
+	public function testRequestHistory(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertArrayEquals( [], $manager->getRequestHistory() );
-	}
 
-	/**
-	 * @covers ::addRequestHistory
-	 */
-	public function testAddRequestHistory(): void {
-		$manager = $this->getWikiRequestManager( id: 1 );
 		$manager->addRequestHistory(
 			action: 'test',
 			details: 'Request history test',
