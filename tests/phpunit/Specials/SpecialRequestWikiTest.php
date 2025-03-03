@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
+namespace Miraheze\CreateWiki\Tests\Specials;
 
 use ErrorPageError;
 use Generator;
@@ -16,7 +16,7 @@ use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
+use Miraheze\CreateWiki\Specials\SpecialRequestWiki;
 use SpecialPageTestBase;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
@@ -25,7 +25,7 @@ use Wikimedia\TestingAccessWrapper;
  * @group CreateWiki
  * @group Database
  * @group medium
- * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki
+ * @coversDefaultClass \Miraheze\CreateWiki\Specials\SpecialRequestWiki
  */
 class SpecialRequestWikiTest extends SpecialPageTestBase {
 
