@@ -39,6 +39,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		return new SpecialRequestWiki(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$this->createMock( CreateWikiHookRunner::class ),
+			$services->get( 'CreateWikiValidator' ),
 			$services->get( 'WikiRequestManager' )
 		);
 	}

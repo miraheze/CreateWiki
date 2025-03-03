@@ -96,8 +96,6 @@ class RequestWikiAIJob extends Job {
 			 * we don't actually care about it.
 			 *
 			 * While this should not be necessary in theory, it is included for added safety.
-			 *
-			 * TODO: Perhaps this should throw a ConfigException?
 			 */
 			return false;
 		}
