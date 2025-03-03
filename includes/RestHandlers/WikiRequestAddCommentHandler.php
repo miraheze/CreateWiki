@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Rest;
+namespace Miraheze\CreateWiki\RestHandlers;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
