@@ -13,6 +13,7 @@ use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Miraheze\CreateWiki\Services\WikiRequestViewer;
 
 return [
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
@@ -108,6 +109,20 @@ return [
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
 				WikiRequestManager::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
+	},
+	'WikiRequestViewer' => static function ( MediaWikiServices $services ): WikiRequestViewer {
+		return new WikiRequestViewer(
+			RequestContext::getMain(),
+			$services->get( 'CreateWikiHookRunner' ),
+			$services->get( 'CreateWikiValidator' ),
+			$services->getLanguageNameUtils(),
+			$services->getPermissionManager(),
+			$services->get( 'WikiRequestManager' ),
+			new ServiceOptions(
+				WikiRequestViewer::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			)
 		);

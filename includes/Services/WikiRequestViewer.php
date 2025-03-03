@@ -1,8 +1,8 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\Services;
 
-use MediaWiki\Config\Config;
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
@@ -17,23 +17,31 @@ use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
-use Miraheze\CreateWiki\Services\CreateWikiValidator;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
 
-class RequestWikiRequestViewer {
+class WikiRequestViewer {
+
+	public const CONSTRUCTOR_OPTIONS = [
+		ConfigNames::CannedResponses,
+		ConfigNames::Categories,
+		ConfigNames::Purposes,
+		ConfigNames::RequestCountWarnThreshold,
+		ConfigNames::ShowBiographicalOption,
+		ConfigNames::UsePrivateWikis,
+	];
 
 	private array $extraFields = [];
 
 	public function __construct(
-		private readonly Config $config,
 		private readonly IContextSource $context,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly ServiceOptions $options
 	) {
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
 	public function getFormDescriptor(): array {
@@ -198,11 +206,11 @@ class RequestWikiRequestViewer {
 				],
 			];
 
-			if ( $this->config->get( ConfigNames::Categories ) ) {
+			if ( $this->options->get( ConfigNames::Categories ) ) {
 				$formDescriptor['edit-category'] = [
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
-					'options' => $this->config->get( ConfigNames::Categories ),
+					'options' => $this->options->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
@@ -210,7 +218,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
+			if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 				$formDescriptor['edit-private'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
@@ -220,7 +228,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( ConfigNames::ShowBiographicalOption ) ) {
+			if ( $this->options->get( ConfigNames::ShowBiographicalOption ) ) {
 				$formDescriptor['edit-bio'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
@@ -230,12 +238,12 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( ConfigNames::Purposes ) ) {
+			if ( $this->options->get( ConfigNames::Purposes ) ) {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
 					'required' => true,
-					'options' => $this->config->get( ConfigNames::Purposes ),
+					'options' => $this->options->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
@@ -293,12 +301,12 @@ class RequestWikiRequestViewer {
 				$this->context->getOutput()->addHTML( Html::errorBox( $error ) );
 			}
 
-			if ( $this->config->get( ConfigNames::RequestCountWarnThreshold ) ) {
+			if ( $this->options->get( ConfigNames::RequestCountWarnThreshold ) ) {
 				$requestCount = count( $this->wikiRequestManager->getVisibleRequestsByUser(
 					$this->wikiRequestManager->getRequester(), $user
 				) );
 
-				if ( $requestCount >= $this->config->get( ConfigNames::RequestCountWarnThreshold ) ) {
+				if ( $requestCount >= $this->options->get( ConfigNames::RequestCountWarnThreshold ) ) {
 					$this->context->getOutput()->addHTML(
 						Html::warningBox( $this->context->msg( 'createwiki-error-requestcountwarn',
 							$requestCount, $this->wikiRequestManager->getRequester()->getName()
@@ -360,12 +368,12 @@ class RequestWikiRequestViewer {
 				],
 			];
 
-			if ( $this->config->get( ConfigNames::CannedResponses ) ) {
+			if ( $this->options->get( ConfigNames::CannedResponses ) ) {
 				$formDescriptor['handle-comment']['type'] = 'selectorother';
-				$formDescriptor['handle-comment']['options'] = $this->config->get( ConfigNames::CannedResponses );
+				$formDescriptor['handle-comment']['options'] = $this->options->get( ConfigNames::CannedResponses );
 
 				$formDescriptor['handle-comment']['default'] = HTMLFormField::flattenOptions(
-					$this->config->get( ConfigNames::CannedResponses )
+					$this->options->get( ConfigNames::CannedResponses )
 				)[0];
 			} else {
 				$formDescriptor['handle-comment']['type'] = 'textarea';
