@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests\Services;
 
 use MediaWiki\MainConfigNames;
+use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -15,6 +16,8 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  */
 class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
+	private readonly User $user;
+
 	public function addDBDataOnce(): void {
 		$this->setMwGlobals( MainConfigNames::VirtualDomainsMapping, [
 			'virtual-createwiki-central' => [ 'db' => 'wikidb' ],
@@ -24,6 +27,8 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getCentralWikiPrimaryDB();
+
+		$this->user = $this->getTestUser()->getUser();
 
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
@@ -37,7 +42,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'cw_sitename' => 'Test Wiki',
 				'cw_timestamp' => $dbw->timestamp(),
 				'cw_url' => 'test.example.org',
-				'cw_user' => $this->getTestUser()->getUser()->getId(),
+				'cw_user' => $this->user->getId(),
 				'cw_category' => 'uncategorised',
 				'cw_visibility' => WikiRequestManager::VISIBILITY_PUBLIC,
 				'cw_bio' => 0,
@@ -99,7 +104,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'reason' => 'Test reason',
 			],
 			extraData: [],
-			user: $this->getTestUser()->getUser()
+			user: $this->user
 		);
 
 		$manager = $this->getWikiRequestManager( id: 2 );
@@ -185,7 +190,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetRequester(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
-		$this->assertSame( 1, $manager->getRequester()->getId() );
+		$this->assertSame( $this->user, $manager->getRequester() );
 	}
 
 	/**
