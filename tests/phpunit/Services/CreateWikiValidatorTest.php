@@ -43,6 +43,13 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::__construct
+	 */
+	public function testConstructor(): void {
+		$this->assertInstanceOf( CreateWikiValidator::class, $this->validator );
+	}
+
+	/**
 	 * @covers ::databaseExists
 	 */
 	public function testDatabaseExists(): void {
