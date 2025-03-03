@@ -1,13 +1,13 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Specials;
+namespace Miraheze\CreateWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
+use Miraheze\CreateWiki\Pagers\RequestWikiQueuePager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
