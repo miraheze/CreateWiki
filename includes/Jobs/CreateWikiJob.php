@@ -53,7 +53,7 @@ class CreateWikiJob extends Job {
 		$wikiManager = $this->wikiManagerFactory->newInstance( $this->dbname );
 
 		try {
-			// This runs checkDatabaseName and if it returns a
+			// This runs validateDatabaseName and if it returns a
 			// non-null value it is returning an error.
 			$notCreated = $wikiManager->create(
 				sitename: $this->sitename,

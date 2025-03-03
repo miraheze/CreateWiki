@@ -64,6 +64,7 @@ class WikiRequestManager {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly CreateWikiValidator $validator,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly PermissionManager $permissionManager,
@@ -98,14 +99,10 @@ class WikiRequestManager {
 	): void {
 		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 
-		$subdomain = strtolower( $data['subdomain'] );
-		$configSubdomain = $this->options->get( ConfigNames::Subdomain );
-		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
-		}
+		$subdomain = $this->validator->getValidSubdomain( $data['subdomain'] );
 
 		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
-		$url = $subdomain . '.' . $configSubdomain;
+		$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
 
 		$comment = $data['reason'];
 		if ( $this->options->get( ConfigNames::Purposes ) && ( $data['purpose'] ?? '' ) ) {
@@ -413,7 +410,7 @@ class WikiRequestManager {
 			}
 		} else {
 			$wikiManager = $this->wikiManagerFactory->newInstance( $this->getDBname() );
-			// This runs checkDatabaseName and if it returns a
+			// This runs validateDatabaseName and if it returns a
 			// non-null value it is returning an error.
 			$notCreated = $wikiManager->create(
 				sitename: $this->getSitename(),
@@ -825,14 +822,10 @@ class WikiRequestManager {
 	public function setUrl( string $url ): void {
 		$this->checkQueryBuilder();
 		if ( $url !== $this->getUrl() ) {
-			$subdomain = strtolower( $url );
-			$configSubdomain = $this->options->get( ConfigNames::Subdomain );
-			if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-				$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
-			}
+			$subdomain = $this->validator->getValidSubdomain( $url );
 
 			$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
-			$url = $subdomain . '.' . $configSubdomain;
+			$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
 
 			$this->trackChange( 'url', $this->getUrl(), $url );
 			$this->queryBuilder->set( [

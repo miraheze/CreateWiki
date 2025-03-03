@@ -164,6 +164,7 @@
 			"class": "Miraheze\\CreateWiki\\Specials\\SpecialCreateWiki",
 			"services": [
 				"CreateWikiDatabaseUtils",
+				"CreateWikiValidator",
 				"WikiManagerFactory"
 			]
 		},
@@ -172,6 +173,7 @@
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
+				"CreateWikiValidator",
 				"WikiRequestManager"
 			]
 		},
@@ -180,10 +182,10 @@
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
+				"CreateWikiValidator",
 				"LanguageNameUtils",
 				"PermissionManager",
 				"UserFactory",
-				"WikiManagerFactory",
 				"WikiRequestManager"
 			]
 		}

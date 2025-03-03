@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
@@ -58,6 +59,15 @@ return [
 			)
 		);
 	},
+	'CreateWikiValidator' => static function ( MediaWikiServices $services ): CreateWikiValidator {
+		return new CreateWikiValidator(
+			RequestContext::getMain(),
+			new ServiceOptions(
+				CreateWikiValidator::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
+	},
 	'RemoteWikiFactory' => static function ( MediaWikiServices $services ): RemoteWikiFactory {
 		return new RemoteWikiFactory(
 			$services->get( 'CreateWikiDatabaseUtils' ),
@@ -76,6 +86,7 @@ return [
 			$services->get( 'CreateWikiDataFactory' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
+			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
@@ -89,6 +100,7 @@ return [
 		return new WikiRequestManager(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
+			$services->get( 'CreateWikiValidator' ),
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
 			$services->getPermissionManager(),

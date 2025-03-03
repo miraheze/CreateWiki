@@ -44,7 +44,6 @@ class RenameWiki extends Maintenance {
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
 			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
 			$wikiManager = $wikiManagerFactory->newInstance( $oldwiki );
 			$rename = $wikiManager->rename( newDatabaseName: $newwiki );
@@ -52,11 +51,6 @@ class RenameWiki extends Maintenance {
 			if ( $rename ) {
 				$this->fatalError( $rename );
 			}
-
-			$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-			$dbw = $databaseUtils->getGlobalPrimaryDB();
-
-			$hookRunner->onCreateWikiRename( $dbw, $oldwiki, $newwiki );
 
 			$renamedWiki[] = $oldwiki;
 			$renamedWiki[] = $newwiki;

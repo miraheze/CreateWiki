@@ -14,7 +14,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 class SpecialRequestWikiQueue extends SpecialPage {
@@ -22,10 +22,10 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
 		private readonly UserFactory $userFactory,
-		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
@@ -134,9 +134,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->getConfig(),
 			$this->getContext(),
 			$this->hookRunner,
+			$this->validator,
 			$this->languageNameUtils,
 			$this->permissionManager,
-			$this->wikiManagerFactory,
 			$this->wikiRequestManager
 		) )->getForm( (int)$par )->show();
 	}
