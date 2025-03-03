@@ -82,6 +82,31 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::createNewRequestAndLog
+	 * @covers ::logNewRequest
+	 */
+	public function testCreateNewRequestAndLog(): void {
+		$manager = $this->getServiceContainer()->getService( 'WikiRequestManager' );
+		$manager->createNewRequestAndLog(
+			data: [
+				'subdomain' => 'test2',
+				'sitename' => 'Test Wiki 2',
+				'language' => 'en',
+				'private' => 0,
+				'category' => 'uncategorised',
+				'bio' => 0,
+				'purpose' => 'Test purpose',
+				'reason' => 'Test reason',
+			],
+			extraData: [],
+			user: $this->getTestUser()->getUser()
+		);
+
+		$manager = $this->getWikiRequestManager( id: 2 );
+		$this->assertTrue( $manager->exists() );
+	}
+
+	/**
 	 * @covers ::isDuplicateRequest
 	 */
 	public function testIsDuplicateRequest(): void {
@@ -160,10 +185,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetRequester(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
-		$this->assertSame(
-			$this->getTestUser()->getUser()->getId(),
-			$manager->getRequester()->getId()
-		);
+		$this->assertSame( 1, $manager->getRequester()->getId() );
 	}
 
 	/**
