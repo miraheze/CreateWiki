@@ -18,7 +18,7 @@ jobs:
             php-docker: 81
             composer-test: true
             coverage: false
-            experimental: true
+            experimental: false
 
           # Latest MediaWiki master - PHP 8.1
           - mw: 'master'
