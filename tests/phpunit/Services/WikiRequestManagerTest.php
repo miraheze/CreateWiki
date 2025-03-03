@@ -18,6 +18,11 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
 	private readonly User $user;
 
+	protected function setUp(): void {
+		parent::setUp();
+		$this->user = $this->getTestUser()->getUser();
+	}
+
 	public function addDBDataOnce(): void {
 		$this->setMwGlobals( MainConfigNames::VirtualDomainsMapping, [
 			'virtual-createwiki-central' => [ 'db' => 'wikidb' ],
@@ -27,8 +32,6 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getCentralWikiPrimaryDB();
-
-		$this->user = $this->getTestUser()->getUser();
 
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
