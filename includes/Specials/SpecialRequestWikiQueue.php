@@ -7,10 +7,10 @@ use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\Pagers\RequestWikiQueuePager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use Miraheze\CreateWiki\Specials\Pagers\RequestWikiQueueTablePager;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
@@ -102,7 +102,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			->prepareForm()
 			->displayForm( false );
 
-		$pager = new RequestWikiQueuePager(
+		$pager = new RequestWikiQueueTablePager(
 			$this->getContext(),
 			$this->databaseUtils,
 			$this->languageNameUtils,
