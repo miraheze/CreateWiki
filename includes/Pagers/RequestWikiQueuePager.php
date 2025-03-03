@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\Pagers;
 
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
