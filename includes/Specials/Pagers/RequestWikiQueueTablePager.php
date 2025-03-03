@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Pagers;
+namespace Miraheze\CreateWiki\Specials\Pagers;
 
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
@@ -13,7 +13,7 @@ use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 
-class RequestWikiQueuePager extends TablePager {
+class RequestWikiQueueTablePager extends TablePager {
 
 	/** @inheritDoc */
 	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
