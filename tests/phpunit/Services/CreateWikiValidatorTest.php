@@ -27,22 +27,13 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		$this->messageLocalizer = $this->createMock( MessageLocalizer::class );
 
 		$options = $this->createMock( ServiceOptions::class );
-		$options->method( 'get' )->willReturnCallback( static function ( string $key ): mixed {
-			switch ( $key ) {
-				case ConfigNames::DatabaseSuffix:
-					return 'db';
-				case ConfigNames::Subdomain:
-					return 'example.org';
-				case ConfigNames::DisallowedSubdomains:
-					return [ 'badsub' ];
-				case ConfigNames::RequestWikiMinimumLength:
-					return 10;
-				case MainConfigNames::LocalDatabases:
-					return [ 'existdb' ];
-				default:
-					return null;
-			}
-		} );
+		$options->method( 'get' )->willReturnMap( [
+			[ ConfigNames::DatabaseSuffix, 'db' ],
+			[ ConfigNames::Subdomain, 'example.org' ],
+			[ ConfigNames::DisallowedSubdomains, [ 'badsub' ] ],
+			[ ConfigNames::RequestWikiMinimumLength, 10 ],
+			[ MainConfigNames::LocalDatabases, [ 'existdb' ] ],
+		] );
 
 		$options->method( 'assertRequiredOptions' )->willReturn( null );
 		$this->validator = new CreateWikiValidator(
