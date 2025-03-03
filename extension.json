@@ -181,12 +181,10 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWikiQueue",
 			"services": [
 				"CreateWikiDatabaseUtils",
-				"CreateWikiHookRunner",
-				"CreateWikiValidator",
 				"LanguageNameUtils",
-				"PermissionManager",
 				"UserFactory",
-				"WikiRequestManager"
+				"WikiRequestManager",
+				"WikiRequestViewer"
 			]
 		}
 	},
