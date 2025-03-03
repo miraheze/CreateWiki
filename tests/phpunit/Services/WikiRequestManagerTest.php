@@ -156,6 +156,17 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getRequester
+	 */
+	public function testGetRequester(): void {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame(
+			$this->getTestUser()->getUser(),
+			$manager->getRequester()
+		);
+	}
+
+	/**
 	 * @covers ::getStatus
 	 */
 	public function testGetStatus(): void {
@@ -177,6 +188,14 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	public function testGetLanguage(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'en', $manager->getLanguage() );
+	}
+
+	/**
+	 * @covers ::getTimestamp
+	 */
+	public function testGetTimestamp(): void {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( $this->db->timestamp(), $manager->getTimestamp() );
 	}
 
 	/**
