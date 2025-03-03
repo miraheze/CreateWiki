@@ -39,7 +39,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'cw_url' => 'test.example.org',
 				'cw_user' => $this->getTestUser()->getUser()->getId(),
 				'cw_category' => 'uncategorised',
-				'cw_visibility' => 0,
+				'cw_visibility' => WikiRequestManager::VISIBILITY_PUBLIC,
 				'cw_bio' => 0,
 				'cw_extra' => '[]',
 			] )
@@ -71,14 +71,6 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::getID
-	 */
-	public function testGetID() {
-		$manager = $this->getWikiRequestManager( id: 1 );
-		$this->assertSame( 1, $manager->getID() );
-	}
-
-	/**
 	 * @covers ::exists
 	 */
 	public function testExists() {
@@ -87,6 +79,16 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
 		$manager = $this->getWikiRequestManager( id: 2 );
 		$this->assertFalse( $manager->exists() );
+	}
+
+	/**
+	 * @covers ::isDuplicateRequest
+	 */
+	public function testIsDuplicateRequest() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+
+		$this->assertTrue( $manager->isDuplicateRequest( 'Test Wiki' ) );
+		$this->assertFalse( $manager->isDuplicateRequest( 'New Wiki' ) );
 	}
 
 	/**
@@ -112,5 +114,118 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$this->assertCount( 1, $manager->getComments() );
+	}
+
+	/**
+	 * @covers ::getRequestHistory
+	 */
+	public function testGetRequestHistory() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertArrayEquals( [], $manager->getRequestHistory() );
+	}
+
+	/**
+	 * @covers ::addRequestHistory
+	 */
+	public function testAddRequestHistory() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$manager->addRequestHistory(
+			action: 'test',
+			details: 'Request history test',
+			user: $this->getTestUser()->getUser()
+		);
+
+		$this->assertCount( 1, $manager->getRequestHistory() );
+	}
+
+	/**
+	 * @covers ::getID
+	 */
+	public function testGetID() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 1, $manager->getID() );
+	}
+
+	/**
+	 * @covers ::getDBname
+	 */
+	public function testGetDBname() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'testwikidb', $manager->getDBname() );
+	}
+
+	/**
+	 * @covers ::getVisibility
+	 */
+	public function testGetVisibility() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame(
+			WikiRequestManager::VISIBILITY_PUBLIC,
+			$manager->getVisibility()
+		);
+	}
+
+	/**
+	 * @covers ::getStatus
+	 */
+	public function testGetStatus() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'inreview', $manager->getStatus() );
+	}
+
+	/**
+	 * @covers ::getSitename
+	 */
+	public function testGetSitename() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'Test Wiki', $manager->getSitename() );
+	}
+
+	/**
+	 * @covers ::getLanguage
+	 */
+	public function testGetLanguage() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'en', $manager->getLanguage() );
+	}
+
+	/**
+	 * @covers ::getUrl
+	 */
+	public function testGetUrl() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'test.example.org', $manager->getUrl() );
+	}
+
+	/**
+	 * @covers ::getCategory
+	 */
+	public function testGetCategory() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'uncategorised', $manager->getCategory() );
+	}
+
+	/**
+	 * @covers ::isPrivate
+	 */
+	public function testIsPrivate() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertFalse( $manager->isPrivate() );
+	}
+
+	/**
+	 * @covers ::isBio
+	 */
+	public function testIsBio() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertFalse( $manager->isBio() );
+	}
+
+	/**
+	 * @covers ::isLocked
+	 */
+	public function testIsLocked() {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertFalse( $manager->isLocked() );
 	}
 }
