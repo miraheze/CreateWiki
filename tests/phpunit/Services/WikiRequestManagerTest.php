@@ -19,12 +19,11 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	private static User $user;
 
 	public function addDBDataOnce(): void {
+		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
 		self::$user = $this->getTestUser()->getUser();
 		$this->setMwGlobals( MainConfigNames::VirtualDomainsMapping, [
 			'virtual-createwiki-central' => [ 'db' => 'wikidb' ],
 		] );
-
-		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
 
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getCentralWikiPrimaryDB();
@@ -39,7 +38,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'cw_private' => 0,
 				'cw_status' => 'inreview',
 				'cw_sitename' => 'Test Wiki',
-				'cw_timestamp' => $dbw->timestamp(),
+				'cw_timestamp' => $this->db->timestamp(),
 				'cw_url' => 'test.example.org',
 				'cw_user' => self::$user->getId(),
 				'cw_category' => 'uncategorised',
