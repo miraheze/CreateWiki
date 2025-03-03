@@ -65,7 +65,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::loadFromID
 	 */
-	public function testLoadFromID() {
+	public function testLoadFromID(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertInstanceOf( WikiRequestManager::class, $manager );
 	}
@@ -73,7 +73,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::exists
 	 */
-	public function testExists() {
+	public function testExists(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertTrue( $manager->exists() );
 
@@ -84,7 +84,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::isDuplicateRequest
 	 */
-	public function testIsDuplicateRequest() {
+	public function testIsDuplicateRequest(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 
 		$this->assertTrue( $manager->isDuplicateRequest( 'Test Wiki' ) );
@@ -94,7 +94,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getComments
 	 */
-	public function testGetComments() {
+	public function testGetComments(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertArrayEquals( [], $manager->getComments() );
 	}
@@ -102,7 +102,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::addComment
 	 */
-	public function testAddComment() {
+	public function testAddComment(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$manager->addComment(
 			comment: 'Test',
@@ -119,7 +119,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getRequestHistory
 	 */
-	public function testGetRequestHistory() {
+	public function testGetRequestHistory(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertArrayEquals( [], $manager->getRequestHistory() );
 	}
@@ -127,7 +127,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::addRequestHistory
 	 */
-	public function testAddRequestHistory() {
+	public function testAddRequestHistory(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$manager->addRequestHistory(
 			action: 'test',
@@ -141,7 +141,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getID
 	 */
-	public function testGetID() {
+	public function testGetID(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 1, $manager->getID() );
 	}
@@ -149,7 +149,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getDBname
 	 */
-	public function testGetDBname() {
+	public function testGetDBname(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'testwikidb', $manager->getDBname() );
 	}
@@ -157,7 +157,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getVisibility
 	 */
-	public function testGetVisibility() {
+	public function testGetVisibility(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame(
 			WikiRequestManager::VISIBILITY_PUBLIC,
@@ -168,7 +168,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getStatus
 	 */
-	public function testGetStatus() {
+	public function testGetStatus(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'inreview', $manager->getStatus() );
 	}
@@ -176,7 +176,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getSitename
 	 */
-	public function testGetSitename() {
+	public function testGetSitename(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'Test Wiki', $manager->getSitename() );
 	}
@@ -184,7 +184,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getLanguage
 	 */
-	public function testGetLanguage() {
+	public function testGetLanguage(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'en', $manager->getLanguage() );
 	}
@@ -192,7 +192,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getUrl
 	 */
-	public function testGetUrl() {
+	public function testGetUrl(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'test.example.org', $manager->getUrl() );
 	}
@@ -200,7 +200,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getCategory
 	 */
-	public function testGetCategory() {
+	public function testGetCategory(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 'uncategorised', $manager->getCategory() );
 	}
@@ -208,7 +208,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::isPrivate
 	 */
-	public function testIsPrivate() {
+	public function testIsPrivate(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertFalse( $manager->isPrivate() );
 	}
@@ -216,7 +216,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::isBio
 	 */
-	public function testIsBio() {
+	public function testIsBio(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertFalse( $manager->isBio() );
 	}
@@ -224,7 +224,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::isLocked
 	 */
-	public function testIsLocked() {
+	public function testIsLocked(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertFalse( $manager->isLocked() );
 	}
