@@ -55,7 +55,7 @@ class CreateWikiValidator {
 		$subdomain = strtolower( $subdomain );
 		$configSubdomain = $this->options->get( ConfigNames::Subdomain );
 
-		if ( str_ends_with( $subdomain, $configSubdomain ) ) {
+		if ( str_ends_with( $subdomain, '.' . $configSubdomain ) ) {
 			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
 		}
 
