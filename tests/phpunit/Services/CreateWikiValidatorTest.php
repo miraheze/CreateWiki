@@ -69,6 +69,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::isDisallowedRegex
 	 * @covers ::validateReason
 	 * @dataProvider provideValidateReasonData
 	 */
@@ -105,6 +106,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getDisallowedSubdomains
 	 * @covers ::validateSubdomain
 	 * @dataProvider provideValidateSubdomainData
 	 */
