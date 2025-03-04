@@ -20,6 +20,13 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 	}
 
 	/**
+	 * @covers ::__construct
+	 */
+	public function testConstructor(): void {
+		$this->assertInstanceOf( CheckLastWikiActivity::class, $this->maintenance );
+	}
+
+	/**
 	 * @covers ::execute
 	 * @covers ::getTimestamp
 	 */
