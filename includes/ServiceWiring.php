@@ -1,5 +1,7 @@
 <?php
 
+namespace Miraheze\CreateWiki;
+
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\RequestContext;
