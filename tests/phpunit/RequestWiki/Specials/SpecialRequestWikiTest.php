@@ -100,13 +100,12 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 */
 	public function testGetFormFields(): void {
 		$this->overrideConfigValues( [
-				ConfigNames::Categories => [ 'uncategorised' => 'uncategorised' ],
-				ConfigNames::Purposes => [ 'test' => 'test' ],
-				ConfigNames::RequestWikiConfirmAgreement => true,
-				ConfigNames::ShowBiographicalOption => true,
-				ConfigNames::UsePrivateWikis => true,
-			]
-		);
+			ConfigNames::Categories => [ 'uncategorised' => 'uncategorised' ],
+			ConfigNames::Purposes => [ 'test' => 'test' ],
+			ConfigNames::RequestWikiConfirmAgreement => true,
+			ConfigNames::ShowBiographicalOption => true,
+			ConfigNames::UsePrivateWikis => true,
+		] );
 
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
 			$this->specialRequestWiki
@@ -225,7 +224,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 */
 	public function testGetDisplayFormat(): void {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
-		$this->assertSame( 'ooui', $specialRequestWiki->getDisplayFormat() )
+		$this->assertSame( 'ooui', $specialRequestWiki->getDisplayFormat() );
 	}
 
 	/**
@@ -233,7 +232,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 */
 	public function testGetGroupName(): void {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
-		$this->assertSame( 'wikimanage', $specialRequestWiki->getGroupName() )
+		$this->assertSame( 'wikimanage', $specialRequestWiki->getGroupName() );
 	}
 
 	private function setSessionUser( User $user, WebRequest $request ): void {
