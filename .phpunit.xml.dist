@@ -10,7 +10,7 @@
 	verbose="true">
 	<testsuites>
 		<testsuite name="CreateWiki">
-			<directory>./tests/phpunit/</directory>
+			<directory>./tests/phpunit</directory>
 		</testsuite>
 	</testsuites>
 	<filter>
