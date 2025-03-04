@@ -10,7 +10,6 @@ use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
-use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
@@ -158,7 +157,7 @@ class WikiRequestViewer {
 					'rows' => 10,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
-					'validation-callback' => [ $this, 'validateComment' ],
+					'validation-callback' => [ $this->validator, 'validateComment' ],
 					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
@@ -336,7 +335,7 @@ class WikiRequestViewer {
 				],
 				'handle-comment' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
-					'validation-callback' => [ $this, 'validateStatusComment' ],
+					'validation-callback' => [ $this->validator, 'validateStatusComment' ],
 					'section' => 'handling',
 				],
 				'handle-lock' => [
@@ -652,22 +651,6 @@ class WikiRequestViewer {
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( $this->getResponseMessageBox() );
 		}
-	}
-
-	public function validateComment( ?string $comment, array $alldata ): bool|Message {
-		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		return true;
-	}
-
-	public function validateStatusComment( ?string $comment, array $alldata ): bool|Message {
-		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		return true;
 	}
 
 	private function getResponseMessageBox(): string {

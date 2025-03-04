@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
-use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
@@ -145,7 +144,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
-				'validation-callback' => [ $this, 'validateAgreement' ],
+				'validation-callback' => [ $this->validator, 'validateAgreement' ],
 			];
 		}
 
@@ -202,14 +201,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
 		return Status::newGood();
-	}
-
-	public function validateAgreement( bool $agreement ): bool|Message {
-		if ( !$agreement ) {
-			return $this->msg( 'createwiki-error-agreement' );
-		}
-
-		return true;
 	}
 
 	public function checkPermissions(): void {

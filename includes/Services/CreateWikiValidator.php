@@ -62,56 +62,17 @@ class CreateWikiValidator {
 		return $subdomain;
 	}
 
-	public function validateReason( ?string $reason, array $alldata ): bool|Message {
-		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-reason'] ) ) {
-			// If we aren't submitting an edit we don't want this to fail.
-			return true;
-		}
-
-		if ( !$reason || ctype_space( $reason ) ) {
-			return $this->messageLocalizer->msg( 'htmlform-required' );
-		}
-
-		$minLength = $this->options->get( ConfigNames::RequestWikiMinimumLength );
-		if ( $minLength && strlen( $reason ) < $minLength ) {
-			// This will automatically call ->parse().
-			return $this->messageLocalizer->msg( 'requestwiki-error-minlength' )->numParams(
-				$minLength, strlen( $reason )
-			);
-		}
-
-		if ( $this->isDisallowedRegex( $reason ) ) {
-			return $this->messageLocalizer->msg( 'requestwiki-error-invalidcomment' );
+	public function validateAgreement( bool $agreement ): bool|Message {
+		if ( !$agreement ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-agreement' );
 		}
 
 		return true;
 	}
 
-	public function validateSubdomain( ?string $subdomain, array $alldata ): bool|Message {
-		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-url'] ) ) {
-			// If we aren't submitting an edit we don't want this to fail.
-			// For example, we don't want an invalid subdomain to block
-			// adding a comment or declining the request.
-			return true;
-		}
-
-		if ( !$subdomain || ctype_space( $subdomain ) ) {
+	public function validateComment( ?string $comment, array $alldata ): bool|Message {
+		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
-		}
-
-		$subdomain = $this->getValidSubdomain( $subdomain );
-		$database = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
-
-		if ( $this->databaseExists( $database ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-subdomaintaken' );
-		}
-
-		if ( !ctype_alnum( $subdomain ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' );
-		}
-
-		if ( preg_match( $this->getDisallowedSubdomains(), $subdomain ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-disallowed' );
 		}
 
 		return true;
@@ -157,5 +118,68 @@ class CreateWikiValidator {
 		}
 
 		return null;
+	}
+
+	public function validateReason( ?string $reason, array $alldata ): bool|Message {
+		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-reason'] ) ) {
+			// If we aren't submitting an edit we don't want this to fail.
+			return true;
+		}
+
+		if ( !$reason || ctype_space( $reason ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		$minLength = $this->options->get( ConfigNames::RequestWikiMinimumLength );
+		if ( $minLength && strlen( $reason ) < $minLength ) {
+			// This will automatically call ->parse().
+			return $this->messageLocalizer->msg( 'requestwiki-error-minlength' )->numParams(
+				$minLength, strlen( $reason )
+			);
+		}
+
+		if ( $this->isDisallowedRegex( $reason ) ) {
+			return $this->messageLocalizer->msg( 'requestwiki-error-invalidcomment' );
+		}
+
+		return true;
+	}
+
+	public function validateStatusComment( ?string $comment, array $alldata ): bool|Message {
+		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		return true;
+	}
+
+	public function validateSubdomain( ?string $subdomain, array $alldata ): bool|Message {
+		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-url'] ) ) {
+			// If we aren't submitting an edit we don't want this to fail.
+			// For example, we don't want an invalid subdomain to block
+			// adding a comment or declining the request.
+			return true;
+		}
+
+		if ( !$subdomain || ctype_space( $subdomain ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		$subdomain = $this->getValidSubdomain( $subdomain );
+		$database = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
+
+		if ( $this->databaseExists( $database ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-subdomaintaken' );
+		}
+
+		if ( !ctype_alnum( $subdomain ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' );
+		}
+
+		if ( preg_match( $this->getDisallowedSubdomains(), $subdomain ) ) {
+			return $this->messageLocalizer->msg( 'createwiki-error-disallowed' );
+		}
+
+		return true;
 	}
 }
