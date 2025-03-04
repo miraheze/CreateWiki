@@ -30,8 +30,8 @@ class RequestWikiRemoteAIJob extends Job {
 	public function __construct(
 		array $params,
 		private readonly Config $config,
-		private readonly HttpRequestFactory $httpRequestFactory,
 		private readonly LoggerInterface $logger,
+		private readonly HttpRequestFactory $httpRequestFactory,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
