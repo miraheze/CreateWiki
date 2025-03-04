@@ -67,6 +67,61 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::validateAgreement
+	 * @dataProvider provideValidateAgreementData
+	 */
+	public function testValidateAgreement(
+		bool $agreement,
+		bool|string $expected
+	): void {
+		$message = $this->createMock( Message::class );
+		$message->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizer->method( 'msg' )->with( 'createwiki-error-agreement' )->willReturn( $message );
+
+		$result = $this->validator->validateAgreement( $agreement );
+		if ( $expected === true ) {
+			$this->assertTrue( $result );
+		} else {
+			$this->assertInstanceOf( Message::class, $result );
+		}
+	}
+
+	public function provideValidateAgreementData(): Generator {
+		yield 'agreement false' => [ false, 'error' ];
+		yield 'agreement true' => [ true, true ];
+	}
+
+	/**
+	 * @covers ::validateComment
+	 * @dataProvider provideValidateCommentData
+	 */
+	public function testValidateComment(
+		string $comment,
+		array $data,
+		bool|string $expected
+	): void {
+		$message = $this->createMock( Message::class );
+		$message->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizer->method( 'msg' )->with( 'htmlform-required' )->willReturn( $message );
+
+		$result = $this->validator->validateComment( $comment, $data );
+		if ( $expected === true ) {
+			$this->assertTrue( $result );
+		} else {
+			$this->assertInstanceOf( Message::class, $result );
+		}
+	}
+
+	public function provideValidateCommentData(): Generator {
+		yield 'submit-comment empty' => [ '', [ 'submit-comment' => true ], 'error' ];
+		yield 'submit-comment whitespace' => [ '   ', [ 'submit-comment' => true ], 'error' ];
+		yield 'submit-comment valid' => [ 'Valid comment', [ 'submit-comment' => true ], true ];
+		yield 'no submit-comment empty' => [ '', [], true ];
+		yield 'no submit-comment whitespace' => [ '   ', [], true ];
+		yield 'no submit-comment valid' => [ 'Some comment', [], true ];
+	}
+
+	/**
 	 * @covers ::validateDatabaseEntry
 	 * @dataProvider provideValidateDatabaseEntryData
 	 */
@@ -157,6 +212,36 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		yield 'whitespace reason with submit-edit' => [ '   ', [ 'submit-edit' => true ], 'parsed' ];
 		yield 'valid reason without submit-edit or edit keys' => [ 'this is valid reason', [], true ];
 		yield 'short reason without submit-edit or edit keys' => [ 'short', [], 'parsed' ];
+	}
+
+	/**
+	 * @covers ::validateStatusComment
+	 * @dataProvider provideValidateStatusCommentData
+	 */
+	public function testValidateStatusComment(
+		string $comment,
+		array $data,
+		bool|string $expected
+	): void {
+		$message = $this->createMock( Message::class );
+		$message->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizer->method( 'msg' )->with( 'htmlform-required' )->willReturn( $message );
+
+		$result = $this->validator->validateStatusComment( $comment, $data );
+		if ( $expected === true ) {
+			$this->assertTrue( $result );
+		} else {
+			$this->assertInstanceOf( Message::class, $result );
+		}
+	}
+
+	public function provideValidateStatusCommentData(): Generator {
+		yield 'submit-handle empty' => [ '', [ 'submit-handle' => true ], 'error' ];
+		yield 'submit-handle whitespace' => [ '   ', [ 'submit-handle' => true ], 'error' ];
+		yield 'submit-handle valid' => [ 'Valid status comment', [ 'submit-handle' => true ], true ];
+		yield 'no submit-handle empty' => [ '', [], true ];
+		yield 'no submit-handle whitespace' => [ '   ', [], true ];
+		yield 'no submit-handle valid' => [ 'Some comment', [], true ];
 	}
 
 	/**
