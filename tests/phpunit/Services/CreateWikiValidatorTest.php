@@ -137,13 +137,20 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		$result = $this->validator->validateDatabaseEntry( $dbname );
 		if ( $expected === true ) {
 			$this->assertTrue( $result );
-		} else {
+		} elseif ( $expected === 'parsed' ) {
 			$this->assertIsString( $result->parse() );
+		} else {
+			$this->assertIsString( $result );
 		}
 	}
 
 	public function provideValidateDatabaseEntryData(): Generator {
 		yield 'empty dbname' => [ '', 'parsed' ];
+		yield 'whitespace dbname' => [ '   ', 'parsed' ];
+		yield 'not suffixed' => [ 'dbname', 'error' ];
+		yield 'database exists' => [ 'existdb', 'error' ];
+		yield 'not alnum' => [ '!validdb', 'error' ];
+		yield 'not lowercase' => [ 'Validdb', 'error' ];
 		yield 'valid dbname' => [ 'validdb', true ];
 	}
 
@@ -172,7 +179,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	public function provideValidateDatabaseNameData(): Generator {
 		yield 'not suffixed' => [ 'dbname', false, 'error' ];
 		yield 'database exists' => [ 'validdb', true, 'error' ];
-		yield 'not alnum' => [ 'validdb!', false, 'error' ];
+		yield 'not alnum' => [ '!validdb', false, 'error' ];
 		yield 'not lowercase' => [ 'Validdb', false, 'error' ];
 		yield 'valid dbname' => [ 'validdb', false, null ];
 	}
