@@ -24,9 +24,7 @@ return [
 		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 	},
 	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
-		return new CreateWikiDatabaseUtils(
-			$services->getConnectionProvider()
-		);
+		return new CreateWikiDatabaseUtils( $services->getConnectionProvider() );
 	},
 	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
 		return new CreateWikiDataFactory(
@@ -42,7 +40,7 @@ return [
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
 	},
-	'CreateWikiLogger' => static function ( MediaWikiServices $services ): LoggerInterface {
+	'CreateWikiLogger' => static function (): LoggerInterface {
 		return LoggerFactory::getInstance( 'CreateWiki' );
 	},
 	'CreateWikiNotificationsManager' => static function (
