@@ -67,6 +67,62 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::validateDatabaseEntry
+	 * @dataProvider provideValidateDatabaseEntryData
+	 */
+	public function testValidateDatabaseEntry(
+		string $dbname,
+		bool|string $expected
+	): void {
+		$message = $this->createMock( Message::class );
+		$message->method( 'parse' )->willReturn( 'parsed' );
+		$message->method( 'numParams' )->willReturn( $message );
+		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+
+		$result = $this->validator->validateDatabaseEntry( $dbname );
+		if ( $expected === true ) {
+			$this->assertTrue( $result );
+		} else {
+			$this->assertIsString( $result->parse() );
+		}
+	}
+
+	public function provideValidateDatabaseEntryData(): Generator {
+		yield 'empty dbname' => [ '', 'parsed' ];
+		yield 'valid dbname' => [ 'validdb', true ];
+	}
+
+	/**
+	 * @covers ::validateDatabaseName
+	 * @dataProvider provideValidateDatabaseNameData
+	 */
+	public function testValidateDatabaseName(
+		string $dbname,
+		bool $exists,
+		?string $expected
+	): void {
+		$message = $this->createMock( Message::class );
+		$message->method( 'parse' )->willReturn( 'parsed' );
+		$message->method( 'numParams' )->willReturn( $message );
+		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+
+		$result = $this->validator->validateDatabaseName( $dbname, $exists );
+		if ( $expected === null ) {
+			$this->assertNull( $result );
+		} else {
+			$this->assertIsString( $result );
+		}
+	}
+
+	public function provideValidateDatabaseNameData(): Generator {
+		yield 'not suffixed' => [ 'dbname', false, 'error' ];
+		yield 'database exists' => [ 'validdb', true, 'error' ];
+		yield 'not alnum' => [ 'validdb!', false, 'error' ];
+		yield 'not lowercase' => [ 'Validdb', false, 'error' ];
+		yield 'valid dbname' => [ 'validdb', false, null ];
+	}
+
+	/**
 	 * @covers ::isDisallowedRegex
 	 * @covers ::validateReason
 	 * @dataProvider provideValidateReasonData
@@ -143,61 +199,5 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		yield 'database exists without submit-edit or edit keys' => [ 'exist.example.org', [], 'error' ];
 		yield 'non alnum subdomain without submit-edit or edit keys' => [ 'sub#', [], 'error' ];
 		yield 'disallowed subdomain without submit-edit or edit keys' => [ 'badsub', [], 'error' ];
-	}
-
-	/**
-	 * @covers ::validateDatabaseEntry
-	 * @dataProvider provideValidateDatabaseEntryData
-	 */
-	public function testValidateDatabaseEntry(
-		string $dbname,
-		bool|string $expected
-	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'parsed' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
-
-		$result = $this->validator->validateDatabaseEntry( $dbname );
-		if ( $expected === true ) {
-			$this->assertTrue( $result );
-		} else {
-			$this->assertIsString( $result->parse() );
-		}
-	}
-
-	public function provideValidateDatabaseEntryData(): Generator {
-		yield 'empty dbname' => [ '', 'parsed' ];
-		yield 'valid dbname' => [ 'validdb', true ];
-	}
-
-	/**
-	 * @covers ::validateDatabaseName
-	 * @dataProvider provideValidateDatabaseNameData
-	 */
-	public function testValidateDatabaseName(
-		string $dbname,
-		bool $exists,
-		?string $expected
-	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'parsed' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
-
-		$result = $this->validator->validateDatabaseName( $dbname, $exists );
-		if ( $expected === null ) {
-			$this->assertNull( $result );
-		} else {
-			$this->assertIsString( $result );
-		}
-	}
-
-	public function provideValidateDatabaseNameData(): Generator {
-		yield 'not suffixed' => [ 'dbname', false, 'error' ];
-		yield 'database exists' => [ 'validdb', true, 'error' ];
-		yield 'not alnum' => [ 'validdb!', false, 'error' ];
-		yield 'not lowercase' => [ 'Validdb', false, 'error' ];
-		yield 'valid dbname' => [ 'validdb', false, null ];
 	}
 }
