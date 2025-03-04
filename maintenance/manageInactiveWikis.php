@@ -74,7 +74,7 @@ class ManageInactiveWikis extends Maintenance {
 		/** @var CheckLastWikiActivity $activity */
 		$activity = $this->createChild(
 			CheckLastWikiActivity::class,
-			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/checkLastWikiActivity.php'
+			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/CheckLastWikiActivity.php'
 		);
 		'@phan-var CheckLastWikiActivity $activity';
 
