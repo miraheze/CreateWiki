@@ -19,6 +19,10 @@ use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
 use Psr\Log\LoggerInterface;
 
+// PHPUnit does not understand coverage for this file.
+// It is covered though, see ServiceWiringTest.
+// @codeCoverageIgnoreStart
+
 return [
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
 		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
@@ -133,3 +137,5 @@ return [
 		);
 	},
 ];
+
+// @codeCoverageIgnoreEnd
