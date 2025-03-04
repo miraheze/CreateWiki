@@ -59,8 +59,9 @@
 			"class": "Miraheze\\CreateWiki\\Jobs\\RequestWikiRemoteAIJob",
 			"services": [
 				"CreateWikiConfig",
-				"WikiRequestManager",
-				"HttpRequestFactory"
+				"CreateWikiLogger",
+				"HttpRequestFactory",
+				"WikiRequestManager"
 			],
 			"needsPage": false
 		},

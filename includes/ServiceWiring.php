@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
@@ -16,15 +17,18 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use Psr\Log\LoggerInterface;
+
+// PHPUnit does not understand coverage for this file.
+// It is covered though, see ServiceWiringTest.
+// @codeCoverageIgnoreStart
 
 return [
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
 		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 	},
 	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
-		return new CreateWikiDatabaseUtils(
-			$services->getConnectionProvider()
-		);
+		return new CreateWikiDatabaseUtils( $services->getConnectionProvider() );
 	},
 	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
 		return new CreateWikiDataFactory(
@@ -39,6 +43,9 @@ return [
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
+	},
+	'CreateWikiLogger' => static function (): LoggerInterface {
+		return LoggerFactory::getInstance( 'CreateWiki' );
 	},
 	'CreateWikiNotificationsManager' => static function (
 		MediaWikiServices $services
@@ -130,3 +137,5 @@ return [
 		);
 	},
 ];
+
+// @codeCoverageIgnoreEnd

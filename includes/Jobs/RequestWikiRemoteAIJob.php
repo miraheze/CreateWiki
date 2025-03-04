@@ -7,7 +7,6 @@ use Job;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\UltimateAuthority;
 use MediaWiki\User\User;
@@ -21,7 +20,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private readonly LoggerInterface $logger;
 	private readonly MessageLocalizer $messageLocalizer;
 
 	private readonly string $apiKey;
@@ -31,12 +29,11 @@ class RequestWikiRemoteAIJob extends Job {
 	public function __construct(
 		array $params,
 		private readonly Config $config,
-		private readonly WikiRequestManager $wikiRequestManager,
-		private readonly HttpRequestFactory $httpRequestFactory
+		private readonly LoggerInterface $logger,
+		private readonly HttpRequestFactory $httpRequestFactory,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
-
-		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 		$this->messageLocalizer = RequestContext::getMain();
 
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
