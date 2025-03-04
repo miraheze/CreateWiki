@@ -78,9 +78,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		return $this->getServiceContainer()->get( 'WikiManagerFactory' );
 	}
 
-	/**
-	 * @return RemoteWikiFactory
-	 */
 	public function getRemoteWikiFactory(): RemoteWikiFactory {
 		return $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 	}
