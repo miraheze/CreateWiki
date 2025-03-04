@@ -20,7 +20,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private readonly LoggerInterface $logger;
 	private readonly MessageLocalizer $messageLocalizer;
 
 	private readonly string $apiKey;
