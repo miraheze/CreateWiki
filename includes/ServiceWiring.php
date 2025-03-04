@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
@@ -16,6 +17,7 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use Psr\Log\LoggerInterface;
 
 return [
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
@@ -39,6 +41,9 @@ return [
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
+	},
+	'CreateWikiLogger' => static function ( MediaWikiServices $services ): LoggerInterface {
+		return LoggerFactory::getInstance( 'CreateWiki' );
 	},
 	'CreateWikiNotificationsManager' => static function (
 		MediaWikiServices $services
