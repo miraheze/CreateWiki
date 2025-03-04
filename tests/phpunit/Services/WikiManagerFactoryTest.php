@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests\Services;
 
 use FatalError;
+use MediaWiki\Config\ConfigException;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
@@ -94,6 +95,12 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testNewInstance(): void {
 		$factory = $this->getFactoryService()->newInstance( 'newwiki' );
+		$this->expectException( ConfigException::class );
+		$this->expectExceptionMessage( 'Must use LBFactoryMulti when using clusters with CreateWiki.' );
+
+		$this->setupLBFactory();
+		$factory = $this->getFactoryService()->newInstance( 'newwiki' );
+
 		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
 		$this->assertFalse( $factory->exists() );
 
