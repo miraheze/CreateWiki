@@ -9,13 +9,16 @@
 	strict="true"
 	verbose="true">
 	<testsuites>
-		<testsuite name="CreateWiki">
+		<testsuite name="CreateWiki Test Suite">
 			<directory>./tests/phpunit</directory>
 		</testsuite>
 	</testsuites>
 	<filter>
 		<whitelist addUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">./includes</directory>
+			<exclude>
+				<file>./includes/ServiceWiring.php</file>
+			</exclude>
 		</whitelist>
 	</filter>
 </phpunit>
