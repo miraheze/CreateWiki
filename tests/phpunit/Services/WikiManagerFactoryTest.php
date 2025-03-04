@@ -79,6 +79,13 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @return RemoteWikiFactory
+	 */
+	public function getRemoteWikiFactory(): RemoteWikiFactory {
+		return $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+	}
+	
+	/**
 	 * @covers ::__construct
 	 */
 	public function testConstructor(): void {
@@ -86,10 +93,16 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @return RemoteWikiFactory
+	 * @covers ::newInstance
 	 */
-	public function getRemoteWikiFactory(): RemoteWikiFactory {
-		return $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+	public function testNewInstance(): void {
+		$factory = $this->getFactoryService()->newInstance( 'newwiki' );
+		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
+		$this->assertFalse( $factory->exists() );
+
+		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
+		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
+		$this->assertTrue( $factory->exists() );
 	}
 
 	/**
