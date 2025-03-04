@@ -93,11 +93,16 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::newInstance
 	 */
-	public function testNewInstance(): void {
-		$factory = $this->getFactoryService()->newInstance( 'newwiki' );
+	public function testNewInstanceException(): void {
 		$this->expectException( ConfigException::class );
 		$this->expectExceptionMessage( 'Must use LBFactoryMulti when using clusters with CreateWiki.' );
+		$this->getFactoryService()->newInstance( 'newwiki' );
+	}
 
+	/**
+	 * @covers ::newInstance
+	 */
+	public function testNewInstance(): void {
 		$this->setupLBFactory();
 		$factory = $this->getFactoryService()->newInstance( 'newwiki' );
 
