@@ -194,7 +194,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 				'sitename' => 'Example Wiki',
 				'language' => 'en',
 				'category' => 'uncategorised',
-				'agreement' => true,
 			],
 			[
 				'duplicate' => true,
