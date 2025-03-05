@@ -82,6 +82,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->insertWikiRow( 'TestWikiActive' );
+		$this->db->selectDomain( 'TestWikiActive' );
 
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
@@ -110,6 +111,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->insertWikiRow( 'TestWikiInactive' );
+		$this->db->selectDomain( 'TestWikiInactive' );
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
@@ -139,6 +141,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->insertWikiRow( 'TestWikiClosure' );
+		$this->db->selectDomain( 'TestWikiClosure' );
 
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
@@ -170,9 +173,10 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		);
 	}
 
-	protected function insertWikiRow( string $dbname ): void {
+	protected function insertWiki( string $dbname ): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
+		$dbw->query( "CREATE DATABASE IF NOT EXISTS $dbname;", __METHOD__ )
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->ignore()
@@ -193,5 +197,19 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			] )
 			->caller( __METHOD__ )
 			->execute();
+	}
+
+	private function createWiki( string $dbname ): void {
+		$testUser = $this->getTestUser()->getUser();
+		$testSysop = $this->getTestSysop()->getUser();
+
+		$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
+			->newInstance( $dbname );
+
+		$wikiManager->create(
+			'TestWiki', 'en', false, 'uncategorised',
+			$testUser->getName(), $testSysop->getName(),
+			'Test', []
+		);
 	}
 }
