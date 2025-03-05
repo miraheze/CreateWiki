@@ -176,7 +176,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	protected function insertWiki( string $dbname ): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
-		$dbw->query( "CREATE DATABASE IF NOT EXISTS $dbname;", __METHOD__ )
+		$dbw->query( "CREATE DATABASE IF NOT EXISTS $dbname;", __METHOD__ );
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->ignore()
@@ -197,19 +197,5 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			] )
 			->caller( __METHOD__ )
 			->execute();
-	}
-
-	private function createWiki( string $dbname ): void {
-		$testUser = $this->getTestUser()->getUser();
-		$testSysop = $this->getTestSysop()->getUser();
-
-		$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
-			->newInstance( $dbname );
-
-		$wikiManager->create(
-			'TestWiki', 'en', false, 'uncategorised',
-			$testUser->getName(), $testSysop->getName(),
-			'Test', []
-		);
 	}
 }
