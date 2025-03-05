@@ -34,6 +34,18 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'virtual-createwiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
 			],
 		] );
+
+		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
+			'host' => $this->getConfVar( MainConfigNames::DBserver ),
+			'user' => 'root',
+		] );
+
+		$db->begin();
+		$db->query( "GRANT ALL PRIVILEGES ON `TestWikiActive`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `TestWikiInactive`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `TestWikiClosure`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "FLUSH PRIVILEGES;" );
+		$db->commit();
 	}
 
 	protected function getMaintenanceClass(): string {
