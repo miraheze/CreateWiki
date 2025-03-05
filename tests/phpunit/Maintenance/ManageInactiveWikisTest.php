@@ -45,11 +45,10 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 */
 	public function testExecuteDisabled(): void {
 		// Disable the maintenance script.
-		$this->setMwGlobals( [
-			ConfigNames::EnableManageInactiveWikis => false,
-		] );
+		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, false );
 
-		$this->expectOutputRegex( '/Enable \$wgCreateWikiEnableManageInactiveWikis to run this script\./' );
+		$this->expectCallToFatalError();
+		$this->expectOutputString( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		$this->maintenance->execute();
 	}
 
