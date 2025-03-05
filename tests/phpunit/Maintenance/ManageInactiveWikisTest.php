@@ -81,7 +81,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteActiveWiki(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->insertWikiRow( 'TestWikiActive' );
+		$this->insertWiki( 'TestWikiActive' );
 		$this->db->selectDomain( 'TestWikiActive' );
 
 		// Set the fake time to now and simulate a recent edit on the wiki.
@@ -110,7 +110,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteInactiveWiki(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->insertWikiRow( 'TestWikiInactive' );
+		$this->insertWiki( 'TestWikiInactive' );
 		$this->db->selectDomain( 'TestWikiInactive' );
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
@@ -140,7 +140,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteClosedWiki(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->insertWikiRow( 'TestWikiClosure' );
+		$this->insertWiki( 'TestWikiClosure' );
 		$this->db->selectDomain( 'TestWikiClosure' );
 
 		// Set an old creation date.
