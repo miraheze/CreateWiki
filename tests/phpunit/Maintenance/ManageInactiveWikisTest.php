@@ -138,7 +138,9 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->maintenance->setOption( 'write', true );
 
 		$this->maintenance->execute();
-		$this->expectOutputRegex( '/^TestWikiClosure (has been closed|was marked as inactive on .* and is now closed)\./' );
+		$this->expectOutputRegex(
+			'/^TestWikiClosure (has been closed|was marked as inactive on .* and is now closed)\./'
+		);
 	}
 
 	protected function insertWikiRow( string $dbname ): void {
