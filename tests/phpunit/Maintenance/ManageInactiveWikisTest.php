@@ -170,7 +170,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
 				'wiki_private' => 0,
-				'wiki_creation' => $dbw->timestamp(),
+				'wiki_creation' => date( 'YmdHis', strtotime( '-11 days' ) ),
 				'wiki_category' => 'uncategorised',
 				'wiki_closed' => 0,
 				'wiki_deleted' => 0,
