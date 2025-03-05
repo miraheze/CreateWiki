@@ -82,7 +82,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->insertWiki( 'TestWikiActive' );
-		$this->db->selectDomain( 'TestWikiActive' );
 
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
@@ -111,7 +110,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->insertWiki( 'TestWikiInactive' );
-		$this->db->selectDomain( 'TestWikiInactive' );
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
@@ -141,7 +139,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->insertWiki( 'TestWikiClosure' );
-		$this->db->selectDomain( 'TestWikiClosure' );
 
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
@@ -174,11 +171,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	}
 
 	protected function insertWiki( string $dbname ): void {
-		$sqlPath = MW_INSTALL_PATH . '/maintenance/tables-generated.sql';
-		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
-			$sqlPath = MW_INSTALL_PATH . '/sql/mysql/tables-generated.sql';
-		}
-
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->query( "CREATE DATABASE IF NOT EXISTS $dbname;", __METHOD__ );
@@ -202,6 +194,13 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			] )
 			->caller( __METHOD__ )
 			->execute();
-		$dbw->query( "USE $dbname; SOURCE $sqlPath;", __METHOD__ );
+
+		$sqlPath = '/maintenance/tables-generated.sql';
+		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
+			$sqlPath = '/sql/mysql/tables-generated.sql';
+		}
+
+		$this->db->selectDomain( $dbname );
+		$this->db->sourceFile( MW_INSTALL_PATH . $sqlPath );
 	}
 }
