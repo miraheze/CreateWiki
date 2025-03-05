@@ -28,6 +28,8 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'closed' => 5,
 				'removed' => 7,
 			],
+			ConfigNames::UseClosedWikis => true,
+			ConfigNames::UseInactiveWikis => true,
 			MainConfigNames::VirtualDomainsMapping => [
 				'virtual-createwiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
 			],
