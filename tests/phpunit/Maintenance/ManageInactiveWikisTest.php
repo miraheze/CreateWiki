@@ -29,7 +29,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'removed' => 7,
 			],
 			MainConfigNames::VirtualDomainsMapping => [
-				'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
+				'virtual-createwiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
 			],
 		] );
 	}
