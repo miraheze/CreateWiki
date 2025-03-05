@@ -2,8 +2,10 @@
 
 namespace Miraheze\CreateWiki\Tests\Maintenance;
 
+use MediaWiki\MainConfigNames;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use MediaWiki\Title\Title;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Maintenance\ManageInactiveWikis;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -19,12 +21,15 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->setMwGlobals( [
+		$this->overrideConfigValues( [
 			ConfigNames::EnableManageInactiveWikis => true,
 			ConfigNames::StateDays => [
 				'inactive' => 10,
 				'closed' => 5,
 				'removed' => 7,
+			],
+			MainConfigNames::VirtualDomainsMapping => [
+				'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
 			],
 		] );
 	}
