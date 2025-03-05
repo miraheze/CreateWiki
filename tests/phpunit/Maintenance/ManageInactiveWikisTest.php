@@ -58,7 +58,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::checkLastActivity
 	 */
 	public function testExecuteActiveWiki(): void {
-		.
 		$this->insertWikiRow( 'TestWikiActive' );
 
 		// Set the fake time to now and simulate a recent edit on the wiki.
