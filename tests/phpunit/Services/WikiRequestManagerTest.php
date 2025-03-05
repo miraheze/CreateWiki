@@ -21,7 +21,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	public function addDBDataOnce(): void {
 		self::$user = $this->getTestUser()->getUser();
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
-		$this->setMwGlobals( MainConfigNames::VirtualDomainsMapping, [
+		$this->overrideConfigValue( MainConfigNames::VirtualDomainsMapping, [
 			'virtual-createwiki-central' => [ 'db' => 'wikidb' ],
 		] );
 
