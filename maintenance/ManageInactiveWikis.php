@@ -72,10 +72,7 @@ class ManageInactiveWikis extends Maintenance {
 		$canWrite = $this->hasOption( 'write' );
 
 		/** @var CheckLastWikiActivity $activity */
-		$activity = $this->createChild(
-			CheckLastWikiActivity::class,
-			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/CheckLastWikiActivity.php'
-		);
+		$activity = $this->createChild( CheckLastWikiActivity::class );
 		'@phan-var CheckLastWikiActivity $activity';
 
 		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
