@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\Maintenance\Maintenance;
 
 class RenameWiki extends Maintenance {
