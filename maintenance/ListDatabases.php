@@ -21,7 +21,4 @@ class ListDatabases extends Maintenance {
 	}
 }
 
-// @codeCoverageIgnoreStart
-$maintClass = ListDatabases::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
-// @codeCoverageIgnoreEnd
+return ListDatabases::class;

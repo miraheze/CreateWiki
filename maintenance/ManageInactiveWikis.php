@@ -199,7 +199,4 @@ class ManageInactiveWikis extends Maintenance {
 	}
 }
 
-// @codeCoverageIgnoreStart
-$maintClass = ManageInactiveWikis::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
-// @codeCoverageIgnoreEnd
+return ManageInactiveWikis::class;

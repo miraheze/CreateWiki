@@ -83,7 +83,4 @@ class CreatePersistentModel extends Maintenance {
 	}
 }
 
-// @codeCoverageIgnoreStart
-$maintClass = CreatePersistentModel::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
-// @codeCoverageIgnoreEnd
+return CreatePersistentModel::class;

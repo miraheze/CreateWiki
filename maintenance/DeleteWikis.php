@@ -81,7 +81,4 @@ class DeleteWikis extends Maintenance {
 	}
 }
 
-// @codeCoverageIgnoreStart
-$maintClass = DeleteWikis::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
-// @codeCoverageIgnoreEnd
+return DeleteWikis::class;
