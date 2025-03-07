@@ -45,4 +45,6 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return CheckLastWikiActivity::class;
+// @codeCoverageIgnoreEnd

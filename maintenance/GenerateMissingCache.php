@@ -31,4 +31,6 @@ class GenerateMissingCache extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return GenerateMissingCache::class;
+// @codeCoverageIgnoreEnd

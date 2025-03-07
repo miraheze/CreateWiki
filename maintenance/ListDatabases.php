@@ -21,4 +21,6 @@ class ListDatabases extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return ListDatabases::class;
+// @codeCoverageIgnoreEnd

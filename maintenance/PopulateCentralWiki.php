@@ -74,4 +74,6 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return PopulateCentralWiki::class;
+// @codeCoverageIgnoreEnd

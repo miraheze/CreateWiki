@@ -73,4 +73,6 @@ class SetContainersAccess extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return SetContainersAccess::class;
+// @codeCoverageIgnoreEnd

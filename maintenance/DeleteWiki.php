@@ -41,4 +41,6 @@ class DeleteWiki extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return DeleteWiki::class;
+// @codeCoverageIgnoreEnd

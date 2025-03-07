@@ -79,4 +79,6 @@ class RenameWiki extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return RenameWiki::class;
+// @codeCoverageIgnoreEnd

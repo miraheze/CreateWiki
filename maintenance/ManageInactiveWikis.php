@@ -199,4 +199,6 @@ class ManageInactiveWikis extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return ManageInactiveWikis::class;
+// @codeCoverageIgnoreEnd

@@ -54,4 +54,6 @@ class ChangeDBCluster extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return ChangeDBCluster::class;
+// @codeCoverageIgnoreEnd

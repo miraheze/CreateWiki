@@ -49,4 +49,6 @@ class RebuildExtensionListCache extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return RebuildExtensionListCache::class;
+// @codeCoverageIgnoreEnd

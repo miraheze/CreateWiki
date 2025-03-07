@@ -48,4 +48,6 @@ class PopulateMainPage extends Maintenance {
 	}
 }
 
+// @codeCoverageIgnoreStart
 return PopulateMainPage::class;
+// @codeCoverageIgnoreEnd
