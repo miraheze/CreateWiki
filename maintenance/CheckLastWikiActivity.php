@@ -22,26 +22,20 @@ class CheckLastWikiActivity extends Maintenance {
 	public function getTimestamp(): int {
 		$dbr = $this->getDB( DB_REPLICA );
 
-		// Get the latest revision timestamp
-		$revTimestamp = $dbr->newSelectQueryBuilder()
-			->select( 'MAX(rev_timestamp)' )
-			->from( 'revision' )
+		$query = $dbr->newSelectQueryBuilder()
+			->select(
+				'GREATEST(
+					(SELECT MAX(rev_timestamp) FROM ' . $dbr->tableName( 'revision' ) . '),
+					(
+     						SELECT MAX(log_timestamp) FROM ' . $dbr->tableName( 'logging' ) .
+						' WHERE log_type NOT IN ("renameuser", "newusers")
+					)
+				) AS latest'
+			)
 			->caller( __METHOD__ )
 			->fetchField();
 
-		// Get the latest logging timestamp
-		$logTimestamp = $dbr->newSelectQueryBuilder()
-			->select( 'MAX(log_timestamp)' )
-			->from( 'logging' )
-			->where( [
-				$dbr->expr( 'log_type', '!=', 'renameuser' ),
-				$dbr->expr( 'log_type', '!=', 'newusers' ),
-			] )
-			->caller( __METHOD__ )
-			->fetchField();
-
-		// Return the most recent timestamp in either revision or logging
-		return (int)max( $revTimestamp, $logTimestamp );
+		return (int)( $query ?? 0 );
 	}
 }
 
