@@ -26,7 +26,6 @@ class CheckLastWikiActivity extends Maintenance {
 		$revTimestamp = $dbr->newSelectQueryBuilder()
 			->select( 'MAX(rev_timestamp)' )
 			->from( 'revision' )
-			->useIndex( 'rev_timestamp' )
 			->caller( __METHOD__ )
 			->fetchField();
 
