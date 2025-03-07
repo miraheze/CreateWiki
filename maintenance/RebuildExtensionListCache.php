@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Registration\ExtensionProcessor;
@@ -52,5 +49,6 @@ class RebuildExtensionListCache extends Maintenance {
 	}
 }
 
-$maintClass = RebuildExtensionListCache::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return RebuildExtensionListCache::class;
+// @codeCoverageIgnoreEnd

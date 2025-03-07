@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 
@@ -57,5 +54,6 @@ class ChangeDBCluster extends Maintenance {
 	}
 }
 
-$maintClass = ChangeDBCluster::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return ChangeDBCluster::class;
+// @codeCoverageIgnoreEnd
