@@ -16,6 +16,8 @@ use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
+use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -224,12 +226,12 @@ class WikiManagerFactory {
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
-					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+					SetContainersAccess::class,
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
 				Shell::makeScriptCommand(
-					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
+					PopulateMainPage::class,
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 

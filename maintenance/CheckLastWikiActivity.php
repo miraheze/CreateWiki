@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\Maintenance\Maintenance;
 
 class CheckLastWikiActivity extends Maintenance {
@@ -48,5 +45,6 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 }
 
-$maintClass = CheckLastWikiActivity::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return CheckLastWikiActivity::class;
+// @codeCoverageIgnoreEnd

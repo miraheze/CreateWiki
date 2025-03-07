@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
@@ -72,10 +69,7 @@ class ManageInactiveWikis extends Maintenance {
 		$canWrite = $this->hasOption( 'write' );
 
 		/** @var CheckLastWikiActivity $activity */
-		$activity = $this->createChild(
-			CheckLastWikiActivity::class,
-			MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/CheckLastWikiActivity.php'
-		);
+		$activity = $this->createChild( CheckLastWikiActivity::class );
 		'@phan-var CheckLastWikiActivity $activity';
 
 		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
@@ -205,5 +199,6 @@ class ManageInactiveWikis extends Maintenance {
 	}
 }
 
-$maintClass = ManageInactiveWikis::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return ManageInactiveWikis::class;
+// @codeCoverageIgnoreEnd

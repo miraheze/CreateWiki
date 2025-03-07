@@ -340,7 +340,7 @@
 			"value": false
 		},
 		"CreateWikiEnableManageInactiveWikis": {
-			"description": "Boolean. Whether the manageInactiveWikis.php maintenance script be enabled. That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
+			"description": "Boolean. Whether the ManageInactiveWikis maintenance script be enabled. That script marks wikis as inactive, closed, or deleted per $wgCreateWikiStateDays.",
 			"value": false
 		},
 		"CreateWikiEnableRESTAPI": {
