@@ -58,6 +58,10 @@ class ManageInactiveWikis extends Maintenance {
 				$this->checkLastActivity( $wiki, $remoteWiki );
 			}
 		}
+
+		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
+		$data = $dataFactory->newInstance( $dbname );
+		$data->resetDatabaseLists( isNewChanges: true );
 	}
 
 	private function checkLastActivity(
@@ -135,11 +139,6 @@ class ManageInactiveWikis extends Maintenance {
 		}
 
 		$remoteWiki->commit();
-
-		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
-		$data = $dataFactory->newInstance( $dbname );
-		$data->resetDatabaseLists( isNewChanges: true );
-
 		return true;
 	}
 
