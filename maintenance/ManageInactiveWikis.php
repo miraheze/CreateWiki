@@ -184,7 +184,7 @@ class ManageInactiveWikis extends Maintenance {
 		$isClosed = $remoteWiki->isClosed() && $closedTimestamp;
 		if ( $isClosed && $closedTimestamp < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
 			if ( $canWrite ) {
-				// $remoteWiki->delete();
+				$remoteWiki->delete();
 				$this->output(
 					"{$dbname} is eligible for removal and now has been. " .
 					"It was closed on {$closedTimestamp}. Last activity: {$lastActivityTimestamp}.\n"
