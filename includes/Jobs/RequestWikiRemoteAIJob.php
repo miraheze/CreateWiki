@@ -202,11 +202,6 @@ class RequestWikiRemoteAIJob extends Job {
 		int $confidence
 	): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
-		$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-decision-' . $outcome )
-			->params( $comment, $confidence )
-			->inContentLanguage()
-			->parse();
-
 		$unknownCommentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
 			->inContentLanguage()
 			->parse();
@@ -216,7 +211,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->approve(
 					user: $systemUser,
-					comment: $commentText
+					comment: $comment
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -234,7 +229,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->moredetails(
 					user: $systemUser,
-					comment: $commentText
+					comment: $comment
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -250,7 +245,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->decline(
 					user: $systemUser,
-					comment: $commentText
+					comment: $comment
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -263,12 +258,13 @@ class RequestWikiRemoteAIJob extends Job {
 				break;
 
 			case 'onhold':
-				$this->wikiRequestManager->startQueryBuilder();
-				$this->wikiRequestManager->onhold(
+				$this->wikiRequestManager->addComment(
+					comment: $comment,
 					user: $systemUser,
-					comment: $commentText
+					log: false,
+					type: 'comment',
+					notifyUsers: []
 				);
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
 					'Wiki request {id} requires manual review and has been placed on hold with reason: {comment}',
 					[
@@ -329,7 +325,7 @@ class RequestWikiRemoteAIJob extends Job {
 				'Number of previous requests: "%d". Language: "%s". ' .
 				'Focuses on real people/groups? "%s". Private wiki? "%s". Category: "%s". ' .
 				'Contains content that is not safe for work? "%s". %s%s' .
-				'Wiki request description: %s',
+				'Wiki request description: "%s"',
 				htmlspecialchars( $sitename, ENT_QUOTES ),
 				htmlspecialchars( $subdomain, ENT_QUOTES ),
 				htmlspecialchars( $username, ENT_QUOTES ),
