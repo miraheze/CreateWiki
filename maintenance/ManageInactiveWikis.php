@@ -37,6 +37,7 @@ class ManageInactiveWikis extends Maintenance {
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
 		$dbr = $databaseUtils->getGlobalReplicaDB();
+
 		$batchSize = $this->getBatchSize();
 		$offset = 0;
 
@@ -68,6 +69,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 
 			$offset += $batchSize;
+			sleep( 10 );
 		}
 	}
 
