@@ -77,6 +77,13 @@ class RemoteWikiFactory {
 			throw new MissingWikiError( $wiki );
 		}
 
+		$this->changes = [];
+		$this->logParams = [];
+		$this->newRows = [];
+		$this->hooks = [];
+
+		$this->log = null;
+
 		$this->dbname = $wiki;
 
 		$this->sitename = $row->wiki_sitename;
