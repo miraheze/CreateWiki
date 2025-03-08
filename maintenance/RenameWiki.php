@@ -31,7 +31,11 @@ class RenameWiki extends Maintenance {
 		$oldwiki = $this->getArg( 0 );
 		$newwiki = $this->getArg( 1 );
 
-		$renamedWiki = [];
+		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+		if ( !$wikiManagerFactory->newInstance( $newwiki )->exists() ) {
+			$this->output( "Cannot rename {$oldwiki} to {$newwiki} as {$newwiki} does not exist\n");
+			return false;
+		}
 
 		if ( $this->hasOption( 'rename' ) ) {
 			$this->output( "Renaming $oldwiki to $newwiki. If this is wrong, Ctrl-C now!" );
@@ -39,29 +43,24 @@ class RenameWiki extends Maintenance {
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
 			$wikiManager = $wikiManagerFactory->newInstance( $oldwiki );
 			$rename = $wikiManager->rename( newDatabaseName: $newwiki );
 
 			if ( $rename ) {
 				$this->fatalError( $rename );
 			}
-
-			$renamedWiki[] = $oldwiki;
-			$renamedWiki[] = $newwiki;
 		} else {
-			$this->output( "Wiki $oldwiki will be renamed to $newwiki" );
+			$this->output( "Wiki $oldwiki will be renamed to $newwiki\n" );
 		}
 
 		$this->output( "Done.\n" );
 
 		if ( $this->hasOption( 'rename' ) ) {
 			$user = $this->getArg( 2 );
-			$wikiRename = implode( ' to ', $renamedWiki );
 
 			$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
 				"just now {$user} has renamed the following wiki from CreateWiki and " .
-				"associated extensions - From {$wikiRename}.";
+				"associated extensions - From {$oldwiki} to {$newwiki}.";
 
 			$notificationData = [
 				'type' => 'wiki-rename',
