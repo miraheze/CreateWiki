@@ -27,7 +27,7 @@ class RenameWiki extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute(): void {
+	public function execute(): bool {
 		$oldwiki = $this->getArg( 0 );
 		$newwiki = $this->getArg( 1 );
 
