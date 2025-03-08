@@ -116,16 +116,16 @@ class ManageInactiveWikis extends Maintenance {
 					} else {
 						$this->output( "{$dbname} should be inactive. Last activity: {$lastActivityTimestamp}\n" );
 					}
+				} else {
+					// Otherwise, mark as closed or notify if it's eligible for closure
+					$this->handleInactiveWiki(
+						$dbname,
+						$remoteWiki,
+						$closeDays,
+						$lastActivityTimestamp,
+						$canWrite
+					);
 				}
-
-				// Otherwise, mark as closed or notify if it's eligible for closure
-				$this->handleInactiveWiki(
-					$dbname,
-					$remoteWiki,
-					$closeDays,
-					$lastActivityTimestamp,
-					$canWrite
-				);
 			}
 		} else {
 			// Handle already closed wikis
