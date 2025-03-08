@@ -24,6 +24,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$this->addDescription( 'Script to manage inactive wikis in a wiki farm.' );
 
+		$this->setBatchSize( 1000 );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
@@ -36,25 +37,37 @@ class ManageInactiveWikis extends Maintenance {
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
 		$dbr = $databaseUtils->getGlobalReplicaDB();
+		$batchSize = $this->getBatchSize();
+		$offset = 0;
 
-		$wikis = $dbr->newSelectQueryBuilder()
-			->select( 'wiki_dbname' )
-			->from( 'cw_wikis' )
-			->where( [
-				'wiki_inactive_exempt' => 0,
-				'wiki_deleted' => 0,
-			] )
-			->caller( __METHOD__ )
-			->fetchFieldValues();
+		while ( true ) {
+			$wikis = $dbr->newSelectQueryBuilder()
+				->select( 'wiki_dbname' )
+				->from( 'cw_wikis' )
+				->where( [
+					'wiki_inactive_exempt' => 0,
+					'wiki_deleted' => 0,
+				] )
+				->limit( $batchSize )
+				->offset( $offset )
+				->caller( __METHOD__ )
+				->fetchFieldValues();
 
-		foreach ( $wikis as $wiki ) {
-			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
-			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
-
-			// Check if the wiki is inactive based on creation date
-			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
-				$this->checkLastActivity( $wiki, $remoteWiki );
+			if ( !$wikis ) {
+				break;
 			}
+
+			foreach ( $wikis as $wiki ) {
+				$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
+				$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
+
+				// Check if the wiki is inactive based on creation date
+				if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
+					$this->checkLastActivity( $wiki, $remoteWiki );
+				}
+			}
+
+			$offset += $batchSize;
 		}
 	}
 
