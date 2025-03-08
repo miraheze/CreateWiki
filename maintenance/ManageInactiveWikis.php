@@ -24,7 +24,7 @@ class ManageInactiveWikis extends Maintenance {
 
 		$this->addDescription( 'Script to manage inactive wikis in a wiki farm.' );
 
-		$this->setBatchSize( 1000 );
+		$this->setBatchSize( 100 );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
@@ -69,7 +69,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 
 			$offset += $batchSize;
-			sleep( 10 );
+			sleep( 1 );
 		}
 	}
 
