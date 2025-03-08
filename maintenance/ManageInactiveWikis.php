@@ -51,11 +51,17 @@ class ManageInactiveWikis extends Maintenance {
 			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 
+			$remoteWiki->disableResetDatabaseLists();
+
 			// Check if the wiki is inactive based on creation date
 			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
 				$this->checkLastActivity( $wiki, $remoteWiki );
 			}
 		}
+
+		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
+		$data = $dataFactory->newInstance( $databaseUtils->getCentralWikiID() );
+		$data->resetDatabaseLists( isNewChanges: true );
 	}
 
 	private function checkLastActivity(
@@ -71,10 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 		$activity = $this->createChild( CheckLastWikiActivity::class );
 		'@phan-var CheckLastWikiActivity $activity';
 
-		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbname ) );
-		$activity->execute();
-
 		$lastActivityTimestamp = $activity->getTimestamp();
 
 		// If the wiki is still active, mark it as active
@@ -113,16 +116,16 @@ class ManageInactiveWikis extends Maintenance {
 					} else {
 						$this->output( "{$dbname} should be inactive. Last activity: {$lastActivityTimestamp}\n" );
 					}
+				} else {
+					// Otherwise, mark as closed or notify if it's eligible for closure
+					$this->handleInactiveWiki(
+						$dbname,
+						$remoteWiki,
+						$closeDays,
+						$lastActivityTimestamp,
+						$canWrite
+					);
 				}
-
-				// Otherwise, mark as closed or notify if it's eligible for closure
-				$this->handleInactiveWiki(
-					$dbname,
-					$remoteWiki,
-					$closeDays,
-					$lastActivityTimestamp,
-					$canWrite
-				);
 			}
 		} else {
 			// Handle already closed wikis
@@ -181,7 +184,7 @@ class ManageInactiveWikis extends Maintenance {
 		$isClosed = $remoteWiki->isClosed() && $closedTimestamp;
 		if ( $isClosed && $closedTimestamp < date( 'YmdHis', strtotime( "-{$removeDays} days" ) ) ) {
 			if ( $canWrite ) {
-				// $remoteWiki->delete();
+				$remoteWiki->delete();
 				$this->output(
 					"{$dbname} is eligible for removal and now has been. " .
 					"It was closed on {$closedTimestamp}. Last activity: {$lastActivityTimestamp}.\n"

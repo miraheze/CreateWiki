@@ -44,6 +44,7 @@ class RemoteWikiFactory {
 	private bool $inactive = false;
 	private bool $inactiveExempt = false;
 	private bool $experimental = false;
+	private bool $resetDatabaseLists = true;
 	private ?string $inactiveExemptReason = null;
 
 	private ?string $deletedTimestamp;
@@ -75,6 +76,13 @@ class RemoteWikiFactory {
 		if ( !$row ) {
 			throw new MissingWikiError( $wiki );
 		}
+
+		$this->changes = [];
+		$this->logParams = [];
+		$this->newRows = [];
+		$this->hooks = [];
+
+		$this->log = null;
 
 		$this->dbname = $wiki;
 
@@ -398,6 +406,10 @@ class RemoteWikiFactory {
 		return $this->logParams;
 	}
 
+	public function disableResetDatabaseLists(): void {
+		$this->resetDatabaseLists = false;
+	}
+
 	public function commit(): void {
 		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
@@ -431,7 +443,9 @@ class RemoteWikiFactory {
 			}
 
 			$data = $this->dataFactory->newInstance( $this->dbname );
-			$data->resetDatabaseLists( isNewChanges: true );
+			if ( $this->resetDatabaseLists ) {
+				$data->resetDatabaseLists( isNewChanges: true );
+			}
 			$data->resetWikiData( isNewChanges: true );
 
 			if ( $this->log === null ) {
