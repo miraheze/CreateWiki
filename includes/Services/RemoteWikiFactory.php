@@ -66,6 +66,13 @@ class RemoteWikiFactory {
 	public function newInstance( string $wiki ): self {
 		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 
+		$this->changes = [];
+		$this->logParams = [];
+		$this->newRows = [];
+		$this->hooks = [];
+
+		$this->log = null;
+
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
