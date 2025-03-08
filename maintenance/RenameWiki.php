@@ -75,6 +75,8 @@ class RenameWiki extends Maintenance {
 					receivers: []
 				);
 		}
+
+		return true;
 	}
 }
 
