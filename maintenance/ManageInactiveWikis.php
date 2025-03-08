@@ -51,11 +51,17 @@ class ManageInactiveWikis extends Maintenance {
 			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 
+			$remoteWiki->disableResetDatabaseLists();
+
 			// Check if the wiki is inactive based on creation date
 			if ( $remoteWiki->getCreationDate() < date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
 				$this->checkLastActivity( $wiki, $remoteWiki );
 			}
 		}
+
+		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
+		$data = $dataFactory->newInstance( $dbname );
+		$data->resetDatabaseLists( isNewChanges: true );
 	}
 
 	private function checkLastActivity(
@@ -71,10 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 		$activity = $this->createChild( CheckLastWikiActivity::class );
 		'@phan-var CheckLastWikiActivity $activity';
 
-		$activity->loadParamsAndArgs( null, [ 'quiet' => true ] );
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbname ) );
-		$activity->execute();
-
 		$lastActivityTimestamp = $activity->getTimestamp();
 
 		// If the wiki is still active, mark it as active
