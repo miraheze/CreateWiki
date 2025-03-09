@@ -29,7 +29,7 @@ class DeleteWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	private function log( $msg ) {
+	private function log( string $msg ): void {
 		$logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
 		$logger->debug( "DeleteWikis: $msg" );
 		$this->output( "$msg\n" );
