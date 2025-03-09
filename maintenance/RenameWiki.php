@@ -15,9 +15,10 @@ class RenameWiki extends Maintenance {
 			'database exists and while old one still exists.'
 		);
 
-		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.', false );
+		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.' );
 		$this->addOption( 'old', 'Old wiki database name', true, true );
 		$this->addOption( 'new', 'New wiki database name', true, true );
+
 		$this->addOption( 'user',
 			'Username or reference name of the person running this script. ' .
 			'Will be used in tracking and notification internally.',
