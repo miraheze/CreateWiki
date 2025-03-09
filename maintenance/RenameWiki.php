@@ -33,8 +33,7 @@ class RenameWiki extends Maintenance {
 
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
 		if ( !$wikiManagerFactory->newInstance( $newwiki )->exists() ) {
-			$this->output( "Cannot rename {$oldwiki} to {$newwiki} as {$newwiki} does not exist\n" );
-			return false;
+			$this->fatalError( "Cannot rename {$oldwiki} to {$newwiki} as {$newwiki} does not exist" );
 		}
 
 		if ( $this->hasOption( 'rename' ) ) {
