@@ -32,6 +32,8 @@ class ManageInactiveWikis extends Maintenance {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
+		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['no-edits']['inactive'];
+
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
@@ -48,10 +50,7 @@ class ManageInactiveWikis extends Maintenance {
 			->fetchFieldValues();
 
 		foreach ( $wikis as $wiki ) {
-			$dbname = $wiki->wiki_dbname;
-			$remoteWiki = $remoteWikiFactory->newInstance( $dbname );
-			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['no-edits']['inactive'];
-
+			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
 			$remoteWiki->disableResetDatabaseLists();
 
 			// Check if the wiki is inactive based on creation date
