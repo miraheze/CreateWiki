@@ -77,6 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 		$lastActivityTimestamp = $activity->getTimestamp();
 
 		$track = $lastActivityTimestamp !== 0 ? 'default' : 'no-edits';
+
 		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['inactive'];
 		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['closed'];
 		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['removed'];
