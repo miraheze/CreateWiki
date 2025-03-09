@@ -134,7 +134,7 @@ class DeleteWikis extends Maintenance {
 
 		$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
 			"just now that $user $action the following wiki(s) from CreateWiki and " .
-			"associated extensions:\n{$deletedWikisList}";
+			"associated extensions:\n$deletedWikisList";
 
 		$notificationData = [
 			'type' => 'deletion',
