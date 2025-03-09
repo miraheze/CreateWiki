@@ -6,6 +6,9 @@ use MediaWiki\Maintenance\Maintenance;
 
 class DeleteWikis extends Maintenance {
 
+	private array $deletedWikis = [];
+	private bool $notified = false;
+
 	public function __construct() {
 		parent::__construct();
 
@@ -26,13 +29,21 @@ class DeleteWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function log( $msg ) {
+		$logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
+		$logger->debug( "DeleteWikis: $msg" );
+		$this->output( "$msg\n" );
+	}
+
 	public function execute(): void {
 		$user = $this->getOption( 'user' );
 		if ( !$user ) {
 			$this->fatalError( 'Please specify the username of the user executing this script.' );
 		}
 
-		$deletedWikis = [];
+		$this->deletedWikis = [];
+
+		register_shutdown_function( [ $this, 'shutdownHandler' ] );
 
 		try {
 			// Single deletion mode
@@ -52,18 +63,14 @@ class DeleteWikis extends Maintenance {
 					$delete = $wikiManager->delete( force: true );
 
 					if ( $delete ) {
-						// We don't use fatalError here since that calls
-						// exit() which would stop the finally block from
-						// executing and we always want it to execute.
-						$this->output( "$delete\n" );
-						return;
+						$this->fatalError( $delete );
 					}
 
-					$this->output( "Wiki $dbname deleted.\n" );
-					$deletedWikis[] = $dbname;
+					$this->log( "Wiki $dbname deleted.\n" );
+					$this->deletedWikis[] = $dbname;
 				} else {
 					$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
-					$deletedWikis[] = $dbname;
+					$this->deletedWikis[] = $dbname;
 				}
 
 				return;
@@ -103,15 +110,15 @@ class DeleteWikis extends Maintenance {
 					$delete = $wikiManager->delete( force: false );
 
 					if ( $delete ) {
-						$this->output( "{$wiki}: {$delete}\n" );
+						$this->log( "{$wiki}: {$delete}\n" );
 						continue;
 					}
 
-					$this->output( "$dbCluster: DROP DATABASE {$wiki};\n" );
-					$deletedWikis[] = $wiki;
+					$this->log( "$dbCluster: DROP DATABASE {$wiki};\n" );
+					$this->deletedWikis[] = $wiki;
 				} else {
 					$this->output( "$wiki: $dbCluster\n" );
-					$deletedWikis[] = $wiki;
+					$this->deletedWikis[] = $wiki;
 				}
 			}
 
@@ -120,12 +127,22 @@ class DeleteWikis extends Maintenance {
 			// Make sure we notify deletions regardless even
 			// if an exception occurred, we always want to notify which
 			// ones have already been deleted.
-			$this->notifyDeletions( $user, $deletedWikis );
+			$this->notifyDeletions();
 		}
 	}
 
-	private function notifyDeletions( string $user, array $deletedWikis ): void {
-		$deletedWikisList = implode( ', ', $deletedWikis );
+	/**
+	 * Shutdown handler to catch termination of the script.
+	 */
+	public function shutdownHandler(): void {
+		if ( !$this->notified ) {
+			$this->notifyDeletions();
+		}
+	}
+
+	private function notifyDeletions(): void {
+		$user = $this->getOption( 'user' );
+		$deletedWikisList = implode( ', ', $this->deletedWikis );
 		$action = $this->hasOption( 'delete' ) ? 'has deleted' : 'is about to delete';
 
 		$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
@@ -144,6 +161,8 @@ class DeleteWikis extends Maintenance {
 				// No receivers, it will send to configured email
 				receivers: []
 			);
+
+		$this->notified = true;
 	}
 }
 
