@@ -36,7 +36,7 @@
 	"action-requestwiki": "solicitar wikis",
 	"createwiki": "Crear un wiki",
 	"createwiki-close-email-body": "Hola,\n\nEste correo electrónico es para informarte de que tu wiki ha sido cerrada.",
-	"createwiki-close-email-sender": "Telepedia",
+	"createwiki-close-email-sender": "Miraheze",
 	"createwiki-close-email-subject": "Su wiki ($1) ha sido cerrada",
 	"createwiki-comment-success": "Comentario añadido con éxito a esta solicitud.",
 	"createwiki-defaultmainpage": "__NOTOC__ ¡Bienvenido a tu nueva wiki! El siguiente enlace puede resultarte útil: [https://www.mediawiki.org/wiki/Help:Contents Help:Contents] en mediawiki.org",
