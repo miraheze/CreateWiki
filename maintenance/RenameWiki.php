@@ -32,7 +32,7 @@ class RenameWiki extends Maintenance {
 		$new = strtolower( $this->getOption( 'new' ) );
 
 		if ( $this->hasOption( 'rename' ) ) {
-			$this->output( "Renaming $old to $new. If this is wrong, Ctrl-C now!" );
+			$this->output( "Renaming $old to $new. If this is wrong, Ctrl-C now!\n" );
 
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
@@ -45,7 +45,7 @@ class RenameWiki extends Maintenance {
 				$this->fatalError( $rename );
 			}
 		} else {
-			$this->output( "Wiki $old will be renamed to $new" );
+			$this->output( "Wiki $old will be renamed to $new\n" );
 		}
 
 		$this->output( "Done.\n" );
