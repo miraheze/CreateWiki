@@ -122,12 +122,6 @@ class DeleteWikis extends Maintenance {
 		}
 	}
 
-	/**
-	 * Sends a notification about the deletion(s) performed.
-	 *
-	 * @param string $user The username that initiated the deletion.
-	 * @param array $deletedWikis List of wiki names that were deleted or would be deleted.
-	 */
 	private function notifyDeletions( string $user, array $deletedWikis ): void {
 		$deletedWikisList = implode( ', ', $deletedWikis );
 		$action = $this->hasOption( 'delete' ) ? 'has deleted' : 'is about to delete';
