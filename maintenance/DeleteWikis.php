@@ -13,7 +13,7 @@ class DeleteWikis extends Maintenance {
 		parent::__construct();
 
 		$this->addDescription(
-			'Deletes wikis. If the --deletewiki option is provided, deletes a single wiki specified by database name. ' .
+			'Deletes wikis. If the --deletewiki option is provided, deletes a single wiki specified by database. ' .
 			'Otherwise, lists or deletes all wikis marked as deleted (will never DROP a database!). ' .
 			'A notification is always sent regardless of mode.'
 		);
