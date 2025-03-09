@@ -46,88 +46,92 @@ class DeleteWikis extends Maintenance {
 		register_shutdown_function( [ $this, 'shutdownHandler' ] );
 
 		try {
-			// Single deletion mode
 			$dbname = $this->getOption( 'deletewiki' );
 			if ( $dbname ) {
-				if ( $this->hasOption( 'delete' ) ) {
-					$this->output(
-						"You are about to delete $dbname from CreateWiki. " .
-						"This will not DROP the database. If this is wrong, Ctrl-C now!\n"
-					);
-
-					// let's count down JUST to be safe!
-					$this->countDown( 10 );
-
-					$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
-						->newInstance( $dbname );
-					$delete = $wikiManager->delete( force: true );
-
-					if ( $delete ) {
-						$this->fatalError( $delete );
-					}
-
-					$this->log( "Wiki $dbname deleted.\n" );
-					$this->deletedWikis[] = $dbname;
-				} else {
-					$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
-					$this->deletedWikis[] = $dbname;
-				}
-
+				$this->processSingleDeletion( $dbname );
 				return;
 			}
 
-			// Multi deletion mode
-			if ( $this->hasOption( 'delete' ) ) {
-				$this->output(
-					"You are about to delete all wikis that are marked as deleted from CreateWiki. " .
-					"This will not DROP any databases. If this is wrong, Ctrl-C now!\n"
-				);
-
-				// let's count down JUST to be safe!
-				$this->countDown( 10 );
-			}
-
-			$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-			$dbr = $databaseUtils->getGlobalReplicaDB();
-
-			$res = $dbr->newSelectQueryBuilder()
-				->table( 'cw_wikis' )
-				->fields( [
-					'wiki_dbcluster',
-					'wiki_dbname',
-				] )
-				->where( [ 'wiki_deleted' => 1 ] )
-				->caller( __METHOD__ )
-				->fetchResultSet();
-
-			foreach ( $res as $row ) {
-				$wiki = $row->wiki_dbname;
-				$dbCluster = $row->wiki_dbcluster;
-
-				if ( $this->hasOption( 'delete' ) ) {
-					$wikiManager = $wikiManagerFactory->newInstance( $wiki );
-					$delete = $wikiManager->delete( force: false );
-
-					if ( $delete ) {
-						$this->log( "{$wiki}: {$delete}\n" );
-						continue;
-					}
-
-					$this->log( "$dbCluster: DROP DATABASE {$wiki};\n" );
-					$this->deletedWikis[] = $wiki;
-				} else {
-					$this->output( "$wiki: $dbCluster\n" );
-					$this->deletedWikis[] = $wiki;
-				}
-			}
-
+			$this->processMultipleDeletions();
 			$this->output( "Done.\n" );
 		} finally {
 			// Make sure we notify deletions regardless even
 			// if an exception occurred, we always want to notify which
 			// ones have already been deleted.
 			$this->notifyDeletions();
+		}
+	}
+
+	private function processSingleDeletion( string $dbname ): void {
+		if ( $this->hasOption( 'delete' ) ) {
+			$this->output(
+				"You are about to delete $dbname from CreateWiki. " .
+				"This will not DROP the database. If this is wrong, Ctrl-C now!\n"
+			);
+
+			// Let's count down JUST to be safe!
+			$this->countDown( 10 );
+
+			$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
+				->newInstance( $dbname );
+			$delete = $wikiManager->delete( force: true );
+
+			if ( $delete ) {
+				$this->fatalError( $delete );
+			}
+
+			$this->log( "Wiki $dbname deleted.\n" );
+			$this->deletedWikis[] = $dbname;
+		} else {
+			$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
+			$this->deletedWikis[] = $dbname;
+		}
+	}
+
+	private function processMultipleDeletions(): void {
+		if ( $this->hasOption( 'delete' ) ) {
+			$this->output(
+				"You are about to delete all wikis that are marked as deleted from CreateWiki. " .
+				"This will not DROP any databases. If this is wrong, Ctrl-C now!\n"
+			);
+
+			// Let's count down JUST to be safe!
+			$this->countDown( 10 );
+		}
+
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+		$dbr = $databaseUtils->getGlobalReplicaDB();
+
+		$res = $dbr->newSelectQueryBuilder()
+			->table( 'cw_wikis' )
+			->fields( [
+				'wiki_dbcluster',
+				'wiki_dbname',
+			] )
+			->where( [ 'wiki_deleted' => 1 ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
+
+		foreach ( $res as $row ) {
+			$wiki = $row->wiki_dbname;
+			$dbCluster = $row->wiki_dbcluster;
+
+			if ( $this->hasOption( 'delete' ) ) {
+				$wikiManager = $wikiManagerFactory->newInstance( $wiki );
+				$delete = $wikiManager->delete( force: false );
+
+				if ( $delete ) {
+					$this->log( "{$wiki}: {$delete}\n" );
+					continue;
+				}
+
+				$this->log( "$dbCluster: DROP DATABASE {$wiki};\n" );
+				$this->deletedWikis[] = $wiki;
+			} else {
+				$this->output( "$wiki: $dbCluster\n" );
+				$this->deletedWikis[] = $wiki;
+			}
 		}
 	}
 
