@@ -38,7 +38,6 @@ class DeleteWikis extends Maintenance {
 			// Single deletion mode
 			$dbname = $this->getOption( 'deletewiki' );
 			if ( $dbname ) {
-				$deletedWikis[] = $dbname;
 				if ( $this->hasOption( 'delete' ) ) {
 					$this->output(
 						"You are about to delete $dbname from CreateWiki. " .
@@ -61,8 +60,10 @@ class DeleteWikis extends Maintenance {
 					}
 
 					$this->output( "Wiki $dbname deleted.\n" );
+					$deletedWikis[] = $dbname;
 				} else {
 					$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
+					$deletedWikis[] = $dbname;
 				}
 
 				return;
@@ -97,7 +98,6 @@ class DeleteWikis extends Maintenance {
 				$wiki = $row->wiki_dbname;
 				$dbCluster = $row->wiki_dbcluster;
 
-				$deletedWikis[] = $wiki;
 				if ( $this->hasOption( 'delete' ) ) {
 					$wikiManager = $wikiManagerFactory->newInstance( $wiki );
 					$delete = $wikiManager->delete( force: false );
@@ -108,8 +108,10 @@ class DeleteWikis extends Maintenance {
 					}
 
 					$this->output( "$dbCluster: DROP DATABASE {$wiki};\n" );
+					$deletedWikis[] = $wiki;
 				} else {
 					$this->output( "$wiki: $dbCluster\n" );
+					$deletedWikis[] = $wiki;
 				}
 			}
 
