@@ -15,53 +15,47 @@ class RenameWiki extends Maintenance {
 			'database exists and while old one still exists.'
 		);
 
-		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.', false );
-		$this->addArg( 'oldwiki', 'Old wiki database name', true );
-		$this->addArg( 'newwiki', 'New wiki database name', true );
+		$this->addOption( 'rename', 'Performs the rename. If not, will output rename information.' );
+		$this->addOption( 'old', 'Old wiki database name', true, true );
+		$this->addOption( 'new', 'New wiki database name', true, true );
 
-		$this->addArg( 'user',
+		$this->addOption( 'user',
 			'Username or reference name of the person running this script. ' .
 			'Will be used in tracking and notification internally.',
-		true );
+		true, true );
 
 		$this->requireExtension( 'CreateWiki' );
 	}
 
 	public function execute(): void {
-		$oldwiki = $this->getArg( 0 );
-		$newwiki = $this->getArg( 1 );
-
-		$renamedWiki = [];
+		$old = strtolower( $this->getOption( 'old' ) );
+		$new = strtolower( $this->getOption( 'new' ) );
 
 		if ( $this->hasOption( 'rename' ) ) {
-			$this->output( "Renaming $oldwiki to $newwiki. If this is wrong, Ctrl-C now!" );
+			$this->output( "Renaming $old to $new. If this is wrong, Ctrl-C now!" );
 
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
 			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-			$wikiManager = $wikiManagerFactory->newInstance( $oldwiki );
-			$rename = $wikiManager->rename( newDatabaseName: $newwiki );
+			$wikiManager = $wikiManagerFactory->newInstance( $old );
+			$rename = $wikiManager->rename( newDatabaseName: $new );
 
 			if ( $rename ) {
 				$this->fatalError( $rename );
 			}
-
-			$renamedWiki[] = $oldwiki;
-			$renamedWiki[] = $newwiki;
 		} else {
-			$this->output( "Wiki $oldwiki will be renamed to $newwiki" );
+			$this->output( "Wiki $old will be renamed to $new" );
 		}
 
 		$this->output( "Done.\n" );
 
 		if ( $this->hasOption( 'rename' ) ) {
-			$user = $this->getArg( 2 );
-			$wikiRename = implode( ' to ', $renamedWiki );
+			$user = $this->getOption( 'user' );
 
 			$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
-				"just now {$user} has renamed the following wiki from CreateWiki and " .
-				"associated extensions - From {$wikiRename}.";
+				"just now $user has renamed the following wiki from CreateWiki and " .
+				"associated extensions - From $old to $new.";
 
 			$notificationData = [
 				'type' => 'wiki-rename',
