@@ -29,10 +29,12 @@ class DeleteWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	private function log( string $msg ): void {
+	private function log( string $msg, bool $output ): void {
 		$logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
 		$logger->debug( "DeleteWikis: $msg" );
-		$this->output( "$msg\n" );
+		if ( $output ) {
+			$this->output( "$msg\n" );
+		}
 	}
 
 	public function execute(): void {
@@ -80,7 +82,7 @@ class DeleteWikis extends Maintenance {
 				$this->fatalError( $delete );
 			}
 
-			$this->log( "Wiki $dbname deleted.\n" );
+			$this->log( "Wiki $dbname deleted.", output: true );
 			$this->deletedWikis[] = $dbname;
 		} else {
 			$this->output( "Wiki $dbname would be deleted. Use --delete to actually perform deletion.\n" );
@@ -122,11 +124,13 @@ class DeleteWikis extends Maintenance {
 				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
-					$this->log( "{$wiki}: {$delete}\n" );
+					$this->log( "{$wiki}: {$delete}", output: true );
 					continue;
 				}
 
-				$this->log( "$dbCluster: DROP DATABASE {$wiki};\n" );
+				
+				$this->log( "Wiki $wiki deleted from $dbCluster.", output: false );
+				$this->output( "$dbCluster: DROP DATABASE $wiki;\n" );
 				$this->deletedWikis[] = $wiki;
 			} else {
 				$this->output( "$wiki: $dbCluster\n" );
