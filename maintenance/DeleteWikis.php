@@ -128,7 +128,6 @@ class DeleteWikis extends Maintenance {
 					continue;
 				}
 
-				
 				$this->log( "Wiki $wiki deleted from $dbCluster.", output: false );
 				$this->output( "$dbCluster: DROP DATABASE $wiki;\n" );
 				$this->deletedWikis[] = $wiki;
