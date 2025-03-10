@@ -86,10 +86,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
 		ConvertibleTimestamp::setFakeTime( $now );
-		$this->editPage(
-			Title::newFromText( 'TestWikiActive/Main_Page' ),
-			'Recent activity'
-		);
+		$this->insertRemoteLogging( 'activetest' )
 
 		$this->getServiceContainer()->get( 'RemoteWikiFactory' )
 			->newInstance( 'activetest' )
@@ -113,10 +110,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
-		$this->editPage(
-			Title::newFromText( 'TestWikiInactive/Main_Page' ),
-			'Initial content'
-		);
+		$this->insertRemoteLogging( 'inactivetest' )
 
 		// Now simulate that the last activity occurred 15 days ago (beyond the inactive threshold of 10 days).
 		$oldTime = date( 'YmdHis', strtotime( '-15 days' ) );
@@ -142,10 +136,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
-		$this->editPage(
-			Title::newFromText( 'TestWikiClosure/Main_Page' ),
-			'Initial content'
-		);
+		$this->insertRemoteLogging( 'closuretest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
 		// plus closed (5 days) thresholds (i.e. older than 15 days).
@@ -206,5 +197,24 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			->execute();
 
 		$this->db->selectDomain( $dbname );
+	}
+
+	private function insertRemoteLogging( string $dbname ): void {
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$dbw = $databaseUtils->getRemoteWikiPrimaryDB( $dbname );
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'logging' )
+			->rows( [
+				'log_type' => 'test',
+				'log_action' => 'test',
+				'log_actor' => $this->getTestUser()->getUser(),
+				'log_params' => "test",
+				'log_timestamp' => $dbw->timestamp(),
+				'log_namespace' => NS_MAIN,
+				'log_title' => 'Test',
+				'log_comment_id' => 0,
+			] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 }
