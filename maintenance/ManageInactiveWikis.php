@@ -32,6 +32,8 @@ class ManageInactiveWikis extends Maintenance {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
+		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['no-edits']['inactive'];
+
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
@@ -49,8 +51,6 @@ class ManageInactiveWikis extends Maintenance {
 
 		foreach ( $wikis as $wiki ) {
 			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
-			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
-
 			$remoteWiki->disableResetDatabaseLists();
 
 			// Check if the wiki is inactive based on creation date
@@ -68,17 +68,19 @@ class ManageInactiveWikis extends Maintenance {
 		string $dbname,
 		RemoteWikiFactory $remoteWiki
 	): bool {
-		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
-		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['closed'];
-		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['removed'];
-		$canWrite = $this->hasOption( 'write' );
-
 		/** @var CheckLastWikiActivity $activity */
 		$activity = $this->createChild( CheckLastWikiActivity::class );
 		'@phan-var CheckLastWikiActivity $activity';
 
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbname ) );
 		$lastActivityTimestamp = $activity->getTimestamp();
+
+		$track = $lastActivityTimestamp !== 0 ? 'default' : 'no-edits';
+
+		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['inactive'];
+		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['closed'];
+		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['removed'];
+		$canWrite = $this->hasOption( 'write' );
 
 		// If the wiki is still active, mark it as active
 		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-{$inactiveDays} days" ) ) ) {
