@@ -41,9 +41,9 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		] );
 
 		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `TestWikiActive`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `TestWikiInactive`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `TestWikiClosure`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `activetest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `closuretest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 	}
@@ -81,7 +81,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteActiveWiki(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->insertWiki( 'TestWikiActive' );
+		$this->createWiki( 'activetest' );
 
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
@@ -92,7 +92,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		);
 
 		$this->getServiceContainer()->get( 'RemoteWikiFactory' )
-			->newInstance( 'TestWikiActive' )
+			->newInstance( 'activetest' )
 			->markInactive();
 
 		// Enable write mode.
@@ -109,7 +109,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteInactiveWiki(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->insertWiki( 'TestWikiInactive' );
+		$this->createWiki( 'inactivetest' );
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
@@ -138,7 +138,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteClosedWiki(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->insertWiki( 'TestWikiClosure' );
+		$this->createWiki( 'closuretest' );
 
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
@@ -155,7 +155,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Mark the wiki as inactive so that it records an inactive timestamp.
 		$remoteWiki = $this->getServiceContainer()
 			->get( 'RemoteWikiFactory' )
-			->newInstance( 'TestWikiClosure' );
+			->newInstance( 'closuretest' );
 		$remoteWiki->markInactive();
 
 		// Return the fake time to now for evaluation.
@@ -170,37 +170,41 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		);
 	}
 
-	protected function insertWiki( string $dbname ): void {
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$dbw = $databaseUtils->getGlobalPrimaryDB();
-		$dbw->query( "CREATE DATABASE IF NOT EXISTS $dbname;", __METHOD__ );
-		$dbw->newInsertQueryBuilder()
-			->insertInto( 'cw_wikis' )
-			->ignore()
-			->row( [
-				'wiki_dbname' => $dbname,
-				'wiki_dbcluster' => 'c1',
-				'wiki_sitename' => 'TestWiki',
-				'wiki_language' => 'en',
-				'wiki_private' => 0,
-				'wiki_creation' => '20200101000000',
-				'wiki_category' => 'uncategorised',
-				'wiki_closed' => 0,
-				'wiki_deleted' => 0,
-				'wiki_locked' => 0,
-				'wiki_inactive' => 0,
-				'wiki_inactive_exempt' => 0,
-				'wiki_url' => 'http://127.0.0.1:9412',
-			] )
-			->caller( __METHOD__ )
-			->execute();
-
+	private function createWiki( string $dbname ): void {
 		$sqlPath = '/maintenance/tables-generated.sql';
 		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
 			$sqlPath = '/sql/mysql/tables-generated.sql';
 		}
 
+		$this->overrideConfigValues( [
+			ConfigNames::DatabaseSuffix => 'test',
+			ConfigNames::SQLFiles => [
+				MW_INSTALL_PATH . $sqlPath,
+			],
+		] );
+
+		$testUser = $this->getTestUser()->getUser();
+		$testSysop = $this->getTestSysop()->getUser();
+
+		// ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+		$wikiManager = $wikiManagerFactory->newInstance( $dbname );
+
+		$wikiManager->create(
+			'TestWiki', 'en', false, 'uncategorised',
+			$testUser->getName(), $testSysop->getName(),
+			'Test', []
+		);
+
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
+		$dbw->newUpdateQueryBuilder()
+			->update( 'cw_wikis' )
+			->set( [ 'wiki_creation' => '20200101000000' ] )
+			->where( [ 'wiki_dbname' => $dbname ] )
+			->caller( __METHOD__ )
+			->execute();
+
 		$this->db->selectDomain( $dbname );
-		$this->db->sourceFile( MW_INSTALL_PATH . $sqlPath );
 	}
 }
