@@ -31,6 +31,7 @@ class CreateWikiNotificationsManager {
 
 	private const EMAIL_TYPES = [
 		'closure',
+		'custom-email',
 		'deletion',
 		'wiki-creation',
 		'wiki-rename',
@@ -171,7 +172,7 @@ class CreateWikiNotificationsManager {
 
 			$from = new MailAddress(
 				$this->options->get( MainConfigNames::PasswordSender ),
-				$this->getFromName()
+				$data['from-name'] ?? $this->getFromName()
 			);
 
 			UserMailer::send(
