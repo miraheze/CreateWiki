@@ -44,6 +44,7 @@ class DeleteWikis extends Maintenance {
 		}
 
 		$this->deletedWikis = [];
+		$this->notified = false;
 
 		register_shutdown_function( [ $this, 'shutdownHandler' ] );
 
