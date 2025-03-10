@@ -124,7 +124,7 @@ class DeleteWikis extends Maintenance {
 				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
-					$this->log( "{$wiki}: {$delete}", output: true );
+					$this->log( "$wiki: $delete", output: true );
 					continue;
 				}
 
