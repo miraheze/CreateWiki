@@ -13,6 +13,7 @@ class EmailBureaucrats extends Maintenance {
 
 		$this->addDescription( 'Sends an email to all bureaucrats on the given wiki.' );
 
+		$this->addOption( 'from-name', 'The from name to use for the email.', true, true );
 		$this->addOption( 'subject', 'The email subject.', true, true );
 		$this->addOption( 'body',
 			'The email body. Either directly or a file with the email contents to be sent. ' .
@@ -46,6 +47,7 @@ class EmailBureaucrats extends Maintenance {
 
 		$notificationData = [
 			'type' => 'custom-email',
+			'from-name' => $this->getOption( 'from-name' ),
 			'subject' => $this->getOption( 'subject' ),
 			'body' => [
 				'html' => $bodyHtml,
