@@ -86,7 +86,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
 		ConvertibleTimestamp::setFakeTime( $now );
-		$this->insertRemoteLogging( 'activetest' )
+		$this->insertRemoteLogging( 'activetest' );
 
 		$this->getServiceContainer()->get( 'RemoteWikiFactory' )
 			->newInstance( 'activetest' )
@@ -110,7 +110,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
-		$this->insertRemoteLogging( 'inactivetest' )
+		$this->insertRemoteLogging( 'inactivetest' );
 
 		// Now simulate that the last activity occurred 15 days ago (beyond the inactive threshold of 10 days).
 		$oldTime = date( 'YmdHis', strtotime( '-15 days' ) );
@@ -208,7 +208,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'log_type' => 'test',
 				'log_action' => 'test',
 				'log_actor' => $this->getTestUser()->getUser(),
-				'log_params' => "test",
+				'log_params' => 'test',
 				'log_timestamp' => $dbw->timestamp(),
 				'log_namespace' => NS_MAIN,
 				'log_title' => 'Test',
