@@ -53,6 +53,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `closuretest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `closureinactivetest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `closureinactiveineligibletest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `removaltest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `removalineligibletest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
@@ -221,6 +222,48 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::handleInactiveWiki
+	 */
+	public function testExecuteClosedWikiAlreadyInactiveIneligible(): void {
+		// Enable the maintenance script.
+		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
+		$this->createWiki( 'closureinactiveineligibletest' );
+
+		// Set an old creation date.
+		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		$this->insertRemoteLogging( 'closureinactiveineligibletest' );
+
+		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
+		$oldTime = date( 'YmdHis', strtotime( '-11 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
+		$this->insertRemoteLogging( 'closureinactiveineligibletest' );
+
+		// Mark the wiki as inactive so that it records an inactive timestamp.
+		// We wark it inactive 4 days ago (less than the closed threshold).
+		$oldTime = date( 'YmdHis', strtotime( '-4 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
+
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'closureinactiveineligibletest' );
+
+		$remoteWiki->markInactive();
+		$remoteWiki->commit();
+
+		// Return the fake time to now for evaluation.
+		ConvertibleTimestamp::setFakeTime( date( 'YmdHis' ) );
+
+		// Enable write mode.
+		$this->maintenance->setOption( 'write', true );
+
+		$this->maintenance->execute();
+		$this->expectOutputRegex(
+			'/^closureinactiveineligibletest was marked as inactive on .* and is now closed\. Last activity:/'
+		);
+	}
+
+	/**
+	 * @covers ::execute
+	 * @covers ::checkLastActivity
 	 * @covers ::handleClosedWiki
 	 */
 	public function testExecuteRemovedWiki(): void {
@@ -298,7 +341,8 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^removalineligibletest is eligible for removal and now has been\. It was closed on .*\. Last activity:/'
+			'/^removalineligibletest was closed on .* but is not yet eligible for deletion\. ' .
+			'It may have been manually closed\. Last activity:/'
 		);
 	}
 
