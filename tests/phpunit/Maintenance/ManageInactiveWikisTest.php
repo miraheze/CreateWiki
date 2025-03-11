@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Tests\Maintenance;
 
 use MediaWiki\MainConfigNames;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
-use MediaWiki\Title\Title;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Maintenance\ManageInactiveWikis;
