@@ -213,7 +213,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^closuretest (has been closed|was marked as inactive on .* and is now closed)\./'
+			'/^removaltest is eligible for removal and now has been\. It was closed on .*\. Last activity:/'
 		);
 	}
 
@@ -235,17 +235,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			reason: 'Test',
 			extra: []
 		);
-
-		/* $databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$dbw = $databaseUtils->getGlobalPrimaryDB();
-		$dbw->newUpdateQueryBuilder()
-			->update( 'cw_wikis' )
-			->set( [ 'wiki_creation' => '20200101000000' ] )
-			->where( [ 'wiki_dbname' => $dbname ] )
-			->caller( __METHOD__ )
-			->execute(); */
-
-		// $this->db->selectDomain( $dbname );
 	}
 
 	private function insertRemoteLogging( string $dbname ): void {
