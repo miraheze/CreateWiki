@@ -171,7 +171,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^closuretest> (has been closed|was marked as inactive on .* and is now closed)\./'
+			'/^closuretest (has been closed|was marked as inactive on .* and is now closed)\./'
 		);
 	}
 
