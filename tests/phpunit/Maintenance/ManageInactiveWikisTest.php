@@ -20,12 +20,21 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		$sqlPath = '/maintenance/tables-generated.sql';
+		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
+			$sqlPath = '/sql/mysql/tables-generated.sql';
+		}
+
 		$this->overrideConfigValues( [
+			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::EnableManageInactiveWikis => true,
 			ConfigNames::StateDays => [
 				'inactive' => 10,
 				'closed' => 5,
 				'removed' => 7,
+			],
+			ConfigNames::SQLFiles => [
+				MW_INSTALL_PATH . $sqlPath,
 			],
 			ConfigNames::UseClosedWikis => true,
 			ConfigNames::UseInactiveWikis => true,
@@ -82,14 +91,14 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->createWiki( 'activetest' );
 
+		$this->getServiceContainer()->get( 'RemoteWikiFactory' )
+			->newInstance( 'activetest' )
+			->markInactive();
+
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
 		ConvertibleTimestamp::setFakeTime( $now );
 		$this->insertRemoteLogging( 'activetest' );
-
-		$this->getServiceContainer()->get( 'RemoteWikiFactory' )
-			->newInstance( 'activetest' )
-			->markInactive();
 
 		// Enable write mode.
 		$this->maintenance->setOption( 'write', true );
@@ -161,18 +170,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	}
 
 	private function createWiki( string $dbname ): void {
-		$sqlPath = '/maintenance/tables-generated.sql';
-		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
-			$sqlPath = '/sql/mysql/tables-generated.sql';
-		}
-
-		$this->overrideConfigValues( [
-			ConfigNames::DatabaseSuffix => 'test',
-			ConfigNames::SQLFiles => [
-				MW_INSTALL_PATH . $sqlPath,
-			],
-		] );
-
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
