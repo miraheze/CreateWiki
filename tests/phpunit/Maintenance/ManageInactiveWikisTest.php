@@ -187,7 +187,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
 		$this->insertRemoteLogging( 'closuretest' );
-		
+
 		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
 		$oldTime = date( 'YmdHis', strtotime( '-11 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
