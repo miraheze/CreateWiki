@@ -106,7 +106,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->maintenance->setOption( 'write', true );
 
 		$this->maintenance->execute();
-		$this->expectOutputRegex( '/^TestWikiActive has been marked as active\./' );
+		$this->expectOutputRegex( '/^activetest has been marked as active\./' );
 	}
 
 	/**
@@ -125,13 +125,14 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Now simulate that the last activity occurred 15 days ago (beyond the inactive threshold of 10 days).
 		$oldTime = date( 'YmdHis', strtotime( '-15 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
+		$this->insertRemoteLogging( 'inactivetest' );
 
 		// Do not mark the wiki as inactive yet.
 		// Enable write mode so that the script can update the wiki's state.
 		$this->maintenance->setOption( 'write', true );
 
 		$this->maintenance->execute();
-		$this->expectOutputRegex( '/^TestWikiInactive was marked as inactive\. Last activity:/' );
+		$this->expectOutputRegex( '/^inactivetest> was marked as inactive\. Last activity:/' );
 	}
 
 	/**
@@ -168,7 +169,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^TestWikiClosure (has been closed|was marked as inactive on .* and is now closed)\./'
+			'/^closuretest (has been closed|was marked as inactive on .* and is now closed)\./'
 		);
 	}
 
