@@ -139,6 +139,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleInactiveWiki
+	 * @covers ::notifyBureaucrats
 	 */
 	public function testExecuteClosedWiki(): void {
 		// Enable the maintenance script.
