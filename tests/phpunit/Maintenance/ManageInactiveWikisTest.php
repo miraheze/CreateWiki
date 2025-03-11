@@ -139,7 +139,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
-	 * @covers ::handleInactiveWiki
 	 * @covers ::notifyBureaucrats
 	 */
 	public function testExecuteClosedWiki(): void {
@@ -171,8 +170,49 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->maintenance->setOption( 'write', true );
 
 		$this->maintenance->execute();
+		$this->expectOutputRegex( '/^closuretest has been closed\. Last activity:/' );
+	}
+
+	/**
+	 * @covers ::execute
+	 * @covers ::checkLastActivity
+	 * @covers ::handleInactiveWiki
+	 * @covers ::notifyBureaucrats
+	 */
+	public function testExecuteClosedWikiAlreadyInactive(): void {
+		// Enable the maintenance script.
+		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
+		$this->createWiki( 'closuretest' );
+
+		// Set an old creation date.
+		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		$this->insertRemoteLogging( 'closuretest' );
+		
+		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
+		$oldTime = date( 'YmdHis', strtotime( '-11 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
+		$this->insertRemoteLogging( 'closuretest' );
+
+		// Mark the wiki as inactive so that it records an inactive timestamp.
+		// We wark it inactive 6 days ago (more than the closed threshold).
+		$oldTime = date( 'YmdHis', strtotime( '-6 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
+
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'closuretest' );
+
+		$remoteWiki->markInactive();
+		$remoteWiki->commit();
+
+		// Return the fake time to now for evaluation.
+		ConvertibleTimestamp::setFakeTime( date( 'YmdHis' ) );
+
+		// Enable write mode.
+		$this->maintenance->setOption( 'write', true );
+
+		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^closuretest (has been closed|was marked as inactive on .* and is now closed)\./'
+			'/^closuretest was marked as inactive on .* and is now closed\. Last activity:/'
 		);
 	}
 
@@ -199,6 +239,49 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Mark the wiki as closed so that it records a closed timestamp.
 		// This will also be 16 days ago which means closed timestamp
 		// plus removal days is greater then 7 which is the removal threshold.
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'removaltest' );
+
+		$remoteWiki->markClosed();
+		$remoteWiki->commit();
+
+		// Return the fake time to now for evaluation.
+		ConvertibleTimestamp::setFakeTime( date( 'YmdHis' ) );
+
+		// Enable write mode.
+		$this->maintenance->setOption( 'write', true );
+
+		$this->maintenance->execute();
+		$this->expectOutputRegex(
+			'/^removaltest is eligible for removal and now has been\. It was closed on .*\. Last activity:/'
+		);
+	}
+
+	/**
+	 * @covers ::execute
+	 * @covers ::checkLastActivity
+	 * @covers ::handleClosedWiki
+	 */
+	public function testExecuteRemovedWikiIneligible(): void {
+		// Enable the maintenance script.
+		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
+		$this->createWiki( 'removaltest' );
+
+		// Set an old creation date.
+		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		$this->insertRemoteLogging( 'removaltest' );
+
+		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
+		// plus closed (5 days) thresholds (i.e. older than 15 days).
+		$oldTime = date( 'YmdHis', strtotime( '-16 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
+		$this->insertRemoteLogging( 'removaltest' );
+
+		// Mark the wiki as closed so that it records a closed timestamp.
+		// We mark as closed 6 days ago (less then the removal threshold),
+		// so it is not yet eligible for removal.
+		$oldTime = date( 'YmdHis', strtotime( '-6 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 		$remoteWiki = $remoteWikiFactory->newInstance( 'removaltest' );
 
