@@ -52,6 +52,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `activetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `closuretest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `removaltest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 	}
@@ -175,30 +176,76 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		);
 	}
 
+	/**
+	 * @covers ::execute
+	 * @covers ::checkLastActivity
+	 * @covers ::handleClosedWiki
+	 */
+	public function testExecuteRemovedWiki(): void {
+		// Enable the maintenance script.
+		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
+		$this->createWiki( 'removaltest' );
+
+		// Set an old creation date.
+		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		$this->insertRemoteLogging( 'removaltest' );
+
+		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
+		// plus closed (5 days) thresholds (i.e. older than 15 days).
+		$oldTime = date( 'YmdHis', strtotime( '-16 days' ) );
+		ConvertibleTimestamp::setFakeTime( $oldTime );
+		$this->insertRemoteLogging( 'removaltest' );
+
+		// Mark the wiki as closed so that it records a closed timestamp.
+		// This will also be 16 days ago which means closed timestamp
+		// plus removal days is greater then 7 which is the removal threshold.
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'removaltest' );
+
+		$remoteWiki->markClosed();
+		$remoteWiki->commit();
+
+		// Return the fake time to now for evaluation.
+		ConvertibleTimestamp::setFakeTime( date( 'YmdHis' ) );
+
+		// Enable write mode.
+		$this->maintenance->setOption( 'write', true );
+
+		$this->maintenance->execute();
+		$this->expectOutputRegex(
+			'/^closuretest (has been closed|was marked as inactive on .* and is now closed)\./'
+		);
+	}
+
 	private function createWiki( string $dbname ): void {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
-		// ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( '20200101000000' );
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
 		$wikiManager = $wikiManagerFactory->newInstance( $dbname );
 
 		$wikiManager->create(
-			'TestWiki', 'en', false, 'uncategorised',
-			$testUser->getName(), $testSysop->getName(),
-			'Test', []
+			sitename: 'TestWiki',
+			language: 'en',
+			private: false,
+			category: 'uncategorised',
+			requester: $testUser->getName(),
+			actor: $testSysop->getName(),
+			reason: 'Test',
+			extra: []
 		);
 
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		/* $databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newUpdateQueryBuilder()
 			->update( 'cw_wikis' )
 			->set( [ 'wiki_creation' => '20200101000000' ] )
 			->where( [ 'wiki_dbname' => $dbname ] )
 			->caller( __METHOD__ )
-			->execute();
+			->execute(); */
 
-		$this->db->selectDomain( $dbname );
+		// $this->db->selectDomain( $dbname );
 	}
 
 	private function insertRemoteLogging( string $dbname ): void {
