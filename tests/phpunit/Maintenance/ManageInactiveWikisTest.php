@@ -206,7 +206,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			->rows( [
 				'log_type' => 'test',
 				'log_action' => 'test',
-				'log_actor' => $this->getTestUser()->getUser(),
+				'log_actor' => $this->getTestUser()->getUser()->getActorId(),
 				'log_params' => 'test',
 				'log_timestamp' => $dbw->timestamp(),
 				'log_namespace' => NS_MAIN,
