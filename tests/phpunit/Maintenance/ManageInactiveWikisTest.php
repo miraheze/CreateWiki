@@ -91,14 +91,16 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
 		$this->createWiki( 'activetest' );
 
-		$this->getServiceContainer()->get( 'RemoteWikiFactory' )
-			->newInstance( 'activetest' )
-			->markInactive();
-
 		// Set the fake time to now and simulate a recent edit on the wiki.
 		$now = date( 'YmdHis' );
 		ConvertibleTimestamp::setFakeTime( $now );
 		$this->insertRemoteLogging( 'activetest' );
+
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'activetest' );
+
+		$remoteWiki->markInactive();
+		$remoteWiki->commit();
 
 		// Enable write mode.
 		$this->maintenance->setOption( 'write', true );
@@ -152,10 +154,11 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		ConvertibleTimestamp::setFakeTime( $oldTime );
 
 		// Mark the wiki as inactive so that it records an inactive timestamp.
-		$remoteWiki = $this->getServiceContainer()
-			->get( 'RemoteWikiFactory' )
-			->newInstance( 'closuretest' );
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'closuretest' );
+
 		$remoteWiki->markInactive();
+		$remoteWiki->commit();
 
 		// Return the fake time to now for evaluation.
 		ConvertibleTimestamp::setFakeTime( date( 'YmdHis' ) );
