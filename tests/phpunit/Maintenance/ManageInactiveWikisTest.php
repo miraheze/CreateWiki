@@ -52,7 +52,9 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `activetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `closuretest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `closureinactivetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `removaltest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `removalineligibletest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 	}
@@ -182,16 +184,16 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteClosedWikiAlreadyInactive(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->createWiki( 'closuretest' );
+		$this->createWiki( 'closureinactivetest' );
 
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
-		$this->insertRemoteLogging( 'closuretest' );
+		$this->insertRemoteLogging( 'closureinactivetest' );
 
 		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
 		$oldTime = date( 'YmdHis', strtotime( '-11 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
-		$this->insertRemoteLogging( 'closuretest' );
+		$this->insertRemoteLogging( 'closureinactivetest' );
 
 		// Mark the wiki as inactive so that it records an inactive timestamp.
 		// We wark it inactive 6 days ago (more than the closed threshold).
@@ -199,7 +201,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		ConvertibleTimestamp::setFakeTime( $oldTime );
 
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'closuretest' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'closureinactivetest' );
 
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
@@ -212,7 +214,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^closuretest was marked as inactive on .* and is now closed\. Last activity:/'
+			'/^closureinactivetest was marked as inactive on .* and is now closed\. Last activity:/'
 		);
 	}
 
@@ -265,17 +267,17 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	public function testExecuteRemovedWikiIneligible(): void {
 		// Enable the maintenance script.
 		$this->overrideConfigValue( ConfigNames::EnableManageInactiveWikis, true );
-		$this->createWiki( 'removaltest' );
+		$this->createWiki( 'removalineligibletest' );
 
 		// Set an old creation date.
 		ConvertibleTimestamp::setFakeTime( '20200101000000' );
-		$this->insertRemoteLogging( 'removaltest' );
+		$this->insertRemoteLogging( 'removalineligibletest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
 		// plus closed (5 days) thresholds (i.e. older than 15 days).
 		$oldTime = date( 'YmdHis', strtotime( '-16 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
-		$this->insertRemoteLogging( 'removaltest' );
+		$this->insertRemoteLogging( 'removalineligibletest' );
 
 		// Mark the wiki as closed so that it records a closed timestamp.
 		// We mark as closed 6 days ago (less then the removal threshold),
@@ -283,7 +285,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$oldTime = date( 'YmdHis', strtotime( '-6 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
 		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'removaltest' );
+		$remoteWiki = $remoteWikiFactory->newInstance( 'removalineligibletest' );
 
 		$remoteWiki->markClosed();
 		$remoteWiki->commit();
@@ -296,7 +298,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 		$this->maintenance->execute();
 		$this->expectOutputRegex(
-			'/^removaltest is eligible for removal and now has been\. It was closed on .*\. Last activity:/'
+			'/^removalineligibletest is eligible for removal and now has been\. It was closed on .*\. Last activity:/'
 		);
 	}
 
