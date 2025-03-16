@@ -265,34 +265,33 @@ class WikiManagerFactory {
 			$this->cwdb
 		);
 
-		$domain = $this->options->get( ConfigNames::Subdomain );
-		$subdomain = substr(
-			$this->dbname, 0,
-			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-		);
-
-		$notificationData = [
-			'type' => 'wiki-creation',
-			'extra' => [
-				'wiki-url' => 'https://' . $subdomain . '.' . $domain,
-				'sitename' => $sitename,
-			],
-			'subject' => $this->messageLocalizer->msg(
-				'createwiki-email-subject', $sitename
-			)->inContentLanguage()->escaped(),
-			'body' => [
-				'html' => $this->messageLocalizer->msg(
-					'createwiki-email-body'
-				)->inContentLanguage()->parse(),
-				'text' => $this->messageLocalizer->msg(
-					'createwiki-email-body'
-				)->inContentLanguage()->text(),
-			],
-		];
-
-		$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
-
 		if ( $actor !== '' ) {
+			$domain = $this->options->get( ConfigNames::Subdomain );
+			$subdomain = substr(
+				$this->dbname, 0,
+				-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
+			);
+
+			$notificationData = [
+				'type' => 'wiki-creation',
+				'extra' => [
+					'wiki-url' => 'https://' . $subdomain . '.' . $domain,
+					'sitename' => $sitename,
+				],
+				'subject' => $this->messageLocalizer->msg(
+					'createwiki-email-subject', $sitename
+				)->inContentLanguage()->escaped(),
+				'body' => [
+					'html' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->parse(),
+					'text' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->text(),
+				],
+			];
+
+			$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
 		}
 	}
