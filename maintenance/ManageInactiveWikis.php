@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
+use MediaWiki\Config\ConfigException;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
@@ -75,11 +76,24 @@ class ManageInactiveWikis extends Maintenance {
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbname ) );
 		$lastActivityTimestamp = $activity->getTimestamp();
 
+		$stateConfig = $this->getConfig()->get( ConfigNames::StateDays );
+
+		if ( !isset( $stateConfig['default'] ) ) {
+			throw new ConfigException(
+				'Default state config not found. Please check your configuration.'
+			);
+		}
+		if ( !isset( $stateConfig['no-edits'] ) ) {
+			$stateConfig['no-edits'] = $stateConfig['default'];
+//			$this->logger()->warning(
+//				'No edits state config not found, using default instead.'
+//			); // TODO: how access logger
+		}
 		$track = $lastActivityTimestamp !== 0 ? 'default' : 'no-edits';
 
-		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['inactive'];
-		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['closed'];
-		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )[$track]['removed'];
+		$inactiveDays = (int)$stateConfig[$track]['inactive'];
+		$closeDays = (int)$stateConfig[$track]['closed'];
+		$removeDays = (int)$stateConfig[$track]['removed'];
 		$canWrite = $this->hasOption( 'write' );
 
 		// If the wiki is still active, mark it as active
