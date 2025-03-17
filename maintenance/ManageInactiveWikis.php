@@ -86,7 +86,7 @@ class ManageInactiveWikis extends Maintenance {
 		if ( !isset( $stateConfig['no-edits'] ) ) {
 			$stateConfig['no-edits'] = $stateConfig['default'];
 			$this->output(
-				'No edits state config not found, using default instead.'
+				"No edits state config not found, using default instead.\n"
 			);
 		}
 		$track = $lastActivityTimestamp !== 0 ? 'default' : 'no-edits';
