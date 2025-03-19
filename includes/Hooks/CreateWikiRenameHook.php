@@ -11,6 +11,7 @@ interface CreateWikiRenameHook {
 	 * @param string $oldDbName
 	 * @param string $newDbName
 	 * @return void
+	 * @codeCoverageIgnore Cannot be annotated as covered.
 	 */
 	public function onCreateWikiRename(
 		DBConnRef $cwdb,
