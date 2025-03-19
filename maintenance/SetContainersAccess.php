@@ -10,6 +10,8 @@ use Wikimedia\FileBackend\FileBackend;
 
 class SetContainersAccess extends Maintenance {
 
+	private array $failedZones = [];
+
 	private bool $isRetrying = false;
 	private bool $needsRetry = false;
 
@@ -23,6 +25,16 @@ class SetContainersAccess extends Maintenance {
 	}
 
 	public function execute(): void {
+		$this->processContainers();
+
+		if ( $this->needsRetry && !$this->isRetrying ) {
+			$this->retryExecution();
+		}
+
+		$this->handleFinalFailures();
+	}
+
+	private function processContainers(): void {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
@@ -41,12 +53,17 @@ class SetContainersAccess extends Maintenance {
 
 			$this->prepareDirectory( $backend, $dir, $zone, $secure );
 		}
+	}
 
-		if ( $this->needsRetry && !$this->isRetrying ) {
-			$this->isRetrying = true;
-			$this->needsRetry = false;
-			$this->execute();
+	private function retryExecution(): void {
+		if ( $this->isRetrying || !$this->needsRetry ) {
+			return;
 		}
+
+		$this->isRetrying = true;
+		$this->needsRetry = false;
+
+		$this->processContainers();
 	}
 
 	private function prepareDirectory(
@@ -88,20 +105,26 @@ class SetContainersAccess extends Maintenance {
 		string $zone,
 		StatusValue $status
 	): void {
+		$this->output( $this->isRetrying ?
+			"retry failed.\n" : "failed.\n"
+		);
+
+		$this->error( $status );
+
 		if ( $this->isRetrying ) {
-			$this->output( "retry failed.\n" );
-			$this->error( $status );
+			$this->failedZones[$zone] = $dir;
 			return;
 		}
 
-		$this->output( "failed.\n" );
-		$this->error( $status );
+		$this->needsRetry = true;
+	}
 
-		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
-		if ( $hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone ) ) {
-			// If the hook returned true, we can try this script one time.
-			$this->output( "retrying.\n" );
-			$this->needsRetry = true;
+	private function handleFinalFailures(): void {
+		if ( $this->failedZones ) {
+			$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
+			foreach ( $this->failedZones as $zone => $dir ) {
+				$hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone );
+			}
 		}
 	}
 }
