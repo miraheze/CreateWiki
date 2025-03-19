@@ -50,8 +50,6 @@ class RequestWikiAIJob extends Job {
 			}
 
 			$token = (array)strtolower( $this->reason );
-
-			// @phan-suppress-next-line PhanUndeclaredMethod
 			$pipeline->transform( $token );
 
 			// @phan-suppress-next-line PhanUndeclaredMethod
