@@ -54,9 +54,6 @@ class SetContainersAccess extends Maintenance {
 		}
 	}
 
-	private function retryExecution(): void {
-	}
-
 	private function prepareDirectory(
 		FileBackend $backend,
 		string $dir,
