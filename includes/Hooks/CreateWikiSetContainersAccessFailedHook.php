@@ -7,7 +7,7 @@ interface CreateWikiSetContainersAccessFailedHook {
 	/**
 	 * @param string $dir
 	 * @param string $zone
-	 * @return void
+	 * @return bool
 	 */
-	public function onCreateWikiSetContainersAccessFailed( string $dir, string $zone ): void;
+	public function onCreateWikiSetContainersAccessFailed( string $dir, string $zone ): bool;
 }
