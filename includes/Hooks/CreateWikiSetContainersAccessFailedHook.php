@@ -11,6 +11,8 @@ interface CreateWikiSetContainersAccessFailedHook {
 	 * @return bool
 	 */
 	public function onCreateWikiSetContainersAccessFailed(
-		string $dir, string $zone, array $errors
+		string $dir,
+		string $zone,
+		array $errors
 	): bool;
 }
