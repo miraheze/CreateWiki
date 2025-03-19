@@ -66,7 +66,7 @@ class SetContainersAccess extends Maintenance {
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		if ( !$status->isOK() ) {
-			$this->handleFailure( $dir, $zone, $status );
+			$this->handleFailure( $status, $dir, $zone );
 			return;
 		}
 
@@ -82,16 +82,16 @@ class SetContainersAccess extends Maintenance {
 		}
 
 		if ( !$status->isOK() ) {
-			$this->handleFailure( $dir, $zone, $status );
+			$this->handleFailure( $status, $dir, $zone );
 		} else {
 			$this->output( "done.\n" );
 		}
 	}
 
 	private function handleFailure(
+		StatusValue $status,
 		string $dir,
-		string $zone,
-		StatusValue $status
+		string $zone
 	): void {
 		if ( $this->isRetrying ) {
 			$this->output( "retry failed.\n" );
