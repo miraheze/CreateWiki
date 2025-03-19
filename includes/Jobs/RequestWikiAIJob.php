@@ -10,6 +10,7 @@ use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Phpml\ModelManager;
+use Phpml\Pipeline;
 
 class RequestWikiAIJob extends Job {
 
@@ -41,6 +42,11 @@ class RequestWikiAIJob extends Job {
 			if ( !$pipeline ) {
 				$modelManager = new ModelManager();
 				$pipeline = $modelManager->restoreFromFile( $modelFile );
+			}
+
+			if ( !$pipeline instanceof Pipeline ) {
+				$this->setLastError( 'Error getting pipeline, invalid data.' );
+				return true;
 			}
 
 			$token = (array)strtolower( $this->reason );
