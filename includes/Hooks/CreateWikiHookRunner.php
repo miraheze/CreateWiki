@@ -16,6 +16,7 @@ class CreateWikiHookRunner implements
 	CreateWikiGenerateDatabaseListsHook,
 	CreateWikiReadPersistentModelHook,
 	CreateWikiRenameHook,
+	CreateWikiSetContainersAccessFailedHook,
 	CreateWikiStateClosedHook,
 	CreateWikiStateOpenHook,
 	CreateWikiStatePrivateHook,
@@ -95,6 +96,18 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'CreateWikiRename',
 			[ $cwdb, $oldDbName, $newDbName ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiSetContainersAccessFailed(
+		string $dir,
+		string $zone,
+		array $errors
+	): bool {
+		$this->hookContainer->run(
+			'CreateWikiSetContainersAccessFailed',
+			[ $dir, $zone, $errors ]
 		);
 	}
 
