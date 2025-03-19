@@ -9,6 +9,8 @@ use Wikimedia\FileBackend\FileBackend;
 
 class SetContainersAccess extends Maintenance {
 
+	private bool $retrying = false;
+
 	public function __construct() {
 		parent::__construct();
 
@@ -35,13 +37,14 @@ class SetContainersAccess extends Maintenance {
 			$secure = ( $private || ( $publicPrivate && $isPrivate ) )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
-			$this->prepareDirectory( $backend, $dir, $secure );
+			$this->prepareDirectory( $backend, $dir, $zone, $secure );
 		}
 	}
 
-	protected function prepareDirectory(
+	private function prepareDirectory(
 		FileBackend $backend,
 		string $dir,
+		string $zone,
 		array $secure
 	): void {
 		// Create zone if it doesn't exist...
@@ -50,7 +53,8 @@ class SetContainersAccess extends Maintenance {
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		if ( !$status->isOK() ) {
-			$this->output( 'failed...' );
+			$this->handleFailure( $dir, $zone, $status->getMessages( 'error' ) );
+			return;
 		}
 
 		// Make sure zone has the right ACLs...
@@ -64,11 +68,31 @@ class SetContainersAccess extends Maintenance {
 			$status->merge( $backend->publish( [ 'dir' => $dir, 'access' => true ] ) );
 		}
 
-		if ( $status->isOK() ) {
-			$this->output( "done.\n" );
+		if ( !$status->isOK() ) {
+			$this->handleFailure( $dir, $zone, $status->getMessages( 'error' ) );
 		} else {
-			$this->output( "failed.\n" );
-			print_r( $status->getMessages( 'error' ) );
+			$this->output( "done.\n" );
+		}
+	}
+
+	private function handleFailure(
+		string $dir,
+		string $zone,
+		array $errors
+	): void {
+		$this->output( "failed.\n" );
+		print_r( $errors );
+
+		if ( $this->retrying ) {
+			$this->fatalError( 'Something still went wrong after retrying.' );
+		}
+
+		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
+		if ( $hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone, $errors ) ) {
+			// If the hook returned true, we can try this script one time.
+			$this->output( "retrying.\n" );
+			$this->retrying = true;
+			$this->execute();
 		}
 	}
 }
