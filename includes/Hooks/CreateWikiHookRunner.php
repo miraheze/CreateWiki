@@ -100,14 +100,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiSetContainersAccessFailed(
-		string $dir,
-		string $zone,
-		array $errors
-	): bool {
+	public function onCreateWikiSetContainersAccessFailed( string $dir, string $zone ): bool {
 		return $this->hookContainer->run(
 			'CreateWikiSetContainersAccessFailed',
-			[ $dir, $zone, $errors ]
+			[ $dir, $zone ]
 		);
 	}
 
