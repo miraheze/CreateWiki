@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Phpml\Classification\SVC;
 use Phpml\ModelManager;
 use Phpml\Pipeline;
 
@@ -49,11 +50,17 @@ class RequestWikiAIJob extends Job {
 				return true;
 			}
 
+			$estimator = $pipeline->getEstimator();
+
+			if ( !$estimator instanceof SVC ) {
+				$this->setLastError( 'Error getting estimator classification, invalid data.' );
+				return true;
+			}
+
 			$token = (array)strtolower( $this->reason );
 			$pipeline->transform( $token );
 
-			// @phan-suppress-next-line PhanUndeclaredMethod
-			$approveScore = $pipeline->getEstimator()->predictProbability( $token )[0]['approved'];
+			$approveScore = $estimator->predictProbability( $token )[0]['approved'];
 
 			$this->wikiRequestManager->addComment(
 				comment: "'''Approval Score''': " . (string)round( $approveScore, 2 ),
