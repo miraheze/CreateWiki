@@ -12,6 +12,7 @@ interface RequestWikiQueueFormDescriptorModifyHook {
 	 * @param User $user
 	 * @param WikiRequestManager $wikiRequestManager
 	 * @return void
+	 * @codeCoverageIgnore Cannot be annotated as covered.
 	 */
 	public function onRequestWikiQueueFormDescriptorModify(
 		array &$formDescriptor,
