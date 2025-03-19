@@ -5,11 +5,13 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use StatusValue;
 use Wikimedia\FileBackend\FileBackend;
 
 class SetContainersAccess extends Maintenance {
 
-	private bool $retrying = false;
+	private bool $isRetrying = false;
+	private bool $needsRetry = false;
 
 	public function __construct() {
 		parent::__construct();
@@ -39,6 +41,12 @@ class SetContainersAccess extends Maintenance {
 
 			$this->prepareDirectory( $backend, $dir, $zone, $secure );
 		}
+
+		if ( $this->needsRetry && !$this->isRetrying ) {
+			$this->isRetrying = true;
+			$this->needsRetry = false;
+			$this->execute();
+		}
 	}
 
 	private function prepareDirectory(
@@ -53,7 +61,7 @@ class SetContainersAccess extends Maintenance {
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		if ( !$status->isOK() ) {
-			$this->handleFailure( $dir, $zone, $status->getMessages( 'error' ) );
+			$this->handleFailure( $dir, $zone, $status );
 			return;
 		}
 
@@ -69,7 +77,7 @@ class SetContainersAccess extends Maintenance {
 		}
 
 		if ( !$status->isOK() ) {
-			$this->handleFailure( $dir, $zone, $status->getMessages( 'error' ) );
+			$this->handleFailure( $dir, $zone, $status );
 		} else {
 			$this->output( "done.\n" );
 		}
@@ -78,21 +86,22 @@ class SetContainersAccess extends Maintenance {
 	private function handleFailure(
 		string $dir,
 		string $zone,
-		array $errors
+		StatusValue $status
 	): void {
-		$this->output( "failed.\n" );
-		print_r( $errors );
-
-		if ( $this->retrying ) {
-			$this->fatalError( 'Something still went wrong after retrying.' );
+		if ( $this->isRetrying ) {
+			$this->output( "retry failed.\n" );
+			$this->error( $status );
+			return;
 		}
 
+		$this->output( "failed.\n" );
+		$this->error( $status );
+
 		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
-		if ( $hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone, $errors ) ) {
+		if ( $hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone ) ) {
 			// If the hook returned true, we can try this script one time.
 			$this->output( "retrying.\n" );
-			$this->retrying = true;
-			$this->execute();
+			$this->needsRetry = true;
 		}
 	}
 }
