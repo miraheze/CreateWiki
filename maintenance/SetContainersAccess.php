@@ -83,9 +83,10 @@ class SetContainersAccess extends Maintenance {
 
 		if ( !$status->isOK() ) {
 			$this->handleFailure( $status, $dir, $zone );
-		} else {
-			$this->output( "done.\n" );
+			return;
 		}
+
+		$this->output( "done.\n" );
 	}
 
 	private function handleFailure(
