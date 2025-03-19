@@ -105,7 +105,7 @@ class CreateWikiHookRunner implements
 		string $zone,
 		array $errors
 	): bool {
-		$this->hookContainer->run(
+		return $this->hookContainer->run(
 			'CreateWikiSetContainersAccessFailed',
 			[ $dir, $zone, $errors ]
 		);
