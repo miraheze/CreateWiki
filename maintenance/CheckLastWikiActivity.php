@@ -15,7 +15,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function execute(): void {
-		$this->output( (string)$this->getTimestamp() );
+		$this->output( "{$this->getTimestamp()}\n" );
 	}
 
 	public function getTimestamp(): int {
