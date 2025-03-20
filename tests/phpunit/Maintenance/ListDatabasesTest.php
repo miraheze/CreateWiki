@@ -10,7 +10,7 @@ use Miraheze\CreateWiki\Maintenance\ListDatabases;
  * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\Maintenance\ListDatabases
  */
-class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
+class ListDatabasesTest extends MaintenanceBaseTestCase {
 
 	protected function getMaintenanceClass(): string {
 		return ListDatabases::class;
