@@ -34,31 +34,33 @@ class SetContainersAccess extends Maintenance {
 	}
 
 	private function processContainers(): void {
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
-		$backend = $repo->getBackend();
 
-		$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+		$backend = $repo->getBackend();
+		$remoteWiki = $remoteWikiFactory->newInstance(
 			$this->getConfig()->get( MainConfigNames::DBname )
 		);
 
 		$isPrivate = $remoteWiki->isPrivate();
-
-		foreach ( $this->getConfig()->get( ConfigNames::Containers ) as $zone => $status ) {
+		foreach ( $this->getConfig()->get( ConfigNames::Containers ) as $zone => $state ) {
 			$dir = $backend->getContainerStoragePath( $zone );
-			$private = $status === 'private';
-			$publicPrivate = $status === 'public-private';
+
+			$private = $state === 'private';
+			$publicPrivate = $state === 'public-private';
+
 			$secure = ( $private || ( $publicPrivate && $isPrivate ) )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
-			$this->prepareDirectory( $backend, $dir, $zone, $secure );
+			$this->prepareDirectory( $backend, $secure, $dir, $zone );
 		}
 	}
 
 	private function prepareDirectory(
 		FileBackend $backend,
+		array $secure,
 		string $dir,
-		string $zone,
-		array $secure
+		string $zone
 	): void {
 		// Create zone if it doesn't exist...
 		$this->output( "Making sure '$dir' exists..." );
