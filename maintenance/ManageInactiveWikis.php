@@ -212,7 +212,8 @@ class ManageInactiveWikis extends Maintenance {
 			$url = "https://{$subdomain}.{$baseDomain}";
 		}
 
-		$body = wfMessage( 'createwiki-close-email-body', $dbname, $url, $remoteWiki->getSitename() )->inContentLanguage();
+		$body = wfMessage( 'createwiki-close-email-body', $dbname, $url, $remoteWiki->getSitename() )
+			->inContentLanguage();
 
 		$notificationData = [
 			'type' => 'closure',
