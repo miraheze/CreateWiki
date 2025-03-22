@@ -387,7 +387,7 @@ class RemoteWikiFactory {
 			return;
 		}
 
-		$extra = $this->extra;	
+		$extra = $this->extra;
 		$extra[$field] = $value;
 
 		$newExtra = json_encode( $extra );
