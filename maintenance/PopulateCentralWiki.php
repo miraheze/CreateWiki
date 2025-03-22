@@ -22,7 +22,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	}
 
 	protected function getUpdateKey(): string {
-		return __CLASS__ . ':' . $this->getCentralWiki();
+		return __CLASS__;
 	}
 
 	protected function doDBUpdates(): bool {
