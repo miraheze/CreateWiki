@@ -355,6 +355,44 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getExtraFieldData
+	 * @covers ::setExtraFieldData
+	 */
+	public function testSetExtraFieldData(): void {
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$this->assertNull( $remoteWiki->getExtraFieldData( 'test' ) );
+
+		$remoteWiki->setExtraFieldData( 'test', 'valid' );
+		$remoteWiki->commit();
+
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+
+		// Test if there are no changes
+		$remoteWiki->setExtraFieldData( 'test', 'valid' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+
+		// Test invalid data
+		$remoteWiki->setExtraFieldData( 'test', "\xB1\x31" );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$this->assertNull( $remoteWiki->getExtraFieldData( 'test2' ) );
+
+		$remoteWiki->setExtraFieldData( 'test', 'validnew' );
+		$remoteWiki->setExtraFieldData( 'test2', 'valid2' );
+		$remoteWiki->commit();
+
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$this->assertSame( 'validnew', $remoteWiki->getExtraFieldData( 'test' ) );
+		$this->assertSame( 'valid2', $remoteWiki->getExtraFieldData( 'test2' ) );
+	}
+
+	/**
 	 * @covers ::commit
 	 */
 	public function testCommit(): void {

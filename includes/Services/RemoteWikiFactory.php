@@ -27,6 +27,7 @@ class RemoteWikiFactory {
 	private array $logParams = [];
 	private array $newRows = [];
 	private array $hooks = [];
+	private array $extra;
 
 	private string $dbname;
 	private string $sitename;
@@ -97,6 +98,8 @@ class RemoteWikiFactory {
 		$this->locked = (bool)$row->wiki_locked;
 
 		$this->deletedTimestamp = $row->wiki_deleted_timestamp;
+
+		$this->extra = json_decode( $row->wiki_extra ?: '[]', true );
 
 		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$this->private = (bool)$row->wiki_private;
@@ -373,6 +376,30 @@ class RemoteWikiFactory {
 		$this->trackChange( 'experimental', 1, 0 );
 		$this->experimental = false;
 		$this->newRows['wiki_experimental'] = 0;
+	}
+
+	public function getExtraFieldData( string $field ): mixed {
+		return $this->extra[$field] ?? null;
+	}
+
+	public function setExtraFieldData( string $field, mixed $value ): void {
+		if ( $value === $this->getExtraFieldData( $field ) ) {
+			return;
+		}
+
+		$extra = $this->extra;
+		$extra[$field] = $value;
+
+		$newExtra = json_encode( $extra );
+
+		if ( $newExtra === false ) {
+			// Can not set invalid JSON data to wiki_extra.
+			return;
+		}
+
+		$this->extra = $extra;
+		$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+		$this->newRows['wiki_extra'] = $newExtra;
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
