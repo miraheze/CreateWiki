@@ -266,16 +266,10 @@ class WikiManagerFactory {
 		);
 
 		if ( $actor !== '' ) {
-			$domain = $this->options->get( ConfigNames::Subdomain );
-			$subdomain = substr(
-				$this->dbname, 0,
-				-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-			);
-
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . $subdomain . '.' . $domain,
+					'wiki-url' => $this->validator->getValidUrl( $this->dbname ),
 					'sitename' => $sitename,
 				],
 				'subject' => $this->messageLocalizer->msg(
