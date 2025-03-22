@@ -32,6 +32,7 @@
 	"action-createwiki-deleterequest": "Запросы на удаление вики",
 	"action-requestwiki": "запрашивать вики",
 	"createwiki": "Создание вики",
+	"createwiki-close-email-body": "Здравствуйте,\n\nЭтим эл. письмом мы информируем вас о том, что ваша вики была закрыта.",
 	"createwiki-close-email-subject": "Ваша Вики ($1) была закрыта",
 	"createwiki-comment-success": "Комментарий успешно добавлен к этому запросу",
 	"createwiki-defaultmainpage": "__NOTOC__ Добро пожаловать в вашу новую вики! Эта ссылка может оказаться вам полезной: [https://www.mediawiki.org/wiki/Help:Contents/ru Справка:Содержание] на mediawiki.org",

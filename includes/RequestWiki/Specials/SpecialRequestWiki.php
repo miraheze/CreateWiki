@@ -3,15 +3,13 @@
 namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use ErrorPageError;
-use MediaWiki\MainConfigNames;
-use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
 
@@ -22,6 +20,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
@@ -56,9 +55,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getFormFields(): array {
 		$formDescriptor = [
 			'subdomain' => [
@@ -71,7 +68,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
-				'validation-callback' => [ $this, 'isValidSubdomain' ],
+				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 			],
 			'sitename' => [
 				'type' => 'text',
@@ -135,7 +132,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
-			'validation-callback' => [ $this, 'isValidReason' ],
+			'validation-callback' => [ $this->validator, 'validateReason' ],
 		];
 
 		$formDescriptor['post-reason-guidance'] = [
@@ -147,8 +144,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
-				'required' => true,
-				'validation-callback' => [ $this, 'isAgreementChecked' ],
+				'validation-callback' => [ $this->validator, 'validateAgreement' ],
 			];
 		}
 
@@ -172,9 +168,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function onSubmit( array $data ): Status {
 		$token = $this->getRequest()->getVal( 'wpEditToken' );
 		$userToken = $this->getContext()->getCsrfTokenSet();
@@ -209,77 +203,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return Status::newGood();
 	}
 
-	public function isValidReason( ?string $reason ): bool|Message {
-		if ( !$reason || ctype_space( $reason ) ) {
-			return $this->msg( 'htmlform-required' );
-		}
-
-		$minLength = $this->getConfig()->get( ConfigNames::RequestWikiMinimumLength );
-		if ( $minLength && strlen( $reason ) < $minLength ) {
-			// This will automatically call ->parse().
-			return $this->msg( 'requestwiki-error-minlength' )->numParams(
-				$minLength,
-				strlen( $reason )
-			);
-		}
-
-		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
-			'CreateWiki-disallowlist', '/', '/i'
-		);
-
-		foreach ( $regexes as $regex ) {
-			preg_match( '/' . $regex . '/i', $reason, $output );
-
-			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return $this->msg( 'requestwiki-error-invalidcomment' );
-			}
-		}
-
-		return true;
-	}
-
-	public function isValidSubdomain( ?string $subdomain ): bool|Message {
-		if ( !$subdomain || ctype_space( $subdomain ) ) {
-			return $this->msg( 'htmlform-required' );
-		}
-
-		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->getConfig()->get( ConfigNames::Subdomain );
-
-		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
-		}
-
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArray(
-			$this->getConfig()->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
-			ConfigNames::DisallowedSubdomains
-		);
-
-		$database = $subdomain . $this->getConfig()->get( ConfigNames::DatabaseSuffix );
-
-		if ( in_array( $database, $this->getConfig()->get( MainConfigNames::LocalDatabases ) ) ) {
-			return $this->msg( 'createwiki-error-subdomaintaken' );
-		}
-
-		if ( !ctype_alnum( $subdomain ) ) {
-			return $this->msg( 'createwiki-error-notalnum' );
-		}
-
-		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			return $this->msg( 'createwiki-error-disallowed' );
-		}
-
-		return true;
-	}
-
-	public function isAgreementChecked( bool $agreement ): bool|Message {
-		if ( !$agreement ) {
-			return $this->msg( 'createwiki-error-agreement' );
-		}
-
-		return true;
-	}
-
 	public function checkPermissions(): void {
 		parent::checkPermissions();
 
@@ -292,16 +215,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->checkReadOnly();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wikimanage';
 	}

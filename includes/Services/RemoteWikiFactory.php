@@ -10,7 +10,6 @@ use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
 
 class RemoteWikiFactory {
@@ -46,6 +45,7 @@ class RemoteWikiFactory {
 	private bool $inactive = false;
 	private bool $inactiveExempt = false;
 	private bool $experimental = false;
+	private bool $resetDatabaseLists = true;
 	private ?string $inactiveExemptReason = null;
 
 	private ?string $deletedTimestamp;
@@ -55,7 +55,7 @@ class RemoteWikiFactory {
 	private ?string $log = null;
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
@@ -65,7 +65,7 @@ class RemoteWikiFactory {
 	}
 
 	public function newInstance( string $wiki ): self {
-		$this->dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -75,8 +75,15 @@ class RemoteWikiFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $wiki ] );
+			throw new MissingWikiError( $wiki );
 		}
+
+		$this->changes = [];
+		$this->logParams = [];
+		$this->newRows = [];
+		$this->hooks = [];
+
+		$this->log = null;
 
 		$this->dbname = $wiki;
 
@@ -424,10 +431,14 @@ class RemoteWikiFactory {
 		return $this->logParams;
 	}
 
+	public function disableResetDatabaseLists(): void {
+		$this->resetDatabaseLists = false;
+	}
+
 	public function commit(): void {
 		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
-				$dbw = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+				$dbw = $this->databaseUtils->getGlobalPrimaryDB();
 
 				$dbw->newUpdateQueryBuilder()
 					->update( 'cw_wikis' )
@@ -457,7 +468,9 @@ class RemoteWikiFactory {
 			}
 
 			$data = $this->dataFactory->newInstance( $this->dbname );
-			$data->resetDatabaseLists( isNewChanges: true );
+			if ( $this->resetDatabaseLists ) {
+				$data->resetDatabaseLists( isNewChanges: true );
+			}
 			$data->resetWikiData( isNewChanges: true );
 
 			if ( $this->log === null ) {

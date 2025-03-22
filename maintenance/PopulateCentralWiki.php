@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\LoggedUpdateMaintenance;
 use Miraheze\CreateWiki\ConfigNames;
@@ -31,8 +28,8 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	protected function doDBUpdates(): bool {
 		$centralWiki = $this->getCentralWiki();
 
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
@@ -77,5 +74,6 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	}
 }
 
-$maintClass = PopulateCentralWiki::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return PopulateCentralWiki::class;
+// @codeCoverageIgnoreEnd

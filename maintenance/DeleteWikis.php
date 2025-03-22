@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\Maintenance\Maintenance;
 
 class DeleteWikis extends Maintenance {
@@ -26,9 +23,10 @@ class DeleteWikis extends Maintenance {
 	}
 
 	public function execute(): void {
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+
+		$dbr = $databaseUtils->getGlobalReplicaDB();
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -74,7 +72,7 @@ class DeleteWikis extends Maintenance {
 			'body' => $message,
 		];
 
-		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
+		$this->getServiceContainer()->get( 'CreateWikiNotificationsManager' )
 			->sendNotification(
 				data: $notificationData,
 				// No receivers, it will send to configured email
@@ -83,5 +81,6 @@ class DeleteWikis extends Maintenance {
 	}
 }
 
-$maintClass = DeleteWikis::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return DeleteWikis::class;
+// @codeCoverageIgnoreEnd

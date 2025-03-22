@@ -2,10 +2,8 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\Maintenance\Maintenance;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 class CheckLastWikiActivity extends Maintenance {
 
@@ -17,9 +15,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function execute(): void {
-		if ( !$this->isQuiet() ) {
-			$this->output( (string)$this->getTimestamp() );
-		}
+		$this->output( "{$this->getTimestamp()}\n" );
 	}
 
 	public function getTimestamp(): int {
@@ -27,19 +23,23 @@ class CheckLastWikiActivity extends Maintenance {
 
 		// Get the latest revision timestamp
 		$revTimestamp = $dbr->newSelectQueryBuilder()
-			->select( 'MAX(rev_timestamp)' )
+			->select( 'rev_timestamp' )
 			->from( 'revision' )
+			->orderBy( 'rev_timestamp', SelectQueryBuilder::SORT_DESC )
+			->limit( 1 )
 			->caller( __METHOD__ )
 			->fetchField();
 
 		// Get the latest logging timestamp
 		$logTimestamp = $dbr->newSelectQueryBuilder()
-			->select( 'MAX(log_timestamp)' )
+			->select( 'log_timestamp' )
 			->from( 'logging' )
 			->where( [
 				$dbr->expr( 'log_type', '!=', 'renameuser' ),
 				$dbr->expr( 'log_type', '!=', 'newusers' ),
 			] )
+			->orderBy( 'log_timestamp', SelectQueryBuilder::SORT_DESC )
+			->limit( 1 )
 			->caller( __METHOD__ )
 			->fetchField();
 
@@ -48,5 +48,6 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 }
 
-$maintClass = CheckLastWikiActivity::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return CheckLastWikiActivity::class;
+// @codeCoverageIgnoreEnd

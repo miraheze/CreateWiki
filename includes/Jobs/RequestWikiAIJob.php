@@ -4,26 +4,25 @@ namespace Miraheze\CreateWiki\Jobs;
 
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Phpml\Classification\SVC;
 use Phpml\ModelManager;
+use Phpml\Pipeline;
 
 class RequestWikiAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiAIJob';
-
-	private readonly Config $config;
 
 	private readonly int $id;
 	private readonly string $reason;
 
 	public function __construct(
 		array $params,
-		ConfigFactory $configFactory,
+		private readonly Config $config,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
@@ -31,8 +30,6 @@ class RequestWikiAIJob extends Job {
 
 		$this->id = $params['id'];
 		$this->reason = $params['reason'];
-
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	public function run(): bool {
@@ -48,13 +45,22 @@ class RequestWikiAIJob extends Job {
 				$pipeline = $modelManager->restoreFromFile( $modelFile );
 			}
 
-			$token = (array)strtolower( $this->reason );
+			if ( !$pipeline instanceof Pipeline ) {
+				$this->setLastError( 'Error getting pipeline, invalid data.' );
+				return true;
+			}
 
-			// @phan-suppress-next-line PhanUndeclaredMethod
+			$estimator = $pipeline->getEstimator();
+
+			if ( !$estimator instanceof SVC ) {
+				$this->setLastError( 'Error getting estimator classification, invalid data.' );
+				return true;
+			}
+
+			$token = (array)strtolower( $this->reason );
 			$pipeline->transform( $token );
 
-			// @phan-suppress-next-line PhanUndeclaredMethod
-			$approveScore = $pipeline->getEstimator()->predictProbability( $token )[0]['approved'];
+			$approveScore = $estimator->predictProbability( $token )[0]['approved'];
 
 			$this->wikiRequestManager->addComment(
 				comment: "'''Approval Score''': " . (string)round( $approveScore, 2 ),
@@ -101,8 +107,6 @@ class RequestWikiAIJob extends Job {
 			 * we don't actually care about it.
 			 *
 			 * While this should not be necessary in theory, it is included for added safety.
-			 *
-			 * TODO: Perhaps this should throw a ConfigException?
 			 */
 			return false;
 		}

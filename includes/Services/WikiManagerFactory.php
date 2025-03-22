@@ -16,8 +16,9 @@ use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
+use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnRef;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 
@@ -45,10 +46,12 @@ class WikiManagerFactory {
 	private ?string $cluster = null;
 
 	public function __construct(
-		private readonly IConnectionProvider $connectionProvider,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
+		private readonly CreateWikiValidator $validator,
+		private readonly ExtensionRegistry $extensionRegistry,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options
@@ -61,7 +64,7 @@ class WikiManagerFactory {
 	 */
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
-		$this->cwdb = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+		$this->cwdb = $this->databaseUtils->getGlobalPrimaryDB();
 
 		// Check if the database exists in the cw_wikis table
 		$check = $this->cwdb->newSelectQueryBuilder()
@@ -114,7 +117,7 @@ class WikiManagerFactory {
 			}
 		} else {
 			// DB exists
-			$newDbw = $this->connectionProvider->getPrimaryDatabase( $dbname );
+			$newDbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $dbname );
 		}
 
 		$this->dbname = $dbname;
@@ -148,7 +151,7 @@ class WikiManagerFactory {
 		// If we aren't using DatabaseClusters, we don't have an LB
 		// So we just connect to $this->dbname using the main
 		// database configuration.
-		$this->dbw = $this->connectionProvider->getPrimaryDatabase( $this->dbname );
+		$this->dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
 	}
 
 	public function create(
@@ -165,7 +168,10 @@ class WikiManagerFactory {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
-		$checkErrors = $this->checkDatabaseName( $this->dbname, forRename: false );
+		$checkErrors = $this->validator->validateDatabaseName(
+			dbname: $this->dbname,
+			exists: $this->exists()
+		);
 
 		if ( $checkErrors ) {
 			return $checkErrors;
@@ -228,16 +234,16 @@ class WikiManagerFactory {
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
-					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/setContainersAccess.php',
+					SetContainersAccess::class,
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
 				Shell::makeScriptCommand(
-					MW_INSTALL_PATH . '/extensions/CreateWiki/maintenance/populateMainPage.php',
+					PopulateMainPage::class,
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
 						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
 						[
@@ -267,34 +273,27 @@ class WikiManagerFactory {
 			$this->cwdb
 		);
 
-		$domain = $this->options->get( ConfigNames::Subdomain );
-		$subdomain = substr(
-			$this->dbname, 0,
-			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-		);
-
-		$notificationData = [
-			'type' => 'wiki-creation',
-			'extra' => [
-				'wiki-url' => 'https://' . $subdomain . '.' . $domain,
-				'sitename' => $sitename,
-			],
-			'subject' => $this->messageLocalizer->msg(
-				'createwiki-email-subject', $sitename
-			)->inContentLanguage()->escaped(),
-			'body' => [
-				'html' => $this->messageLocalizer->msg(
-					'createwiki-email-body'
-				)->inContentLanguage()->parse(),
-				'text' => $this->messageLocalizer->msg(
-					'createwiki-email-body'
-				)->inContentLanguage()->text(),
-			],
-		];
-
-		$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
-
 		if ( $actor !== '' ) {
+			$notificationData = [
+				'type' => 'wiki-creation',
+				'extra' => [
+					'wiki-url' => $this->validator->getValidUrl( $this->dbname ),
+					'sitename' => $sitename,
+				],
+				'subject' => $this->messageLocalizer->msg(
+					'createwiki-email-subject', $sitename
+				)->inContentLanguage()->escaped(),
+				'body' => [
+					'html' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->parse(),
+					'text' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->text(),
+				],
+			];
+
+			$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
 		}
 	}
@@ -350,7 +349,11 @@ class WikiManagerFactory {
 
 		$this->compileTables();
 
-		$error = $this->checkDatabaseName( dbname: $newDatabaseName, forRename: true );
+		$error = $this->validator->validateDatabaseName(
+			dbname: $newDatabaseName,
+			// It shouldn't ever exist yet as we are renaming to it.
+			exists: false
+		);
 
 		if ( $error ) {
 			return "Can not rename {$this->dbname} to {$newDatabaseName} because: {$error}";
@@ -380,33 +383,6 @@ class WikiManagerFactory {
 		return null;
 	}
 
-	public function checkDatabaseName(
-		string $dbname,
-		bool $forRename
-	): ?string {
-		$suffix = $this->options->get( ConfigNames::DatabaseSuffix );
-		$suffixed = substr( $dbname, -strlen( $suffix ) ) === $suffix;
-		if ( !$suffixed ) {
-			return $this->messageLocalizer->msg(
-				'createwiki-error-notsuffixed', $suffix
-			)->parse();
-		}
-
-		if ( !$forRename && $this->exists() ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-dbexists' )->parse();
-		}
-
-		if ( !ctype_alnum( $dbname ) ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notalnum' )->parse();
-		}
-
-		if ( strtolower( $dbname ) !== $dbname ) {
-			return $this->messageLocalizer->msg( 'createwiki-error-notlowercase' )->parse();
-		}
-
-		return null;
-	}
-
 	private function logEntry(
 		string $log,
 		string $action,
@@ -420,7 +396,7 @@ class WikiManagerFactory {
 			return;
 		}
 
-		$logDBConn = $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
+		$logDBConn = $this->databaseUtils->getCentralWikiPrimaryDB();
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
@@ -442,9 +418,8 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-		$data = $this->dataFactory->newInstance( $dbr->getDomainID() );
-
+		$centralWiki = $this->databaseUtils->getCentralWikiID();
+		$data = $this->dataFactory->newInstance( $centralWiki );
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
 }

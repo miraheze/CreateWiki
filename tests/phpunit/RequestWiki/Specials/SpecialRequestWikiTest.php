@@ -31,16 +31,15 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	use TempUserTestTrait;
 
-	private SpecialRequestWiki $specialRequestWiki;
+	private readonly SpecialRequestWiki $specialRequestWiki;
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$this->createMock( CreateWikiHookRunner::class ),
+			$services->get( 'CreateWikiValidator' ),
 			$services->get( 'WikiRequestManager' )
 		);
 	}
@@ -52,7 +51,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->disableAutoCreateTempUser();
 
 		$this->overrideConfigValue( MainConfigNames::VirtualDomainsMapping, [
-				'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
+			'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
 		] );
 
 		$this->specialRequestWiki = $this->newSpecialPage();
@@ -100,26 +99,48 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::getFormFields
 	 */
 	public function testGetFormFields(): void {
+		$this->overrideConfigValues( [
+			ConfigNames::Categories => [ 'uncategorised' => 'uncategorised' ],
+			ConfigNames::Purposes => [ 'test' => 'test' ],
+			ConfigNames::RequestWikiConfirmAgreement => true,
+			ConfigNames::ShowBiographicalOption => true,
+			ConfigNames::UsePrivateWikis => true,
+		] );
+
 		$specialRequestWiki = TestingAccessWrapper::newFromObject(
 			$this->specialRequestWiki
 		);
 
-		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'agreement', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'bio', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'category', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'guidance', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'language', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'post-reason-guidance', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'private', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'purpose', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'reason', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
 	}
 
 	/**
-	 * @dataProvider onSubmitDataProvider
 	 * @covers ::onSubmit
-	 * @param array $formData
+	 * @dataProvider onSubmitDataProvider
 	 */
-	public function testOnSubmit( array $formData ): void {
+	public function testOnSubmit(
+		array $formData,
+		array $extraData,
+		?string $expectedError
+	): void {
 		$context = new DerivativeContext( $this->specialRequestWiki->getContext() );
 		$user = $this->getMutableTestUser()->getUser();
 
 		$context->setUser( $user );
-		$this->setSessionUser( $user, $user->getRequest() );
+
+		if ( $extraData['session'] ) {
+			$this->setSessionUser( $user, $user->getRequest() );
+		}
 
 		$request = new FauxRequest(
 			[ 'wpEditToken' => $user->getEditToken() ],
@@ -132,19 +153,24 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$specialRequestWiki->setContext( $context );
 
 		$this->overrideConfigValue(
-			ConfigNames::Subdomain, 'example.com'
+			ConfigNames::Subdomain, 'example.org'
 		);
 
 		$status = $specialRequestWiki->onSubmit( $formData );
 		$this->assertInstanceOf( Status::class, $status );
-		$this->assertStatusGood( $status );
+		if ( !$expectedError ) {
+			$this->assertStatusGood( $status );
+		} else {
+			$this->assertStatusError( $expectedError, $status );
+		}
+
+		if ( $extraData['duplicate'] ) {
+			$status = $specialRequestWiki->onSubmit( $formData );
+			$this->assertInstanceOf( Status::class, $status );
+			$this->assertStatusError( 'requestwiki-error-patient', $status );
+		}
 	}
 
-	/**
-	 * Data provider for testOnSubmit
-	 *
-	 * @return Generator
-	 */
 	public function onSubmitDataProvider(): Generator {
 		yield 'valid data' => [
 			[
@@ -154,7 +180,58 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 				'language' => 'en',
 				'category' => 'uncategorised',
 			],
+			[
+				'duplicate' => false,
+				'session' => true,
+			],
+			null,
 		];
+
+		yield 'duplicate data' => [
+			[
+				'reason' => 'Test onSubmit()',
+				'subdomain' => 'example',
+				'sitename' => 'Example Wiki',
+				'language' => 'en',
+				'category' => 'uncategorised',
+			],
+			[
+				'duplicate' => true,
+				'session' => true,
+			],
+			null,
+		];
+
+		yield 'session failure' => [
+			[
+				'reason' => '',
+				'subdomain' => '',
+				'sitename' => '',
+				'language' => '',
+				'category' => '',
+			],
+			[
+				'duplicate' => false,
+				'session' => false,
+			],
+			'sessionfailure',
+		];
+	}
+
+	/**
+	 * @covers ::getDisplayFormat
+	 */
+	public function testGetDisplayFormat(): void {
+		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
+		$this->assertSame( 'ooui', $specialRequestWiki->getDisplayFormat() );
+	}
+
+	/**
+	 * @covers ::getGroupName
+	 */
+	public function testGetGroupName(): void {
+		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
+		$this->assertSame( 'wikimanage', $specialRequestWiki->getGroupName() );
 	}
 
 	private function setSessionUser( User $user, WebRequest $request ): void {
@@ -166,7 +243,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	private function getTestUserAuthorityWithConfirmedEmail(): Authority {
 		$user = $this->getTestUser()->getUser();
-		$user->setEmail( 'test@example.com' );
+		$user->setEmail( 'test@example.org' );
 		$user->setEmailAuthenticationTimestamp( wfTimestamp() );
 		return $user;
 	}

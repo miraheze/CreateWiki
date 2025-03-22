@@ -9,23 +9,17 @@ use MediaWiki\Message\Message;
 
 class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getIconType(): string {
 		return 'chat';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getHeaderMessage(): Message {
 		return $this->msg( 'notification-header-request-comment' );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getBodyMessage(): RawMessage {
 		$comment = $this->event->getExtraParam( 'comment' );
 		$text = DiscussionParser::getTextSnippet( $comment, $this->language );
@@ -33,16 +27,12 @@ class EchoRequestCommentPresentationModel extends EchoEventPresentationModel {
 		return new RawMessage( '$1', [ $text ] );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getPrimaryLink(): bool {
 		return false;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function getSecondaryLinks(): array {
 		$visitLink = [
 			'url' => $this->event->getExtraParam( 'request-url', 0 ),

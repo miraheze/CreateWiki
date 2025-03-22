@@ -10,6 +10,7 @@ interface CreateWikiDeletionHook {
 	 * @param DBConnRef $cwdb
 	 * @param string $dbname
 	 * @return void
+	 * @codeCoverageIgnore Cannot be annotated as covered.
 	 */
 	public function onCreateWikiDeletion(
 		DBConnRef $cwdb,

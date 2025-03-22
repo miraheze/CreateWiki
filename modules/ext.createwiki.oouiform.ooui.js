@@ -42,7 +42,6 @@
 		tabs.on( 'set', onTabPanelSet );
 
 		/**
-		 * @ignore
 		 * @param {string} name The name of a tab
 		 * @param {boolean} [noHash] A hash will be set according to the current
 		 *  open section. Use this flag to suppress this.
