@@ -70,7 +70,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 * @covers :getValidUrl
 	 */
 	public function testGetValidUrl(): void {
-		$this->assertEquals( 'test.example.org', $this->validator->getValidUrl( 'testdb' ) );
+		$this->assertEquals( 'https://test.example.org', $this->validator->getValidUrl( 'testdb' ) );
 	}
 
 	/**
