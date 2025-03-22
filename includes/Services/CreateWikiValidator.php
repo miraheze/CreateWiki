@@ -62,6 +62,16 @@ class CreateWikiValidator {
 		return $subdomain;
 	}
 
+	public function getValidUrl( string $dbname ): string {
+		$domain = $this->options->get( ConfigNames::Subdomain );
+		$subdomain = substr(
+			$dbname, 0,
+			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
+		);
+
+		return "https://$subdomain.$domain";
+	}
+
 	public function validateAgreement( bool $agreement ): bool|Message {
 		if ( !$agreement ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-agreement' );
