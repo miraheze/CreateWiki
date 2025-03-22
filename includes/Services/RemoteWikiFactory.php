@@ -383,21 +383,23 @@ class RemoteWikiFactory {
 	}
 
 	public function setExtraFieldData( string $field, mixed $value ): void {
-		if ( $value !== $this->getExtraFieldData( $field ) ) {
-			$extra = $this->extra;
-			$extra[$field] = $value;
-
-			$newExtra = json_encode( $extra );
-
-			if ( $newExtra === false ) {
-				// Can not set invalid JSON data to wiki_extra.
-				return;
-			}
-
-			$this->extra = $extra;
-			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
-			$this->newRows['wiki_extra'] = $newExtra;
+		if ( $value === $this->getExtraFieldData( $field ) ) {
+			return;
 		}
+
+		$extra = $this->extra;	
+		$extra[$field] = $value;
+
+		$newExtra = json_encode( $extra );
+
+		if ( $newExtra === false ) {
+			// Can not set invalid JSON data to wiki_extra.
+			return;
+		}
+
+		$this->extra = $extra;
+		$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+		$this->newRows['wiki_extra'] = $newExtra;
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
