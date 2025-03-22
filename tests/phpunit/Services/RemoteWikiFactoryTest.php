@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests\Services;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -64,18 +65,36 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 			->execute();
 	}
 
-	/**
-	 * @return RemoteWikiFactory
-	 */
 	public function getFactoryService(): RemoteWikiFactory {
 		return $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 	}
 
-	/**
-	 * @return WikiManagerFactory
-	 */
 	public function getWikiManagerFactory(): WikiManagerFactory {
 		return $this->getServiceContainer()->get( 'WikiManagerFactory' );
+	}
+
+	/**
+	 * @covers ::__construct
+	 */
+	public function testConstructor(): void {
+		$this->assertInstanceOf( RemoteWikiFactory::class, $this->getFactoryService() );
+	}
+
+	/**
+	 * @covers ::newInstance
+	 */
+	public function testNewInstanceException(): void {
+		$this->expectException( MissingWikiError::class );
+		$this->expectExceptionMessage( 'The wiki \'missingwiki\' does not exist.' );
+		$this->getFactoryService()->newInstance( 'missingwiki' );
+	}
+
+	/**
+	 * @covers ::newInstance
+	 */
+	public function testNewInstance(): void {
+		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
+		$this->assertInstanceOf( RemoteWikiFactory::class, $factory );
 	}
 
 	/**
@@ -349,9 +368,6 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
 	}
 
-	/**
-	 * @param string $dbname
-	 */
 	private function createWiki( string $dbname ): void {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
