@@ -18,7 +18,7 @@ class PopulateCentralWikiTest extends MediaWikiUnitTestCase {
 		$objectUnderTest = new PopulateCentralWiki();
 		$objectUnderTest = TestingAccessWrapper::newFromObject( $objectUnderTest );
 		$this->assertSame(
-			PopulateCentralWiki::class . ':wikidb',
+			PopulateCentralWiki::class,
 			$objectUnderTest->getUpdateKey(),
 			'::getUpdateKey did not return the expected key.'
 		);
