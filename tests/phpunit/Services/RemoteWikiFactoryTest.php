@@ -349,6 +349,18 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
 
+		// Test if there are no changes
+		$remoteWiki->setExtraFieldData( 'test', 'valid' );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+
+		// Test invalid data
+		$remoteWiki->setExtraFieldData( 'test', "\xB1\x31" );
+		$remoteWiki->commit();
+
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
 		$this->assertNull( $remoteWiki->getExtraFieldData( 'test2' ) );
 
