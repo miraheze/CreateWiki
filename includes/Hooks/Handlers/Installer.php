@@ -7,7 +7,10 @@ use Miraheze\CreateWiki\Maintenance\PopulateCentralWiki;
 
 class Installer implements LoadExtensionSchemaUpdatesHook {
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 * @codeCoverageIgnore Tested by updating or installing MediaWiki.
+	 */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
 		$dir = __DIR__ . '/../../../sql';
 
