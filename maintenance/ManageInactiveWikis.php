@@ -204,13 +204,8 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	private function notifyBureaucrats( string $dbname, RemoteWikiFactory $remoteWiki ): void {
-		$url = $remoteWiki->getServerName();
-		if ( $url === '' ) {
-			$baseDomain = $this->getConfig()->get( ConfigNames::Subdomain );
-			$databaseSuffix = $this->getConfig()->get( ConfigNames::DatabaseSuffix );
-			$subdomain = substr( $dbname, 0, -strlen( $databaseSuffix ) );
-			$url = "https://{$subdomain}.{$baseDomain}";
-		}
+		$validator = $this->getServiceContainer()->get( 'CreateWikiValidator' );
+		$url = $remoteWiki->getServerName() ?: $validator->getValidUrl( $dbname );
 
 		$body = wfMessage( 'createwiki-close-email-body', $dbname, $url, $remoteWiki->getSitename() )
 			->inContentLanguage();
