@@ -97,6 +97,7 @@
 	"log-action-filter-farmersuppression-delete": "Eliminar las solicitudes de wiki",
 	"log-action-filter-farmersuppression-public": "Eliminación de las restricciones de visibilidad",
 	"log-action-filter-farmersuppression-suppress": "Solicitud wiki suprimida",
+	"logentry-farmer-comment": "$1 {{gender:$2|comentó}} en la solicitud de wiki $4",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|creó}} la wiki «$4»",
 	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|aprobó}} solicitud de wiki $4",
 	"logentry-farmer-requestdecline": "$1 {{GENDER:$2|rechazó}} solicitud de wiki $4",
