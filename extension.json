@@ -389,7 +389,7 @@
 			}
 		},
 		"CreateWikiSubdomain": {
-			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
+			"description": "String. The main part of subdomains, e.g. wiki.example.com, example.com is the main part.",
 			"value": ""
 		},
 		"CreateWikiUseClosedWikis": {
