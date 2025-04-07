@@ -79,6 +79,7 @@
 	"createwiki-request-updated": "Solicitud actualizada.",
 	"createwiki-rest-disabled": "El acceso a la API REST para CreateWiki se ha deshabilitado en la configuración de este wiki.",
 	"createwiki-rest-mustlogin": "Debe iniciar sesión para realizar esta acción.",
+	"createwiki-rest-notallowed": "No está permitido realizar esta acción.",
 	"createwiki-rest-usernowikirequests": "Este usuario no ha realizado ninguna solicitud de wikis.",
 	"createwiki-success": "El wiki ha sido creado exitosamente.",
 	"createwiki-wikinotcentralwiki": "Las interfaces para CreateWiki están sólo disponibles en la wiki global.",
