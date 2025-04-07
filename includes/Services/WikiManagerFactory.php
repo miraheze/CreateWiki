@@ -408,13 +408,13 @@ class WikiManagerFactory {
 	}
 
 	private function compileTables(): void {
-		$cTables = [];
+		$tables = [];
 
-		$this->hookRunner->onCreateWikiTables( $cTables );
+		$this->hookRunner->onCreateWikiTables( $tables );
 
-		$cTables['cw_wikis'] = 'wiki_dbname';
+		$tables['cw_wikis'] = 'wiki_dbname';
 
-		$this->tables = $cTables;
+		$this->tables = $tables;
 	}
 
 	private function recache(): void {

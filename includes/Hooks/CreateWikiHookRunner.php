@@ -140,10 +140,10 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiTables( array &$cTables ): void {
+	public function onCreateWikiTables( array &$tables ): void {
 		$this->hookContainer->run(
 			'CreateWikiTables',
-			[ &$cTables ]
+			[ &$tables ]
 		);
 	}
 
