@@ -4,9 +4,9 @@ namespace Miraheze\CreateWiki;
 
 interface IConfigModule {
 
-	public function hasChanges(): bool;
-
 	public function getErrors(): array;
+
+	public function hasChanges(): bool;
 
 	public function setLogAction( string $action ): void;
 

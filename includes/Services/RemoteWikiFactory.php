@@ -419,14 +419,14 @@ class RemoteWikiFactory implements IConfigModule {
 		$this->newRows[$row] = $value;
 	}
 
-	public function hasChanges(): bool {
-		return (bool)$this->changes;
-	}
-
 	public function getErrors(): array {
 		// This class doesn't produce errors, but the method
 		// may be called by consumers, so return an empty array.
 		return [];
+	}
+
+	public function hasChanges(): bool {
+		return (bool)$this->changes;
 	}
 
 	public function setLogAction( string $action ): void {
