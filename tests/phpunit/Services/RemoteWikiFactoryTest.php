@@ -427,6 +427,18 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getLogAction
+	 * @covers ::setLogAction
+	 */
+	public function testSetLogAction(): void {
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$this->assertNull( $remoteWiki->getLogAction() );
+
+		$remoteWiki->setLogAction( 'test', true );
+		$this->assertSame( 'test', $remoteWiki->getLogAction() );
+	}
+
+	/**
 	 * @covers ::addLogParam
 	 * @covers ::getLogParams
 	 */
@@ -440,6 +452,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::commit
+	 * @covers ::hasChanges
 	 */
 	public function testCommit(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
