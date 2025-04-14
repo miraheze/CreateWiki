@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki;
 
-interface ConfigModuleInterface {
+interface IConfigModule {
 
 	public function hasChanges(): bool;
 
