@@ -427,6 +427,18 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::addLogParam
+	 * @covers ::getLogParams
+	 */
+	public function testAddLogParam(): void {
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$this->assertArrayEquals( [], $remoteWiki->getLogParams() );
+
+		$remoteWiki->addLogParam( 'test', true );
+		$this->assertTrue( $remoteWiki->getLogParams()['test'] );
+	}
+
+	/**
 	 * @covers ::commit
 	 */
 	public function testCommit(): void {
