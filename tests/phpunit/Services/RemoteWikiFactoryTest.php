@@ -432,7 +432,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testSetLogAction(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-		$this->assertNull( $remoteWiki->getLogAction() );
+		$this->assertSame( 'settings', $remoteWiki->getLogAction() );
 
 		$remoteWiki->setLogAction( 'test', true );
 		$this->assertSame( 'test', $remoteWiki->getLogAction() );

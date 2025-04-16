@@ -10,7 +10,7 @@ interface IConfigModule {
 
 	public function setLogAction( string $action ): void;
 
-	public function getLogAction(): ?string;
+	public function getLogAction(): string;
 
 	public function addLogParam( string $param, mixed $value ): void;
 

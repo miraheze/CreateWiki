@@ -433,8 +433,8 @@ class RemoteWikiFactory implements IConfigModule {
 		$this->log = $action;
 	}
 
-	public function getLogAction(): ?string {
-		return $this->log;
+	public function getLogAction(): string {
+		return $this->log ?? 'settings';
 	}
 
 	public function addLogParam( string $param, mixed $value ): void {
