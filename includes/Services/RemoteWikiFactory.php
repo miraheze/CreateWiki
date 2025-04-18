@@ -378,12 +378,12 @@ class RemoteWikiFactory implements IConfigModule {
 		$this->newRows['wiki_experimental'] = 0;
 	}
 
-	public function getExtraFieldData( string $field ): mixed {
-		return $this->extra[$field] ?? null;
+	public function getExtraFieldData( string $field, mixed $default = null ): mixed {
+		return $this->extra[$field] ?? $default;
 	}
 
-	public function setExtraFieldData( string $field, mixed $value ): void {
-		if ( $value === $this->getExtraFieldData( $field ) ) {
+	public function setExtraFieldData( string $field, mixed $value, mixed $default = null ): void {
+		if ( $value === $this->getExtraFieldData( $field, $default ) ) {
 			return;
 		}
 
@@ -398,7 +398,7 @@ class RemoteWikiFactory implements IConfigModule {
 		}
 
 		$this->extra = $extra;
-		$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+		$this->trackChange( $field, $this->getExtraFieldData( $field, $default ), $value );
 		$this->newRows['wiki_extra'] = $newExtra;
 	}
 
