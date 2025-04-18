@@ -406,17 +406,11 @@ class RemoteWikiFactory implements IConfigModule {
 		$this->resetDatabaseLists = false;
 	}
 
-	/** @private Use extra field data */
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
 		$this->changes[$field] = [
 			'old' => $oldValue,
 			'new' => $newValue,
 		];
-	}
-
-	/** @deprecated Use extra field data */
-	public function addNewRow( string $row, mixed $value ): void {
-		$this->newRows[$row] = $value;
 	}
 
 	public function getErrors(): array {
