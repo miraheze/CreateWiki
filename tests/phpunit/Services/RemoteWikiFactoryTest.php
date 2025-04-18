@@ -375,36 +375,36 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testSetExtraFieldData(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-		$this->assertNull( $remoteWiki->getExtraFieldData( 'test' ) );
+		$this->assertNull( $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
-		$remoteWiki->setExtraFieldData( 'test', 'valid' );
+		$remoteWiki->setExtraFieldData( 'test', 'valid', default: null );
 		$remoteWiki->commit();
 
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
 		// Test if there are no changes
-		$remoteWiki->setExtraFieldData( 'test', 'valid' );
+		$remoteWiki->setExtraFieldData( 'test', 'valid', default: null );
 		$remoteWiki->commit();
 
-		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
 		// Test invalid data
-		$remoteWiki->setExtraFieldData( 'test', "\xB1\x31" );
+		$remoteWiki->setExtraFieldData( 'test', "\xB1\x31", default: null );
 		$remoteWiki->commit();
 
-		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test' ) );
+		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-		$this->assertNull( $remoteWiki->getExtraFieldData( 'test2' ) );
+		$this->assertNull( $remoteWiki->getExtraFieldData( 'test2', default: null ) );
 
-		$remoteWiki->setExtraFieldData( 'test', 'validnew' );
-		$remoteWiki->setExtraFieldData( 'test2', 'valid2' );
+		$remoteWiki->setExtraFieldData( 'test', 'validnew', default: null );
+		$remoteWiki->setExtraFieldData( 'test2', 'valid2', default: null );
 		$remoteWiki->commit();
 
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-		$this->assertSame( 'validnew', $remoteWiki->getExtraFieldData( 'test' ) );
-		$this->assertSame( 'valid2', $remoteWiki->getExtraFieldData( 'test2' ) );
+		$this->assertSame( 'validnew', $remoteWiki->getExtraFieldData( 'test', default: null ) );
+		$this->assertSame( 'valid2', $remoteWiki->getExtraFieldData( 'test2', default: null ) );
 	}
 
 	/**
