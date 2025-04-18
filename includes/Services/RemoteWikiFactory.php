@@ -378,11 +378,11 @@ class RemoteWikiFactory implements IConfigModule {
 		$this->newRows['wiki_experimental'] = 0;
 	}
 
-	public function getExtraFieldData( string $field, mixed $default = null ): mixed {
+	public function getExtraFieldData( string $field, mixed $default ): mixed {
 		return $this->extra[$field] ?? $default;
 	}
 
-	public function setExtraFieldData( string $field, mixed $value, mixed $default = null ): void {
+	public function setExtraFieldData( string $field, mixed $value, mixed $default ): void {
 		if ( $value === $this->getExtraFieldData( $field, $default ) ) {
 			return;
 		}
