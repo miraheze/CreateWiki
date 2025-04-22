@@ -22,7 +22,6 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	 */
 	public function wrapForm( $html ) {
 		$html = Xml::tags( 'div', [ 'id' => 'createwiki' ], $html );
-
 		return parent::wrapForm( $html );
 	}
 
@@ -49,8 +48,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$tabPanels = [];
 		foreach ( $this->mFieldTree as $key => $val ) {
 			if ( !is_array( $val ) ) {
-				wfDebug( __METHOD__ . " encountered a field not attached to a section: '{$key}'" );
-
+				wfDebug( __METHOD__ . " encountered a field not attached to a section: '$key'" );
 				continue;
 			}
 
@@ -61,20 +59,20 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				$this->displaySection(
 					$val,
 					'',
-					"mw-section-{$key}-"
+					"mw-section-$key-"
 				) .
 				$this->getFooterHtml( $key );
 
-			$tabPanels[] = new TabPanelLayout( 'mw-section-' . $key, [
+			$tabPanels[] = new TabPanelLayout( "mw-section-$key", [
 				'classes' => [ 'mw-htmlform-autoinfuse-lazy' ],
 				'label' => $label,
 				'content' => new FieldsetLayout( [
 					'classes' => [ 'createwiki-section-fieldset' ],
-					'id' => "mw-section-{$key}",
+					'id' => "mw-section-$key",
 					'label' => $label,
 					'items' => [
 						new Widget( [
-							'content' => new HtmlSnippet( $content )
+							'content' => new HtmlSnippet( $content ),
 						] ),
 					],
 				] ),
@@ -98,7 +96,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 			'framed' => true,
 			'expanded' => false,
 			'classes' => [ 'createwiki-tabs-wrapper' ],
-			'content' => $indexLayout
+			'content' => $indexLayout,
 		] );
 
 		return $header . $form;

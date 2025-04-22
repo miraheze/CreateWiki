@@ -179,6 +179,13 @@ class WikiManagerFactory {
 
 		$this->doCreateDatabase();
 
+		$extraFields = [];
+		$this->hookRunner->onCreateWikiCreationExtraFields( $extraFields );
+
+		// Filter $extra to only include keys present in $extraFields
+		$filteredData = array_intersect_key( $extra, array_flip( $extraFields ) );
+		$extraData = json_encode( $filteredData ) ?: '[]';
+
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
@@ -189,6 +196,7 @@ class WikiManagerFactory {
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category,
+				'wiki_extra' => $extraData,
 			] )
 			->caller( __METHOD__ )
 			->execute();
@@ -266,16 +274,10 @@ class WikiManagerFactory {
 		);
 
 		if ( $actor !== '' ) {
-			$domain = $this->options->get( ConfigNames::Subdomain );
-			$subdomain = substr(
-				$this->dbname, 0,
-				-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-			);
-
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . $subdomain . '.' . $domain,
+					'wiki-url' => $this->validator->getValidUrl( $this->dbname ),
 					'sitename' => $sitename,
 				],
 				'subject' => $this->messageLocalizer->msg(
@@ -406,13 +408,13 @@ class WikiManagerFactory {
 	}
 
 	private function compileTables(): void {
-		$cTables = [];
+		$tables = [];
 
-		$this->hookRunner->onCreateWikiTables( $cTables );
+		$this->hookRunner->onCreateWikiTables( $tables );
 
-		$cTables['cw_wikis'] = 'wiki_dbname';
+		$tables['cw_wikis'] = 'wiki_dbname';
 
-		$this->tables = $cTables;
+		$this->tables = $tables;
 	}
 
 	private function recache(): void {

@@ -956,9 +956,7 @@ class WikiRequestManager {
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
-				[
-					'id' => $this->ID
-				]
+				[ 'id' => $this->ID ]
 			)
 		);
 	}

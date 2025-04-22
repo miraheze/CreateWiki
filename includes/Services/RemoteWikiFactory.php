@@ -8,11 +8,12 @@ use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\IConfigModule;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class RemoteWikiFactory {
+class RemoteWikiFactory implements IConfigModule {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::UseClosedWikis,
@@ -27,6 +28,7 @@ class RemoteWikiFactory {
 	private array $logParams = [];
 	private array $newRows = [];
 	private array $hooks = [];
+	private array $extra;
 
 	private string $dbname;
 	private string $sitename;
@@ -65,7 +67,6 @@ class RemoteWikiFactory {
 
 	public function newInstance( string $wiki ): self {
 		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
-
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
@@ -97,6 +98,8 @@ class RemoteWikiFactory {
 		$this->locked = (bool)$row->wiki_locked;
 
 		$this->deletedTimestamp = $row->wiki_deleted_timestamp;
+
+		$this->extra = json_decode( $row->wiki_extra ?: '[]', true );
 
 		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$this->private = (bool)$row->wiki_private;
@@ -202,7 +205,7 @@ class RemoteWikiFactory {
 	}
 
 	public function setInactiveExemptReason( string $reason ): void {
-		$reason = ( $reason === '' ) ? null : $reason;
+		$reason = $reason === '' ? null : $reason;
 
 		$this->trackChange( 'inactive-exempt-reason', $this->inactiveExemptReason, $reason );
 
@@ -341,7 +344,7 @@ class RemoteWikiFactory {
 	}
 
 	public function setServerName( string $server ): void {
-		$server = ( $server === '' ) ? null : $server;
+		$server = $server === '' ? null : $server;
 
 		$this->trackChange( 'servername', $this->url, $server );
 
@@ -375,46 +378,71 @@ class RemoteWikiFactory {
 		$this->newRows['wiki_experimental'] = 0;
 	}
 
-	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
-		$this->changes[$field] = [
-			'old' => $oldValue,
-			'new' => $newValue
-		];
+	public function getExtraFieldData( string $field, mixed $default ): mixed {
+		return $this->extra[$field] ?? $default;
 	}
 
-	public function hasChanges(): bool {
-		return (bool)$this->changes;
-	}
+	public function setExtraFieldData( string $field, mixed $value, mixed $default ): void {
+		if ( $value === $this->getExtraFieldData( $field, $default ) ) {
+			return;
+		}
 
-	public function addNewRow( string $row, mixed $value ): void {
-		$this->newRows[$row] = $value;
-	}
+		$extra = $this->extra;
+		$extra[$field] = $value;
 
-	public function setLogAction( string $action ): void {
-		$this->log = $action;
-	}
+		$newExtra = json_encode( $extra );
 
-	public function addLogParam( string $param, mixed $value ): void {
-		$this->logParams[$param] = $value;
-	}
+		if ( $newExtra === false ) {
+			// Can not set invalid JSON data to wiki_extra.
+			return;
+		}
 
-	public function getLogAction(): ?string {
-		return $this->log;
-	}
-
-	public function getLogParams(): array {
-		return $this->logParams;
+		$this->extra = $extra;
+		$this->trackChange( $field, $this->getExtraFieldData( $field, $default ), $value );
+		$this->newRows['wiki_extra'] = $newExtra;
 	}
 
 	public function disableResetDatabaseLists(): void {
 		$this->resetDatabaseLists = false;
 	}
 
+	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
+		$this->changes[$field] = [
+			'old' => $oldValue,
+			'new' => $newValue,
+		];
+	}
+
+	public function getErrors(): array {
+		// This class doesn't produce errors, but the method
+		// may be called by consumers, so return an empty array.
+		return [];
+	}
+
+	public function hasChanges(): bool {
+		return (bool)$this->changes;
+	}
+
+	public function setLogAction( string $action ): void {
+		$this->log = $action;
+	}
+
+	public function getLogAction(): string {
+		return $this->log ?? 'settings';
+	}
+
+	public function addLogParam( string $param, mixed $value ): void {
+		$this->logParams[$param] = $value;
+	}
+
+	public function getLogParams(): array {
+		return $this->logParams;
+	}
+
 	public function commit(): void {
 		if ( $this->hasChanges() ) {
 			if ( $this->newRows ) {
 				$dbw = $this->databaseUtils->getGlobalPrimaryDB();
-
 				$dbw->newUpdateQueryBuilder()
 					->update( 'cw_wikis' )
 					->set( $this->newRows )
@@ -438,7 +466,7 @@ class RemoteWikiFactory {
 						$this->hookRunner->onCreateWikiStatePrivate( $this->dbname );
 						break;
 					default:
-						throw new UnexpectedValueException( 'Unsupported hook: ' . $hook );
+						throw new UnexpectedValueException( "Unsupported hook: $hook" );
 				}
 			}
 
@@ -446,12 +474,13 @@ class RemoteWikiFactory {
 			if ( $this->resetDatabaseLists ) {
 				$data->resetDatabaseLists( isNewChanges: true );
 			}
+
 			$data->resetWikiData( isNewChanges: true );
 
 			if ( $this->log === null ) {
 				$this->log = 'settings';
 				$this->logParams = [
-					'5::changes' => implode( ', ', array_keys( $this->changes ) )
+					'5::changes' => implode( ', ', array_keys( $this->changes ) ),
 				];
 			}
 		}

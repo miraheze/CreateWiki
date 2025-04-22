@@ -148,7 +148,6 @@ class CreateWikiNotificationsManager {
 			foreach ( $receivers as $receiver ) {
 				if ( $receiver instanceof MailAddress ) {
 					$notifyEmails[] = $receiver;
-
 					continue;
 				}
 
