@@ -137,7 +137,7 @@ class WikiManagerFactory {
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
 			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};", __METHOD__ );
 		} catch ( Exception $e ) {
-			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
+			throw new FatalError( $e->getMessage() );
 		}
 
 		if ( $this->lb ) {
