@@ -212,7 +212,13 @@ class WikiInitialize {
 		// Handle namespaces - additional settings will be done in ManageWiki
 		if ( isset( $cacheArray['namespaces'] ) ) {
 			foreach ( (array)$cacheArray['namespaces'] as $name => $ns ) {
-				$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
+				if ( (int)$ns['id'] === NS_PROJECT ) {
+					$this->config->settings['wgMetaNamespace'][$this->dbname] = $name;
+				} elseif ( (int)$ns['id'] === NS_PROJECT_TALK ) {
+					$this->config->settings['wgMetaNamespaceTalk'][$this->dbname] = $name;
+				} else {
+					$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
+				}
 				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] =
 					$ns['searchable'];
 				$this->config->settings['wgNamespacesWithSubpages'][$this->dbname][(int)$ns['id']] =
