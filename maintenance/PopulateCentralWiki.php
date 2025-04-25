@@ -70,7 +70,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 
 	private function getDefaultCluster(): ?string {
 		$clusters = $this->getConfig()->get( ConfigNames::DatabaseClusters );
-		return $clusters[0] ?? null;
+		return array_key_first( $clusters );
 	}
 }
 
