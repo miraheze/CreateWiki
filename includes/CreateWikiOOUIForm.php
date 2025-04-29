@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki;
 
+use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\OOUIHTMLForm;
-use MediaWiki\Xml\Xml;
 use OOUI\FieldsetLayout;
 use OOUI\HtmlSnippet;
 use OOUI\IndexLayout;
@@ -21,7 +21,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	 * @return string
 	 */
 	public function wrapForm( $html ) {
-		$html = Xml::tags( 'div', [ 'id' => 'createwiki' ], $html );
+		$html = Html::rawElement( 'div', [ 'id' => 'createwiki' ], $html );
 		return parent::wrapForm( $html );
 	}
 
