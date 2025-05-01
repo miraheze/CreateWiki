@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
+use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 
 class RemoteWikiFactory {
@@ -17,8 +18,8 @@ class RemoteWikiFactory {
 	) {
 	}
 
-	public function newInstance( string $dbname ): RemoteWikiFactory {
-		return new RemoteWikiFactory(
+	public function newInstance( string $dbname ): RemoteWiki {
+		return new RemoteWiki(
 			$this->databaseUtils,
 			$this->dataFactory,
 			$this->hookRunner,
