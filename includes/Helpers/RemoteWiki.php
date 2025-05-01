@@ -70,12 +70,12 @@ class RemoteWiki implements IConfigModule {
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
-			->where( [ 'wiki_dbname' => $wiki ] )
+			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
 			->fetchRow();
 
 		if ( !$row ) {
-			throw new MissingWikiError( $wiki );
+			throw new MissingWikiError( $this->dbname );
 		}
 
 		$this->sitename = $row->wiki_sitename;
