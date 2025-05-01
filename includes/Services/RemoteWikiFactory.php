@@ -8,12 +8,12 @@ use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\IConfigModule;
+use Miraheze\CreateWiki\ICoreModule;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class RemoteWikiFactory implements IConfigModule {
+class RemoteWikiFactory implements ICoreModule {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::UseClosedWikis,
