@@ -4,7 +4,8 @@
 			"Elisardojm",
 			"Iváns",
 			"O Breixo",
-			"Toliño"
+			"Toliño",
+			"Xosecalvo"
 		]
 	},
 	"action-createwiki": "crear as wikis",
@@ -18,7 +19,7 @@
 	"createwiki-error-dbexists": "Xa existe unha wiki con ese nome de base de datos.",
 	"createwiki-error-notalnum": "O nome da base de datos non pode conter caracteres non alfanuméricos.",
 	"createwiki-error-notlowercase": "O nome da base de datos non pode conter letras maiúsculas.",
-	"createwiki-error-notsuffixed": "O nome da base de datos non remata nun sufixo válido (por exemplo, 'wiki').",
+	"createwiki-error-notsuffixed": "O nome da base de datos non remata nun sufixo válido ('$1').",
 	"createwiki-label-category": "Categoría:",
 	"createwiki-label-dbname": "Nome da base de datos:",
 	"createwiki-label-language": "Lingua:",
