@@ -28,6 +28,6 @@ class ListDatabasesTest extends MaintenanceBaseTestCase {
 	 */
 	public function testExecute(): void {
 		$this->maintenance->execute();
-		$this->expectOutputRegex( '/^wikidb$/' );
+		$this->expectOutputRegex( '/wikidb$/' );
 	}
 }

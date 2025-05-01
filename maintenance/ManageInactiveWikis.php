@@ -4,7 +4,7 @@ namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use Miraheze\CreateWiki\Helpers\RemoteWiki;
 
 /**
  * Maintenance script for marking wikis as inactive, closed, and deleted
@@ -23,7 +23,6 @@ class ManageInactiveWikis extends Maintenance {
 		);
 
 		$this->addDescription( 'Script to manage inactive wikis in a wiki farm.' );
-
 		$this->requireExtension( 'CreateWiki' );
 	}
 
@@ -66,7 +65,7 @@ class ManageInactiveWikis extends Maintenance {
 
 	private function checkLastActivity(
 		string $dbname,
-		RemoteWikiFactory $remoteWiki
+		RemoteWiki $remoteWiki
 	): bool {
 		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['closed'];
@@ -144,7 +143,7 @@ class ManageInactiveWikis extends Maintenance {
 
 	private function handleInactiveWiki(
 		string $dbname,
-		RemoteWikiFactory $remoteWiki,
+		RemoteWiki $remoteWiki,
 		int $closeDays,
 		int $lastActivityTimestamp,
 		bool $canWrite
@@ -175,7 +174,7 @@ class ManageInactiveWikis extends Maintenance {
 
 	private function handleClosedWiki(
 		string $dbname,
-		RemoteWikiFactory $remoteWiki,
+		RemoteWiki $remoteWiki,
 		int $removeDays,
 		int $lastActivityTimestamp,
 		bool $canWrite

@@ -1,11 +1,12 @@
 <?php
 
-namespace Miraheze\CreateWiki\Tests\Services;
+namespace Miraheze\CreateWiki\Tests\Helpers;
 
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
+use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\TestingAccessWrapper;
@@ -15,9 +16,9 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  * @group CreateWiki
  * @group Database
  * @group medium
- * @coversDefaultClass \Miraheze\CreateWiki\Services\RemoteWikiFactory
+ * @coversDefaultClass \Miraheze\CreateWiki\Helpers\RemoteWiki
  */
-class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
+class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -36,7 +37,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `remotewikifactorytest`.* TO 'wikiuser'@'localhost';" );
+		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
 	}
@@ -75,27 +76,28 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::__construct
+	 * @covers \Miraheze\CreateWiki\Services\RemoteWikiFactory::__construct
 	 */
-	public function testConstructor(): void {
+	public function testFactoryConstructor(): void {
 		$this->assertInstanceOf( RemoteWikiFactory::class, $this->getFactoryService() );
 	}
 
 	/**
-	 * @covers ::newInstance
+	 * @covers ::__construct
+	 * @covers \Miraheze\CreateWiki\Services\RemoteWikiFactory::newInstance
 	 */
-	public function testNewInstanceException(): void {
-		$this->expectException( MissingWikiError::class );
-		$this->expectExceptionMessage( 'The wiki \'missingwiki\' does not exist.' );
-		$this->getFactoryService()->newInstance( 'missingwiki' );
+	public function testNewFactoryInstance(): void {
+		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
+		$this->assertInstanceOf( RemoteWiki::class, $factory );
 	}
 
 	/**
-	 * @covers ::newInstance
+	 * @covers ::__construct
 	 */
-	public function testNewInstance(): void {
-		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
-		$this->assertInstanceOf( RemoteWikiFactory::class, $factory );
+	public function testConstructorException(): void {
+		$this->expectException( MissingWikiError::class );
+		$this->expectExceptionMessage( 'The wiki \'missingwiki\' does not exist.' );
+		$this->getFactoryService()->newInstance( 'missingwiki' );
 	}
 
 	/**
@@ -105,9 +107,9 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
 
 		$timestamp = $this->db->timestamp();
-		$this->createWiki( 'remotewikifactorytest' );
+		$this->createWiki( 'remotewikitest' );
 
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( $timestamp, $remoteWiki->getCreationDate() );
 	}
 
@@ -115,8 +117,8 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getDBname
 	 */
 	public function testGetDBname(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-		$this->assertSame( 'remotewikifactorytest', $remoteWiki->getDBname() );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
+		$this->assertSame( 'remotewikitest', $remoteWiki->getDBname() );
 	}
 
 	/**
@@ -125,8 +127,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetSitename(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 
 		$remoteWiki->setSitename( 'TestWiki_New' );
@@ -141,8 +142,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetLanguage(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'en', $remoteWiki->getLanguage() );
 
 		$remoteWiki->setLanguage( 'qqx' );
@@ -152,20 +152,24 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getInactiveTimestamp
 	 * @covers ::isInactive
 	 * @covers ::markActive
 	 * @covers ::markInactive
 	 * @covers ::trackChange
 	 */
 	public function testMarkInactive(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isInactive() );
+
+		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
+		$timestamp = $this->db->timestamp();
 
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
 
 		$this->assertTrue( $remoteWiki->isInactive() );
+		$this->assertSame( $timestamp, $remoteWiki->getInactiveTimestamp() );
 
 		$remoteWiki->markActive();
 		$remoteWiki->commit();
@@ -180,8 +184,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testMarkExempt(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isInactiveExempt() );
 
 		$remoteWiki->markExempt();
@@ -201,8 +204,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetInactiveExemptReason(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertNull( $remoteWiki->getInactiveExemptReason() );
 
 		$remoteWiki->setInactiveExemptReason( 'test' );
@@ -218,8 +220,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testMarkPrivate(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isPrivate() );
 
 		$remoteWiki->markPrivate();
@@ -234,19 +235,23 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getClosedTimestamp
 	 * @covers ::isClosed
 	 * @covers ::markClosed
 	 * @covers ::trackChange
 	 */
 	public function testMarkClosed(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isClosed() );
+
+		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
+		$timestamp = $this->db->timestamp();
 
 		$remoteWiki->markClosed();
 		$remoteWiki->commit();
 
 		$this->assertTrue( $remoteWiki->isClosed() );
+		$this->assertSame( $timestamp, $remoteWiki->getClosedTimestamp() );
 
 		$remoteWiki->markActive();
 		$remoteWiki->commit();
@@ -256,19 +261,23 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::delete
+	 * @covers ::getDeletedTimestamp
 	 * @covers ::isDeleted
 	 * @covers ::undelete
 	 * @covers ::trackChange
 	 */
 	public function testDelete(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isDeleted() );
+
+		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
+		$timestamp = $this->db->timestamp();
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
 
 		$this->assertTrue( $remoteWiki->isDeleted() );
+		$this->assertSame( $timestamp, $remoteWiki->getDeletedTimestamp() );
 
 		$remoteWiki->undelete();
 		$remoteWiki->commit();
@@ -283,8 +292,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testLock(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isLocked() );
 
 		$remoteWiki->lock();
@@ -304,8 +312,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetCategory(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
 
 		$remoteWiki->setCategory( 'test' );
@@ -320,8 +327,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetServerName(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( '', $remoteWiki->getServerName() );
 
 		$remoteWiki->setServerName( 'http://127.0.0.1' );
@@ -336,8 +342,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetDBCluster(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'c1', $remoteWiki->getDBCluster() );
 
 		$remoteWiki->setDBCluster( 'c2' );
@@ -353,8 +358,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testMarkExperimental(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
-
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isExperimental() );
 
 		$remoteWiki->markExperimental();
@@ -374,13 +378,13 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::trackChange
 	 */
 	public function testSetExtraFieldData(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertNull( $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
 		$remoteWiki->setExtraFieldData( 'test', 'valid', default: null );
 		$remoteWiki->commit();
 
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
 		// Test if there are no changes
@@ -395,14 +399,14 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertSame( 'valid', $remoteWiki->getExtraFieldData( 'test', default: null ) );
 
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertNull( $remoteWiki->getExtraFieldData( 'test2', default: null ) );
 
 		$remoteWiki->setExtraFieldData( 'test', 'validnew', default: null );
 		$remoteWiki->setExtraFieldData( 'test2', 'valid2', default: null );
 		$remoteWiki->commit();
 
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'validnew', $remoteWiki->getExtraFieldData( 'test', default: null ) );
 		$this->assertSame( 'valid2', $remoteWiki->getExtraFieldData( 'test2', default: null ) );
 	}
@@ -411,7 +415,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::disableResetDatabaseLists
 	 */
 	public function testDisableResetDatabaseLists(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$remoteWiki->disableResetDatabaseLists();
 		$this->assertFalse(
 			TestingAccessWrapper::newFromObject( $remoteWiki )->resetDatabaseLists
@@ -422,7 +426,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getErrors
 	 */
 	public function testGetErrors(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertArrayEquals( [], $remoteWiki->getErrors() );
 	}
 
@@ -431,7 +435,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::setLogAction
 	 */
 	public function testSetLogAction(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'settings', $remoteWiki->getLogAction() );
 
 		$remoteWiki->setLogAction( 'test', true );
@@ -443,7 +447,7 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getLogParams
 	 */
 	public function testAddLogParam(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertArrayEquals( [], $remoteWiki->getLogParams() );
 
 		$remoteWiki->addLogParam( 'test', true );
@@ -455,14 +459,35 @@ class RemoteWikiFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::hasChanges
 	 */
 	public function testCommit(): void {
-		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikifactorytest' );
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
+		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
+
+		$remoteWiki->setSitename( 'TestWiki' );
+		$remoteWiki->commit();
+
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 
 		$this->assertSame( 'http://127.0.0.1', $remoteWiki->getServerName() );
 		$this->assertSame( 'test', $remoteWiki->getInactiveExemptReason() );
-		$this->assertSame( 'TestWiki_New', $remoteWiki->getSitename() );
+		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 		$this->assertSame( 'test', $remoteWiki->getCategory() );
 		$this->assertSame( 'qqx', $remoteWiki->getLanguage() );
 		$this->assertSame( 'c2', $remoteWiki->getDBCluster() );
+	}
+
+	/**
+	 * @covers ::commit
+	 * @covers ::hasChanges
+	 */
+	public function testCommitNoChanges(): void {
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
+		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
+
+		$remoteWiki->setSitename( 'TestWiki' );
+		$remoteWiki->commit();
+
+		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
+		$this->assertSame( 'TestWiki', $remoteWiki->getSitename() );
 	}
 
 	private function createWiki( string $dbname ): void {
