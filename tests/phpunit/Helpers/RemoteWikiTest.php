@@ -161,7 +161,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testMarkInactive(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertFalse( $remoteWiki->isInactive() );
-		
+
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
 		$timestamp = $this->db->timestamp();
 
