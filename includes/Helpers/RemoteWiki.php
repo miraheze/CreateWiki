@@ -24,7 +24,7 @@ class RemoteWiki implements IConfigModule {
 		ConfigNames::UsePrivateWikis,
 	];
 
-	private IReadableDatabase $dbr;
+	private readonly IReadableDatabase $dbr;
 
 	private array $changes = [];
 	private array $logParams = [];
