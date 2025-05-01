@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\Helpers;
 
 use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
@@ -10,10 +10,12 @@ use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\IConfigModule;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class RemoteWikiFactory implements IConfigModule {
+class RemoteWiki implements IConfigModule {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::UseClosedWikis,
@@ -30,7 +32,6 @@ class RemoteWikiFactory implements IConfigModule {
 	private array $hooks = [];
 	private array $extra;
 
-	private string $dbname;
 	private string $sitename;
 	private string $language;
 	private string $dbcluster;
@@ -60,12 +61,11 @@ class RemoteWikiFactory implements IConfigModule {
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
+		private readonly string $dbname
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-	}
 
-	public function newInstance( string $wiki ): self {
 		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -77,15 +77,6 @@ class RemoteWikiFactory implements IConfigModule {
 		if ( !$row ) {
 			throw new MissingWikiError( $wiki );
 		}
-
-		$this->changes = [];
-		$this->logParams = [];
-		$this->newRows = [];
-		$this->hooks = [];
-
-		$this->log = null;
-
-		$this->dbname = $wiki;
 
 		$this->sitename = $row->wiki_sitename;
 		$this->language = $row->wiki_language;
@@ -120,8 +111,6 @@ class RemoteWikiFactory implements IConfigModule {
 		if ( $this->options->get( ConfigNames::UseExperimental ) ) {
 			$this->experimental = (bool)$row->wiki_experimental;
 		}
-
-		return $this;
 	}
 
 	public function getCreationDate(): string {
