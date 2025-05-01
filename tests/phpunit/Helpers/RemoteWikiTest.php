@@ -77,18 +77,18 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers \Miraheze\CreateWiki\Services\RemoteWikiFactory::__construct
+	 */
+	public function testFactoryConstructor(): void {
+		$this->assertInstanceOf( RemoteWikiFactory::class, $this->getFactoryService() );
+	}
+
+	/**
+	 * @covers ::__construct
 	 * @covers \Miraheze\CreateWiki\Services\RemoteWikiFactory::newInstance
 	 */
 	public function testNewFactoryInstance(): void {
 		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
 		$this->assertInstanceOf( RemoteWiki::class, $factory );
-	}
-
-	/**
-	 * @covers ::__construct
-	 */
-	public function testConstructor(): void {
-		$this->assertInstanceOf( RemoteWiki::class, $this->getFactoryService() );
 	}
 
 	/**
