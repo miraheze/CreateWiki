@@ -8,8 +8,14 @@ use Miraheze\ManageWiki\ICoreModule;
 class ManageWikiCoreModule extends RemoteWiki implements ICoreModule {
 
 	public function isEnabled( string $feature ): bool {
-		// Enable all features
-		return true;
+		$enabled = [
+			'closed-wikis' => $this->options->get( ConfigNames::UseClosedWikis ),
+			'experimental-wikis' => $this->options->get( ConfigNames::UseExperimental ),
+			'inactive-wikis' => $this->options->get( ConfigNames::UseInactiveWikis ),
+			'private-wikis' => $this->options->get( ConfigNames::UsePrivateWikis ),
+		];
+		// Enable all other features
+		return $enabled[$feature] ?? true;
 	}
 
 	public function getCategoryOptions(): array {
