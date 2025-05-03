@@ -208,6 +208,9 @@
 		"MakeGlobalVariablesScript": {
 			"handler": "Main"
 		},
+		"ManageWikiCoreProvider": {
+			"handler": "ManageWiki"
+		},
 		"ParserGetVariableValueSwitch": {
 			"handler": "Main"
 		},
@@ -229,6 +232,16 @@
 				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"
+			]
+		},
+		"ManageWiki": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\ManageWiki",
+			"services": [
+				"CreateWikiConfig",
+				"CreateWikiDatabaseUtils",
+				"CreateWikiDataFactory",
+				"CreateWikiHookRunner",
+				"JobQueueGroupFactory"
 			]
 		},
 		"Notifications": {
