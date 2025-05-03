@@ -8,16 +8,17 @@ use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\IConfigModule;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class RemoteWiki implements IConfigModule {
+class RemoteWiki {
 
 	public const CONSTRUCTOR_OPTIONS = [
+		ConfigNames::Categories,
+		ConfigNames::DatabaseClusters,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
@@ -61,8 +62,8 @@ class RemoteWiki implements IConfigModule {
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
-		private readonly ServiceOptions $options,
-		private readonly string $dbname
+		protected readonly ServiceOptions $options,
+		protected readonly string $dbname
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 

@@ -1,0 +1,41 @@
+<?php
+
+namespace Miraheze\CreateWiki\Hooks\Handlers;
+
+use MediaWiki\Config\Config;
+use MediaWiki\Config\ServiceOptions;
+use MediaWiki\JobQueue\JobQueueGroupFactory;
+use Miraheze\CreateWiki\Helpers\ManageWikiCoreModule;
+use Miraheze\CreateWiki\Helpers\RemoteWiki;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\ManageWiki\Hooks\ManageWikiCoreProviderHook;
+use Miraheze\ManageWiki\ICoreModule;
+
+class ManageWiki implements ManageWikiCoreProviderHook {
+
+	public function __construct(
+		private readonly Config $config,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly JobQueueGroupFactory $jobQueueGroupFactory
+	) {
+	}
+
+	/** @inheritDoc */
+	public function onManageWikiCoreProvider( ?ICoreModule &$provider, string $dbname ): void {
+		$provider = new ManageWikiCoreModule(
+			$this->databaseUtils,
+			$this->dataFactory,
+			$this->hookRunner,
+			$this->jobQueueGroupFactory,
+			new ServiceOptions(
+				RemoteWiki::CONSTRUCTOR_OPTIONS,
+				$this->config
+			),
+			$dbname
+		);
+	}
+}
