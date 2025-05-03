@@ -17,6 +17,8 @@ use Wikimedia\Rdbms\IReadableDatabase;
 class RemoteWiki {
 
 	public const CONSTRUCTOR_OPTIONS = [
+		ConfigNames::Categories,
+		ConfigNames::DatabaseClusters,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
@@ -60,8 +62,8 @@ class RemoteWiki {
 		private readonly CreateWikiDataFactory $dataFactory,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
-		private readonly ServiceOptions $options,
-		private readonly string $dbname
+		protected readonly ServiceOptions $options,
+		protected readonly string $dbname
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 
