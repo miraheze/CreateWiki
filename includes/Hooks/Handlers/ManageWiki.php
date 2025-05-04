@@ -45,4 +45,5 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 			// expects that one for ManageWiki.
 			throw new MWMissingWikiError( $dbname );
 		}
+	}
 }
