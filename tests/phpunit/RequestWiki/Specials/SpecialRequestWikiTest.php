@@ -231,7 +231,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 */
 	public function testGetGroupName(): void {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
-		$this->assertSame( 'wikimanage', $specialRequestWiki->getGroupName() );
+		$this->assertSame( 'wiki', $specialRequestWiki->getGroupName() );
 	}
 
 	private function setSessionUser( User $user, WebRequest $request ): void {

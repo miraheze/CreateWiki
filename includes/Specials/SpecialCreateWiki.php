@@ -115,6 +115,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	protected function getGroupName(): string {
-		return 'wikimanage';
+		return 'wiki';
 	}
 }
