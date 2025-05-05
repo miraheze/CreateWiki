@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-mediawiki-tests-workflow:
-    uses: miraheze/.github/.github/workflows/mediawiki-tests.yml@main
+    uses: miraheze/.github/.github/workflows/mediawiki-tests.yml@dep-gh
     strategy:
       matrix:
         include:
