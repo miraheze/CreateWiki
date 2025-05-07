@@ -138,14 +138,14 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		$context->setUser( $user );
 
-		if ( $extraData['session'] ) {
-			$this->setSessionUser( $user, $user->getRequest() );
-		}
-
 		$request = new FauxRequest(
 			[ 'wpEditToken' => $user->getEditToken() ],
 			true
 		);
+
+		if ( $extraData['session'] ) {
+			$this->setSessionUser( $user, $request );
+		}
 
 		$context->setRequest( $request );
 
