@@ -26,7 +26,7 @@ class CreateWikiDataFactory {
 	private IReadableDatabase $dbr;
 
 	/** @var string The wiki database name. */
-	private string $wiki;
+	private string $dbname;
 
 	/** @var string The directory path for cache files. */
 	private readonly string $cacheDir;
@@ -55,18 +55,18 @@ class CreateWikiDataFactory {
 	/**
 	 * Create a new CreateWikiDataFactory instance.
 	 *
-	 * @param string $wiki
+	 * @param string $dbname
 	 * @return self
 	 */
-	public function newInstance( string $wiki ): self {
-		$this->wiki = $wiki;
+	public function newInstance( string $dbname ): self {
+		$this->dbname = $dbname;
 
 		$this->databasesTimestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( 'CreateWiki', 'databases' )
 		);
 
 		$this->wikiTimestamp = (int)$this->cache->get(
-			$this->cache->makeGlobalKey( 'CreateWiki', $wiki )
+			$this->cache->makeGlobalKey( 'CreateWiki', $dbname )
 		);
 
 		if ( !$this->databasesTimestamp ) {
@@ -185,7 +185,7 @@ class CreateWikiDataFactory {
 		if ( $isNewChanges ) {
 			$this->wikiTimestamp = $mtime;
 			$this->cache->set(
-				$this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ),
+				$this->cache->makeGlobalKey( 'CreateWiki', $this->dbname ),
 				$mtime
 			);
 		}
@@ -195,19 +195,19 @@ class CreateWikiDataFactory {
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
-			->where( [ 'wiki_dbname' => $this->wiki ] )
+			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
 			->fetchRow();
 
 		if ( !$row ) {
-			if ( $this->databaseUtils->isRemoteWikiCentral( $this->wiki ) ) {
+			if ( $this->databaseUtils->isRemoteWikiCentral( $this->dbname ) ) {
 				// Don't throw an exception if we have not yet populated the
 				// central wiki, so that the PopulateCentralWiki script can
 				// successfully populate it.
 				return;
 			}
 
-			throw new MissingWikiError( $this->wiki );
+			throw new MissingWikiError( $this->dbname );
 		}
 
 		$states = [];
@@ -243,21 +243,21 @@ class CreateWikiDataFactory {
 			'states' => $states,
 		];
 
-		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $cacheArray );
-		$this->writeToFile( $this->wiki, $cacheArray );
+		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->dbname, $this->dbr, $cacheArray );
+		$this->writeToFile( $this->dbname, $cacheArray );
 	}
 
 	/**
 	 * Deletes the wiki data cache for a wiki.
 	 * Probably used when a wiki is deleted or renamed.
 	 *
-	 * @param string $wiki
+	 * @param string $dbname
 	 */
-	public function deleteWikiData( string $wiki ): void {
-		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+	public function deleteWikiData( string $dbname ): void {
+		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $dbname ) );
 
-		if ( file_exists( "{$this->cacheDir}/{$wiki}.php" ) ) {
-			unlink( "{$this->cacheDir}/{$wiki}.php" );
+		if ( file_exists( "{$this->cacheDir}/{$dbname}.php" ) ) {
+			unlink( "{$this->cacheDir}/{$dbname}.php" );
 		}
 	}
 
@@ -290,7 +290,7 @@ class CreateWikiDataFactory {
 		// the opcode cache and prevents any file system access.
 		// We only handle failures if the include does not work.
 
-		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
+		$filePath = "{$this->cacheDir}/{$this->dbname}.php";
 		$cacheData = AtEase::quietCall( static function ( $path ) {
 			return include $path;
 		}, $filePath );

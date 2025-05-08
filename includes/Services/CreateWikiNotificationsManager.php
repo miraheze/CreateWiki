@@ -70,10 +70,10 @@ class CreateWikiNotificationsManager {
 
 	/**
 	 * @param array $data
-	 * @param string $wiki
+	 * @param string $dbname
 	 */
-	public function notifyBureaucrats( array $data, string $wiki ): void {
-		$dbr = $this->databaseUtils->getRemoteWikiReplicaDB( $wiki );
+	public function notifyBureaucrats( array $data, string $dbname ): void {
+		$dbr = $this->databaseUtils->getRemoteWikiReplicaDB( $dbname );
 
 		$bureaucrats = $dbr->newSelectQueryBuilder()
 			->select( [ 'user_email', 'user_name' ] )

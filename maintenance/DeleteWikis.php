@@ -38,22 +38,22 @@ class DeleteWikis extends Maintenance {
 		$deletedWikis = [];
 
 		foreach ( $res as $row ) {
-			$wiki = $row->wiki_dbname;
+			$dbname = $row->wiki_dbname;
 			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				$wikiManager = $wikiManagerFactory->newInstance( $wiki );
+				$wikiManager = $wikiManagerFactory->newInstance( $dbname );
 				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
-					$this->output( "{$wiki}: {$delete}\n" );
+					$this->output( "$dbname: $delete\n" );
 					continue;
 				}
 
-				$this->output( "$dbCluster: DROP DATABASE {$wiki};\n" );
-				$deletedWikis[] = $wiki;
+				$this->output( "$dbCluster: DROP DATABASE $dbname;\n" );
+				$deletedWikis[] = $dbname;
 			} else {
-				$this->output( "$wiki: $dbCluster\n" );
+				$this->output( "$dbname: $dbCluster\n" );
 			}
 		}
 
