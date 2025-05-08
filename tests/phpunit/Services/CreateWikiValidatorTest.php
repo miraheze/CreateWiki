@@ -93,7 +93,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateAgreementData(): Generator {
+	public static function provideValidateAgreementData(): Generator {
 		yield 'agreement false' => [ false, 'error' ];
 		yield 'agreement true' => [ true, true ];
 	}
@@ -119,7 +119,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateCommentData(): Generator {
+	public static function provideValidateCommentData(): Generator {
 		yield 'submit-comment empty' => [ '', [ 'submit-comment' => true ], 'error' ];
 		yield 'submit-comment whitespace' => [ '   ', [ 'submit-comment' => true ], 'error' ];
 		yield 'submit-comment valid' => [ 'Valid comment', [ 'submit-comment' => true ], true ];
@@ -151,7 +151,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateDatabaseEntryData(): Generator {
+	public static function provideValidateDatabaseEntryData(): Generator {
 		yield 'empty dbname' => [ '', 'parsed' ];
 		yield 'whitespace dbname' => [ '   ', 'parsed' ];
 		yield 'not suffixed' => [ 'dbname', 'error' ];
@@ -183,7 +183,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateDatabaseNameData(): Generator {
+	public static function provideValidateDatabaseNameData(): Generator {
 		yield 'not suffixed' => [ 'dbname', false, 'error' ];
 		yield 'database exists' => [ 'validdb', true, 'error' ];
 		yield 'not alnum' => [ '!validdb', false, 'error' ];
@@ -218,7 +218,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateReasonData(): Generator {
+	public static function provideValidateReasonData(): Generator {
 		yield 'not submitting edit via edit-reason' => [ 'any reason', [ 'edit-reason' => 'test' ], true ];
 		yield 'empty reason with submit-edit' => [ '', [ 'submit-edit' => true ], 'parsed' ];
 		yield 'short reason with submit-edit' => [ 'short', [ 'submit-edit' => true ], 'parsed' ];
@@ -249,7 +249,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateStatusCommentData(): Generator {
+	public static function provideValidateStatusCommentData(): Generator {
 		yield 'submit-handle empty' => [ '', [ 'submit-handle' => true ], 'error' ];
 		yield 'submit-handle whitespace' => [ '   ', [ 'submit-handle' => true ], 'error' ];
 		yield 'submit-handle valid' => [ 'Valid status comment', [ 'submit-handle' => true ], true ];
@@ -281,7 +281,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateSubdomainData(): Generator {
+	public static function provideValidateSubdomainData(): Generator {
 		yield 'not submitting edit via edit-url' => [ 'anything', [ 'edit-url' => 'test' ], true ];
 		yield 'empty subdomain with submit-edit' => [ '', [ 'submit-edit' => true ], 'error' ];
 		yield 'database exists with submit-edit' => [ 'exist.example.org', [ 'submit-edit' => true ], 'error' ];

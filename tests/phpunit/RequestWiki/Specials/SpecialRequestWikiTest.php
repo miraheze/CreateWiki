@@ -171,7 +171,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		}
 	}
 
-	public function onSubmitDataProvider(): Generator {
+	public static function onSubmitDataProvider(): Generator {
 		yield 'valid data' => [
 			[
 				'reason' => 'Test onSubmit()',
