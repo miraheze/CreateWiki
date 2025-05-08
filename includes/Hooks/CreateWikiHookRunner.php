@@ -164,8 +164,7 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiWritePersistentModel( string $pipeline ): bool {
 		return $this->hookContainer->run(
 			'CreateWikiWritePersistentModel',
-			[ $pipeline ],
-			[ 'abortable' => false ]
+			[ $pipeline ]
 		);
 	}
 
