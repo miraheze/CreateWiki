@@ -12,7 +12,7 @@ use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use UserMailer;
 
-class CreateWikiNotificationsManager {
+class NotificationsManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::EmailNotifications,
