@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\Helpers\Factories;
 
 use Exception;
 use FatalError;
