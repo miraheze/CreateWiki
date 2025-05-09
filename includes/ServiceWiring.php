@@ -9,15 +9,15 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
-use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
-use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
-use Miraheze\CreateWiki\Services\CreateWikiValidator;
-use Miraheze\CreateWiki\Services\RemoteWikiFactory;
-use Miraheze\CreateWiki\Services\WikiManagerFactory;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use Miraheze\CreateWiki\Helpers\Utils\DatabaseUtils;
+use Miraheze\CreateWiki\Helpers\Factories\DataFactory;
+use Miraheze\CreateWiki\Helpers\NotificationsManager;
+use Miraheze\CreateWiki\Helpers\Utils\RestUtils;
+use Miraheze\CreateWiki\Helpers\CreateWikiValidator;
+use Miraheze\CreateWiki\Helpers\Factories\RemoteWikiFactory;
+use Miraheze\CreateWiki\Helpers\Factories\WikiManagerFactory;
+use Miraheze\CreateWiki\RequestWiki\Helpers\RequestManager;
+use Miraheze\CreateWiki\RequestWiki\Helpers\RequestViewer;
 use Psr\Log\LoggerInterface;
 
 // PHPUnit does not understand coverage for this file.
@@ -28,16 +28,16 @@ return [
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
 		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 	},
-	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
-		return new CreateWikiDatabaseUtils( $services->getConnectionProvider() );
+	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): DatabaseUtils {
+		return new DatabaseUtils( $services->getConnectionProvider() );
 	},
-	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
-		return new CreateWikiDataFactory(
+	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): DataFactory {
+		return new DataFactory(
 			$services->getObjectCacheFactory(),
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
-				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,
+				DataFactory::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			)
 		);
@@ -50,22 +50,22 @@ return [
 	},
 	'CreateWikiNotificationsManager' => static function (
 		MediaWikiServices $services
-	): CreateWikiNotificationsManager {
-		return new CreateWikiNotificationsManager(
+	): NotificationsManager {
+		return new NotificationsManager(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			RequestContext::getMain(),
 			new ServiceOptions(
-				CreateWikiNotificationsManager::CONSTRUCTOR_OPTIONS,
+				NotificationsManager::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			),
 			$services->getUserFactory()
 		);
 	},
-	'CreateWikiRestUtils' => static function ( MediaWikiServices $services ): CreateWikiRestUtils {
-		return new CreateWikiRestUtils(
+	'CreateWikiRestUtils' => static function ( MediaWikiServices $services ): RestUtils {
+		return new RestUtils(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			new ServiceOptions(
-				CreateWikiRestUtils::CONSTRUCTOR_OPTIONS,
+				RestUtils::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			)
 		);
@@ -107,8 +107,8 @@ return [
 			)
 		);
 	},
-	'WikiRequestManager' => static function ( MediaWikiServices $services ): WikiRequestManager {
-		return new WikiRequestManager(
+	'WikiRequestManager' => static function ( MediaWikiServices $services ): RequestManager {
+		return new RequestManager(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
@@ -123,8 +123,8 @@ return [
 			)
 		);
 	},
-	'WikiRequestViewer' => static function ( MediaWikiServices $services ): WikiRequestViewer {
-		return new WikiRequestViewer(
+	'WikiRequestViewer' => static function ( MediaWikiServices $services ): RequestViewer {
+		return new RequestViewer(
 			RequestContext::getMain(),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiValidator' ),
