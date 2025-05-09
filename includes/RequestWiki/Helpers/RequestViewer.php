@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\RequestWiki\Helpers;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\IContextSource;
@@ -18,7 +18,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use UserNotLoggedIn;
 
-class WikiRequestViewer {
+class RequestViewer {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::CannedResponses,
