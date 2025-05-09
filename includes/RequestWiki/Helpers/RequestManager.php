@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\RequestWiki\Helpers;
 
 use InvalidArgumentException;
 use JobSpecification;
@@ -24,7 +24,7 @@ use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
 
-class WikiRequestManager {
+class RequestManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::AIThreshold,
