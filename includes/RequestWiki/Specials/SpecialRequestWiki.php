@@ -69,12 +69,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
 				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L4
+				'maxlength' => 64 - strlen( $this->getConfig()->get( ConfigNames::DatabaseSuffix ) ),
 			],
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
 				'help-message' => 'createwiki-help-sitename',
 				'required' => true,
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L7
+				'maxlength' => 128,
 			],
 			'language' => [
 				'type' => 'language',
