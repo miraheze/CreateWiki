@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\Helpers\Factories;
 
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
@@ -11,7 +11,7 @@ use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class CreateWikiDataFactory {
+class DataFactory {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::CacheDirectory,

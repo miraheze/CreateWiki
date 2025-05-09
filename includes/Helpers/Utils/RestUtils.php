@@ -1,13 +1,13 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\Helpers\Utils;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Rest\LocalizedHttpException;
 use Miraheze\CreateWiki\ConfigNames;
 use Wikimedia\Message\MessageValue;
 
-class CreateWikiRestUtils {
+class RestUtils {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::EnableRESTAPI,

@@ -1,13 +1,13 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\Helpers\Utils;
 
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\IReadableDatabase;
 
-class CreateWikiDatabaseUtils {
+class DatabaseUtils {
 
 	public function __construct(
 		private readonly IConnectionProvider $connectionProvider

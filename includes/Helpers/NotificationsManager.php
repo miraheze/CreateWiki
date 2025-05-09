@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\Services;
+namespace Miraheze\CreateWiki\Helpers;
 
 use MailAddress;
 use MediaWiki\Config\ServiceOptions;
@@ -12,7 +12,7 @@ use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use UserMailer;
 
-class CreateWikiNotificationsManager {
+class NotificationsManager {
 
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::EmailNotifications,
