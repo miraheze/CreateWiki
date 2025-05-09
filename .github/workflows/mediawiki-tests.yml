@@ -44,6 +44,7 @@ jobs:
       php: ${{ matrix.php }}
       php-docker: ${{ matrix.php-docker }}
       experimental: ${{ matrix.experimental }}
+      experimental-phan: ${{ matrix.experimental-phan }}
       composer-test: ${{ matrix.composer-test }}
       coverage: ${{ matrix.coverage }}
 
