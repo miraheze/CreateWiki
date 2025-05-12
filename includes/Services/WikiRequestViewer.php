@@ -174,6 +174,8 @@ class WikiRequestViewer {
 					'required' => true,
 					'default' => $this->wikiRequestManager->getSitename(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
+					// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L7
+					'maxlength' => 128,
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
@@ -183,6 +185,8 @@ class WikiRequestViewer {
 					'default' => $this->wikiRequestManager->getUrl(),
 					'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 					'disabled' => $this->wikiRequestManager->isLocked(),
+					// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L10
+					'maxlength' => 96,
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
