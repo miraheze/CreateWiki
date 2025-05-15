@@ -28,6 +28,11 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 
 	/** @inheritDoc */
 	public function onManageWikiCoreProvider( ?ICoreModule &$provider, string $dbname ): void {
+		if ( $dbname === 'default' ) {
+			// We don't need the core provider on 'default'
+			return;
+		}
+
 		try {
 			$provider = new ManageWikiCoreModule(
 				$this->databaseUtils,
