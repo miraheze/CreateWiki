@@ -8,6 +8,7 @@
 			"MuratTheTurkish",
 			"SaldırganSincap",
 			"Sayginer",
+			"Slickdaddy",
 			"TmY e12",
 			"ToprakM"
 		]
@@ -66,6 +67,7 @@
 	"requestwiki-edit-success": "Talepte yapılan değişiklikler başarıyla gönderildi.",
 	"requestwiki-error-invalidcomment": "Viki talebiniz geçersiz bir karakter içeriyor. Lütfen tekrar talepte bulunmayı deneyin ve sorun devam ederse [[Help center|lütfen bize ulaşın]]",
 	"requestwiki-error-patient": "Zaten bir viki talebinde bulundunuz. Lütfen sabırlı olun ve viki içerik oluşturucularımızdan biri yakında vikinizi oluşturacaktır. Başka bir viki talebinde bulunmanız gerekiyorsa lütfen bekleyin ve daha sonra talep edin.",
+	"requestwiki-label-add-comment": "Yorum Ekle",
 	"requestwiki-label-bio": "Bu vikinin ana konusu yaşayan insanlar hakkında mı?",
 	"requestwiki-label-language": "Dil:",
 	"requestwiki-label-private": "Özel viki (herkes tarafından okunamaz; yalnızca üye veya sistem grubu verilen kullanıcılar tarafından okunabilir):",
@@ -96,6 +98,7 @@
 	"requestwikiqueue-section-comments": "Yorum isteyin",
 	"requestwikiqueue-section-editing": "İsteği düzenle",
 	"requestwikiqueue-section-handling": "İsteği işle",
+	"requestwikiqueue-section-history": "İstek geçmişi",
 	"right-createwiki": "Viki oluştur",
 	"right-requestwiki": "Viki talep et"
 }
