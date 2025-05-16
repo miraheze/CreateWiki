@@ -19,6 +19,8 @@ class RemoteWiki {
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::Categories,
 		ConfigNames::DatabaseClusters,
+		ConfigNames::DatabaseClustersInactive,
+		ConfigNames::InactiveExemptReasonOptions,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
 		ConfigNames::UseInactiveWikis,
