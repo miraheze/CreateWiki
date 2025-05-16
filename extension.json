@@ -340,6 +340,10 @@
 			"description": "Array. LBFactory clusters which CreateWiki considers active. Format: <display name> => <cluster name from LBFactory>.",
 			"value": []
 		},
+		"CreateWikiDatabaseClustersInactive": {
+			"description": "Array. LBFactory clusters which are not considered active for wikis to be created on. Format: <display name> => <cluster name from LBFactory>.",
+			"value": []
+		},
 		"CreateWikiDatabaseSuffix": {
 			"description": "String. Database suffix.",
 			"value": "wiki"
@@ -359,6 +363,10 @@
 		"CreateWikiEnableRESTAPI": {
 			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
+		},
+		"CreateWikiInactiveExemptReasonOptions": {
+			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
+			"value": []
 		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
