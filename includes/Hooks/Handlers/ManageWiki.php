@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\ManageWiki\Exceptions\MissingWikiError as MWMissingWikiError;
+use Miraheze\ManageWiki\Helpers\Factories\ModuleFactory;
 use Miraheze\ManageWiki\Hooks\ManageWikiCoreProviderHook;
 use Miraheze\ManageWiki\ICoreModule;
 
@@ -28,7 +29,7 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 
 	/** @inheritDoc */
 	public function onManageWikiCoreProvider( ?ICoreModule &$provider, string $dbname ): void {
-		if ( $dbname === 'default' ) {
+		if ( $dbname === ModuleFactory::DEFAULT_DBNAME ) {
 			// We don't need the core provider on 'default'
 			return;
 		}
