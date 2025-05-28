@@ -18,14 +18,14 @@ class ExtensionCallback {
 		// Initialize what we need to start services here
 		Profiler::init( $settings->getConfig()->get( MainConfigNames::Profiler ) );
 		$settings->overrideConfigValue( MainConfigNames::TmpDirectory, wfTempDir() );
-		// MediaWikiServices::allowGlobalInstance();
-
-		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
-		$isPrivate = false;
 
 		$services = new MediaWikiServices( $settings->getConfig() );
 		$wiringFiles = $settings->getConfig()->get( MainConfigNames::ServiceWiringFiles );
 		$services->loadWiringFiles( $wiringFiles );
+		$services::allowGlobalInstance();
+
+		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
+		$isPrivate = false;
 
 		$dataFactory = $services->getService( 'CreateWikiDataFactory' );
 		$data = $dataFactory->newInstance( $dbname );
