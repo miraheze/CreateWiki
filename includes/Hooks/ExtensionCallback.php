@@ -7,6 +7,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Settings\SettingsBuilder;
 use Miraheze\CreateWiki\ConfigNames;
 use Profiler;
+use ReflectionClass;
 use Wikimedia\AtEase\AtEase;
 
 class ExtensionCallback {
@@ -19,10 +20,16 @@ class ExtensionCallback {
 		Profiler::init( $settings->getConfig()->get( MainConfigNames::Profiler ) );
 		$settings->overrideConfigValue( MainConfigNames::TmpDirectory, wfTempDir() );
 
+		$refClass = new ReflectionClass( MediaWikiServices::class );
+		$refProp = $refClass->getProperty( 'globalInstanceAllowed' );
+		$refProp->setAccessible( true );
+		$originalValue = $refProp->getValue();
+
+		$refProp->setValue( null, true );
+
 		$services = new MediaWikiServices( $settings->getConfig() );
 		$wiringFiles = $settings->getConfig()->get( MainConfigNames::ServiceWiringFiles );
 		$services->loadWiringFiles( $wiringFiles );
-		$services::allowGlobalInstance();
 
 		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
 		$isPrivate = false;
@@ -63,6 +70,7 @@ class ExtensionCallback {
 
 		$settings->overrideConfigValue( MainConfigNames::GroupPermissions, $groupPermissions );
 		// Reset services so Setup.php can start them properly
+		$refProp->setValue( null, $originalValue );
 		// MediaWikiServices::resetGlobalInstance();
 	}
 }
