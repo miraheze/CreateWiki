@@ -10,57 +10,51 @@ use Profiler;
 use ReflectionClass;
 use Wikimedia\AtEase\AtEase;
 
-class ExtensionCallback {
+final class ExtensionCallback {
 
 	public static function onRegistrationCallback(
 		array $extInfo,
 		SettingsBuilder $settings
 	): void {
-		// Initialize what we need to start services here
-		Profiler::init( $settings->getConfig()->get( MainConfigNames::Profiler ) );
+		$config = $settings->getConfig();
+
+		// We need these to start services to prevent errors/warnings
+		Profiler::init( $config->get( MainConfigNames::Profiler ) );
 		$settings->overrideConfigValue( MainConfigNames::TmpDirectory, wfTempDir() );
 
-		$refClass = new ReflectionClass( MediaWikiServices::class );
-		$refProp = $refClass->getProperty( 'globalInstanceAllowed' );
-		$refProp->setAccessible( true );
-		$originalValue = $refProp->getValue();
+		// Temporarily enable global service instance
+		$originalGlobalInstanceAllowed = self::setGlobalInstanceAllowed( true );
 
-		$refProp->setValue( null, true );
-
-		$services = new MediaWikiServices( $settings->getConfig() );
-		$wiringFiles = $settings->getConfig()->get( MainConfigNames::ServiceWiringFiles );
+		$services = new MediaWikiServices( $config );
+		$wiringFiles = $config->get( MainConfigNames::ServiceWiringFiles );
 		$services->loadWiringFiles( $wiringFiles );
 
-		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
+		$dbname = $config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
 		$dataFactory = $services->getService( 'CreateWikiDataFactory' );
 		$data = $dataFactory->newInstance( $dbname );
 		$data->syncCache();
 
-		if ( $settings->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
-			// Avoid using file_exists for performance reasons. Including the file directly leverages
-			// the opcode cache and prevents any file system access.
-			// We only handle failures if the include does not work.
+		if ( $config->get( ConfigNames::UsePrivateWikis ) ) {
+			$cacheDir = $config->get( ConfigNames::CacheDirectory );
+			$cachePath = "$cacheDir/$dbname.php";
 
-			$cacheDir = $settings->getConfig()->get( ConfigNames::CacheDirectory );
-
-			$cachePath = $cacheDir . '/' . $dbname . '.php';
-			$cacheArray = AtEase::quietCall( static function ( $path ) {
-				return include $path;
-			}, $cachePath );
+			$cacheArray = AtEase::quietCall(
+				static fn ( string $path ): mixed => include $path,
+				$cachePath
+			);
 
 			if ( $cacheArray !== false ) {
-				$isPrivate = (bool)$cacheArray['states']['private'];
+				$isPrivate = (bool)( $cacheArray['states']['private'] ?? false );
 			} else {
 				$remoteWikiFactory = $services->getService( 'RemoteWikiFactory' );
-				$remoteWiki = $remoteWikiFactory->newInstance( $dbname );
-				$isPrivate = $remoteWiki->isPrivate();
+				$isPrivate = $remoteWikiFactory->newInstance( $dbname )->isPrivate();
 			}
 		}
 
-		// Safety Catch!
-		$groupPermissions = $settings->getConfig()->get( MainConfigNames::GroupPermissions );
+		// Apply read restrictions based on privacy
+		$groupPermissions = $config->get( MainConfigNames::GroupPermissions );
 		if ( $isPrivate ) {
 			$groupPermissions['*']['read'] = false;
 			$groupPermissions['sysop']['read'] = true;
@@ -69,8 +63,21 @@ class ExtensionCallback {
 		}
 
 		$settings->overrideConfigValue( MainConfigNames::GroupPermissions, $groupPermissions );
-		// Reset services so Setup.php can start them properly
-		$refProp->setValue( null, $originalValue );
-		// MediaWikiServices::resetGlobalInstance();
+
+		// Restore static state to prevent side effects
+		self::setGlobalInstanceAllowed( $originalGlobalInstanceAllowed );
+	}
+
+	/**
+	 * Set MediaWikiServices::$globalInstanceAllowed via reflection.
+	 * Returns the original value before change.
+	 */
+	private static function setGlobalInstanceAllowed( bool $value ): bool {
+		$refClass = new ReflectionClass( MediaWikiServices::class );
+		$refProp = $refClass->getProperty( 'globalInstanceAllowed' );
+		$refProp->setAccessible( true );
+		$original = $refProp->getValue();
+		$refProp->setValue( null, $value );
+		return $original;
 	}
 }
