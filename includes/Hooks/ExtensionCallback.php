@@ -17,7 +17,7 @@ class ExtensionCallback {
 		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		MediaWikiServices::allowGlobalInstance();
+		// MediaWikiServices::allowGlobalInstance();
 		$services = MediaWikiServices::getInstance();
 
 		$dataFactory = $services->getService( 'CreateWikiDataFactory' );
