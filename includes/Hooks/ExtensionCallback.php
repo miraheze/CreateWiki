@@ -14,6 +14,7 @@ class ExtensionCallback {
 		array $extInfo,
 		SettingsBuilder $settings
 	): void {
+		$settings->overrideConfigValue( MainConfigNames::TmpDirectory, wfTempDir() );
 		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
