@@ -56,5 +56,6 @@ class ExtensionCallback {
 		}
 
 		$settings->overrideConfigValue( MainConfigNames::GroupPermissions, $groupPermissions );
+		MediaWikiServices::resetGlobalInstance();
 	}
 }
