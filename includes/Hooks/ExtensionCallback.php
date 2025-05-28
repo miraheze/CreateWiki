@@ -6,6 +6,7 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Settings\SettingsBuilder;
 use Miraheze\CreateWiki\ConfigNames;
+use Profiler;
 use Wikimedia\AtEase\AtEase;
 
 class ExtensionCallback {
@@ -14,11 +15,14 @@ class ExtensionCallback {
 		array $extInfo,
 		SettingsBuilder $settings
 	): void {
+		// Initialize what we need to start services here
+		Profiler::init( $settings->getConfig()->get( MainConfigNames::Profiler ) );
 		$settings->overrideConfigValue( MainConfigNames::TmpDirectory, wfTempDir() );
+		MediaWikiServices::allowGlobalInstance();
+
 		$dbname = $settings->getConfig()->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		MediaWikiServices::allowGlobalInstance();
 		$services = MediaWikiServices::getInstance();
 
 		$dataFactory = $services->getService( 'CreateWikiDataFactory' );
@@ -56,6 +60,7 @@ class ExtensionCallback {
 		}
 
 		$settings->overrideConfigValue( MainConfigNames::GroupPermissions, $groupPermissions );
+		// Reset services so Setup.php can start them properly
 		MediaWikiServices::resetGlobalInstance();
 	}
 }
