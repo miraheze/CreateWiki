@@ -34,7 +34,7 @@ final class ExtensionCallback {
 
 		$dataFactory = $services->getService( 'CreateWikiDataFactory' );
 		$data = $dataFactory->newInstance( $dbname );
-		$data->syncCache();
+		$data->syncCache( $settings );
 
 		if ( $config->get( ConfigNames::UsePrivateWikis ) ) {
 			$cacheDir = $config->get( ConfigNames::CacheDirectory );
