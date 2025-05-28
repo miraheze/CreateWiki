@@ -3,6 +3,10 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\Settings\Config\GlobalConfigBuilder;
+use MediaWiki\Settings\Config\PhpIniSink;
+use MediaWiki\Settings\SettingsBuilder;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -244,6 +248,13 @@ class CreateWikiDataFactory {
 		];
 
 		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->dbname, $this->dbr, $cacheArray );
+		$settings = new SettingsBuilder(
+			MW_INSTALL_PATH,
+			ExtensionRegistry::getInstance(),
+			new GlobalConfigBuilder( '' ),
+			new PhpIniSink()
+		);
+		$settings->overrideConfigValues( $cacheArray['settings'] );
 		$this->writeToFile( $this->dbname, $cacheArray );
 	}
 
