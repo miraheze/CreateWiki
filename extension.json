@@ -214,9 +214,6 @@
 		"ParserGetVariableValueSwitch": {
 			"handler": "Main"
 		},
-		"SetupAfterCache": {
-			"handler": "Main"
-		},
 		"UserGetReservedNames": {
 			"handler": "Main"
 		}
@@ -478,6 +475,7 @@
 		"virtual-createwiki",
 		"virtual-createwiki-central"
 	],
+	"callback": "Miraheze\\CreateWiki\\Hooks\\ExtensionCallback::onRegistrationCallback",
 	"load_composer_autoloader": true,
 	"manifest_version": 2
 }
