@@ -25,7 +25,7 @@ final class ExtensionCallback {
 		// Temporarily enable global service instance
 		$originalGlobalInstanceAllowed = self::setGlobalInstanceAllowed( true );
 
-		$services = new MediaWikiServices( $config );
+		$services = new MediaWikiServices( $settings->getConfig() );
 		$wiringFiles = $config->get( MainConfigNames::ServiceWiringFiles );
 		$services->loadWiringFiles( $wiringFiles );
 
