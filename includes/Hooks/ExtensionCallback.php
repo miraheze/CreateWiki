@@ -24,6 +24,8 @@ class ExtensionCallback {
 		$isPrivate = false;
 
 		$services = new MediaWikiServices( $settings->getConfig() );
+		$wiringFiles = $settings->getConfig()->get( MainConfigNames::ServiceWiringFiles );
+		$services->loadWiringFiles( $wiringFiles );
 
 		$dataFactory = $services->getService( 'CreateWikiDataFactory' );
 		$data = $dataFactory->newInstance( $dbname );
