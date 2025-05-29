@@ -77,7 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 		}
 
-		$data = $this->dataFactory->newInstance( $databaseUtils->getCentralWikiID() );
+		$data = $this->dataFactory->newInstance( $this->databaseUtils->getCentralWikiID() );
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
 
