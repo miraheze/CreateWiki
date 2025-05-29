@@ -21,6 +21,16 @@ use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use function array_flip;
+use function array_intersect_key;
+use function array_keys;
+use function array_rand;
+use function json_encode;
+use function min;
+use function wfTimestamp;
+use const DB_PRIMARY;
+use const MW_INSTALL_PATH;
+use const TS_UNIX;
 
 class WikiManagerFactory {
 
@@ -99,7 +109,7 @@ class WikiManagerFactory {
 				}
 
 				// Pick the cluster with the least number of databases
-				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
+				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ), true );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
 				// Make sure we set the new database in sectionsByDB early

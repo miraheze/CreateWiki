@@ -10,6 +10,8 @@ use OOUI\IndexLayout;
 use OOUI\PanelLayout;
 use OOUI\TabPanelLayout;
 use OOUI\Widget;
+use function is_array;
+use function wfDebug;
 
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 

@@ -10,6 +10,15 @@ use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
+use function file_exists;
+use function file_put_contents;
+use function is_array;
+use function rename;
+use function tempnam;
+use function time;
+use function unlink;
+use function var_export;
+use function wfTempDir;
 
 class CreateWikiDataFactory {
 
@@ -52,12 +61,6 @@ class CreateWikiDataFactory {
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
 
-	/**
-	 * Create a new CreateWikiDataFactory instance.
-	 *
-	 * @param string $dbname
-	 * @return self
-	 */
 	public function newInstance( string $dbname ): self {
 		$this->dbname = $dbname;
 
@@ -281,9 +284,7 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Retrieves cached wiki data.
-	 *
-	 * @return array
+	 * @return array Cached wiki data.
 	 */
 	private function getCachedWikiData(): array {
 		// Avoid using file_exists for performance reasons. Including the file directly leverages
@@ -303,9 +304,7 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Retrieves cached database list.
-	 *
-	 * @return array
+	 * @return array Cached database list
 	 */
 	private function getCachedDatabaseList(): array {
 		// Avoid using file_exists for performance reasons. Including the file directly leverages

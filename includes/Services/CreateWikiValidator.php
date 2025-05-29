@@ -8,6 +8,15 @@ use MediaWiki\Message\Message;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
+use function ctype_alnum;
+use function ctype_space;
+use function in_array;
+use function preg_match;
+use function str_ends_with;
+use function str_replace;
+use function strlen;
+use function strtolower;
+use function substr;
 
 class CreateWikiValidator {
 
@@ -48,7 +57,7 @@ class CreateWikiValidator {
 	}
 
 	public function databaseExists( string $database ): bool {
-		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ) );
+		return in_array( $database, $this->options->get( MainConfigNames::LocalDatabases ), true );
 	}
 
 	public function getValidSubdomain( string $subdomain ): string {

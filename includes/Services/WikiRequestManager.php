@@ -23,6 +23,26 @@ use stdClass;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
+use function array_column;
+use function array_diff;
+use function array_filter;
+use function array_key_exists;
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function count;
+use function explode;
+use function htmlspecialchars;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_bool;
+use function json_decode;
+use function json_encode;
+use function preg_replace;
+use function rtrim;
+use function trim;
+use const ENT_QUOTES;
 
 class WikiRequestManager {
 
@@ -200,6 +220,9 @@ class WikiRequestManager {
 		}
 	}
 
+	/**
+	 * @return array<int, array{comment: string, timestamp: string, user: User|null}>
+	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_comments' )
@@ -277,6 +300,9 @@ class WikiRequestManager {
 			->execute();
 	}
 
+	/**
+	 * @return array<int, array{action: string, details: string, timestamp: string, user: User|null}>
+	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_history' )
@@ -627,11 +653,11 @@ class WikiRequestManager {
 	}
 
 	public function canCommentReopen(): bool {
-		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [], true );
 	}
 
 	public function canEditReopen(): bool {
-		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [], true );
 	}
 
 	public function getID(): int {
@@ -709,7 +735,7 @@ class WikiRequestManager {
 	}
 
 	public function getAllExtraData(): array {
-		return json_decode( $this->row->cw_extra ?: '[]', true );
+		return (array)json_decode( $this->row->cw_extra ?: '[]', true );
 	}
 
 	public function getExtraFieldData( string $field ): mixed {
@@ -772,7 +798,7 @@ class WikiRequestManager {
 	public function setCategory( string $category ): void {
 		$this->checkQueryBuilder();
 		if ( $category !== $this->getCategory() ) {
-			if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
+			if ( !in_array( $category, $this->options->get( ConfigNames::Categories ), true ) ) {
 				throw new InvalidArgumentException( 'Cannot set an unsupported category.' );
 			}
 

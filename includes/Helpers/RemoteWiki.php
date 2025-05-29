@@ -13,6 +13,11 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
+use function array_keys;
+use function array_merge;
+use function implode;
+use function json_decode;
+use function json_encode;
 
 class RemoteWiki {
 

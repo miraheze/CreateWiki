@@ -12,6 +12,9 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
+use function array_diff_key;
+use function array_filter;
+use function strlen;
 
 class SpecialRequestWiki extends FormSpecialPage {
 

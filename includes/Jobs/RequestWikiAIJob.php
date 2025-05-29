@@ -12,6 +12,10 @@ use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Phpml\Classification\SVC;
 use Phpml\ModelManager;
 use Phpml\Pipeline;
+use function file_exists;
+use function preg_match;
+use function round;
+use function strtolower;
 
 class RequestWikiAIJob extends Job {
 
@@ -32,6 +36,7 @@ class RequestWikiAIJob extends Job {
 		$this->reason = $params['reason'];
 	}
 
+	/** @inheritDoc */
 	public function run(): bool {
 		$this->wikiRequestManager->loadFromID( $this->id );
 		$modelFile = $this->config->get( ConfigNames::PersistentModelFile );

@@ -17,6 +17,14 @@ use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use UserNotLoggedIn;
+use function array_diff_key;
+use function array_flip;
+use function count;
+use function nl2br;
+use function str_starts_with;
+use function strlen;
+use function substr;
+use function ucfirst;
 
 class WikiRequestViewer {
 
@@ -77,8 +85,8 @@ class WikiRequestViewer {
 				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->languageNameUtils->getLanguageName(
-					$this->wikiRequestManager->getLanguage(),
-					$this->context->getLanguage()->getCode()
+					code: $this->wikiRequestManager->getLanguage(),
+					inLanguage: $this->context->getLanguage()->getCode()
 				),
 			],
 			'requester' => [
@@ -434,10 +442,6 @@ class WikiRequestViewer {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @param int $requestID
-	 * @return CreateWikiOOUIForm
-	 */
 	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
