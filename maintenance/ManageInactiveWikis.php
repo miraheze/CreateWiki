@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use function date;
 use function strtotime;
 use function wfMessage;
+use const DB_PRIMARY;
 
 /**
  * Maintenance script for marking wikis as inactive, closed, and deleted

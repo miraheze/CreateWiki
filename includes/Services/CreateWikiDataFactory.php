@@ -61,12 +61,6 @@ class CreateWikiDataFactory {
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
 
-	/**
-	 * Create a new CreateWikiDataFactory instance.
-	 *
-	 * @param string $dbname
-	 * @return self
-	 */
 	public function newInstance( string $dbname ): self {
 		$this->dbname = $dbname;
 
@@ -290,9 +284,7 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Retrieves cached wiki data.
-	 *
-	 * @return array
+	 * @return array Cached wiki data.
 	 */
 	private function getCachedWikiData(): array {
 		// Avoid using file_exists for performance reasons. Including the file directly leverages
@@ -312,9 +304,7 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Retrieves cached database list.
-	 *
-	 * @return array
+	 * @return array Cached database list
 	 */
 	private function getCachedDatabaseList(): array {
 		// Avoid using file_exists for performance reasons. Including the file directly leverages

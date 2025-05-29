@@ -85,8 +85,8 @@ class WikiRequestViewer {
 				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->languageNameUtils->getLanguageName(
-					$this->wikiRequestManager->getLanguage(),
-					$this->context->getLanguage()->getCode()
+					code: $this->wikiRequestManager->getLanguage(),
+					inLanguage: $this->context->getLanguage()->getCode()
 				),
 			],
 			'requester' => [
@@ -442,10 +442,6 @@ class WikiRequestViewer {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @param int $requestID
-	 * @return CreateWikiOOUIForm
-	 */
 	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
