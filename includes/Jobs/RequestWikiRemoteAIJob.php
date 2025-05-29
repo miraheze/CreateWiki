@@ -473,7 +473,7 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
-			return json_decode( $finalResponseContent, true );
+			return (array)json_decode( $finalResponseContent, true );
 		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
 			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() );
@@ -530,7 +530,7 @@ class RequestWikiRemoteAIJob extends Job {
 			return null;
 		}
 
-		return json_decode( $request['body'], true );
+		return (array)json_decode( $request['body'], true );
 	}
 
 	private function canAutoApprove(): bool {
