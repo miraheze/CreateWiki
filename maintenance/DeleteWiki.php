@@ -3,8 +3,11 @@
 namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class DeleteWiki extends Maintenance {
+
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -17,19 +20,21 @@ class DeleteWiki extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute(): void {
-		$dbname = $this->getOption( 'deletewiki' );
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->wikiManagerFactory = $services->get( 'WikiManagerFactory' );
+	}
 
+	public function execute(): void {
+		$this->initServices();
+		$dbname = $this->getOption( 'deletewiki' );
 		if ( !$dbname ) {
 			$this->fatalError( 'Please specify the database to delete using the --deletewiki option.' );
 		}
 
 		if ( $this->hasOption( 'delete' ) ) {
-			$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
-				->newInstance( $dbname );
-
+			$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
 			$delete = $wikiManager->delete( force: true );
-
 			if ( $delete ) {
 				$this->fatalError( $delete );
 			}

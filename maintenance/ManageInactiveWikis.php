@@ -5,6 +5,10 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use function date;
 use function strtotime;
 use function wfMessage;
@@ -18,6 +22,11 @@ use const DB_PRIMARY;
  */
 class ManageInactiveWikis extends Maintenance {
 
+	private CreateWikiDatabaseUtils $databaseUtils;
+	private CreateWikiDataFactory $dataFactory;
+	private CreateWikiNotificationsManager $notificationsManager;
+	private RemoteWikiFactory $remoteWikiFactory;
+
 	public function __construct() {
 		parent::__construct();
 
@@ -30,15 +39,21 @@ class ManageInactiveWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+		$this->dataFactory = $services->get( 'CreateWikiDataFactory' );
+		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
+		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
+	}
+
 	public function execute(): void {
 		if ( !$this->getConfig()->get( ConfigNames::EnableManageInactiveWikis ) ) {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-
-		$dbr = $databaseUtils->getGlobalReplicaDB();
+		$this->initServices();
+		$dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$wikis = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
@@ -51,7 +66,7 @@ class ManageInactiveWikis extends Maintenance {
 			->fetchFieldValues();
 
 		foreach ( $wikis as $wiki ) {
-			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
+			$remoteWiki = $this->remoteWikiFactory->newInstance( $wiki );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 
 			$remoteWiki->disableResetDatabaseLists();
@@ -62,8 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 		}
 
-		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
-		$data = $dataFactory->newInstance( $databaseUtils->getCentralWikiID() );
+		$data = $this->dataFactory->newInstance( $databaseUtils->getCentralWikiID() );
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
 
@@ -216,8 +230,7 @@ class ManageInactiveWikis extends Maintenance {
 			],
 		];
 
-		$this->getServiceContainer()->get( 'CreateWikiNotificationsManager' )
-			->notifyBureaucrats( $notificationData, $dbname );
+		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
 

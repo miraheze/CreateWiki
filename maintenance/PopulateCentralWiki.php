@@ -5,9 +5,12 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\LoggedUpdateMaintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use function array_key_first;
 
 class PopulateCentralWiki extends LoggedUpdateMaintenance {
+
+	private CreateWikiDatabaseUtils $databaseUtils;
 
 	public function __construct() {
 		parent::__construct();
@@ -22,15 +25,19 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+	}
+
 	protected function getUpdateKey(): string {
 		return __CLASS__ . ':' . $this->getCentralWiki();
 	}
 
 	protected function doDBUpdates(): bool {
+		$this->initServices();
 		$centralWiki = $this->getCentralWiki();
-
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$dbw = $databaseUtils->getGlobalPrimaryDB();
+		$dbw = $this->databaseUtils->getGlobalPrimaryDB();
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
@@ -65,8 +72,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	}
 
 	private function getCentralWiki(): string {
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		return $databaseUtils->getCentralWikiID();
+		return $this->databaseUtils->getCentralWikiID();
 	}
 
 	private function getDefaultCluster(): ?string {
