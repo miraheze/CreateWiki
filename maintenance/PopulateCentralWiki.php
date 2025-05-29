@@ -31,6 +31,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	}
 
 	protected function getUpdateKey(): string {
+		$this->initServices();
 		return __CLASS__ . ':' . $this->getCentralWiki();
 	}
 
