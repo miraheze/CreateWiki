@@ -220,6 +220,9 @@ class WikiRequestManager {
 		}
 	}
 
+	/**
+	 * @return array<int, array{comment: string, timestamp: string, user: User|null}>
+	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_comments' )
@@ -297,6 +300,14 @@ class WikiRequestManager {
 			->execute();
 	}
 
+	/**
+	 * @return array<int, array{
+	 *     action: string,
+	 *     details: string,
+	 *     timestamp: string,
+	 *     user: User|null
+	 * }>
+	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_history' )
