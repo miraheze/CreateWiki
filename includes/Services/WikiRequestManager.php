@@ -301,12 +301,7 @@ class WikiRequestManager {
 	}
 
 	/**
-	 * @return array<int, array{
-	 *     action: string,
-	 *     details: string,
-	 *     timestamp: string,
-	 *     user: User|null
-	 * }>
+	 * @return array<int, array{action: string, details: string, timestamp: string, user: User|null}>
 	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
