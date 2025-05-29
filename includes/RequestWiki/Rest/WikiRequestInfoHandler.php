@@ -59,14 +59,14 @@ class WikiRequestInfoHandler extends SimpleHandler {
 			'visibility' => $this->wikiRequestManager->getVisibility(),
 		];
 
-		$formattedComments = array_map(
-			static fn ( array $comment ): array => [
+		$formattedComments = [];
+		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
+			$formattedComments[] = [
 				'comment' => $comment['comment'],
 				'timestamp' => wfTimestamp( TS_ISO_8601, $comment['timestamp'] ),
 				'user' => $comment['user']->getName(),
-			],
-			$this->wikiRequestManager->getComments()
-		);
+			];
+		}
 
 		// We now have all the data we need, add the comments to $response and return
 		$response['comments'] = $formattedComments;
