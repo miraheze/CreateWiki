@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\LoggedUpdateMaintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use function array_key_first;
 
 class PopulateCentralWiki extends LoggedUpdateMaintenance {
 

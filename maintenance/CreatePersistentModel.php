@@ -13,6 +13,9 @@ use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
 use Wikimedia\Rdbms\SelectQueryBuilder;
+use function strtolower;
+use function in_array;
+use function serialize;
 
 class CreatePersistentModel extends Maintenance {
 
@@ -44,7 +47,7 @@ class CreatePersistentModel extends Maintenance {
 
 		foreach ( $res as $row ) {
 			$comment = strtolower( $row->cw_comment );
-			if ( !in_array( $comment, $comments ) ) {
+			if ( !in_array( $comment, $comments, true ) ) {
 				$comments[] = $comment;
 				$status[] = $row->cw_status;
 			}

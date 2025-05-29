@@ -6,6 +6,13 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Registration\ExtensionProcessor;
 use Miraheze\CreateWiki\ConfigNames;
+use function array_fill_keys;
+use function array_merge;
+use function glob;
+use function array_column;
+use function var_export;
+use function file_put_contents;
+use const LOCK_EX;
 
 class RebuildExtensionListCache extends Maintenance {
 

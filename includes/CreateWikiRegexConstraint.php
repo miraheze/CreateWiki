@@ -4,6 +4,12 @@ namespace Miraheze\CreateWiki;
 
 use MediaWiki\Logger\LoggerFactory;
 use StringUtils;
+use function array_filter;
+use function array_map;
+use function explode;
+use function implode;
+use function preg_replace;
+use function wfMessage;
 
 class CreateWikiRegexConstraint {
 

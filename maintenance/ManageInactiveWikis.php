@@ -5,6 +5,9 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
+use function date;
+use function strtotime;
+use function wfMessage;
 
 /**
  * Maintenance script for marking wikis as inactive, closed, and deleted

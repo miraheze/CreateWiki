@@ -15,6 +15,19 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
+use function count;
+use function htmlspecialchars;
+use function implode;
+use function json_decode;
+use function json_encode;
+use function preg_match;
+use function sleep;
+use function sprintf;
+use function str_replace;
+use function strtolower;
+use function substr;
+use function trim;
+use const ENT_QUOTES;
 
 class RequestWikiRemoteAIJob extends Job {
 
@@ -42,6 +55,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->id = $params['id'];
 	}
 
+	/** @inheritDoc */
 	public function run(): bool {
 		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
 			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );

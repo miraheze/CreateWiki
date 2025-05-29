@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
+use function strtolower;
 
 class RenameWiki extends Maintenance {
 

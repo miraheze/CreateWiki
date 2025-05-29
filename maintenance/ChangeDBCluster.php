@@ -4,6 +4,10 @@ namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
+use function fopen;
+use function feof;
+use function fgets;
+use function trim;
 
 class ChangeDBCluster extends Maintenance {
 

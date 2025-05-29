@@ -10,6 +10,15 @@ use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
+use function file_exists;
+use function file_put_contents;
+use function is_array;
+use function rename;
+use function tempnam;
+use function time;
+use function unlink;
+use function var_export;
+use function wfTempDir;
 
 class CreateWikiDataFactory {
 

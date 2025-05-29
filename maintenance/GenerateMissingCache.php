@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use function file_exists;
 
 class GenerateMissingCache extends Maintenance {
 

@@ -6,6 +6,7 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 use Wikimedia\FileBackend\FileBackend;
+use function print_r;
 
 class SetContainersAccess extends Maintenance {
 

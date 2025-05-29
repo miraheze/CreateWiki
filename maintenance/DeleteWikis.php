@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
+use function implode;
 
 class DeleteWikis extends Maintenance {
 

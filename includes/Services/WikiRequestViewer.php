@@ -17,6 +17,14 @@ use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
 use UserNotLoggedIn;
+use function array_diff_key;
+use function array_flip;
+use function count;
+use function nl2br;
+use function strlen;
+use function str_starts_with;
+use function substr;
+use function ucfirst;
 
 class WikiRequestViewer {
 

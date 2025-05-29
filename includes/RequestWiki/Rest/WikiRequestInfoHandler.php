@@ -8,6 +8,9 @@ use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use function array_map;
+use function wfTimestamp;
+use const TS_ISO_8601;
 
 /**
  * Returns information related to a wiki request

@@ -22,6 +22,7 @@ class SetContainersAccessJob extends Job {
 		$this->isPrivate = $params['private'];
 	}
 
+	/** @inheritDoc */
 	public function run(): bool {
 		// Make sure all of the file repo zones are setup
 		$repo = $this->repoGroup->getLocalRepo();
