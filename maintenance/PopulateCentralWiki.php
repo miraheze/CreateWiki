@@ -55,7 +55,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 			->insertInto( 'cw_wikis' )
 			->row( [
 				'wiki_dbname' => $centralWiki,
-				'wiki_dbcluster' => $this->getOption( 'dbcluster', $this->getDefaultCluster() ),
+				'wiki_dbcluster' => $this->getOption( 'dbcluster', $this->getDefaultCluster() ?: null ),
 				'wiki_sitename' => $this->getOption( 'sitename', 'Central Wiki' ),
 				'wiki_language' => $this->getOption( 'language',
 					$this->getConfig()->get( MainConfigNames::LanguageCode )
@@ -75,9 +75,9 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 		return $this->databaseUtils->getCentralWikiID();
 	}
 
-	private function getDefaultCluster(): ?string {
+	private function getDefaultCluster(): string {
 		$clusters = $this->getConfig()->get( ConfigNames::DatabaseClusters );
-		return array_key_first( $clusters );
+		return (string)array_key_first( $clusters );
 	}
 }
 
