@@ -17,7 +17,6 @@ use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
 use function count;
 use function htmlspecialchars;
-use function implode;
 use function json_decode;
 use function json_encode;
 use function preg_match;

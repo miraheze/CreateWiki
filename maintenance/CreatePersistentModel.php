@@ -13,9 +13,9 @@ use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
 use Wikimedia\Rdbms\SelectQueryBuilder;
-use function strtolower;
 use function in_array;
 use function serialize;
+use function strtolower;
 
 class CreatePersistentModel extends Maintenance {
 

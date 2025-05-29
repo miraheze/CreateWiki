@@ -21,8 +21,8 @@ use function array_diff_key;
 use function array_flip;
 use function count;
 use function nl2br;
-use function strlen;
 use function str_starts_with;
+use function strlen;
 use function substr;
 use function ucfirst;
 

@@ -25,18 +25,14 @@ use function is_bool;
 use function json_decode;
 use function pathinfo;
 use function strlen;
-use function str_ends_with;
 use function substr;
 use function var_export;
 use const CW_DB;
-use const ENT_QUOTES;
 use const LOCK_EX;
 use const MW_DB;
-use const MW_INSTALL_PATH;
 use const NS_PROJECT;
 use const NS_PROJECT_TALK;
 use const PHP_SAPI;
-use const TS_UNIX;
 
 class WikiInitialize {
 
