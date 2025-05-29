@@ -735,7 +735,7 @@ class WikiRequestManager {
 	}
 
 	public function getAllExtraData(): array {
-		return json_decode( $this->row->cw_extra ?: '[]', true );
+		return (array)json_decode( $this->row->cw_extra ?: '[]', true );
 	}
 
 	public function getExtraFieldData( string $field ): mixed {
