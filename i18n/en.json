@@ -12,7 +12,7 @@
 	"action-createwiki-suppressrequest": "suppress wiki requests",
 	"action-requestwiki": "request wikis",
 	"createwiki": "Create a wiki",
-	"createwiki-close-email-body": "Hello,\n\nThis email is to inform you that your wiki has been closed.",
+	"createwiki-close-email-body": "Hello,\n\nThis email is to inform you that your wiki ([$2 $3]) has been closed.",
 	"createwiki-close-email-sender": "noreply",
 	"createwiki-close-email-subject": "Your wiki ($1) has been closed",
 	"createwiki-comment-success": "Comment successfully added to this request.",
