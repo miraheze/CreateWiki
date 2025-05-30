@@ -91,7 +91,8 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageLocalizerMock->method( 'msg' )
-			->with( ...[ 'createwiki-error-agreement' ] )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'createwiki-error-agreement' )
 			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateAgreement( $agreement );
@@ -118,7 +119,8 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageLocalizerMock->method( 'msg' )
-			->with( ...[ 'htmlform-required' ] )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'htmlform-required' )
 			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateComment( $comment, $data );
@@ -246,7 +248,8 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageLocalizerMock->method( 'msg' )
-			->with( ...[ 'htmlform-required' ] )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'htmlform-required' )
 			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateStatusComment( $comment, $data );
