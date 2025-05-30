@@ -7,7 +7,17 @@ use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Maintenance\ManageInactiveWikis;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
+use function date;
+use function strtotime;
+use function version_compare;
+use const MW_INSTALL_PATH;
+use const MW_VERSION;
+use const NS_MAIN;
 
 /**
  * @group CreateWiki
@@ -17,8 +27,11 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  */
 class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
+	private RemoteWikiFactory $remoteWikiFactory;
+
 	protected function setUp(): void {
 		parent::setUp();
+		$this->remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
 		$sqlPath = '/maintenance/tables-generated.sql';
 		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
@@ -68,7 +81,9 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::__construct
 	 */
 	public function testConstructor(): void {
-		$this->assertInstanceOf( ManageInactiveWikis::class, $this->maintenance->object );
+		$mockObject = $this->maintenance;
+		'@phan-var TestingAccessWrapper $mockObject';
+		$this->assertInstanceOf( ManageInactiveWikis::class, $mockObject->object );
 	}
 
 	/**
@@ -100,9 +115,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		ConvertibleTimestamp::setFakeTime( $now );
 		$this->insertRemoteLogging( 'activetest' );
 
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'activetest' );
-
+		$remoteWiki = $this->remoteWikiFactory->newInstance( 'activetest' );
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
 
@@ -123,7 +136,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'inactivetest' );
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'inactivetest' );
 
 		// Now simulate that the last activity occurred 15 days ago (beyond the inactive threshold of 10 days).
@@ -150,7 +163,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'closuretest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'closuretest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
@@ -160,9 +173,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->insertRemoteLogging( 'closuretest' );
 
 		// Mark the wiki as inactive so that it records an inactive timestamp.
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'closuretest' );
-
+		$remoteWiki = $this->remoteWikiFactory->newInstance( 'closuretest' );
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
 
@@ -188,7 +199,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'closureinactivetest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'closureinactivetest' );
 
 		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
@@ -201,9 +212,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$oldTime = date( 'YmdHis', strtotime( '-6 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
 
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'closureinactivetest' );
-
+		$remoteWiki = $this->remoteWikiFactory->newInstance( 'closureinactivetest' );
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
 
@@ -230,7 +239,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'closureinactiveineligibletest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'closureinactiveineligibletest' );
 
 		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
@@ -243,9 +252,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$oldTime = date( 'YmdHis', strtotime( '-4 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
 
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'closureinactiveineligibletest' );
-
+		$remoteWiki = $this->remoteWikiFactory->newInstance( 'closureinactiveineligibletest' );
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
 
@@ -273,7 +280,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'removaltest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'removaltest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
@@ -285,9 +292,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// Mark the wiki as closed so that it records a closed timestamp.
 		// This will also be 16 days ago which means closed timestamp
 		// plus removal days is greater then 7 which is the removal threshold.
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'removaltest' );
-
+		$remoteWiki = $this->remoteWikiFactory->newInstance( 'removaltest' );
 		$remoteWiki->markClosed();
 		$remoteWiki->commit();
 
@@ -314,7 +319,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'removalineligibletest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'removalineligibletest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
@@ -328,9 +333,8 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		// so it is not yet eligible for removal.
 		$oldTime = date( 'YmdHis', strtotime( '-6 days' ) );
 		ConvertibleTimestamp::setFakeTime( $oldTime );
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$remoteWiki = $remoteWikiFactory->newInstance( 'removalineligibletest' );
 
+		$remoteWiki = $this->remoteWikiFactory->newInstance( 'removalineligibletest' );
 		$remoteWiki->markClosed();
 		$remoteWiki->commit();
 
@@ -351,10 +355,11 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
-		ConvertibleTimestamp::setFakeTime( '20200101000000' );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$wikiManager = $wikiManagerFactory->newInstance( $dbname );
+		'@phan-var WikiManagerFactory $wikiManagerFactory';
 
+		$wikiManager = $wikiManagerFactory->newInstance( $dbname );
 		$wikiManager->create(
 			sitename: 'TestWiki',
 			language: 'en',
@@ -369,10 +374,11 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 	private function insertRemoteLogging( string $dbname ): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 		$dbw = $databaseUtils->getRemoteWikiPrimaryDB( $dbname );
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'logging' )
-			->rows( [
+			->row( [
 				'log_type' => 'test',
 				'log_action' => 'test',
 				'log_actor' => $this->getTestUser()->getUser()->getActorId(),

@@ -7,6 +7,7 @@ use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\TestingAccessWrapper;
@@ -44,6 +45,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
@@ -106,7 +108,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function testGetCreationDate(): void {
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
 
-		$timestamp = $this->db->timestamp();
+		$timestamp = $this->getDb()->timestamp();
 		$this->createWiki( 'remotewikitest' );
 
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
@@ -163,7 +165,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $remoteWiki->isInactive() );
 
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
-		$timestamp = $this->db->timestamp();
+		$timestamp = $this->getDb()->timestamp();
 
 		$remoteWiki->markInactive();
 		$remoteWiki->commit();
@@ -245,7 +247,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $remoteWiki->isClosed() );
 
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
-		$timestamp = $this->db->timestamp();
+		$timestamp = $this->getDb()->timestamp();
 
 		$remoteWiki->markClosed();
 		$remoteWiki->commit();
@@ -271,7 +273,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $remoteWiki->isDeleted() );
 
 		ConvertibleTimestamp::setFakeTime( ConvertibleTimestamp::now() );
-		$timestamp = $this->db->timestamp();
+		$timestamp = $this->getDb()->timestamp();
 
 		$remoteWiki->delete();
 		$remoteWiki->commit();
@@ -438,7 +440,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
 		$this->assertSame( 'settings', $remoteWiki->getLogAction() );
 
-		$remoteWiki->setLogAction( 'test', true );
+		$remoteWiki->setLogAction( 'test' );
 		$this->assertSame( 'test', $remoteWiki->getLogAction() );
 	}
 

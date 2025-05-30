@@ -10,6 +10,9 @@ use MediaWikiIntegrationTestCase;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
+use PHPUnit\Framework\MockObject\MockObject;
+use function is_bool;
+use function is_string;
 
 /**
  * @group CreateWiki
@@ -18,13 +21,14 @@ use Miraheze\CreateWiki\Services\CreateWikiValidator;
  */
 class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
-	private readonly CreateWikiValidator $validator;
-	private readonly MessageLocalizer $messageLocalizer;
+	private CreateWikiValidator $validator;
+	private MockObject $messageLocalizerMock;
+	private MockObject $messageMock;
 
 	protected function setUp(): void {
 		parent::setUp();
-
-		$this->messageLocalizer = $this->createMock( MessageLocalizer::class );
+		$this->messageLocalizerMock = $this->createMock( MessageLocalizer::class );
+		$this->messageMock = $this->createMock( Message::class );
 
 		$options = $this->createMock( ServiceOptions::class );
 		$options->method( 'get' )->willReturnMap( [
@@ -36,8 +40,12 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		$options->method( 'assertRequiredOptions' )->willReturn( null );
+		'@phan-var ServiceOptions $options';
+
+		$messageLocalizer = $this->messageLocalizerMock;
+		'@phan-var MessageLocalizer $messageLocalizer';
 		$this->validator = new CreateWikiValidator(
-			$this->messageLocalizer,
+			$messageLocalizer,
 			$options
 		);
 	}
@@ -81,9 +89,11 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool $agreement,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizer->method( 'msg' )->with( 'createwiki-error-agreement' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'createwiki-error-agreement' )
+			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateAgreement( $agreement );
 		if ( $expected === true ) {
@@ -107,9 +117,11 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		array $data,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizer->method( 'msg' )->with( 'htmlform-required' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'htmlform-required' )
+			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateComment( $comment, $data );
 		if ( $expected === true ) {
@@ -136,10 +148,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		string $dbname,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'parsed' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateDatabaseEntry( $dbname );
 		if ( $expected === true ) {
@@ -170,10 +181,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool $exists,
 		?string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'parsed' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateDatabaseName( $dbname, $exists );
 		if ( $expected === null ) {
@@ -203,10 +213,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	): void {
 		// For cases where an error message is expected, simulate Message behavior.
 		if ( is_string( $expected ) ) {
-			$message = $this->createMock( Message::class );
-			$message->method( 'parse' )->willReturn( $expected );
-			$message->method( 'numParams' )->willReturn( $message );
-			$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+			$this->messageMock->method( 'parse' )->willReturn( $expected );
+			$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+			$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 		}
 		$result = $this->validator->validateReason( $reason, $data );
 		if ( is_bool( $expected ) ) {
@@ -237,9 +246,11 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		array $data,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizer->method( 'msg' )->with( 'htmlform-required' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'htmlform-required' )
+			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateStatusComment( $comment, $data );
 		if ( $expected === true ) {
@@ -268,10 +279,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		array $data,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateSubdomain( $subdomain, $data );
 		if ( $expected === true ) {

@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\Tests\Maintenance;
 
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use Miraheze\CreateWiki\Maintenance\ListDatabases;
+use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group CreateWiki
@@ -20,7 +21,9 @@ class ListDatabasesTest extends MaintenanceBaseTestCase {
 	 * @covers ::__construct
 	 */
 	public function testConstructor(): void {
-		$this->assertInstanceOf( ListDatabases::class, $this->maintenance->object );
+		$mockObject = $this->maintenance;
+		'@phan-var TestingAccessWrapper $mockObject';
+		$this->assertInstanceOf( ListDatabases::class, $mockObject->object );
 	}
 
 	/**

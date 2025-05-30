@@ -7,9 +7,21 @@ use MediaWiki\Config\ConfigException;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use function array_merge;
+use function version_compare;
+use function wfLoadConfiguration;
+use function wfMessage;
+use function wfTimestamp;
+use const DBO_DEBUG;
+use const DBO_DEFAULT;
+use const MW_INSTALL_PATH;
+use const MW_VERSION;
+use const TS_MW;
+use const TS_UNIX;
 
 /**
  * @group CreateWiki
@@ -52,6 +64,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
@@ -193,7 +206,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	public function testRenameSuccess(): void {
 		$this->createWiki( dbname: 'renamewikitest', private: false );
 
-		$this->db->newDeleteQueryBuilder()
+		$this->getDb()->newDeleteQueryBuilder()
 			->deleteFrom( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => 'renamewikitest' ] )
 			->caller( __METHOD__ )
@@ -205,7 +218,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->wikiExists( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'renamewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `createwikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `createwikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -218,7 +231,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'renamewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `renamewikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -260,12 +273,12 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertTrue( $remoteWiki->isDeleted() );
 
-		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp(
+		$eligibleTimestamp = wfTimestamp( TS_MW, (int)wfTimestamp(
 			TS_UNIX,
 			$remoteWiki->getDeletedTimestamp()
 		) - ( 86400 * 8 ) );
 
-		$this->db->newUpdateQueryBuilder()
+		$this->getDb()->newUpdateQueryBuilder()
 			->update( 'cw_wikis' )
 			->set( [ 'wiki_deleted_timestamp' => $eligibleTimestamp ] )
 			->where( [ 'wiki_dbname' => 'deletewikitest' ] )
@@ -275,7 +288,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: false ) );
 		$this->assertFalse( $this->wikiExists( 'deletewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `deletewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `deletewikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -290,21 +303,16 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;', __METHOD__ );
 
 		$this->assertNull( $this->createWiki( dbname: 'recreatewikitest', private: false ) );
 		$this->assertTrue( $this->wikiExists( 'recreatewikitest' ) );
 
 		$wikiManager->delete( force: true );
 
-		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;', __METHOD__ );
 	}
 
-	/**
-	 * @param string $dbname
-	 * @param bool $private
-	 * @return ?string
-	 */
 	private function createWiki( string $dbname, bool $private ): ?string {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
@@ -323,10 +331,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	/**
-	 * @param string $dbname
-	 * @return bool
-	 */
 	private function wikiExists( string $dbname ): bool {
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 		return $wikiManager->exists();
