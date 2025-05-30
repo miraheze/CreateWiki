@@ -58,7 +58,7 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 		ConvertibleTimestamp::setFakeTime( (string)20250505060710 );
 		$this->deletePage(
 			$this->getServiceContainer()->getWikiPageFactory()->newFromTitle(
-				$editStatus->getNewRevision()->getPage()
+				$editStatus->getNewRevision()?->getPage()
 			)
 		);
 

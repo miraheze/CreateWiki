@@ -52,6 +52,10 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			'user' => 'root',
 		] );
 
+		if ( $db === null ) {
+			return;
+		}
+
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatetest`.* TO 'wikiuser'@'localhost';" );

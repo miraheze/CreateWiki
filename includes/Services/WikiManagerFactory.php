@@ -18,6 +18,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
+use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -110,7 +111,7 @@ class WikiManagerFactory {
 
 				// Pick the cluster with the least number of databases
 				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ), true );
-				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
+				$this->cluster = (string)$smallestClusters[array_rand( $smallestClusters )] ?: null;
 
 				// Make sure we set the new database in sectionsByDB early
 				// so that if the cluster is empty it is populated so that a new
@@ -121,6 +122,9 @@ class WikiManagerFactory {
 				$lbs = $lbFactoryMulti->getAllMainLBs();
 				$this->lb = $lbs[$this->cluster];
 				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
+				if ( $newDbw === false ) {
+					throw new DBConnectionError();
+				}
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
@@ -154,7 +158,11 @@ class WikiManagerFactory {
 			// If we are using DatabaseClusters we will have an LB
 			// and we will use that which will use the clusters
 			// defined in $wgLBFactoryConf.
-			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
+			$conn = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
+			if ( $conn === false ) {
+				throw new DBConnectionError();
+			}
+			$this->dbw = $conn;
 			return;
 		}
 

@@ -53,7 +53,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		] );
 
 		$form = $this->getForm();
-		if ( $form->show() ) {
+		if ( $form?->show() ) {
 			$this->onSuccess();
 		}
 	}
