@@ -31,8 +31,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	private RemoteWikiFactory $remoteWikiFactory;
 	private WikiManagerFactory $wikiManagerFactory;
 
-	private string $fakeTime;
-
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -44,8 +42,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		$this->remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 		$this->wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-
-		$this->fakeTime = '20200101000000';
 
 		$this->overrideConfigValues( [
 			ConfigNames::DatabaseSuffix => 'test',
@@ -145,7 +141,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'inactivetest' );
 
 		// Simulate an old creation date by setting the fake time to an earlier date and making an initial edit.
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'inactivetest' );
 
 		// Now simulate that the last activity occurred 15 days ago (beyond the inactive threshold of 10 days).
@@ -172,7 +168,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'closuretest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'closuretest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
@@ -208,7 +204,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'closureinactivetest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'closureinactivetest' );
 
 		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
@@ -248,7 +244,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'closureinactiveineligibletest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'closureinactiveineligibletest' );
 
 		// Now simulate that the last activity occurred 11 days ago (beyond the inactive threshold of 10 days).
@@ -289,7 +285,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'removaltest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'removaltest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
@@ -328,7 +324,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$this->createWiki( 'removalineligibletest' );
 
 		// Set an old creation date.
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$this->insertRemoteLogging( 'removalineligibletest' );
 
 		// Simulate an edit that happened 16 days ago, which is older than inactive (10 days)
@@ -364,7 +360,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
 
-		ConvertibleTimestamp::setFakeTime( $this->fakeTime );
+		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 
 		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
 		$wikiManager->create(
