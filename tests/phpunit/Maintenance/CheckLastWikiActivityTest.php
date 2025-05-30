@@ -55,10 +55,16 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 			'Initial revision'
 		);
 
+		$newRevision = $editStatus->getNewRevision();
+		if ( $newRevision === null ) {
+			$this->fail( 'Could not get new revision' );
+			return;
+		}
+
 		ConvertibleTimestamp::setFakeTime( (string)20250505060710 );
 		$this->deletePage(
 			$this->getServiceContainer()->getWikiPageFactory()->newFromTitle(
-				$editStatus->getNewRevision()?->getPage()
+				$newRevision->getPage()
 			)
 		);
 
