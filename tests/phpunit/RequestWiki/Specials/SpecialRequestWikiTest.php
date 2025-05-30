@@ -143,7 +143,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		}
 
 		$request = new FauxRequest(
-			[ 'wpEditToken' => $context->getCsrfTokenSet()->getToken() ],
+			[ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ],
 			true
 		);
 
