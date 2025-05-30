@@ -145,9 +145,10 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			$this->setSessionUser( $user, $user->getRequest() );
 		}
 
+		// TODO replace with CsrfTokenSet
 		$request = new FauxRequest(
-			[ 'wpEditToken' => $user->getEditToken() ],
-			true
+			// [ 'wpEditToken' => $user->getEditToken() ],
+			// true
 		);
 
 		$context->setRequest( $request );
