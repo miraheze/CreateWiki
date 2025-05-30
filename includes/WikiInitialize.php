@@ -96,6 +96,7 @@ class WikiInitialize {
 		}
 
 		// Assign all known wikis
+		// @phan-suppress-next-line PhanPartialTypeMismatchProperty
 		$this->config->wikis = array_keys( $databasesArray['databases'] );
 
 		// Handle wgServer and wgSitename
@@ -123,6 +124,7 @@ class WikiInitialize {
 
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.php' ) ) {
+			// @phan-suppress-next-line PhanPartialTypeMismatchProperty
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
 		}
 
@@ -135,7 +137,7 @@ class WikiInitialize {
 		} elseif ( defined( 'CW_DB' ) ) {
 			$this->dbname = CW_DB;
 		} elseif ( isset( array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname] ) ) {
-			$this->dbname = array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname];
+			$this->dbname = (string)array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname];
 		} else {
 			$explode = explode( '.', $this->hostname, 2 );
 
@@ -161,10 +163,10 @@ class WikiInitialize {
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
 
-		$this->server = $this->config->settings['wgServer'][$this->dbname] ??
-			$this->config->settings['wgServer']['default'];
-		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ??
-			$this->config->settings['wgSitename']['default'];
+		$this->server = (string)( $this->config->settings['wgServer'][$this->dbname] ??
+			$this->config->settings['wgServer']['default'] );
+		$this->sitename = (string)( $this->config->settings['wgSitename'][$this->dbname] ??
+			$this->config->settings['wgSitename']['default'] );
 
 		if ( !in_array( $this->dbname, $this->config->wikis, true ) ) {
 			$this->missing = true;
