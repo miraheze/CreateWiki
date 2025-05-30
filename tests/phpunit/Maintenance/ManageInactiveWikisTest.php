@@ -27,21 +27,16 @@ use const NS_MAIN;
  */
 class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
-	private CreateWikiDatabaseUtils $databaseUtils;
 	private RemoteWikiFactory $remoteWikiFactory;
-	private WikiManagerFactory $wikiManagerFactory;
 
 	protected function setUp(): void {
 		parent::setUp();
+		$this->remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
 		$sqlPath = '/maintenance/tables-generated.sql';
 		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
 			$sqlPath = '/sql/mysql/tables-generated.sql';
 		}
-
-		$this->databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$this->remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-		$this->wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
 
 		$this->overrideConfigValues( [
 			ConfigNames::DatabaseSuffix => 'test',
@@ -361,8 +356,10 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$testSysop = $this->getTestSysop()->getUser();
 
 		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
+		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
+		'@phan-var WikiManagerFactory $wikiManagerFactory';
 
-		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
+		$wikiManager = $wikiManagerFactory->newInstance( $dbname );
 		$wikiManager->create(
 			sitename: 'TestWiki',
 			language: 'en',
@@ -376,7 +373,9 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	}
 
 	private function insertRemoteLogging( string $dbname ): void {
-		$dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $dbname );
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
+		$dbw = $databaseUtils->getRemoteWikiPrimaryDB( $dbname );
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'logging' )
 			->row( [
