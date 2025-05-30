@@ -135,18 +135,15 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	): void {
 		$context = new DerivativeContext( $this->specialRequestWiki->getContext() );
 		$user = $this->getMutableTestUser()->getUser();
-
 		$context->setUser( $user );
 
+		$data = [];
 		if ( $extraData['session'] ) {
 			$this->setSessionUser( $user, $user->getRequest() );
+			$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
 		}
 
-		$request = new FauxRequest(
-			[ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ],
-			true
-		);
-
+		$request = new FauxRequest( $data, true );
 		$context->setRequest( $request );
 
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
