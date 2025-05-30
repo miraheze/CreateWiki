@@ -34,7 +34,7 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 	 * @covers ::getTimestamp
 	 */
 	public function testExecuteWithRevisionOnly(): void {
-		ConvertibleTimestamp::setFakeTime( (string)'20250405060708' );
+		ConvertibleTimestamp::setFakeTime( (string)20250405060708 );
 		$this->editPage(
 			Title::newFromText( 'TestPageRevisionOnly' ),
 			'Initial revision'
@@ -49,13 +49,13 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 	 * @covers ::getTimestamp
 	 */
 	public function testExecuteWithLoggingEventLater(): void {
-		ConvertibleTimestamp::setFakeTime( (string)'20250505060708' );
+		ConvertibleTimestamp::setFakeTime( (string)20250505060708 );
 		$editStatus = $this->editPage(
 			Title::newFromText( 'TestPageLogging' ),
 			'Initial revision'
 		);
 
-		ConvertibleTimestamp::setFakeTime( (string)'20250505060710' );
+		ConvertibleTimestamp::setFakeTime( (string)20250505060710 );
 		$this->deletePage(
 			$this->getServiceContainer()->getWikiPageFactory()->newFromTitle(
 				$editStatus->getNewRevision()->getPage()
