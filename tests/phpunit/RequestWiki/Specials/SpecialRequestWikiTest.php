@@ -20,6 +20,7 @@ use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use SpecialPageTestBase;
 use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
+use function wfTimestamp;
 
 /**
  * @group CreateWiki

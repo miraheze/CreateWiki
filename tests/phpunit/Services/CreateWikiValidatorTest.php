@@ -10,6 +10,8 @@ use MediaWikiIntegrationTestCase;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
+use function is_bool;
+use function is_string;
 
 /**
  * @group CreateWiki
