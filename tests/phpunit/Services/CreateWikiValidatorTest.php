@@ -90,7 +90,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool|string $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizerMock->method( 'msg' )->with( 'createwiki-error-agreement' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->with( [ 'createwiki-error-agreement' ] )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateAgreement( $agreement );
 		if ( $expected === true ) {
@@ -115,7 +115,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool|string $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizerMock->method( 'msg' )->with( 'htmlform-required' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->with( [ 'htmlform-required' ] )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateComment( $comment, $data );
 		if ( $expected === true ) {
@@ -241,7 +241,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool|string $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizerMock->method( 'msg' )->with( 'htmlform-required' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->with( [ 'htmlform-required' ] )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateStatusComment( $comment, $data );
 		if ( $expected === true ) {
