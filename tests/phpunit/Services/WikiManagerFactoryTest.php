@@ -7,6 +7,7 @@ use MediaWiki\Config\ConfigException;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -63,6 +64,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
@@ -216,7 +218,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->wikiExists( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'renamewikitest' ) );
 
-		$this->getDb()->query( 'DROP DATABASE `createwikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `createwikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -229,7 +231,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'renamewikitest' ) );
 
-		$this->getDb()->query( 'DROP DATABASE `renamewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `renamewikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -286,7 +288,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: false ) );
 		$this->assertFalse( $this->wikiExists( 'deletewikitest' ) );
 
-		$this->getDb()->query( 'DROP DATABASE `deletewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `deletewikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -301,14 +303,14 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
 
-		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;', __METHOD__ );
 
 		$this->assertNull( $this->createWiki( dbname: 'recreatewikitest', private: false ) );
 		$this->assertTrue( $this->wikiExists( 'recreatewikitest' ) );
 
 		$wikiManager->delete( force: true );
 
-		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;', __METHOD__ );
 	}
 
 	private function createWiki( string $dbname, bool $private ): ?string {
