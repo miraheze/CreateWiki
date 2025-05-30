@@ -15,7 +15,6 @@ use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use SpecialPageTestBase;
 use UserNotLoggedIn;
@@ -32,14 +31,14 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	use TempUserTestTrait;
 
-	private readonly SpecialRequestWiki $specialRequestWiki;
+	private SpecialRequestWiki $specialRequestWiki;
 
 	/** @inheritDoc */
 	protected function newSpecialPage(): SpecialRequestWiki {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
 			$services->get( 'CreateWikiDatabaseUtils' ),
-			$this->createMock( CreateWikiHookRunner::class ),
+			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->get( 'WikiRequestManager' )
 		);
