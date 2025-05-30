@@ -44,8 +44,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function addDBDataOnce(): void {
-		/** @var CreateWikiDatabaseUtils $databaseUtils */
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
