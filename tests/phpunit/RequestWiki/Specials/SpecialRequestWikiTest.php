@@ -127,9 +127,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::onSubmit
 	 * @dataProvider onSubmitDataProvider
-	 *
-	 * Session fails on MediaWiki 1.44+ and not sure why at the moment
-	 * @group Broken
 	 */
 	public function testOnSubmit(
 		array $formData,
@@ -146,9 +143,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		}
 
 		$request = new FauxRequest(
-			// TODO replace with CsrfTokenSet
-			// [ 'wpEditToken' => $user->getEditToken() ],
-			// true
+			[ 'wpEditToken' => $context->getCsrfTokenSet()->getToken() ],
+			true
 		);
 
 		$context->setRequest( $request );
