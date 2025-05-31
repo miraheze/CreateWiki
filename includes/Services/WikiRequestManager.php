@@ -11,11 +11,9 @@ use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
-use MediaWiki\User\ActorStore;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
-use MediaWiki\User\UserIdentityValue;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
@@ -240,10 +238,7 @@ class WikiRequestManager {
 
 		$comments = [];
 		foreach ( $res as $row ) {
-			$user = $this->userFactory->newFromId( $row->cw_comment_user ) ??
-				$this->userFactory->newFromUserIdentity(
-					new UserIdentityValue( 0, ActorStore::UNKNOWN_USER_NAME )
-				);
+			$user = $this->userFactory->newFromId( $row->cw_comment_user );
 
 			$comments[] = [
 				'comment' => $row->cw_comment,
@@ -319,10 +314,7 @@ class WikiRequestManager {
 
 		$history = [];
 		foreach ( $res as $row ) {
-			$user = $this->userFactory->newFromActorId( $row->cw_history_actor ) ??
-				$this->userFactory->newFromUserIdentity(
-					new UserIdentityValue( 0, ActorStore::UNKNOWN_USER_NAME )
-				);
+			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
 
 			$history[] = [
 				'action' => $row->cw_history_action,
