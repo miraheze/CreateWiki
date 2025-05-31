@@ -751,6 +751,9 @@ class WikiRequestManager {
 			->caller( __METHOD__ );
 	}
 
+	/**
+	 * @phan-assert UpdateQueryBuilder $this->queryBuilder
+	 */
 	public function checkQueryBuilder(): void {
 		if ( !$this->queryBuilder ) {
 			throw new RuntimeException(
@@ -763,7 +766,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $private !== $this->isPrivate() ) {
 			$this->trackChange( 'private', $this->isPrivate(), $private );
-			$this->queryBuilder?->set( [ 'cw_private' => (int)$private ] );
+			$this->queryBuilder->set( [ 'cw_private' => (int)$private ] );
 		}
 	}
 
@@ -771,7 +774,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $bio !== $this->isBio() ) {
 			$this->trackChange( 'bio', $this->isBio(), $bio );
-			$this->queryBuilder?->set( [ 'cw_bio' => (int)$bio ] );
+			$this->queryBuilder->set( [ 'cw_bio' => (int)$bio ] );
 		}
 	}
 
@@ -791,7 +794,7 @@ class WikiRequestManager {
 			}
 
 			$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
-			$this->queryBuilder?->set( [ 'cw_visibility' => $visibility ] );
+			$this->queryBuilder->set( [ 'cw_visibility' => $visibility ] );
 		}
 	}
 
@@ -803,7 +806,7 @@ class WikiRequestManager {
 			}
 
 			$this->trackChange( 'category', $this->getCategory(), $category );
-			$this->queryBuilder?->set( [ 'cw_category' => $category ] );
+			$this->queryBuilder->set( [ 'cw_category' => $category ] );
 		}
 	}
 
@@ -811,7 +814,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $sitename !== $this->getSitename() ) {
 			$this->trackChange( 'sitename', $this->getSitename(), $sitename );
-			$this->queryBuilder?->set( [ 'cw_sitename' => $sitename ] );
+			$this->queryBuilder->set( [ 'cw_sitename' => $sitename ] );
 		}
 	}
 
@@ -819,7 +822,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $language !== $this->getLanguage() ) {
 			$this->trackChange( 'language', $this->getLanguage(), $language );
-			$this->queryBuilder?->set( [ 'cw_language' => $language ] );
+			$this->queryBuilder->set( [ 'cw_language' => $language ] );
 		}
 	}
 
@@ -840,7 +843,7 @@ class WikiRequestManager {
 
 		$newComment .= $reason;
 
-		$this->queryBuilder?->set( [ 'cw_comment' => $newComment ] );
+		$this->queryBuilder->set( [ 'cw_comment' => $newComment ] );
 	}
 
 	public function setUrl( string $url ): void {
@@ -852,7 +855,7 @@ class WikiRequestManager {
 			$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
 
 			$this->trackChange( 'url', $this->getUrl(), $url );
-			$this->queryBuilder?->set( [
+			$this->queryBuilder->set( [
 				'cw_dbname' => $dbname,
 				'cw_url' => $url,
 			] );
@@ -878,7 +881,7 @@ class WikiRequestManager {
 				throw new RuntimeException( 'Cannot set invalid JSON data to cw_extra.' );
 			}
 
-			$this->queryBuilder?->set( [ 'cw_extra' => $newExtra ] );
+			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
 		}
 	}
 
@@ -886,14 +889,14 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $status !== $this->getStatus() ) {
 			$this->trackChange( 'status', $this->getStatus(), $status );
-			$this->queryBuilder?->set( [ 'cw_status' => $status ] );
+			$this->queryBuilder->set( [ 'cw_status' => $status ] );
 		}
 	}
 
 	public function tryExecuteQueryBuilder(): void {
 		$this->checkQueryBuilder();
 		if ( $this->changes ) {
-			$this->queryBuilder?->execute();
+			$this->queryBuilder->execute();
 		}
 
 		$this->clearQueryBuilder();
