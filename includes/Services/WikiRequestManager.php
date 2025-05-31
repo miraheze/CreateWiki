@@ -11,9 +11,11 @@ use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\ActorStore;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
+use MediaWiki\User\UserIdentityValue;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Jobs\CreateWikiJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
@@ -221,7 +223,7 @@ class WikiRequestManager {
 	}
 
 	/**
-	 * @return array<int, array{comment: string, timestamp: string, user: User|null}>
+	 * @return array<int, array{comment: string, timestamp: string, user: User}>
 	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
@@ -238,7 +240,10 @@ class WikiRequestManager {
 
 		$comments = [];
 		foreach ( $res as $row ) {
-			$user = $this->userFactory->newFromId( $row->cw_comment_user );
+			$user = $this->userFactory->newFromId( $row->cw_comment_user ) ??
+				$this->userFactory->newFromUserIdentity(
+					new UserIdentityValue( 0, ActorStore::UNKNOWN_USER_NAME )
+				);
 
 			$comments[] = [
 				'comment' => $row->cw_comment,
@@ -301,7 +306,7 @@ class WikiRequestManager {
 	}
 
 	/**
-	 * @return array<int, array{action: string, details: string, timestamp: string, user: User|null}>
+	 * @return array<int, array{action: string, details: string, timestamp: string, user: User}>
 	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
@@ -314,7 +319,10 @@ class WikiRequestManager {
 
 		$history = [];
 		foreach ( $res as $row ) {
-			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
+			$user = $this->userFactory->newFromActorId( $row->cw_history_actor ) ??
+				$this->userFactory->newFromUserIdentity(
+					new UserIdentityValue( 0, ActorStore::UNKNOWN_USER_NAME )
+				);
 
 			$history[] = [
 				'action' => $row->cw_history_action,
