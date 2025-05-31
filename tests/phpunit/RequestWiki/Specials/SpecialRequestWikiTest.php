@@ -5,14 +5,11 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
 use ErrorPageError;
 use Generator;
 use MediaWiki\Context\DerivativeContext;
-use MediaWiki\Context\RequestContext;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
-use MediaWiki\Request\WebRequest;
 use MediaWiki\Status\Status;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
-use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
@@ -127,9 +124,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	/**
 	 * @covers ::onSubmit
 	 * @dataProvider onSubmitDataProvider
-	 *
-	 * Session fails on MediaWiki 1.44+ and not sure why at the moment
-	 * @group Broken
 	 */
 	public function testOnSubmit(
 		array $formData,
@@ -138,19 +132,14 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	): void {
 		$context = new DerivativeContext( $this->specialRequestWiki->getContext() );
 		$user = $this->getMutableTestUser()->getUser();
-
 		$context->setUser( $user );
 
-		if ( $extraData['session'] ) {
-			$this->setSessionUser( $user, $user->getRequest() );
+		$data = [];
+		if ( $extraData['token'] ) {
+			$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
 		}
 
-		$request = new FauxRequest(
-			// TODO replace with CsrfTokenSet
-			// [ 'wpEditToken' => $user->getEditToken() ],
-			// true
-		);
-
+		$request = new FauxRequest( $data, true );
 		$context->setRequest( $request );
 
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
@@ -186,7 +175,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
-				'session' => true,
+				'token' => true,
 			],
 			null,
 		];
@@ -201,7 +190,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => true,
-				'session' => true,
+				'token' => true,
 			],
 			null,
 		];
@@ -216,7 +205,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
-				'session' => false,
+				'token' => false,
 			],
 			'sessionfailure',
 		];
@@ -236,13 +225,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	public function testGetGroupName(): void {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
 		$this->assertSame( 'wiki', $specialRequestWiki->getGroupName() );
-	}
-
-	private function setSessionUser( User $user, WebRequest $request ): void {
-		RequestContext::getMain()->setUser( $user );
-		RequestContext::getMain()->setRequest( $request );
-		TestingAccessWrapper::newFromObject( $user )->mRequest = $request;
-		$request->getSession()->setUser( $user );
 	}
 
 	private function getTestUserAuthorityWithConfirmedEmail(): Authority {
