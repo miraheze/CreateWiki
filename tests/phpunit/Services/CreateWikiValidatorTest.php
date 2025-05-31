@@ -156,6 +156,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		if ( $expected === true ) {
 			$this->assertTrue( $result );
 		} elseif ( $expected === 'parsed' ) {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
 		} else {
 			$this->assertIsString( $result );
@@ -221,6 +222,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		if ( is_bool( $expected ) ) {
 			$this->assertSame( $expected, $result );
 		} elseif ( $expected === 'parsed' ) {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );

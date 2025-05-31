@@ -14,6 +14,7 @@ use Phpml\ModelManager;
 use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\WordTokenizer;
+use stdClass;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use function in_array;
 use function serialize;
@@ -56,6 +57,11 @@ class CreatePersistentModel extends Maintenance {
 		$status = [];
 
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$comment = strtolower( $row->cw_comment );
 			if ( !in_array( $comment, $comments, true ) ) {
 				$comments[] = $comment;
