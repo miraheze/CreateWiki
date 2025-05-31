@@ -782,7 +782,7 @@ class WikiRequestManager {
 		$this->checkQueryBuilder();
 		if ( $locked !== $this->isLocked() ) {
 			$this->trackChange( 'locked', $this->isLocked(), $locked );
-			$this->queryBuilder?->set( [ 'cw_locked' => (int)$locked ] );
+			$this->queryBuilder->set( [ 'cw_locked' => (int)$locked ] );
 		}
 	}
 
