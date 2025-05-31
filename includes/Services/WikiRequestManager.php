@@ -20,6 +20,7 @@ use Miraheze\CreateWiki\Jobs\RequestWikiAIJob;
 use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
+use Wikimedia\Assert\Assert;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
@@ -751,15 +752,10 @@ class WikiRequestManager {
 			->caller( __METHOD__ );
 	}
 
-	/**
-	 * @phan-assert UpdateQueryBuilder $this->queryBuilder
-	 */
 	public function checkQueryBuilder(): void {
-		if ( !$this->queryBuilder ) {
-			throw new RuntimeException(
-				'queryBuilder not yet initialized, you must first call startQueryBuilder()'
-			);
-		}
+		Assert::precondition( $this->queryBuilder !== null,
+			'Attempted to access queryBuilder before startQueryBuilder() was called'
+		);
 	}
 
 	public function setPrivate( bool $private ): void {
