@@ -139,7 +139,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		$data = [];
 		if ( $extraData['session'] ) {
-			$this->setSessionUser( $user, $user->getRequest() );
+			// $this->setSessionUser( $user, $user->getRequest() );
 			$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
 		}
 
