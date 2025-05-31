@@ -94,10 +94,8 @@ class WikiRequestManager {
 	}
 
 	public function loadFromID( int $requestID ): void {
-		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
-
 		$this->ID = $requestID;
-
+		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 		$this->row = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_requests' )
 			->field( '*' )
@@ -107,7 +105,7 @@ class WikiRequestManager {
 	}
 
 	public function exists(): bool {
-		return (bool)$this->row;
+		return $this->row !== false;
 	}
 
 	public function createNewRequestAndLog(
