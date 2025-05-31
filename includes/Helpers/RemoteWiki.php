@@ -130,10 +130,11 @@ class RemoteWiki {
 	}
 
 	public function getSitename(): string {
-		return $this->sitename;
+		return trim( $this->sitename );
 	}
 
 	public function setSitename( string $sitename ): void {
+		$sitename = trim( $sitename );
 		$this->trackChange( 'sitename', $this->sitename, $sitename );
 		$this->sitename = $sitename;
 		$this->newRows['wiki_sitename'] = $sitename;
@@ -202,7 +203,7 @@ class RemoteWiki {
 	}
 
 	public function setInactiveExemptReason( string $reason ): void {
-		$reason = $reason === '' ? null : $reason;
+		$reason = $reason === '' ? null : trim( $reason );
 
 		$this->trackChange( 'inactive-exempt-reason', $this->inactiveExemptReason, $reason );
 
@@ -211,7 +212,7 @@ class RemoteWiki {
 	}
 
 	public function getInactiveExemptReason(): ?string {
-		return $this->inactiveExemptReason;
+		return trim( $this->inactiveExemptReason );
 	}
 
 	public function isPrivate(): bool {
@@ -337,11 +338,11 @@ class RemoteWiki {
 	}
 
 	public function getServerName(): string {
-		return $this->url ?? '';
+		return trim( $this->url ?? '' );
 	}
 
 	public function setServerName( string $server ): void {
-		$server = $server === '' ? null : $server;
+		$server = $server === '' ? null : trim( $server );
 
 		$this->trackChange( 'servername', $this->url, $server );
 
