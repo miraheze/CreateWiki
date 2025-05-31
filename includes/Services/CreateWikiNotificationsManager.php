@@ -10,6 +10,7 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
+use stdClass;
 use UserMailer;
 use function in_array;
 use function is_object;
@@ -83,6 +84,11 @@ class CreateWikiNotificationsManager {
 
 		$emails = [];
 		foreach ( $bureaucrats as $user ) {
+			if ( !$user instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$emails[] = new MailAddress( $user->user_email, $user->user_name );
 		}
 

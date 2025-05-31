@@ -238,6 +238,11 @@ class WikiRequestManager {
 
 		$comments = [];
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$user = $this->userFactory->newFromId( $row->cw_comment_user );
 
 			$comments[] = [
@@ -314,6 +319,11 @@ class WikiRequestManager {
 
 		$history = [];
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
 
 			$history[] = [
@@ -347,6 +357,11 @@ class WikiRequestManager {
 
 		$requests = [];
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			if ( !$this->isVisibilityAllowed( $row->cw_visibility, $user ) ) {
 				continue;
 			}

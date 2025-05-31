@@ -7,6 +7,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
+use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
@@ -158,6 +159,11 @@ class CreateWikiDataFactory {
 
 		$databases = [];
 		foreach ( $databaseList as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$databases[$row->wiki_dbname] = [
 				's' => $row->wiki_sitename,
 				'c' => $row->wiki_dbcluster,

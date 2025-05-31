@@ -6,6 +6,7 @@ use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use stdClass;
 use function implode;
 
 class DeleteWikis extends Maintenance {
@@ -51,6 +52,11 @@ class DeleteWikis extends Maintenance {
 		$deletedWikis = [];
 
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$dbname = $row->wiki_dbname;
 			$dbCluster = $row->wiki_dbcluster;
 
