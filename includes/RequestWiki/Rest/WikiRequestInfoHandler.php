@@ -63,7 +63,7 @@ class WikiRequestInfoHandler extends SimpleHandler {
 			$formattedComments[] = [
 				'comment' => $comment['comment'],
 				'timestamp' => wfTimestamp( TS_ISO_8601, $comment['timestamp'] ),
-				'user' => $comment['user']?->getName(),
+				'user' => $comment['user']->getName(),
 			];
 		}
 
