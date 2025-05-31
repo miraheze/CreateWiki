@@ -145,7 +145,7 @@ class WikiRequestViewer {
 				'section' => 'comments',
 				'label-message' => [
 					'requestwiki-header-comment-withtimestamp',
-					$comment['user']?->getName(),
+					$comment['user']->getName(),
 					$this->context->getLanguage()->userTimeAndDate( $comment['timestamp'], $user ),
 				],
 				'default' => ( new RawMessage( nl2br( $comment['comment'] ) ) )->parse(),
@@ -277,7 +277,7 @@ class WikiRequestViewer {
 				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
 					'type' => 'info',
 					'section' => 'history',
-					'label' => $entry['user']?->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
+					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
 					'default' => ( new RawMessage( nl2br( $entry['details'] ) ) )->parse(),
 					'raw' => true,
 				];
