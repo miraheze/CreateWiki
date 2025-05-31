@@ -72,7 +72,7 @@ class WikiRequestManager {
 	];
 
 	private IDatabase $dbw;
-	private stdClass|bool $row;
+	private stdClass|false $row;
 
 	private int $ID;
 	private array $changes = [];
@@ -667,6 +667,15 @@ class WikiRequestManager {
 		}
 	}
 
+	private function getRowObject(): stdClass {
+		if ( $this->row === false ) {
+			// Skip unexpected row
+			throw new RuntimeException( '$this->row is false' );
+		}
+
+		return $this->row;
+	}
+
 	public function canCommentReopen(): bool {
 		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [], true );
 	}
@@ -680,54 +689,54 @@ class WikiRequestManager {
 	}
 
 	public function getDBname(): string {
-		return $this->row->cw_dbname;
+		return $this->getRowObject()->cw_dbname;
 	}
 
 	public function getVisibility(): int {
-		return $this->row->cw_visibility;
+		return $this->getRowObject()->cw_visibility;
 	}
 
 	public function getRequester(): User {
-		return $this->userFactory->newFromId( $this->row->cw_user );
+		return $this->userFactory->newFromId( $this->getRowObject()->cw_user );
 	}
 
 	public function getStatus(): string {
-		return $this->row->cw_status;
+		return $this->getRowObject()->cw_status;
 	}
 
 	public function getSitename(): string {
-		return $this->row->cw_sitename;
+		return $this->getRowObject()->cw_sitename;
 	}
 
 	public function getLanguage(): string {
-		return $this->row->cw_language;
+		return $this->getRowObject()->cw_language;
 	}
 
 	public function getTimestamp(): string {
-		return $this->row->cw_timestamp;
+		return $this->getRowObject()->cw_timestamp;
 	}
 
 	public function getUrl(): string {
-		return $this->row->cw_url;
+		return $this->getRowObject()->cw_url;
 	}
 
 	public function getCategory(): string {
-		return $this->row->cw_category;
+		return $this->getRowObject()->cw_category;
 	}
 
 	public function getReason(): string {
-		$comment = explode( "\n", $this->row->cw_comment, 2 );
+		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return $comment[1];
 		}
 
-		return $this->row->cw_comment;
+		return $this->getRowObject()->cw_comment;
 	}
 
 	public function getPurpose(): ?string {
-		$comment = explode( "\n", $this->row->cw_comment, 2 );
+		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
 		if ( $purposeCheck[0] === 'Purpose' ) {
@@ -738,19 +747,19 @@ class WikiRequestManager {
 	}
 
 	public function isPrivate(): bool {
-		return (bool)$this->row->cw_private;
+		return (bool)$this->getRowObject()->cw_private;
 	}
 
 	public function isBio(): bool {
-		return (bool)$this->row->cw_bio;
+		return (bool)$this->getRowObject()->cw_bio;
 	}
 
 	public function isLocked(): bool {
-		return (bool)$this->row->cw_locked;
+		return (bool)$this->getRowObject()->cw_locked;
 	}
 
 	public function getAllExtraData(): array {
-		return (array)json_decode( $this->row->cw_extra ?: '[]', true );
+		return (array)json_decode( $this->getRowObject()->cw_extra ?: '[]', true );
 	}
 
 	public function getExtraFieldData( string $field ): mixed {
