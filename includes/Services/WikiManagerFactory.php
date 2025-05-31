@@ -15,6 +15,7 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
@@ -240,7 +241,7 @@ class WikiManagerFactory {
 		array $extra
 	): void {
 		foreach ( $this->options->get( ConfigNames::SQLFiles ) as $sqlfile ) {
-			$this->dbw->sourceFile( $sqlfile );
+			$this->dbw->sourceFile( $sqlfile, fname: __METHOD__ );
 		}
 
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
@@ -325,6 +326,10 @@ class WikiManagerFactory {
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
 			->fetchRow();
+
+		if ( !$row ) {
+			throw new MissingWikiError( $this->dbname );
+		}
 
 		$deletionDate = $row->wiki_deleted_timestamp;
 		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
