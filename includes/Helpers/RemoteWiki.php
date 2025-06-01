@@ -98,7 +98,7 @@ class RemoteWiki {
 
 		$this->deletedTimestamp = $row->wiki_deleted_timestamp;
 
-		$this->extra = json_decode( $row->wiki_extra ?: '[]', true );
+		$this->extra = (array)json_decode( $row->wiki_extra ?: '[]', true );
 
 		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$this->private = (bool)$row->wiki_private;
