@@ -2,14 +2,16 @@
 
 namespace Miraheze\CreateWiki;
 
+use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\OOUIHTMLForm;
-use MediaWiki\Xml\Xml;
+use MediaWiki\Logger\LoggerFactory;
 use OOUI\FieldsetLayout;
 use OOUI\HtmlSnippet;
 use OOUI\IndexLayout;
 use OOUI\PanelLayout;
 use OOUI\TabPanelLayout;
 use OOUI\Widget;
+use function is_array;
 
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 
@@ -21,7 +23,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	 * @return string
 	 */
 	public function wrapForm( $html ) {
-		$html = Xml::tags( 'div', [ 'id' => 'createwiki' ], $html );
+		$html = Html::rawElement( 'div', [ 'id' => 'createwiki' ], $html );
 		return parent::wrapForm( $html );
 	}
 
@@ -48,7 +50,10 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$tabPanels = [];
 		foreach ( $this->mFieldTree as $key => $val ) {
 			if ( !is_array( $val ) ) {
-				wfDebug( __METHOD__ . " encountered a field not attached to a section: '$key'" );
+				LoggerFactory::getInstance( 'CreateWiki' )->debug(
+					'Encountered a field not attached to a section: {key}',
+					[ 'key' => $key ]
+				);
 				continue;
 			}
 

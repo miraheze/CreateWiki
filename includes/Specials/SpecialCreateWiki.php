@@ -39,6 +39,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-dbname',
 				'required' => true,
 				'validation-callback' => [ $this->validator, 'validateDatabaseEntry' ],
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_wikis.sql#L2
+				'maxlength' => 64,
 			],
 			'requester' => [
 				'type' => 'user',
@@ -50,6 +52,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 				'type' => 'text',
 				'label-message' => 'createwiki-label-sitename',
 				'required' => true,
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_wikis.sql#L3
+				'maxlength' => 128,
 			],
 			'language' => [
 				'type' => 'language',
@@ -115,6 +119,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	protected function getGroupName(): string {
-		return 'wikimanage';
+		return 'wiki';
 	}
 }

@@ -4,6 +4,8 @@ namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
 use Wikimedia\Rdbms\SelectQueryBuilder;
+use function max;
+use const DB_REPLICA;
 
 class CheckLastWikiActivity extends Maintenance {
 

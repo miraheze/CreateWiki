@@ -5,10 +5,13 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use StatusValue;
 use Wikimedia\FileBackend\FileBackend;
 
 class SetContainersAccess extends Maintenance {
+
+	private RemoteWikiFactory $remoteWikiFactory;
 
 	private bool $isRetrying = false;
 	private bool $needsRetry = false;
@@ -22,7 +25,13 @@ class SetContainersAccess extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
+	}
+
 	public function execute(): void {
+		$this->initServices();
 		$this->processContainers();
 
 		if ( $this->needsRetry && !$this->isRetrying ) {
@@ -34,11 +43,10 @@ class SetContainersAccess extends Maintenance {
 	}
 
 	private function processContainers(): void {
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
-
 		$backend = $repo->getBackend();
-		$remoteWiki = $remoteWikiFactory->newInstance(
+
+		$remoteWiki = $this->remoteWikiFactory->newInstance(
 			$this->getConfig()->get( MainConfigNames::DBname )
 		);
 

@@ -62,13 +62,13 @@ class CreateWikiHookRunner implements
 
 	/** @inheritDoc */
 	public function onCreateWikiDataFactoryBuilder(
-		string $wiki,
+		string $dbname,
 		IReadableDatabase $dbr,
 		array &$cacheArray
 	): void {
 		$this->hookContainer->run(
 			'CreateWikiDataFactoryBuilder',
-			[ $wiki, $dbr, &$cacheArray ],
+			[ $dbname, $dbr, &$cacheArray ],
 			[ 'abortable' => false ]
 		);
 	}
@@ -173,8 +173,7 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiWritePersistentModel( string $pipeline ): bool {
 		return $this->hookContainer->run(
 			'CreateWikiWritePersistentModel',
-			[ $pipeline ],
-			[ 'abortable' => false ]
+			[ $pipeline ]
 		);
 	}
 
