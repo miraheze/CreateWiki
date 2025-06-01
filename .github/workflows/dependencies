@@ -4,3 +4,6 @@ CentralAuth:
 Echo:
   branch: auto
   repo: auto
+ManageWiki:
+  branch: main
+  repo: https://github.com/miraheze/ManageWiki

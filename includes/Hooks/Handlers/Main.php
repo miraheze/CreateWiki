@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Block\Hook\GetAllBlockActionsHook;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
@@ -15,10 +14,10 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\AtEase\AtEase;
-use Wikimedia\Rdbms\IConnectionProvider;
 
 class Main implements
 	GetAllBlockActionsHook,
@@ -30,28 +29,12 @@ class Main implements
 	UserGetReservedNamesHook
 {
 
-	private Config $config;
-	private CreateWikiDataFactory $dataFactory;
-	private RemoteWikiFactory $remoteWikiFactory;
-	private IConnectionProvider $connectionProvider;
-
-	/**
-	 * @param ConfigFactory $configFactory
-	 * @param IConnectionProvider $connectionProvider
-	 * @param CreateWikiDataFactory $dataFactory
-	 * @param RemoteWikiFactory $remoteWikiFactory
-	 */
 	public function __construct(
-		ConfigFactory $configFactory,
-		IConnectionProvider $connectionProvider,
-		CreateWikiDataFactory $dataFactory,
-		RemoteWikiFactory $remoteWikiFactory
+		private readonly Config $config,
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
-		$this->connectionProvider = $connectionProvider;
-		$this->dataFactory = $dataFactory;
-		$this->remoteWikiFactory = $remoteWikiFactory;
-
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
 	}
 
 	/** @inheritDoc */
@@ -62,8 +45,7 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onGetAllBlockActions( &$actions ) {
-		$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-		if ( !WikiMap::isCurrentWikiDbDomain( $dbr->getDomainID() ) ) {
+		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
 			return;
 		}
 
@@ -123,8 +105,7 @@ class Main implements
 		$frame
 	) {
 		if ( $magicWordId === 'numberofopenwikirequests' ) {
-			$dbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
+			$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )
 				->from( 'cw_requests' )
@@ -134,8 +115,7 @@ class Main implements
 		}
 
 		if ( $magicWordId === 'numberofwikirequests' ) {
-			$dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
+			$dbr ??= $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
 				->select( '*' )
 				->from( 'cw_requests' )

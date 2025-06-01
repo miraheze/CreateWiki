@@ -2,15 +2,16 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\FileBackend\FileBackend;
+use function print_r;
 
 class SetContainersAccess extends Maintenance {
+
+	private RemoteWikiFactory $remoteWikiFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -21,11 +22,18 @@ class SetContainersAccess extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
+	}
+
 	public function execute(): void {
+		$this->initServices();
+
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
-		$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+		$remoteWiki = $this->remoteWikiFactory->newInstance(
 			$this->getConfig()->get( MainConfigNames::DBname )
 		);
 
@@ -76,5 +84,6 @@ class SetContainersAccess extends Maintenance {
 	}
 }
 
-$maintClass = SetContainersAccess::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return SetContainersAccess::class;
+// @codeCoverageIgnoreEnd

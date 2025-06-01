@@ -10,6 +10,7 @@ use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiHookRunner implements
 	CreateWikiAfterCreationWithExtraDataHook,
+	CreateWikiCreationExtraFieldsHook,
 	CreateWikiCreationHook,
 	CreateWikiDataFactoryBuilderHook,
 	CreateWikiDeletionHook,
@@ -26,20 +27,26 @@ class CreateWikiHookRunner implements
 	RequestWikiQueueFormDescriptorModifyHook
 {
 
-	private HookContainer $hookContainer;
-
-	/**
-	 * @param HookContainer $hookContainer
-	 */
-	public function __construct( HookContainer $hookContainer ) {
-		$this->hookContainer = $hookContainer;
+	public function __construct(
+		private readonly HookContainer $hookContainer
+	) {
 	}
 
 	/** @inheritDoc */
 	public function onCreateWikiAfterCreationWithExtraData( array $extraData, string $dbname ): void {
 		$this->hookContainer->run(
 			'CreateWikiAfterCreationWithExtraData',
-			[ $extraData, $dbname ]
+			[ $extraData, $dbname ],
+			[ 'abortable' => false ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiCreationExtraFields( array &$extraFields ): void {
+		$this->hookContainer->run(
+			'CreateWikiCreationExtraFields',
+			[ &$extraFields ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -47,19 +54,21 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiCreation( string $dbname, bool $private ): void {
 		$this->hookContainer->run(
 			'CreateWikiCreation',
-			[ $dbname, $private ]
+			[ $dbname, $private ],
+			[ 'abortable' => false ]
 		);
 	}
 
 	/** @inheritDoc */
 	public function onCreateWikiDataFactoryBuilder(
-		string $wiki,
+		string $dbname,
 		IReadableDatabase $dbr,
 		array &$cacheArray
 	): void {
 		$this->hookContainer->run(
 			'CreateWikiDataFactoryBuilder',
-			[ $wiki, $dbr, &$cacheArray ]
+			[ $dbname, $dbr, &$cacheArray ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -70,7 +79,8 @@ class CreateWikiHookRunner implements
 	): void {
 		$this->hookContainer->run(
 			'CreateWikiDeletion',
-			[ $cwdb, $dbname ]
+			[ $cwdb, $dbname ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -78,7 +88,8 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiGenerateDatabaseLists( array &$databaseLists ): void {
 		$this->hookContainer->run(
 			'CreateWikiGenerateDatabaseLists',
-			[ &$databaseLists ]
+			[ &$databaseLists ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -86,7 +97,8 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiReadPersistentModel( string &$pipeline ): void {
 		$this->hookContainer->run(
 			'CreateWikiReadPersistentModel',
-			[ &$pipeline ]
+			[ &$pipeline ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -98,7 +110,8 @@ class CreateWikiHookRunner implements
 	): void {
 		$this->hookContainer->run(
 			'CreateWikiRename',
-			[ $cwdb, $oldDbName, $newDbName ]
+			[ $cwdb, $oldDbName, $newDbName ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -106,7 +119,8 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiStateClosed( string $dbname ): void {
 		$this->hookContainer->run(
 			'CreateWikiStateClosed',
-			[ $dbname ]
+			[ $dbname ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -114,7 +128,8 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiStateOpen( string $dbname ): void {
 		$this->hookContainer->run(
 			'CreateWikiStateOpen',
-			[ $dbname ]
+			[ $dbname ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -122,7 +137,8 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiStatePrivate( string $dbname ): void {
 		$this->hookContainer->run(
 			'CreateWikiStatePrivate',
-			[ $dbname ]
+			[ $dbname ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -130,15 +146,17 @@ class CreateWikiHookRunner implements
 	public function onCreateWikiStatePublic( string $dbname ): void {
 		$this->hookContainer->run(
 			'CreateWikiStatePublic',
-			[ $dbname ]
+			[ $dbname ],
+			[ 'abortable' => false ]
 		);
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiTables( array &$cTables ): void {
+	public function onCreateWikiTables( array &$tables ): void {
 		$this->hookContainer->run(
 			'CreateWikiTables',
-			[ &$cTables ]
+			[ &$tables ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -154,7 +172,8 @@ class CreateWikiHookRunner implements
 	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
 		$this->hookContainer->run(
 			'RequestWikiFormDescriptorModify',
-			[ &$formDescriptor ]
+			[ &$formDescriptor ],
+			[ 'abortable' => false ]
 		);
 	}
 
@@ -166,7 +185,8 @@ class CreateWikiHookRunner implements
 	): void {
 		$this->hookContainer->run(
 			'RequestWikiQueueFormDescriptorModify',
-			[ &$formDescriptor, $user, $wikiRequestManager ]
+			[ &$formDescriptor, $user, $wikiRequestManager ],
+			[ 'abortable' => false ]
 		);
 	}
 }

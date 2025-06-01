@@ -2,12 +2,17 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\Maintenance\Maintenance;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use function implode;
 
 class DeleteWikis extends Maintenance {
+
+	private CreateWikiDatabaseUtils $databaseUtils;
+	private CreateWikiNotificationsManager $notificationsManager;
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -25,10 +30,16 @@ class DeleteWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
+		$this->wikiManagerFactory = $services->get( 'WikiManagerFactory' );
+	}
+
 	public function execute(): void {
-		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->initServices();
+		$dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$res = $dbr->newSelectQueryBuilder()
 			->select( '*' )
@@ -40,22 +51,22 @@ class DeleteWikis extends Maintenance {
 		$deletedWikis = [];
 
 		foreach ( $res as $row ) {
-			$wiki = $row->wiki_dbname;
+			$dbname = $row->wiki_dbname;
 			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				$wikiManager = $wikiManagerFactory->newInstance( $wiki );
+				$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
 				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
-					$this->output( "{$wiki}: {$delete}\n" );
+					$this->output( "$dbname: $delete\n" );
 					continue;
 				}
 
-				$this->output( "$dbCluster: DROP DATABASE {$wiki};\n" );
-				$deletedWikis[] = $wiki;
+				$this->output( "$dbCluster: DROP DATABASE $dbname;\n" );
+				$deletedWikis[] = $dbname;
 			} else {
-				$this->output( "$wiki: $dbCluster\n" );
+				$this->output( "$dbname: $dbCluster\n" );
 			}
 		}
 
@@ -74,14 +85,14 @@ class DeleteWikis extends Maintenance {
 			'body' => $message,
 		];
 
-		$this->getServiceContainer()->get( 'CreateWiki.NotificationsManager' )
-			->sendNotification(
-				data: $notificationData,
-				// No receivers, it will send to configured email
-				receivers: []
-			);
+		$this->notificationsManager->sendNotification(
+			data: $notificationData,
+			// No receivers, it will send to configured email
+			receivers: []
+		);
 	}
 }
 
-$maintClass = DeleteWikis::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return DeleteWikis::class;
+// @codeCoverageIgnoreEnd

@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Handler;
+namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
@@ -14,28 +14,21 @@ use Wikimedia\ParamValidator\ParamValidator;
  * Returns the IDs and suppression level of all wiki requests made by a user
  * GET /createwiki/v0/wiki_requests/user/{username}
  */
-class RestWikiRequestsByUser extends SimpleHandler {
-
-	private CreateWikiRestUtils $restUtils;
-	private UserFactory $userFactory;
-	private WikiRequestManager $wikiRequestManager;
+class UserWikiRequestsHandler extends SimpleHandler {
 
 	public function __construct(
-		CreateWikiRestUtils $restUtils,
-		UserFactory $userFactory,
-		WikiRequestManager $wikiRequestManager
+		private readonly CreateWikiRestUtils $restUtils,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
-		$this->restUtils = $restUtils;
-		$this->userFactory = $userFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( string $username ): Response {
 		$this->restUtils->checkEnv();
 
-		$user = $this->userFactory->newFromName( $username );
+		$requester = $this->userFactory->newFromName( $username );
 
-		if ( !$user ) {
+		if ( !$requester ) {
 			// A non-existing user has no requests
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				404, new MessageValue( 'createwiki-rest-usernowikirequests' )
@@ -43,7 +36,7 @@ class RestWikiRequestsByUser extends SimpleHandler {
 		}
 
 		$wikiRequests = $this->wikiRequestManager->getVisibleRequestsByUser(
-			$user, $this->getAuthority()->getUser()
+			$requester, $this->getAuthority()->getUser()
 		);
 
 		if ( $wikiRequests ) {

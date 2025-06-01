@@ -1,8 +1,8 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki;
+namespace Miraheze\CreateWiki\Services;
 
-use MediaWiki\Config\Config;
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
@@ -10,47 +10,45 @@ use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
-use MediaWiki\MainConfigNames;
-use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
-use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
-use Miraheze\CreateWiki\Services\WikiManagerFactory;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserNotLoggedIn;
+use function array_diff_key;
+use function array_flip;
+use function count;
+use function nl2br;
+use function str_starts_with;
+use function strlen;
+use function substr;
+use function ucfirst;
 
-class RequestWikiRequestViewer {
+class WikiRequestViewer {
 
-	private Config $config;
-	private IContextSource $context;
-	private CreateWikiHookRunner $hookRunner;
-	private LanguageNameUtils $languageNameUtils;
-	private PermissionManager $permissionManager;
-	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
+	public const CONSTRUCTOR_OPTIONS = [
+		ConfigNames::CannedResponses,
+		ConfigNames::Categories,
+		ConfigNames::Purposes,
+		ConfigNames::RequestCountWarnThreshold,
+		ConfigNames::ShowBiographicalOption,
+		ConfigNames::UsePrivateWikis,
+	];
 
 	private array $extraFields = [];
 
 	public function __construct(
-		Config $config,
-		IContextSource $context,
-		CreateWikiHookRunner $hookRunner,
-		LanguageNameUtils $languageNameUtils,
-		PermissionManager $permissionManager,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		private readonly IContextSource $context,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly PermissionManager $permissionManager,
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly ServiceOptions $options
 	) {
-		$this->config = $config;
-		$this->context = $context;
-		$this->hookRunner = $hookRunner;
-		$this->languageNameUtils = $languageNameUtils;
-		$this->permissionManager = $permissionManager;
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
 	public function getFormDescriptor(): array {
@@ -87,8 +85,8 @@ class RequestWikiRequestViewer {
 				'type' => 'info',
 				'section' => 'details',
 				'default' => $this->languageNameUtils->getLanguageName(
-					$this->wikiRequestManager->getLanguage(),
-					$this->context->getLanguage()->getCode()
+					code: $this->wikiRequestManager->getLanguage(),
+					inLanguage: $this->context->getLanguage()->getCode()
 				),
 			],
 			'requester' => [
@@ -167,7 +165,7 @@ class RequestWikiRequestViewer {
 					'rows' => 10,
 					'label-message' => 'requestwikiqueue-request-label-comment',
 					'section' => 'comments',
-					'validation-callback' => [ $this, 'isValidComment' ],
+					'validation-callback' => [ $this->validator, 'validateComment' ],
 					'useeditfont' => true,
 					'disabled' => $this->wikiRequestManager->isLocked(),
 				],
@@ -184,6 +182,8 @@ class RequestWikiRequestViewer {
 					'required' => true,
 					'default' => $this->wikiRequestManager->getSitename(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
+					// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L7
+					'maxlength' => 128,
 				],
 				'edit-url' => [
 					'label-message' => 'requestwikiqueue-request-label-url',
@@ -191,8 +191,10 @@ class RequestWikiRequestViewer {
 					'section' => 'editing',
 					'required' => true,
 					'default' => $this->wikiRequestManager->getUrl(),
-					'validation-callback' => [ $this, 'isValidSubdomain' ],
+					'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 					'disabled' => $this->wikiRequestManager->isLocked(),
+					// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L10
+					'maxlength' => 96,
 				],
 				'edit-language' => [
 					'label-message' => 'requestwikiqueue-request-label-language',
@@ -211,15 +213,15 @@ class RequestWikiRequestViewer {
 					'useeditfont' => true,
 					'default' => $this->wikiRequestManager->getReason(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'validation-callback' => [ $this, 'isValidReason' ],
+					'validation-callback' => [ $this->validator, 'validateReason' ],
 				],
 			];
 
-			if ( $this->config->get( ConfigNames::Categories ) ) {
+			if ( $this->options->get( ConfigNames::Categories ) ) {
 				$formDescriptor['edit-category'] = [
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
-					'options' => $this->config->get( ConfigNames::Categories ),
+					'options' => $this->options->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
@@ -227,7 +229,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
+			if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 				$formDescriptor['edit-private'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-private',
@@ -237,7 +239,7 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( ConfigNames::ShowBiographicalOption ) ) {
+			if ( $this->options->get( ConfigNames::ShowBiographicalOption ) ) {
 				$formDescriptor['edit-bio'] = [
 					'type' => 'check',
 					'label-message' => 'requestwiki-label-bio',
@@ -247,12 +249,12 @@ class RequestWikiRequestViewer {
 				];
 			}
 
-			if ( $this->config->get( ConfigNames::Purposes ) ) {
+			if ( $this->options->get( ConfigNames::Purposes ) ) {
 				$formDescriptor['edit-purpose'] = [
 					'type' => 'select',
 					'label-message' => 'requestwiki-label-purpose',
 					'required' => true,
-					'options' => $this->config->get( ConfigNames::Purposes ),
+					'options' => $this->options->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
 					'cssclass' => 'createwiki-infuse',
@@ -268,7 +270,6 @@ class RequestWikiRequestViewer {
 			];
 		}
 
-		// TODO: Should we really require (createwiki) to suppress wiki requests?
 		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
 		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
@@ -302,19 +303,21 @@ class RequestWikiRequestViewer {
 				)->escaped();
 			}
 
-			$wikiManager = $this->wikiManagerFactory->newInstance( $this->wikiRequestManager->getDBname() );
-			$error = $wikiManager->checkDatabaseName( $this->wikiRequestManager->getDBname(), forRename: false );
+			$dbname = $this->wikiRequestManager->getDBname();
+			$exists = $this->validator->databaseExists( $dbname );
+
+			$error = $this->validator->validateDatabaseName( $dbname, $exists );
 
 			if ( $error ) {
 				$this->context->getOutput()->addHTML( Html::errorBox( $error ) );
 			}
 
-			if ( $this->config->get( ConfigNames::RequestCountWarnThreshold ) ) {
+			if ( $this->options->get( ConfigNames::RequestCountWarnThreshold ) ) {
 				$requestCount = count( $this->wikiRequestManager->getVisibleRequestsByUser(
 					$this->wikiRequestManager->getRequester(), $user
 				) );
 
-				if ( $requestCount >= $this->config->get( ConfigNames::RequestCountWarnThreshold ) ) {
+				if ( $requestCount >= $this->options->get( ConfigNames::RequestCountWarnThreshold ) ) {
 					$this->context->getOutput()->addHTML(
 						Html::warningBox( $this->context->msg( 'createwiki-error-requestcountwarn',
 							$requestCount, $this->wikiRequestManager->getRequester()->getName()
@@ -344,7 +347,7 @@ class RequestWikiRequestViewer {
 				],
 				'handle-comment' => [
 					'label-message' => 'createwiki-label-statuschangecomment',
-					'validation-callback' => [ $this, 'isValidStatusComment' ],
+					'validation-callback' => [ $this->validator, 'validateStatusComment' ],
 					'section' => 'handling',
 				],
 				'handle-lock' => [
@@ -376,12 +379,12 @@ class RequestWikiRequestViewer {
 				],
 			];
 
-			if ( $this->config->get( ConfigNames::CannedResponses ) ) {
+			if ( $this->options->get( ConfigNames::CannedResponses ) ) {
 				$formDescriptor['handle-comment']['type'] = 'selectorother';
-				$formDescriptor['handle-comment']['options'] = $this->config->get( ConfigNames::CannedResponses );
+				$formDescriptor['handle-comment']['options'] = $this->options->get( ConfigNames::CannedResponses );
 
 				$formDescriptor['handle-comment']['default'] = HTMLFormField::flattenOptions(
-					$this->config->get( ConfigNames::CannedResponses )
+					$this->options->get( ConfigNames::CannedResponses )
 				)[0];
 			} else {
 				$formDescriptor['handle-comment']['type'] = 'textarea';
@@ -439,10 +442,6 @@ class RequestWikiRequestViewer {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @param int $requestID
-	 * @return CreateWikiOOUIForm
-	 */
 	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
@@ -660,97 +659,6 @@ class RequestWikiRequestViewer {
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( $this->getResponseMessageBox() );
 		}
-	}
-
-	public function isValidComment( ?string $comment, array $alldata ): bool|Message {
-		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		return true;
-	}
-
-	public function isValidReason( ?string $reason, array $alldata ): bool|Message {
-		if ( !isset( $alldata['submit-edit'] ) ) {
-			// If we aren't submitting an edit we don't want this to fail.
-			return true;
-		}
-
-		if ( !$reason || ctype_space( $reason ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		$minLength = $this->config->get( ConfigNames::RequestWikiMinimumLength );
-		if ( $minLength && strlen( $reason ) < $minLength ) {
-			// This will automatically call ->parse().
-			return $this->context->msg( 'requestwiki-error-minlength' )->numParams(
-				$minLength,
-				strlen( $reason )
-			);
-		}
-
-		$regexes = CreateWikiRegexConstraint::regexesFromMessage(
-			'CreateWiki-disallowlist', '/', '/i'
-		);
-
-		foreach ( $regexes as $regex ) {
-			preg_match( '/' . $regex . '/i', $reason, $output );
-
-			if ( is_array( $output ) && count( $output ) >= 1 ) {
-				return $this->context->msg( 'requestwiki-error-invalidcomment' );
-			}
-		}
-
-		return true;
-	}
-
-	public function isValidStatusComment( ?string $comment, array $alldata ): bool|Message {
-		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		return true;
-	}
-
-	public function isValidSubdomain( ?string $subdomain, array $alldata ): bool|Message {
-		if ( !isset( $alldata['submit-edit'] ) ) {
-			// If we aren't submitting an edit we don't want this to fail.
-			// For example, we don't want an invalid subdomain to block
-			// adding a comment or declining the request.
-			return true;
-		}
-
-		if ( !$subdomain || ctype_space( $subdomain ) ) {
-			return $this->context->msg( 'htmlform-required' );
-		}
-
-		$subdomain = strtolower( $subdomain );
-		$configSubdomain = $this->config->get( ConfigNames::Subdomain );
-
-		if ( strpos( $subdomain, $configSubdomain ) !== false ) {
-			$subdomain = str_replace( '.' . $configSubdomain, '', $subdomain );
-		}
-
-		$disallowedSubdomains = CreateWikiRegexConstraint::regexFromArray(
-			$this->config->get( ConfigNames::DisallowedSubdomains ), '/^(', ')+$/',
-			ConfigNames::DisallowedSubdomains
-		);
-
-		$database = $subdomain . $this->config->get( ConfigNames::DatabaseSuffix );
-
-		if ( in_array( $database, $this->config->get( MainConfigNames::LocalDatabases ) ) ) {
-			return $this->context->msg( 'createwiki-error-subdomaintaken' );
-		}
-
-		if ( !ctype_alnum( $subdomain ) ) {
-			return $this->context->msg( 'createwiki-error-notalnum' );
-		}
-
-		if ( preg_match( $disallowedSubdomains, $subdomain ) ) {
-			return $this->context->msg( 'createwiki-error-disallowed' );
-		}
-
-		return true;
 	}
 
 	private function getResponseMessageBox(): string {

@@ -2,14 +2,15 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\LoggedUpdateMaintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use function array_key_first;
 
 class PopulateCentralWiki extends LoggedUpdateMaintenance {
+
+	private CreateWikiDatabaseUtils $databaseUtils;
 
 	public function __construct() {
 		parent::__construct();
@@ -24,15 +25,20 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+	}
+
 	protected function getUpdateKey(): string {
+		$this->initServices();
 		return __CLASS__ . ':' . $this->getCentralWiki();
 	}
 
 	protected function doDBUpdates(): bool {
+		$this->initServices();
 		$centralWiki = $this->getCentralWiki();
-
-		$connectionProvider = $this->getServiceContainer()->getConnectionProvider();
-		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+		$dbw = $this->databaseUtils->getGlobalPrimaryDB();
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
@@ -67,15 +73,15 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 	}
 
 	private function getCentralWiki(): string {
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		return $databaseUtils->getCentralWikiID();
+		return $this->databaseUtils->getCentralWikiID();
 	}
 
 	private function getDefaultCluster(): ?string {
 		$clusters = $this->getConfig()->get( ConfigNames::DatabaseClusters );
-		return $clusters[0] ?? null;
+		return (string)array_key_first( $clusters ) ?: null;
 	}
 }
 
-$maintClass = PopulateCentralWiki::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return PopulateCentralWiki::class;
+// @codeCoverageIgnoreEnd

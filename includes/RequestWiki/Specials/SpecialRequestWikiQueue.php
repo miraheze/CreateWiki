@@ -5,48 +5,23 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 use ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
-use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
-use Miraheze\CreateWiki\RequestWiki\RequestWikiRequestViewer;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Wikimedia\Rdbms\IConnectionProvider;
+use Miraheze\CreateWiki\Services\WikiRequestViewer;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
-	private IConnectionProvider $connectionProvider;
-	private CreateWikiDatabaseUtils $databaseUtils;
-	private CreateWikiHookRunner $hookRunner;
-	private LanguageNameUtils $languageNameUtils;
-	private PermissionManager $permissionManager;
-	private UserFactory $userFactory;
-	private WikiManagerFactory $wikiManagerFactory;
-	private WikiRequestManager $wikiRequestManager;
-
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		CreateWikiDatabaseUtils $databaseUtils,
-		CreateWikiHookRunner $hookRunner,
-		LanguageNameUtils $languageNameUtils,
-		PermissionManager $permissionManager,
-		UserFactory $userFactory,
-		WikiManagerFactory $wikiManagerFactory,
-		WikiRequestManager $wikiRequestManager
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly WikiRequestViewer $wikiRequestViewer
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->databaseUtils = $databaseUtils;
-		$this->hookRunner = $hookRunner;
-		$this->languageNameUtils = $languageNameUtils;
-		$this->permissionManager = $permissionManager;
-		$this->userFactory = $userFactory;
-		$this->wikiManagerFactory = $wikiManagerFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	/**
@@ -128,9 +103,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			->displayForm( false );
 
 		$pager = new RequestWikiQueuePager(
-			$this->getConfig(),
 			$this->getContext(),
-			$this->connectionProvider,
+			$this->databaseUtils,
 			$this->languageNameUtils,
 			$this->getLinkRenderer(),
 			$this->userFactory,
@@ -149,21 +123,11 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		$this->getOutput()->enableOOUI();
 		// Lookup the request by the id (the current subpage)
 		// and then show the form for the request if it is found.
-		( new RequestWikiRequestViewer(
-			$this->getConfig(),
-			$this->getContext(),
-			$this->hookRunner,
-			$this->languageNameUtils,
-			$this->permissionManager,
-			$this->wikiManagerFactory,
-			$this->wikiRequestManager
-		) )->getForm( (int)$par )->show();
+		$this->wikiRequestViewer->getForm( (int)$par )->show();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getGroupName(): string {
-		return 'wikimanage';
+		return 'wiki';
 	}
 }

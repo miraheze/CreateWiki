@@ -6,6 +6,33 @@ use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\Registration\ExtensionProcessor;
 use MediaWiki\Registration\ExtensionRegistry;
+use function array_column;
+use function array_fill_keys;
+use function array_flip;
+use function array_key_first;
+use function array_keys;
+use function array_merge;
+use function array_search;
+use function count;
+use function defined;
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function glob;
+use function in_array;
+use function is_bool;
+use function json_decode;
+use function pathinfo;
+use function strlen;
+use function substr;
+use function var_export;
+use const CW_DB;
+use const LOCK_EX;
+use const MW_DB;
+use const NS_PROJECT;
+use const NS_PROJECT_TALK;
+use const PHP_SAPI;
 
 class WikiInitialize {
 
@@ -78,7 +105,7 @@ class WikiInitialize {
 
 		foreach ( $databasesArray['databases'] as $db => $data ) {
 			foreach ( $suffixes as $suffix ) {
-				if ( substr( $db, -strlen( $suffix ) ) == $suffix ) {
+				if ( substr( $db, -strlen( $suffix ) ) === $suffix ) {
 					$this->config->settings['wgServer'][$db] = $data['u'] ??
 						'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' .
 						$suffixMatch[$suffix];
@@ -112,12 +139,12 @@ class WikiInitialize {
 		} else {
 			$explode = explode( '.', $this->hostname, 2 );
 
-			if ( $explode[0] == 'www' ) {
+			if ( $explode[0] === 'www' ) {
 				$explode = explode( '.', $explode[1], 2 );
 			}
 
 			foreach ( $siteMatch as $site => $suffix ) {
-				if ( $explode[1] == $site ) {
+				if ( $explode[1] === $site ) {
 					$this->dbname = $explode[0] . $suffix;
 					break;
 				}
@@ -139,7 +166,7 @@ class WikiInitialize {
 		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ??
 			$this->config->settings['wgSitename']['default'];
 
-		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
+		if ( !in_array( $this->dbname, $this->config->wikis, true ) ) {
 			$this->missing = true;
 		}
 	}
@@ -188,7 +215,7 @@ class WikiInitialize {
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'] ?? 'en',
 				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $tags ),
-				'params' => []
+				'params' => [],
 			];
 		};
 
@@ -212,7 +239,13 @@ class WikiInitialize {
 		// Handle namespaces - additional settings will be done in ManageWiki
 		if ( isset( $cacheArray['namespaces'] ) ) {
 			foreach ( (array)$cacheArray['namespaces'] as $name => $ns ) {
-				$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
+				if ( (int)$ns['id'] === NS_PROJECT ) {
+					$this->config->settings['wgMetaNamespace'][$this->dbname] = $name;
+				} elseif ( (int)$ns['id'] === NS_PROJECT_TALK ) {
+					$this->config->settings['wgMetaNamespaceTalk'][$this->dbname] = $name;
+				} else {
+					$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
+				}
 				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] =
 					$ns['searchable'];
 				$this->config->settings['wgNamespacesWithSubpages'][$this->dbname][(int)$ns['id']] =
@@ -260,7 +293,7 @@ class WikiInitialize {
 				}
 
 				if ( $perm['autopromote'] !== null ) {
-					$onceId = array_search( 'once', $perm['autopromote'] );
+					$onceId = array_search( 'once', $perm['autopromote'], true );
 
 					if ( !is_bool( $onceId ) ) {
 						unset( $perm['autopromote'][$onceId] );
@@ -320,8 +353,8 @@ class WikiInitialize {
 			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 				$this->config->settings[ $ext['var'] ]['default'] = false;
 
-				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
-					!in_array( $name, $this->disabledExtensions )
+				if ( in_array( $ext['var'], (array)$cacheArray['extensions'], true ) &&
+					!in_array( $name, $this->disabledExtensions, true )
 				) {
 					$path = $list[ $ext['name'] ] ?? false;
 

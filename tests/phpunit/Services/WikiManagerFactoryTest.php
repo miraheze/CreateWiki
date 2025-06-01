@@ -3,12 +3,25 @@
 namespace Miraheze\CreateWiki\Tests\Services;
 
 use FatalError;
+use MediaWiki\Config\ConfigException;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use function array_merge;
+use function version_compare;
+use function wfLoadConfiguration;
+use function wfMessage;
+use function wfTimestamp;
+use const DBO_DEBUG;
+use const DBO_DEFAULT;
+use const MW_INSTALL_PATH;
+use const MW_VERSION;
+use const TS_MW;
+use const TS_UNIX;
 
 /**
  * @group CreateWiki
@@ -50,7 +63,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function addDBDataOnce(): void {
-		$dbw = $this->getServiceContainer()->getConnectionProvider()->getPrimaryDatabase();
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->ignore()
@@ -73,22 +88,51 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			->execute();
 	}
 
-	/**
-	 * @return WikiManagerFactory
-	 */
 	public function getFactoryService(): WikiManagerFactory {
 		return $this->getServiceContainer()->get( 'WikiManagerFactory' );
 	}
 
-	/**
-	 * @return RemoteWikiFactory
-	 */
 	public function getRemoteWikiFactory(): RemoteWikiFactory {
 		return $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 	}
 
 	/**
+	 * @covers ::__construct
+	 */
+	public function testConstructor(): void {
+		$this->assertInstanceOf( WikiManagerFactory::class, $this->getFactoryService() );
+	}
+
+	/**
+	 * @covers ::newInstance
+	 */
+	public function testNewInstanceException(): void {
+		$this->expectException( ConfigException::class );
+		$this->expectExceptionMessage( 'Must use LBFactoryMulti when using clusters with CreateWiki.' );
+		$this->getFactoryService()->newInstance( 'newwiki' );
+	}
+
+	/**
+	 * @covers ::newInstance
+	 */
+	public function testNewInstance(): void {
+		$this->setupLBFactory();
+		$factory = $this->getFactoryService()->newInstance( 'newwiki' );
+
+		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
+		$this->assertFalse( $factory->exists() );
+
+		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
+		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
+		$this->assertTrue( $factory->exists() );
+	}
+
+	/**
 	 * @covers ::create
+	 * @covers ::doAfterCreate
+	 * @covers ::doCreateDatabase
+	 * @covers ::exists
+	 * @covers ::logEntry
 	 */
 	public function testCreateSuccess(): void {
 		$this->assertNull( $this->createWiki( dbname: 'createwikitest', private: false ) );
@@ -97,6 +141,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::create
+	 * @covers ::doAfterCreate
+	 * @covers ::doCreateDatabase
+	 * @covers ::exists
 	 */
 	public function testCreatePrivate(): void {
 		$this->assertNull( $this->createWiki( dbname: 'createwikiprivatetest', private: true ) );
@@ -105,6 +152,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::create
+	 * @covers ::doAfterCreate
+	 * @covers ::doCreateDatabase
+	 * @covers ::exists
 	 */
 	public function testCreateExists(): void {
 		$this->expectException( FatalError::class );
@@ -114,8 +164,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::checkDatabaseName
 	 * @covers ::create
+	 * @covers ::doAfterCreate
+	 * @covers ::doCreateDatabase
 	 */
 	public function testCreateErrors(): void {
 		$notsuffixed = wfMessage( 'createwiki-error-notsuffixed', 'test' )->parse();
@@ -128,7 +179,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::checkDatabaseName
 	 * @covers ::rename
 	 */
 	public function testRenameErrors(): void {
@@ -149,12 +199,14 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::compileTables
+	 * @covers ::recache
 	 * @covers ::rename
 	 */
 	public function testRenameSuccess(): void {
 		$this->createWiki( dbname: 'renamewikitest', private: false );
 
-		$this->db->newDeleteQueryBuilder()
+		$this->getDb()->newDeleteQueryBuilder()
 			->deleteFrom( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => 'renamewikitest' ] )
 			->caller( __METHOD__ )
@@ -166,7 +218,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->wikiExists( 'createwikitest' ) );
 		$this->assertTrue( $this->wikiExists( 'renamewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `createwikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `createwikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -179,7 +231,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'renamewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `renamewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `renamewikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -205,7 +257,9 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::compileTables
 	 * @covers ::delete
+	 * @covers ::recache
 	 */
 	public function testDeleteEligible(): void {
 		$this->setupLBFactory();
@@ -219,12 +273,12 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertTrue( $remoteWiki->isDeleted() );
 
-		$eligibleTimestamp = wfTimestamp( TS_MW, wfTimestamp(
+		$eligibleTimestamp = wfTimestamp( TS_MW, (int)wfTimestamp(
 			TS_UNIX,
 			$remoteWiki->getDeletedTimestamp()
 		) - ( 86400 * 8 ) );
 
-		$this->db->newUpdateQueryBuilder()
+		$this->getDb()->newUpdateQueryBuilder()
 			->update( 'cw_wikis' )
 			->set( [ 'wiki_deleted_timestamp' => $eligibleTimestamp ] )
 			->where( [ 'wiki_dbname' => 'deletewikitest' ] )
@@ -234,7 +288,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: false ) );
 		$this->assertFalse( $this->wikiExists( 'deletewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `deletewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `deletewikitest`;', __METHOD__ );
 	}
 
 	/**
@@ -249,21 +303,16 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertNull( $wikiManager->delete( force: true ) );
 		$this->assertFalse( $this->wikiExists( 'recreatewikitest' ) );
 
-		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;', __METHOD__ );
 
 		$this->assertNull( $this->createWiki( dbname: 'recreatewikitest', private: false ) );
 		$this->assertTrue( $this->wikiExists( 'recreatewikitest' ) );
 
 		$wikiManager->delete( force: true );
 
-		$this->db->query( 'DROP DATABASE `recreatewikitest`;' );
+		$this->getDb()->query( 'DROP DATABASE `recreatewikitest`;', __METHOD__ );
 	}
 
-	/**
-	 * @param string $dbname
-	 * @param bool $private
-	 * @return ?string
-	 */
 	private function createWiki( string $dbname, bool $private ): ?string {
 		$testUser = $this->getTestUser()->getUser();
 		$testSysop = $this->getTestSysop()->getUser();
@@ -282,10 +331,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	/**
-	 * @param string $dbname
-	 * @return bool
-	 */
 	private function wikiExists( string $dbname ): bool {
 		$wikiManager = $this->getFactoryService()->newInstance( $dbname );
 		return $wikiManager->exists();

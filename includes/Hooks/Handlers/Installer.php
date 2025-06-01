@@ -7,7 +7,10 @@ use Miraheze\CreateWiki\Maintenance\PopulateCentralWiki;
 
 class Installer implements LoadExtensionSchemaUpdatesHook {
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 * @codeCoverageIgnore Tested by updating or installing MediaWiki.
+	 */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
 		$dir = __DIR__ . '/../../../sql';
 
@@ -58,6 +61,15 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			'cw_requests',
 			'cw_extra',
 			"$dir/patches/patch-cw_requests-add-cw_extra.sql",
+			true,
+		] );
+
+		$updater->addExtensionUpdateOnVirtualDomain( [
+			'virtual-createwiki',
+			'addField',
+			'cw_wikis',
+			'wiki_extra',
+			"$dir/patches/patch-cw_wikis-add-wiki_extra.sql",
 			true,
 		] );
 

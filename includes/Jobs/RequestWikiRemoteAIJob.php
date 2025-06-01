@@ -5,60 +5,56 @@ namespace Miraheze\CreateWiki\Jobs;
 use Exception;
 use Job;
 use MediaWiki\Config\Config;
-use MediaWiki\Config\ConfigFactory;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Permissions\UltimateAuthority;
 use MediaWiki\User\User;
+use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
+use function count;
+use function htmlspecialchars;
+use function json_decode;
+use function json_encode;
+use function preg_match;
+use function sleep;
+use function sprintf;
+use function str_replace;
+use function strtolower;
+use function substr;
+use function trim;
+use const ENT_QUOTES;
 
 class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private Config $config;
-	private WikiRequestManager $wikiRequestManager;
-	private HttpRequestFactory $httpRequestFactory;
-	private LoggerInterface $logger;
-	private RequestContext $context;
-	private string $baseApiUrl;
-	private string $apiKey;
+	private readonly MessageLocalizer $messageLocalizer;
 
-	private int $id;
-	private string $reason;
-	private string $sitename;
-	private string $subdomain;
-	private string $username;
-	private string $language;
-	private bool $bio;
-	private bool $private;
-	private string $category;
-	private array $extraData;
+	private readonly string $apiKey;
+	private readonly string $baseApiUrl;
+	private readonly int $id;
 
 	public function __construct(
 		array $params,
-		ConfigFactory $configFactory,
-		WikiRequestManager $wikiRequestManager,
-		HttpRequestFactory $httpRequestFactory
+		private readonly Config $config,
+		private readonly LoggerInterface $logger,
+		private readonly HttpRequestFactory $httpRequestFactory,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
+		$this->messageLocalizer = RequestContext::getMain();
 
-		$this->config = $configFactory->makeConfig( 'CreateWiki' );
-		$this->wikiRequestManager = $wikiRequestManager;
-		$this->httpRequestFactory = $httpRequestFactory;
-		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
-		$this->context = RequestContext::getMain();
-
-		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
 
+		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->id = $params['id'];
 	}
 
+	/** @inheritDoc */
 	public function run(): bool {
 		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
 			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );
@@ -105,14 +101,15 @@ class RequestWikiRemoteAIJob extends Job {
 			$this->wikiRequestManager->getReason(),
 			$this->wikiRequestManager->getSitename(),
 			substr( $this->wikiRequestManager->getDBname(), 0, -4 ),
-			$this->wikiRequestManager->getRequesterUsername(),
+			$this->wikiRequestManager->getRequester()->getName(),
 			count( $this->wikiRequestManager->getVisibleRequestsByUser(
-				$this->wikiRequestManager->getRequester(), User::newSystemUser( 'CreateWiki AI' )
+				$this->wikiRequestManager->getRequester(),
+				( new UltimateAuthority( User::newSystemUser( 'CreateWiki AI' ) ) )->getUser()
 			) )
 		);
 
 		if ( !$apiResponse ) {
-			$commentText = $this->context->msg( 'requestwiki-ai-error' )
+			$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
 				->inContentLanguage()
 				->parse();
 
@@ -128,11 +125,11 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		if ( $apiResponse['error'] ) {
-			$publicCommentText = $this->context->msg( 'requestwiki-ai-error-reason' )
+			$publicCommentText = $this->messageLocalizer->msg( 'requestwiki-ai-error-reason' )
 				->inContentLanguage()
 				->parse();
 
-			$requestHistoryComment = $this->context->msg( 'requestwiki-ai-error-history-reason' )
+			$requestHistoryComment = $this->messageLocalizer->msg( 'requestwiki-ai-error-history-reason' )
 				->params( $apiResponse['error'] )
 				->inContentLanguage()
 				->parse();
@@ -174,9 +171,13 @@ class RequestWikiRemoteAIJob extends Job {
 		return $this->handleLiveRun( $outcome, $comment, $confidence );
 	}
 
-	private function handleDryRun( string $outcome, string $comment, int $confidence ): bool {
-		$outcomeMessage = $this->context->msg( 'requestwikiqueue-' . $outcome )->text();
-		$commentText = $this->context->msg( 'requestwiki-ai-decision-dryrun' )
+	private function handleDryRun(
+		string $outcome,
+		string $comment,
+		int $confidence
+	): bool {
+		$outcomeMessage = $this->messageLocalizer->msg( 'requestwikiqueue-' . $outcome )->text();
+		$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
 			->params( $outcomeMessage, $comment, $confidence )
 			->inContentLanguage()
 			->parse();
@@ -208,14 +209,13 @@ class RequestWikiRemoteAIJob extends Job {
 		return true;
 	}
 
-	private function handleLiveRun( string $outcome, string $comment, int $confidence ): bool {
+	private function handleLiveRun(
+		string $outcome,
+		string $comment,
+		int $confidence
+	): bool {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
-		$commentText = $this->context->msg( 'requestwiki-ai-decision-' . $outcome )
-			->params( $comment, $confidence )
-			->inContentLanguage()
-			->parse();
-
-		$unknownCommentText = $this->context->msg( 'requestwiki-ai-error' )
+		$unknownCommentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
 			->inContentLanguage()
 			->parse();
 
@@ -224,7 +224,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->approve(
 					user: $systemUser,
-					comment: $commentText
+					comment: $comment
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -242,7 +242,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->moredetails(
 					user: $systemUser,
-					comment: $commentText
+					comment: $comment
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -258,7 +258,7 @@ class RequestWikiRemoteAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->decline(
 					user: $systemUser,
-					comment: $commentText
+					comment: $comment
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -271,12 +271,13 @@ class RequestWikiRemoteAIJob extends Job {
 				break;
 
 			case 'onhold':
-				$this->wikiRequestManager->startQueryBuilder();
-				$this->wikiRequestManager->onhold(
+				$this->wikiRequestManager->addComment(
+					comment: $comment,
 					user: $systemUser,
-					comment: $commentText
+					log: false,
+					type: 'comment',
+					notifyUsers: []
 				);
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
 					'Wiki request {id} requires manual review and has been placed on hold with reason: {comment}',
 					[
@@ -319,25 +320,25 @@ class RequestWikiRemoteAIJob extends Job {
 		int $userRequestsNum
 	): ?array {
 		try {
-			$isBio = $bio ? "Yes" : "No";
-			$isFork = !empty( $extraData['source'] ) ? "Yes" : "No";
-			$isNsfw = !empty( $extraData['nsfw'] ) ? "Yes" : "No";
-			$isPrivate = $private ? "Yes" : "No";
+			$isBio = $bio ? 'Yes' : 'No';
+			$isFork = !empty( $extraData['source'] ) ? 'Yes' : 'No';
+			$isNsfw = !empty( $extraData['nsfw'] ) ? 'Yes' : 'No';
+			$isPrivate = $private ? 'Yes' : 'No';
 			$forkText = !empty( $extraData['sourceurl'] )
-				? "This wiki is forking from this URL: \"" .
-				htmlspecialchars( $extraData['sourceurl'], ENT_QUOTES ) . "\". "
-				: "";
+				? 'This wiki is forking from this URL: "' .
+				htmlspecialchars( $extraData['sourceurl'], ENT_QUOTES ) . '". '
+				: '';
 			$nsfwReasonText = !empty( $extraData['nsfwtext'] )
-				? "What type of NSFW content will it feature? \"" .
-				htmlspecialchars( $extraData['nsfwtext'], ENT_QUOTES ) . "\". "
-				: "";
+				? 'What type of NSFW content will it feature? "' .
+				htmlspecialchars( $extraData['nsfwtext'], ENT_QUOTES ) . '". '
+				: '';
 
 			$sanitizedReason = sprintf(
 				'Wiki name: "%s". Subdomain: "%s". Requester: "%s". ' .
 				'Number of previous requests: "%d". Language: "%s". ' .
 				'Focuses on real people/groups? "%s". Private wiki? "%s". Category: "%s". ' .
 				'Contains content that is not safe for work? "%s". %s%s' .
-				'Wiki request description: %s',
+				'Wiki request description: "%s"',
 				htmlspecialchars( $sitename, ENT_QUOTES ),
 				htmlspecialchars( $subdomain, ENT_QUOTES ),
 				htmlspecialchars( $username, ENT_QUOTES ),
@@ -482,7 +483,7 @@ class RequestWikiRemoteAIJob extends Job {
 			}
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
-			return json_decode( $finalResponseContent, true );
+			return (array)json_decode( $finalResponseContent, true );
 		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
 			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() );
@@ -539,7 +540,7 @@ class RequestWikiRemoteAIJob extends Job {
 			return null;
 		}
 
-		return json_decode( $request['body'], true );
+		return (array)json_decode( $request['body'], true );
 	}
 
 	private function canAutoApprove(): bool {

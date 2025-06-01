@@ -1,28 +1,23 @@
 <?php
 
-namespace Miraheze\CreateWiki\CreateWiki;
+namespace Miraheze\CreateWiki\Specials;
 
 use ErrorPageError;
 use MediaWiki\Html\Html;
-use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
-	private CreateWikiDatabaseUtils $databaseUtils;
-	private WikiManagerFactory $wikiManagerFactory;
-
 	public function __construct(
-		CreateWikiDatabaseUtils $databaseUtils,
-		WikiManagerFactory $wikiManagerFactory
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiValidator $validator,
+		private readonly WikiManagerFactory $wikiManagerFactory
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
-
-		$this->databaseUtils = $databaseUtils;
-		$this->wikiManagerFactory = $wikiManagerFactory;
 	}
 
 	/**
@@ -36,27 +31,29 @@ class SpecialCreateWiki extends FormSpecialPage {
 		parent::execute( $par );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getFormFields(): array {
 		$formDescriptor = [
 			'dbname' => [
-				'label-message' => 'createwiki-label-dbname',
 				'type' => 'text',
+				'label-message' => 'createwiki-label-dbname',
 				'required' => true,
-				'validation-callback' => [ $this, 'isValidDatabase' ],
+				'validation-callback' => [ $this->validator, 'validateDatabaseEntry' ],
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_wikis.sql#L2
+				'maxlength' => 64,
 			],
 			'requester' => [
-				'label-message' => 'createwiki-label-requester',
 				'type' => 'user',
 				'exists' => true,
+				'label-message' => 'createwiki-label-requester',
 				'required' => true,
 			],
 			'sitename' => [
-				'label-message' => 'createwiki-label-sitename',
 				'type' => 'text',
-				'size' => 20,
+				'label-message' => 'createwiki-label-sitename',
+				'required' => true,
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_wikis.sql#L3
+				'maxlength' => 128,
 			],
 			'language' => [
 				'type' => 'language',
@@ -85,7 +82,6 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'type' => 'textarea',
 			'rows' => 10,
 			'label-message' => 'createwiki-label-reason',
-			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
 		];
@@ -93,28 +89,14 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return $formDescriptor;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function onSubmit( array $formData ): bool {
-		if ( $this->getConfig()->get( ConfigNames::UsePrivateWikis ) ) {
-			$private = $formData['private'];
-		} else {
-			$private = 0;
-		}
-
-		if ( $this->getConfig()->get( ConfigNames::Categories ) ) {
-			$category = $formData['category'];
-		} else {
-			$category = 'uncategorised';
-		}
-
 		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
 		$wikiManager->create(
 			sitename: $formData['sitename'],
 			language: $formData['language'],
-			private: $private,
-			category: $category,
+			private: $formData['private'] ?? 0,
+			category: $formData['category'] ?? 'uncategorised',
 			requester: $formData['requester'],
 			actor: $this->getContext()->getUser()->getName(),
 			reason: $formData['reason'],
@@ -130,33 +112,13 @@ class SpecialCreateWiki extends FormSpecialPage {
 		return true;
 	}
 
-	public function isValidDatabase( ?string $dbname ): bool|string|Message {
-		if ( !$dbname || ctype_space( $dbname ) ) {
-			return $this->msg( 'htmlform-required' );
-		}
-
-		$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
-		$check = $wikiManager->checkDatabaseName( $dbname, forRename: false );
-
-		if ( $check ) {
-			// Will return a string — the error it received
-			return $check;
-		}
-
-		return true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getDisplayFormat(): string {
 		return 'ooui';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	protected function getGroupName(): string {
-		return 'wikimanage';
+		return 'wiki';
 	}
 }

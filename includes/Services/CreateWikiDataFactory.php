@@ -9,8 +9,16 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
-use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IReadableDatabase;
+use function file_exists;
+use function file_put_contents;
+use function is_array;
+use function rename;
+use function tempnam;
+use function time;
+use function unlink;
+use function var_export;
+use function wfTempDir;
 
 class CreateWikiDataFactory {
 
@@ -23,17 +31,14 @@ class CreateWikiDataFactory {
 		ConfigNames::UsePrivateWikis,
 	];
 
-	private BagOStuff $cache;
-	private CreateWikiHookRunner $hookRunner;
-	private IConnectionProvider $connectionProvider;
+	private readonly BagOStuff $cache;
 	private IReadableDatabase $dbr;
-	private ServiceOptions $options;
 
 	/** @var string The wiki database name. */
-	private string $wiki;
+	private string $dbname;
 
 	/** @var string The directory path for cache files. */
-	private string $cacheDir;
+	private readonly string $cacheDir;
 
 	/** @var int The cached timestamp for the databases list. */
 	private int $databasesTimestamp;
@@ -41,25 +46,13 @@ class CreateWikiDataFactory {
 	/** @var int The cached timestamp for the wiki information. */
 	private int $wikiTimestamp;
 
-	/**
-	 * CreateWikiDataFactory constructor.
-	 *
-	 * @param IConnectionProvider $connectionProvider
-	 * @param ObjectCacheFactory $objectCacheFactory
-	 * @param CreateWikiHookRunner $hookRunner
-	 * @param ServiceOptions $options
-	 */
 	public function __construct(
-		IConnectionProvider $connectionProvider,
 		ObjectCacheFactory $objectCacheFactory,
-		CreateWikiHookRunner $hookRunner,
-		ServiceOptions $options
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->hookRunner = $hookRunner;
-		$this->options = $options;
 
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
@@ -68,21 +61,15 @@ class CreateWikiDataFactory {
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
 
-	/**
-	 * Create a new CreateWikiDataFactory instance.
-	 *
-	 * @param string $wiki
-	 * @return self
-	 */
-	public function newInstance( string $wiki ): self {
-		$this->wiki = $wiki;
+	public function newInstance( string $dbname ): self {
+		$this->dbname = $dbname;
 
 		$this->databasesTimestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( 'CreateWiki', 'databases' )
 		);
 
 		$this->wikiTimestamp = (int)$this->cache->get(
-			$this->cache->makeGlobalKey( 'CreateWiki', $wiki )
+			$this->cache->makeGlobalKey( 'CreateWiki', $dbname )
 		);
 
 		if ( !$this->databasesTimestamp ) {
@@ -155,7 +142,7 @@ class CreateWikiDataFactory {
 			return;
 		}
 
-		$this->dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
 
 		$databaseList = $this->dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
@@ -201,30 +188,29 @@ class CreateWikiDataFactory {
 		if ( $isNewChanges ) {
 			$this->wikiTimestamp = $mtime;
 			$this->cache->set(
-				$this->cache->makeGlobalKey( 'CreateWiki', $this->wiki ),
+				$this->cache->makeGlobalKey( 'CreateWiki', $this->dbname ),
 				$mtime
 			);
 		}
 
-		$this->dbr ??= $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
+		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
 
 		$row = $this->dbr->newSelectQueryBuilder()
 			->select( '*' )
 			->from( 'cw_wikis' )
-			->where( [ 'wiki_dbname' => $this->wiki ] )
+			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
 			->fetchRow();
 
 		if ( !$row ) {
-			$centralDbr = $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-			if ( $this->wiki === $centralDbr->getDomainID() ) {
+			if ( $this->databaseUtils->isRemoteWikiCentral( $this->dbname ) ) {
 				// Don't throw an exception if we have not yet populated the
 				// central wiki, so that the PopulateCentralWiki script can
 				// successfully populate it.
 				return;
 			}
 
-			throw new MissingWikiError( 'createwiki-error-missingwiki', [ $this->wiki ] );
+			throw new MissingWikiError( $this->dbname );
 		}
 
 		$states = [];
@@ -260,21 +246,21 @@ class CreateWikiDataFactory {
 			'states' => $states,
 		];
 
-		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->wiki, $this->dbr, $cacheArray );
-		$this->writeToFile( $this->wiki, $cacheArray );
+		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->dbname, $this->dbr, $cacheArray );
+		$this->writeToFile( $this->dbname, $cacheArray );
 	}
 
 	/**
 	 * Deletes the wiki data cache for a wiki.
 	 * Probably used when a wiki is deleted or renamed.
 	 *
-	 * @param string $wiki
+	 * @param string $dbname
 	 */
-	public function deleteWikiData( string $wiki ): void {
-		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $wiki ) );
+	public function deleteWikiData( string $dbname ): void {
+		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $dbname ) );
 
-		if ( file_exists( "{$this->cacheDir}/{$wiki}.php" ) ) {
-			unlink( "{$this->cacheDir}/{$wiki}.php" );
+		if ( file_exists( "{$this->cacheDir}/{$dbname}.php" ) ) {
+			unlink( "{$this->cacheDir}/{$dbname}.php" );
 		}
 	}
 
@@ -298,16 +284,14 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Retrieves cached wiki data.
-	 *
-	 * @return array
+	 * @return array Cached wiki data.
 	 */
 	private function getCachedWikiData(): array {
 		// Avoid using file_exists for performance reasons. Including the file directly leverages
 		// the opcode cache and prevents any file system access.
 		// We only handle failures if the include does not work.
 
-		$filePath = "{$this->cacheDir}/{$this->wiki}.php";
+		$filePath = "{$this->cacheDir}/{$this->dbname}.php";
 		$cacheData = AtEase::quietCall( static function ( $path ) {
 			return include $path;
 		}, $filePath );
@@ -320,9 +304,7 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Retrieves cached database list.
-	 *
-	 * @return array
+	 * @return array Cached database list
 	 */
 	private function getCachedDatabaseList(): array {
 		// Avoid using file_exists for performance reasons. Including the file directly leverages

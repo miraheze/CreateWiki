@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
@@ -11,50 +10,30 @@ use MediaWiki\Pager\IndexPager;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Wikimedia\Rdbms\IConnectionProvider;
+use function htmlspecialchars;
+use const ENT_QUOTES;
 
 class RequestWikiQueuePager extends TablePager {
 
 	/** @inheritDoc */
 	public $mDefaultDirection = IndexPager::DIR_ASCENDING;
 
-	private LanguageNameUtils $languageNameUtils;
-	private LinkRenderer $linkRenderer;
-	private UserFactory $userFactory;
-	private WikiRequestManager $wikiRequestManager;
-
-	private string $dbname;
-	private string $language;
-	private string $requester;
-	private string $status;
-
 	public function __construct(
-		Config $config,
 		IContextSource $context,
-		IConnectionProvider $connectionProvider,
-		LanguageNameUtils $languageNameUtils,
-		LinkRenderer $linkRenderer,
-		UserFactory $userFactory,
-		WikiRequestManager $wikiRequestManager,
-		string $dbname,
-		string $language,
-		string $requester,
-		string $status
+		CreateWikiDatabaseUtils $databaseUtils,
+		private readonly LanguageNameUtils $languageNameUtils,
+		private readonly LinkRenderer $linkRenderer,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager,
+		private readonly string $dbname,
+		private readonly string $language,
+		private readonly string $requester,
+		private readonly string $status
 	) {
-		$this->mDb = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
-
+		$this->mDb = $databaseUtils->getCentralWikiReplicaDB();
 		parent::__construct( $context, $linkRenderer );
-
-		$this->linkRenderer = $linkRenderer;
-		$this->languageNameUtils = $languageNameUtils;
-		$this->userFactory = $userFactory;
-		$this->wikiRequestManager = $wikiRequestManager;
-
-		$this->dbname = $dbname;
-		$this->language = $language;
-		$this->requester = $requester;
-		$this->status = $status;
 	}
 
 	/** @inheritDoc */
@@ -81,10 +60,10 @@ class RequestWikiQueuePager extends TablePager {
 				) );
 				break;
 			case 'cw_dbname':
-				$formatted = $this->escape( $row->cw_dbname );
+				$formatted = $this->escape( $row->cw_dbname ?? '' );
 				break;
 			case 'cw_sitename':
-				$formatted = $this->escape( $row->cw_sitename );
+				$formatted = $this->escape( $row->cw_sitename ?? '' );
 				break;
 			case 'cw_user':
 				$formatted = Linker::userLink(
@@ -93,7 +72,7 @@ class RequestWikiQueuePager extends TablePager {
 				);
 				break;
 			case 'cw_url':
-				$formatted = $this->escape( $row->cw_url );
+				$formatted = $this->escape( $row->cw_url ?? '' );
 				break;
 			case 'cw_status':
 				$formatted = $this->linkRenderer->makeLink(
@@ -103,8 +82,8 @@ class RequestWikiQueuePager extends TablePager {
 				break;
 			case 'cw_language':
 				$formatted = $this->languageNameUtils->getLanguageName(
-					$row->cw_language,
-					$this->getLanguage()->getCode()
+					code: $row->cw_language,
+					inLanguage: $this->getLanguage()->getCode()
 				);
 				break;
 			default:

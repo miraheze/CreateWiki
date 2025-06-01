@@ -4,13 +4,11 @@
 		"stylelint-config-wikimedia/support-modern",
 		"stylelint-config-wikimedia/mediawiki"
 	],
-	"ignoreFiles": [
-		"vendor/**"
-	],
+	"ignoreFiles": [ "vendor/**" ],
 	"reportNeedlessDisables": true,
 	"rules": {
 		"no-descending-specificity": null,
-		"selector-class-pattern": null,
+		"selector-class-pattern": "^(client|createwiki|mw|oo-ui)-",
 		"selector-max-id": null
 	}
 }

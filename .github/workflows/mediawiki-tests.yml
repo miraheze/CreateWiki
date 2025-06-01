@@ -2,43 +2,58 @@ name: Call reusable MediaWiki tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   call-mediawiki-tests-workflow:
-    uses: miraheze/.github/.github/workflows/mediawiki-tests.yml@master
+    uses: miraheze/.github/.github/workflows/mediawiki-tests.yml@main
     strategy:
       matrix:
         include:
-          # Latest MediaWiki stable - PHP 8.1
+          # Latest MediaWiki stable - PHP 8.2
           - mw: 'REL1_43'
-            php: 8.1
-            php-docker: 81
+            php: 8.2
+            php-docker: 82
             composer-test: true
-            experimental: false
+            coverage: true
+            experimental-phan: false
+            experimental-phpunit: false
 
-          # Latest MediaWiki master - PHP 8.1
-          - mw: 'master'
-            php: 8.1
-            php-docker: 81
+          # Latest MediaWiki beta - PHP 8.2
+          - mw: 'REL1_44'
+            php: 8.2
+            php-docker: 82
             composer-test: false
-            experimental: true
+            coverage: false
+            experimental-phan: true
+            experimental-phpunit: false
+
+          # Latest MediaWiki master - PHP 8.2
+          - mw: 'master'
+            php: 8.2
+            php-docker: 82
+            composer-test: false
+            coverage: false
+            experimental-phan: true
+            experimental-phpunit: true
 
     with:
       mw: ${{ matrix.mw }}
       php: ${{ matrix.php }}
       php-docker: ${{ matrix.php-docker }}
-      experimental: ${{ matrix.experimental }}
+      experimental-phan: ${{ matrix.experimental-phan }}
+      experimental-phpunit: ${{ matrix.experimental-phpunit }}
       composer-test: ${{ matrix.composer-test }}
+      coverage: ${{ matrix.coverage }}
 
     secrets: inherit
 
   notify-irc:
     needs: call-mediawiki-tests-workflow
     runs-on: ubuntu-latest
-    if: ${{ always() && github.repository_owner == 'miraheze' && ( github.ref == 'refs/heads/master' || github.event_name == 'pull_request' ) }}
+    if: ${{ always() && github.repository_owner == 'miraheze' && ( github.ref == 'refs/heads/main' || github.event_name == 'pull_request' ) }}
     steps:
       - name: succeeded
         uses: technote-space/workflow-conclusion-action@v3

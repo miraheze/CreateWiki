@@ -2,14 +2,15 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use function file_exists;
 
 class GenerateMissingCache extends Maintenance {
+
+	private CreateWikiDataFactory $dataFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -18,15 +19,19 @@ class GenerateMissingCache extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute(): void {
-		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->dataFactory = $services->get( 'CreateWikiDataFactory' );
+	}
 
+	public function execute(): void {
+		$this->initServices();
 		foreach ( $this->getConfig()->get( MainConfigNames::LocalDatabases ) as $db ) {
 			if ( file_exists( $this->getConfig()->get( ConfigNames::CacheDirectory ) . '/' . $db . '.php' ) ) {
 				continue;
 			}
 
-			$data = $dataFactory->newInstance( $db );
+			$data = $this->dataFactory->newInstance( $db );
 			$data->resetWikiData( isNewChanges: true );
 
 			$this->output( "Cache generated for {$db}\n" );
@@ -34,5 +39,6 @@ class GenerateMissingCache extends Maintenance {
 	}
 }
 
-$maintClass = GenerateMissingCache::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return GenerateMissingCache::class;
+// @codeCoverageIgnoreEnd

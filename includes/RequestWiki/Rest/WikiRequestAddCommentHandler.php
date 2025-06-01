@@ -1,6 +1,6 @@
 <?php
 
-namespace Miraheze\CreateWiki\RequestWiki\Handler;
+namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
@@ -8,22 +8,18 @@ use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use function ctype_space;
 
 /**
  * Posts a comment to the specified wiki request
  * POST /createwiki/v0/wiki_request/{id}/comment
  */
-class RestWikiRequestComment extends SimpleHandler {
-
-	private CreateWikiRestUtils $restUtils;
-	private WikiRequestManager $wikiRequestManager;
+class WikiRequestAddCommentHandler extends SimpleHandler {
 
 	public function __construct(
-		CreateWikiRestUtils $restUtils,
-		WikiRequestManager $wikiRequestManager
+		private readonly CreateWikiRestUtils $restUtils,
+		private readonly WikiRequestManager $wikiRequestManager
 	) {
-		$this->restUtils = $restUtils;
-		$this->wikiRequestManager = $wikiRequestManager;
 	}
 
 	public function run( int $requestID ): Response {

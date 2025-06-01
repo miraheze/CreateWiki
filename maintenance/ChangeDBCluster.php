@@ -2,13 +2,17 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
+use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use function feof;
+use function fgets;
+use function fopen;
+use function trim;
 
 class ChangeDBCluster extends Maintenance {
+
+	private RemoteWikiFactory $remoteWikiFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -23,7 +27,13 @@ class ChangeDBCluster extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
+	}
+
 	public function execute(): void {
+		$this->initServices();
 		if ( $this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
 
@@ -31,13 +41,12 @@ class ChangeDBCluster extends Maintenance {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
 		} else {
-			$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )->newInstance(
+			$remoteWiki = $this->remoteWikiFactory->newInstance(
 				$this->getConfig()->get( MainConfigNames::DBname )
 			);
 
 			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$remoteWiki->commit();
-
 			return;
 		}
 
@@ -48,14 +57,13 @@ class ChangeDBCluster extends Maintenance {
 				continue;
 			}
 
-			$remoteWiki = $this->getServiceContainer()->get( 'RemoteWikiFactory' )
-				->newInstance( $line );
-
+			$remoteWiki = $this->remoteWikiFactory->newInstance( $line );
 			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$remoteWiki->commit();
 		}
 	}
 }
 
-$maintClass = ChangeDBCluster::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return ChangeDBCluster::class;
+// @codeCoverageIgnoreEnd

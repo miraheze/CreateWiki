@@ -11,7 +11,8 @@ use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use UserMailer;
-use Wikimedia\Rdbms\IConnectionProvider;
+use function in_array;
+use function is_object;
 
 class CreateWikiNotificationsManager {
 
@@ -42,36 +43,17 @@ class CreateWikiNotificationsManager {
 		'wiki-rename',
 	];
 
-	private IConnectionProvider $connectionProvider;
-	private MessageLocalizer $messageLocalizer;
-	private ServiceOptions $options;
-	private UserFactory $userFactory;
 	private string $type;
 
-	/**
-	 * @param IConnectionProvider $connectionProvider
-	 * @param MessageLocalizer $messageLocalizer
-	 * @param ServiceOptions $options
-	 * @param UserFactory $userFactory
-	 */
 	public function __construct(
-		IConnectionProvider $connectionProvider,
-		MessageLocalizer $messageLocalizer,
-		ServiceOptions $options,
-		UserFactory $userFactory
+		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly MessageLocalizer $messageLocalizer,
+		private readonly ServiceOptions $options,
+		private readonly UserFactory $userFactory
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->connectionProvider = $connectionProvider;
-		$this->messageLocalizer = $messageLocalizer;
-
-		$this->options = $options;
-		$this->userFactory = $userFactory;
 	}
 
-	/**
-	 * @return string
-	 */
 	private function getFromName(): string {
 		if ( $this->type === 'closure' ) {
 			return $this->messageLocalizer->msg( 'createwiki-close-email-sender' )
@@ -85,12 +67,8 @@ class CreateWikiNotificationsManager {
 		return 'CreateWiki Notifications';
 	}
 
-	/**
-	 * @param array $data
-	 * @param string $wiki
-	 */
-	public function notifyBureaucrats( array $data, string $wiki ): void {
-		$dbr = $this->connectionProvider->getReplicaDatabase( $wiki );
+	public function notifyBureaucrats( array $data, string $dbname ): void {
+		$dbr = $this->databaseUtils->getRemoteWikiReplicaDB( $dbname );
 
 		$bureaucrats = $dbr->newSelectQueryBuilder()
 			->select( [ 'user_email', 'user_name' ] )
@@ -111,32 +89,24 @@ class CreateWikiNotificationsManager {
 		$this->sendNotification( $data, $emails );
 	}
 
-	/**
-	 * @param array $data
-	 * @param array $receivers
-	 */
 	public function sendNotification( array $data, array $receivers ): void {
 		$this->type = $data['type'];
 
 		if (
 			$this->options->get( ConfigNames::UseEchoNotifications ) &&
-			in_array( $this->type, self::ECHO_TYPES )
+			in_array( $this->type, self::ECHO_TYPES, true )
 		) {
 			$this->sendEchoNotification( $data, $receivers );
 		}
 
 		if (
 			$this->options->get( ConfigNames::EmailNotifications ) &&
-			in_array( $this->type, self::EMAIL_TYPES )
+			in_array( $this->type, self::EMAIL_TYPES, true )
 		) {
 			$this->sendEmailNotification( $data, $receivers );
 		}
 	}
 
-	/**
-	 * @param array $data
-	 * @param array $receivers
-	 */
 	private function sendEchoNotification( array $data, array $receivers ): void {
 		foreach ( $receivers as $receiver ) {
 			$user = is_object( $receiver ) ? $receiver :
@@ -154,10 +124,6 @@ class CreateWikiNotificationsManager {
 		}
 	}
 
-	/**
-	 * @param array $data
-	 * @param array $receivers
-	 */
 	private function sendEmailNotification( array $data, array $receivers ): void {
 		DeferredUpdates::addCallableUpdate( function () use ( $data, $receivers ) {
 			$notifyEmails = [];
@@ -165,7 +131,6 @@ class CreateWikiNotificationsManager {
 			foreach ( $receivers as $receiver ) {
 				if ( $receiver instanceof MailAddress ) {
 					$notifyEmails[] = $receiver;
-
 					continue;
 				}
 
@@ -179,7 +144,7 @@ class CreateWikiNotificationsManager {
 				$notifyEmails[] = MailAddress::newFromUser( $user );
 			}
 
-			if ( in_array( $this->type, self::SERVER_ADMIN_TYPES ) ) {
+			if ( in_array( $this->type, self::SERVER_ADMIN_TYPES, true ) ) {
 				$notifyEmails[] = new MailAddress(
 					$this->options->get( ConfigNames::NotificationEmail ),
 					'Server Administrators'

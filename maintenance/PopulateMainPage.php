@@ -2,9 +2,6 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-$IP ??= getenv( 'MW_INSTALL_PATH' ) ?: dirname( __DIR__, 3 );
-require_once "$IP/maintenance/Maintenance.php";
-
 use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\Content\WikitextContent;
 use MediaWiki\MainConfigNames;
@@ -12,6 +9,8 @@ use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
+use function wfMessage;
+use const EDIT_SUPPRESS_RC;
 
 class PopulateMainPage extends Maintenance {
 
@@ -51,5 +50,6 @@ class PopulateMainPage extends Maintenance {
 	}
 }
 
-$maintClass = PopulateMainPage::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
+// @codeCoverageIgnoreStart
+return PopulateMainPage::class;
+// @codeCoverageIgnoreEnd
