@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use function implode;
+use function register_shutdown_function;
 
 class DeleteWikis extends Maintenance {
 
@@ -92,8 +93,7 @@ class DeleteWikis extends Maintenance {
 			// Let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$wikiManager = $this->getServiceContainer()->get( 'WikiManagerFactory' )
-				->newInstance( $dbname );
+			$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
 			$delete = $wikiManager->delete( force: true );
 
 			if ( $delete ) {
@@ -139,16 +139,16 @@ class DeleteWikis extends Maintenance {
 				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
-					$this->log( "$wiki: $delete", output: true );
+					$this->log( "$dbname: $delete", output: true );
 					continue;
 				}
 
-				$this->log( "Wiki $wiki deleted from $dbCluster.", output: false );
-				$this->output( "$dbCluster: DROP DATABASE $wiki;\n" );
-				$this->deletedWikis[] = $wiki;
+				$this->log( "Wiki $dbname deleted from $dbCluster.", output: false );
+				$this->output( "$dbCluster: DROP DATABASE $dbname;\n" );
+				$this->deletedWikis[] = $dbname;
 			} else {
-				$this->output( "$wiki: $dbCluster\n" );
-				$this->deletedWikis[] = $wiki;
+				$this->output( "$dbname: $dbCluster\n" );
+				$this->deletedWikis[] = $dbname;
 			}
 		}
 	}
