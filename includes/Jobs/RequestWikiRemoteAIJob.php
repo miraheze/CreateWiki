@@ -68,17 +68,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Loaded request {id} for AI approval.',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( !$this->canAutoApprove() ) {
 			$this->logger->debug(
 				'Wiki request {id} was not auto-evaluated! Request matched the denylist.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return true;
@@ -87,9 +83,7 @@ class RequestWikiRemoteAIJob extends Job {
 		// Initiate OpenAI query for decision
 		$this->logger->debug(
 			'Querying OpenAI for decision on wiki request {id}...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		$apiResponse = $this->queryOpenAI(
@@ -395,9 +389,7 @@ class RequestWikiRemoteAIJob extends Job {
 			if ( !$runId ) {
 				$this->logger->error(
 					'OpenAI did not return a runId for request #{id}! AI execution aborted.',
-				[
-					'id' => $this->id,
-					]
+					[ 'id' => $this->id ]
 				);
 				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
 				return $runData;
@@ -553,17 +545,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Checking wiki request {id} against the auto approval denylist filter...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( preg_match( $filter, strtolower( $this->wikiRequestManager->getReason() ) ) ) {
 			$this->logger->debug(
 				'Wiki request {id} matched against the auto approval denylist filter! A manual review is required.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return false;
@@ -571,9 +559,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Wiki request {id} passed the auto approval filter review!',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		return true;
