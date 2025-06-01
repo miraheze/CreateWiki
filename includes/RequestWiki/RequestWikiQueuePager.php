@@ -136,7 +136,10 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = $this->userFactory->newFromName( $this->requester )->getId();
+			$requester = $this->userFactory->newFromName( $this->requester );
+			if ( $requester ) {
+				$info['conds']['cw_user'] = $requester->getId();
+			}
 		}
 
 		if ( $this->status && $this->status !== '*' ) {
