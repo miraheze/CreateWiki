@@ -468,7 +468,7 @@ class RequestWikiRemoteAIJob extends Job {
 				]
 			);
 
-			if ( !$messagesData['data'][0]['content'][0]['text']['value'] ) {
+			if ( !( $messagesData['data'][0]['content'][0]['text']['value'] ?? '' ) ) {
 				$this->logger->error(
 					'AI stage 4: Message response not received for #{runId}! Data returned: {messagesData}',
 					[
