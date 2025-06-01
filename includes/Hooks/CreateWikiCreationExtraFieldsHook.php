@@ -2,12 +2,12 @@
 
 namespace Miraheze\CreateWiki\Hooks;
 
-interface CreateWikiReadPersistentModelHook {
+interface CreateWikiCreationExtraFieldsHook {
 
 	/**
-	 * @param string &$pipeline
+	 * @param array &$extraFields
 	 * @return void This hook must not abort, it must return no value.
 	 * @codeCoverageIgnore Cannot be annotated as covered.
 	 */
-	public function onCreateWikiReadPersistentModel( string &$pipeline ): void;
+	public function onCreateWikiCreationExtraFields( array &$extraFields ): void;
 }

@@ -15,6 +15,18 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
+use function count;
+use function htmlspecialchars;
+use function json_decode;
+use function json_encode;
+use function preg_match;
+use function sleep;
+use function sprintf;
+use function str_replace;
+use function strtolower;
+use function substr;
+use function trim;
+use const ENT_QUOTES;
 
 class RequestWikiRemoteAIJob extends Job {
 
@@ -42,6 +54,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->id = $params['id'];
 	}
 
+	/** @inheritDoc */
 	public function run(): bool {
 		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
 			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );
@@ -460,7 +473,7 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
-			return json_decode( $finalResponseContent, true );
+			return (array)json_decode( $finalResponseContent, true );
 		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
 			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() );
@@ -517,7 +530,7 @@ class RequestWikiRemoteAIJob extends Job {
 			return null;
 		}
 
-		return json_decode( $request['body'], true );
+		return (array)json_decode( $request['body'], true );
 	}
 
 	private function canAutoApprove(): bool {

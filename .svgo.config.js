@@ -21,8 +21,7 @@ module.exports = {
 					// If the SVG doesn't start with an XML declaration, then its MIME type will
 					// be detected as "text/plain" rather than "image/svg+xml" by libmagic and,
 					// consequently, MediaWiki's CSSMin CSS minifier. libmagic's default database
-					// currently requires that SVGs contain an XML declaration:
-					// https://github.com/threatstack/libmagic/blob/master/magic/Magdir/sgml#L5
+					// currently requires that SVGs contain an XML declaration.
 					removeXMLProcInst: false
 				}
 			}
