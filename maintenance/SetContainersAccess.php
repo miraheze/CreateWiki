@@ -5,12 +5,14 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use StatusValue;
 use Wikimedia\FileBackend\FileBackend;
 
 class SetContainersAccess extends Maintenance {
 
+	private CreateWikiHookRunner $hookRunner;
 	private RemoteWikiFactory $remoteWikiFactory;
 
 	private bool $isRetrying = false;
@@ -27,6 +29,7 @@ class SetContainersAccess extends Maintenance {
 
 	private function initServices(): void {
 		$services = $this->getServiceContainer();
+		$this->hookRunner = $services->get( 'CreateWikiHookRunner' );
 		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
 	}
 
@@ -113,8 +116,7 @@ class SetContainersAccess extends Maintenance {
 		$this->output( "failed.\n" );
 		$this->error( $status );
 
-		$hookRunner = $this->getServiceContainer()->get( 'CreateWikiHookRunner' );
-		if ( $hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone ) ) {
+		if ( $this->hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone ) ) {
 			// If the hook returned true, we can try this script one time.
 			$this->output( "retrying.\n" );
 			$this->needsRetry = true;
