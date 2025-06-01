@@ -3,8 +3,14 @@
 namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use function strtolower;
 
 class RenameWiki extends Maintenance {
+
+	private CreateWikiNotificationsManager $notificationsManager;
+	private WikiManagerFactory $wikiManagerFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -27,7 +33,14 @@ class RenameWiki extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
+		$this->wikiManagerFactory = $services->get( 'WikiManagerFactory' );
+	}
+
 	public function execute(): void {
+		$this->initServices();
 		$old = strtolower( $this->getOption( 'old' ) );
 		$new = strtolower( $this->getOption( 'new' ) );
 
@@ -37,8 +50,7 @@ class RenameWiki extends Maintenance {
 			// let's count down JUST to be safe!
 			$this->countDown( 10 );
 
-			$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-			$wikiManager = $wikiManagerFactory->newInstance( $old );
+			$wikiManager = $this->wikiManagerFactory->newInstance( $old );
 			$rename = $wikiManager->rename( newDatabaseName: $new );
 
 			if ( $rename ) {
@@ -63,12 +75,11 @@ class RenameWiki extends Maintenance {
 				'body' => $message,
 			];
 
-			$this->getServiceContainer()->get( 'CreateWikiNotificationsManager' )
-				->sendNotification(
-					data: $notificationData,
-					// No receivers, it will send to configured email
-					receivers: []
-				);
+			$this->notificationsManager->sendNotification(
+				data: $notificationData,
+				// No receivers, it will send to configured email
+				receivers: []
+			);
 		}
 	}
 }

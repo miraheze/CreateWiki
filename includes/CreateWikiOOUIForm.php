@@ -2,14 +2,16 @@
 
 namespace Miraheze\CreateWiki;
 
+use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\OOUIHTMLForm;
-use MediaWiki\Xml\Xml;
+use MediaWiki\Logger\LoggerFactory;
 use OOUI\FieldsetLayout;
 use OOUI\HtmlSnippet;
 use OOUI\IndexLayout;
 use OOUI\PanelLayout;
 use OOUI\TabPanelLayout;
 use OOUI\Widget;
+use function is_array;
 
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 
@@ -21,8 +23,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	 * @return string
 	 */
 	public function wrapForm( $html ) {
-		$html = Xml::tags( 'div', [ 'id' => 'createwiki' ], $html );
-
+		$html = Html::rawElement( 'div', [ 'id' => 'createwiki' ], $html );
 		return parent::wrapForm( $html );
 	}
 
@@ -49,8 +50,10 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$tabPanels = [];
 		foreach ( $this->mFieldTree as $key => $val ) {
 			if ( !is_array( $val ) ) {
-				wfDebug( __METHOD__ . " encountered a field not attached to a section: '{$key}'" );
-
+				LoggerFactory::getInstance( 'CreateWiki' )->debug(
+					'Encountered a field not attached to a section: {key}',
+					[ 'key' => $key ]
+				);
 				continue;
 			}
 
@@ -61,20 +64,20 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				$this->displaySection(
 					$val,
 					'',
-					"mw-section-{$key}-"
+					"mw-section-$key-"
 				) .
 				$this->getFooterHtml( $key );
 
-			$tabPanels[] = new TabPanelLayout( 'mw-section-' . $key, [
+			$tabPanels[] = new TabPanelLayout( "mw-section-$key", [
 				'classes' => [ 'mw-htmlform-autoinfuse-lazy' ],
 				'label' => $label,
 				'content' => new FieldsetLayout( [
 					'classes' => [ 'createwiki-section-fieldset' ],
-					'id' => "mw-section-{$key}",
+					'id' => "mw-section-$key",
 					'label' => $label,
 					'items' => [
 						new Widget( [
-							'content' => new HtmlSnippet( $content )
+							'content' => new HtmlSnippet( $content ),
 						] ),
 					],
 				] ),
@@ -98,7 +101,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 			'framed' => true,
 			'expanded' => false,
 			'classes' => [ 'createwiki-tabs-wrapper' ],
-			'content' => $indexLayout
+			'content' => $indexLayout,
 		] );
 
 		return $header . $form;

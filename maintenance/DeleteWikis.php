@@ -2,9 +2,18 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Maintenance\Maintenance;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use function implode;
 
 class DeleteWikis extends Maintenance {
+
+	private CreateWikiDatabaseUtils $databaseUtils;
+	private CreateWikiNotificationsManager $notificationsManager;
+	private WikiManagerFactory $wikiManagerFactory;
 
 	private array $deletedWikis = [];
 	private bool $notified = false;
@@ -29,15 +38,23 @@ class DeleteWikis extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
+		$this->wikiManagerFactory = $services->get( 'WikiManagerFactory' );
+	}
+
 	private function log( string $msg, bool $output ): void {
-		$logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
-		$logger->debug( "DeleteWikis: $msg" );
+		$logger = LoggerFactory::getInstance( 'CreateWiki' );
+		$logger->debug( 'DeleteWikis: {msg}', [ 'msg' => $msg ] );
 		if ( $output ) {
 			$this->output( "$msg\n" );
 		}
 	}
 
 	public function execute(): void {
+		$this->initServices();
 		$user = $this->getOption( 'user' );
 		if ( !$user ) {
 			$this->fatalError( 'Please specify the username of the user executing this script.' );
@@ -102,10 +119,7 @@ class DeleteWikis extends Maintenance {
 			$this->countDown( 10 );
 		}
 
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
-		$dbr = $databaseUtils->getGlobalReplicaDB();
-
+		$dbr = $this->databaseUtils->getGlobalReplicaDB();
 		$res = $dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
 			->fields( [
@@ -117,11 +131,11 @@ class DeleteWikis extends Maintenance {
 			->fetchResultSet();
 
 		foreach ( $res as $row ) {
-			$wiki = $row->wiki_dbname;
+			$dbname = $row->wiki_dbname;
 			$dbCluster = $row->wiki_dbcluster;
 
 			if ( $this->hasOption( 'delete' ) ) {
-				$wikiManager = $wikiManagerFactory->newInstance( $wiki );
+				$wikiManager = $this->wikiManagerFactory->newInstance( $dbname );
 				$delete = $wikiManager->delete( force: false );
 
 				if ( $delete ) {
@@ -163,12 +177,11 @@ class DeleteWikis extends Maintenance {
 			'body' => $message,
 		];
 
-		$this->getServiceContainer()->get( 'CreateWikiNotificationsManager' )
-			->sendNotification(
-				data: $notificationData,
-				// No receivers, it will send to configured email
-				receivers: []
-			);
+		$this->notificationsManager->sendNotification(
+			data: $notificationData,
+			// No receivers, it will send to configured email
+			receivers: []
+		);
 
 		$this->notified = true;
 	}

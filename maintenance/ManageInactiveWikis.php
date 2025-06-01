@@ -4,7 +4,15 @@ namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Helpers\RemoteWiki;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use function date;
+use function strtotime;
+use function wfMessage;
+use const DB_PRIMARY;
 
 /**
  * Maintenance script for marking wikis as inactive, closed, and deleted
@@ -13,6 +21,11 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
  * @author Universal Omega
  */
 class ManageInactiveWikis extends Maintenance {
+
+	private CreateWikiDatabaseUtils $databaseUtils;
+	private CreateWikiDataFactory $dataFactory;
+	private CreateWikiNotificationsManager $notificationsManager;
+	private RemoteWikiFactory $remoteWikiFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -23,8 +36,15 @@ class ManageInactiveWikis extends Maintenance {
 		);
 
 		$this->addDescription( 'Script to manage inactive wikis in a wiki farm.' );
-
 		$this->requireExtension( 'CreateWiki' );
+	}
+
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+		$this->dataFactory = $services->get( 'CreateWikiDataFactory' );
+		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
+		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
 	}
 
 	public function execute(): void {
@@ -32,10 +52,8 @@ class ManageInactiveWikis extends Maintenance {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
-
-		$dbr = $databaseUtils->getGlobalReplicaDB();
+		$this->initServices();
+		$dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$wikis = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
@@ -48,7 +66,7 @@ class ManageInactiveWikis extends Maintenance {
 			->fetchFieldValues();
 
 		foreach ( $wikis as $wiki ) {
-			$remoteWiki = $remoteWikiFactory->newInstance( $wiki );
+			$remoteWiki = $this->remoteWikiFactory->newInstance( $wiki );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 
 			$remoteWiki->disableResetDatabaseLists();
@@ -59,14 +77,13 @@ class ManageInactiveWikis extends Maintenance {
 			}
 		}
 
-		$dataFactory = $this->getServiceContainer()->get( 'CreateWikiDataFactory' );
-		$data = $dataFactory->newInstance( $databaseUtils->getCentralWikiID() );
+		$data = $this->dataFactory->newInstance( $this->databaseUtils->getCentralWikiID() );
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
 
 	private function checkLastActivity(
 		string $dbname,
-		RemoteWikiFactory $remoteWiki
+		RemoteWiki $remoteWiki
 	): bool {
 		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['closed'];
@@ -144,7 +161,7 @@ class ManageInactiveWikis extends Maintenance {
 
 	private function handleInactiveWiki(
 		string $dbname,
-		RemoteWikiFactory $remoteWiki,
+		RemoteWiki $remoteWiki,
 		int $closeDays,
 		int $lastActivityTimestamp,
 		bool $canWrite
@@ -175,7 +192,7 @@ class ManageInactiveWikis extends Maintenance {
 
 	private function handleClosedWiki(
 		string $dbname,
-		RemoteWikiFactory $remoteWiki,
+		RemoteWiki $remoteWiki,
 		int $removeDays,
 		int $lastActivityTimestamp,
 		bool $canWrite
@@ -213,8 +230,7 @@ class ManageInactiveWikis extends Maintenance {
 			],
 		];
 
-		$this->getServiceContainer()->get( 'CreateWikiNotificationsManager' )
-			->notifyBureaucrats( $notificationData, $dbname );
+		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
 

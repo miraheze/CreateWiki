@@ -28,7 +28,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function provideFieldExists(): Generator {
+	public static function provideFieldExists(): Generator {
 		yield 'field exists' => [
 			[ 'field1' => [ 'type' => 'text' ] ],
 			'field1',
@@ -55,7 +55,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideReorderSections(): Generator {
+	public static function provideReorderSections(): Generator {
 		yield 'reorder fields by section' => [
 			[
 				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
@@ -125,7 +125,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideAddFieldToBeginning(): Generator {
+	public static function provideAddFieldToBeginning(): Generator {
 		yield 'add to empty form' => [
 			[],
 			'field1',
@@ -158,7 +158,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideAddFieldToEnd(): Generator {
+	public static function provideAddFieldToEnd(): Generator {
 		yield 'add to empty form' => [
 			[],
 			'field1',
@@ -192,7 +192,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideRemoveFieldByKey(): Generator {
+	public static function provideRemoveFieldByKey(): Generator {
 		yield 'remove existing field' => [
 			[ 'field1' => [ 'type' => 'text' ], 'field2' => [ 'type' => 'checkbox' ] ],
 			'field1',
@@ -220,7 +220,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideMoveFieldToSection(): Generator {
+	public static function provideMoveFieldToSection(): Generator {
 		yield 'move existing field' => [
 			[ 'field1' => [ 'type' => 'text', 'section' => 'oldSection' ] ],
 			'field1',
@@ -251,7 +251,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideInsertFieldAfter(): Generator {
+	public static function provideInsertFieldAfter(): Generator {
 		yield 'insert after existing key' => [
 			[ 'field1' => [ 'type' => 'text' ], 'field3' => [ 'type' => 'checkbox' ] ],
 			'field1',
@@ -291,7 +291,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideInsertFieldAtBeginningOfSection(): Generator {
+	public static function provideInsertFieldAtBeginningOfSection(): Generator {
 		yield 'section exists' => [
 			[
 				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
@@ -336,7 +336,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideInsertFieldAtEndOfSection(): Generator {
+	public static function provideInsertFieldAtEndOfSection(): Generator {
 		yield 'section exists' => [
 			[
 				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
@@ -381,7 +381,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideCloneFieldToSection(): Generator {
+	public static function provideCloneFieldToSection(): Generator {
 		yield 'clone existing field' => [
 			[
 				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
@@ -420,7 +420,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideReorderFieldsInSection(): Generator {
+	public static function provideReorderFieldsInSection(): Generator {
 		yield 'reorder fields' => [
 			[
 				'field1' => [ 'type' => 'text', 'section' => 'section1' ],
@@ -468,7 +468,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideUpdateFieldProperties(): Generator {
+	public static function provideUpdateFieldProperties(): Generator {
 		yield 'update existing field' => [
 			[ 'field1' => [ 'type' => 'text', 'label' => 'Field 1' ] ],
 			'field1',
@@ -504,7 +504,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $formDescriptor );
 	}
 
-	public function provideUnsetFieldProperty(): Generator {
+	public static function provideUnsetFieldProperty(): Generator {
 		yield 'unset existing property' => [
 			[
 				'field1' => [ 'type' => 'text', 'label' => 'Field 1' ],
@@ -554,7 +554,7 @@ class RequestWikiFormUtilsTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $result );
 	}
 
-	public function provideGetFieldsInSection(): Generator {
+	public static function provideGetFieldsInSection(): Generator {
 		yield 'fields in section' => [
 			[
 				'field1' => [ 'type' => 'text', 'section' => 'section1' ],

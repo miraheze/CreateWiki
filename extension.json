@@ -208,6 +208,9 @@
 		"MakeGlobalVariablesScript": {
 			"handler": "Main"
 		},
+		"ManageWikiCoreProvider": {
+			"handler": "ManageWiki"
+		},
 		"ParserGetVariableValueSwitch": {
 			"handler": "Main"
 		},
@@ -229,6 +232,16 @@
 				"CreateWikiDatabaseUtils",
 				"CreateWikiDataFactory",
 				"RemoteWikiFactory"
+			]
+		},
+		"ManageWiki": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\ManageWiki",
+			"services": [
+				"CreateWikiConfig",
+				"CreateWikiDatabaseUtils",
+				"CreateWikiDataFactory",
+				"CreateWikiHookRunner",
+				"JobQueueGroupFactory"
 			]
 		},
 		"Notifications": {
@@ -314,7 +327,7 @@
 			"value": ""
 		},
 		"CreateWikiContainers": {
-			"description": "Array. List of local containers to create. Format: <container>: <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MW default containers with most public apart from deleted and temp.",
+			"description": "Array. List of local containers to create. Format: <container> => <public/public-private/private>. public means directory will always be public. public-private is to support public/private and uses isPrivate check. private means directory is private regardless of wiki status. Defaults to MediaWiki default containers with most public apart from deleted and temp.",
 			"value": {
 				"local-public": "public-private",
 				"local-thumb": "public-private",
@@ -324,7 +337,11 @@
 			}
 		},
 		"CreateWikiDatabaseClusters": {
-			"description": "Array. LBFactory clusters which CreateWiki considers active.",
+			"description": "Array. LBFactory clusters which CreateWiki considers active. Format: <display name> => <cluster name from LBFactory>.",
+			"value": []
+		},
+		"CreateWikiDatabaseClustersInactive": {
+			"description": "Array. LBFactory clusters which are not considered active for wikis to be created on. Format: <display name> => <cluster name from LBFactory>.",
 			"value": []
 		},
 		"CreateWikiDatabaseSuffix": {
@@ -346,6 +363,10 @@
 		"CreateWikiEnableRESTAPI": {
 			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
+		},
+		"CreateWikiInactiveExemptReasonOptions": {
+			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
+			"value": []
 		},
 		"CreateWikiNotificationEmail": {
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
@@ -389,7 +410,7 @@
 			}
 		},
 		"CreateWikiSubdomain": {
-			"description": "String. The master part of subdomains, e.g. wiki.example.com, example.com is the master part.",
+			"description": "String. The main part of subdomains, e.g. wiki.example.org, example.org is the main part.",
 			"value": ""
 		},
 		"CreateWikiUseClosedWikis": {

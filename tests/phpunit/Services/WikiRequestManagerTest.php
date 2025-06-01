@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests\Services;
 use MediaWiki\MainConfigNames;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -26,8 +27,9 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		$dbw = $databaseUtils->getCentralWikiPrimaryDB();
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 
+		$dbw = $databaseUtils->getCentralWikiPrimaryDB();
 		$dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_requests' )
 			->ignore()
@@ -52,8 +54,8 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
 	private function getWikiRequestManager( int $id ): WikiRequestManager {
 		$manager = $this->getServiceContainer()->getService( 'WikiRequestManager' );
+		'@phan-var WikiRequestManager $manager';
 		$manager->loadFromID( $id );
-
 		return $manager;
 	}
 
@@ -90,6 +92,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testCreateNewRequestAndLog(): void {
 		$manager = $this->getServiceContainer()->getService( 'WikiRequestManager' );
+		'@phan-var WikiRequestManager $manager';
 		$manager->createNewRequestAndLog(
 			data: [
 				'subdomain' => 'test2',

@@ -12,6 +12,8 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use function htmlspecialchars;
+use const ENT_QUOTES;
 
 class RequestWikiQueuePager extends TablePager {
 
@@ -80,8 +82,8 @@ class RequestWikiQueuePager extends TablePager {
 				break;
 			case 'cw_language':
 				$formatted = $this->languageNameUtils->getLanguageName(
-					$row->cw_language,
-					$this->getLanguage()->getCode()
+					code: $row->cw_language,
+					inLanguage: $this->getLanguage()->getCode()
 				);
 				break;
 			default:

@@ -21,6 +21,16 @@ use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use function array_flip;
+use function array_intersect_key;
+use function array_keys;
+use function array_rand;
+use function json_encode;
+use function min;
+use function wfTimestamp;
+use const DB_PRIMARY;
+use const MW_INSTALL_PATH;
+use const TS_UNIX;
 
 class WikiManagerFactory {
 
@@ -99,7 +109,7 @@ class WikiManagerFactory {
 				}
 
 				// Pick the cluster with the least number of databases
-				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
+				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ), true );
 				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
 
 				// Make sure we set the new database in sectionsByDB early
@@ -179,6 +189,13 @@ class WikiManagerFactory {
 
 		$this->doCreateDatabase();
 
+		$extraFields = [];
+		$this->hookRunner->onCreateWikiCreationExtraFields( $extraFields );
+
+		// Filter $extra to only include keys present in $extraFields
+		$filteredData = array_intersect_key( $extra, array_flip( $extraFields ) );
+		$extraData = json_encode( $filteredData ) ?: '[]';
+
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
@@ -189,6 +206,7 @@ class WikiManagerFactory {
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category,
+				'wiki_extra' => $extraData,
 			] )
 			->caller( __METHOD__ )
 			->execute();
@@ -265,34 +283,27 @@ class WikiManagerFactory {
 			$this->cwdb
 		);
 
-		$domain = $this->options->get( ConfigNames::Subdomain );
-		$subdomain = substr(
-			$this->dbname, 0,
-			-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-		);
-
-		$notificationData = [
-			'type' => 'wiki-creation',
-			'extra' => [
-				'wiki-url' => 'https://' . $subdomain . '.' . $domain,
-				'sitename' => $sitename,
-			],
-			'subject' => $this->messageLocalizer->msg(
-				'createwiki-email-subject', $sitename
-			)->inContentLanguage()->escaped(),
-			'body' => [
-				'html' => $this->messageLocalizer->msg(
-					'createwiki-email-body'
-				)->inContentLanguage()->parse(),
-				'text' => $this->messageLocalizer->msg(
-					'createwiki-email-body'
-				)->inContentLanguage()->text(),
-			],
-		];
-
-		$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
-
 		if ( $actor !== '' ) {
+			$notificationData = [
+				'type' => 'wiki-creation',
+				'extra' => [
+					'wiki-url' => $this->validator->getValidUrl( $this->dbname ),
+					'sitename' => $sitename,
+				],
+				'subject' => $this->messageLocalizer->msg(
+					'createwiki-email-subject', $sitename
+				)->inContentLanguage()->escaped(),
+				'body' => [
+					'html' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->parse(),
+					'text' => $this->messageLocalizer->msg(
+						'createwiki-email-body'
+					)->inContentLanguage()->text(),
+				],
+			];
+
+			$this->notificationsManager->sendNotification( $notificationData, [ $requester ] );
 			$this->logEntry( 'farmer', 'createwiki', $actor, $reason, [ '4::wiki' => $this->dbname ] );
 		}
 	}
@@ -407,13 +418,13 @@ class WikiManagerFactory {
 	}
 
 	private function compileTables(): void {
-		$cTables = [];
+		$tables = [];
 
-		$this->hookRunner->onCreateWikiTables( $cTables );
+		$this->hookRunner->onCreateWikiTables( $tables );
 
-		$cTables['cw_wikis'] = 'wiki_dbname';
+		$tables['cw_wikis'] = 'wiki_dbname';
 
-		$this->tables = $cTables;
+		$this->tables = $tables;
 	}
 
 	private function recache(): void {

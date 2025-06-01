@@ -4,6 +4,8 @@ namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
 use Wikimedia\Rdbms\SelectQueryBuilder;
+use function max;
+use const DB_REPLICA;
 
 class CheckLastWikiActivity extends Maintenance {
 
@@ -15,7 +17,7 @@ class CheckLastWikiActivity extends Maintenance {
 	}
 
 	public function execute(): void {
-		$this->output( (string)$this->getTimestamp() );
+		$this->output( "{$this->getTimestamp()}\n" );
 	}
 
 	public function getTimestamp(): int {

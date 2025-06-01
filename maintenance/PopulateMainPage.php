@@ -9,6 +9,8 @@ use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
+use function wfMessage;
+use const EDIT_SUPPRESS_RC;
 
 class PopulateMainPage extends Maintenance {
 
