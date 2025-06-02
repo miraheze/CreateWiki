@@ -294,7 +294,7 @@ class WikiInitialize {
 					$this->config->settings['wgGroupsRemoveFromSelf'][$this->dbname][$group][] = $name;
 				}
 
-				if ( $perm['autopromote'] !== null ) {
+				if ( (array)$perm['autopromote'] !== [] ) {
 					$onceId = array_search( 'once', $perm['autopromote'], true );
 
 					if ( !is_bool( $onceId ) ) {
