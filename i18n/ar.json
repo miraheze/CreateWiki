@@ -59,6 +59,8 @@
 	"notification-header-request-declined": "تم رفض طلبك للسبب التالي:",
 	"notification-header-wiki-creation": "تم إنشاء الويكي الخاص بك <strong>$1</strong>!",
 	"requestwiki": "طلب ويكي",
+	"requestwiki-ai-error": "لم يُقيّم هذا الطلب تلقائيًا. يُرجى انتظار المراجعة البشرية.",
+	"requestwiki-ai-error-reason": "تعذّر تقييم هذا الطلب تلقائيًا، وسجل السبب. يُرجى انتظار المراجعة البشرية.",
 	"requestwiki-edit-success": "لقد تم حفظ التغييرات التي أجريتها على طلب الويكي هذا بنجاح.",
 	"requestwiki-error-invalidcomment": "يحتوي طلب الويكي الخاص بك على حرف غير صالح. يرجى تصحيح ذلك والمحاولة مرة أخرى.",
 	"requestwiki-error-patient": "لقد قمت بالفعل بطلب ويكي! يرجى التحلي بالصبر، حيث يتم مراجعة طلبك. إذا كنت بحاجة إلى طلب ويكي آخر، فحاول مرة أخرى لاحقًا.",
