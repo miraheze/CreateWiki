@@ -79,7 +79,7 @@ class Main implements
 				return include $path;
 			}, $cachePath );
 
-			if ( $cacheArray !== false ) {
+			if ( $cacheArray !== false && isset( $cacheArray['states']['private'] ) ) {
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
 				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbname );
