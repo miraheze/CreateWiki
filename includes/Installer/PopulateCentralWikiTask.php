@@ -5,8 +5,6 @@ namespace Miraheze\CreateWiki\Installer;
 use MediaWiki\Installer\Task\Task;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Status\Status;
-use Miraheze\CreateWiki\ConfigNames;
-use function array_key_first;
 
 class PopulateCentralWikiTask extends Task {
 
@@ -44,9 +42,9 @@ class PopulateCentralWikiTask extends Task {
 			->insertInto( 'cw_wikis' )
 			->row( [
 				'wiki_dbname' => $centralWiki,
-				'wiki_dbcluster' => $this->getDefaultCluster(),
-				'wiki_sitename' => 'Central Wiki',
-				'wiki_language' => $this->getConfigVar( MainConfigNames::LanguageCode ) ?? 'en',
+				'wiki_dbcluster' => null,
+				'wiki_sitename' => $this->getConfigVar( MainConfigNames::Sitename ),
+				'wiki_language' => $this->getConfigVar( MainConfigNames::LanguageCode ),
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
 				'wiki_category' => 'uncategorised',
@@ -55,10 +53,5 @@ class PopulateCentralWikiTask extends Task {
 			->execute();
 
 		return Status::newGood();
-	}
-
-	private function getDefaultCluster(): ?string {
-		$clusters = $this->getConfigVar( ConfigNames::DatabaseClusters );
-		return (string)array_key_first( $clusters ?? [] ) ?: null;
 	}
 }
