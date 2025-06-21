@@ -46,7 +46,7 @@ class PopulateCentralWikiTask extends Task {
 				'wiki_dbname' => $centralWiki,
 				'wiki_dbcluster' => $this->getDefaultCluster(),
 				'wiki_sitename' => 'Central Wiki',
-				'wiki_language' => $this->getConfigVar( MainConfigNames::LanguageCode ),
+				'wiki_language' => $this->getConfigVar( MainConfigNames::LanguageCode ) ?? 'en',
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
 				'wiki_category' => 'uncategorised',
@@ -59,6 +59,6 @@ class PopulateCentralWikiTask extends Task {
 
 	private function getDefaultCluster(): ?string {
 		$clusters = $this->getConfigVar( ConfigNames::DatabaseClusters );
-		return (string)array_key_first( $clusters ) ?: null;
+		return (string)array_key_first( $clusters ?? [] ) ?: null;
 	}
 }
