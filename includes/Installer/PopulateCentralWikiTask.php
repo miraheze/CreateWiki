@@ -6,12 +6,9 @@ use MediaWiki\Installer\Task\Task;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Status\Status;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use function array_key_first;
 
 class PopulateCentralWikiTask extends Task {
-
-	private CreateWikiDatabaseUtils $databaseUtils;
 
 	public function getName(): string {
 		return 'createwiki-populate-central-wiki';
@@ -25,15 +22,10 @@ class PopulateCentralWikiTask extends Task {
 		return [ 'extension-tables', 'services' ];
 	}
 
-	private function initServices(): void {
-		$services = $this->getServices();
-		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
-	}
-
 	public function execute(): Status {
-		$this->initServices();
-		$centralWiki = $this->databaseUtils->getCentralWikiID();
-		$dbw = $this->databaseUtils->getGlobalPrimaryDB();
+		$connectionProvider = $this->getServices()->getConnectionProvider();
+		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
+		$centralWiki = $dbw->getDomainID();
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
