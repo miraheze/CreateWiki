@@ -435,7 +435,7 @@
 		},
 		"CreateWikiUsePrivateWikis": {
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
-			"value": false
+			"value": true
 		},
 		"RequestWikiConfirmAgreement": {
 			"description": "Boolean. Whether to require users to confirm they will abide by farm policies.",
