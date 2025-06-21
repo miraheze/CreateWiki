@@ -7,7 +7,6 @@ use MediaWiki\Config\ConfigException;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -64,32 +63,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
-	}
-
-	public function addDBDataOnce(): void {
-		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
-		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
-		$dbw = $databaseUtils->getGlobalPrimaryDB();
-		$dbw->newInsertQueryBuilder()
-			->insertInto( 'cw_wikis' )
-			->ignore()
-			->row( [
-				'wiki_dbname' => 'wikidb',
-				'wiki_dbcluster' => 'c1',
-				'wiki_sitename' => 'TestWiki',
-				'wiki_language' => 'en',
-				'wiki_private' => 0,
-				'wiki_creation' => $dbw->timestamp(),
-				'wiki_category' => 'uncategorised',
-				'wiki_closed' => 0,
-				'wiki_deleted' => 0,
-				'wiki_locked' => 0,
-				'wiki_inactive' => 0,
-				'wiki_inactive_exempt' => 0,
-				'wiki_url' => 'http://127.0.0.1:9412',
-			] )
-			->caller( __METHOD__ )
-			->execute();
 	}
 
 	public function getFactoryService(): WikiManagerFactory {
