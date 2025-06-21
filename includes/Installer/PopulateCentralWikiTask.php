@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Installer;
 
-use MediaWiki\Installer\Task\Task,
+use MediaWiki\Installer\Task\Task;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Status\Status;
 use Miraheze\CreateWiki\ConfigNames;
