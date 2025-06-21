@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
-use Miraheze\CreateWiki\Maintenance\PopulateCentralWiki;
 
 class Installer implements LoadExtensionSchemaUpdatesHook {
 
@@ -134,7 +133,5 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql",
 			true,
 		] );
-
-		$updater->addPostDatabaseUpdateMaintenance( PopulateCentralWiki::class );
 	}
 }
