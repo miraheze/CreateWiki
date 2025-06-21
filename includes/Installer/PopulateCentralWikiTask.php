@@ -24,8 +24,9 @@ class PopulateCentralWikiTask extends Task {
 
 	public function execute(): Status {
 		$connectionProvider = $this->getServices()->getConnectionProvider();
-		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki-central' );
-		$centralWiki = $dbw->getDomainID();
+		$dbw = $connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
+		$dbr = $connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
+		$centralWiki = $dbr->getDomainID();
 
 		$exists = $dbw->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
