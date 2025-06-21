@@ -32,7 +32,7 @@ class PopulateCentralWikiTask extends Task {
 
 	public function execute(): Status {
 		$this->initServices();
-		$centralWiki =  $this->databaseUtils->getCentralWikiID();
+		$centralWiki = $this->databaseUtils->getCentralWikiID();
 		$dbw = $this->databaseUtils->getGlobalPrimaryDB();
 
 		$exists = $dbw->newSelectQueryBuilder()
