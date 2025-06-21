@@ -6,6 +6,7 @@ use MediaWiki\Installer\Task\Task;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Status\Status;
 
+/** @codeCoverageIgnore Tested by installing MediaWiki. */
 class PopulateCentralWikiTask extends Task {
 
 	public function getName(): string {
