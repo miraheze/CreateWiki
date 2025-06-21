@@ -18,8 +18,8 @@ jobs:
             php-docker: 82
             composer-test: true
             coverage: true
-            experimental-phan: false
-            experimental-phpunit: false
+            experimental-phan: true
+            experimental-phpunit: true
 
           # Latest MediaWiki beta - PHP 8.2
           - mw: 'REL1_44'
