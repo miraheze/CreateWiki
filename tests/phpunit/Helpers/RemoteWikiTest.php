@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Tests\Helpers;
 
+use MediaWiki\Installer\Task\ITaskContext;
 use MediaWiki\Installer\Task\TaskFactory;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
@@ -50,6 +51,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 	public function addDBDataOnce(): void {
 		$services = $this->getServiceContainer();
+		$context = $this->createMock( ITaskContext::class );
 		$taskFactory = new TaskFactory( $services->getObjectFactory(), $context );
 		$task = $taskFactory->create( [ 'class' => PopulateCentralWikiTask::class ] );
 		$task->execute();
