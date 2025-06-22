@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\Services;
 
 use Exception;
-use FatalError;
-use ManualLogEntry;
 use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Exception\FatalError;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;

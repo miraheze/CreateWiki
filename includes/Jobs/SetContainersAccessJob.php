@@ -2,10 +2,10 @@
 
 namespace Miraheze\CreateWiki\Jobs;
 
-use Job;
 use MediaWiki\Config\Config;
+use MediaWiki\FileRepo\RepoGroup;
+use MediaWiki\JobQueue\Job;
 use Miraheze\CreateWiki\ConfigNames;
-use RepoGroup;
 
 class SetContainersAccessJob extends Job {
 

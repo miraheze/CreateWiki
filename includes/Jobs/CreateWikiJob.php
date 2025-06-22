@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\Jobs;
 
 use Exception;
-use Job;
+use MediaWiki\Exception\MWExceptionHandler;
+use MediaWiki\JobQueue\Job;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use MWExceptionHandler;
 
 class CreateWikiJob extends Job {
 

@@ -33,11 +33,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		parent::setUp();
 		$this->remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
-		$sqlPath = '/maintenance/tables-generated.sql';
-		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
-			$sqlPath = '/sql/mysql/tables-generated.sql';
-		}
-
 		$this->overrideConfigValues( [
 			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::EnableManageInactiveWikis => true,
@@ -47,7 +42,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'removed' => 7,
 			],
 			ConfigNames::SQLFiles => [
-				MW_INSTALL_PATH . $sqlPath,
+				MW_INSTALL_PATH . '/sql/mysql/tables-generated.sql',
 			],
 			ConfigNames::UseClosedWikis => true,
 			ConfigNames::UseInactiveWikis => true,
@@ -77,7 +72,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->commit();
 	}
 
-	public function addDBDataOnce(): void {
+	public function addDBData(): void {
 		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
 		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
 		$dbw = $databaseUtils->getGlobalPrimaryDB();

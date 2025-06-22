@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki\Tests\Services;
 
-use FatalError;
 use MediaWiki\Config\ConfigException;
+use MediaWiki\Exception\FatalError;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
@@ -34,16 +34,11 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$sqlPath = '/maintenance/tables-generated.sql';
-		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
-			$sqlPath = '/sql/mysql/tables-generated.sql';
-		}
-
 		$this->overrideConfigValues( [
 			ConfigNames::DatabaseClusters => [ 'c1', 'c2' ],
 			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::SQLFiles => [
-				MW_INSTALL_PATH . $sqlPath,
+				MW_INSTALL_PATH . '/sql/mysql/tables-generated.sql',
 			],
 		] );
 

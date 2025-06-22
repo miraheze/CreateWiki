@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\Logger\LoggerFactory;
-use StringUtils;
+use Wikimedia\StringUtils\StringUtils;
 use function array_filter;
 use function array_map;
 use function explode;
