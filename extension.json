@@ -478,6 +478,12 @@
 		"virtual-createwiki",
 		"virtual-createwiki-central"
 	],
+	"InstallerTasks": [
+		{
+			"class": "Miraheze\\CreateWiki\\Installer\\PopulateCentralWikiTask",
+			"profile": "installer"
+		}
+	],
 	"load_composer_autoloader": true,
 	"manifest_version": 2
 }
