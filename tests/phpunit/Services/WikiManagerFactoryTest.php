@@ -45,6 +45,8 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			ConfigNames::SQLFiles => [
 				MW_INSTALL_PATH . $sqlPath,
 			],
+			MainConfigNames::DBprefix => '',
+			MainConfigNames::DBname => 'wikidb',
 		] );
 
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
