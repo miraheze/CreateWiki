@@ -2,11 +2,13 @@
 
 namespace Miraheze\CreateWiki\Tests\Helpers;
 
+use MediaWiki\Installer\Task\TaskFactory;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
+use Miraheze\CreateWiki\Installer\PopulateCentralWikiTask;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\TestingAccessWrapper;
@@ -44,6 +46,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
+	}
+
+	public function addDBDataOnce(): void {
+		$services = $this->getServiceContainer();
+		$taskFactory = new TaskFactory( $services->getObjectFactory(), $context );
+		$task = $taskFactory->create( [ 'class' => PopulateCentralWikiTask::class ] );
+		$task->execute();
 	}
 
 	public function getFactoryService(): RemoteWikiFactory {
