@@ -55,7 +55,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 			->insertInto( 'cw_wikis' )
 			->ignore()
 			->row( [
-				'wiki_dbname' => 'wikidb',
+				'wiki_dbname' => 'wikidb-unittest_',
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
