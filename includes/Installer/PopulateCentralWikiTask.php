@@ -5,9 +5,6 @@ namespace Miraheze\CreateWiki\Installer;
 use MediaWiki\Installer\Task\Task;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Status\Status;
-use Wikimedia\Rdbms\ChangedTablesTracker;
-use Wikimedia\Rdbms\Platform\SQLPlatform;
-use Wikimedia\Rdbms\Query;
 
 /** @codeCoverageIgnore Tested by installing MediaWiki. */
 class PopulateCentralWikiTask extends Task {
@@ -55,15 +52,6 @@ class PopulateCentralWikiTask extends Task {
 			] )
 			->caller( __METHOD__ )
 			->execute();
-
-		// Make sure tests know we populated this
-		ChangedTablesTracker::recordQuery(
-			$dbw,
-			new Query(
-				'INSERT', SQLPlatform::QUERY_CHANGE_ROWS,
-				'INSERT', 'cw_wikis'
-			)
-		);
 
 		return Status::newGood();
 	}
