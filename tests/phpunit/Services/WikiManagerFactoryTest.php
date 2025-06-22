@@ -4,9 +4,12 @@ namespace Miraheze\CreateWiki\Tests\Services;
 
 use FatalError;
 use MediaWiki\Config\ConfigException;
+use MediaWiki\Installer\Task\ITaskContext;
+use MediaWiki\Installer\Task\TaskFactory;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Installer\PopulateCentralWikiTask;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -63,6 +66,14 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
+	}
+
+	public function addDBDataOnce(): void {
+		$services = $this->getServiceContainer();
+		$context = $this->createMock( ITaskContext::class );
+		$taskFactory = new TaskFactory( $services->getObjectFactory(), $context );
+		$task = $taskFactory->create( [ 'class' => PopulateCentralWikiTask::class ] );
+		$task->execute();
 	}
 
 	public function getFactoryService(): WikiManagerFactory {
