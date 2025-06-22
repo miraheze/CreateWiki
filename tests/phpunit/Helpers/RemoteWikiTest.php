@@ -52,6 +52,8 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	public function addDBDataOnce(): void {
 		$services = $this->getServiceContainer();
 		$context = $this->createMock( ITaskContext::class );
+		$context->method( 'getProvision' )->with( 'services' )->willReturn( $services );
+		'@phan-var ITaskContext $context';
 		$taskFactory = new TaskFactory( $services->getObjectFactory(), $context );
 		$task = $taskFactory->create( [ 'class' => PopulateCentralWikiTask::class ] );
 		$task->execute();
