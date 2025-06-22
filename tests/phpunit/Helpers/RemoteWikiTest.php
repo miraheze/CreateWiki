@@ -2,14 +2,12 @@
 
 namespace Miraheze\CreateWiki\Tests\Helpers;
 
-use MediaWiki\Installer\Task\ITaskContext;
-use MediaWiki\Installer\Task\TaskFactory;
 use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
-use Miraheze\CreateWiki\Installer\PopulateCentralWikiTask;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\TestingAccessWrapper;
@@ -50,13 +48,29 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function addDBDataOnce(): void {
-		$services = $this->getServiceContainer();
-		$context = $this->createMock( ITaskContext::class );
-		$context->method( 'getProvision' )->with( 'services' )->willReturn( $services );
-		'@phan-var ITaskContext $context';
-		$taskFactory = new TaskFactory( $services->getObjectFactory(), $context );
-		$task = $taskFactory->create( [ 'class' => PopulateCentralWikiTask::class ] );
-		$task->execute();
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->ignore()
+			->row( [
+				'wiki_dbname' => 'wikidb',
+				'wiki_dbcluster' => 'c1',
+				'wiki_sitename' => 'TestWiki',
+				'wiki_language' => 'en',
+				'wiki_private' => 0,
+				'wiki_creation' => $dbw->timestamp(),
+				'wiki_category' => 'uncategorised',
+				'wiki_closed' => 0,
+				'wiki_deleted' => 0,
+				'wiki_locked' => 0,
+				'wiki_inactive' => 0,
+				'wiki_inactive_exempt' => 0,
+				'wiki_url' => 'http://127.0.0.1:9412',
+			] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 
 	public function getFactoryService(): RemoteWikiFactory {
