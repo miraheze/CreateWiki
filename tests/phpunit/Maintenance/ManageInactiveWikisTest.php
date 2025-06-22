@@ -14,9 +14,7 @@ use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 use function date;
 use function strtotime;
-use function version_compare;
 use const MW_INSTALL_PATH;
-use const MW_VERSION;
 use const NS_MAIN;
 
 /**

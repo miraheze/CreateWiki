@@ -12,14 +12,12 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Wikimedia\Rdbms\LBFactoryMulti;
 use function array_merge;
-use function version_compare;
 use function wfLoadConfiguration;
 use function wfMessage;
 use function wfTimestamp;
 use const DBO_DEBUG;
 use const DBO_DEFAULT;
 use const MW_INSTALL_PATH;
-use const MW_VERSION;
 use const TS_MW;
 use const TS_UNIX;
 
