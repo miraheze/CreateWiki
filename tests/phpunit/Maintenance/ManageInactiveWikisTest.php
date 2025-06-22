@@ -77,6 +77,26 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->commit();
 	}
 
+	public function addDBDataOnce(): void {
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->ignore()
+			->row( [
+				'wiki_dbname' => 'wikidb-unittest_',
+				'wiki_dbcluster' => 'c1',
+				'wiki_sitename' => 'TestWiki',
+				'wiki_language' => 'en',
+				'wiki_private' => 0,
+				'wiki_creation' => $dbw->timestamp(),
+				'wiki_category' => 'uncategorised',
+			] )
+			->caller( __METHOD__ )
+			->execute();
+	}
+
 	protected function getMaintenanceClass(): string {
 		return ManageInactiveWikis::class;
 	}
