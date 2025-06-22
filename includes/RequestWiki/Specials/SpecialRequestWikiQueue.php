@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
@@ -18,6 +19,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly UserFactory $userFactory,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly WikiRequestViewer $wikiRequestViewer
 	) {
@@ -108,6 +110,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 			$this->languageNameUtils,
 			$this->getLinkRenderer(),
 			$this->userFactory,
+			$this->userLinkRenderer,
 			$this->wikiRequestManager,
 			$dbname,
 			$language,

@@ -11,6 +11,7 @@ use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
+use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
@@ -45,6 +46,7 @@ class WikiRequestViewer {
 		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly ServiceOptions $options
 	) {
@@ -93,9 +95,9 @@ class WikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => Linker::userLink(
-					$this->wikiRequestManager->getRequester()->getId(),
-					$this->wikiRequestManager->getRequester()->getName()
+				'default' => $this->userLinkRenderer->userLink(
+					$this->wikiRequestManager->getRequester(),
+					$this->context
 				) . Linker::userToolLinks(
 					$this->wikiRequestManager->getRequester()->getId(),
 					$this->wikiRequestManager->getRequester()->getName()

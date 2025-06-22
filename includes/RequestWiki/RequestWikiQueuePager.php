@@ -4,8 +4,8 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Languages\LanguageNameUtils;
-use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Pager\IndexPager;
 use MediaWiki\Pager\TablePager;
 use MediaWiki\SpecialPage\SpecialPage;
@@ -26,6 +26,7 @@ class RequestWikiQueuePager extends TablePager {
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly UserFactory $userFactory,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly string $dbname,
 		private readonly string $language,
@@ -66,9 +67,9 @@ class RequestWikiQueuePager extends TablePager {
 				$formatted = $this->escape( $row->cw_sitename ?? '' );
 				break;
 			case 'cw_user':
-				$formatted = Linker::userLink(
-					$this->userFactory->newFromId( $row->cw_user )->getId(),
-					$this->userFactory->newFromId( $row->cw_user )->getName()
+				$formatted = $this->userLinkRenderer->userLink(
+					$this->userFactory->newFromId( $row->cw_user ),
+					$this->getContext()
 				);
 				break;
 			case 'cw_url':
