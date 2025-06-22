@@ -62,12 +62,6 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
 				'wiki_category' => 'uncategorised',
-				'wiki_closed' => 0,
-				'wiki_deleted' => 0,
-				'wiki_locked' => 0,
-				'wiki_inactive' => 0,
-				'wiki_inactive_exempt' => 0,
-				'wiki_url' => 'http://127.0.0.1:9412',
 			] )
 			->caller( __METHOD__ )
 			->execute();
