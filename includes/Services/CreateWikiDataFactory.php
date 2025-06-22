@@ -209,13 +209,6 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			if ( $this->databaseUtils->isRemoteWikiCentral( $this->dbname ) ) {
-				// Don't throw an exception if we have not yet populated the
-				// central wiki, so that the PopulateCentralWiki script can
-				// successfully populate it.
-				return;
-			}
-
 			throw new MissingWikiError( $this->dbname );
 		}
 
