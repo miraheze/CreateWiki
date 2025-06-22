@@ -45,8 +45,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			ConfigNames::SQLFiles => [
 				MW_INSTALL_PATH . $sqlPath,
 			],
-			MainConfigNames::DBprefix => '',
-			MainConfigNames::DBname => 'wikidb',
 		] );
 
 		$db = $this->getServiceContainer()->getDatabaseFactory()->create( 'mysql', [
@@ -76,7 +74,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			->insertInto( 'cw_wikis' )
 			->ignore()
 			->row( [
-				'wiki_dbname' => 'wikidb',
+				'wiki_dbname' => 'wikidb-unittest_',
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
