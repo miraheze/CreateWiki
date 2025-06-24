@@ -34,6 +34,6 @@ class ListDatabasesTest extends MaintenanceBaseTestCase {
 		$dbname = WikiMap::getCurrentWikiId();
 
 		$this->maintenance->execute();
-		$this->expectOutputRegex( "/$dbname?$/" );
+		$this->expectOutputRegex( "/$dbname$/" );
 	}
 }
