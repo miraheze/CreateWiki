@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests\Services;
 use MediaWiki\Config\ConfigException;
 use MediaWiki\Exception\FatalError;
 use MediaWiki\MainConfigNames;
+use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
@@ -67,7 +68,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			->insertInto( 'cw_wikis' )
 			->ignore()
 			->row( [
-				'wiki_dbname' => 'wikidb-unittest_',
+				'wiki_dbname' => WikiMap::getCurrentWikiId(),
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
@@ -113,7 +114,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
 		$this->assertFalse( $factory->exists() );
 
-		$factory = $this->getFactoryService()->newInstance( 'wikidb-unittest_' );
+		$factory = $this->getFactoryService()->newInstance( WikiMap::getCurrentWikiId() );
 		$this->assertInstanceOf( WikiManagerFactory::class, $factory );
 		$this->assertTrue( $factory->exists() );
 	}

@@ -78,7 +78,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			->insertInto( 'cw_wikis' )
 			->ignore()
 			->row( [
-				'wiki_dbname' => 'wikidb-unittest_',
+				'wiki_dbname' => WikiMap::getCurrentWikiId(),
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
