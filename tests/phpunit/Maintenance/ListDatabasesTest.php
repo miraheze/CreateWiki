@@ -9,6 +9,7 @@ use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group CreateWiki
+ * @group Database
  * @group medium
  * @coversDefaultClass \Miraheze\CreateWiki\Maintenance\ListDatabases
  */
