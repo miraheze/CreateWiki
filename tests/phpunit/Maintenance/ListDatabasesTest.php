@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests\Maintenance;
 
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
+use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\Maintenance\ListDatabases;
 use Wikimedia\TestingAccessWrapper;
 
@@ -30,7 +31,9 @@ class ListDatabasesTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 */
 	public function testExecute(): void {
+		$dbname = WikiMap::getCurrentWikiId();
+
 		$this->maintenance->execute();
-		$this->expectOutputRegex( '/wikidb(-unittest_)?$/' );
+		$this->expectOutputRegex( "/$dbname?$/" );
 	}
 }
