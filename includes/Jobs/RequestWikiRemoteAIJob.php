@@ -68,17 +68,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Loaded request {id} for AI approval.',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( !$this->canAutoApprove() ) {
 			$this->logger->debug(
 				'Wiki request {id} was not auto-evaluated! Request matched the denylist.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return true;
@@ -87,9 +83,7 @@ class RequestWikiRemoteAIJob extends Job {
 		// Initiate OpenAI query for decision
 		$this->logger->debug(
 			'Querying OpenAI for decision on wiki request {id}...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		$apiResponse = $this->queryOpenAI(
@@ -363,13 +357,11 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$threadId = $threadData['id'] ?? null;
 
-			$this->logger->debug( 'Stage 1 for AI decision: Created thread.' );
-
 			$this->logger->debug(
 				'OpenAI returned for stage 1 of {id}: {threadData}',
 				[
 					'id' => $this->id,
-					'comment' => json_encode( $threadData ),
+					'threadData' => json_encode( $threadData ),
 				]
 			);
 
@@ -387,14 +379,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$runId = $runData['id'] ?? null;
 
 			$this->logger->debug(
-				'Stage 2 for AI decision of {id}: Message ran.',
-				[
-					'id' => $this->id,
-				]
-			);
-
-			$this->logger->debug(
-				'OpenAI returned the following data for stage 2 of {id}: {runData}',
+				'AI stage 2: Thread created, message ran for request #{id}. Data returned: {runData}',
 				[
 					'id' => $this->id,
 					'runData' => json_encode( $runData ),
@@ -402,25 +387,28 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 
 			if ( !$runId ) {
-				$this->logger->error( 'OpenAI did not return a runId!' );
+				$this->logger->error(
+					'OpenAI did not return a runId for request #{id}! AI execution aborted.',
+					[ 'id' => $this->id ]
+				);
 				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
 				return $runData;
 			}
 
 			// Step 3: Poll the status of the run
 			$status = 'running';
-			$this->logger->debug( 'Stage 3 for AI decision: Polling status...' );
+			$this->logger->debug( 'AI stage 3: Polling status...' );
 
 			while ( $status === 'running' ) {
-				sleep( 5 );
+				$this->logger->debug( 'AI stage 3: Sleeping for 5 seconds...' );
 
-				$this->logger->debug( 'Sleeping for 5 seconds...' );
+				sleep( 5 );
 
 				$statusData = $this->createRequest( '/threads/' . $threadId . '/runs/' . $runId, 'GET', [] );
 				$status = $statusData['status'] ?? 'failed';
 
 				$this->logger->debug(
-					'Stage 2 for AI decision of {id}: Retrieved run status for {runId}',
+					'AI stage 3 for request #{id}: Retrieved run status for {runId}',
 					[
 						'id' => $this->id,
 						'runId' => $runId,
@@ -428,7 +416,7 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 
 				$this->logger->debug(
-					'OpenAI returned the following data for stage 3 of {id}: {statusData}',
+					'AI stage 3: OpenAI returned the following data request #{id}: {statusData}',
 					[
 						'id' => $this->id,
 						'statusData' => json_encode( $statusData ),
@@ -439,7 +427,7 @@ class RequestWikiRemoteAIJob extends Job {
 					$status = 'running';
 				} elseif ( $status === 'failed' ) {
 					$this->logger->error(
-						'Run {runId} failed for {id}! OpenAI returned {statusData}',
+						'AI stage 3: Run {runId} failed for request #{id}! Data returned: {statusData}',
 						[
 							'id' => $this->id,
 							'runId' => $runId,
@@ -457,7 +445,7 @@ class RequestWikiRemoteAIJob extends Job {
 			$messagesData = $this->createRequest( '/threads/' . $threadId . '/messages', 'GET', [] );
 
 			$this->logger->debug(
-				'Stage 4 for AI decision of {id}: Queried for messages in thread {threadId}.',
+				'AI stage 4 for request #{id}: Queried for messages in thread {threadId}.',
 				[
 					'id' => $this->id,
 					'threadId' => $threadId,
@@ -465,12 +453,26 @@ class RequestWikiRemoteAIJob extends Job {
 			);
 
 			$this->logger->debug(
-				'OpenAI returned the following data for stage 4 of {id}: {messagesData}',
+				'AI stage 4 for request #{id}. Data returned: {messagesData}',
 				[
 					'id' => $this->id,
 					'messagesData' => json_encode( $messagesData ),
 				]
 			);
+
+			if ( !( $messagesData['data'][0]['content'][0]['text']['value'] ?? '' ) ) {
+				$this->logger->error(
+					'AI stage 4: Message response not received for #{runId}! Data returned: {messagesData}',
+					[
+						'id' => $this->id,
+						'messagesData' => json_encode( $messagesData ),
+					]
+				);
+
+				$this->setLastError( 'Stage 4: Run ' . $this->id . ' failed! Message data missing.' );
+
+				return $messagesData;
+			}
 
 			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
 			return (array)json_decode( $finalResponseContent, true );
@@ -543,17 +545,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Checking wiki request {id} against the auto approval denylist filter...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( preg_match( $filter, strtolower( $this->wikiRequestManager->getReason() ) ) ) {
 			$this->logger->debug(
 				'Wiki request {id} matched against the auto approval denylist filter! A manual review is required.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return false;
@@ -561,9 +559,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Wiki request {id} passed the auto approval filter review!',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		return true;
