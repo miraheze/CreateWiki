@@ -37,7 +37,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected function wrapFieldSetSection( $legend, $section, $attributes, $isRoot ) {
 		$layout = parent::wrapFieldSetSection( $legend, $section, $attributes, $isRoot );
 
-		$layout->addClasses( [ 'createwiki-fieldset-wrapper' ] );
+		$layout->addClasses( [ 'ext-createwiki-fieldset-wrapper' ] );
 		$layout->removeClasses( [ 'oo-ui-panelLayout-framed' ] );
 
 		return $layout;
@@ -72,7 +72,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				'classes' => [ 'mw-htmlform-autoinfuse-lazy' ],
 				'label' => $label,
 				'content' => new FieldsetLayout( [
-					'classes' => [ 'createwiki-section-fieldset' ],
+					'classes' => [ 'ext-createwiki-section-fieldset' ],
 					'id' => "mw-section-$key",
 					'label' => $label,
 					'items' => [
@@ -90,7 +90,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 			'infusable' => true,
 			'expanded' => false,
 			'autoFocus' => false,
-			'classes' => [ 'createwiki-tabs' ],
+			'classes' => [ 'ext-createwiki-tabs' ],
 		] );
 
 		$indexLayout->addTabPanels( $tabPanels );
@@ -100,7 +100,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$form = new PanelLayout( [
 			'framed' => true,
 			'expanded' => false,
-			'classes' => [ 'createwiki-tabs-wrapper' ],
+			'classes' => [ 'ext-createwiki-tabs-wrapper' ],
 			'content' => $indexLayout,
 		] );
 
