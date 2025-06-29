@@ -2,11 +2,11 @@
 	$( () => {
 		let switchingNoHash;
 
-		const tabs = OO.ui.infuse( $( '.createwiki-tabs' ) );
-		tabs.$element.addClass( 'createwiki-tabs-infused' );
+		const tabs = OO.ui.infuse( $( '.ext-createwiki-tabs' ) );
+		tabs.$element.addClass( 'ext-createwiki-tabs-infused' );
 
 		function enhancePanel( panel ) {
-			const $infuse = $( panel.$element ).find( '.createwiki-infuse' );
+			const $infuse = $( panel.$element ).find( '.ext-createwiki-infuse' );
 			$infuse.each( function () {
 				try {
 					OO.ui.infuse( this );
@@ -67,7 +67,7 @@
 				switchCreateWikiTab( hash.slice( 1 ) );
 			} else if ( hash.match( /^#mw-[\w-]+$/ ) ) {
 				matchedElement = document.getElementById( hash.slice( 1 ) );
-				$parentSection = $( matchedElement ).closest( '.createwiki-section-fieldset' );
+				$parentSection = $( matchedElement ).closest( '.ext-createwiki-section-fieldset' );
 				if ( $parentSection.length ) {
 					mw.storage.session.remove( 'createwiki-prevTab' );
 					// Switch to proper tab and scroll to selected item.

@@ -201,7 +201,7 @@ class WikiRequestViewer {
 					'type' => 'language',
 					'default' => $this->wikiRequestManager->getLanguage(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'editing',
 				],
 				'edit-reason' => [
@@ -224,7 +224,7 @@ class WikiRequestViewer {
 					'options' => $this->options->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'editing',
 				];
 			}
@@ -257,7 +257,7 @@ class WikiRequestViewer {
 					'options' => $this->options->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'editing',
 				];
 			}
@@ -342,7 +342,7 @@ class WikiRequestViewer {
 						'requestwikiqueue-moredetails' => 'moredetails',
 					],
 					'default' => $this->wikiRequestManager->getStatus(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'handling',
 				],
 				'handle-comment' => [
@@ -360,7 +360,7 @@ class WikiRequestViewer {
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
 					'default' => $visibility !== WikiRequestManager::VISIBILITY_PUBLIC,
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'handling',
 				],
 				'handle-visibility' => [
@@ -369,7 +369,7 @@ class WikiRequestViewer {
 					'hide-if' => [ '!==', 'handle-changevisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
 					'default' => (string)$visibility,
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'handling',
 				],
 				'submit-handle' => [
