@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki;
 
-use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\OOUIHTMLForm;
 use MediaWiki\Logger\LoggerFactory;
 use OOUI\FieldsetLayout;
@@ -17,15 +16,6 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 
 	/** @var bool Override default value from HTMLForm */
 	protected $mSubSectionBeforeFields = false;
-
-	/**
-	 * @param string $html
-	 * @return string
-	 */
-	public function wrapForm( $html ) {
-		$html = Html::rawElement( 'div', [ 'id' => 'createwiki' ], $html );
-		return parent::wrapForm( $html );
-	}
 
 	/**
 	 * @param string $legend
