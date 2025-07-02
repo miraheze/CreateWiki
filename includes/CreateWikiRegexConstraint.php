@@ -58,7 +58,7 @@ class CreateWikiRegexConstraint {
 	/**
 	 * Strip comments and whitespace, and remove blank lines
 	 *
-	 * @param array $lines
+	 * @param array $lines lines to clean
 	 * @return array Cleaned lines
 	 */
 	private static function cleanLines( array $lines ): array {

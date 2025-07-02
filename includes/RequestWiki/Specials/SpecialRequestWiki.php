@@ -127,7 +127,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['guidance'] = [
 			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-info-guidance' ),
+			'default' => $this->msg( 'requestwiki-info-guidance' )->text(),
 		];
 
 		$formDescriptor['reason'] = [
@@ -144,7 +144,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['post-reason-guidance'] = [
 			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-info-guidance-post' ),
+			'default' => $this->msg( 'requestwiki-info-guidance-post' )->text(),
 		];
 
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
@@ -193,7 +193,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$extraData = [];
-		foreach ( $this->extraFields as $field => $value ) {
+		foreach ( $this->extraFields as $field => $_ ) {
 			if ( isset( $data[$field] ) ) {
 				$extraData[$field] = $data[$field];
 			}

@@ -274,7 +274,7 @@ class WikiInitialize {
 		// Handle Permissions
 		if ( isset( $cacheArray['permissions'] ) ) {
 			foreach ( (array)$cacheArray['permissions'] as $group => $perm ) {
-				foreach ( (array)$perm['permissions'] as $id => $right ) {
+				foreach ( (array)$perm['permissions'] as $right ) {
 					$this->config->settings['wgGroupPermissions'][$this->dbname][$group][$right] = true;
 				}
 
@@ -330,7 +330,7 @@ class WikiInitialize {
 
 			$processor = new ExtensionProcessor();
 
-			foreach ( $queue as $path => $mtime ) {
+			foreach ( $queue as $path => $_ ) {
 				$json = file_get_contents( $path );
 				$info = json_decode( $json, true );
 				$version = $info['manifest_version'] ?? 2;

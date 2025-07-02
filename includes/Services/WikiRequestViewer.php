@@ -420,8 +420,6 @@ class WikiRequestViewer {
 			}
 
 			$section = $properties['section'] ?? '';
-			$type = $properties['type'] ?? '';
-
 			if ( $section === 'editing' || str_starts_with( $section, 'editing/' ) ) {
 				if ( !$canEditRequest ) {
 					unset( $formDescriptor[$field] );
@@ -543,7 +541,7 @@ class WikiRequestViewer {
 			);
 
 			$extraData = [];
-			foreach ( $this->extraFields as $field => $value ) {
+			foreach ( $this->extraFields as $field => $_ ) {
 				if ( isset( $formData[$field] ) ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {
