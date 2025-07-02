@@ -70,8 +70,8 @@ class RequestWikiQueuePager extends TablePager {
 				break;
 			case 'cw_user':
 				$formatted = Linker::userLink(
-					$this->userFactory->newFromId( $value )->getId(),
-					$this->userFactory->newFromId( $value )->getName()
+					(int)$value,
+					$this->userFactory->newFromId( (int)$value )->getName()
 				);
 				break;
 			case 'cw_url':
