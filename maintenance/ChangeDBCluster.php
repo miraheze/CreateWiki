@@ -36,7 +36,6 @@ class ChangeDBCluster extends Maintenance {
 		$this->initServices();
 		if ( $this->getOption( 'file' ) ) {
 			$file = fopen( $this->getOption( 'file' ), 'r' );
-
 			if ( !$file ) {
 				$this->fatalError( 'Unable to read file, exiting' );
 			}
@@ -50,16 +49,20 @@ class ChangeDBCluster extends Maintenance {
 			return;
 		}
 
-		for ( $linenum = 1; !feof( $file ); $linenum++ ) {
+		$linenum = 1;
+		while ( !feof( $file ) ) {
 			$line = trim( fgets( $file ) );
 
 			if ( $line === '' ) {
+				$linenum++;
 				continue;
 			}
 
 			$remoteWiki = $this->remoteWikiFactory->newInstance( $line );
 			$remoteWiki->setDBCluster( $this->getOption( 'db-cluster' ) );
 			$remoteWiki->commit();
+
+			$linenum++;
 		}
 	}
 }

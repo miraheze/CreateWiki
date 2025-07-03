@@ -114,8 +114,6 @@ class CreateWikiDataFactory {
 	 * This function queries the 'cw_wikis' table for database names and clusters, and writes
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification time (mtime) and stores it in the cache for future reference.
-	 *
-	 * @param bool $isNewChanges
 	 */
 	public function resetDatabaseLists( bool $isNewChanges ): void {
 		$mtime = time();
@@ -186,8 +184,6 @@ class CreateWikiDataFactory {
 	 * Resets the wiki data information.
 	 *
 	 * This method retrieves new information for the wiki and updates the cache.
-	 *
-	 * @param bool $isNewChanges
 	 */
 	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();
@@ -259,8 +255,6 @@ class CreateWikiDataFactory {
 	/**
 	 * Deletes the wiki data cache for a wiki.
 	 * Probably used when a wiki is deleted or renamed.
-	 *
-	 * @param string $dbname
 	 */
 	public function deleteWikiData( string $dbname ): void {
 		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $dbname ) );
@@ -272,9 +266,6 @@ class CreateWikiDataFactory {
 
 	/**
 	 * Writes data to a PHP file in the cache directory.
-	 *
-	 * @param string $fileName
-	 * @param array $data
 	 */
 	private function writeToFile( string $fileName, array $data ): void {
 		$tmpFile = tempnam( wfTempDir(), $fileName );
