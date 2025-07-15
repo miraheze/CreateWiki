@@ -135,6 +135,6 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			true,
 		] );
 
-		$updater->addPostDatabaseUpdateMaintenance( PopulateCentralWiki::class );
+		// $updater->addPostDatabaseUpdateMaintenance( PopulateCentralWiki::class );
 	}
 }
