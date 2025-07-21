@@ -51,44 +51,47 @@ class RequestWikiQueuePager extends TablePager {
 	}
 
 	/** @inheritDoc */
-	public function formatValue( $name, $value ): string {
+	public function formatValue( $field, $value ): string {
 		$row = $this->getCurrentRow();
+		if ( $value === null ) {
+			return '';
+		}
 
-		switch ( $name ) {
+		switch ( $field ) {
 			case 'cw_timestamp':
 				$formatted = $this->escape( $this->getLanguage()->userTimeAndDate(
-					$row->cw_timestamp, $this->getUser()
+					$value, $this->getUser()
 				) );
 				break;
 			case 'cw_dbname':
-				$formatted = $this->escape( $row->cw_dbname ?? '' );
+				$formatted = $this->escape( $value );
 				break;
 			case 'cw_sitename':
-				$formatted = $this->escape( $row->cw_sitename ?? '' );
+				$formatted = $this->escape( $value );
 				break;
 			case 'cw_user':
 				$formatted = $this->userLinkRenderer->userLink(
-					$this->userFactory->newFromId( $row->cw_user ),
+					$this->userFactory->newFromId( (int)$value ),
 					$this->getContext()
 				);
 				break;
 			case 'cw_url':
-				$formatted = $this->escape( $row->cw_url ?? '' );
+				$formatted = $this->escape( $value );
 				break;
 			case 'cw_status':
 				$formatted = $this->linkRenderer->makeLink(
 					SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
-					$this->msg( 'requestwikiqueue-' . $row->cw_status )->text()
+					$this->msg( "requestwikiqueue-$value" )->text()
 				);
 				break;
 			case 'cw_language':
 				$formatted = $this->languageNameUtils->getLanguageName(
-					code: $row->cw_language,
+					code: $value,
 					inLanguage: $this->getLanguage()->getCode()
 				);
 				break;
 			default:
-				$formatted = $this->escape( "Unable to format {$name}" );
+				$formatted = $this->escape( "Unable to format $field" );
 		}
 
 		return $formatted;
@@ -98,7 +101,7 @@ class RequestWikiQueuePager extends TablePager {
 	 * Safely HTML-escapes $value
 	 */
 	private function escape( string $value ): string {
-		return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
+		return htmlspecialchars( $value, ENT_QUOTES );
 	}
 
 	/** @inheritDoc */

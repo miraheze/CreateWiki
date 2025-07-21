@@ -396,7 +396,7 @@ class WikiRequestManager {
 	public function getAllowedVisibilities( UserIdentity $user ): array {
 		$allowedVisibilities = [];
 
-		foreach ( self::VISIBILITY_CONDS as $visibility => $condition ) {
+		foreach ( self::VISIBILITY_CONDS as $visibility => $_ ) {
 			if ( $this->isVisibilityAllowed( $visibility, $user ) ) {
 				$allowedVisibilities[] = $visibility;
 			}
