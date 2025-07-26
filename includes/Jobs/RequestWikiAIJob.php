@@ -2,8 +2,8 @@
 
 namespace Miraheze\CreateWiki\Jobs;
 
-use Job;
 use MediaWiki\Config\Config;
+use MediaWiki\JobQueue\Job;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
