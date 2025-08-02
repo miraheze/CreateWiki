@@ -27,6 +27,8 @@ class ConfigNames {
 
 	public const DatabaseClusters = 'CreateWikiDatabaseClusters';
 
+	public const DatabaseClustersInactive = 'CreateWikiDatabaseClustersInactive';
+
 	public const DatabaseSuffix = 'CreateWikiDatabaseSuffix';
 
 	public const DisallowedSubdomains = 'CreateWikiDisallowedSubdomains';
@@ -36,6 +38,8 @@ class ConfigNames {
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
+
+	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
 
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 

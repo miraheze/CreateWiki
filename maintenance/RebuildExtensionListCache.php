@@ -6,6 +6,13 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Registration\ExtensionProcessor;
 use Miraheze\CreateWiki\ConfigNames;
+use function array_column;
+use function array_fill_keys;
+use function array_merge;
+use function file_put_contents;
+use function glob;
+use function var_export;
+use const LOCK_EX;
 
 class RebuildExtensionListCache extends Maintenance {
 
@@ -27,7 +34,7 @@ class RebuildExtensionListCache extends Maintenance {
 		), true );
 
 		$processor = new ExtensionProcessor();
-		foreach ( $queue as $path => $mtime ) {
+		foreach ( $queue as $path => $_ ) {
 			$processor->extractInfoFromFile( $path );
 		}
 

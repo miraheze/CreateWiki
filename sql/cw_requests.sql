@@ -13,7 +13,7 @@ CREATE TABLE /*_*/cw_requests (
   cw_visibility TINYINT UNSIGNED NOT NULL DEFAULT '0',
   cw_locked TINYINT UNSIGNED NOT NULL DEFAULT '0',
   cw_bio TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  cw_extra LONGTEXT NULL
+  cw_extra JSON NULL
 ) /*$wgDBTableOptions*/;
 
 CREATE INDEX /*i*/cw_status ON /*_*/cw_requests (cw_status);

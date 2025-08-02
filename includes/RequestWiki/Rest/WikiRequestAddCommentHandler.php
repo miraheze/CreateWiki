@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use function ctype_space;
 
 /**
  * Posts a comment to the specified wiki request

@@ -3,28 +3,19 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\HTMLForm\OOUIHTMLForm;
-use MediaWiki\Xml\Xml;
+use MediaWiki\Logger\LoggerFactory;
 use OOUI\FieldsetLayout;
 use OOUI\HtmlSnippet;
 use OOUI\IndexLayout;
 use OOUI\PanelLayout;
 use OOUI\TabPanelLayout;
 use OOUI\Widget;
+use function is_array;
 
 class CreateWikiOOUIForm extends OOUIHTMLForm {
 
 	/** @var bool Override default value from HTMLForm */
 	protected $mSubSectionBeforeFields = false;
-
-	/**
-	 * @param string $html
-	 * @return string
-	 */
-	public function wrapForm( $html ) {
-		$html = Xml::tags( 'div', [ 'id' => 'createwiki' ], $html );
-
-		return parent::wrapForm( $html );
-	}
 
 	/**
 	 * @param string $legend
@@ -36,7 +27,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected function wrapFieldSetSection( $legend, $section, $attributes, $isRoot ) {
 		$layout = parent::wrapFieldSetSection( $legend, $section, $attributes, $isRoot );
 
-		$layout->addClasses( [ 'createwiki-fieldset-wrapper' ] );
+		$layout->addClasses( [ 'ext-createwiki-fieldset-wrapper' ] );
 		$layout->removeClasses( [ 'oo-ui-panelLayout-framed' ] );
 
 		return $layout;
@@ -49,8 +40,10 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$tabPanels = [];
 		foreach ( $this->mFieldTree as $key => $val ) {
 			if ( !is_array( $val ) ) {
-				wfDebug( __METHOD__ . " encountered a field not attached to a section: '{$key}'" );
-
+				LoggerFactory::getInstance( 'CreateWiki' )->debug(
+					'Encountered a field not attached to a section: {key}',
+					[ 'key' => $key ]
+				);
 				continue;
 			}
 
@@ -61,20 +54,20 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				$this->displaySection(
 					$val,
 					'',
-					"mw-section-{$key}-"
+					"mw-section-$key-"
 				) .
 				$this->getFooterHtml( $key );
 
-			$tabPanels[] = new TabPanelLayout( 'mw-section-' . $key, [
+			$tabPanels[] = new TabPanelLayout( "mw-section-$key", [
 				'classes' => [ 'mw-htmlform-autoinfuse-lazy' ],
 				'label' => $label,
 				'content' => new FieldsetLayout( [
-					'classes' => [ 'createwiki-section-fieldset' ],
-					'id' => "mw-section-{$key}",
+					'classes' => [ 'ext-createwiki-section-fieldset' ],
+					'id' => "mw-section-$key",
 					'label' => $label,
 					'items' => [
 						new Widget( [
-							'content' => new HtmlSnippet( $content )
+							'content' => new HtmlSnippet( $content ),
 						] ),
 					],
 				] ),
@@ -87,7 +80,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 			'infusable' => true,
 			'expanded' => false,
 			'autoFocus' => false,
-			'classes' => [ 'createwiki-tabs' ],
+			'classes' => [ 'ext-createwiki-tabs' ],
 		] );
 
 		$indexLayout->addTabPanels( $tabPanels );
@@ -97,8 +90,8 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$form = new PanelLayout( [
 			'framed' => true,
 			'expanded' => false,
-			'classes' => [ 'createwiki-tabs-wrapper' ],
-			'content' => $indexLayout
+			'classes' => [ 'ext-createwiki-tabs-wrapper' ],
+			'content' => $indexLayout,
 		] );
 
 		return $header . $form;

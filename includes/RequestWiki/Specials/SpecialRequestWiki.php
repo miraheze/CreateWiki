@@ -12,6 +12,9 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use UserBlockedError;
+use function array_diff_key;
+use function array_filter;
+use function strlen;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -50,7 +53,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		] );
 
 		$form = $this->getForm();
-		if ( $form->show() ) {
+		if ( $form && $form->show() ) {
 			$this->onSuccess();
 		}
 	}
@@ -69,12 +72,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
 				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L4
+				'maxlength' => 64 - strlen( $this->getConfig()->get( ConfigNames::DatabaseSuffix ) ),
 			],
 			'sitename' => [
 				'type' => 'text',
 				'label-message' => 'requestwiki-label-sitename',
 				'help-message' => 'createwiki-help-sitename',
 				'required' => true,
+				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L7
+				'maxlength' => 128,
 			],
 			'language' => [
 				'type' => 'language',
@@ -120,7 +127,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['guidance'] = [
 			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-info-guidance' ),
+			'default' => $this->msg( 'requestwiki-info-guidance' )->text(),
 		];
 
 		$formDescriptor['reason'] = [
@@ -137,7 +144,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$formDescriptor['post-reason-guidance'] = [
 			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-info-guidance-post' ),
+			'default' => $this->msg( 'requestwiki-info-guidance-post' )->text(),
 		];
 
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
@@ -186,7 +193,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$extraData = [];
-		foreach ( $this->extraFields as $field => $value ) {
+		foreach ( $this->extraFields as $field => $_ ) {
 			if ( isset( $data[$field] ) ) {
 				$extraData[$field] = $data[$field];
 			}
@@ -222,6 +229,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	protected function getGroupName(): string {
-		return 'wikimanage';
+		return 'wiki';
 	}
 }

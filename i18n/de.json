@@ -11,6 +11,7 @@
 			"Jan Luca",
 			"Justman10000",
 			"Metalhead64",
+			"MoritzMT20",
 			"Nekky-chan",
 			"TheRabbit22",
 			"Wolfdietmann"
@@ -125,8 +126,8 @@
 	"requestwiki-ai-decision-dryrun": "Dies ist eine experimentelle KI-Analyse. Wiki-Antragsteller können dies getrost ignorieren.\n\n'''Empfehlung''': $1.\n\n'''Argumentation''': $2\n\n'''Zuversicht''': $3%",
 	"requestwiki-ai-decision-moredetails": "Dieser Antrag benötigt mehr Details, bevor dieser weiter ausgewertet werden kann, und zwar aus folgendem Grund: „$1“",
 	"requestwiki-ai-decision-onhold": "Dieser Antrag konnte nicht automatisch genehmigt werden und erfordert eine manuelle Überprüfung aus folgendem Grund: „$1“",
-	"requestwiki-ai-error": "Dieser Antrag konnte nicht automatisch ausgewertet werden. Wende dich für weitere Informationen an deinen Systemadministrator.",
-	"requestwiki-ai-error-reason": "Dieser Antrag konnte nicht automatisch ausgewertet werden und der Grund wurde protokolliert. Weitere Informationen hierzu erhältst du von deinem Systemadministrator.",
+	"requestwiki-ai-error": "Diese Anfrage konnte nicht automatisch ausgewertet werden. Bitte warte auf die Überprüfung durch einen Mitarbeiter.",
+	"requestwiki-ai-error-reason": "Diese Anfrage konnte nicht automatisch ausgewertet werden. Der Grund wurde geloggt. Bitte warte auf die Überprüfung durch einen Mitarbeiter.",
 	"requestwiki-ai-error-history-reason": "Bei der Auswertung des Antrags durch die künstliche Intelligenz wurde der folgende Fehler zurückgegeben:\n\n'$1'",
 	"requestwiki-edit-success": "Deine Änderungen an diesem Wiki-Antrag wurden erfolgreich gespeichert.",
 	"requestwiki-error-emailnotconfirmed": "Deine E-Mail-Adresse ist nicht bestätigt. Um Wikis zu beantragen, [[Special:ChangeEmail|bestätige bitte zuerst eine E-Mail-Adresse]].",

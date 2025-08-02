@@ -10,6 +10,9 @@ use MediaWikiIntegrationTestCase;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
+use PHPUnit\Framework\MockObject\MockObject;
+use function is_bool;
+use function is_string;
 
 /**
  * @group CreateWiki
@@ -18,13 +21,14 @@ use Miraheze\CreateWiki\Services\CreateWikiValidator;
  */
 class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
-	private readonly CreateWikiValidator $validator;
-	private readonly MessageLocalizer $messageLocalizer;
+	private CreateWikiValidator $validator;
+	private MockObject $messageLocalizerMock;
+	private MockObject $messageMock;
 
 	protected function setUp(): void {
 		parent::setUp();
-
-		$this->messageLocalizer = $this->createMock( MessageLocalizer::class );
+		$this->messageLocalizerMock = $this->createMock( MessageLocalizer::class );
+		$this->messageMock = $this->createMock( Message::class );
 
 		$options = $this->createMock( ServiceOptions::class );
 		$options->method( 'get' )->willReturnMap( [
@@ -36,8 +40,12 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		] );
 
 		$options->method( 'assertRequiredOptions' )->willReturn( null );
+		'@phan-var ServiceOptions $options';
+
+		$messageLocalizer = $this->messageLocalizerMock;
+		'@phan-var MessageLocalizer $messageLocalizer';
 		$this->validator = new CreateWikiValidator(
-			$this->messageLocalizer,
+			$messageLocalizer,
 			$options
 		);
 	}
@@ -67,6 +75,13 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::getValidUrl
+	 */
+	public function testGetValidUrl(): void {
+		$this->assertEquals( 'https://test.example.org', $this->validator->getValidUrl( 'testdb' ) );
+	}
+
+	/**
 	 * @covers ::validateAgreement
 	 * @dataProvider provideValidateAgreementData
 	 */
@@ -74,9 +89,11 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool $agreement,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizer->method( 'msg' )->with( 'createwiki-error-agreement' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'createwiki-error-agreement' )
+			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateAgreement( $agreement );
 		if ( $expected === true ) {
@@ -86,7 +103,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateAgreementData(): Generator {
+	public static function provideValidateAgreementData(): Generator {
 		yield 'agreement false' => [ false, 'error' ];
 		yield 'agreement true' => [ true, true ];
 	}
@@ -100,9 +117,11 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		array $data,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizer->method( 'msg' )->with( 'htmlform-required' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'htmlform-required' )
+			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateComment( $comment, $data );
 		if ( $expected === true ) {
@@ -112,7 +131,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateCommentData(): Generator {
+	public static function provideValidateCommentData(): Generator {
 		yield 'submit-comment empty' => [ '', [ 'submit-comment' => true ], 'error' ];
 		yield 'submit-comment whitespace' => [ '   ', [ 'submit-comment' => true ], 'error' ];
 		yield 'submit-comment valid' => [ 'Valid comment', [ 'submit-comment' => true ], true ];
@@ -129,22 +148,22 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		string $dbname,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'parsed' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateDatabaseEntry( $dbname );
 		if ( $expected === true ) {
 			$this->assertTrue( $result );
 		} elseif ( $expected === 'parsed' ) {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
 		} else {
 			$this->assertIsString( $result );
 		}
 	}
 
-	public function provideValidateDatabaseEntryData(): Generator {
+	public static function provideValidateDatabaseEntryData(): Generator {
 		yield 'empty dbname' => [ '', 'parsed' ];
 		yield 'whitespace dbname' => [ '   ', 'parsed' ];
 		yield 'not suffixed' => [ 'dbname', 'error' ];
@@ -163,10 +182,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		bool $exists,
 		?string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'parsed' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateDatabaseName( $dbname, $exists );
 		if ( $expected === null ) {
@@ -176,7 +194,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateDatabaseNameData(): Generator {
+	public static function provideValidateDatabaseNameData(): Generator {
 		yield 'not suffixed' => [ 'dbname', false, 'error' ];
 		yield 'database exists' => [ 'validdb', true, 'error' ];
 		yield 'not alnum' => [ '!validdb', false, 'error' ];
@@ -196,22 +214,22 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	): void {
 		// For cases where an error message is expected, simulate Message behavior.
 		if ( is_string( $expected ) ) {
-			$message = $this->createMock( Message::class );
-			$message->method( 'parse' )->willReturn( $expected );
-			$message->method( 'numParams' )->willReturn( $message );
-			$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+			$this->messageMock->method( 'parse' )->willReturn( $expected );
+			$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+			$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 		}
 		$result = $this->validator->validateReason( $reason, $data );
 		if ( is_bool( $expected ) ) {
 			$this->assertSame( $expected, $result );
 		} elseif ( $expected === 'parsed' ) {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );
 		}
 	}
 
-	public function provideValidateReasonData(): Generator {
+	public static function provideValidateReasonData(): Generator {
 		yield 'not submitting edit via edit-reason' => [ 'any reason', [ 'edit-reason' => 'test' ], true ];
 		yield 'empty reason with submit-edit' => [ '', [ 'submit-edit' => true ], 'parsed' ];
 		yield 'short reason with submit-edit' => [ 'short', [ 'submit-edit' => true ], 'parsed' ];
@@ -230,9 +248,11 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		array $data,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$this->messageLocalizer->method( 'msg' )->with( 'htmlform-required' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'htmlform-required' )
+			->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateStatusComment( $comment, $data );
 		if ( $expected === true ) {
@@ -242,7 +262,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateStatusCommentData(): Generator {
+	public static function provideValidateStatusCommentData(): Generator {
 		yield 'submit-handle empty' => [ '', [ 'submit-handle' => true ], 'error' ];
 		yield 'submit-handle whitespace' => [ '   ', [ 'submit-handle' => true ], 'error' ];
 		yield 'submit-handle valid' => [ 'Valid status comment', [ 'submit-handle' => true ], true ];
@@ -261,10 +281,9 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		array $data,
 		bool|string $expected
 	): void {
-		$message = $this->createMock( Message::class );
-		$message->method( 'parse' )->willReturn( 'error' );
-		$message->method( 'numParams' )->willReturn( $message );
-		$this->messageLocalizer->method( 'msg' )->willReturn( $message );
+		$this->messageMock->method( 'parse' )->willReturn( 'error' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
 
 		$result = $this->validator->validateSubdomain( $subdomain, $data );
 		if ( $expected === true ) {
@@ -274,7 +293,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValidateSubdomainData(): Generator {
+	public static function provideValidateSubdomainData(): Generator {
 		yield 'not submitting edit via edit-url' => [ 'anything', [ 'edit-url' => 'test' ], true ];
 		yield 'empty subdomain with submit-edit' => [ '', [ 'submit-edit' => true ], 'error' ];
 		yield 'database exists with submit-edit' => [ 'exist.example.org', [ 'submit-edit' => true ], 'error' ];

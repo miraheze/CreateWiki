@@ -7,6 +7,7 @@ use LogFormatter;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
+use function str_replace;
 
 class FarmerLogFormatter extends LogFormatter {
 

@@ -2,6 +2,11 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
+use function array_keys;
+use function array_merge;
+use function array_search;
+use function array_slice;
+
 class RequestWikiFormUtils {
 
 	public static function fieldExists(
@@ -86,7 +91,7 @@ class RequestWikiFormUtils {
 		array $newField
 	): void {
 		// Find the position of the target field
-		$pos = array_search( $afterKey, array_keys( $formDescriptor ) );
+		$pos = array_search( $afterKey, array_keys( $formDescriptor ), true );
 
 		if ( $pos === false ) {
 			// If the target field is not found, add to the end
@@ -121,7 +126,7 @@ class RequestWikiFormUtils {
 			$formDescriptor[$newKey] = $newField;
 		} else {
 			// Insert the new field before the first field in the section
-			$pos = array_search( $firstKeyInSection, array_keys( $formDescriptor ) );
+			$pos = array_search( $firstKeyInSection, array_keys( $formDescriptor ), true );
 			$formDescriptor = array_slice( $formDescriptor, 0, $pos, true ) +
 				[ $newKey => $newField ] +
 				array_slice( $formDescriptor, $pos, null, true );
@@ -148,7 +153,7 @@ class RequestWikiFormUtils {
 			$formDescriptor[$newKey] = $newField;
 		} else {
 			// Insert the new field after the last field in the section
-			$pos = array_search( $lastKeyInSection, array_keys( $formDescriptor ) );
+			$pos = array_search( $lastKeyInSection, array_keys( $formDescriptor ), true );
 			$formDescriptor = array_slice( $formDescriptor, 0, $pos + 1, true ) +
 				[ $newKey => $newField ] +
 				array_slice( $formDescriptor, $pos + 1, null, true );

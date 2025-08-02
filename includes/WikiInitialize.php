@@ -6,6 +6,33 @@ use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\Registration\ExtensionProcessor;
 use MediaWiki\Registration\ExtensionRegistry;
+use function array_column;
+use function array_fill_keys;
+use function array_flip;
+use function array_key_first;
+use function array_keys;
+use function array_merge;
+use function array_search;
+use function count;
+use function defined;
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function glob;
+use function in_array;
+use function is_bool;
+use function json_decode;
+use function pathinfo;
+use function strlen;
+use function substr;
+use function var_export;
+use const CW_DB;
+use const LOCK_EX;
+use const MW_DB;
+use const NS_PROJECT;
+use const NS_PROJECT_TALK;
+use const PHP_SAPI;
 
 class WikiInitialize {
 
@@ -69,6 +96,7 @@ class WikiInitialize {
 		}
 
 		// Assign all known wikis
+		// @phan-suppress-next-line PhanPartialTypeMismatchProperty
 		$this->config->wikis = array_keys( $databasesArray['databases'] );
 
 		// Handle wgServer and wgSitename
@@ -78,7 +106,7 @@ class WikiInitialize {
 
 		foreach ( $databasesArray['databases'] as $db => $data ) {
 			foreach ( $suffixes as $suffix ) {
-				if ( substr( $db, -strlen( $suffix ) ) == $suffix ) {
+				if ( substr( $db, -strlen( $suffix ) ) === $suffix ) {
 					$this->config->settings['wgServer'][$db] = $data['u'] ??
 						'https://' . substr( $db, 0, -strlen( $suffix ) ) . '.' .
 						$suffixMatch[$suffix];
@@ -96,6 +124,7 @@ class WikiInitialize {
 
 		// We need the CLI to be able to access 'deleted' wikis
 		if ( PHP_SAPI == 'cli' && file_exists( $this->cacheDir . '/deleted.php' ) ) {
+			// @phan-suppress-next-line PhanPartialTypeMismatchProperty
 			$this->config->wikis = array_merge( $this->config->wikis, array_keys( $deletedDatabases['databases'] ) );
 		}
 
@@ -108,16 +137,16 @@ class WikiInitialize {
 		} elseif ( defined( 'CW_DB' ) ) {
 			$this->dbname = CW_DB;
 		} elseif ( isset( array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname] ) ) {
-			$this->dbname = array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname];
+			$this->dbname = (string)array_flip( $this->config->settings['wgServer'] )['https://' . $this->hostname];
 		} else {
 			$explode = explode( '.', $this->hostname, 2 );
 
-			if ( $explode[0] == 'www' ) {
+			if ( $explode[0] === 'www' ) {
 				$explode = explode( '.', $explode[1], 2 );
 			}
 
 			foreach ( $siteMatch as $site => $suffix ) {
-				if ( $explode[1] == $site ) {
+				if ( $explode[1] === $site ) {
 					$this->dbname = $explode[0] . $suffix;
 					break;
 				}
@@ -134,12 +163,12 @@ class WikiInitialize {
 		// As soon as we know the database name, let's assign it
 		$this->config->settings['wgDBname'][$this->dbname] = $this->dbname;
 
-		$this->server = $this->config->settings['wgServer'][$this->dbname] ??
-			$this->config->settings['wgServer']['default'];
-		$this->sitename = $this->config->settings['wgSitename'][$this->dbname] ??
-			$this->config->settings['wgSitename']['default'];
+		$this->server = (string)( $this->config->settings['wgServer'][$this->dbname] ??
+			$this->config->settings['wgServer']['default'] );
+		$this->sitename = (string)( $this->config->settings['wgSitename'][$this->dbname] ??
+			$this->config->settings['wgSitename']['default'] );
 
-		if ( !in_array( $this->dbname, $this->config->wikis ) ) {
+		if ( !in_array( $this->dbname, $this->config->wikis, true ) ) {
 			$this->missing = true;
 		}
 	}
@@ -188,7 +217,7 @@ class WikiInitialize {
 				'suffix' => null,
 				'lang' => $cacheArray['core']['wgLanguageCode'] ?? 'en',
 				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $tags ),
-				'params' => []
+				'params' => [],
 			];
 		};
 
@@ -212,7 +241,13 @@ class WikiInitialize {
 		// Handle namespaces - additional settings will be done in ManageWiki
 		if ( isset( $cacheArray['namespaces'] ) ) {
 			foreach ( (array)$cacheArray['namespaces'] as $name => $ns ) {
-				$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
+				if ( (int)$ns['id'] === NS_PROJECT ) {
+					$this->config->settings['wgMetaNamespace'][$this->dbname] = $name;
+				} elseif ( (int)$ns['id'] === NS_PROJECT_TALK ) {
+					$this->config->settings['wgMetaNamespaceTalk'][$this->dbname] = $name;
+				} else {
+					$this->config->settings['wgExtraNamespaces'][$this->dbname][(int)$ns['id']] = $name;
+				}
 				$this->config->settings['wgNamespacesToBeSearchedDefault'][$this->dbname][(int)$ns['id']] =
 					$ns['searchable'];
 				$this->config->settings['wgNamespacesWithSubpages'][$this->dbname][(int)$ns['id']] =
@@ -239,7 +274,7 @@ class WikiInitialize {
 		// Handle Permissions
 		if ( isset( $cacheArray['permissions'] ) ) {
 			foreach ( (array)$cacheArray['permissions'] as $group => $perm ) {
-				foreach ( (array)$perm['permissions'] as $id => $right ) {
+				foreach ( (array)$perm['permissions'] as $right ) {
 					$this->config->settings['wgGroupPermissions'][$this->dbname][$group][$right] = true;
 				}
 
@@ -259,8 +294,8 @@ class WikiInitialize {
 					$this->config->settings['wgGroupsRemoveFromSelf'][$this->dbname][$group][] = $name;
 				}
 
-				if ( $perm['autopromote'] !== null ) {
-					$onceId = array_search( 'once', $perm['autopromote'] );
+				if ( (array)$perm['autopromote'] !== [] ) {
+					$onceId = array_search( 'once', $perm['autopromote'], true );
 
 					if ( !is_bool( $onceId ) ) {
 						unset( $perm['autopromote'][$onceId] );
@@ -295,7 +330,7 @@ class WikiInitialize {
 
 			$processor = new ExtensionProcessor();
 
-			foreach ( $queue as $path => $mtime ) {
+			foreach ( $queue as $path => $_ ) {
 				$json = file_get_contents( $path );
 				$info = json_decode( $json, true );
 				$version = $info['manifest_version'] ?? 2;
@@ -320,8 +355,8 @@ class WikiInitialize {
 			foreach ( $config->get( 'ManageWikiExtensions' ) as $name => $ext ) {
 				$this->config->settings[ $ext['var'] ]['default'] = false;
 
-				if ( in_array( $ext['var'], (array)$cacheArray['extensions'] ) &&
-					!in_array( $name, $this->disabledExtensions )
+				if ( in_array( $ext['var'], (array)$cacheArray['extensions'], true ) &&
+					!in_array( $name, $this->disabledExtensions, true )
 				) {
 					$path = $list[ $ext['name'] ] ?? false;
 

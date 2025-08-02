@@ -12,6 +12,8 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use function htmlspecialchars;
+use const ENT_QUOTES;
 
 class RequestWikiQueuePager extends TablePager {
 
@@ -48,44 +50,47 @@ class RequestWikiQueuePager extends TablePager {
 	}
 
 	/** @inheritDoc */
-	public function formatValue( $name, $value ): string {
+	public function formatValue( $field, $value ): string {
 		$row = $this->getCurrentRow();
+		if ( $value === null ) {
+			return '';
+		}
 
-		switch ( $name ) {
+		switch ( $field ) {
 			case 'cw_timestamp':
 				$formatted = $this->escape( $this->getLanguage()->userTimeAndDate(
-					$row->cw_timestamp, $this->getUser()
+					$value, $this->getUser()
 				) );
 				break;
 			case 'cw_dbname':
-				$formatted = $this->escape( $row->cw_dbname ?? '' );
+				$formatted = $this->escape( $value );
 				break;
 			case 'cw_sitename':
-				$formatted = $this->escape( $row->cw_sitename ?? '' );
+				$formatted = $this->escape( $value );
 				break;
 			case 'cw_user':
 				$formatted = Linker::userLink(
-					$this->userFactory->newFromId( $row->cw_user )->getId(),
-					$this->userFactory->newFromId( $row->cw_user )->getName()
+					(int)$value,
+					$this->userFactory->newFromId( (int)$value )->getName()
 				);
 				break;
 			case 'cw_url':
-				$formatted = $this->escape( $row->cw_url ?? '' );
+				$formatted = $this->escape( $value );
 				break;
 			case 'cw_status':
 				$formatted = $this->linkRenderer->makeLink(
 					SpecialPage::getTitleValueFor( 'RequestWikiQueue', $row->cw_id ),
-					$this->msg( 'requestwikiqueue-' . $row->cw_status )->text()
+					$this->msg( "requestwikiqueue-$value" )->text()
 				);
 				break;
 			case 'cw_language':
 				$formatted = $this->languageNameUtils->getLanguageName(
-					$row->cw_language,
-					$this->getLanguage()->getCode()
+					code: $value,
+					inLanguage: $this->getLanguage()->getCode()
 				);
 				break;
 			default:
-				$formatted = $this->escape( "Unable to format {$name}" );
+				$formatted = $this->escape( "Unable to format $field" );
 		}
 
 		return $formatted;
@@ -95,7 +100,7 @@ class RequestWikiQueuePager extends TablePager {
 	 * Safely HTML-escapes $value
 	 */
 	private function escape( string $value ): string {
-		return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8', false );
+		return htmlspecialchars( $value, ENT_QUOTES );
 	}
 
 	/** @inheritDoc */
@@ -134,7 +139,10 @@ class RequestWikiQueuePager extends TablePager {
 		}
 
 		if ( $this->requester ) {
-			$info['conds']['cw_user'] = $this->userFactory->newFromName( $this->requester )->getId();
+			$requester = $this->userFactory->newFromName( $this->requester );
+			if ( $requester ) {
+				$info['conds']['cw_user'] = $requester->getId();
+			}
 		}
 
 		if ( $this->status && $this->status !== '*' ) {

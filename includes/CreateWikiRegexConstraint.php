@@ -4,6 +4,12 @@ namespace Miraheze\CreateWiki;
 
 use MediaWiki\Logger\LoggerFactory;
 use StringUtils;
+use function array_filter;
+use function array_map;
+use function explode;
+use function implode;
+use function preg_replace;
+use function wfMessage;
 
 class CreateWikiRegexConstraint {
 
@@ -52,8 +58,8 @@ class CreateWikiRegexConstraint {
 	/**
 	 * Strip comments and whitespace, and remove blank lines
 	 *
-	 * @param array $lines
-	 * @return array
+	 * @param array $lines lines to clean
+	 * @return array Cleaned lines
 	 */
 	private static function cleanLines( array $lines ): array {
 		return array_filter(
@@ -68,7 +74,7 @@ class CreateWikiRegexConstraint {
 	 * @param string $start
 	 * @param string $end
 	 * @param string $name name of regex caller (config or message key) for logging
-	 * @return array
+	 * @return array Array of regexes with invalid ones filtered out.
 	 */
 	private static function regexesFromText(
 		string $text,
@@ -80,7 +86,6 @@ class CreateWikiRegexConstraint {
 		$regexes = self::cleanLines( $lines );
 
 		self::filterInvalidRegexes( $regexes, $name, $start, $end );
-
 		return $regexes;
 	}
 
@@ -89,7 +94,7 @@ class CreateWikiRegexConstraint {
 	 * @param string $start prepend to the beginning of the regex
 	 * @param string $end append to the end of the regex
 	 * @param string $name name of regex caller (config or message key) for logging
-	 * @return string
+	 * @return string Valid regex
 	 */
 	public static function regexFromArray(
 		array $regexes,
@@ -122,7 +127,7 @@ class CreateWikiRegexConstraint {
 	 * @param string $key
 	 * @param string $start prepend to the beginning of each regex line; used only for validation
 	 * @param string $end append to the end of each regex line; used only for validation
-	 * @return array
+	 * @return array Array of regexes with invalid ones filtered out.
 	 */
 	public static function regexesFromMessage(
 		string $key,

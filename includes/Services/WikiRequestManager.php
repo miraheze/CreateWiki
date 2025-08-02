@@ -23,6 +23,26 @@ use stdClass;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
+use function array_column;
+use function array_diff;
+use function array_filter;
+use function array_key_exists;
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function count;
+use function explode;
+use function htmlspecialchars;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_bool;
+use function json_decode;
+use function json_encode;
+use function preg_replace;
+use function rtrim;
+use function trim;
+use const ENT_QUOTES;
 
 class WikiRequestManager {
 
@@ -52,7 +72,7 @@ class WikiRequestManager {
 	];
 
 	private IDatabase $dbw;
-	private stdClass|bool $row;
+	private stdClass|false $row;
 
 	private int $ID;
 	private array $changes = [];
@@ -74,10 +94,8 @@ class WikiRequestManager {
 	}
 
 	public function loadFromID( int $requestID ): void {
-		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
-
 		$this->ID = $requestID;
-
+		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 		$this->row = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_requests' )
 			->field( '*' )
@@ -87,7 +105,7 @@ class WikiRequestManager {
 	}
 
 	public function exists(): bool {
-		return (bool)$this->row;
+		return $this->row !== false;
 	}
 
 	public function createNewRequestAndLog(
@@ -200,6 +218,9 @@ class WikiRequestManager {
 		}
 	}
 
+	/**
+	 * @return array<int, array{comment: string, timestamp: string, user: User}>
+	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_comments' )
@@ -215,6 +236,11 @@ class WikiRequestManager {
 
 		$comments = [];
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$user = $this->userFactory->newFromId( $row->cw_comment_user );
 
 			$comments[] = [
@@ -277,6 +303,9 @@ class WikiRequestManager {
 			->execute();
 	}
 
+	/**
+	 * @return array<int, array{action: string, details: string, timestamp: string, user: User}>
+	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->table( 'cw_history' )
@@ -288,6 +317,11 @@ class WikiRequestManager {
 
 		$history = [];
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
 
 			$history[] = [
@@ -321,6 +355,11 @@ class WikiRequestManager {
 
 		$requests = [];
 		foreach ( $res as $row ) {
+			if ( !$row instanceof stdClass ) {
+				// Skip unexpected row
+				continue;
+			}
+
 			if ( !$this->isVisibilityAllowed( $row->cw_visibility, $user ) ) {
 				continue;
 			}
@@ -357,7 +396,7 @@ class WikiRequestManager {
 	public function getAllowedVisibilities( UserIdentity $user ): array {
 		$allowedVisibilities = [];
 
-		foreach ( self::VISIBILITY_CONDS as $visibility => $condition ) {
+		foreach ( self::VISIBILITY_CONDS as $visibility => $_ ) {
 			if ( $this->isVisibilityAllowed( $visibility, $user ) ) {
 				$allowedVisibilities[] = $visibility;
 			}
@@ -626,12 +665,21 @@ class WikiRequestManager {
 		}
 	}
 
+	private function getRowObject(): stdClass {
+		if ( $this->row === false ) {
+			// Skip unexpected row
+			throw new RuntimeException( '$this->row is false' );
+		}
+
+		return $this->row;
+	}
+
 	public function canCommentReopen(): bool {
-		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+		return in_array( 'comment', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [], true );
 	}
 
 	public function canEditReopen(): bool {
-		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [] );
+		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [], true );
 	}
 
 	public function getID(): int {
@@ -639,54 +687,54 @@ class WikiRequestManager {
 	}
 
 	public function getDBname(): string {
-		return $this->row->cw_dbname;
+		return $this->getRowObject()->cw_dbname;
 	}
 
 	public function getVisibility(): int {
-		return $this->row->cw_visibility;
+		return $this->getRowObject()->cw_visibility;
 	}
 
 	public function getRequester(): User {
-		return $this->userFactory->newFromId( $this->row->cw_user );
+		return $this->userFactory->newFromId( $this->getRowObject()->cw_user );
 	}
 
 	public function getStatus(): string {
-		return $this->row->cw_status;
+		return $this->getRowObject()->cw_status;
 	}
 
 	public function getSitename(): string {
-		return $this->row->cw_sitename;
+		return $this->getRowObject()->cw_sitename;
 	}
 
 	public function getLanguage(): string {
-		return $this->row->cw_language;
+		return $this->getRowObject()->cw_language;
 	}
 
 	public function getTimestamp(): string {
-		return $this->row->cw_timestamp;
+		return $this->getRowObject()->cw_timestamp;
 	}
 
 	public function getUrl(): string {
-		return $this->row->cw_url;
+		return $this->getRowObject()->cw_url;
 	}
 
 	public function getCategory(): string {
-		return $this->row->cw_category;
+		return $this->getRowObject()->cw_category;
 	}
 
 	public function getReason(): string {
-		$comment = explode( "\n", $this->row->cw_comment, 2 );
+		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return $comment[1];
 		}
 
-		return $this->row->cw_comment;
+		return $this->getRowObject()->cw_comment;
 	}
 
 	public function getPurpose(): ?string {
-		$comment = explode( "\n", $this->row->cw_comment, 2 );
+		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
 
 		if ( $purposeCheck[0] === 'Purpose' ) {
@@ -697,19 +745,19 @@ class WikiRequestManager {
 	}
 
 	public function isPrivate(): bool {
-		return (bool)$this->row->cw_private;
+		return (bool)$this->getRowObject()->cw_private;
 	}
 
 	public function isBio(): bool {
-		return (bool)$this->row->cw_bio;
+		return (bool)$this->getRowObject()->cw_bio;
 	}
 
 	public function isLocked(): bool {
-		return (bool)$this->row->cw_locked;
+		return (bool)$this->getRowObject()->cw_locked;
 	}
 
 	public function getAllExtraData(): array {
-		return json_decode( $this->row->cw_extra ?: '[]', true );
+		return (array)json_decode( $this->getRowObject()->cw_extra ?: '[]', true );
 	}
 
 	public function getExtraFieldData( string $field ): mixed {
@@ -725,149 +773,163 @@ class WikiRequestManager {
 			->caller( __METHOD__ );
 	}
 
-	public function checkQueryBuilder(): void {
-		if ( !$this->queryBuilder ) {
+	private function getQueryBuilder(): UpdateQueryBuilder {
+		if ( $this->queryBuilder === null ) {
 			throw new RuntimeException(
-				'queryBuilder not yet initialized, you must first call startQueryBuilder()'
+				'Attempted to access queryBuilder before startQueryBuilder() was called.'
 			);
 		}
+
+		return $this->queryBuilder;
 	}
 
 	public function setPrivate( bool $private ): void {
-		$this->checkQueryBuilder();
-		if ( $private !== $this->isPrivate() ) {
-			$this->trackChange( 'private', $this->isPrivate(), $private );
-			$this->queryBuilder->set( [ 'cw_private' => (int)$private ] );
+		if ( $private === $this->isPrivate() ) {
+			return;
 		}
+
+		$this->trackChange( 'private', $this->isPrivate(), $private );
+		$this->getQueryBuilder()->set( [ 'cw_private' => (int)$private ] );
 	}
 
 	public function setBio( bool $bio ): void {
-		$this->checkQueryBuilder();
-		if ( $bio !== $this->isBio() ) {
-			$this->trackChange( 'bio', $this->isBio(), $bio );
-			$this->queryBuilder->set( [ 'cw_bio' => (int)$bio ] );
+		if ( $bio === $this->isBio() ) {
+			return;
 		}
+
+		$this->trackChange( 'bio', $this->isBio(), $bio );
+		$this->getQueryBuilder()->set( [ 'cw_bio' => (int)$bio ] );
 	}
 
 	public function setLocked( bool $locked ): void {
-		$this->checkQueryBuilder();
-		if ( $locked !== $this->isLocked() ) {
-			$this->trackChange( 'locked', $this->isLocked(), $locked );
-			$this->queryBuilder->set( [ 'cw_locked' => (int)$locked ] );
+		if ( $locked === $this->isLocked() ) {
+			return;
 		}
+
+		$this->trackChange( 'locked', $this->isLocked(), $locked );
+		$this->getQueryBuilder()->set( [ 'cw_locked' => (int)$locked ] );
 	}
 
 	public function setVisibility( int $visibility ): void {
-		$this->checkQueryBuilder();
-		if ( $visibility !== $this->getVisibility() ) {
-			if ( !array_key_exists( $visibility, self::VISIBILITY_CONDS ) ) {
-				throw new InvalidArgumentException( 'Cannot set an unsupported visibility type.' );
-			}
-
-			$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
-			$this->queryBuilder->set( [ 'cw_visibility' => $visibility ] );
+		if ( $visibility === $this->getVisibility() ) {
+			return;
 		}
+
+		if ( !array_key_exists( $visibility, self::VISIBILITY_CONDS ) ) {
+			throw new InvalidArgumentException( 'Cannot set an unsupported visibility type.' );
+		}
+
+		$this->trackChange( 'visibility', $this->getVisibility(), $visibility );
+		$this->getQueryBuilder()->set( [ 'cw_visibility' => $visibility ] );
 	}
 
 	public function setCategory( string $category ): void {
-		$this->checkQueryBuilder();
-		if ( $category !== $this->getCategory() ) {
-			if ( !in_array( $category, $this->options->get( ConfigNames::Categories ) ) ) {
-				throw new InvalidArgumentException( 'Cannot set an unsupported category.' );
-			}
-
-			$this->trackChange( 'category', $this->getCategory(), $category );
-			$this->queryBuilder->set( [ 'cw_category' => $category ] );
+		if ( $category === $this->getCategory() ) {
+			return;
 		}
+
+		if ( !in_array( $category, $this->options->get( ConfigNames::Categories ), true ) ) {
+			throw new InvalidArgumentException( 'Cannot set an unsupported category.' );
+		}
+
+		$this->trackChange( 'category', $this->getCategory(), $category );
+		$this->getQueryBuilder()->set( [ 'cw_category' => $category ] );
 	}
 
 	public function setSitename( string $sitename ): void {
-		$this->checkQueryBuilder();
-		if ( $sitename !== $this->getSitename() ) {
-			$this->trackChange( 'sitename', $this->getSitename(), $sitename );
-			$this->queryBuilder->set( [ 'cw_sitename' => $sitename ] );
+		if ( $sitename === $this->getSitename() ) {
+			return;
 		}
+
+		$this->trackChange( 'sitename', $this->getSitename(), $sitename );
+		$this->getQueryBuilder()->set( [ 'cw_sitename' => $sitename ] );
 	}
 
 	public function setLanguage( string $language ): void {
-		$this->checkQueryBuilder();
-		if ( $language !== $this->getLanguage() ) {
-			$this->trackChange( 'language', $this->getLanguage(), $language );
-			$this->queryBuilder->set( [ 'cw_language' => $language ] );
+		if ( $language === $this->getLanguage() ) {
+			return;
 		}
+
+		$this->trackChange( 'language', $this->getLanguage(), $language );
+		$this->getQueryBuilder()->set( [ 'cw_language' => $language ] );
 	}
 
 	public function setReasonAndPurpose( string $reason, string $purpose ): void {
-		$this->checkQueryBuilder();
-		if ( $reason !== $this->getReason() ) {
+		$hasReasonChanged = $reason !== $this->getReason();
+		$hasPurposeChanged = $purpose && $purpose !== $this->getPurpose();
+
+		if ( !$hasReasonChanged && !$hasPurposeChanged ) {
+			return;
+		}
+
+		if ( $hasReasonChanged ) {
 			$this->trackChange( 'reason', $this->getReason(), $reason );
 		}
 
-		if ( $purpose && $purpose !== $this->getPurpose() ) {
+		if ( $hasPurposeChanged ) {
 			$this->trackChange( 'purpose', $this->getPurpose(), $purpose );
 		}
 
-		$newComment = '';
-		if ( $purpose ) {
-			$newComment .= "Purpose: $purpose\n";
-		}
-
+		$newComment = $purpose ? "Purpose: $purpose\n" : '';
 		$newComment .= $reason;
 
-		$this->queryBuilder->set( [ 'cw_comment' => $newComment ] );
+		$this->getQueryBuilder()->set( [ 'cw_comment' => $newComment ] );
 	}
 
 	public function setUrl( string $url ): void {
-		$this->checkQueryBuilder();
-		if ( $url !== $this->getUrl() ) {
-			$subdomain = $this->validator->getValidSubdomain( $url );
-
-			$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
-			$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
-
-			$this->trackChange( 'url', $this->getUrl(), $url );
-			$this->queryBuilder->set( [
-				'cw_dbname' => $dbname,
-				'cw_url' => $url,
-			] );
+		if ( $url === $this->getUrl() ) {
+			return;
 		}
+
+		$subdomain = $this->validator->getValidSubdomain( $url );
+		$dbname = $subdomain . $this->options->get( ConfigNames::DatabaseSuffix );
+		$url = $subdomain . '.' . $this->options->get( ConfigNames::Subdomain );
+
+		$this->trackChange( 'url', $this->getUrl(), $url );
+		$this->getQueryBuilder()->set( [
+			'cw_dbname' => $dbname,
+			'cw_url' => $url,
+		] );
 	}
 
 	public function setExtraFieldsData( array $fieldsData ): void {
-		$this->checkQueryBuilder();
 		$extra = $this->getAllExtraData();
-
 		$hasChanges = false;
+
 		foreach ( $fieldsData as $field => $value ) {
-			if ( $value !== $this->getExtraFieldData( $field ) ) {
-				$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
-				$extra[$field] = $value;
-				$hasChanges = true;
-			}
-		}
-
-		if ( $hasChanges ) {
-			$newExtra = json_encode( $extra );
-			if ( $newExtra === false ) {
-				throw new RuntimeException( 'Cannot set invalid JSON data to cw_extra.' );
+			if ( $value === $this->getExtraFieldData( $field ) ) {
+				continue;
 			}
 
-			$this->queryBuilder->set( [ 'cw_extra' => $newExtra ] );
+			$this->trackChange( $field, $this->getExtraFieldData( $field ), $value );
+			$extra[$field] = $value;
+			$hasChanges = true;
 		}
+
+		if ( !$hasChanges ) {
+			return;
+		}
+
+		$newExtra = json_encode( $extra );
+		if ( $newExtra === false ) {
+			throw new RuntimeException( 'Cannot set invalid JSON data to cw_extra.' );
+		}
+
+		$this->getQueryBuilder()->set( [ 'cw_extra' => $newExtra ] );
 	}
 
 	public function setStatus( string $status ): void {
-		$this->checkQueryBuilder();
-		if ( $status !== $this->getStatus() ) {
-			$this->trackChange( 'status', $this->getStatus(), $status );
-			$this->queryBuilder->set( [ 'cw_status' => $status ] );
+		if ( $status === $this->getStatus() ) {
+			return;
 		}
+
+		$this->trackChange( 'status', $this->getStatus(), $status );
+		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );
 	}
 
 	public function tryExecuteQueryBuilder(): void {
-		$this->checkQueryBuilder();
 		if ( $this->changes ) {
-			$this->queryBuilder->execute();
+			$this->getQueryBuilder()->execute();
 		}
 
 		$this->clearQueryBuilder();
@@ -882,6 +944,11 @@ class WikiRequestManager {
 	}
 
 	public function trackChange( string $field, mixed $oldValue, mixed $newValue ): void {
+		if ( $this->queryBuilder === null ) {
+			// If query builder is not set we don't want changes
+			return;
+		}
+
 		// Make sure boolean, array, and null values save to changes as a string
 		// We need this so that getChangeMessage properly displays them.
 
@@ -956,9 +1023,7 @@ class WikiRequestManager {
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
-				[
-					'id' => $this->ID
-				]
+				[ 'id' => $this->ID ]
 			)
 		);
 	}

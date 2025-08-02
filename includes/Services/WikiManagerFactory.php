@@ -15,12 +15,24 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
+use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use function array_flip;
+use function array_intersect_key;
+use function array_keys;
+use function array_rand;
+use function json_encode;
+use function min;
+use function wfTimestamp;
+use const DB_PRIMARY;
+use const MW_INSTALL_PATH;
+use const TS_UNIX;
 
 class WikiManagerFactory {
 
@@ -99,8 +111,8 @@ class WikiManagerFactory {
 				}
 
 				// Pick the cluster with the least number of databases
-				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ) );
-				$this->cluster = $smallestClusters[array_rand( $smallestClusters )];
+				$smallestClusters = array_keys( $clusterSizes, min( $clusterSizes ), true );
+				$this->cluster = (string)$smallestClusters[array_rand( $smallestClusters )] ?: null;
 
 				// Make sure we set the new database in sectionsByDB early
 				// so that if the cluster is empty it is populated so that a new
@@ -111,6 +123,9 @@ class WikiManagerFactory {
 				$lbs = $lbFactoryMulti->getAllMainLBs();
 				$this->lb = $lbs[$this->cluster];
 				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
+				if ( $newDbw === false ) {
+					throw new DBConnectionError();
+				}
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
@@ -136,7 +151,7 @@ class WikiManagerFactory {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
 			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};", __METHOD__ );
-		} catch ( Exception $e ) {
+		} catch ( Exception ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
@@ -144,7 +159,11 @@ class WikiManagerFactory {
 			// If we are using DatabaseClusters we will have an LB
 			// and we will use that which will use the clusters
 			// defined in $wgLBFactoryConf.
-			$this->dbw = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
+			$conn = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
+			if ( $conn === false ) {
+				throw new DBConnectionError();
+			}
+			$this->dbw = $conn;
 			return;
 		}
 
@@ -179,6 +198,13 @@ class WikiManagerFactory {
 
 		$this->doCreateDatabase();
 
+		$extraFields = [];
+		$this->hookRunner->onCreateWikiCreationExtraFields( $extraFields );
+
+		// Filter $extra to only include keys present in $extraFields
+		$filteredData = array_intersect_key( $extra, array_flip( $extraFields ) );
+		$extraData = json_encode( $filteredData ) ?: '[]';
+
 		$this->cwdb->newInsertQueryBuilder()
 			->insertInto( 'cw_wikis' )
 			->row( [
@@ -189,6 +215,7 @@ class WikiManagerFactory {
 				'wiki_private' => (int)$private,
 				'wiki_creation' => $this->dbw->timestamp(),
 				'wiki_category' => $category,
+				'wiki_extra' => $extraData,
 			] )
 			->caller( __METHOD__ )
 			->execute();
@@ -214,7 +241,7 @@ class WikiManagerFactory {
 		array $extra
 	): void {
 		foreach ( $this->options->get( ConfigNames::SQLFiles ) as $sqlfile ) {
-			$this->dbw->sourceFile( $sqlfile );
+			$this->dbw->sourceFile( $sqlfile, fname: __METHOD__ );
 		}
 
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
@@ -266,16 +293,10 @@ class WikiManagerFactory {
 		);
 
 		if ( $actor !== '' ) {
-			$domain = $this->options->get( ConfigNames::Subdomain );
-			$subdomain = substr(
-				$this->dbname, 0,
-				-strlen( $this->options->get( ConfigNames::DatabaseSuffix ) )
-			);
-
 			$notificationData = [
 				'type' => 'wiki-creation',
 				'extra' => [
-					'wiki-url' => 'https://' . $subdomain . '.' . $domain,
+					'wiki-url' => $this->validator->getValidUrl( $this->dbname ),
 					'sitename' => $sitename,
 				],
 				'subject' => $this->messageLocalizer->msg(
@@ -305,6 +326,10 @@ class WikiManagerFactory {
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
 			->fetchRow();
+
+		if ( !$row ) {
+			throw new MissingWikiError( $this->dbname );
+		}
 
 		$deletionDate = $row->wiki_deleted_timestamp;
 		$unixDeletion = (int)wfTimestamp( TS_UNIX, $deletionDate );
@@ -406,13 +431,13 @@ class WikiManagerFactory {
 	}
 
 	private function compileTables(): void {
-		$cTables = [];
+		$tables = [];
 
-		$this->hookRunner->onCreateWikiTables( $cTables );
+		$this->hookRunner->onCreateWikiTables( $tables );
 
-		$cTables['cw_wikis'] = 'wiki_dbname';
+		$tables['cw_wikis'] = 'wiki_dbname';
 
-		$this->tables = $cTables;
+		$this->tables = $tables;
 	}
 
 	private function recache(): void {

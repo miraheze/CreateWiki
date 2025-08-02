@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests\Maintenance;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use MediaWiki\Title\Title;
 use Miraheze\CreateWiki\Maintenance\CheckLastWikiActivity;
+use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /**
@@ -23,7 +24,9 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 	 * @covers ::__construct
 	 */
 	public function testConstructor(): void {
-		$this->assertInstanceOf( CheckLastWikiActivity::class, $this->maintenance->object );
+		$mockObject = $this->maintenance;
+		'@phan-var TestingAccessWrapper $mockObject';
+		$this->assertInstanceOf( CheckLastWikiActivity::class, $mockObject->object );
 	}
 
 	/**
@@ -31,7 +34,7 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 	 * @covers ::getTimestamp
 	 */
 	public function testExecuteWithRevisionOnly(): void {
-		ConvertibleTimestamp::setFakeTime( '20250405060708' );
+		ConvertibleTimestamp::setFakeTime( (string)20250405060708 );
 		$this->editPage(
 			Title::newFromText( 'TestPageRevisionOnly' ),
 			'Initial revision'
@@ -46,16 +49,22 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 	 * @covers ::getTimestamp
 	 */
 	public function testExecuteWithLoggingEventLater(): void {
-		ConvertibleTimestamp::setFakeTime( '20250505060708' );
+		ConvertibleTimestamp::setFakeTime( (string)20250505060708 );
 		$editStatus = $this->editPage(
 			Title::newFromText( 'TestPageLogging' ),
 			'Initial revision'
 		);
 
-		ConvertibleTimestamp::setFakeTime( '20250505060710' );
+		$newRevision = $editStatus->getNewRevision();
+		if ( $newRevision === null ) {
+			$this->fail( 'Could not get new revision' );
+			return;
+		}
+
+		ConvertibleTimestamp::setFakeTime( (string)20250505060710 );
 		$this->deletePage(
 			$this->getServiceContainer()->getWikiPageFactory()->newFromTitle(
-				$editStatus->getNewRevision()->getPage()
+				$newRevision->getPage()
 			)
 		);
 

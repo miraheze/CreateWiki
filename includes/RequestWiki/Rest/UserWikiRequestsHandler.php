@@ -26,9 +26,9 @@ class UserWikiRequestsHandler extends SimpleHandler {
 	public function run( string $username ): Response {
 		$this->restUtils->checkEnv();
 
-		$user = $this->userFactory->newFromName( $username );
+		$requester = $this->userFactory->newFromName( $username );
 
-		if ( !$user ) {
+		if ( !$requester ) {
 			// A non-existing user has no requests
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				404, new MessageValue( 'createwiki-rest-usernowikirequests' )
@@ -36,7 +36,7 @@ class UserWikiRequestsHandler extends SimpleHandler {
 		}
 
 		$wikiRequests = $this->wikiRequestManager->getVisibleRequestsByUser(
-			$user, $this->getAuthority()->getUser()
+			$requester, $this->getAuthority()->getUser()
 		);
 
 		if ( $wikiRequests ) {
