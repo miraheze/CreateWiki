@@ -130,6 +130,7 @@ return [
 			$services->get( 'CreateWikiValidator' ),
 			$services->getLanguageNameUtils(),
 			$services->getPermissionManager(),
+			$services->getUserLinkRenderer(),
 			$services->get( 'WikiRequestManager' ),
 			new ServiceOptions(
 				WikiRequestViewer::CONSTRUCTOR_OPTIONS,

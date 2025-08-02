@@ -4,19 +4,20 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\IContextSource;
+use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
+use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
-use UserNotLoggedIn;
 use function array_diff_key;
 use function array_flip;
 use function count;
@@ -45,6 +46,7 @@ class WikiRequestViewer {
 		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly ServiceOptions $options
 	) {
@@ -93,9 +95,9 @@ class WikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => Linker::userLink(
-					$this->wikiRequestManager->getRequester()->getId(),
-					$this->wikiRequestManager->getRequester()->getName()
+				'default' => $this->userLinkRenderer->userLink(
+					$this->wikiRequestManager->getRequester(),
+					$this->context
 				) . Linker::userToolLinks(
 					$this->wikiRequestManager->getRequester()->getId(),
 					$this->wikiRequestManager->getRequester()->getName()
