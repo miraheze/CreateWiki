@@ -32,6 +32,7 @@
 	"createwiki-label-requester": "Prosilec:",
 	"createwiki-label-sitename": "Ime mesta:",
 	"createwiki-label-statuschangecomment": "Razlog za to dejanje:",
+	"createwiki-request-locked": "Ta zahtevek je zaklenjen. Ni ga mogoče urejati in k njemu ni mogoče dodajati komentarjev.",
 	"createwiki-success": "Viki je bil uspešno ustvarjen.",
 	"echo-category-title-request-comment": "K prošnji za viki je bil dodan komentar",
 	"echo-category-title-request-declined": "Prošnja za viki zavrnjena",
