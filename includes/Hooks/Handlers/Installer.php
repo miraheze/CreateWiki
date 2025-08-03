@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
-use Miraheze\CreateWiki\Maintenance\PopulateCentralWiki;
 
 class Installer implements LoadExtensionSchemaUpdatesHook {
 
