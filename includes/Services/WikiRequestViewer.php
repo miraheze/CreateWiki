@@ -53,6 +53,7 @@ class WikiRequestViewer {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
+	/** @throws UnknownRequestError */
 	public function getFormDescriptor(): array {
 		$user = $this->context->getUser();
 
@@ -442,6 +443,7 @@ class WikiRequestViewer {
 		return $formDescriptor;
 	}
 
+	/** @throws UnknownRequestError */
 	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
@@ -469,6 +471,7 @@ class WikiRequestViewer {
 		return $htmlForm;
 	}
 
+	/** @throws UserNotLoggedIn */
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form

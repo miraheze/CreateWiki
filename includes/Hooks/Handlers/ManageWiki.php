@@ -49,7 +49,6 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 		} catch ( MissingWikiError ) {
 			// Switch to the ManageWiki MissingWikiError since it
 			// expects that one for ManageWiki.
-			// @phan-suppress-next-line PhanTypeInvalidThrowStatementNonThrowable
 			throw new MWMissingWikiError( $dbname );
 		}
 	}

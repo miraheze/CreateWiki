@@ -64,6 +64,7 @@ class RemoteWiki {
 
 	private ?string $log = null;
 
+	/** @throws MissingWikiError */
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataFactory $dataFactory,

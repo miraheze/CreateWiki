@@ -28,6 +28,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 	/**
 	 * @param ?string $par
+	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
 		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {

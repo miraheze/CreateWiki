@@ -184,6 +184,8 @@ class CreateWikiDataFactory {
 	 * Resets the wiki data information.
 	 *
 	 * This method retrieves new information for the wiki and updates the cache.
+	 *
+	 * @throws MissingWikiError
 	 */
 	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();

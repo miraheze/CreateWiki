@@ -31,6 +31,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/**
 	 * @param ?string $par
+	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
 		$this->requireNamedUser( 'requestwiki-notloggedin' );
@@ -210,6 +211,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		return Status::newGood();
 	}
 
+	/** @throws UserBlockedError */
 	public function checkPermissions(): void {
 		parent::checkPermissions();
 

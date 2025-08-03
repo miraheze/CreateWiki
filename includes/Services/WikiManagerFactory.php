@@ -173,6 +173,7 @@ class WikiManagerFactory {
 		$this->dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
 	}
 
+	/** @throws FatalError */
 	public function create(
 		string $sitename,
 		string $language,
@@ -317,6 +318,7 @@ class WikiManagerFactory {
 		}
 	}
 
+	/** @throws MissingWikiError */
 	public function delete( bool $force ): ?string {
 		$this->compileTables();
 
