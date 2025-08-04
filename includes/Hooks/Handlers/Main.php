@@ -10,6 +10,8 @@ use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
+use MediaWiki\Parser\Parser;
+use MediaWiki\Parser\PPFrame;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
@@ -79,7 +81,7 @@ class Main implements
 				return include $path;
 			}, $cachePath );
 
-			if ( $cacheArray !== false ) {
+			if ( $cacheArray !== false && isset( $cacheArray['states']['private'] ) ) {
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
 				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbname );
@@ -96,7 +98,11 @@ class Main implements
 		}
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 * @param Parser $parser @phan-unused-param
+	 * @param PPFrame $frame @phan-unused-param
+	 */
 	public function onParserGetVariableValueSwitch(
 		$parser,
 		&$variableCache,
@@ -137,7 +143,7 @@ class Main implements
 		&$vars,
 		$out
 	): void {
-		if ( $out->getTitle()->isSubpageOf( SpecialPage::getTitleFor( 'RequestWikiQueue' ) ) ) {
+		if ( $out->getTitle()?->isSubpageOf( SpecialPage::getTitleFor( 'RequestWikiQueue' ) ) ) {
 			$vars[ConfigNames::CannedResponses] = $this->config->get( ConfigNames::CannedResponses );
 		}
 	}

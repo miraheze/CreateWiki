@@ -37,6 +37,10 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 			'user' => 'root',
 		] );
 
+		if ( $db === null ) {
+			return;
+		}
+
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
