@@ -315,7 +315,6 @@ class RequestWikiRemoteAIJob extends Job {
 	): ?array {
 		try {
 			$isBio = $bio ? 'Yes' : 'No';
-			$isFork = !empty( $extraData['source'] ) ? 'Yes' : 'No';
 			$isNsfw = !empty( $extraData['nsfw'] ) ? 'Yes' : 'No';
 			$isPrivate = $private ? 'Yes' : 'No';
 			$forkText = !empty( $extraData['sourceurl'] )

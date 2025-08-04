@@ -59,7 +59,7 @@ $cfg['plugins'] = array_merge( $cfg['plugins'], [
 	'UseReturnValuePlugin',
 ] );
 
-$cfg['plugins'][] = __DIR__ . '/plugins/NoOptionalParamPlugin.php';
+$cfg['plugins'][] = __DIR__ . '/../vendor/miraheze/phan-plugins/NoOptionalParamPlugin.php';
 
 $cfg['enable_class_alias_support'] = false;
 
