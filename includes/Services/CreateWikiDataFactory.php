@@ -184,6 +184,8 @@ class CreateWikiDataFactory {
 	 * Resets the wiki data information.
 	 *
 	 * This method retrieves new information for the wiki and updates the cache.
+	 *
+	 * @throws MissingWikiError
 	 */
 	public function resetWikiData( bool $isNewChanges ): void {
 		$mtime = time();
@@ -205,13 +207,6 @@ class CreateWikiDataFactory {
 			->fetchRow();
 
 		if ( !$row ) {
-			if ( $this->databaseUtils->isRemoteWikiCentral( $this->dbname ) ) {
-				// Don't throw an exception if we have not yet populated the
-				// central wiki, so that the PopulateCentralWiki script can
-				// successfully populate it.
-				return;
-			}
-
 			throw new MissingWikiError( $this->dbname );
 		}
 
