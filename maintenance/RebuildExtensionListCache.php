@@ -34,7 +34,7 @@ class RebuildExtensionListCache extends Maintenance {
 		), true );
 
 		$processor = new ExtensionProcessor();
-		foreach ( $queue as $path => $mtime ) {
+		foreach ( $queue as $path => $_ ) {
 			$processor->extractInfoFromFile( $path );
 		}
 

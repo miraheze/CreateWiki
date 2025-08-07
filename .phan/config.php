@@ -59,14 +59,14 @@ $cfg['plugins'] = array_merge( $cfg['plugins'], [
 	'UseReturnValuePlugin',
 ] );
 
-$cfg['plugins'][] = __DIR__ . '/plugins/NoOptionalParamPlugin.php';
+$cfg['plugins'][] = __DIR__ . '/../vendor/miraheze/phan-plugins/NoOptionalParamPlugin.php';
 
 $cfg['enable_class_alias_support'] = false;
 
-// $cfg['strict_method_checking'] = true;
-// $cfg['strict_object_checking'] = true;
+$cfg['strict_method_checking'] = true;
+$cfg['strict_object_checking'] = true;
 // $cfg['strict_param_checking'] = true;
-// $cfg['strict_property_checking'] = true;
+$cfg['strict_property_checking'] = true;
 $cfg['strict_return_checking'] = true;
 
 return $cfg;

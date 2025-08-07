@@ -61,6 +61,10 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			'user' => 'root',
 		] );
 
+		if ( $db === null ) {
+			return;
+		}
+
 		$db->begin();
 		$db->query( "GRANT ALL PRIVILEGES ON `activetest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';" );

@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki;
 
-use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\OOUIHTMLForm;
 use MediaWiki\Logger\LoggerFactory;
 use OOUI\FieldsetLayout;
@@ -19,15 +18,6 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected $mSubSectionBeforeFields = false;
 
 	/**
-	 * @param string $html
-	 * @return string
-	 */
-	public function wrapForm( $html ) {
-		$html = Html::rawElement( 'div', [ 'id' => 'createwiki' ], $html );
-		return parent::wrapForm( $html );
-	}
-
-	/**
 	 * @param string $legend
 	 * @param string $section
 	 * @param array $attributes
@@ -37,7 +27,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 	protected function wrapFieldSetSection( $legend, $section, $attributes, $isRoot ) {
 		$layout = parent::wrapFieldSetSection( $legend, $section, $attributes, $isRoot );
 
-		$layout->addClasses( [ 'createwiki-fieldset-wrapper' ] );
+		$layout->addClasses( [ 'ext-createwiki-fieldset-wrapper' ] );
 		$layout->removeClasses( [ 'oo-ui-panelLayout-framed' ] );
 
 		return $layout;
@@ -72,7 +62,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 				'classes' => [ 'mw-htmlform-autoinfuse-lazy' ],
 				'label' => $label,
 				'content' => new FieldsetLayout( [
-					'classes' => [ 'createwiki-section-fieldset' ],
+					'classes' => [ 'ext-createwiki-section-fieldset' ],
 					'id' => "mw-section-$key",
 					'label' => $label,
 					'items' => [
@@ -90,7 +80,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 			'infusable' => true,
 			'expanded' => false,
 			'autoFocus' => false,
-			'classes' => [ 'createwiki-tabs' ],
+			'classes' => [ 'ext-createwiki-tabs' ],
 		] );
 
 		$indexLayout->addTabPanels( $tabPanels );
@@ -100,7 +90,7 @@ class CreateWikiOOUIForm extends OOUIHTMLForm {
 		$form = new PanelLayout( [
 			'framed' => true,
 			'expanded' => false,
-			'classes' => [ 'createwiki-tabs-wrapper' ],
+			'classes' => [ 'ext-createwiki-tabs-wrapper' ],
 			'content' => $indexLayout,
 		] );
 

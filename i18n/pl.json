@@ -48,6 +48,7 @@
 	"notification-header-request-declined": "Twoja prośba została odrzucona z powodu:",
 	"notification-header-wiki-creation": "Wiki <strong>$1</strong> została utworzona!",
 	"requestwiki": "Załóż wiki",
+	"requestwiki-ai-error-reason": "Ten wniosek nie mógł zostać automatycznie rozpatrzony, powód został zarejestrowany. Prosimy czekać na rozpatrzenie wniosku przez personel.",
 	"requestwiki-edit-success": "Zmiany w zgłoszeniu $1 zostały pomyślnie zapisane.",
 	"requestwiki-error-invalidcomment": "Twoje zgłoszenie zawiera nieprawidłowe znaki. Spróbuj ponownie później, a jeżeli problem będzie się powtarzał, [[Help center|skontaktuj się z nami]].",
 	"requestwiki-error-patient": "Wysłałeś już jedno zgłoszenie. Prosimy o cierpliwość, wkrótce jeden z naszych wolontariuszy założy twoją wiki. Jeżeli chcesz poprosić o następną, musisz poczekać aby móc zrobić to ponownie.",
