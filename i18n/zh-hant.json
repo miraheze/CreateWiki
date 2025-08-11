@@ -113,6 +113,7 @@
 	"requestwiki-edit-success": "已成功儲存您對此 wiki 申請的變更。",
 	"requestwiki-error-emailnotconfirmed": "您的電子郵件尚未確認。若要請求 wiki，請先[[Special:ChangeEmail|確認電子郵件]]。",
 	"requestwiki-error-invalidcomment": "您的 wiki 申請包含無效字元，請改正後重新申請。",
+	"requestwiki-error-minlength": "請將此文字加長至 $1 個{{PLURAL:$1|字元}}或更多（您目前使用了 $2 個{{PLURAL:$2|字元}}）。",
 	"requestwiki-error-patient": "您已經申請了一個 wiki！請耐心等候，我們正在檢視您的申請。若您需要申請另一個 wiki，請稍後再試。",
 	"requestwiki-info-guidance-post": "感謝您選擇我們的服務！",
 	"requestwiki-label-add-comment": "新增意見",
