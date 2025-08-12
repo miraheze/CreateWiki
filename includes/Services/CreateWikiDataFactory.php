@@ -3,7 +3,6 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
-use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -201,8 +200,6 @@ class CreateWikiDataFactory {
 	public function resetWikiData( bool $isNewChanges ): void {
 		// Temporary; don't reset wiki data here if doing from ManageWiki.
 		if ( class_exists( DataStoreFactory::class ) ) {
-			MediaWikiServices::getInstance()->get( 'ManageWikiDataStoreFactory' )
-				->newInstance( $this->dbname )->resetWikiData( $isNewChanges );
 			return;
 		}
 
