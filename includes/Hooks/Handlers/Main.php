@@ -66,7 +66,7 @@ class Main implements
 		$dbname = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		$data = $this->dataFactory->newInstance( $dbname );
+		$data = $this->dataFactory->newInstance();
 		$data->syncCache();
 
 		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
