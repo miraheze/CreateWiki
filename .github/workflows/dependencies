@@ -5,5 +5,5 @@ Echo:
   branch: auto
   repo: auto
 ManageWiki:
-  branch: main
+  branch: cache
   repo: https://github.com/miraheze/ManageWiki

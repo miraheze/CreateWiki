@@ -6,11 +6,13 @@ use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\ManageWiki\Helpers\Factories\DataStoreFactory;
 use ObjectCacheFactory;
 use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
+use function class_exists;
 use function file_exists;
 use function file_put_contents;
 use function is_array;
@@ -69,13 +71,18 @@ class CreateWikiDataFactory {
 			$this->cache->makeGlobalKey( 'CreateWiki', 'databases' )
 		);
 
-		$this->wikiTimestamp = (int)$this->cache->get(
-			$this->cache->makeGlobalKey( 'CreateWiki', $dbname )
-		);
-
 		if ( !$this->databasesTimestamp ) {
 			$this->resetDatabaseLists( isNewChanges: true );
 		}
+
+		// Temporary; don't load wiki data here if doing from ManageWiki.
+		if ( class_exists( DataStoreFactory::class ) ) {
+			return $this;
+		}
+
+		$this->wikiTimestamp = (int)$this->cache->get(
+			$this->cache->makeGlobalKey( 'CreateWiki', $dbname )
+		);
 
 		if ( !$this->wikiTimestamp ) {
 			$this->resetWikiData( isNewChanges: true );
@@ -99,6 +106,11 @@ class CreateWikiDataFactory {
 		// exist or has no valid mtime
 		if ( $databasesMtime === 0 || $databasesMtime < $this->databasesTimestamp ) {
 			$this->resetDatabaseLists( isNewChanges: false );
+		}
+
+		// Temporary; don't load wiki data here if doing from ManageWiki.
+		if ( class_exists( DataStoreFactory::class ) ) {
+			return;
 		}
 
 		$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
@@ -186,6 +198,11 @@ class CreateWikiDataFactory {
 	 * This method retrieves new information for the wiki and updates the cache.
 	 */
 	public function resetWikiData( bool $isNewChanges ): void {
+		// Temporary; don't reset wiki data here if doing from ManageWiki.
+		if ( class_exists( DataStoreFactory::class ) ) {
+			return;
+		}
+
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->wikiTimestamp = $mtime;
@@ -257,8 +274,12 @@ class CreateWikiDataFactory {
 	 * Probably used when a wiki is deleted or renamed.
 	 */
 	public function deleteWikiData( string $dbname ): void {
-		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $dbname ) );
+		// Temporary; don't delete wiki data here if doing from ManageWiki.
+		if ( class_exists( DataStoreFactory::class ) ) {
+			return;
+		}
 
+		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $dbname ) );
 		if ( file_exists( "{$this->cacheDir}/{$dbname}.php" ) ) {
 			unlink( "{$this->cacheDir}/{$dbname}.php" );
 		}
