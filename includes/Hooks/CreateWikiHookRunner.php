@@ -12,7 +12,6 @@ class CreateWikiHookRunner implements
 	CreateWikiAfterCreationWithExtraDataHook,
 	CreateWikiCreationExtraFieldsHook,
 	CreateWikiCreationHook,
-	CreateWikiDataFactoryBuilderHook,
 	CreateWikiDeletionHook,
 	CreateWikiGenerateDatabaseListsHook,
 	CreateWikiReadPersistentModelHook,
@@ -56,19 +55,6 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'CreateWikiCreation',
 			[ $dbname, $private ],
-			[ 'abortable' => false ]
-		);
-	}
-
-	/** @inheritDoc */
-	public function onCreateWikiDataFactoryBuilder(
-		string $dbname,
-		IReadableDatabase $dbr,
-		array &$cacheArray
-	): void {
-		$this->hookContainer->run(
-			'CreateWikiDataFactoryBuilder',
-			[ $dbname, $dbr, &$cacheArray ],
 			[ 'abortable' => false ]
 		);
 	}
