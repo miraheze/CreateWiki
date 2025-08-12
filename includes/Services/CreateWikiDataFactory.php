@@ -10,8 +10,6 @@ use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
-use function class_exists;
-use function file_exists;
 use function file_put_contents;
 use function is_array;
 use function rename;
