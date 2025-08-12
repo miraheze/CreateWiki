@@ -349,9 +349,6 @@ class WikiManagerFactory {
 			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
-		$data = $this->dataFactory->newInstance( $this->dbname );
-		$data->deleteWikiData( $this->dbname );
-
 		foreach ( $this->tables as $table => $selector ) {
 			$this->cwdb->newDeleteQueryBuilder()
 				->deleteFrom( $table )
@@ -390,14 +387,6 @@ class WikiManagerFactory {
 				->caller( __METHOD__ )
 				->execute();
 		}
-
-		/**
-		 * Since the wiki at $new likely won't be cached yet, this will also
-		 * run resetWikiData() on it since it has no mtime, so that it will
-		 * generate the new cache file for it as well.
-		 */
-		$data = $this->dataFactory->newInstance( $newDatabaseName );
-		$data->deleteWikiData( $this->dbname );
 
 		$this->recache();
 
