@@ -16,6 +16,7 @@ class CreateWikiHookRunner implements
 	CreateWikiDeletionHook,
 	CreateWikiGenerateDatabaseListsHook,
 	CreateWikiReadPersistentModelHook,
+	CreateWikiRemoteWikiCommitHook,
 	CreateWikiRenameHook,
 	CreateWikiStateClosedHook,
 	CreateWikiStateOpenHook,
@@ -98,6 +99,15 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'CreateWikiReadPersistentModel',
 			[ &$pipeline ],
+			[ 'abortable' => false ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiRemoteWikiCommit( string $dbname ): void {
+		$this->hookContainer->run(
+			'CreateWikiRemoteWikiCommit',
+			[ $dbname ],
 			[ 'abortable' => false ]
 		);
 	}
