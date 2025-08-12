@@ -430,7 +430,6 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$centralWiki = $this->databaseUtils->getCentralWikiID();
 		$data = $this->dataFactory->newInstance();
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
