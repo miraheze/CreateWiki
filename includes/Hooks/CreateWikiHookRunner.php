@@ -6,7 +6,6 @@ use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\DBConnRef;
-use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiHookRunner implements
 	CreateWikiAfterCreationWithExtraDataHook,
