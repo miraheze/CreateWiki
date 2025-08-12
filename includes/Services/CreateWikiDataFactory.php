@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -198,6 +199,13 @@ class CreateWikiDataFactory {
 	 * This method retrieves new information for the wiki and updates the cache.
 	 */
 	public function resetWikiData( bool $isNewChanges ): void {
+		// Temporary; don't reset wiki data here if doing from ManageWiki.
+		if ( class_exists( DataStoreFactory::class ) ) {
+			MediaWikiServices::getInstance()->get( 'ManageWikiDataStoreFactory' )
+				->newInstance( $this->dbname )->resetWikiData( $isNewChanges );
+			return;
+		}
+
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->wikiTimestamp = $mtime;
@@ -269,7 +277,7 @@ class CreateWikiDataFactory {
 	 * Probably used when a wiki is deleted or renamed.
 	 */
 	public function deleteWikiData( string $dbname ): void {
-		// Temporary; don't load wiki data here if doing from ManageWiki.
+		// Temporary; don't delete wiki data here if doing from ManageWiki.
 		if ( class_exists( DataStoreFactory::class ) ) {
 			return;
 		}
