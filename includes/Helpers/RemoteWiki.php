@@ -467,7 +467,7 @@ class RemoteWiki {
 				}
 			}
 
-			$data = $this->dataFactory->newInstance( $this->dbname );
+			$data = $this->dataFactory->newInstance();
 			if ( $this->resetDatabaseLists ) {
 				$data->resetDatabaseLists( isNewChanges: true );
 			}
