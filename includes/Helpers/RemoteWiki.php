@@ -467,12 +467,11 @@ class RemoteWiki {
 				}
 			}
 
-			$data = $this->dataFactory->newInstance( $this->dbname );
+			$data = $this->dataFactory->newInstance();
 			if ( $this->resetDatabaseLists ) {
 				$data->resetDatabaseLists( isNewChanges: true );
 			}
 
-			$data->resetWikiData( isNewChanges: true );
 			$this->hookRunner->onCreateWikiRemoteWikiCommit( $this->dbname );
 
 			if ( $this->log === null ) {
