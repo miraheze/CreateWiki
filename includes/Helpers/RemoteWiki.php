@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use UnexpectedValueException;
+use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IReadableDatabase;
 use function array_keys;
 use function array_merge;
@@ -73,6 +74,9 @@ class RemoteWiki {
 		protected readonly string $dbname
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
+		if ( $dbname === ILoadBalancer::DOMAIN_ANY ) {
+			return;
+		}
 
 		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 		$row = $this->dbr->newSelectQueryBuilder()
