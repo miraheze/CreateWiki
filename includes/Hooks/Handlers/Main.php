@@ -61,15 +61,15 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onSetupAfterCache() {
-		global $wgGroupPermissions;
+		// global $wgGroupPermissions;
 
-		$dbname = $this->config->get( MainConfigNames::DBname );
-		$isPrivate = false;
+		// $dbname = $this->config->get( MainConfigNames::DBname );
+		// $isPrivate = false;
 
 		$data = $this->dataFactory->newInstance();
 		$data->syncCache();
 
-		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
+		/* if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
 			// Avoid using file_exists for performance reasons. Including the file directly leverages
 			// the opcode cache and prevents any file system access.
 			// We only handle failures if the include does not work.
@@ -95,7 +95,7 @@ class Main implements
 			$wgGroupPermissions['sysop']['read'] = true;
 		} else {
 			$wgGroupPermissions['*']['read'] = true;
-		}
+		} */
 	}
 
 	/**
