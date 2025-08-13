@@ -8,7 +8,6 @@ use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
-use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
@@ -19,7 +18,6 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
-use Wikimedia\AtEase\AtEase;
 
 class Main implements
 	GetAllBlockActionsHook,
