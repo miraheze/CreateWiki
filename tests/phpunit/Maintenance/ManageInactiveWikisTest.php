@@ -357,7 +357,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 
 	private function createWiki( string $dbname ): void {
 		$testUser = $this->getTestUser()->getUser();
-		$testSysop = $this->getTestSysop()->getUser();
 
 		ConvertibleTimestamp::setFakeTime( (string)20200101000000 );
 		$wikiManagerFactory = $this->getServiceContainer()->get( 'WikiManagerFactory' );
