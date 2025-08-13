@@ -80,7 +80,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 				'wiki_language' => 'en',
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
-				'wiki_category' => 'uncategorised',
+				'wiki_category' => 'test',
 				'wiki_closed' => 0,
 				'wiki_deleted' => 0,
 				'wiki_locked' => 0,
@@ -329,7 +329,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		) );
 
 		return $wikiManager->create(
-			'TestWiki', 'en', $private, 'uncategorised',
+			'TestWiki', 'en', $private, 'test',
 			$testUser->getName(), $testSysop->getName(),
 			'Test', []
 		);

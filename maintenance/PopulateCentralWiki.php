@@ -63,7 +63,7 @@ class PopulateCentralWiki extends LoggedUpdateMaintenance {
 				),
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
-				'wiki_category' => $this->getOption( 'category', 'uncategorised' ),
+				'wiki_category' => $this->getOption( 'category', '' ),
 			] )
 			->caller( __METHOD__ )
 			->execute();

@@ -97,7 +97,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 */
 	public function testGetFormFields(): void {
 		$this->overrideConfigValues( [
-			ConfigNames::Categories => [ 'uncategorised' => 'uncategorised' ],
+			ConfigNames::Categories => [ 'test' => 'test' ],
 			ConfigNames::Purposes => [ 'test' => 'test' ],
 			ConfigNames::RequestWikiConfirmAgreement => true,
 			ConfigNames::ShowBiographicalOption => true,
@@ -171,7 +171,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 				'subdomain' => 'example',
 				'sitename' => 'Example Wiki',
 				'language' => 'en',
-				'category' => 'uncategorised',
+				'category' => 'test',
 			],
 			[
 				'duplicate' => false,
@@ -186,7 +186,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 				'subdomain' => 'example',
 				'sitename' => 'Example Wiki',
 				'language' => 'en',
-				'category' => 'uncategorised',
+				'category' => 'test',
 			],
 			[
 				'duplicate' => true,

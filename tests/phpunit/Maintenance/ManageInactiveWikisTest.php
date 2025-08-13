@@ -369,7 +369,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			sitename: 'TestWiki',
 			language: 'en',
 			private: false,
-			category: 'uncategorised',
+			category: 'test',
 			requester: $testUser->getName(),
 			actor: $testSysop->getName(),
 			reason: 'Test',
