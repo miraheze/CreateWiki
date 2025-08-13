@@ -103,7 +103,7 @@ class ManageInactiveWikis extends Maintenance {
 				$remoteWiki->markActive();
 				$remoteWiki->commit();
 
-				$this->output( "{$dbname} has been marked as active.\n" );
+				$this->output( "{$dbname} has been marked as active. Last activity: {$lastActivityTimestamp}\n" );
 			}
 
 			return true;
