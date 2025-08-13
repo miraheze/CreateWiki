@@ -53,7 +53,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			ConfigNames::UseInactiveWikis => true,
 			MainConfigNames::VirtualDomainsMapping => [
 				'virtual-createwiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
-				'virtual-managewiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
 			],
 		] );
 
@@ -371,7 +370,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			private: false,
 			category: 'uncategorised',
 			requester: $testUser->getName(),
-			actor: $testSysop->getName(),
+			actor: '',
 			reason: 'Test',
 			extra: []
 		);
