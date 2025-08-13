@@ -96,7 +96,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			sitename: $formData['sitename'],
 			language: $formData['language'],
 			private: $formData['private'] ?? 0,
-			category: $formData['category'] ?? 'uncategorised',
+			category: $formData['category'] ?? '',
 			requester: $formData['requester'],
 			actor: $this->getContext()->getUser()->getName(),
 			reason: $formData['reason'],
