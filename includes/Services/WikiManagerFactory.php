@@ -27,6 +27,7 @@ use function array_flip;
 use function array_intersect_key;
 use function array_keys;
 use function array_rand;
+use function defined;
 use function json_encode;
 use function min;
 use function wfTimestamp;
@@ -258,10 +259,12 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				Shell::makeScriptCommand(
-					PopulateMainPage::class,
-					[ '--wiki', $this->dbname ]
-				)->limits( $limits )->execute();
+				if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+					Shell::makeScriptCommand(
+						PopulateMainPage::class,
+						[ '--wiki', $this->dbname ]
+					)->limits( $limits )->execute();
+				}
 
 				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
@@ -351,9 +354,6 @@ class WikiManagerFactory {
 			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
-		$data = $this->dataFactory->newInstance( $this->dbname );
-		$data->deleteWikiData( $this->dbname );
-
 		foreach ( $this->tables as $table => $selector ) {
 			$this->cwdb->newDeleteQueryBuilder()
 				->deleteFrom( $table )
@@ -392,14 +392,6 @@ class WikiManagerFactory {
 				->caller( __METHOD__ )
 				->execute();
 		}
-
-		/**
-		 * Since the wiki at $new likely won't be cached yet, this will also
-		 * run resetWikiData() on it since it has no mtime, so that it will
-		 * generate the new cache file for it as well.
-		 */
-		$data = $this->dataFactory->newInstance( $newDatabaseName );
-		$data->deleteWikiData( $this->dbname );
 
 		$this->recache();
 
@@ -443,8 +435,7 @@ class WikiManagerFactory {
 	}
 
 	private function recache(): void {
-		$centralWiki = $this->databaseUtils->getCentralWikiID();
-		$data = $this->dataFactory->newInstance( $centralWiki );
+		$data = $this->dataFactory->newInstance();
 		$data->resetDatabaseLists( isNewChanges: true );
 	}
 }

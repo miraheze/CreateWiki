@@ -4,14 +4,12 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
 use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
-use function file_exists;
 use function file_put_contents;
 use function is_array;
 use function rename;
@@ -35,17 +33,11 @@ class CreateWikiDataFactory {
 	private readonly BagOStuff $cache;
 	private IReadableDatabase $dbr;
 
-	/** @var string The wiki database name. */
-	private string $dbname;
-
 	/** @var string The directory path for cache files. */
 	private readonly string $cacheDir;
 
 	/** @var int The cached timestamp for the databases list. */
 	private int $databasesTimestamp;
-
-	/** @var int The cached timestamp for the wiki information. */
-	private int $wikiTimestamp;
 
 	public function __construct(
 		ObjectCacheFactory $objectCacheFactory,
@@ -62,23 +54,13 @@ class CreateWikiDataFactory {
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
 	}
 
-	public function newInstance( string $dbname ): self {
-		$this->dbname = $dbname;
-
+	public function newInstance(): self {
 		$this->databasesTimestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( 'CreateWiki', 'databases' )
 		);
 
-		$this->wikiTimestamp = (int)$this->cache->get(
-			$this->cache->makeGlobalKey( 'CreateWiki', $dbname )
-		);
-
 		if ( !$this->databasesTimestamp ) {
 			$this->resetDatabaseLists( isNewChanges: true );
-		}
-
-		if ( !$this->wikiTimestamp ) {
-			$this->resetWikiData( isNewChanges: true );
 		}
 
 		return $this;
@@ -99,13 +81,6 @@ class CreateWikiDataFactory {
 		// exist or has no valid mtime
 		if ( $databasesMtime === 0 || $databasesMtime < $this->databasesTimestamp ) {
 			$this->resetDatabaseLists( isNewChanges: false );
-		}
-
-		$wikiMtime = $this->getCachedWikiData()['mtime'] ?? 0;
-
-		// Regenerate wiki data cache if the file does not exist or has no valid mtime
-		if ( $wikiMtime === 0 || $wikiMtime < $this->wikiTimestamp ) {
-			$this->resetWikiData( isNewChanges: false );
 		}
 	}
 
@@ -181,85 +156,6 @@ class CreateWikiDataFactory {
 	}
 
 	/**
-	 * Resets the wiki data information.
-	 *
-	 * This method retrieves new information for the wiki and updates the cache.
-	 *
-	 * @throws MissingWikiError
-	 */
-	public function resetWikiData( bool $isNewChanges ): void {
-		$mtime = time();
-		if ( $isNewChanges ) {
-			$this->wikiTimestamp = $mtime;
-			$this->cache->set(
-				$this->cache->makeGlobalKey( 'CreateWiki', $this->dbname ),
-				$mtime
-			);
-		}
-
-		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
-
-		$row = $this->dbr->newSelectQueryBuilder()
-			->select( '*' )
-			->from( 'cw_wikis' )
-			->where( [ 'wiki_dbname' => $this->dbname ] )
-			->caller( __METHOD__ )
-			->fetchRow();
-
-		if ( !$row ) {
-			throw new MissingWikiError( $this->dbname );
-		}
-
-		$states = [];
-
-		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
-			$states['private'] = (bool)$row->wiki_private;
-		}
-
-		if ( $this->options->get( ConfigNames::UseClosedWikis ) ) {
-			$states['closed'] = (bool)$row->wiki_closed;
-		}
-
-		if ( $this->options->get( ConfigNames::UseInactiveWikis ) ) {
-			$states['inactive'] = $row->wiki_inactive_exempt ? 'exempt' :
-				(bool)$row->wiki_inactive;
-		}
-
-		if ( $this->options->get( ConfigNames::UseExperimental ) ) {
-			$states['experimental'] = (bool)$row->wiki_experimental;
-		}
-
-		$cacheArray = [
-			'mtime' => $mtime,
-			'database' => $row->wiki_dbname,
-			'created' => $row->wiki_creation,
-			'dbcluster' => $row->wiki_dbcluster,
-			'category' => $row->wiki_category,
-			'url' => $row->wiki_url ?? false,
-			'core' => [
-				'wgSitename' => $row->wiki_sitename,
-				'wgLanguageCode' => $row->wiki_language,
-			],
-			'states' => $states,
-		];
-
-		$this->hookRunner->onCreateWikiDataFactoryBuilder( $this->dbname, $this->dbr, $cacheArray );
-		$this->writeToFile( $this->dbname, $cacheArray );
-	}
-
-	/**
-	 * Deletes the wiki data cache for a wiki.
-	 * Probably used when a wiki is deleted or renamed.
-	 */
-	public function deleteWikiData( string $dbname ): void {
-		$this->cache->delete( $this->cache->makeGlobalKey( 'CreateWiki', $dbname ) );
-
-		if ( file_exists( "{$this->cacheDir}/{$dbname}.php" ) ) {
-			unlink( "{$this->cacheDir}/{$dbname}.php" );
-		}
-	}
-
-	/**
 	 * Writes data to a PHP file in the cache directory.
 	 */
 	private function writeToFile( string $fileName, array $data ): void {
@@ -273,26 +169,6 @@ class CreateWikiDataFactory {
 				unlink( $tmpFile );
 			}
 		}
-	}
-
-	/**
-	 * @return array Cached wiki data.
-	 */
-	private function getCachedWikiData(): array {
-		// Avoid using file_exists for performance reasons. Including the file directly leverages
-		// the opcode cache and prevents any file system access.
-		// We only handle failures if the include does not work.
-
-		$filePath = "{$this->cacheDir}/{$this->dbname}.php";
-		$cacheData = AtEase::quietCall( static function ( $path ) {
-			return include $path;
-		}, $filePath );
-
-		if ( is_array( $cacheData ) ) {
-			return $cacheData;
-		}
-
-		return [ 'mtime' => 0 ];
 	}
 
 	/**

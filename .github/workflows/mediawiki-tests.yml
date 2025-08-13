@@ -28,7 +28,7 @@ jobs:
             composer-test: true
             coverage: false
             experimental-phan: false
-            experimental-phpunit: false
+            experimental-phpunit: true
 
           # Latest MediaWiki master - PHP 8.2
           - mw: 'master'

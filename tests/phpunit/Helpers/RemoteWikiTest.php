@@ -62,7 +62,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 				'wiki_language' => 'en',
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
-				'wiki_category' => 'uncategorised',
+				'wiki_category' => 'test',
 			] )
 			->caller( __METHOD__ )
 			->execute();
@@ -314,7 +314,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testSetCategory(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
-		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
+		$this->assertSame( 'test', $remoteWiki->getCategory() );
 
 		$remoteWiki->setCategory( 'test' );
 		$remoteWiki->commit();
@@ -497,7 +497,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = $this->getWikiManagerFactory()->newInstance( $dbname );
 		$wikiManager->create(
-			'TestWiki', 'en', false, 'uncategorised',
+			'TestWiki', 'en', false, 'test',
 			$testUser->getName(), $testSysop->getName(),
 			'Test', []
 		);
