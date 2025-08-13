@@ -73,8 +73,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
+				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Categories ),
-				'default' => 'uncategorised',
 			];
 		}
 
