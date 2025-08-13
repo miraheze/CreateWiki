@@ -17,7 +17,6 @@ use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
-use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
@@ -254,11 +253,6 @@ class WikiManagerFactory {
 
 				Shell::makeScriptCommand(
 					SetContainersAccess::class,
-					[ '--wiki', $this->dbname ]
-				)->limits( $limits )->execute();
-
-				Shell::makeScriptCommand(
-					PopulateMainPage::class,
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
