@@ -27,6 +27,7 @@ use function array_flip;
 use function array_intersect_key;
 use function array_keys;
 use function array_rand;
+use function defined;
 use function json_encode;
 use function min;
 use function wfTimestamp;
@@ -257,10 +258,12 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				Shell::makeScriptCommand(
-					PopulateMainPage::class,
-					[ '--wiki', $this->dbname ]
-				)->limits( $limits )->execute();
+				if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+					Shell::makeScriptCommand(
+						PopulateMainPage::class,
+						[ '--wiki', $this->dbname ]
+					)->limits( $limits )->execute();
+				}
 
 				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
