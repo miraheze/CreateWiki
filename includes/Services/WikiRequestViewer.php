@@ -221,6 +221,7 @@ class WikiRequestViewer {
 				$formDescriptor['edit-category'] = [
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
+					'required' => true,
 					'options' => $this->options->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),

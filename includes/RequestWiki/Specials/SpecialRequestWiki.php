@@ -95,8 +95,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'help-message' => 'createwiki-help-category',
+				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Categories ),
-				'default' => 'uncategorised',
 			];
 		}
 
