@@ -21,7 +21,6 @@ use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
-use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 use function array_flip;
@@ -221,7 +220,7 @@ class WikiManagerFactory {
 			->caller( __METHOD__ )
 			->execute();
 
-		$this->cwdb->commit( __METHOD__, IDatabase::FLUSHING_ALL_PEERS );
+		$this->cwdb->commit( __METHOD__, 'flush' );
 
 		$this->doAfterCreate(
 			$sitename,
