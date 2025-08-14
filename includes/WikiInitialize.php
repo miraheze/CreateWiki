@@ -324,7 +324,6 @@ class WikiInitialize {
 			true );
 
 			$processor = new ExtensionProcessor();
-
 			foreach ( $queue as $path => $_ ) {
 				$processor->extractInfoFromFile( $path );
 			}
