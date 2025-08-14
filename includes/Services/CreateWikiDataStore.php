@@ -7,7 +7,6 @@ use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
-use RuntimeException;
 use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
@@ -54,10 +53,6 @@ class CreateWikiDataStore {
 		$this->timestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( self::CACHE_KEY, 'databases' )
 		);
-
-		if ( !$this->timestamp ) {
-			$this->resetDatabaseLists( isNewChanges: true );
-		}
 	}
 
 	/**
@@ -66,6 +61,11 @@ class CreateWikiDataStore {
 	 * and regenerate the cached data.
 	 */
 	public function syncCache(): void {
+		if ( !$this->timestamp ) {
+			$this->resetDatabaseLists( isNewChanges: true );
+			return;
+		}
+
 		// mtime will be 0 if the file does not exist as well, which means
 		// it will be generated.
 		$mtime = $this->getCachedDatabaseList()['mtime'] ?? 0;
@@ -109,13 +109,7 @@ class CreateWikiDataStore {
 			return;
 		}
 
-		try {
-			$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
-		} catch ( RuntimeException ) {
-			// Database backend is probably disabled.
-			return;
-		}
-
+		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
 		$databaseList = $this->dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
 			->fields( [
