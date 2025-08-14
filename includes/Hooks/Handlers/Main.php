@@ -16,7 +16,7 @@ use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 
 class Main implements
@@ -32,7 +32,7 @@ class Main implements
 	public function __construct(
 		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
 	}
@@ -59,8 +59,7 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onSetupAfterCache() {
-		$data = $this->dataFactory->newInstance();
-		$data->syncCache();
+		$this->dataStore->syncCache();
 	}
 
 	/**

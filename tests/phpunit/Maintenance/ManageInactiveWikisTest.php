@@ -109,6 +109,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::initServices
 	 */
 	public function testExecuteActiveWiki(): void {
 		// Enable the maintenance script.
@@ -134,6 +135,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::initServices
 	 */
 	public function testExecuteInactiveWiki(): void {
 		// Enable the maintenance script.
@@ -160,6 +162,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::initServices
 	 * @covers ::notifyBureaucrats
 	 */
 	public function testExecuteClosedWiki(): void {
@@ -196,6 +199,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleInactiveWiki
+	 * @covers ::initServices
 	 * @covers ::notifyBureaucrats
 	 */
 	public function testExecuteClosedWikiAlreadyInactive(): void {
@@ -237,6 +241,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleInactiveWiki
+	 * @covers ::initServices
 	 */
 	public function testExecuteClosedWikiAlreadyInactiveIneligible(): void {
 		// Enable the maintenance script.
@@ -278,6 +283,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleClosedWiki
+	 * @covers ::initServices
 	 */
 	public function testExecuteRemovedWiki(): void {
 		// Enable the maintenance script.
@@ -317,6 +323,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleClosedWiki
+	 * @covers ::initServices
 	 */
 	public function testExecuteRemovedWikiIneligible(): void {
 		// Enable the maintenance script.
