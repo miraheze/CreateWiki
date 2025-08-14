@@ -7,6 +7,7 @@ use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
+use RuntimeException;
 use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
@@ -108,7 +109,13 @@ class CreateWikiDataStore {
 			return;
 		}
 
-		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
+		try {
+			$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
+		} catch ( RuntimeException ) {
+			// Database backend is probably disabled.
+			return;
+		}
+
 		$databaseList = $this->dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
 			->fields( [
