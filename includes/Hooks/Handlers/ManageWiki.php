@@ -16,6 +16,7 @@ use Miraheze\ManageWiki\Helpers\Factories\ModuleFactory;
 use Miraheze\ManageWiki\Hooks\ManageWikiCoreProviderHook;
 use Miraheze\ManageWiki\ICoreModule;
 
+/** @codeCoverageIgnore Tested by testing RemoteWiki. */
 class ManageWiki implements ManageWikiCoreProviderHook {
 
 	public function __construct(
