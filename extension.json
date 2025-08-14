@@ -307,7 +307,7 @@
 			"value": []
 		},
 		"CreateWikiCacheDirectory": {
-			"description": "String. The path to store CreateWiki cache files at.",
+			"description": "String. The path to store CreateWiki cache files at. Defaults to $wgCacheDirectory if not set.",
 			"value": ""
 		},
 		"CreateWikiCacheType": {
