@@ -19,6 +19,7 @@ use function tempnam;
 use function time;
 use function unlink;
 
+/** @codeCoverageIgnore Tested through SetupAfterCache and other tests. */
 class CreateWikiDataStore {
 
 	public const CONSTRUCTOR_OPTIONS = [
