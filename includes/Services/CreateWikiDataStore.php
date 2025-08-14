@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
@@ -23,6 +24,7 @@ class CreateWikiDataStore {
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::CacheDirectory,
 		ConfigNames::CacheType,
+		MainConfigNames::CacheDirectory,
 	];
 
 	private const CACHE_KEY = 'CreateWiki';
@@ -45,7 +47,8 @@ class CreateWikiDataStore {
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
 			$objectCacheFactory->getLocalClusterInstance();
 
-		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory );
+		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory ) ?:
+			$this->options->get( MainConfigNames::CacheDirectory );
 
 		$this->timestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( self::CACHE_KEY, 'databases' )
