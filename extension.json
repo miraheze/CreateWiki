@@ -16,7 +16,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.43.0",
 		"platform": {
-			"php": ">= 8.1"
+			"php": ">= 8.2"
 		}
 	},
 	"MessagesDirs": {
@@ -230,7 +230,7 @@
 			"services": [
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
-				"CreateWikiDataFactory",
+				"CreateWikiDataStore",
 				"RemoteWikiFactory"
 			]
 		},
@@ -239,7 +239,7 @@
 			"services": [
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
-				"CreateWikiDataFactory",
+				"CreateWikiDataStore",
 				"CreateWikiHookRunner",
 				"JobQueueGroupFactory"
 			]
