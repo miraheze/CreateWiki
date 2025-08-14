@@ -60,7 +60,7 @@ class WikiManagerFactory {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
@@ -250,8 +250,7 @@ class WikiManagerFactory {
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $requester, $extra ) {
-				$this->recache();
-
+				$this->dataStore->resetDatabaseLists( isNewChanges: true );
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
@@ -362,8 +361,7 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->recache();
-
+		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $this->dbname );
 
 		return null;
@@ -393,8 +391,7 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->recache();
-
+		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
 
 		return null;
@@ -432,10 +429,5 @@ class WikiManagerFactory {
 		$tables['cw_wikis'] = 'wiki_dbname';
 
 		$this->tables = $tables;
-	}
-
-	private function recache(): void {
-		$data = $this->dataFactory->newInstance();
-		$data->resetDatabaseLists( isNewChanges: true );
 	}
 }

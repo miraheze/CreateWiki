@@ -16,7 +16,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.44.0",
 		"platform": {
-			"php": ">= 8.1"
+			"php": ">= 8.2"
 		}
 	},
 	"MessagesDirs": {
@@ -231,7 +231,7 @@
 			"services": [
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
-				"CreateWikiDataFactory",
+				"CreateWikiDataStore",
 				"RemoteWikiFactory"
 			]
 		},
@@ -240,7 +240,7 @@
 			"services": [
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
-				"CreateWikiDataFactory",
+				"CreateWikiDataStore",
 				"CreateWikiHookRunner",
 				"JobQueueGroupFactory"
 			]
@@ -308,7 +308,7 @@
 			"value": []
 		},
 		"CreateWikiCacheDirectory": {
-			"description": "String. The path to store CreateWiki cache files at.",
+			"description": "String. The path to store CreateWiki cache files at. Defaults to $wgCacheDirectory if not set.",
 			"value": ""
 		},
 		"CreateWikiCacheType": {

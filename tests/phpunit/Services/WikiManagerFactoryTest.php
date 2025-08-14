@@ -192,7 +192,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::compileTables
-	 * @covers ::recache
 	 * @covers ::rename
 	 */
 	public function testRenameSuccess(): void {
@@ -251,7 +250,6 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::compileTables
 	 * @covers ::delete
-	 * @covers ::recache
 	 */
 	public function testDeleteEligible(): void {
 		$this->setupLBFactory();

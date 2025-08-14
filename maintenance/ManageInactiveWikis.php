@@ -6,7 +6,7 @@ use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use function date;
@@ -23,7 +23,7 @@ use const DB_PRIMARY;
 class ManageInactiveWikis extends Maintenance {
 
 	private CreateWikiDatabaseUtils $databaseUtils;
-	private CreateWikiDataFactory $dataFactory;
+	private CreateWikiDataStore $dataStore;
 	private CreateWikiNotificationsManager $notificationsManager;
 	private RemoteWikiFactory $remoteWikiFactory;
 
@@ -42,7 +42,7 @@ class ManageInactiveWikis extends Maintenance {
 	private function initServices(): void {
 		$services = $this->getServiceContainer();
 		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
-		$this->dataFactory = $services->get( 'CreateWikiDataFactory' );
+		$this->dataStore = $services->get( 'CreateWikiDataStore' );
 		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
 		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
 	}
@@ -77,8 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 		}
 
-		$data = $this->dataFactory->newInstance();
-		$data->resetDatabaseLists( isNewChanges: true );
+		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 	}
 
 	private function checkLastActivity(
