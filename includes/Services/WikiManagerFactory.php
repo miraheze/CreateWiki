@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\Services;
 
 use Exception;
-use FatalError;
-use ManualLogEntry;
 use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Exception\FatalError;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
@@ -174,6 +174,7 @@ class WikiManagerFactory {
 		$this->dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
 	}
 
+	/** @throws FatalError */
 	public function create(
 		string $sitename,
 		string $language,
@@ -319,6 +320,7 @@ class WikiManagerFactory {
 		}
 	}
 
+	/** @throws MissingWikiError */
 	public function delete( bool $force ): ?string {
 		$this->compileTables();
 
