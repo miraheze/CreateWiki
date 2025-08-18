@@ -6,6 +6,7 @@ use MediaWiki\Config\GlobalVarConfig;
 use MediaWiki\Config\SiteConfiguration;
 use MediaWiki\Registration\ExtensionProcessor;
 use MediaWiki\Registration\ExtensionRegistry;
+use Wikimedia\StaticArrayWriter;
 use function array_column;
 use function array_fill_keys;
 use function array_flip;
@@ -17,16 +18,13 @@ use function count;
 use function defined;
 use function explode;
 use function file_exists;
-use function file_get_contents;
 use function file_put_contents;
 use function glob;
 use function in_array;
 use function is_bool;
-use function json_decode;
 use function pathinfo;
 use function strlen;
 use function substr;
-use function var_export;
 use const CW_DB;
 use const LOCK_EX;
 use const MW_DB;
@@ -73,25 +71,25 @@ class WikiInitialize {
 		if ( !file_exists( $this->cacheDir . '/databases.php' ) ) {
 			$databasesArray = [
 				'mtime' => 0,
-				'databases' => []
+				'databases' => [],
 			];
 		} else {
 			$databasesFile = include $this->cacheDir . '/databases.php';
 			$databasesArray = $databasesFile ?: [
 				'mtime' => 0,
-				'databases' => []
+				'databases' => [],
 			];
 		}
 
 		if ( !file_exists( $this->cacheDir . '/deleted.php' ) ) {
 			$deletedDatabases = [
-				'databases' => []
+				'databases' => [],
 			];
 		} else {
 			$databaseDeletedFile = include $this->cacheDir . '/deleted.php';
 			$deletedDatabases = $databaseDeletedFile ?: [
 				'mtime' => 0,
-				'databases' => []
+				'databases' => [],
 			];
 		}
 
@@ -212,14 +210,12 @@ class WikiInitialize {
 			}
 		}
 
-		$this->config->siteParamsCallback = static function () use ( $cacheArray, $tags ) {
-			return [
-				'suffix' => null,
-				'lang' => $cacheArray['core']['wgLanguageCode'] ?? 'en',
-				'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $tags ),
-				'params' => [],
-			];
-		};
+		$this->config->siteParamsCallback = static fn (): array => [
+			'suffix' => null,
+			'lang' => $cacheArray['core']['wgLanguageCode'] ?? 'en',
+			'tags' => array_merge( ( $cacheArray['extensions'] ?? [] ), $tags ),
+			'params' => [],
+		];
 
 		// The following is ManageWiki additional code
 		// If ManageWiki isn't installed, this does nothing
@@ -318,7 +314,6 @@ class WikiInitialize {
 
 		// @phan-suppress-next-line SecurityCheck-PathTraversal
 		$cacheArray = include $this->cacheDir . '/' . $this->dbname . '.php';
-
 		$config = new GlobalVarConfig( 'wg' );
 
 		if ( !file_exists( "{$this->cacheDir}/extension-list.php" ) ) {
@@ -329,24 +324,15 @@ class WikiInitialize {
 			true );
 
 			$processor = new ExtensionProcessor();
-
 			foreach ( $queue as $path => $_ ) {
-				$json = file_get_contents( $path );
-				$info = json_decode( $json, true );
-				$version = $info['manifest_version'] ?? 2;
-
-				$processor->extractInfo( $path, $info, $version );
+				$processor->extractInfoFromFile( $path );
 			}
 
 			$data = $processor->getExtractedInfo();
-
 			$list = array_column( $data['credits'], 'path', 'name' );
 
-			$phpContent = "<?php\n\n" .
-				"/**\n * Auto-generated extension list cache.\n */\n\n" .
-				'return ' . var_export( $list, true ) . ";\n";
-
-			file_put_contents( "{$this->cacheDir}/extension-list.php", $phpContent, LOCK_EX );
+			$contents = StaticArrayWriter::write( $list, 'Auto-generated extension list cache.' );
+			file_put_contents( "{$this->cacheDir}/extension-list.php", $contents, LOCK_EX );
 		} else {
 			$list = include "{$this->cacheDir}/extension-list.php";
 		}

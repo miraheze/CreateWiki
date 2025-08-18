@@ -17,7 +17,7 @@ use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\AtEase\AtEase;
 
@@ -34,7 +34,7 @@ class Main implements
 	public function __construct(
 		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
 	}
@@ -66,8 +66,7 @@ class Main implements
 		$dbname = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		$data = $this->dataFactory->newInstance( $dbname );
-		$data->syncCache();
+		$this->dataStore->syncCache();
 
 		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
 			// Avoid using file_exists for performance reasons. Including the file directly leverages

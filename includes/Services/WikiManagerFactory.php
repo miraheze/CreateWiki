@@ -27,6 +27,7 @@ use function array_flip;
 use function array_intersect_key;
 use function array_keys;
 use function array_rand;
+use function defined;
 use function json_encode;
 use function min;
 use function wfTimestamp;
@@ -59,7 +60,7 @@ class WikiManagerFactory {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
@@ -248,8 +249,7 @@ class WikiManagerFactory {
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $requester, $extra ) {
-				$this->recache();
-
+				$this->dataStore->resetDatabaseLists( isNewChanges: true );
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
@@ -257,10 +257,12 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				Shell::makeScriptCommand(
-					PopulateMainPage::class,
-					[ '--wiki', $this->dbname ]
-				)->limits( $limits )->execute();
+				if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+					Shell::makeScriptCommand(
+						PopulateMainPage::class,
+						[ '--wiki', $this->dbname ]
+					)->limits( $limits )->execute();
+				}
 
 				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
@@ -349,9 +351,6 @@ class WikiManagerFactory {
 			return "Wiki {$this->dbname} can not be deleted yet.";
 		}
 
-		$data = $this->dataFactory->newInstance( $this->dbname );
-		$data->deleteWikiData( $this->dbname );
-
 		foreach ( $this->tables as $table => $selector ) {
 			$this->cwdb->newDeleteQueryBuilder()
 				->deleteFrom( $table )
@@ -360,8 +359,7 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->recache();
-
+		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $this->dbname );
 
 		return null;
@@ -391,16 +389,7 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		/**
-		 * Since the wiki at $new likely won't be cached yet, this will also
-		 * run resetWikiData() on it since it has no mtime, so that it will
-		 * generate the new cache file for it as well.
-		 */
-		$data = $this->dataFactory->newInstance( $newDatabaseName );
-		$data->deleteWikiData( $this->dbname );
-
-		$this->recache();
-
+		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
 
 		return null;
@@ -438,11 +427,5 @@ class WikiManagerFactory {
 		$tables['cw_wikis'] = 'wiki_dbname';
 
 		$this->tables = $tables;
-	}
-
-	private function recache(): void {
-		$centralWiki = $this->databaseUtils->getCentralWikiID();
-		$data = $this->dataFactory->newInstance( $centralWiki );
-		$data->resetDatabaseLists( isNewChanges: true );
 	}
 }
