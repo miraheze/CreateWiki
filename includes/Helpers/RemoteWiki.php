@@ -11,6 +11,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
 use function array_keys;
@@ -68,6 +69,7 @@ class RemoteWiki {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		protected readonly ServiceOptions $options,
 		protected readonly string $dbname
@@ -337,7 +339,7 @@ class RemoteWiki {
 	}
 
 	public function getServerName(): string {
-		return $this->url ?? '';
+		return $this->url ?? $this->validator->getValidUrl( $this->dbname );
 	}
 
 	public function setServerName( string $server ): void {
