@@ -42,7 +42,6 @@ use function json_encode;
 use function preg_replace;
 use function rtrim;
 use function trim;
-use const ENT_QUOTES;
 
 class WikiRequestManager {
 
@@ -961,8 +960,8 @@ class WikiRequestManager {
 		}
 
 		$this->changes[$field] = [
-			'old' => $this->escape( $oldValue ),
-			'new' => $this->escape( $newValue ),
+			'old' => htmlspecialchars( $oldValue ),
+			'new' => htmlspecialchars( $newValue ),
 		];
 	}
 
@@ -978,16 +977,12 @@ class WikiRequestManager {
 			$oldValue = $this->formatValue( $change['old'] );
 			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "{$prefix}Field ''{$field}'' changed:\n" .
-				"*{$prefix}'''Old value''': {$oldValue}\n" .
-				"*{$prefix}'''New value''': {$newValue}";
+			$messages[] = "{$prefix}Field ''$field'' changed:\n" .
+				"*$prefix'''Old value''': $oldValue\n" .
+				"*$prefix'''New value''': $newValue";
 		}
 
 		return implode( "\n", $messages );
-	}
-
-	private function escape( string $text ): string {
-		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
 
 	private function formatValue( string $value ): string {

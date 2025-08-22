@@ -104,9 +104,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$pager = new RequestWikiQueuePager(
 			$this->getContext(),
+			$this->getLinkRenderer(),
 			$this->databaseUtils,
 			$this->languageNameUtils,
-			$this->getLinkRenderer(),
 			$this->userFactory,
 			$this->wikiRequestManager,
 			$dbname,
