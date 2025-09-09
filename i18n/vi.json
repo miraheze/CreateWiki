@@ -4,6 +4,7 @@
 			"Learntoshare",
 			"Minh Nguyen",
 			"NguyenHung",
+			"Nvdtn19",
 			"Pisceskaze",
 			"SongNgu.xyz",
 			"沈澄心"
@@ -90,7 +91,7 @@
 	"log-action-filter-farmer-requestwiki": "Yêu cầu Wiki đã được mở",
 	"log-action-filter-farmersuppression": "Kiểu tác vụ:",
 	"log-action-filter-farmersuppression-delete": "Xóa yêu cầu wiki",
-	"log-action-filter-farmersuppression-public": "Thiết lập hạn chế khả kiến",
+	"log-action-filter-farmersuppression-public": "Đã loại bỏ hạn chế hiển thị",
 	"log-action-filter-farmersuppression-suppress": "Yêu cầu wiki bị ẩn",
 	"logentry-farmer-comment": "$1 {{GENDER:$2|đã bình luận}} trên yêu cầu wiki $4",
 	"logentry-farmer-create-failure": "$1 {{GENDER:$2|đã gặp phải}} lỗi khi tạo yêu cầu wiki $4",

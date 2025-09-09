@@ -3,7 +3,8 @@
 		"authors": [
 			"Kakan spelar",
 			"Sabelöga",
-			"WikiPhoenix"
+			"WikiPhoenix",
+			"Yupik"
 		]
 	},
 	"action-createwiki": "skapa wikier",
@@ -20,7 +21,7 @@
 	"createwiki-error-notlowercase": "Databasens namn kan inte innehålla versaler.",
 	"createwiki-error-notsuffixed": "Databasens namn slutar inte med ett giltigt suffix (t.ex. \"wiki\").",
 	"createwiki-help-reason": "Ange en tillräcklig sammanfattning som beskriver ämnet, omfattningen och syftet med wikin du ansöker om.",
-	"createwiki-label-category": "Kategori:",
+	"createwiki-label-category": "Kategori",
 	"createwiki-label-dbname": "Databasnamn:",
 	"createwiki-label-language": "Språk:",
 	"createwiki-label-private": "Märk denna wiki som privat",

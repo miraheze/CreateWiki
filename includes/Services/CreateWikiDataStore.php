@@ -12,6 +12,7 @@ use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\StaticArrayWriter;
+use function array_keys;
 use function file_put_contents;
 use function is_array;
 use function rename;
@@ -26,6 +27,7 @@ class CreateWikiDataStore {
 		ConfigNames::CacheDirectory,
 		ConfigNames::CacheType,
 		MainConfigNames::CacheDirectory,
+		MainConfigNames::LocalDatabases,
 	];
 
 	private const CACHE_KEY = 'CreateWiki';
@@ -76,6 +78,15 @@ class CreateWikiDataStore {
 		if ( $mtime === 0 || $mtime < $this->timestamp ) {
 			$this->resetDatabaseLists( isNewChanges: false );
 		}
+	}
+
+	public function getAllDatabases(): array {
+		$data = $this->getCachedDatabaseList();
+		if ( isset( $data['databases'] ) ) {
+			return array_keys( $data['databases'] );
+		}
+
+		return $this->options->get( MainConfigNames::LocalDatabases );
 	}
 
 	/**
