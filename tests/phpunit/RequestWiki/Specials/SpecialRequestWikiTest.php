@@ -2,9 +2,10 @@
 
 namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
 
-use ErrorPageError;
 use Generator;
 use MediaWiki\Context\DerivativeContext;
+use MediaWiki\Exception\ErrorPageError;
+use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
@@ -14,7 +15,6 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use SpecialPageTestBase;
-use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 use function wfTimestamp;
 

@@ -2,9 +2,9 @@
 
 namespace Miraheze\CreateWiki\Helpers;
 
-use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
+use MediaWiki\JobQueue\JobSpecification;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -64,6 +64,7 @@ class RemoteWiki {
 
 	private ?string $log = null;
 
+	/** @throws MissingWikiError */
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataStore $dataStore,
