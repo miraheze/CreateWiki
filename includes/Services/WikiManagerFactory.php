@@ -354,6 +354,10 @@ class WikiManagerFactory {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
+			if ( !$this->cwdb->tableExists( $table, __METHOD__ ) ) {
+				continue;
+			}
+
 			$this->cwdb->newDeleteQueryBuilder()
 				->deleteFrom( $table )
 				->where( [ $selector => $this->dbname ] )
@@ -383,6 +387,10 @@ class WikiManagerFactory {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
+			if ( !$this->cwdb->tableExists( $table, __METHOD__ ) ) {
+				continue;
+			}
+
 			$this->cwdb->newUpdateQueryBuilder()
 				->update( $table )
 				->set( [ $selector => $newDatabaseName ] )
