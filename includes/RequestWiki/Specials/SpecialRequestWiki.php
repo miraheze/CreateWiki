@@ -188,7 +188,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
-			/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 			$this->statsFactory->getCounter( 'requestwiki_throttled_total' )->increment();
 			return Status::newFatal( 'actionthrottledtext' );
 		}
@@ -212,7 +211,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
-		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 		$this->statsFactory->getCounter( 'requestwiki_requests_total' )->increment();
 		return Status::newGood();
 	}
