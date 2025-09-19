@@ -23,6 +23,7 @@ use stdClass;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
+use Wikimedia\Stats\StatsFactory;
 use function array_column;
 use function array_diff;
 use function array_filter;
@@ -85,6 +86,7 @@ class WikiRequestManager {
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly PermissionManager $permissionManager,
+		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly ServiceOptions $options
@@ -921,6 +923,11 @@ class WikiRequestManager {
 		if ( $status === $this->getStatus() ) {
 			return;
 		}
+
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'requestwiki_status_total' )
+			->setLabel( 'status', $status )
+			->increment();
 
 		$this->trackChange( 'status', $this->getStatus(), $status );
 		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );

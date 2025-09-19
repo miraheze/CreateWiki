@@ -61,6 +61,7 @@
 				"CreateWikiConfig",
 				"CreateWikiLogger",
 				"HttpRequestFactory",
+				"StatsFactory",
 				"WikiRequestManager"
 			],
 			"needsPage": false
@@ -175,6 +176,7 @@
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"CreateWikiValidator",
+				"StatsFactory",
 				"WikiRequestManager"
 			]
 		},

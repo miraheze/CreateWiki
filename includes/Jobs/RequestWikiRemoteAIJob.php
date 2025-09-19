@@ -15,6 +15,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
+use Wikimedia\Stats\StatsFactory;
 use function count;
 use function htmlspecialchars;
 use function json_decode;
@@ -43,6 +44,7 @@ class RequestWikiRemoteAIJob extends Job {
 		private readonly Config $config,
 		private readonly LoggerInterface $logger,
 		private readonly HttpRequestFactory $httpRequestFactory,
+		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( self::JOB_NAME, $params );
@@ -121,6 +123,7 @@ class RequestWikiRemoteAIJob extends Job {
 				notifyUsers: []
 			);
 
+			$this->statsFactory->getCounter( 'createwiki_ai_error_total' )->increment();
 			return true;
 		}
 
@@ -147,6 +150,8 @@ class RequestWikiRemoteAIJob extends Job {
 				type: 'comment',
 				notifyUsers: []
 			);
+
+			$this->statsFactory->getCounter( 'createwiki_ai_error_total' )->increment();
 		}
 
 		// Extract response details with default fallbacks
@@ -303,6 +308,12 @@ class RequestWikiRemoteAIJob extends Job {
 					]
 				);
 		}
+
+		// Outcome will probably be 'unknown' if error
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'createwiki_ai_outcome_total' )
+			->setLabel( 'outcome', $outcome )
+			->increment();
 
 		return true;
 	}

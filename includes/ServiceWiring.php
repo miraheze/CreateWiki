@@ -115,6 +115,7 @@ return [
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
+			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
