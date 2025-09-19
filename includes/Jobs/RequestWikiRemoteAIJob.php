@@ -308,7 +308,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Outcome will probably be 'unknown' if error
-		$this->getCounterMetric()?->setLabel( 'outcome', $outcome )->increment();
+		$this->getCounterMetric()->setLabel( 'outcome', $outcome )->increment();
 		return true;
 	}
 
@@ -573,12 +573,8 @@ class RequestWikiRemoteAIJob extends Job {
 		return true;
 	}
 
-	private function getCounterMetric(): ?CounterMetric {
-		$counter = $this->statsFactory->getCounter( 'createwiki_ai_outcome_total' );
-		if ( $counter instanceof CounterMetric ) {
-			return $counter;
-		}
-
-		return null;
+	/** @phan-return CounterMetric */
+	private function getCounterMetric(): CounterMetric {
+		return $this->statsFactory->getCounter( 'createwiki_ai_outcome_total' );
 	}
 }
