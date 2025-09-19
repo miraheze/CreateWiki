@@ -176,6 +176,7 @@
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"CreateWikiValidator",
+				"StatsFactory",
 				"WikiRequestManager"
 			]
 		},
