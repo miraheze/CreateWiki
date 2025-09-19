@@ -23,7 +23,6 @@ use stdClass;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
-use Wikimedia\Stats\Metrics\CounterMetric;
 use Wikimedia\Stats\StatsFactory;
 use function array_column;
 use function array_diff;
@@ -925,7 +924,10 @@ class WikiRequestManager {
 			return;
 		}
 
-		$this->getCounterMetric()->setLabel( 'status', $status )->increment();
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'requestwiki_status_total' )
+			->setLabel( 'status', $status )
+			->increment();
 
 		$this->trackChange( 'status', $this->getStatus(), $status );
 		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );
@@ -1026,10 +1028,5 @@ class WikiRequestManager {
 				[ 'id' => $this->ID ]
 			)
 		);
-	}
-
-	/** @phan-return CounterMetric */
-	private function getCounterMetric(): CounterMetric {
-		return $this->statsFactory->getCounter( 'requestwiki_status_total' );
 	}
 }
