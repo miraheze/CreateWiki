@@ -122,7 +122,7 @@ class RequestWikiRemoteAIJob extends Job {
 				type: 'comment',
 				notifyUsers: []
 			);
-			
+
 			/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 			$this->statsFactory->getCounter( 'createwiki_ai_error_total' )->increment();
 			return true;
