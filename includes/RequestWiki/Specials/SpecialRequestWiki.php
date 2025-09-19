@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Wikimedia\Stats\StatsFactory;
 use function array_diff_key;
 use function array_filter;
 use function strlen;
@@ -24,6 +25,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiValidator $validator,
+		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
@@ -186,6 +188,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
+			/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+			$this->statsFactory->getCounter( 'requestwiki_throttled_total' )->increment();
 			return Status::newFatal( 'actionthrottledtext' );
 		}
 
@@ -208,6 +212,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'requestwiki_requests_total' )->increment();
 		return Status::newGood();
 	}
 
