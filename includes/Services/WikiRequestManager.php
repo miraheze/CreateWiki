@@ -925,7 +925,7 @@ class WikiRequestManager {
 			return;
 		}
 
-		$this->getCounterMetric()?->setLabel( 'status', $status )->increment();
+		$this->getCounterMetric()->setLabel( 'status', $status )->increment();
 
 		$this->trackChange( 'status', $this->getStatus(), $status );
 		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );
@@ -1028,12 +1028,8 @@ class WikiRequestManager {
 		);
 	}
 
-	private function getCounterMetric(): ?CounterMetric {
-		$counter = $this->statsFactory->getCounter( 'requestwiki_status_total' );
-		if ( $counter instanceof CounterMetric ) {
-			return $counter;
-		}
-
-		return null;
+	/** @phan-return CounterMetric */
+	private function getCounterMetric(): CounterMetric {
+		return $this->statsFactory->getCounter( 'requestwiki_status_total' );
 	}
 }
