@@ -15,7 +15,6 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Psr\Log\LoggerInterface;
-use Wikimedia\Stats\Metrics\CounterMetric;
 use Wikimedia\Stats\StatsFactory;
 use function count;
 use function htmlspecialchars;
@@ -308,7 +307,11 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Outcome will probably be 'unknown' if error
-		$this->getCounterMetric()->setLabel( 'outcome', $outcome )->increment();
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'createwiki_ai_outcome_total' )
+			->setLabel( 'outcome', $outcome )
+			->increment();
+
 		return true;
 	}
 
@@ -571,10 +574,5 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		return true;
-	}
-
-	/** @phan-return CounterMetric */
-	private function getCounterMetric(): CounterMetric {
-		return $this->statsFactory->getCounter( 'createwiki_ai_outcome_total' );
 	}
 }
