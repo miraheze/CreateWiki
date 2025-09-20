@@ -23,6 +23,7 @@ use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use Wikimedia\Stats\Metrics\TimingMetric;
 use Wikimedia\Stats\StatsFactory;
 use function array_flip;
 use function array_intersect_key;
@@ -211,6 +212,7 @@ class WikiManagerFactory {
 		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
 			->setLabel( 'private', $private ? 'Yes' : 'No' )
 			->start();
+		'@phan-var TimingMetric $timer';
 
 		$this->doCreateDatabase();
 
