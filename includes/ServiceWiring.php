@@ -99,6 +99,7 @@ return [
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
+			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
 			new ServiceOptions(
