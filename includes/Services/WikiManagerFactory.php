@@ -23,6 +23,7 @@ use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use Wikimedia\Stats\Metrics\TimingMetric;
 use Wikimedia\Stats\StatsFactory;
 use function array_flip;
@@ -107,7 +108,7 @@ class WikiManagerFactory {
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
 					$clusterSizes[$cluster] = $this->cwdb->newSelectQueryBuilder()
-						->select( '*' )
+						->select( ISQLPlatform::ALL_ROWS )
 						->from( 'cw_wikis' )
 						->where( [ 'wiki_dbcluster' => $cluster ] )
 						->caller( __METHOD__ )
@@ -342,7 +343,7 @@ class WikiManagerFactory {
 		$this->compileTables();
 
 		$row = $this->cwdb->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
