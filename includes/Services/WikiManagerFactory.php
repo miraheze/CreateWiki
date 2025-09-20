@@ -198,6 +198,7 @@ class WikiManagerFactory {
 			->setLabel( 'private', $private ? 'Yes' : 'No' )
 			->increment();
 
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
 			->setLabel( 'private', $private ? 'Yes' : 'No' )
 			->start();
