@@ -23,6 +23,7 @@ use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use Wikimedia\Stats\StatsFactory;
 use function array_flip;
 use function array_intersect_key;
 use function array_keys;
@@ -65,6 +66,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
 		private readonly ExtensionRegistry $extensionRegistry,
+		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options
@@ -147,7 +149,7 @@ class WikiManagerFactory {
 		return $this->exists;
 	}
 
-	public function doCreateDatabase(): void {
+	private function doCreateDatabase(): void {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
@@ -188,6 +190,17 @@ class WikiManagerFactory {
 		if ( $this->exists() ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
+
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'createwiki_creation_total' )
+			->setLabel( 'category', $category )
+			->setLabel( 'language', $language )
+			->setLabel( 'private', $private ? 'Yes' : 'No' )
+			->increment();
+
+		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
+			->setLabel( 'private', $private ? 'Yes' : 'No' )
+			->start();
 
 		$checkErrors = $this->validator->validateDatabaseName(
 			dbname: $this->dbname,
@@ -231,6 +244,7 @@ class WikiManagerFactory {
 			$extra
 		);
 
+		$timer->stop();
 		return null;
 	}
 
