@@ -24,6 +24,8 @@ use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 use Wikimedia\Rdbms\Platform\ISQLPlatform;
+use Wikimedia\Stats\Metrics\TimingMetric;
+use Wikimedia\Stats\StatsFactory;
 use function array_flip;
 use function array_intersect_key;
 use function array_keys;
@@ -66,6 +68,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
 		private readonly ExtensionRegistry $extensionRegistry,
+		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options
@@ -148,7 +151,7 @@ class WikiManagerFactory {
 		return $this->exists;
 	}
 
-	public function doCreateDatabase(): void {
+	private function doCreateDatabase(): void {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
@@ -199,6 +202,19 @@ class WikiManagerFactory {
 			return $checkErrors;
 		}
 
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'createwiki_creation_total' )
+			->setLabel( 'category', $category )
+			->setLabel( 'language', $language )
+			->setLabel( 'private', $private ? 'Yes' : 'No' )
+			->increment();
+
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
+			->setLabel( 'private', $private ? 'Yes' : 'No' )
+			->start();
+		'@phan-var TimingMetric $timer';
+
 		$this->doCreateDatabase();
 
 		$extraFields = [];
@@ -232,6 +248,7 @@ class WikiManagerFactory {
 			$extra
 		);
 
+		$timer->stop();
 		return null;
 	}
 
