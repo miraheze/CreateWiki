@@ -191,6 +191,15 @@ class WikiManagerFactory {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
 
+		$checkErrors = $this->validator->validateDatabaseName(
+			dbname: $this->dbname,
+			exists: $this->exists()
+		);
+
+		if ( $checkErrors ) {
+			return $checkErrors;
+		}
+
 		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 		$this->statsFactory->getCounter( 'createwiki_creation_total' )
 			->setLabel( 'category', $category )
@@ -202,15 +211,6 @@ class WikiManagerFactory {
 		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
 			->setLabel( 'private', $private ? 'Yes' : 'No' )
 			->start();
-
-		$checkErrors = $this->validator->validateDatabaseName(
-			dbname: $this->dbname,
-			exists: $this->exists()
-		);
-
-		if ( $checkErrors ) {
-			return $checkErrors;
-		}
 
 		$this->doCreateDatabase();
 
@@ -245,7 +245,7 @@ class WikiManagerFactory {
 			$extra
 		);
 
-		$timer?->stop();
+		$timer->stop();
 		return null;
 	}
 
