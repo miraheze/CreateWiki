@@ -1,3 +1,5 @@
+@import 'mediawiki.skin.variables.less';
+
 /* Fix width for the 'reason' selectorother field */
 #mw-input-wpreason {
 	display: inline-flex;
@@ -34,9 +36,7 @@
 
 .ext-createwiki-tabs-wrapper.oo-ui-panelLayout-framed,
 .ext-createwiki-tabs > .oo-ui-menuLayout-content > .oo-ui-indexLayout-stackLayout > .oo-ui-tabPanelLayout {
-	/* Decrease contrast of `border` slightly as padding/border combination is sufficient
-	 * accessibility wise and focus of content is more important here. */
-	border-color: #c8ccd1;
+	border-color: @border-color-base;
 }
 
 /* JavaScript disabled */
@@ -139,10 +139,10 @@
 				max-height: 15em;
 				box-sizing: border-box;
 				padding: 8px;
-				border: 1.5px solid #ccc;
+				border: 1.5px solid @border-color-subtle;
 				border-radius: 4px;
-				background-color: #f5f5f5;
-				color: #333;
+				background-color: @background-color-neutral;
+				color: @color-base;
 				font-family: 'Arial', sans-serif;
 				line-height: 1.5em;
 				overflow-y: auto;
