@@ -13,6 +13,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use function array_keys;
 use function array_merge;
 use function implode;
@@ -77,7 +78,7 @@ class RemoteWiki {
 
 		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 		$row = $this->dbr->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )

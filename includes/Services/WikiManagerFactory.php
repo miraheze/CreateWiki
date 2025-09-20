@@ -23,6 +23,7 @@ use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use function array_flip;
 use function array_intersect_key;
 use function array_keys;
@@ -104,7 +105,7 @@ class WikiManagerFactory {
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
 					$clusterSizes[$cluster] = $this->cwdb->newSelectQueryBuilder()
-						->select( '*' )
+						->select( ISQLPlatform::ALL_ROWS )
 						->from( 'cw_wikis' )
 						->where( [ 'wiki_dbcluster' => $cluster ] )
 						->caller( __METHOD__ )
@@ -325,7 +326,7 @@ class WikiManagerFactory {
 		$this->compileTables();
 
 		$row = $this->cwdb->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
