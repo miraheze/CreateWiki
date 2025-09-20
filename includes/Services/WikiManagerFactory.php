@@ -245,7 +245,7 @@ class WikiManagerFactory {
 			$extra
 		);
 
-		$timer->stop();
+		$timer?->stop();
 		return null;
 	}
 
