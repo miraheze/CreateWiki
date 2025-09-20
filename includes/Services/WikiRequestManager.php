@@ -21,6 +21,7 @@ use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
 use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
 use Wikimedia\Stats\StatsFactory;
@@ -98,8 +99,8 @@ class WikiRequestManager {
 		$this->ID = $requestID;
 		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 		$this->row = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_requests' )
 			->where( [ 'cw_id' => $requestID ] )
 			->caller( __METHOD__ )
 			->fetchRow();
@@ -169,8 +170,8 @@ class WikiRequestManager {
 	public function isDuplicateRequest( string $sitename ): bool {
 		$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 		$duplicate = $dbr->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_requests' )
 			->where( [
 				'cw_sitename' => $sitename,
 				'cw_status' => 'inreview',
@@ -224,8 +225,8 @@ class WikiRequestManager {
 	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_comments' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_comments' )
 			->where( [ 'cw_id' => $this->ID ] )
 			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
@@ -309,8 +310,8 @@ class WikiRequestManager {
 	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_history' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_history' )
 			->where( [ 'cw_id' => $this->ID ] )
 			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_DESC )
 			->caller( __METHOD__ )
