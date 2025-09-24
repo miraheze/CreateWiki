@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Wikimedia\Stats\StatsFactory;
 use function count;
 use function htmlspecialchars;
+use function is_array;
 use function json_decode;
 use function json_encode;
 use function preg_match;
