@@ -21,7 +21,6 @@ use function htmlspecialchars;
 use function json_decode;
 use function json_encode;
 use function preg_match;
-use function sleep;
 use function sprintf;
 use function str_replace;
 use function strtolower;
@@ -35,7 +34,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 	private readonly MessageLocalizer $messageLocalizer;
 
-	private readonly string $apiKey;
 	private readonly string $baseApiUrl;
 	private readonly int $id;
 
@@ -50,22 +48,12 @@ class RequestWikiRemoteAIJob extends Job {
 		parent::__construct( self::JOB_NAME, $params );
 		$this->messageLocalizer = RequestContext::getMain();
 
-		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
-
-		$this->baseApiUrl = 'https://api.openai.com/v1';
+		$this->baseApiUrl = $this->config->get( ConfigNames::AIConfig )['baseurl'] ?? '';
 		$this->id = $params['id'];
 	}
 
 	/** @inheritDoc */
 	public function run(): bool {
-		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
-			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );
-			$this->setLastError( 'OpenAI API key is missing! Cannot query API without it!' );
-		} elseif ( !$this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ) {
-			$this->logger->debug( 'OpenAI Assistant ID is missing! AI job cannot start.' );
-			$this->setLastError( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
-		}
-
 		$this->wikiRequestManager->loadFromID( $this->id );
 
 		$this->logger->debug(
@@ -86,15 +74,15 @@ class RequestWikiRemoteAIJob extends Job {
 			return true;
 		}
 
-		// Initiate OpenAI query for decision
+		// Query Ollama for decision
 		$this->logger->debug(
-			'Querying OpenAI for decision on wiki request {id}...',
+			'Querying Ollama for decision on wiki request {id}...',
 			[
 				'id' => $this->id,
 			]
 		);
 
-		$apiResponse = $this->queryOpenAI(
+		$apiResponse = $this->queryOllama(
 			$this->wikiRequestManager->isBio(),
 			$this->wikiRequestManager->getCategory(),
 			$this->wikiRequestManager->getAllExtraData(),
@@ -169,7 +157,7 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
+		if ( $this->config->get( ConfigNames::AIConfig )['dryrun'] ?? false ) {
 			return $this->handleDryRun( $outcome, $comment, $confidence );
 		}
 
@@ -301,7 +289,7 @@ class RequestWikiRemoteAIJob extends Job {
 					notifyUsers: []
 				);
 				$this->logger->debug(
-					'Wiki request {id} recieved an unknown outcome with comment: {comment}',
+					'Wiki request {id} received an unknown outcome with comment: {comment}',
 					[
 						'comment' => $comment,
 						'id' => $this->id,
@@ -309,7 +297,6 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 		}
 
-		// Outcome will probably be 'unknown' if error
 		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 		$this->statsFactory->getCounter( 'createwiki_ai_outcome_total' )
 			->setLabel( 'outcome', $outcome )
@@ -318,7 +305,8 @@ class RequestWikiRemoteAIJob extends Job {
 		return true;
 	}
 
-	private function queryOpenAI(
+	// Query Ollama's /api/generate endpoint with a single prompt.
+	private function queryOllama(
 		bool $bio,
 		string $category,
 		array $extraData,
@@ -363,130 +351,50 @@ class RequestWikiRemoteAIJob extends Job {
 				htmlspecialchars( trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) ), ENT_QUOTES )
 			);
 
-			// Step 1: Create a new thread
-			$threadData = $this->createRequest( '/threads', 'POST', [
-				'messages' => [ [
-					'role' => 'user',
-					'content' => $sanitizedReason,
-				] ]
-			] );
+			// POST to Ollama /api/generate with stream=false so we get a single JSON response
+			$payload = [
+				'model' => $this->config->get( ConfigNames::AIConfig )['model'] ?? 'default',
+				'prompt' => $sanitizedReason,
+				'stream' => false,
+			];
 
-			$threadId = $threadData['id'] ?? null;
-
-			$this->logger->debug( 'Stage 1 for AI decision: Created thread.' );
+			$response = $this->createRequest( '/api/generate', 'POST', $payload );
 
 			$this->logger->debug(
-				'OpenAI returned for stage 1 of {id}: {threadData}',
+				'Ollama returned for {id}: {response}',
 				[
 					'id' => $this->id,
-					'comment' => json_encode( $threadData ),
+					'response' => json_encode( $response ),
 				]
 			);
 
-			if ( !$threadId ) {
-				$this->logger->error( 'OpenAI did not return a threadId!' );
-				$this->setLastError( 'Run ' . $this->id . ' failed. No threadId returned.' );
-				return $threadData;
+			if ( !$response ) {
+				$this->setLastError( 'Ollama query failed: empty or non-200 response.' );
+				return null;
 			}
 
-			// Step 2: Run the message
-			$runData = $this->createRequest( '/threads/' . $threadId . '/runs', 'POST', [
-				'assistant_id' => $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? '',
-			] );
+			// Ollama /api/generate returns: { "response": "<assistant text>", ... }
+			$finalText = $response['response'] ?? '';
 
-			$runId = $runData['id'] ?? null;
-
-			$this->logger->debug(
-				'Stage 2 for AI decision of {id}: Message ran.',
-				[
-					'id' => $this->id,
-				]
-			);
-
-			$this->logger->debug(
-				'OpenAI returned the following data for stage 2 of {id}: {runData}',
-				[
-					'id' => $this->id,
-					'runData' => json_encode( $runData ),
-				]
-			);
-
-			if ( !$runId ) {
-				$this->logger->error( 'OpenAI did not return a runId!' );
-				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
-				return $runData;
+			// Your model is expected to return a JSON object as text; parse it
+			$decoded = json_decode( $finalText, true );
+			if ( is_array( $decoded ) ) {
+				return $decoded;
 			}
 
-			// Step 3: Poll the status of the run
-			$status = 'running';
-			$this->logger->debug( 'Stage 3 for AI decision: Polling status...' );
-
-			while ( $status === 'running' ) {
-				sleep( 5 );
-
-				$this->logger->debug( 'Sleeping for 5 seconds...' );
-
-				$statusData = $this->createRequest( '/threads/' . $threadId . '/runs/' . $runId, 'GET', [] );
-				$status = $statusData['status'] ?? 'failed';
-
-				$this->logger->debug(
-					'Stage 2 for AI decision of {id}: Retrieved run status for {runId}',
-					[
-						'id' => $this->id,
-						'runId' => $runId,
-					]
-				);
-
-				$this->logger->debug(
-					'OpenAI returned the following data for stage 3 of {id}: {statusData}',
-					[
-						'id' => $this->id,
-						'statusData' => json_encode( $statusData ),
-					]
-				);
-
-				if ( $status === 'in_progress' ) {
-					$status = 'running';
-				} elseif ( $status === 'failed' ) {
-					$this->logger->error(
-						'Run {runId} failed for {id}! OpenAI returned {statusData}',
-						[
-							'id' => $this->id,
-							'runId' => $runId,
-							'statusData' => json_encode( $statusData ),
-						]
-					);
-
-					$this->setLastError( 'Run ' . $runId . ' failed.' );
-
-					return $statusData;
-				}
-			}
-
-			// Step 4: Query for messages in the thread
-			$messagesData = $this->createRequest( '/threads/' . $threadId . '/messages', 'GET', [] );
-
-			$this->logger->debug(
-				'Stage 4 for AI decision of {id}: Queried for messages in thread {threadId}.',
-				[
-					'id' => $this->id,
-					'threadId' => $threadId,
-				]
-			);
-
-			$this->logger->debug(
-				'OpenAI returned the following data for stage 4 of {id}: {messagesData}',
-				[
-					'id' => $this->id,
-					'messagesData' => json_encode( $messagesData ),
-				]
-			);
-
-			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
-			return (array)json_decode( $finalResponseContent, true );
+			// If the model did not return valid JSON, surface an error wrapper so your existing handling logs it
+			return [
+				'error' => 'Model did not return valid JSON',
+				'raw' => $finalText,
+				'recommendation' => [
+					'outcome' => 'unknown',
+					'public_comment' => 'AI response was not valid JSON. A human review is required.',
+					'confidence' => 0,
+				],
+			];
 		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
-			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() );
+			$this->setLastError( 'An exception occurred! The following issue was reported: ' . $e->getMessage() );
 			return null;
 		}
 	}
@@ -498,16 +406,14 @@ class RequestWikiRemoteAIJob extends Job {
 	): ?array {
 		$url = $this->baseApiUrl . $endpoint;
 
-		$this->logger->debug( 'Creating HTTP request to OpenAI...' );
+		$this->logger->debug( 'Creating HTTP request to Ollama...' );
 
-		// Create a multi-client
+		// Build request options (no auth headers needed for Ollama by default)
 		$requestOptions = [
 			'url' => $url,
 			'method' => $method,
 			'headers' => [
-				'Authorization'	=> 'Bearer ' . $this->apiKey,
-				'Content-Type'	=> 'application/json',
-				'OpenAI-Beta'	=> 'assistants=v2',
+				'Content-Type' => 'application/json',
 			],
 		];
 
@@ -518,10 +424,10 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$request = $this->httpRequestFactory->createMultiClient(
 			[ 'proxy' => $this->config->get( MainConfigNames::HTTPProxy ) ]
-		)->run( $requestOptions, [ 'reqTimeout' => 15 ] );
+		)->run( $requestOptions, [ 'reqTimeout' => 30 ] );
 
 		$this->logger->debug(
-			'HTTP request for {id} to OpenAI executed. Response was: {request}',
+			'HTTP request for {id} to Ollama executed. Response was: {request}',
 			[
 				'id' => $this->id,
 				'request' => json_encode( $request ),
