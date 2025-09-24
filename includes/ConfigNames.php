@@ -9,6 +9,8 @@ namespace Miraheze\CreateWiki;
  */
 class ConfigNames {
 
+	public const AIConfig = 'CreateWikiAIConfig';
+
 	public const AIThreshold = 'CreateWikiAIThreshold';
 
 	public const AutoApprovalFilter = 'CreateWikiAutoApprovalFilter';
@@ -42,8 +44,6 @@ class ConfigNames {
 	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
 
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
-
-	public const OpenAIConfig = 'CreateWikiOpenAIConfig';
 
 	public const PersistentModelFile = 'CreateWikiPersistentModelFile';
 
