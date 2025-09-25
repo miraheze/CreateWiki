@@ -144,10 +144,9 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$responseData = json_decode( $apiResponse['response'], true );
-		$confidence = (int)( $responseData['confidence'] ?? 0 );
-		$outcome = $responseData['outcome'] ?? 'unknown';
-		$comment = $responseData['public_comment'] ?? 'No comment provided. Please check logs.';
+		$confidence = (int)( $apiResponse['confidence'] ?? 0 );
+		$outcome = $apiResponse['outcome'] ?? 'unknown';
+		$comment = $apiResponse['public_comment'] ?? 'No comment provided. Please check logs.';
 
 		$this->logger->debug(
 			'AI decision for wiki request {id} was {outcome} (with {confidence}% confidence) with reasoning: {comment}',
