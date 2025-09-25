@@ -83,7 +83,7 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		$apiResponse = $this->queryOllama(
+		$rawResponse = $this->queryOllama(
 			$this->wikiRequestManager->isBio(),
 			$this->wikiRequestManager->getCategory(),
 			$this->wikiRequestManager->getAllExtraData(),
@@ -98,6 +98,8 @@ class RequestWikiRemoteAIJob extends Job {
 				( new UltimateAuthority( User::newSystemUser( 'CreateWiki AI' ) ) )->getUser()
 			) )
 		);
+
+		$apiResponse = json_decode($rawResponse, true);
 
 		if ( !$apiResponse ) {
 			$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
@@ -144,9 +146,10 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$confidence = (int)( $apiResponse['confidence'] ?? 0 );
-		$outcome = $apiResponse['outcome'] ?? 'unknown';
-		$comment = $apiResponse['public_comment'] ?? 'No comment provided. Please check logs.';
+		$responseData = json_decode($apiResponse['response'], true);
+		$confidence = (int)( $responseData['confidence'] ?? 0 );
+		$outcome = $responseData['outcome'] ?? 'unknown';
+		$comment = $responseData['public_comment'] ?? 'No comment provided. Please check logs.';
 
 		$this->logger->debug(
 			'AI decision for wiki request {id} was {outcome} (with {confidence}% confidence) with reasoning: {comment}',
@@ -358,10 +361,18 @@ class RequestWikiRemoteAIJob extends Job {
 					'type' => 'object',
 					'properties' => [
 						'confidence' => [
-							'type' => 'integer'
+							'type' => 'integer',
+							'minimum' => 0,
+							'maximum' => 100
 						],
 						'outcome' => [
-							'type' => 'string'
+							'type' => 'string',
+							'enum' => [
+                                'approve',
+                                'decline',
+                                'moredetails',
+                                'onhold'
+                            ],
 						],
 						'public_comment' => [
 							'type' => 'string'
