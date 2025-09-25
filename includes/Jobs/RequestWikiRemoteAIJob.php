@@ -144,9 +144,9 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$confidence = (int)( $apiResponse['recommendation']['confidence'] ?? 0 );
-		$outcome = $apiResponse['recommendation']['outcome'] ?? 'unknown';
-		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
+		$confidence = (int)( $apiResponse['confidence'] ?? 0 );
+		$outcome = $apiResponse['outcome'] ?? 'unknown';
+		$comment = $apiResponse['public_comment'] ?? 'No comment provided. Please check logs.';
 
 		$this->logger->debug(
 			'AI decision for wiki request {id} was {outcome} (with {confidence}% confidence) with reasoning: {comment}',
@@ -354,6 +354,25 @@ class RequestWikiRemoteAIJob extends Job {
 
 			// POST to Ollama /api/generate with stream=false so we get a single JSON response
 			$payload = [
+				'format' => [
+					'type' => 'object',
+					'properties' => [
+						'confidence' => [
+							'type' => 'integer'
+						],
+						'outcome' => [
+							'type' => 'string'
+						],
+						'public_comment' => [
+							'type' => 'string'
+						],
+					],
+					'required' => [
+						'confidence',
+						'outcome',
+						'public_comment'
+					],
+				],
 				'model' => $this->config->get( ConfigNames::AIConfig )['model'] ?? 'default',
 				'prompt' => $sanitizedReason,
 				'stream' => false,
@@ -387,11 +406,9 @@ class RequestWikiRemoteAIJob extends Job {
 			return [
 				'error' => 'Model did not return valid JSON',
 				'raw' => $finalText,
-				'recommendation' => [
-					'outcome' => 'unknown',
-					'public_comment' => 'AI response was not valid JSON. A human review is required.',
-					'confidence' => 0,
-				],
+				'outcome' => 'unknown',
+				'public_comment' => 'AI response was not valid JSON. A human review is required.',
+				'confidence' => 0,
 			];
 		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
