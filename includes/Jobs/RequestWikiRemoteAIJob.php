@@ -83,7 +83,7 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		$rawResponse = $this->queryOllama(
+		$apiResponse = $this->queryOllama(
 			$this->wikiRequestManager->isBio(),
 			$this->wikiRequestManager->getCategory(),
 			$this->wikiRequestManager->getAllExtraData(),
@@ -98,8 +98,6 @@ class RequestWikiRemoteAIJob extends Job {
 				( new UltimateAuthority( User::newSystemUser( 'CreateWiki AI' ) ) )->getUser()
 			) )
 		);
-
-		$apiResponse = json_decode( $rawResponse, true );
 
 		if ( !$apiResponse ) {
 			$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
