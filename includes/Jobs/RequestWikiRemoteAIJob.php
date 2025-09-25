@@ -99,7 +99,7 @@ class RequestWikiRemoteAIJob extends Job {
 			) )
 		);
 
-		$apiResponse = json_decode($rawResponse, true);
+		$apiResponse = json_decode( $rawResponse, true );
 
 		if ( !$apiResponse ) {
 			$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
@@ -146,7 +146,7 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$responseData = json_decode($apiResponse['response'], true);
+		$responseData = json_decode( $apiResponse['response'], true );
 		$confidence = (int)( $responseData['confidence'] ?? 0 );
 		$outcome = $responseData['outcome'] ?? 'unknown';
 		$comment = $responseData['public_comment'] ?? 'No comment provided. Please check logs.';
@@ -368,11 +368,11 @@ class RequestWikiRemoteAIJob extends Job {
 						'outcome' => [
 							'type' => 'string',
 							'enum' => [
-                                'approve',
-                                'decline',
-                                'moredetails',
-                                'onhold'
-                            ],
+								'approve',
+								'decline',
+								'moredetails',
+								'onhold'
+							],
 						],
 						'public_comment' => [
 							'type' => 'string'
