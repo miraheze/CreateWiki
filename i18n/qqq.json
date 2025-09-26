@@ -160,7 +160,7 @@
 	"requestwikiqueue-request-info-submission": "Instructional text about handling the submission of a wiki request.",
 	"requestwikiqueue-request-label-action": "Label for the 'Action' selection in the request handling form.",
 	"requestwikiqueue-request-label-comment": "Used as a label for 'comment'\n{{Identical|Comment}}",
-	"requestwikiqueue-request-label-handle-ai": "Lable used for 'Handle with AI' button in the request handling form.",
+	"requestwikiqueue-request-label-handle-ai": "Label used for 'Handle with AI' button in the request handling form.",
 	"requestwikiqueue-request-label-handle-ai-success": "Message after a request has been queued for AI handling.",
 	"requestwikiqueue-request-label-language": "Used as a label for 'language'\n{{Identical|Language}}",
 	"requestwikiqueue-request-label-reason": "Label for the 'reason' field in the request details section.",

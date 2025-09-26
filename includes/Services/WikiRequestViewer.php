@@ -384,7 +384,7 @@ class WikiRequestViewer {
 			];
 
 			if (
-				$this->config->get$this->config->get( ConfigNames::AIConfig )['baseurl'] &&
+				$this->options->get( ConfigNames::AIConfig )['baseurl'] &&
 				$this->options->get( ConfigNames::AIConfig )['model']
 			) {
 				$formDescriptor['handle-ai'] = [
