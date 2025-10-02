@@ -4,6 +4,7 @@
 			"Chrumps",
 			"Fan Formuły 1",
 			"Meeqoo",
+			"Nux",
 			"Rail",
 			"Railfail536",
 			"Sp5uhe"
@@ -32,6 +33,7 @@
 	"createwiki-label-sitename": "Nazwa strony:",
 	"createwiki-success": "Wiki została pomyślnie utworzona.",
 	"echo-category-title-request-declined": "Odrzucenie prośby o utworzenie wiki",
+	"echo-category-title-request-moredetails": "Żądanie Wiki wymaga podania więcej danych",
 	"echo-category-title-wiki-creation": "Tworzenie wiki",
 	"echo-pref-tooltip-wiki-creation": "Powiadom mnie, kiedy moja wiki zostanie utworzona.",
 	"echo-pref-tooltip-wiki-request-declined": "Powiadom mnie, kiedy moja prośba o wiki zostanie odrzucona.",
