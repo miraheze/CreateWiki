@@ -51,7 +51,7 @@ class WikiRequestManager {
 		ConfigNames::AIThreshold,
 		ConfigNames::Categories,
 		ConfigNames::DatabaseSuffix,
-		ConfigNames::AIConfig,
+		ConfigNames::OpenAIConfig,
 		ConfigNames::Purposes,
 		ConfigNames::Subdomain,
 		ConfigNames::UseJobQueue,
@@ -158,10 +158,10 @@ class WikiRequestManager {
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
 		} elseif (
-			$this->options->get( ConfigNames::AIConfig )['baseurl'] &&
-			$this->options->get( ConfigNames::AIConfig )['model']
+			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
+			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
 		) {
-			$this->evaluateWithOllama();
+			$this->evaluateWithOpenAI();
 		}
 
 		$this->logNewRequest( $data, $user );
@@ -1021,7 +1021,7 @@ class WikiRequestManager {
 		);
 	}
 
-	private function evaluateWithOllama(): void {
+	private function evaluateWithOpenAI(): void {
 		$jobQueueGroup = $this->jobQueueGroupFactory->makeJobQueueGroup();
 		$jobQueueGroup->push(
 			new JobSpecification(

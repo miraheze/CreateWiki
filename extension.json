@@ -375,12 +375,12 @@
 			"description": "String. Email address to send internally generated notification emails to. Does not depend on $wgCreateWikiEmailNotifications.",
 			"value": "root@localhost"
 		},
-		"CreateWikiAIConfig": {
-			"description": "Array. AI configuration array, including base URL, dry run status, and model name.",
+		"CreateWikiOpenAIConfig": {
+			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
 			"value": {
-				"baseurl": null,
 				"dryrun": true,
-				"model": null
+				"assistantid": null,
+				"apikey": null
 			}
 		},
 		"CreateWikiPersistentModelFile": {
