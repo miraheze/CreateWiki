@@ -161,8 +161,13 @@
 	"requestwikiqueue-request-label-visibility-suppress": "Ogledajo si lahko uporabniki s pravico »createwiki-suppressrequest«",
 	"requestwikiqueue-search-header": "Iskanje prošenj za viki",
 	"requestwikiqueue-section-comments": "Komentarji prošenj",
+	"requestwikiqueue-section-details": "Podrobnosti prošnje",
 	"requestwikiqueue-section-editing": "Uredi prošnjo",
 	"requestwikiqueue-section-handling": "Obravnava prošnje",
+	"requestwikiqueue-section-history": "Zgodovina prošnje",
 	"right-createwiki": "Ustvarjanje vikijev",
+	"right-createwiki-deleterequest": "Brisanje prošenj za vikije",
+	"right-createwiki-suppressionlog": "Ogled dnevnika skritja prošenj za viki",
+	"right-createwiki-suppressrequest": "Skritje prošenj za viki pred vsakomer",
 	"right-requestwiki": "Vlaganje prošenj za viki"
 }
