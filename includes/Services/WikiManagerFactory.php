@@ -266,9 +266,13 @@ class WikiManagerFactory {
 
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
 
+		$dbname = $this->dbname;
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $requester, $extra ) {
-				$this->dataStore->resetDatabaseLists( isNewChanges: true );
+			function () use ( $requester, $extra, $dbname ) {
+				$this->dataStore->resetDatabaseLists( isNewChanges: true, reason:
+					'WikiManagerFactory::doAfterCreate', logData: [
+						'dbname' => $dbname,
+					]);
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
@@ -383,7 +387,9 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->dataStore->resetDatabaseLists( isNewChanges: true );
+		$this->dataStore->resetDatabaseLists( isNewChanges: true, reason: 'WikiManagerFactory::delete', logData: [
+			'dbname' => $this->dbname,
+		] );
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $this->dbname );
 
 		return null;
@@ -417,7 +423,9 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->dataStore->resetDatabaseLists( isNewChanges: true );
+		$this->dataStore->resetDatabaseLists( isNewChanges: true, reason: 'WikiManagerFactory::rename', logData: [
+			'dbname' => $this->dbname,
+		] );
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
 
 		return null;

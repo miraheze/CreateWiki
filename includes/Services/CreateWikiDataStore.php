@@ -73,7 +73,7 @@ class CreateWikiDataStore {
 	 */
 	public function syncCache(): void {
 		if ( !$this->timestamp ) {
-			$this->resetDatabaseLists( isNewChanges: true );
+			$this->resetDatabaseLists( isNewChanges: true, reason: 'syncCacheNoTimestamp' );
 			return;
 		}
 
@@ -84,14 +84,10 @@ class CreateWikiDataStore {
 		// Regenerate database list cache if the databases.php file does not
 		// exist or has no valid mtime
 		if ( $mtime === 0 || $mtime < $this->timestamp ) {
-			$this->logger->debug(
-				'CreateWikiDataStore: Resetting database list due to invalid mtime',
-				[
-					'mtime' => $mtime,
-					'timestamp' => $this->timestamp,
-				]
-			);
-			$this->resetDatabaseLists( isNewChanges: false );
+			$this->resetDatabaseLists( isNewChanges: false, reason: 'syncCacheInvalidMtime', logData: [
+				'mtime' => $mtime,
+				'timestamp' => $this->timestamp,
+			] );
 		}
 	}
 
@@ -110,7 +106,7 @@ class CreateWikiDataStore {
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification time (mtime) and stores it in the cache for future reference.
 	 */
-	public function resetDatabaseLists( bool $isNewChanges ): void {
+	public function resetDatabaseLists( bool $isNewChanges, string $reason = 'unknown', array $logData = [] ): void {
 		$mtime = time();
 		if ( $isNewChanges ) {
 			$this->timestamp = $mtime;
@@ -119,6 +115,14 @@ class CreateWikiDataStore {
 				$mtime
 			);
 		}
+		$this->logger->debug(
+			'Resetting database lists',
+			[
+				'is_new_changes' => $isNewChanges,
+				'reason' => $reason,
+				'new_mtime' => $mtime,
+			] + $logData
+		);
 
 		$databaseLists = [];
 		$this->hookRunner->onCreateWikiGenerateDatabaseLists( $databaseLists );
