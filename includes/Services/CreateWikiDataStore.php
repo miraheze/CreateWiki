@@ -3,10 +3,12 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
+use Psr\Log\LoggerInterface;
 use stdClass;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
@@ -40,6 +42,8 @@ class CreateWikiDataStore {
 	private readonly string $cacheDir;
 	private int $timestamp;
 
+	private LoggerInterface $logger;
+
 	public function __construct(
 		ObjectCacheFactory $objectCacheFactory,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
@@ -58,6 +62,8 @@ class CreateWikiDataStore {
 		$this->timestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( self::CACHE_KEY, 'databases' )
 		);
+
+		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
 	}
 
 	/**
@@ -78,6 +84,13 @@ class CreateWikiDataStore {
 		// Regenerate database list cache if the databases.php file does not
 		// exist or has no valid mtime
 		if ( $mtime === 0 || $mtime < $this->timestamp ) {
+			$this->logger->debug(
+				'CreateWikiDataStore: Resetting database list due to invalid mtime',
+				[
+					'mtime' => $mtime,
+					'timestamp' => $this->timestamp,
+				]
+			);
 			$this->resetDatabaseLists( isNewChanges: false );
 		}
 	}
