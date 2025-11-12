@@ -37,10 +37,12 @@ class CreateWikiDataStore {
 	private const CACHE_KEY = 'CreateWiki';
 
 	private readonly BagOStuff $cache;
+	private readonly BagOStuff $localServerCache;
 	private IReadableDatabase $dbr;
 
 	private readonly string $cacheDir;
 	private int $timestamp;
+	private int $localServerTimestamp;
 
 	private LoggerInterface $logger;
 
@@ -55,12 +57,16 @@ class CreateWikiDataStore {
 		$this->cache = ( $this->options->get( ConfigNames::CacheType ) !== null ) ?
 			$objectCacheFactory->getInstance( $this->options->get( ConfigNames::CacheType ) ) :
 			$objectCacheFactory->getLocalClusterInstance();
+		$this->localServerCache = $objectCacheFactory->getLocalServerInstance();
 
 		$this->cacheDir = $this->options->get( ConfigNames::CacheDirectory ) ?:
 			$this->options->get( MainConfigNames::CacheDirectory );
 
 		$this->timestamp = (int)$this->cache->get(
 			$this->cache->makeGlobalKey( self::CACHE_KEY, 'databases' )
+		);
+		$this->localServerTimestamp = (int)$this->localServerCache->get(
+			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' )
 		);
 
 		$this->logger = LoggerFactory::getInstance( 'CreateWiki' );
@@ -82,8 +88,10 @@ class CreateWikiDataStore {
 		$mtime = $this->getCachedDatabaseList()['mtime'] ?? 0;
 
 		// Regenerate database list cache if the databases.php file does not
-		// exist or has no valid mtime
-		if ( $mtime === 0 || $mtime < $this->timestamp ) {
+		// exist or has no valid mtime.
+		// Only regenerate if localServerTimestamp is smaller than timestamp so multiple processes on the
+		// same server don't try regenerating the dblists at the same time.
+		if ( ( $mtime === 0 || $mtime < $this->timestamp ) && $this->localServerTimestamp < $this->timestamp ) {
 			$this->resetDatabaseLists( isNewChanges: false, reason: 'syncCacheInvalidMtime', logData: [
 				'mtime' => $mtime,
 				'timestamp' => $this->timestamp,
@@ -108,6 +116,10 @@ class CreateWikiDataStore {
 	 */
 	public function resetDatabaseLists( bool $isNewChanges, string $reason = 'unknown', array $logData = [] ): void {
 		$mtime = time();
+		$this->localServerCache->set(
+			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' ),
+			$mtime
+		);
 		if ( $isNewChanges ) {
 			$this->timestamp = $mtime;
 			$this->cache->set(
