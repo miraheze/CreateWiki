@@ -228,6 +228,13 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->assertSame( 'wiki', $specialRequestWiki->getGroupName() );
 	}
 
+	/**
+	 * @covers ::doesWrites
+	 */
+	public function testDoesWrites(): void {
+		$this->assertTrue( $this->specialRequestWiki->doesWrites() );
+	}
+
 	private function getTestUserAuthorityWithConfirmedEmail(): Authority {
 		$user = $this->getTestUser()->getUser();
 		$user->setEmail( 'test@example.org' );

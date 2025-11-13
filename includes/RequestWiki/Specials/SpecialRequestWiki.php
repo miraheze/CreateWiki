@@ -239,7 +239,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	}
 
 	/** @inheritDoc */
-	public function doesWrites() {
+	public function doesWrites(): bool {
 		return true;
 	}
 }

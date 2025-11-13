@@ -136,7 +136,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	}
 
 	/** @inheritDoc */
-	public function doesWrites() {
+	public function doesWrites(): bool {
 		return true;
 	}
 }
