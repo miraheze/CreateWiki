@@ -383,6 +383,18 @@ class WikiRequestViewer {
 				],
 			];
 
+			if (
+				$this->options->get( ConfigNames::AIConfig )['baseurl'] &&
+				$this->options->get( ConfigNames::AIConfig )['model']
+			) {
+				$formDescriptor['handle-ai'] = [
+					'type' => 'submit',
+					'flags' => [ 'progressive', 'primary' ],
+					'buttonlabel-message' => 'requestwikiqueue-request-label-handle-ai',
+					'section' => 'handling',
+				];
+			}
+
 			if ( $this->options->get( ConfigNames::CannedResponses ) ) {
 				$formDescriptor['handle-comment']['type'] = 'selectorother';
 				$formDescriptor['handle-comment']['options'] = $this->options->get( ConfigNames::CannedResponses );
@@ -484,6 +496,13 @@ class WikiRequestViewer {
 
 		$out = $form->getContext()->getOutput();
 		$session = $form->getRequest()->getSession();
+
+		if ( isset( $formData['handle-ai'] ) ) {
+			$this->wikiRequestManager->evaluateWithOllama();
+
+			$out->addHTML( Html::successBox( $this->context->msg( 'requestwikiqueue-request-label-handle-ai-success' )->escaped() ) );
+			return;
+		}
 
 		if ( isset( $formData['submit-comment'] ) ) {
 			// Don't want to mess with some generic comments across requests.
