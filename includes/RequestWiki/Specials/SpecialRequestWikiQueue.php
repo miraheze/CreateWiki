@@ -135,9 +135,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		return 'wiki';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function doesWrites() {
 		return true;
 	}

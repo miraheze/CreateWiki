@@ -237,4 +237,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 	protected function getGroupName(): string {
 		return 'wiki';
 	}
+
+	/** @inheritDoc */
+	public function doesWrites() {
+		return true;
+	}
 }
