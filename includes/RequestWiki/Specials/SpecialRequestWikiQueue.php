@@ -134,4 +134,9 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	protected function getGroupName(): string {
 		return 'wiki';
 	}
+
+	/** @inheritDoc */
+	public function doesWrites(): bool {
+		return true;
+	}
 }
