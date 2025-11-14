@@ -470,7 +470,7 @@ class RemoteWiki {
 			}
 
 			if ( $this->resetDatabaseLists ) {
-				$this->dataStore->resetDatabaseLists( isNewChanges: true );
+				$this->dataStore->resetDatabaseLists( isNewChanges: true, caller: __METHOD__ );
 			}
 
 			$this->hookRunner->onCreateWikiRemoteWikiCommit( $this->dbname );

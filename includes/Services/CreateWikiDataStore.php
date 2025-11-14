@@ -12,6 +12,7 @@ use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\StaticArrayWriter;
+use Wikimedia\Stats\StatsFactory;
 use function array_keys;
 use function file_put_contents;
 use function function_exists;
@@ -28,6 +29,7 @@ class CreateWikiDataStore {
 	public const CONSTRUCTOR_OPTIONS = [
 		ConfigNames::CacheDirectory,
 		ConfigNames::CacheType,
+		ConfigNames::TrackDatabaseListMetrics,
 		MainConfigNames::CacheDirectory,
 		MainConfigNames::LocalDatabases,
 	];
@@ -41,9 +43,11 @@ class CreateWikiDataStore {
 	private readonly string $cacheDir;
 	private int $timestamp;
 	private int $localServerTimestamp;
+	private readonly bool $trackDatabaseListMetrics;
 
 	public function __construct(
 		ObjectCacheFactory $objectCacheFactory,
+		private readonly StatsFactory $statsFactory,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly ServiceOptions $options
@@ -64,6 +68,8 @@ class CreateWikiDataStore {
 		$this->localServerTimestamp = (int)$this->localServerCache->get(
 			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' )
 		);
+
+		$this->trackDatabaseListMetrics = $this->options->get( ConfigNames::TrackDatabaseListMetrics );
 	}
 
 	/**
@@ -73,7 +79,7 @@ class CreateWikiDataStore {
 	 */
 	public function syncCache(): void {
 		if ( !$this->timestamp ) {
-			$this->resetDatabaseLists( isNewChanges: true );
+			$this->resetDatabaseLists( isNewChanges: true, caller: __METHOD__ );
 			return;
 		}
 
@@ -86,7 +92,7 @@ class CreateWikiDataStore {
 		// Only regenerate if localServerTimestamp is smaller than timestamp so multiple processes on the
 		// same server don't try regenerating the dblists at the same time.
 		if ( ( $mtime === 0 || $mtime < $this->timestamp ) && $this->localServerTimestamp < $this->timestamp ) {
-			$this->resetDatabaseLists( isNewChanges: false );
+			$this->resetDatabaseLists( isNewChanges: false, caller: __METHOD__ );
 		}
 	}
 
@@ -105,7 +111,18 @@ class CreateWikiDataStore {
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification time (mtime) and stores it in the cache for future reference.
 	 */
-	public function resetDatabaseLists( bool $isNewChanges ): void {
+	public function resetDatabaseLists( bool $isNewChanges, string $caller = 'unknown' ): void {
+		$timer = null;
+		if ( $this->trackDatabaseListMetrics ) {
+			$this->statsFactory->getCounter( 'createwiki_dblist_generation_total' )
+				->setLabel( 'cause', $caller )
+				->setLabel( 'new_changes', $isNewChanges )
+				->increment();
+
+			$timer = $this->statsFactory->getTiming( 'createwiki_dblist_generation_seconds' )
+				->start();
+		}
+
 		$mtime = time();
 		$this->localServerCache->set(
 			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' ),
@@ -132,6 +149,7 @@ class CreateWikiDataStore {
 				$this->writeToFile( $name, $list );
 			}
 
+			$timer?->stop();
 			return;
 		}
 
@@ -171,6 +189,7 @@ class CreateWikiDataStore {
 		];
 
 		$this->writeToFile( 'databases', $list );
+		$timer?->stop();
 	}
 
 	/**
