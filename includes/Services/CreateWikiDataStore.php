@@ -111,6 +111,7 @@ class CreateWikiDataStore {
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification time (mtime) and stores it in the cache for future reference.
 	 */
+	// @phan-suppress-next-line PhanDisallowedOptionalMethodParameter
 	public function resetDatabaseLists( bool $isNewChanges, ?string $caller = null ): void {
 		$timer = null;
 		if ( $this->trackDatabaseListMetrics ) {
@@ -120,7 +121,6 @@ class CreateWikiDataStore {
 				->setLabel( 'new_changes', $isNewChanges ? 'Yes' : 'No' )
 				->increment();
 
-			/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 			$timer = $this->statsFactory->getTiming( 'createwiki_dblist_generation_seconds' )
 				->start();
 		}
