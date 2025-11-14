@@ -416,6 +416,10 @@
 			"description": "String. The main part of subdomains, e.g. wiki.example.org, example.org is the main part.",
 			"value": ""
 		},
+		"CreateWikiTrackDatabaseListMetrics": {
+			"description": "Boolean. Whether to track metrics related to the (re)generation of database lists.",
+			"value": false
+		},
 		"CreateWikiUseClosedWikis": {
 			"description": "Boolean. Whether to implement front end logic for closing wikis.",
 			"value": false
