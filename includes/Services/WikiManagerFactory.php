@@ -266,9 +266,10 @@ class WikiManagerFactory {
 
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
 
+		$method = __METHOD__;
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $requester, $extra ) {
-				$this->dataStore->resetDatabaseLists( isNewChanges: true, caller: __METHOD__ );
+			function () use ( $requester, $extra, $method ) {
+				$this->dataStore->resetDatabaseLists( isNewChanges: true, caller: $method );
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(

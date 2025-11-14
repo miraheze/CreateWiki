@@ -111,14 +111,16 @@ class CreateWikiDataStore {
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification time (mtime) and stores it in the cache for future reference.
 	 */
-	public function resetDatabaseLists( bool $isNewChanges, string $caller = 'unknown' ): void {
+	public function resetDatabaseLists( bool $isNewChanges, ?string $caller = null ): void {
 		$timer = null;
 		if ( $this->trackDatabaseListMetrics ) {
+			/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 			$this->statsFactory->getCounter( 'createwiki_dblist_generation_total' )
-				->setLabel( 'cause', $caller )
-				->setLabel( 'new_changes', $isNewChanges )
+				->setLabel( 'cause', $caller ?? 'unknown' )
+				->setLabel( 'new_changes', $isNewChanges ? 'Yes' : 'No' )
 				->increment();
 
+			/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 			$timer = $this->statsFactory->getTiming( 'createwiki_dblist_generation_seconds' )
 				->start();
 		}
