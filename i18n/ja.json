@@ -31,9 +31,9 @@
 		]
 	},
 	"action-createwiki": "ウィキの作成",
-	"action-createwiki-deleterequest": "ウィキの申請を削除",
-	"action-createwiki-suppressionlog": "ウィキの申請秘匿記録を表示",
-	"action-createwiki-suppressrequest": "ウィキの申請を秘匿",
+	"action-createwiki-deleterequest": "ウィキの申請の削除",
+	"action-createwiki-suppressionlog": "ウィキの申請秘匿記録の閲覧",
+	"action-createwiki-suppressrequest": "ウィキの申請の秘匿",
 	"action-requestwiki": "ウィキの申請",
 	"createwiki": "ウィキを作成",
 	"createwiki-close-email-body": "こんにちは。\n\nこのメールは、あなたのウィキが閉鎖されたことをお知らせするためのものです。",
@@ -192,7 +192,7 @@
 	"requestwikiqueue-section-history": "申請履歴",
 	"right-createwiki": "ウィキを作成",
 	"right-createwiki-deleterequest": "ウィキの申請を削除",
-	"right-createwiki-suppressionlog": "ウィキの申請秘匿記録を表示",
+	"right-createwiki-suppressionlog": "ウィキの申請秘匿記録を閲覧",
 	"right-createwiki-suppressrequest": "ウィキの申請を全員から非表示にする",
 	"right-requestwiki": "ウィキを申請"
 }
