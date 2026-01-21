@@ -119,7 +119,7 @@
 	"requestwiki-ai-error-reason": "This request could not be automatically evaluated and the reason has been logged. Please wait for human review.",
 	"requestwiki-ai-error-history-reason": "The following error was returned when evaluating the request through artificial intelligence:\n\n'$1'",
 	"requestwiki-edit-success": "Your changes to this wiki request have been successfully saved.",
-	"requestwiki-error-emailnotconfirmed": "Your email is not confirmed. To request wikis, please [[Special:ChangeEmail|confirm an email]] first.",
+	"requestwiki-error-emailnotconfirmed": "Your email is not confirmed. To request wikis, please [[Special:ConfirmEmail|confirm an email]] first.",
 	"requestwiki-error-invalidcomment": "Your wiki request contains an invalid character. Please correct that and try again.",
 	"requestwiki-error-minlength": "Please lengthen this text to $1 {{PLURAL:$1|character|characters}} or more (you are currently using $2 {{PLURAL:$2|character|characters}}).",
 	"requestwiki-error-patient": "You have already requested a wiki! Please be patient, your request is being reviewed. If you need to request another wiki, try again later.",
