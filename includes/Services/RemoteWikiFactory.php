@@ -13,6 +13,7 @@ class RemoteWikiFactory {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiValidator $validator,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		private readonly ServiceOptions $options
 	) {
@@ -23,6 +24,7 @@ class RemoteWikiFactory {
 			$this->databaseUtils,
 			$this->dataStore,
 			$this->hookRunner,
+			$this->validator,
 			$this->jobQueueGroupFactory,
 			$this->options,
 			$dbname
