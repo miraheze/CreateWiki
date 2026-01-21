@@ -5,13 +5,18 @@ namespace Miraheze\CreateWiki\Maintenance;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use StatusValue;
 use Wikimedia\FileBackend\FileBackend;
-use function print_r;
 
 class SetContainersAccess extends Maintenance {
 
+	private CreateWikiHookRunner $hookRunner;
 	private RemoteWikiFactory $remoteWikiFactory;
+
+	private bool $isRetrying = false;
+	private bool $needsRetry = false;
 
 	public function __construct() {
 		parent::__construct();
@@ -24,12 +29,23 @@ class SetContainersAccess extends Maintenance {
 
 	private function initServices(): void {
 		$services = $this->getServiceContainer();
+		$this->hookRunner = $services->get( 'CreateWikiHookRunner' );
 		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
 	}
 
 	public function execute(): void {
 		$this->initServices();
+		$this->processContainers();
 
+		if ( $this->needsRetry && !$this->isRetrying ) {
+			$this->isRetrying = true;
+			$this->needsRetry = false;
+
+			$this->processContainers();
+		}
+	}
+
+	private function processContainers(): void {
 		$repo = $this->getServiceContainer()->getRepoGroup()->getLocalRepo();
 		$backend = $repo->getBackend();
 
@@ -38,22 +54,24 @@ class SetContainersAccess extends Maintenance {
 		);
 
 		$isPrivate = $remoteWiki->isPrivate();
-
-		foreach ( $this->getConfig()->get( ConfigNames::Containers ) as $zone => $status ) {
+		foreach ( $this->getConfig()->get( ConfigNames::Containers ) as $zone => $state ) {
 			$dir = $backend->getContainerStoragePath( $zone );
-			$private = $status === 'private';
-			$publicPrivate = $status === 'public-private';
+
+			$private = $state === 'private';
+			$publicPrivate = $state === 'public-private';
+
 			$secure = ( $private || ( $publicPrivate && $isPrivate ) )
 				? [ 'noAccess' => true, 'noListing' => true ] : [];
 
-			$this->prepareDirectory( $backend, $dir, $secure );
+			$this->prepareDirectory( $backend, $secure, $dir, $zone );
 		}
 	}
 
-	protected function prepareDirectory(
+	private function prepareDirectory(
 		FileBackend $backend,
+		array $secure,
 		string $dir,
-		array $secure
+		string $zone
 	): void {
 		// Create zone if it doesn't exist...
 		$this->output( "Making sure '$dir' exists..." );
@@ -61,7 +79,8 @@ class SetContainersAccess extends Maintenance {
 		$status = $backend->prepare( [ 'dir' => $dir ] + $secure );
 
 		if ( !$status->isOK() ) {
-			$this->output( 'failed...' );
+			$this->handleFailure( $status, $dir, $zone );
+			return;
 		}
 
 		// Make sure zone has the right ACLs...
@@ -75,11 +94,32 @@ class SetContainersAccess extends Maintenance {
 			$status->merge( $backend->publish( [ 'dir' => $dir, 'access' => true ] ) );
 		}
 
-		if ( $status->isOK() ) {
-			$this->output( "done.\n" );
-		} else {
-			$this->output( "failed.\n" );
-			print_r( $status->getMessages( 'error' ) );
+		if ( !$status->isOK() ) {
+			$this->handleFailure( $status, $dir, $zone );
+			return;
+		}
+
+		$this->output( "done.\n" );
+	}
+
+	private function handleFailure(
+		StatusValue $status,
+		string $dir,
+		string $zone
+	): void {
+		if ( $this->isRetrying ) {
+			$this->output( "retry failed.\n" );
+			$this->error( $status );
+			return;
+		}
+
+		$this->output( "failed.\n" );
+		$this->error( $status );
+
+		if ( $this->hookRunner->onCreateWikiSetContainersAccessFailed( $dir, $zone ) ) {
+			// If the hook returned true, we can try this script one time.
+			$this->output( "retrying.\n" );
+			$this->needsRetry = true;
 		}
 	}
 }
