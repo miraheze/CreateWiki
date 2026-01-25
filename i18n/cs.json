@@ -4,7 +4,8 @@
 			"MasterStudioCZ",
 			"Matěj Suchánek",
 			"Mormegil",
-			"MrJaroslavik"
+			"MrJaroslavik",
+			"VitSkv"
 		]
 	},
 	"action-createwiki": "vytvářet wiki",
@@ -109,7 +110,7 @@
 	"notification-header-request-moredetails": "Vaše žádost vyžaduje před učiněním rozhodnutí více informací:",
 	"notification-header-wiki-creation": "Vaše wiki <strong>$1</strong> byla vytvořena!",
 	"requestwiki": "Požádat o wiki",
-	"requestwiki-ai-decision-approve": "Automaticky, s odůvodněním: $1",
+	"requestwiki-ai-decision-approve": "Automaticky,  s jistotou $2 a s odůvodněním: $1",
 	"requestwiki-ai-decision-decline": "Tato žádost nemohla být schválena z následujícího důvodu: $1",
 	"requestwiki-ai-decision-dryrun": "Toto je experimentální analýza od AI. Žadatelé o wiki ji mohou bezpečně ignorovat.\n\n'''Doporučení''': $1\n\n'''Důvod''': $2",
 	"requestwiki-ai-decision-moredetails": "Před dalším zhodnocením této žádosti je k ní potřeba dodat více podrobností, a to z následujícího důvodu: $1",

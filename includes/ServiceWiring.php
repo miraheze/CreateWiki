@@ -10,7 +10,7 @@ use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
@@ -31,13 +31,13 @@ return [
 	'CreateWikiDatabaseUtils' => static function ( MediaWikiServices $services ): CreateWikiDatabaseUtils {
 		return new CreateWikiDatabaseUtils( $services->getConnectionProvider() );
 	},
-	'CreateWikiDataFactory' => static function ( MediaWikiServices $services ): CreateWikiDataFactory {
-		return new CreateWikiDataFactory(
+	'CreateWikiDataStore' => static function ( MediaWikiServices $services ): CreateWikiDataStore {
+		return new CreateWikiDataStore(
 			$services->getObjectCacheFactory(),
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
-				CreateWikiDataFactory::CONSTRUCTOR_OPTIONS,
+				CreateWikiDataStore::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			)
 		);
@@ -82,7 +82,7 @@ return [
 	'RemoteWikiFactory' => static function ( MediaWikiServices $services ): RemoteWikiFactory {
 		return new RemoteWikiFactory(
 			$services->get( 'CreateWikiDatabaseUtils' ),
-			$services->get( 'CreateWikiDataFactory' ),
+			$services->get( 'CreateWikiDataStore' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->getJobQueueGroupFactory(),
 			new ServiceOptions(
@@ -94,11 +94,12 @@ return [
 	'WikiManagerFactory' => static function ( MediaWikiServices $services ): WikiManagerFactory {
 		return new WikiManagerFactory(
 			$services->get( 'CreateWikiDatabaseUtils' ),
-			$services->get( 'CreateWikiDataFactory' ),
+			$services->get( 'CreateWikiDataStore' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
+			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
 			new ServiceOptions(
@@ -115,6 +116,7 @@ return [
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
+			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
@@ -130,6 +132,7 @@ return [
 			$services->get( 'CreateWikiValidator' ),
 			$services->getLanguageNameUtils(),
 			$services->getPermissionManager(),
+			$services->getUserLinkRenderer(),
 			$services->get( 'WikiRequestManager' ),
 			new ServiceOptions(
 				WikiRequestViewer::CONSTRUCTOR_OPTIONS,

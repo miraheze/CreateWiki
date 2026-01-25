@@ -6,16 +6,15 @@ use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\DBConnRef;
-use Wikimedia\Rdbms\IReadableDatabase;
 
 class CreateWikiHookRunner implements
 	CreateWikiAfterCreationWithExtraDataHook,
 	CreateWikiCreationExtraFieldsHook,
 	CreateWikiCreationHook,
-	CreateWikiDataFactoryBuilderHook,
 	CreateWikiDeletionHook,
 	CreateWikiGenerateDatabaseListsHook,
 	CreateWikiReadPersistentModelHook,
+	CreateWikiRemoteWikiCommitHook,
 	CreateWikiRenameHook,
 	CreateWikiStateClosedHook,
 	CreateWikiStateOpenHook,
@@ -60,19 +59,6 @@ class CreateWikiHookRunner implements
 	}
 
 	/** @inheritDoc */
-	public function onCreateWikiDataFactoryBuilder(
-		string $dbname,
-		IReadableDatabase $dbr,
-		array &$cacheArray
-	): void {
-		$this->hookContainer->run(
-			'CreateWikiDataFactoryBuilder',
-			[ $dbname, $dbr, &$cacheArray ],
-			[ 'abortable' => false ]
-		);
-	}
-
-	/** @inheritDoc */
 	public function onCreateWikiDeletion(
 		DBConnRef $cwdb,
 		string $dbname
@@ -98,6 +84,15 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'CreateWikiReadPersistentModel',
 			[ &$pipeline ],
+			[ 'abortable' => false ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiRemoteWikiCommit( string $dbname ): void {
+		$this->hookContainer->run(
+			'CreateWikiRemoteWikiCommit',
+			[ $dbname ],
 			[ 'abortable' => false ]
 		);
 	}

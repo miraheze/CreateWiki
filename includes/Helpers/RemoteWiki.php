@@ -2,17 +2,18 @@
 
 namespace Miraheze\CreateWiki\Helpers;
 
-use JobSpecification;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
+use MediaWiki\JobQueue\JobSpecification;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Jobs\SetContainersAccessJob;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use UnexpectedValueException;
 use Wikimedia\Rdbms\IReadableDatabase;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use function array_keys;
 use function array_merge;
 use function implode;
@@ -64,9 +65,10 @@ class RemoteWiki {
 
 	private ?string $log = null;
 
+	/** @throws MissingWikiError */
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		protected readonly ServiceOptions $options,
@@ -76,7 +78,7 @@ class RemoteWiki {
 
 		$this->dbr = $this->databaseUtils->getGlobalReplicaDB();
 		$row = $this->dbr->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
@@ -467,12 +469,11 @@ class RemoteWiki {
 				}
 			}
 
-			$data = $this->dataFactory->newInstance( $this->dbname );
 			if ( $this->resetDatabaseLists ) {
-				$data->resetDatabaseLists( isNewChanges: true );
+				$this->dataStore->resetDatabaseLists( isNewChanges: true );
 			}
 
-			$data->resetWikiData( isNewChanges: true );
+			$this->hookRunner->onCreateWikiRemoteWikiCommit( $this->dbname );
 
 			if ( $this->log === null ) {
 				$this->log = 'settings';

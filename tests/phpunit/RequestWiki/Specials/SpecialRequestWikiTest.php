@@ -2,9 +2,10 @@
 
 namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
 
-use ErrorPageError;
 use Generator;
 use MediaWiki\Context\DerivativeContext;
+use MediaWiki\Exception\ErrorPageError;
+use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
@@ -14,7 +15,6 @@ use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use SpecialPageTestBase;
-use UserNotLoggedIn;
 use Wikimedia\TestingAccessWrapper;
 use function wfTimestamp;
 
@@ -37,6 +37,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiValidator' ),
+			$services->getStatsFactory(),
 			$services->get( 'WikiRequestManager' )
 		);
 	}
@@ -97,7 +98,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 */
 	public function testGetFormFields(): void {
 		$this->overrideConfigValues( [
-			ConfigNames::Categories => [ 'uncategorised' => 'uncategorised' ],
+			ConfigNames::Categories => [ 'test' => 'test' ],
 			ConfigNames::Purposes => [ 'test' => 'test' ],
 			ConfigNames::RequestWikiConfirmAgreement => true,
 			ConfigNames::ShowBiographicalOption => true,
@@ -171,7 +172,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 				'subdomain' => 'example',
 				'sitename' => 'Example Wiki',
 				'language' => 'en',
-				'category' => 'uncategorised',
+				'category' => 'test',
 			],
 			[
 				'duplicate' => false,
@@ -186,7 +187,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 				'subdomain' => 'example',
 				'sitename' => 'Example Wiki',
 				'language' => 'en',
-				'category' => 'uncategorised',
+				'category' => 'test',
 			],
 			[
 				'duplicate' => true,
@@ -225,6 +226,13 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	public function testGetGroupName(): void {
 		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
 		$this->assertSame( 'wiki', $specialRequestWiki->getGroupName() );
+	}
+
+	/**
+	 * @covers ::doesWrites
+	 */
+	public function testDoesWrites(): void {
+		$this->assertTrue( $this->specialRequestWiki->doesWrites() );
 	}
 
 	private function getTestUserAuthorityWithConfirmedEmail(): Authority {

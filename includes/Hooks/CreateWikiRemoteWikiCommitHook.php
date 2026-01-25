@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Hooks;
 
-interface CreateWikiStateClosedHook {
+interface CreateWikiRemoteWikiCommitHook {
 
 	/**
 	 * @param string $dbname
@@ -11,5 +11,5 @@ interface CreateWikiStateClosedHook {
 	 * @return void This hook must not abort, it must return no value.
 	 * @codeCoverageIgnore Cannot be annotated as covered.
 	 */
-	public function onCreateWikiStateClosed( string $dbname ): void;
+	public function onCreateWikiRemoteWikiCommit( string $dbname ): void;
 }

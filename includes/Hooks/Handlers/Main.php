@@ -10,14 +10,17 @@ use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
+use MediaWiki\Parser\Parser;
+use MediaWiki\Parser\PPFrame;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Wikimedia\AtEase\AtEase;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 
 class Main implements
 	GetAllBlockActionsHook,
@@ -32,7 +35,7 @@ class Main implements
 	public function __construct(
 		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly RemoteWikiFactory $remoteWikiFactory
 	) {
 	}
@@ -64,8 +67,7 @@ class Main implements
 		$dbname = $this->config->get( MainConfigNames::DBname );
 		$isPrivate = false;
 
-		$data = $this->dataFactory->newInstance( $dbname );
-		$data->syncCache();
+		$this->dataStore->syncCache();
 
 		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
 			// Avoid using file_exists for performance reasons. Including the file directly leverages
@@ -79,7 +81,7 @@ class Main implements
 				return include $path;
 			}, $cachePath );
 
-			if ( $cacheArray !== false ) {
+			if ( $cacheArray !== false && isset( $cacheArray['states']['private'] ) ) {
 				$isPrivate = (bool)$cacheArray['states']['private'];
 			} else {
 				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbname );
@@ -96,7 +98,11 @@ class Main implements
 		}
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 * @param Parser $parser @phan-unused-param
+	 * @param PPFrame $frame @phan-unused-param
+	 */
 	public function onParserGetVariableValueSwitch(
 		$parser,
 		&$variableCache,
@@ -107,7 +113,7 @@ class Main implements
 		if ( $magicWordId === 'numberofopenwikirequests' ) {
 			$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-				->select( '*' )
+				->select( ISQLPlatform::ALL_ROWS )
 				->from( 'cw_requests' )
 				->where( [ 'cw_status' => 'inreview' ] )
 				->caller( __METHOD__ )
@@ -117,7 +123,7 @@ class Main implements
 		if ( $magicWordId === 'numberofwikirequests' ) {
 			$dbr ??= $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-				->select( '*' )
+				->select( ISQLPlatform::ALL_ROWS )
 				->from( 'cw_requests' )
 				->caller( __METHOD__ )
 				->fetchRowCount();

@@ -7,6 +7,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use stdClass;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use function implode;
 
 class DeleteWikis extends Maintenance {
@@ -43,7 +44,7 @@ class DeleteWikis extends Maintenance {
 		$dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$res = $dbr->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_deleted' => 1 ] )
 			->caller( __METHOD__ )

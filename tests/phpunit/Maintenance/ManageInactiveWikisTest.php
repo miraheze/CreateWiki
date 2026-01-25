@@ -14,9 +14,7 @@ use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 use function date;
 use function strtotime;
-use function version_compare;
 use const MW_INSTALL_PATH;
-use const MW_VERSION;
 use const NS_MAIN;
 
 /**
@@ -33,11 +31,6 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		parent::setUp();
 		$this->remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
 
-		$sqlPath = '/maintenance/tables-generated.sql';
-		if ( version_compare( MW_VERSION, '1.44', '>=' ) ) {
-			$sqlPath = '/sql/mysql/tables-generated.sql';
-		}
-
 		$this->overrideConfigValues( [
 			ConfigNames::DatabaseSuffix => 'test',
 			ConfigNames::EnableManageInactiveWikis => true,
@@ -47,12 +40,13 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 				'removed' => 7,
 			],
 			ConfigNames::SQLFiles => [
-				MW_INSTALL_PATH . $sqlPath,
+				MW_INSTALL_PATH . '/sql/mysql/tables-generated.sql',
 			],
 			ConfigNames::UseClosedWikis => true,
 			ConfigNames::UseInactiveWikis => true,
 			MainConfigNames::VirtualDomainsMapping => [
 				'virtual-createwiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
+				'virtual-managewiki' => [ 'db' => WikiMap::getCurrentWikiId() ],
 			],
 		] );
 
@@ -75,6 +69,26 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `removalineligibletest`.* TO 'wikiuser'@'localhost';" );
 		$db->query( "FLUSH PRIVILEGES;" );
 		$db->commit();
+	}
+
+	public function addDBData(): void {
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		'@phan-var CreateWikiDatabaseUtils $databaseUtils';
+		$dbw = $databaseUtils->getGlobalPrimaryDB();
+		$dbw->newInsertQueryBuilder()
+			->insertInto( 'cw_wikis' )
+			->ignore()
+			->row( [
+				'wiki_dbname' => WikiMap::getCurrentWikiId(),
+				'wiki_dbcluster' => 'c1',
+				'wiki_sitename' => 'TestWiki',
+				'wiki_language' => 'en',
+				'wiki_private' => 0,
+				'wiki_creation' => $dbw->timestamp(),
+				'wiki_category' => 'uncategorised',
+			] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 
 	protected function getMaintenanceClass(): string {
@@ -108,6 +122,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::initServices
 	 */
 	public function testExecuteActiveWiki(): void {
 		// Enable the maintenance script.
@@ -133,6 +148,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::initServices
 	 */
 	public function testExecuteInactiveWiki(): void {
 		// Enable the maintenance script.
@@ -159,6 +175,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	/**
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
+	 * @covers ::initServices
 	 * @covers ::notifyBureaucrats
 	 */
 	public function testExecuteClosedWiki(): void {
@@ -195,6 +212,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleInactiveWiki
+	 * @covers ::initServices
 	 * @covers ::notifyBureaucrats
 	 */
 	public function testExecuteClosedWikiAlreadyInactive(): void {
@@ -236,6 +254,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleInactiveWiki
+	 * @covers ::initServices
 	 */
 	public function testExecuteClosedWikiAlreadyInactiveIneligible(): void {
 		// Enable the maintenance script.
@@ -277,6 +296,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleClosedWiki
+	 * @covers ::initServices
 	 */
 	public function testExecuteRemovedWiki(): void {
 		// Enable the maintenance script.
@@ -316,6 +336,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 	 * @covers ::execute
 	 * @covers ::checkLastActivity
 	 * @covers ::handleClosedWiki
+	 * @covers ::initServices
 	 */
 	public function testExecuteRemovedWikiIneligible(): void {
 		// Enable the maintenance script.
@@ -368,7 +389,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			sitename: 'TestWiki',
 			language: 'en',
 			private: false,
-			category: 'uncategorised',
+			category: 'test',
 			requester: $testUser->getName(),
 			actor: $testSysop->getName(),
 			reason: 'Test',

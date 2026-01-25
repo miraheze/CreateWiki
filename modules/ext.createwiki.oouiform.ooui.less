@@ -1,3 +1,5 @@
+@import 'mediawiki.skin.variables.less';
+
 /* Fix width for the 'reason' selectorother field */
 #mw-input-wpreason {
 	display: inline-flex;
@@ -17,12 +19,8 @@
 	}
 }
 
-#createwiki {
-	filter: brightness( 1 );
-}
-
-.createwiki-tabs {
-	.createwiki-fieldset-wrapper {
+.ext-createwiki-tabs {
+	.ext-createwiki-fieldset-wrapper {
 		padding-right: 0;
 		padding-left: 0;
 
@@ -36,28 +34,26 @@
 	}
 }
 
-.createwiki-tabs-wrapper.oo-ui-panelLayout-framed,
-.createwiki-tabs > .oo-ui-menuLayout-content > .oo-ui-indexLayout-stackLayout > .oo-ui-tabPanelLayout {
-	/* Decrease contrast of `border` slightly as padding/border combination is sufficient
-	 * accessibility wise and focus of content is more important here. */
-	border-color: #c8ccd1;
+.ext-createwiki-tabs-wrapper.oo-ui-panelLayout-framed,
+.ext-createwiki-tabs > .oo-ui-menuLayout-content > .oo-ui-indexLayout-stackLayout > .oo-ui-tabPanelLayout {
+	border-color: @border-color-subtle;
 }
 
 /* JavaScript disabled */
 .client-nojs {
 	// Disable .oo-ui-panelLayout-framed on outer wrapper
-	.createwiki-tabs-wrapper {
+	.ext-createwiki-tabs-wrapper {
 		border-width: 0;
 		border-radius: 0;
 	}
 
-	.createwiki-tabs {
+	.ext-createwiki-tabs {
 		// Hide the tab menu when JS is disabled as we can't use this feature
 		> .oo-ui-menuLayout-menu {
 			display: none;
 		}
 
-		.createwiki-section-fieldset {
+		.ext-createwiki-section-fieldset {
 			// <legend> is hard to style, so apply border to top of group
 			> .oo-ui-fieldsetLayout-group {
 				padding-top: 1.5em;
@@ -78,7 +74,7 @@
 }
 
 /* JavaScript enabled */
-.client-js .createwiki-tabs {
+.client-js .ext-createwiki-tabs {
 	.oo-ui-tabPanelLayout {
 		// Panels don't need borders as the IndexLayout is inside a framed wrapper.
 		border: 0;
@@ -90,7 +86,7 @@
 	}
 
 	// Hide all but the first panel before infusion
-	&:not( .createwiki-tabs-infused ) {
+	&:not( .ext-createwiki-tabs-infused ) {
 		.oo-ui-tabPanelLayout:not( :first-child ) {
 			display: none;
 		}
@@ -143,10 +139,10 @@
 				max-height: 15em;
 				box-sizing: border-box;
 				padding: 8px;
-				border: 1.5px solid #ccc;
+				border: 1.5px solid @border-color-subtle;
 				border-radius: 4px;
-				background-color: #f5f5f5;
-				color: #333;
+				background-color: @background-color-neutral-subtle;
+				color: @color-base;
 				font-family: 'Arial', sans-serif;
 				line-height: 1.5em;
 				overflow-y: auto;

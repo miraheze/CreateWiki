@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Tests\Helpers;
 
 use MediaWiki\MainConfigNames;
+use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
@@ -55,19 +56,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 			->insertInto( 'cw_wikis' )
 			->ignore()
 			->row( [
-				'wiki_dbname' => 'wikidb',
+				'wiki_dbname' => WikiMap::getCurrentWikiId(),
 				'wiki_dbcluster' => 'c1',
 				'wiki_sitename' => 'TestWiki',
 				'wiki_language' => 'en',
 				'wiki_private' => 0,
 				'wiki_creation' => $dbw->timestamp(),
-				'wiki_category' => 'uncategorised',
-				'wiki_closed' => 0,
-				'wiki_deleted' => 0,
-				'wiki_locked' => 0,
-				'wiki_inactive' => 0,
-				'wiki_inactive_exempt' => 0,
-				'wiki_url' => 'http://127.0.0.1:9412',
+				'wiki_category' => 'test',
 			] )
 			->caller( __METHOD__ )
 			->execute();
@@ -93,7 +88,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 * @covers \Miraheze\CreateWiki\Services\RemoteWikiFactory::newInstance
 	 */
 	public function testNewFactoryInstance(): void {
-		$factory = $this->getFactoryService()->newInstance( 'wikidb' );
+		$factory = $this->getFactoryService()->newInstance( WikiMap::getCurrentWikiId() );
 		$this->assertInstanceOf( RemoteWiki::class, $factory );
 	}
 
@@ -319,7 +314,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testSetCategory(): void {
 		$remoteWiki = $this->getFactoryService()->newInstance( 'remotewikitest' );
-		$this->assertSame( 'uncategorised', $remoteWiki->getCategory() );
+		$this->assertSame( 'test', $remoteWiki->getCategory() );
 
 		$remoteWiki->setCategory( 'test' );
 		$remoteWiki->commit();
@@ -502,7 +497,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$wikiManager = $this->getWikiManagerFactory()->newInstance( $dbname );
 		$wikiManager->create(
-			'TestWiki', 'en', false, 'uncategorised',
+			'TestWiki', 'en', false, 'test',
 			$testUser->getName(), $testSysop->getName(),
 			'Test', []
 		);

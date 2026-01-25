@@ -14,9 +14,9 @@
 	"license-name": "GPL-3.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.43.0",
+		"MediaWiki": ">= 1.44.0",
 		"platform": {
-			"php": ">= 8.1"
+			"php": ">= 8.2"
 		}
 	},
 	"MessagesDirs": {
@@ -61,6 +61,7 @@
 				"CreateWikiConfig",
 				"CreateWikiLogger",
 				"HttpRequestFactory",
+				"StatsFactory",
 				"WikiRequestManager"
 			],
 			"needsPage": false
@@ -87,21 +88,21 @@
 		"requestwiki"
 	],
 	"LogActionsHandlers": {
-		"farmer/createwiki": "LogFormatter",
-		"farmer/comment": "LogFormatter",
-		"farmer/create-failure": "LogFormatter",
-		"farmer/requestapprove": "LogFormatter",
-		"farmer/requestdecline": "LogFormatter",
-		"farmer/requestmoredetails": "LogFormatter",
-		"farmer/requestonhold": "LogFormatter",
-		"farmer/requestreopen": "LogFormatter",
+		"farmer/createwiki": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/comment": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/create-failure": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/requestapprove": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/requestdecline": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/requestmoredetails": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/requestonhold": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/requestreopen": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestwiki": {
 			"class": "Miraheze\\CreateWiki\\LogFormatter\\FarmerLogFormatter",
 			"services": [
 				"LinkRenderer"
 			]
 		},
-		"farmersuppression/*": "LogFormatter"
+		"farmersuppression/*": "MediaWiki\\Logging\\LogFormatter"
 	},
 	"LogHeaders": {
 		"farmer": "farmer-log-header",
@@ -175,6 +176,7 @@
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
 				"CreateWikiValidator",
+				"StatsFactory",
 				"WikiRequestManager"
 			]
 		},
@@ -184,6 +186,7 @@
 				"CreateWikiDatabaseUtils",
 				"LanguageNameUtils",
 				"UserFactory",
+				"UserLinkRenderer",
 				"WikiRequestManager",
 				"WikiRequestViewer"
 			]
@@ -230,7 +233,7 @@
 			"services": [
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
-				"CreateWikiDataFactory",
+				"CreateWikiDataStore",
 				"RemoteWikiFactory"
 			]
 		},
@@ -239,7 +242,7 @@
 			"services": [
 				"CreateWikiConfig",
 				"CreateWikiDatabaseUtils",
-				"CreateWikiDataFactory",
+				"CreateWikiDataStore",
 				"CreateWikiHookRunner",
 				"JobQueueGroupFactory"
 			]
@@ -307,7 +310,7 @@
 			"value": []
 		},
 		"CreateWikiCacheDirectory": {
-			"description": "String. The path to store CreateWiki cache files at.",
+			"description": "String. The path to store CreateWiki cache files at. Defaults to $wgCacheDirectory if not set.",
 			"value": ""
 		},
 		"CreateWikiCacheType": {
@@ -435,7 +438,7 @@
 		},
 		"CreateWikiUsePrivateWikis": {
 			"description": "Boolean. Whether to implement front end logic for marking wikis as private.",
-			"value": false
+			"value": true
 		},
 		"RequestWikiConfirmAgreement": {
 			"description": "Boolean. Whether to require users to confirm they will abide by farm policies.",
@@ -477,6 +480,12 @@
 	"DatabaseVirtualDomains": [
 		"virtual-createwiki",
 		"virtual-createwiki-central"
+	],
+	"InstallerTasks": [
+		{
+			"class": "Miraheze\\CreateWiki\\Installer\\PopulateCentralWikiTask",
+			"profile": "installer"
+		}
 	],
 	"load_composer_autoloader": true,
 	"manifest_version": 2

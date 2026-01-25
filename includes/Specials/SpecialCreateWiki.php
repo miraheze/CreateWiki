@@ -2,7 +2,7 @@
 
 namespace Miraheze\CreateWiki\Specials;
 
-use ErrorPageError;
+use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
@@ -22,6 +22,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	/**
 	 * @param ?string $par
+	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
 		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
@@ -73,8 +74,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
+				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Categories ),
-				'default' => 'uncategorised',
 			];
 		}
 
@@ -96,7 +97,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			sitename: $formData['sitename'],
 			language: $formData['language'],
 			private: $formData['private'] ?? 0,
-			category: $formData['category'] ?? 'uncategorised',
+			category: $formData['category'] ?? '',
 			requester: $formData['requester'],
 			actor: $this->getContext()->getUser()->getName(),
 			reason: $formData['reason'],

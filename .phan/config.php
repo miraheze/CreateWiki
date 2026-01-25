@@ -2,7 +2,7 @@
 
 $cfg = require __DIR__ . '/../vendor/mediawiki/mediawiki-phan-config/src/config.php';
 
-$cfg['minimum_target_php_version'] = '8.1';
+$cfg['minimum_target_php_version'] = '8.2';
 
 $cfg['directory_list'] = array_merge(
 	$cfg['directory_list'], [
@@ -59,7 +59,7 @@ $cfg['plugins'] = array_merge( $cfg['plugins'], [
 	'UseReturnValuePlugin',
 ] );
 
-$cfg['plugins'][] = __DIR__ . '/plugins/NoOptionalParamPlugin.php';
+$cfg['plugins'][] = __DIR__ . '/../vendor/miraheze/phan-plugins/NoOptionalParamPlugin.php';
 
 $cfg['enable_class_alias_support'] = false;
 

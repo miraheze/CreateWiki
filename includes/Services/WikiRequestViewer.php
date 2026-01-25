@@ -4,19 +4,20 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\IContextSource;
+use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
+use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
-use UserNotLoggedIn;
 use function array_diff_key;
 use function array_flip;
 use function count;
@@ -45,12 +46,14 @@ class WikiRequestViewer {
 		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly ServiceOptions $options
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
+	/** @throws UnknownRequestError */
 	public function getFormDescriptor(): array {
 		$user = $this->context->getUser();
 
@@ -93,9 +96,9 @@ class WikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => Linker::userLink(
-					$this->wikiRequestManager->getRequester()->getId(),
-					$this->wikiRequestManager->getRequester()->getName()
+				'default' => $this->userLinkRenderer->userLink(
+					$this->wikiRequestManager->getRequester(),
+					$this->context
 				) . Linker::userToolLinks(
 					$this->wikiRequestManager->getRequester()->getId(),
 					$this->wikiRequestManager->getRequester()->getName()
@@ -201,7 +204,7 @@ class WikiRequestViewer {
 					'type' => 'language',
 					'default' => $this->wikiRequestManager->getLanguage(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'editing',
 				],
 				'edit-reason' => [
@@ -221,10 +224,11 @@ class WikiRequestViewer {
 				$formDescriptor['edit-category'] = [
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
+					'required' => true,
 					'options' => $this->options->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'editing',
 				];
 			}
@@ -257,7 +261,7 @@ class WikiRequestViewer {
 					'options' => $this->options->get( ConfigNames::Purposes ),
 					'default' => $this->wikiRequestManager->getPurpose(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'editing',
 				];
 			}
@@ -342,7 +346,7 @@ class WikiRequestViewer {
 						'requestwikiqueue-moredetails' => 'moredetails',
 					],
 					'default' => $this->wikiRequestManager->getStatus(),
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'handling',
 				],
 				'handle-comment' => [
@@ -360,7 +364,7 @@ class WikiRequestViewer {
 					'type' => 'check',
 					'label-message' => 'revdelete-legend',
 					'default' => $visibility !== WikiRequestManager::VISIBILITY_PUBLIC,
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'handling',
 				],
 				'handle-visibility' => [
@@ -369,7 +373,7 @@ class WikiRequestViewer {
 					'hide-if' => [ '!==', 'handle-changevisibility', '1' ],
 					'options' => array_flip( $visibilityOptions ),
 					'default' => (string)$visibility,
-					'cssclass' => 'createwiki-infuse',
+					'cssclass' => 'ext-createwiki-infuse',
 					'section' => 'handling',
 				],
 				'submit-handle' => [
@@ -420,8 +424,6 @@ class WikiRequestViewer {
 			}
 
 			$section = $properties['section'] ?? '';
-			$type = $properties['type'] ?? '';
-
 			if ( $section === 'editing' || str_starts_with( $section, 'editing/' ) ) {
 				if ( !$canEditRequest ) {
 					unset( $formDescriptor[$field] );
@@ -442,6 +444,7 @@ class WikiRequestViewer {
 		return $formDescriptor;
 	}
 
+	/** @throws UnknownRequestError */
 	public function getForm( int $requestID ): CreateWikiOOUIForm {
 		$this->wikiRequestManager->loadFromID( $requestID );
 		$out = $this->context->getOutput();
@@ -469,6 +472,7 @@ class WikiRequestViewer {
 		return $htmlForm;
 	}
 
+	/** @throws UserNotLoggedIn */
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form
@@ -543,7 +547,7 @@ class WikiRequestViewer {
 			);
 
 			$extraData = [];
-			foreach ( $this->extraFields as $field => $value ) {
+			foreach ( $this->extraFields as $field => $_ ) {
 				if ( isset( $formData[$field] ) ) {
 					$fieldKey = $field;
 					if ( str_starts_with( $field, 'edit-' ) ) {

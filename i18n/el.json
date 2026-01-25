@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
+			"Jimkats",
 			"NikosLikomitros",
 			"Nikosgranturismogt",
-			"Omnipaedista"
+			"Omnipaedista",
+			"Warudo"
 		]
 	},
 	"action-createwiki": "δημιουργία βίκι",
@@ -12,8 +14,8 @@
 	"createwiki-desc": "Μια επέκταση για την εύκολη δημιουργία νέων βίκι σε μια φάρμα βίκι.",
 	"createwiki-email-subject": "Το νέο βίκι Miraheze σας: $1",
 	"createwiki-error-dbexists": "Ένα βίκι με αυτό το όνομα βάσης δεδομένων υπάρχει ήδη.",
-	"createwiki-label-category": "Κατηγορία:",
-	"createwiki-label-dbname": "Όνομα βάσης δεδομένων:",
+	"createwiki-label-category": "Κατηγορία",
+	"createwiki-label-dbname": "Όνομα βάσης δεδομένων",
 	"createwiki-label-language": "Γλώσσα:",
 	"createwiki-label-private": "Επισήμανση αυτού του βίκι ως ιδιωτικού",
 	"createwiki-label-reason": "Αιτία:",
@@ -21,7 +23,7 @@
 	"createwiki-label-sitename": "Όνομα ιστοχώρου:",
 	"createwiki-success": "Το βίκι δημιουργήθηκε επιτυχώς",
 	"farmer-log-name": "Αρχείο της βικι-φάρμας",
-	"logentry-farmer-createwiki": "Ο $1 δημιούργησε το βίκι \"$4\"",
+	"logentry-farmer-createwiki": "{{GENDER:$2|Ο|Η}} $1 δημιούργησε το βίκι «$4»",
 	"requestwiki": "Ζητήστε ένα βίκι",
 	"requestwiki-label-language": "Γλώσσα:",
 	"requestwiki-label-private": "Ιδιωτικό βίκι (μη αναγνώσιμο από τον καθένα):",

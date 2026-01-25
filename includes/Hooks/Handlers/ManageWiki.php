@@ -10,18 +10,19 @@ use Miraheze\CreateWiki\Helpers\ManageWikiCoreModule;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
-use Miraheze\CreateWiki\Services\CreateWikiDataFactory;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\ManageWiki\Exceptions\MissingWikiError as MWMissingWikiError;
 use Miraheze\ManageWiki\Helpers\Factories\ModuleFactory;
 use Miraheze\ManageWiki\Hooks\ManageWikiCoreProviderHook;
 use Miraheze\ManageWiki\ICoreModule;
 
+/** @codeCoverageIgnore Tested by testing RemoteWiki. */
 class ManageWiki implements ManageWikiCoreProviderHook {
 
 	public function __construct(
 		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory
 	) {
@@ -37,7 +38,7 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 		try {
 			$provider = new ManageWikiCoreModule(
 				$this->databaseUtils,
-				$this->dataFactory,
+				$this->dataStore,
 				$this->hookRunner,
 				$this->jobQueueGroupFactory,
 				new ServiceOptions(
@@ -46,7 +47,7 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 				),
 				$dbname
 			);
-		} catch ( MissingWikiError $e ) {
+		} catch ( MissingWikiError ) {
 			// Switch to the ManageWiki MissingWikiError since it
 			// expects that one for ManageWiki.
 			throw new MWMissingWikiError( $dbname );
