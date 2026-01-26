@@ -40,7 +40,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "मेरे विकि के अनुरोध को अस्वीकृत किए जाने पर मुझे सूचित करें।",
 	"farmer-log-header": "इस लॉग में विकि सृष्टियाँ ट्रैक किए जाते हैं।",
 	"farmer-log-name": "किसान लॉग",
-	"log-action-filter-farmer": "कार्य का प्रकार:",
+	"log-action-filter-farmer": "क्रिया का प्रकार:",
 	"log-action-filter-farmer-createwiki": "विकि बनाया गया",
 	"log-action-filter-farmer-requestapprove": "विकि का अनुरोध स्वीकार किया गया",
 	"log-action-filter-farmer-requestdecline": "विकि का अनुरोध अस्वीकार किया गया",
