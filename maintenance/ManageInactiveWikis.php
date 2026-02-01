@@ -77,7 +77,7 @@ class ManageInactiveWikis extends Maintenance {
 			}
 		}
 
-		$this->dataStore->resetDatabaseLists( isNewChanges: true );
+		$this->dataStore->resetDatabaseLists( isNewChanges: true, caller: __METHOD__ );
 	}
 
 	private function checkLastActivity(
