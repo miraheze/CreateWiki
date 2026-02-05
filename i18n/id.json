@@ -12,7 +12,7 @@
 	},
 	"action-createwiki": "membuat wiki",
 	"action-createwiki-deleterequest": "menghapus permintaan wiki",
-	"action-createwiki-suppressionlog": "melihat log penyembunyian permintaan wiki",
+	"action-createwiki-suppressionlog": "melihat log pemberedelan permintaan wiki",
 	"action-createwiki-suppressrequest": "menyembunyikan (supresi) permintaan wiki",
 	"action-requestwiki": "meminta wiki",
 	"createwiki": "Buat sebuah wiki",
