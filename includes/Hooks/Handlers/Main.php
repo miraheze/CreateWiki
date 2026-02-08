@@ -18,6 +18,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 
 class Main implements
 	GetAllBlockActionsHook,
@@ -77,7 +78,7 @@ class Main implements
 		if ( $magicWordId === 'numberofopenwikirequests' ) {
 			$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-				->select( '*' )
+				->select( ISQLPlatform::ALL_ROWS )
 				->from( 'cw_requests' )
 				->where( [ 'cw_status' => 'inreview' ] )
 				->caller( __METHOD__ )
@@ -87,7 +88,7 @@ class Main implements
 		if ( $magicWordId === 'numberofwikirequests' ) {
 			$dbr ??= $this->databaseUtils->getCentralWikiReplicaDB();
 			$ret = $variableCache[$magicWordId] = $dbr->newSelectQueryBuilder()
-				->select( '*' )
+				->select( ISQLPlatform::ALL_ROWS )
 				->from( 'cw_requests' )
 				->caller( __METHOD__ )
 				->fetchRowCount();

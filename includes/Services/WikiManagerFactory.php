@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\Services;
 
 use Exception;
-use FatalError;
-use ManualLogEntry;
 use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Exception\FatalError;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
@@ -23,6 +23,9 @@ use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
+use Wikimedia\Stats\Metrics\TimingMetric;
+use Wikimedia\Stats\StatsFactory;
 use function array_flip;
 use function array_intersect_key;
 use function array_keys;
@@ -65,6 +68,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
 		private readonly ExtensionRegistry $extensionRegistry,
+		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options
@@ -104,7 +108,7 @@ class WikiManagerFactory {
 				$clusterSizes = [];
 				foreach ( $hasClusters as $cluster ) {
 					$clusterSizes[$cluster] = $this->cwdb->newSelectQueryBuilder()
-						->select( '*' )
+						->select( ISQLPlatform::ALL_ROWS )
 						->from( 'cw_wikis' )
 						->where( [ 'wiki_dbcluster' => $cluster ] )
 						->caller( __METHOD__ )
@@ -174,6 +178,7 @@ class WikiManagerFactory {
 		$this->dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
 	}
 
+	/** @throws FatalError */
 	public function create(
 		string $sitename,
 		string $language,
@@ -196,6 +201,19 @@ class WikiManagerFactory {
 		if ( $checkErrors ) {
 			return $checkErrors;
 		}
+
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'createwiki_creation_total' )
+			->setLabel( 'category', $category )
+			->setLabel( 'language', $language )
+			->setLabel( 'private', $private ? 'Yes' : 'No' )
+			->increment();
+
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
+			->setLabel( 'private', $private ? 'Yes' : 'No' )
+			->start();
+		'@phan-var TimingMetric $timer';
 
 		$this->doCreateDatabase();
 
@@ -230,6 +248,7 @@ class WikiManagerFactory {
 			$extra
 		);
 
+		$timer->stop();
 		return null;
 	}
 
@@ -319,11 +338,12 @@ class WikiManagerFactory {
 		}
 	}
 
+	/** @throws MissingWikiError */
 	public function delete( bool $force ): ?string {
 		$this->compileTables();
 
 		$row = $this->cwdb->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_dbname' => $this->dbname ] )
 			->caller( __METHOD__ )
@@ -352,6 +372,10 @@ class WikiManagerFactory {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
+			if ( !$this->cwdb->tableExists( $table, __METHOD__ ) ) {
+				continue;
+			}
+
 			$this->cwdb->newDeleteQueryBuilder()
 				->deleteFrom( $table )
 				->where( [ $selector => $this->dbname ] )
@@ -381,6 +405,10 @@ class WikiManagerFactory {
 		}
 
 		foreach ( $this->tables as $table => $selector ) {
+			if ( !$this->cwdb->tableExists( $table, __METHOD__ ) ) {
+				continue;
+			}
+
 			$this->cwdb->newUpdateQueryBuilder()
 				->update( $table )
 				->set( [ $selector => $newDatabaseName ] )

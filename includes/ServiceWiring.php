@@ -99,6 +99,7 @@ return [
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
+			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
 			new ServiceOptions(
@@ -115,6 +116,7 @@ return [
 			$services->getJobQueueGroupFactory(),
 			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
+			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			$services->get( 'WikiManagerFactory' ),
 			new ServiceOptions(
@@ -130,6 +132,7 @@ return [
 			$services->get( 'CreateWikiValidator' ),
 			$services->getLanguageNameUtils(),
 			$services->getPermissionManager(),
+			$services->getUserLinkRenderer(),
 			$services->get( 'WikiRequestManager' ),
 			new ServiceOptions(
 				WikiRequestViewer::CONSTRUCTOR_OPTIONS,

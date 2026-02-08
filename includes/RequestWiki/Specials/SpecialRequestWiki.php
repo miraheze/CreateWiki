@@ -2,7 +2,8 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
-use ErrorPageError;
+use MediaWiki\Exception\ErrorPageError;
+use MediaWiki\Exception\UserBlockedError;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
@@ -11,7 +12,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use UserBlockedError;
+use Wikimedia\Stats\StatsFactory;
 use function array_diff_key;
 use function array_filter;
 use function strlen;
@@ -24,6 +25,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiValidator $validator,
+		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
@@ -31,6 +33,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/**
 	 * @param ?string $par
+	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
 		$this->requireNamedUser( 'requestwiki-notloggedin' );
@@ -185,6 +188,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
+			$this->statsFactory->getCounter( 'requestwiki_throttled_total' )->increment();
 			return Status::newFatal( 'actionthrottledtext' );
 		}
 
@@ -207,9 +211,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
+		$this->statsFactory->getCounter( 'requestwiki_requests_total' )->increment();
 		return Status::newGood();
 	}
 
+	/** @throws UserBlockedError */
 	public function checkPermissions(): void {
 		parent::checkPermissions();
 
@@ -230,5 +236,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function doesWrites(): bool {
+		return true;
 	}
 }

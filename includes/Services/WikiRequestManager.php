@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\Services;
 
 use InvalidArgumentException;
-use JobSpecification;
-use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
+use MediaWiki\JobQueue\JobSpecification;
 use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
@@ -21,8 +21,10 @@ use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
 use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
+use Wikimedia\Stats\StatsFactory;
 use function array_column;
 use function array_diff;
 use function array_filter;
@@ -42,7 +44,6 @@ use function json_encode;
 use function preg_replace;
 use function rtrim;
 use function trim;
-use const ENT_QUOTES;
 
 class WikiRequestManager {
 
@@ -86,6 +87,7 @@ class WikiRequestManager {
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly PermissionManager $permissionManager,
+		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 		private readonly ServiceOptions $options
@@ -97,8 +99,8 @@ class WikiRequestManager {
 		$this->ID = $requestID;
 		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 		$this->row = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_requests' )
 			->where( [ 'cw_id' => $requestID ] )
 			->caller( __METHOD__ )
 			->fetchRow();
@@ -168,8 +170,8 @@ class WikiRequestManager {
 	public function isDuplicateRequest( string $sitename ): bool {
 		$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 		$duplicate = $dbr->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_requests' )
 			->where( [
 				'cw_sitename' => $sitename,
 				'cw_status' => 'inreview',
@@ -223,8 +225,8 @@ class WikiRequestManager {
 	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_comments' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_comments' )
 			->where( [ 'cw_id' => $this->ID ] )
 			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
@@ -308,8 +310,8 @@ class WikiRequestManager {
 	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_history' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_history' )
 			->where( [ 'cw_id' => $this->ID ] )
 			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_DESC )
 			->caller( __METHOD__ )
@@ -923,6 +925,11 @@ class WikiRequestManager {
 			return;
 		}
 
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'requestwiki_status_total' )
+			->setLabel( 'status', $status )
+			->increment();
+
 		$this->trackChange( 'status', $this->getStatus(), $status );
 		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );
 	}
@@ -961,8 +968,8 @@ class WikiRequestManager {
 		}
 
 		$this->changes[$field] = [
-			'old' => $this->escape( $oldValue ),
-			'new' => $this->escape( $newValue ),
+			'old' => htmlspecialchars( $oldValue ),
+			'new' => htmlspecialchars( $newValue ),
 		];
 	}
 
@@ -978,16 +985,12 @@ class WikiRequestManager {
 			$oldValue = $this->formatValue( $change['old'] );
 			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "{$prefix}Field ''{$field}'' changed:\n" .
-				"*{$prefix}'''Old value''': {$oldValue}\n" .
-				"*{$prefix}'''New value''': {$newValue}";
+			$messages[] = "{$prefix}Field ''$field'' changed:\n" .
+				"*$prefix'''Old value''': $oldValue\n" .
+				"*$prefix'''New value''': $newValue";
 		}
 
 		return implode( "\n", $messages );
-	}
-
-	private function escape( string $text ): string {
-		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
 
 	private function formatValue( string $value ): string {

@@ -2,9 +2,9 @@
 
 namespace Miraheze\CreateWiki\LogFormatter;
 
-use LogEntry;
-use LogFormatter;
 use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Logging\LogEntry;
+use MediaWiki\Logging\LogFormatter;
 use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\SpecialPage;
 use function str_replace;
