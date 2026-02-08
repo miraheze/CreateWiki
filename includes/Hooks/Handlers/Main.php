@@ -8,7 +8,6 @@ use MediaWiki\Hook\GetMagicVariableIDsHook;
 use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
-use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
@@ -19,7 +18,6 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
-use Wikimedia\AtEase\AtEase;
 use Wikimedia\Rdbms\Platform\ISQLPlatform;
 
 class Main implements
@@ -62,40 +60,7 @@ class Main implements
 
 	/** @inheritDoc */
 	public function onSetupAfterCache() {
-		global $wgGroupPermissions;
-
-		$dbname = $this->config->get( MainConfigNames::DBname );
-		$isPrivate = false;
-
 		$this->dataStore->syncCache();
-
-		if ( $this->config->get( ConfigNames::UsePrivateWikis ) ) {
-			// Avoid using file_exists for performance reasons. Including the file directly leverages
-			// the opcode cache and prevents any file system access.
-			// We only handle failures if the include does not work.
-
-			$cacheDir = $this->config->get( ConfigNames::CacheDirectory );
-
-			$cachePath = $cacheDir . '/' . $dbname . '.php';
-			$cacheArray = AtEase::quietCall( static function ( $path ) {
-				return include $path;
-			}, $cachePath );
-
-			if ( $cacheArray !== false && isset( $cacheArray['states']['private'] ) ) {
-				$isPrivate = (bool)$cacheArray['states']['private'];
-			} else {
-				$remoteWiki = $this->remoteWikiFactory->newInstance( $dbname );
-				$isPrivate = $remoteWiki->isPrivate();
-			}
-		}
-
-		// Safety Catch!
-		if ( $isPrivate ) {
-			$wgGroupPermissions['*']['read'] = false;
-			$wgGroupPermissions['sysop']['read'] = true;
-		} else {
-			$wgGroupPermissions['*']['read'] = true;
-		}
 	}
 
 	/**
