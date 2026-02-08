@@ -8,7 +8,6 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use ObjectCacheFactory;
 use stdClass;
-use Wikimedia\AtEase\AtEase;
 use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\StaticArrayWriter;
@@ -111,6 +110,7 @@ class CreateWikiDataStore {
 			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' ),
 			$mtime
 		);
+
 		if ( $isNewChanges ) {
 			$this->timestamp = $mtime;
 			$this->cache->set(
@@ -201,10 +201,11 @@ class CreateWikiDataStore {
 		// We only handle failures if the include does not work.
 
 		$filePath = "{$this->cacheDir}/databases.php";
-		$cacheData = AtEase::quietCall(
-			static fn ( string $path ): array|false => include $path,
-			$filePath
-		);
+
+		// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+		$cacheData = @(
+			static fn ( string $path ): array|false => include $path
+		)( $filePath );
 
 		if ( is_array( $cacheData ) ) {
 			return $cacheData;
