@@ -27,7 +27,7 @@
 		"php-ai/php-ml": "*"
 	},
 	"require-dev": {
-		"mediawiki/mediawiki-codesniffer": "49.0.0",
+		"mediawiki/mediawiki-codesniffer": "50.0.0",
 		"mediawiki/mediawiki-phan-config": "0.18.0",
 		"mediawiki/minus-x": "2.0.1",
 		"miraheze/phan-plugins": "0.3.0",
