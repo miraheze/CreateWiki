@@ -20,7 +20,7 @@ use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnectionError;
-use Wikimedia\Rdbms\DBConnRef;
+use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 use Wikimedia\Rdbms\Platform\ISQLPlatform;
@@ -50,8 +50,8 @@ class WikiManagerFactory {
 		MainConfigNames::LBFactoryConf,
 	];
 
-	private DBConnRef $dbw;
-	private DBConnRef $cwdb;
+	private IDatabase $dbw;
+	private IDatabase $cwdb;
 
 	private ?ILoadBalancer $lb = null;
 
