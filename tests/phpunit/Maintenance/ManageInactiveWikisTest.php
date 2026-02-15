@@ -59,16 +59,17 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 			return;
 		}
 
-		$db->begin( __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `activetest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `closuretest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `closureinactivetest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `closureinactiveineligibletest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `removaltest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "GRANT ALL PRIVILEGES ON `removalineligibletest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
-		$db->commit( __METHOD__ );
+		$fname = __METHOD__;
+		$db->begin( $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `activetest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `inactivetest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `closuretest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `closureinactivetest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `closureinactiveineligibletest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `removaltest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "GRANT ALL PRIVILEGES ON `removalineligibletest`.* TO 'wikiuser'@'localhost';", $fname );
+		$db->query( "FLUSH PRIVILEGES;", $fname );
+		$db->commit( $fname );
 	}
 
 	public function addDBData(): void {
