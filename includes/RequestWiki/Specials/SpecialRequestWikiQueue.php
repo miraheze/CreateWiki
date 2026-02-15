@@ -4,7 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Parser\ParserOptions;
 use MediaWiki\SpecialPage\SpecialPage;

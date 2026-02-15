@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use MediaWiki\Context\IContextSource;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Pager\IndexPager;

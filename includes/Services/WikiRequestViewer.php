@@ -9,7 +9,7 @@ use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\Language\RawMessage;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;

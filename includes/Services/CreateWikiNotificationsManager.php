@@ -2,16 +2,16 @@
 
 namespace Miraheze\CreateWiki\Services;
 
-use MailAddress;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\Notifications\Model\Event;
+use MediaWiki\Mail\MailAddress;
+use MediaWiki\Mail\UserMailer;
 use MediaWiki\MainConfigNames;
 use MediaWiki\User\UserFactory;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use stdClass;
-use UserMailer;
 use function in_array;
 use function is_object;
 
