@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\WikiMap\WikiMap;
+use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\IReadableDatabase;
@@ -26,7 +27,7 @@ class CreateWikiDatabaseUtils {
 		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki-central' );
 	}
 
-	public function getGlobalPrimaryDB(): IDatabase {
+	public function getGlobalPrimaryDB(): DBConnRef {
 		return $this->connectionProvider->getPrimaryDatabase( 'virtual-createwiki' );
 	}
 
@@ -34,7 +35,7 @@ class CreateWikiDatabaseUtils {
 		return $this->connectionProvider->getReplicaDatabase( 'virtual-createwiki' );
 	}
 
-	public function getRemoteWikiPrimaryDB( string $dbname ): IDatabase {
+	public function getRemoteWikiPrimaryDB( string $dbname ): DBConnRef {
 		return $this->connectionProvider->getPrimaryDatabase( $dbname );
 	}
 
