@@ -50,14 +50,14 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 			return;
 		}
 
-		$db->begin();
-		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatetest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';" );
-		$db->query( "FLUSH PRIVILEGES;" );
-		$db->commit();
+		$db->begin( __METHOD__ );
+		$db->query( "GRANT ALL PRIVILEGES ON `createwikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
+		$db->query( "GRANT ALL PRIVILEGES ON `createwikiprivatetest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
+		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
+		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
+		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
+		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
+		$db->commit( __METHOD__ );
 	}
 
 	public function addDBDataOnce(): void {
