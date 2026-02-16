@@ -695,11 +695,11 @@ class WikiRequestManager {
 	}
 
 	public function getVisibility(): int {
-		return $this->getRowObject()->cw_visibility;
+		return (int)$this->getRowObject()->cw_visibility;
 	}
 
 	public function getRequester(): User {
-		return $this->userFactory->newFromId( $this->getRowObject()->cw_user );
+		return $this->userFactory->newFromId( (int)$this->getRowObject()->cw_user );
 	}
 
 	public function getStatus(): string {
