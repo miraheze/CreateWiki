@@ -245,7 +245,7 @@ class WikiRequestManager {
 				continue;
 			}
 
-			$user = $this->userFactory->newFromId( $row->cw_comment_user );
+			$user = $this->userFactory->newFromId( (int)$row->cw_comment_user );
 
 			$comments[] = [
 				'comment' => $row->cw_comment,
@@ -326,7 +326,7 @@ class WikiRequestManager {
 				continue;
 			}
 
-			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
+			$user = $this->userFactory->newFromActorId( (int)$row->cw_history_actor );
 
 			$history[] = [
 				'action' => $row->cw_history_action,
