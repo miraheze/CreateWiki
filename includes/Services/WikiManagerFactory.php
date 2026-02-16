@@ -81,8 +81,8 @@ class WikiManagerFactory {
 	 */
 	public function newInstance( string $dbname ): self {
 		// Get connection for the CreateWiki database
-		/** @var DBConnRef $cwdb */
 		$cwdb = $this->databaseUtils->getGlobalPrimaryDB();
+		'@phan-var DBConnRef $cwdb';
 		$this->cwdb = $cwdb;
 
 		// Check if the database exists in the cw_wikis table
@@ -129,8 +129,8 @@ class WikiManagerFactory {
 
 				$lbs = $lbFactoryMulti->getAllMainLBs();
 				$this->lb = $lbs[$this->cluster];
-				/** @var DBConnRef|false $newDbw */
 				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
+				'@phan-var DBConnRef|false $newDbw';
 				if ( $newDbw === false ) {
 					throw new DBConnectionError();
 				}
@@ -140,8 +140,8 @@ class WikiManagerFactory {
 			}
 		} else {
 			// DB exists
-			/** @var DBConnRef $newDbw */
 			$newDbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $dbname );
+			'@phan-var DBConnRef $newDbw';
 		}
 
 		$this->dbname = $dbname;
@@ -168,8 +168,8 @@ class WikiManagerFactory {
 			// If we are using DatabaseClusters we will have an LB
 			// and we will use that which will use the clusters
 			// defined in $wgLBFactoryConf.
-			/** @var DBConnRef|false $conn */
 			$conn = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
+			'@phan-var DBConnRef|false $conn';
 			if ( $conn === false ) {
 				throw new DBConnectionError();
 			}
@@ -180,8 +180,8 @@ class WikiManagerFactory {
 		// If we aren't using DatabaseClusters, we don't have an LB
 		// So we just connect to $this->dbname using the main
 		// database configuration.
-		/** @var DBConnRef $dbw */
 		$dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
+		'@phan-var DBConnRef $dbw';
 		$this->dbw = $dbw;
 	}
 
