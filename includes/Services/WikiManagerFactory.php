@@ -19,7 +19,6 @@ use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
-use Wikimedia\Rdbms\DBConnectionError;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -129,11 +128,7 @@ class WikiManagerFactory {
 
 				$lbs = $lbFactoryMulti->getAllMainLBs();
 				$this->lb = $lbs[$this->cluster];
-				$newDbw = $this->lb->getConnection( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
-				'@phan-var DBConnRef|false $newDbw';
-				if ( $newDbw === false ) {
-					throw new DBConnectionError();
-				}
+				$newDbw = $this->lb->getMaintenanceConnectionRef( DB_PRIMARY, [], ILoadBalancer::DOMAIN_ANY );
 			} else {
 				// DB doesn't exist, and there are no clusters
 				$newDbw = $this->cwdb;
@@ -159,7 +154,7 @@ class WikiManagerFactory {
 		try {
 			$dbCollation = $this->options->get( ConfigNames::Collation );
 			$dbQuotes = $this->dbw->addIdentifierQuotes( $this->dbname );
-			$this->dbw->query( "CREATE DATABASE {$dbQuotes} {$dbCollation};", __METHOD__ );
+			$this->dbw->query( "CREATE DATABASE $dbQuotes $dbCollation;", __METHOD__ );
 		} catch ( Exception ) {
 			throw new FatalError( "Wiki '{$this->dbname}' already exists." );
 		}
@@ -168,12 +163,7 @@ class WikiManagerFactory {
 			// If we are using DatabaseClusters we will have an LB
 			// and we will use that which will use the clusters
 			// defined in $wgLBFactoryConf.
-			$conn = $this->lb->getConnection( DB_PRIMARY, [], $this->dbname );
-			'@phan-var DBConnRef|false $conn';
-			if ( $conn === false ) {
-				throw new DBConnectionError();
-			}
-			$this->dbw = $conn;
+			$this->dbw = $this->lb->getMaintenanceConnectionRef( DB_PRIMARY, [], $this->dbname );
 			return;
 		}
 
