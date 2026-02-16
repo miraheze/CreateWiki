@@ -180,7 +180,7 @@ class WikiManagerFactory {
 		// If we aren't using DatabaseClusters, we don't have an LB
 		// So we just connect to $this->dbname using the main
 		// database configuration.
-		/** @var DBConnRef $newDbw */
+		/** @var DBConnRef $dbw */
 		$dbw = $this->databaseUtils->getRemoteWikiPrimaryDB( $this->dbname );
 		$this->dbw = $dbw;
 	}
