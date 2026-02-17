@@ -588,8 +588,8 @@ class WikiRequestManager {
 			]
 		);
 
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logId );
 	}
 
 	private function logNewRequest(
@@ -612,8 +612,8 @@ class WikiRequestManager {
 			]
 		);
 
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logId );
 	}
 
 	private function logSuppression(
@@ -634,8 +634,8 @@ class WikiRequestManager {
 			]
 		);
 
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logId );
 	}
 
 	public function suppress(
@@ -727,7 +727,6 @@ class WikiRequestManager {
 	public function getReason(): string {
 		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
-
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return $comment[1];
 		}
@@ -738,7 +737,6 @@ class WikiRequestManager {
 	public function getPurpose(): ?string {
 		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
-
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return trim( $purposeCheck[1] );
 		}
