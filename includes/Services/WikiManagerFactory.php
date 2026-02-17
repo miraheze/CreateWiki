@@ -2,11 +2,13 @@
 
 namespace Miraheze\CreateWiki\Services;
 
+use CreateAndPromote;
 use Exception;
 use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Exception\FatalError;
+use MediaWiki\Extension\CentralAuth\Maintenance\CreateLocalAccount;
 use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
@@ -34,7 +36,6 @@ use function json_encode;
 use function min;
 use function wfTimestamp;
 use const DB_PRIMARY;
-use const MW_INSTALL_PATH;
 use const TS_UNIX;
 
 class WikiManagerFactory {
@@ -70,7 +71,7 @@ class WikiManagerFactory {
 		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
@@ -282,7 +283,7 @@ class WikiManagerFactory {
 
 				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
-						MW_INSTALL_PATH . '/extensions/CentralAuth/maintenance/createLocalAccount.php',
+						CreateLocalAccount::class,
 						[
 							$requester,
 							'--wiki', $this->dbname
@@ -290,7 +291,7 @@ class WikiManagerFactory {
 					)->limits( $limits )->execute();
 
 					Shell::makeScriptCommand(
-						MW_INSTALL_PATH . '/maintenance/createAndPromote.php',
+						CreateAndPromote::class,
 						[
 							$requester,
 							'--bureaucrat',
@@ -398,7 +399,7 @@ class WikiManagerFactory {
 		);
 
 		if ( $error ) {
-			return "Can not rename {$this->dbname} to {$newDatabaseName} because: {$error}";
+			return "Can not rename {$this->dbname} to $newDatabaseName because: $error";
 		}
 
 		foreach ( $this->tables as $table => $selector ) {

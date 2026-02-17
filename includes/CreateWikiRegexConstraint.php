@@ -137,7 +137,7 @@ class CreateWikiRegexConstraint {
 		$message = wfMessage( $key )->inContentLanguage();
 
 		if ( !$message->isDisabled() ) {
-			return self::regexesFromText( $message->plain(), $start, $end, "MediaWiki:{$key}" );
+			return self::regexesFromText( $message->plain(), $start, $end, "MediaWiki:$key" );
 		}
 
 		return [];
