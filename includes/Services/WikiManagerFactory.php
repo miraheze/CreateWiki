@@ -8,7 +8,6 @@ use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Exception\FatalError;
-use MediaWiki\Extension\CentralAuth\Maintenance\CreateLocalAccount;
 use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
@@ -283,7 +282,7 @@ class WikiManagerFactory {
 
 				if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
 					Shell::makeScriptCommand(
-						CreateLocalAccount::class,
+						'CentralAuth:createLocalAccount',
 						[
 							$requester,
 							'--wiki', $this->dbname
