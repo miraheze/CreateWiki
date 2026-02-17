@@ -13,6 +13,7 @@ use MediaWiki\Language\RawMessage;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
@@ -654,9 +655,9 @@ class WikiRequestViewer {
 	private function handleStatusUpdate( array $formData, User $user ): void {
 		$comment = $formData['handle-comment'];
 		match ( $formData['handle-action'] ) {
-			'approve' => $this->wikiRequestManager->approve( $user, $comment ),
-			'onhold' => $this->wikiRequestManager->onhold( $comment, $user ),
+			'approve' => $this->wikiRequestManager->approve( $comment, $user ),
 			'moredetails' => $this->wikiRequestManager->moredetails( $comment, $user ),
+			'onhold' => $this->wikiRequestManager->onhold( $comment, $user ),
 			default => $this->wikiRequestManager->decline( $comment, $user ),
 		};
 	}
