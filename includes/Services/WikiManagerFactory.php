@@ -285,7 +285,7 @@ class WikiManagerFactory {
 						'CentralAuth:createLocalAccount',
 						[
 							$requester,
-							'--wiki', $this->dbname
+							'--wiki', $this->dbname,
 						]
 					)->limits( $limits )->execute();
 
@@ -297,7 +297,7 @@ class WikiManagerFactory {
 							'--interface-admin',
 							'--sysop',
 							'--force',
-							'--wiki', $this->dbname
+							'--wiki', $this->dbname,
 						]
 					)->limits( $limits )->execute();
 				}
@@ -382,7 +382,6 @@ class WikiManagerFactory {
 
 		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $this->dbname );
-
 		return null;
 	}
 
@@ -416,7 +415,6 @@ class WikiManagerFactory {
 
 		$this->dataStore->resetDatabaseLists( isNewChanges: true );
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
-
 		return null;
 	}
 
@@ -428,29 +426,23 @@ class WikiManagerFactory {
 		array $params
 	): void {
 		$user = $this->userFactory->newFromName( $actor );
-
-		if ( !$user ) {
+		if ( $user === null ) {
 			return;
 		}
-
-		$logDBConn = $this->databaseUtils->getCentralWikiPrimaryDB();
 
 		$logEntry = new ManualLogEntry( $log, $action );
 		$logEntry->setPerformer( $user );
 		$logEntry->setTarget( SpecialPage::getTitleValueFor( 'CreateWiki' ) );
 		$logEntry->setComment( $reason );
 		$logEntry->setParameters( $params );
-		$logID = $logEntry->insert( $logDBConn );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->databaseUtils->getCentralWikiPrimaryDB() );
+		$logEntry->publish( $logId );
 	}
 
 	private function compileTables(): void {
 		$tables = [];
-
 		$this->hookRunner->onCreateWikiTables( $tables );
-
 		$tables['cw_wikis'] = 'wiki_dbname';
-
 		$this->tables = $tables;
 	}
 }
