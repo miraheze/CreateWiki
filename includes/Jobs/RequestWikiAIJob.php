@@ -85,9 +85,9 @@ class RequestWikiAIJob extends Job {
 				$this->wikiRequestManager->startQueryBuilder();
 
 				$this->wikiRequestManager->approve(
-					user: User::newSystemUser( 'CreateWiki Extension' ),
 					// Only post the default 'Request approved.' comment
-					comment: ''
+					comment: '',
+					user: User::newSystemUser( 'CreateWiki Extension' )
 				);
 
 				// Execute query builder to commit the status change
