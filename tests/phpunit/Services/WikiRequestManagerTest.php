@@ -164,7 +164,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::getId
 	 */
-	public function testGetID(): void {
+	public function testGetId(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertSame( 1, $manager->getId() );
 	}
