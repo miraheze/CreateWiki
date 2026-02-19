@@ -6,6 +6,7 @@
 			"Cigaryno",
 			"HendSalah16",
 			"Meno25",
+			"Mohamed123",
 			"Mohammed Qays",
 			"NancyMilad",
 			"OsamaK",
@@ -75,6 +76,7 @@
 	"requestwiki-label-subdomain": "النطاق الفرعي:",
 	"requestwiki-notloggedin": "يرجى تسجيل الدخول لطلب ويكي.",
 	"requestwiki-success": "تم تقديم طلبك الخاص بالويكي ( $1 ) بنجاح. سيتم مراجعة طلبك في أقرب وقت ممكن.",
+	"requestwiki-unknown": "لا يوجد طلب بهذا المعرف",
 	"requestwikiqueue": "طابور طلبات الويكي",
 	"requestwikiqueue-approve": "موافقة",
 	"requestwikiqueue-approved": "مقبول",
@@ -97,6 +99,7 @@
 	"requestwikiqueue-section-details": "تفاصيل الطلب",
 	"requestwikiqueue-section-editing": "تعديل الطلب",
 	"requestwikiqueue-section-handling": "التعامل مع الطلب",
+	"requestwikiqueue-section-history": "سجل الطلبات",
 	"right-createwiki": "أنشئ ويكيات في مزرعة الويكي",
 	"right-requestwiki": "طلب الويكيات"
 }
