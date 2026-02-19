@@ -23,6 +23,7 @@ class CreateWikiHookRunner implements
 	CreateWikiTablesHook,
 	CreateWikiWritePersistentModelHook,
 	RequestWikiFormDescriptorModifyHook,
+	RequestWikiNewRequest,
 	RequestWikiQueueFormDescriptorModifyHook
 {
 
@@ -168,6 +169,15 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'RequestWikiFormDescriptorModify',
 			[ &$formDescriptor ],
+			[ 'abortable' => false ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onRequestWikiNewRequest( int &$id ): void {
+		$this->hookContainer->run(
+			'RequestWikiNewRequest',
+			[ &$id ],
 			[ 'abortable' => false ]
 		);
 	}

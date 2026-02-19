@@ -208,6 +208,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$requestID = (string)$this->wikiRequestManager->getID();
 		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID );
 
+		$this->hookRunner->onRequestWikiNewRequest( $requestID );
+
 		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
 
