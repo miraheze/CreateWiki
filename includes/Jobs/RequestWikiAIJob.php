@@ -28,7 +28,7 @@ class RequestWikiAIJob extends Job {
 		array $params,
 		private readonly Config $config,
 		private readonly CreateWikiHookRunner $hookRunner,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
@@ -38,7 +38,7 @@ class RequestWikiAIJob extends Job {
 
 	/** @inheritDoc */
 	public function run(): bool {
-		$this->wikiRequestManager->loadFromID( $this->id );
+		$this->wikiRequestManager->loadFromId( $this->id );
 		$modelFile = $this->config->get( ConfigNames::PersistentModelFile );
 
 		$pipeline = '';

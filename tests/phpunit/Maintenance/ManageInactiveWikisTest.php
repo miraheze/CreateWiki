@@ -68,7 +68,7 @@ class ManageInactiveWikisTest extends MaintenanceBaseTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `closureinactiveineligibletest`.* TO 'wikiuser'@'localhost';", $fname );
 		$db->query( "GRANT ALL PRIVILEGES ON `removaltest`.* TO 'wikiuser'@'localhost';", $fname );
 		$db->query( "GRANT ALL PRIVILEGES ON `removalineligibletest`.* TO 'wikiuser'@'localhost';", $fname );
-		$db->query( "FLUSH PRIVILEGES;", $fname );
+		$db->query( 'FLUSH PRIVILEGES;', $fname );
 		$db->commit( $fname );
 	}
 

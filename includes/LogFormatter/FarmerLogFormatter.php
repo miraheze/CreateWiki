@@ -13,7 +13,7 @@ class FarmerLogFormatter extends LogFormatter {
 
 	public function __construct(
 		LogEntry $entry,
-		private readonly LinkRenderer $linkRenderer
+		private readonly LinkRenderer $linkRenderer,
 	) {
 		parent::__construct( $entry );
 	}
