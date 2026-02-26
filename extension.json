@@ -93,12 +93,7 @@
 		"farmer/requestmoredetails": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestonhold": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestreopen": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestwiki": {
-			"class": "Miraheze\\CreateWiki\\LogFormatter\\FarmerLogFormatter",
-			"services": [
-				"LinkRenderer"
-			]
-		},
+		"farmer/requestwiki": "Miraheze\\CreateWiki\\LogFormatter\\FarmerLogFormatter",
 		"farmersuppression/*": "MediaWiki\\Logging\\LogFormatter"
 	},
 	"LogHeaders": {
