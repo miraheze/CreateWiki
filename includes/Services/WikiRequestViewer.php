@@ -13,6 +13,7 @@ use MediaWiki\Language\RawMessage;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
@@ -615,6 +616,7 @@ class WikiRequestViewer {
 			// Handle locking wiki request
 			if ( $this->wikiRequestManager->isLocked() !== (bool)$formData['handle-lock'] ) {
 				$this->wikiRequestManager->setLocked( (bool)$formData['handle-lock'] );
+				$this->handleStatusUpdate( $formData, $user );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				if ( $formData['handle-lock'] ) {
 					$out->addHTML( Html::successBox(
@@ -629,37 +631,7 @@ class WikiRequestViewer {
 				return;
 			}
 
-			/**
-			 * HANDLE STATUS UPDATES
-			 */
-
-			// Handle approve action
-			if ( $formData['handle-action'] === 'approve' ) {
-				// This will create the wiki
-				$this->wikiRequestManager->approve( $user, $formData['handle-comment'] );
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$out->addHTML( $this->getResponseMessageBox() );
-				return;
-			}
-
-			// Handle onhold action
-			if ( $formData['handle-action'] === 'onhold' ) {
-				$this->wikiRequestManager->onhold( $formData['handle-comment'], $user );
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$out->addHTML( $this->getResponseMessageBox() );
-				return;
-			}
-
-			// Handle moredetails action
-			if ( $formData['handle-action'] === 'moredetails' ) {
-				$this->wikiRequestManager->moredetails( $formData['handle-comment'], $user );
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$out->addHTML( $this->getResponseMessageBox() );
-				return;
-			}
-
-			// Handle decline action (the action we use if handle-action is none of the others)
-			$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
+			$this->handleStatusUpdate( $formData, $user );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( $this->getResponseMessageBox() );
 		}
@@ -677,5 +649,16 @@ class WikiRequestViewer {
 		return Html::errorBox(
 			$this->context->msg( 'createwiki-no-changes' )->escaped()
 		);
+	}
+
+	/** 'approve' creates the wiki. Any unknown action defaults to declining the request. */
+	private function handleStatusUpdate( array $formData, User $user ): void {
+		$comment = $formData['handle-comment'];
+		match ( $formData['handle-action'] ) {
+			'approve' => $this->wikiRequestManager->approve( $comment, $user ),
+			'moredetails' => $this->wikiRequestManager->moredetails( $comment, $user ),
+			'onhold' => $this->wikiRequestManager->onhold( $comment, $user ),
+			default => $this->wikiRequestManager->decline( $comment, $user ),
+		};
 	}
 }

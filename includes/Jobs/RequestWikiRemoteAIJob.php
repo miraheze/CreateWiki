@@ -216,8 +216,8 @@ class RequestWikiRemoteAIJob extends Job {
 			case 'approve':
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->approve(
-					user: $systemUser,
-					comment: $comment
+					comment: $comment,
+					user: $systemUser
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
