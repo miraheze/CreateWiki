@@ -3,11 +3,11 @@
 namespace Miraheze\CreateWiki\Services;
 
 use InvalidArgumentException;
-use JobSpecification;
-use ManualLogEntry;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
+use MediaWiki\JobQueue\JobSpecification;
 use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
@@ -21,8 +21,10 @@ use Miraheze\CreateWiki\Jobs\RequestWikiRemoteAIJob;
 use RuntimeException;
 use stdClass;
 use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use Wikimedia\Rdbms\UpdateQueryBuilder;
+use Wikimedia\Stats\StatsFactory;
 use function array_column;
 use function array_diff;
 use function array_filter;
@@ -42,7 +44,6 @@ use function json_encode;
 use function preg_replace;
 use function rtrim;
 use function trim;
-use const ENT_QUOTES;
 
 class WikiRequestManager {
 
@@ -74,7 +75,7 @@ class WikiRequestManager {
 	private IDatabase $dbw;
 	private stdClass|false $row;
 
-	private int $ID;
+	private int $id;
 	private array $changes = [];
 
 	private ?UpdateQueryBuilder $queryBuilder = null;
@@ -86,20 +87,21 @@ class WikiRequestManager {
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly PermissionManager $permissionManager,
+		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly WikiManagerFactory $wikiManagerFactory,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	public function loadFromID( int $requestID ): void {
-		$this->ID = $requestID;
+	public function loadFromId( int $requestId ): void {
+		$this->id = $requestId;
 		$this->dbw = $this->databaseUtils->getCentralWikiPrimaryDB();
 		$this->row = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
-			->where( [ 'cw_id' => $requestID ] )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_requests' )
+			->where( [ 'cw_id' => $requestId ] )
 			->caller( __METHOD__ )
 			->fetchRow();
 	}
@@ -151,7 +153,7 @@ class WikiRequestManager {
 			->caller( __METHOD__ )
 			->execute();
 
-		$this->ID = $this->dbw->insertId();
+		$this->id = $this->dbw->insertId();
 
 		if ( $this->options->get( ConfigNames::AIThreshold ) > 0 ) {
 			$this->tryAutoCreate( $data['reason'] );
@@ -168,8 +170,8 @@ class WikiRequestManager {
 	public function isDuplicateRequest( string $sitename ): bool {
 		$dbr = $this->databaseUtils->getCentralWikiReplicaDB();
 		$duplicate = $dbr->newSelectQueryBuilder()
-			->table( 'cw_requests' )
-			->field( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_requests' )
 			->where( [
 				'cw_sitename' => $sitename,
 				'cw_status' => 'inreview',
@@ -190,7 +192,7 @@ class WikiRequestManager {
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_comments' )
 			->row( [
-				'cw_id' => $this->ID,
+				'cw_id' => $this->id,
 				'cw_comment' => $comment,
 				'cw_comment_timestamp' => $this->dbw->timestamp(),
 				'cw_comment_user' => $user->getId(),
@@ -223,9 +225,9 @@ class WikiRequestManager {
 	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_comments' )
-			->field( '*' )
-			->where( [ 'cw_id' => $this->ID ] )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_comments' )
+			->where( [ 'cw_id' => $this->id ] )
 			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
@@ -258,10 +260,10 @@ class WikiRequestManager {
 		string $type,
 		array $notifyUsers
 	): void {
-		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->ID )->getFullURL();
+		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', (string)$this->id )->getFullURL();
 
 		$notificationData = [
-			'type' => "request-{$type}",
+			'type' => "request-$type",
 			'extra' => [
 				'request-url' => $requestLink,
 				'comment' => $comment,
@@ -293,7 +295,7 @@ class WikiRequestManager {
 		$this->dbw->newInsertQueryBuilder()
 			->insertInto( 'cw_history' )
 			->row( [
-				'cw_id' => $this->ID,
+				'cw_id' => $this->id,
 				'cw_history_action' => $action,
 				'cw_history_actor' => $user->getActorId(),
 				'cw_history_details' => $details,
@@ -308,9 +310,9 @@ class WikiRequestManager {
 	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
-			->table( 'cw_history' )
-			->field( '*' )
-			->where( [ 'cw_id' => $this->ID ] )
+			->select( ISQLPlatform::ALL_ROWS )
+			->from( 'cw_history' )
+			->where( [ 'cw_id' => $this->id ] )
 			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_DESC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
@@ -416,7 +418,7 @@ class WikiRequestManager {
 				new JobSpecification(
 					CreateWikiJob::JOB_NAME,
 					[
-						'id' => $this->ID,
+						'id' => $this->id,
 						'dbname' => $this->getDBname(),
 						'sitename' => $this->getSitename(),
 						'language' => $this->getLanguage(),
@@ -457,7 +459,7 @@ class WikiRequestManager {
 				requester: $this->getRequester()->getName(),
 				actor: $user->getName(),
 				extra: $this->getAllExtraData(),
-				reason: "[[Special:RequestWikiQueue/{$this->ID}|Requested]]"
+				reason: "[[Special:RequestWikiQueue/{$this->id}|Requested]]"
 			);
 
 			if ( $notCreated ) {
@@ -572,8 +574,8 @@ class WikiRequestManager {
 	}
 
 	public function log( UserIdentity $user, string $action ): void {
-		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
-		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
+		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->id );
+		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->id}" );
 
 		$logEntry = new ManualLogEntry( 'farmer', $action );
 
@@ -586,8 +588,8 @@ class WikiRequestManager {
 			]
 		);
 
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logId );
 	}
 
 	private function logNewRequest(
@@ -606,20 +608,20 @@ class WikiRequestManager {
 				'4::sitename' => $data['sitename'],
 				'5::language' => $data['language'],
 				'6::private' => (int)( $data['private'] ?? 0 ),
-				'7::id' => "#{$this->ID}",
+				'7::id' => "#{$this->id}",
 			]
 		);
 
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logId );
 	}
 
 	private function logSuppression(
 		UserIdentity $user,
 		string $action
 	): void {
-		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->ID );
-		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->ID}" );
+		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->id );
+		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->id}" );
 
 		$logEntry = new ManualLogEntry( 'farmersuppression', $action );
 
@@ -632,8 +634,8 @@ class WikiRequestManager {
 			]
 		);
 
-		$logID = $logEntry->insert( $this->dbw );
-		$logEntry->publish( $logID );
+		$logId = $logEntry->insert( $this->dbw );
+		$logEntry->publish( $logId );
 	}
 
 	public function suppress(
@@ -682,8 +684,8 @@ class WikiRequestManager {
 		return in_array( 'edit', self::REOPEN_STATUS_CONDS[$this->getStatus()] ?? [], true );
 	}
 
-	public function getID(): int {
-		return $this->ID;
+	public function getId(): int {
+		return $this->id;
 	}
 
 	public function getDBname(): string {
@@ -725,7 +727,6 @@ class WikiRequestManager {
 	public function getReason(): string {
 		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
-
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return $comment[1];
 		}
@@ -736,7 +737,6 @@ class WikiRequestManager {
 	public function getPurpose(): ?string {
 		$comment = explode( "\n", $this->getRowObject()->cw_comment, 2 );
 		$purposeCheck = explode( ':', $comment[0], 2 );
-
 		if ( $purposeCheck[0] === 'Purpose' ) {
 			return trim( $purposeCheck[1] );
 		}
@@ -769,7 +769,7 @@ class WikiRequestManager {
 		$this->clearChanges();
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
-			->where( [ 'cw_id' => $this->ID ] )
+			->where( [ 'cw_id' => $this->id ] )
 			->caller( __METHOD__ );
 	}
 
@@ -923,6 +923,11 @@ class WikiRequestManager {
 			return;
 		}
 
+		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
+		$this->statsFactory->getCounter( 'requestwiki_status_total' )
+			->setLabel( 'status', $status )
+			->increment();
+
 		$this->trackChange( 'status', $this->getStatus(), $status );
 		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );
 	}
@@ -961,8 +966,8 @@ class WikiRequestManager {
 		}
 
 		$this->changes[$field] = [
-			'old' => $this->escape( $oldValue ),
-			'new' => $this->escape( $newValue ),
+			'old' => htmlspecialchars( $oldValue ),
+			'new' => htmlspecialchars( $newValue ),
 		];
 	}
 
@@ -978,16 +983,12 @@ class WikiRequestManager {
 			$oldValue = $this->formatValue( $change['old'] );
 			$newValue = $this->formatValue( $change['new'] );
 
-			$messages[] = "{$prefix}Field ''{$field}'' changed:\n" .
-				"*{$prefix}'''Old value''': {$oldValue}\n" .
-				"*{$prefix}'''New value''': {$newValue}";
+			$messages[] = "{$prefix}Field ''$field'' changed:\n" .
+				"*$prefix'''Old value''': $oldValue\n" .
+				"*$prefix'''New value''': $newValue";
 		}
 
 		return implode( "\n", $messages );
-	}
-
-	private function escape( string $text ): string {
-		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
 	}
 
 	private function formatValue( string $value ): string {
@@ -1011,7 +1012,7 @@ class WikiRequestManager {
 			new JobSpecification(
 				RequestWikiAIJob::JOB_NAME,
 				[
-					'id' => $this->ID,
+					'id' => $this->id,
 					'reason' => $reason,
 				]
 			)
@@ -1023,7 +1024,7 @@ class WikiRequestManager {
 		$jobQueueGroup->push(
 			new JobSpecification(
 				RequestWikiRemoteAIJob::JOB_NAME,
-				[ 'id' => $this->ID ]
+				[ 'id' => $this->id ]
 			)
 		);
 	}

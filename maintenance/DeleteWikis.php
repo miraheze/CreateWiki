@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use stdClass;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use function implode;
 use function register_shutdown_function;
 
