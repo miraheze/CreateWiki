@@ -3,6 +3,7 @@
 		"authors": [
 			"Helix84",
 			"Oujon",
+			"Username1233219128",
 			"Yardom78"
 		]
 	},
@@ -20,8 +21,8 @@
 	"createwiki-error-notlowercase": "Názov databázy nesmie obsahovať veľké písmená.",
 	"createwiki-error-notsuffixed": "Názov databázy nekončí s platnou príponou (napríklad: wiki).",
 	"createwiki-help-reason": "Prosím zadajte dostačujúce zhrnutie popisujúce tému, sféru a účel wiki pre ktorú ste poslali žiadosť.",
-	"createwiki-label-category": "Kategória:",
-	"createwiki-label-dbname": "Názov databázy:",
+	"createwiki-label-category": "Kategória",
+	"createwiki-label-dbname": "Názov databázy",
 	"createwiki-label-language": "Jazyk:",
 	"createwiki-label-private": "Označiť túto wiki ako súkromnú",
 	"createwiki-label-reason": "Dôvod:",
