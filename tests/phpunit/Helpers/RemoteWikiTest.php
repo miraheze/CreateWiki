@@ -44,7 +44,7 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 
 		$db->begin( __METHOD__ );
 		$db->query( "GRANT ALL PRIVILEGES ON `remotewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
+		$db->query( 'FLUSH PRIVILEGES;', __METHOD__ );
 		$db->commit( __METHOD__ );
 	}
 

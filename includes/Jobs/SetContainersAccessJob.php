@@ -16,7 +16,7 @@ class SetContainersAccessJob extends Job {
 	public function __construct(
 		array $params,
 		private readonly Config $config,
-		private readonly RepoGroup $repoGroup
+		private readonly RepoGroup $repoGroup,
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 		$this->isPrivate = $params['private'];

@@ -28,7 +28,7 @@ class CreateWikiJob extends Job {
 	public function __construct(
 		array $params,
 		private readonly WikiManagerFactory $wikiManagerFactory,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 
@@ -45,7 +45,7 @@ class CreateWikiJob extends Job {
 
 	/** @inheritDoc */
 	public function run(): bool {
-		$this->wikiRequestManager->loadFromID( $this->id );
+		$this->wikiRequestManager->loadFromId( $this->id );
 		$wikiManager = $this->wikiManagerFactory->newInstance( $this->dbname );
 
 		try {

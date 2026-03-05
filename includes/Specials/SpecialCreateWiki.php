@@ -15,7 +15,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiValidator $validator,
-		private readonly WikiManagerFactory $wikiManagerFactory
+		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
 		parent::__construct( 'CreateWiki', 'createwiki' );
 	}

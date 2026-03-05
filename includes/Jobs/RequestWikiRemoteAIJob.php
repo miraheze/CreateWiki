@@ -33,11 +33,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private readonly MessageLocalizer $messageLocalizer;
-
-	private readonly string $apiKey;
-	private readonly string $baseApiUrl;
 	private readonly int $id;
+	private readonly MessageLocalizer $messageLocalizer;
 
 	public function __construct(
 		array $params,
@@ -45,42 +42,35 @@ class RequestWikiRemoteAIJob extends Job {
 		private readonly LoggerInterface $logger,
 		private readonly HttpRequestFactory $httpRequestFactory,
 		private readonly StatsFactory $statsFactory,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 		parent::__construct( self::JOB_NAME, $params );
-		$this->messageLocalizer = RequestContext::getMain();
 
-		$this->apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
-
-		$this->baseApiUrl = 'https://api.openai.com/v1';
 		$this->id = $params['id'];
+		$this->messageLocalizer = RequestContext::getMain();
 	}
 
 	/** @inheritDoc */
-	public function run(): bool {
-		if ( !$this->config->get( ConfigNames::OpenAIConfig )['apikey'] ) {
+	public function run(): true {
+		if ( !( $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '' ) ) {
 			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );
 			$this->setLastError( 'OpenAI API key is missing! Cannot query API without it!' );
-		} elseif ( !$this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ) {
+		} elseif ( !( $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? '' ) ) {
 			$this->logger->debug( 'OpenAI Assistant ID is missing! AI job cannot start.' );
 			$this->setLastError( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
 		}
 
-		$this->wikiRequestManager->loadFromID( $this->id );
+		$this->wikiRequestManager->loadFromId( $this->id );
 
 		$this->logger->debug(
 			'Loaded request {id} for AI approval.',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( !$this->canAutoApprove() ) {
 			$this->logger->debug(
 				'Wiki request {id} was not auto-evaluated! Request matched the denylist.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return true;
@@ -89,9 +79,7 @@ class RequestWikiRemoteAIJob extends Job {
 		// Initiate OpenAI query for decision
 		$this->logger->debug(
 			'Querying OpenAI for decision on wiki request {id}...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		$apiResponse = $this->queryOpenAI(
@@ -170,17 +158,19 @@ class RequestWikiRemoteAIJob extends Job {
 		);
 
 		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
-			return $this->handleDryRun( $outcome, $comment, $confidence );
+			$this->handleDryRun( $outcome, $comment, $confidence );
+			return true;
 		}
 
-		return $this->handleLiveRun( $outcome, $comment, $confidence );
+		$this->handleLiveRun( $outcome, $comment, $confidence );
+		return true;
 	}
 
 	private function handleDryRun(
 		string $outcome,
 		string $comment,
 		int $confidence
-	): bool {
+	): void {
 		$outcomeMessage = $this->messageLocalizer->msg( 'requestwikiqueue-' . $outcome )->text();
 		$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
 			->params( $outcomeMessage, $comment, $confidence )
@@ -210,15 +200,13 @@ class RequestWikiRemoteAIJob extends Job {
 				'reasoning' => $comment,
 			]
 		);
-
-		return true;
 	}
 
 	private function handleLiveRun(
 		string $outcome,
 		string $comment,
 		int $confidence
-	): bool {
+	): void {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
 		$unknownCommentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
 			->inContentLanguage()
@@ -314,8 +302,6 @@ class RequestWikiRemoteAIJob extends Job {
 		$this->statsFactory->getCounter( 'createwiki_ai_outcome_total' )
 			->setLabel( 'outcome', $outcome )
 			->increment();
-
-		return true;
 	}
 
 	private function queryOpenAI(
@@ -398,9 +384,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 			$this->logger->debug(
 				'Stage 2 for AI decision of {id}: Message ran.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			$this->logger->debug(
@@ -423,7 +407,6 @@ class RequestWikiRemoteAIJob extends Job {
 
 			while ( $status === 'running' ) {
 				sleep( 5 );
-
 				$this->logger->debug( 'Sleeping for 5 seconds...' );
 
 				$statusData = $this->createRequest( '/threads/' . $threadId . '/runs/' . $runId, 'GET', [] );
@@ -458,7 +441,6 @@ class RequestWikiRemoteAIJob extends Job {
 					);
 
 					$this->setLastError( 'Run ' . $runId . ' failed.' );
-
 					return $statusData;
 				}
 			}
@@ -496,8 +478,8 @@ class RequestWikiRemoteAIJob extends Job {
 		string $method,
 		array $data
 	): ?array {
-		$url = $this->baseApiUrl . $endpoint;
-
+		$url = 'https://api.openai.com/v1' . $endpoint;
+		$apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
 		$this->logger->debug( 'Creating HTTP request to OpenAI...' );
 
 		// Create a multi-client
@@ -505,7 +487,7 @@ class RequestWikiRemoteAIJob extends Job {
 			'url' => $url,
 			'method' => $method,
 			'headers' => [
-				'Authorization'	=> 'Bearer ' . $this->apiKey,
+				'Authorization'	=> 'Bearer ' . $apiKey,
 				'Content-Type'	=> 'application/json',
 				'OpenAI-Beta'	=> 'assistants=v2',
 			],
@@ -544,7 +526,7 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function canAutoApprove(): bool {
-		$this->wikiRequestManager->loadFromID( $this->id );
+		$this->wikiRequestManager->loadFromId( $this->id );
 
 		$filter = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
@@ -553,17 +535,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Checking wiki request {id} against the auto approval denylist filter...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( preg_match( $filter, strtolower( $this->wikiRequestManager->getReason() ) ) ) {
 			$this->logger->debug(
 				'Wiki request {id} matched against the auto approval denylist filter! A manual review is required.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return false;
@@ -571,9 +549,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Wiki request {id} passed the auto approval filter review!',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		return true;

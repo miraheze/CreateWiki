@@ -56,7 +56,7 @@ class WikiManagerFactoryTest extends MediaWikiIntegrationTestCase {
 		$db->query( "GRANT ALL PRIVILEGES ON `deletewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
 		$db->query( "GRANT ALL PRIVILEGES ON `recreatewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
 		$db->query( "GRANT ALL PRIVILEGES ON `renamewikitest`.* TO 'wikiuser'@'localhost';", __METHOD__ );
-		$db->query( "FLUSH PRIVILEGES;", __METHOD__ );
+		$db->query( 'FLUSH PRIVILEGES;', __METHOD__ );
 		$db->commit( __METHOD__ );
 	}
 

@@ -34,7 +34,7 @@ class Main implements
 		private readonly Config $config,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataStore $dataStore,
-		private readonly RemoteWikiFactory $remoteWikiFactory
+		private readonly RemoteWikiFactory $remoteWikiFactory,
 	) {
 	}
 

@@ -22,7 +22,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		private readonly UserFactory $userFactory,
 		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
-		private readonly WikiRequestViewer $wikiRequestViewer
+		private readonly WikiRequestViewer $wikiRequestViewer,
 	) {
 		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
 	}

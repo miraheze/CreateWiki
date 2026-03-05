@@ -14,7 +14,7 @@ class RemoteWikiFactory {
 		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 	}
 

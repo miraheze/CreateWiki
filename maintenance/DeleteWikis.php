@@ -83,8 +83,8 @@ class DeleteWikis extends Maintenance {
 		$deletedWikis = implode( ', ', $deletedWikis );
 
 		$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
-			"just now {$user} has deleted the following wikis from the CreateWiki and " .
-			"associated extensions:\n{$deletedWikis}";
+			"just now $user has deleted the following wikis from the CreateWiki and " .
+			"associated extensions:\n$deletedWikis";
 
 		$notificationData = [
 			'type' => 'deletion',

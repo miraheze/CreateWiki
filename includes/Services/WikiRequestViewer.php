@@ -49,7 +49,7 @@ class WikiRequestViewer {
 		private readonly PermissionManager $permissionManager,
 		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
@@ -446,11 +446,11 @@ class WikiRequestViewer {
 	}
 
 	/** @throws UnknownRequestError */
-	public function getForm( int $requestID ): CreateWikiOOUIForm {
-		$this->wikiRequestManager->loadFromID( $requestID );
+	public function getForm( int $requestId ): CreateWikiOOUIForm {
+		$this->wikiRequestManager->loadFromId( $requestId );
 		$out = $this->context->getOutput();
 
-		if ( $requestID === 0 || !$this->wikiRequestManager->exists() ) {
+		if ( $requestId === 0 || !$this->wikiRequestManager->exists() ) {
 			throw new UnknownRequestError();
 		}
 
@@ -489,8 +489,8 @@ class WikiRequestViewer {
 		if ( isset( $formData['submit-comment'] ) ) {
 			// Don't want to mess with some generic comments across requests.
 			// If it is a different request it is not a duplicate comment.
-			$ID = (string)$this->wikiRequestManager->getID();
-			$commentData = $ID . ':' . $formData['comment'];
+			$id = (string)$this->wikiRequestManager->getId();
+			$commentData = $id . ':' . $formData['comment'];
 			if ( $session->get( 'previous_posted_comment' ) !== $commentData ) {
 				$session->set( 'previous_posted_comment', $commentData );
 				$this->wikiRequestManager->addComment(

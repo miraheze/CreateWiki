@@ -50,7 +50,7 @@ class CreateWikiNotificationsManager {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly MessageLocalizer $messageLocalizer,
 		private readonly ServiceOptions $options,
-		private readonly UserFactory $userFactory
+		private readonly UserFactory $userFactory,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

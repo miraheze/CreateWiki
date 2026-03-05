@@ -26,7 +26,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiValidator $validator,
 		private readonly StatsFactory $statsFactory,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 		parent::__construct( 'RequestWiki', 'requestwiki' );
 	}
@@ -205,8 +205,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->wikiRequestManager->createNewRequestAndLog( $data, $extraData, $this->getUser() );
 
-		$requestID = (string)$this->wikiRequestManager->getID();
-		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestID );
+		$requestId = (string)$this->wikiRequestManager->getId();
+		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestId );
 
 		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
