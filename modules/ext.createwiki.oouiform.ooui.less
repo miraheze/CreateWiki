@@ -1,5 +1,24 @@
 @import 'mediawiki.skin.variables.less';
 
+/* Fix width for the 'reason' selectorother field */
+#mw-input-wpreason {
+	display: inline-flex;
+	width: 100%;
+	max-width: 50em;
+
+	.oo-ui-dropdownInputWidget {
+		max-width: initial;
+	}
+
+	.oo-ui-inputWidget {
+		margin-right: 0;
+	}
+
+	.oo-ui-textInputWidget {
+		margin-left: 0.5em;
+	}
+}
+
 .ext-createwiki-tabs {
 	.ext-createwiki-fieldset-wrapper {
 		padding-right: 0;

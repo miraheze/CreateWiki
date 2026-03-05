@@ -19,14 +19,13 @@ class WikiRequestInfoHandler extends SimpleHandler {
 
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 	}
 
-	public function run( int $requestID ): Response {
+	public function run( int $requestId ): Response {
 		$this->restUtils->checkEnv();
-
-		$this->wikiRequestManager->loadFromID( $requestID );
+		$this->wikiRequestManager->loadFromId( $requestId );
 
 		if ( !$this->wikiRequestManager->exists() ) {
 			return $this->getResponseFactory()->createLocalizedHttpError(

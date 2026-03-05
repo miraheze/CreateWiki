@@ -8,7 +8,7 @@
 	"action-createwiki": "създаване на уикита",
 	"createwiki": "Създаване на уики",
 	"createwiki-desc": "Разширение за лесно създаване на нови уикита на уикиферма.",
-	"createwiki-email-subject": "Вашето ново Miraheze уики ($1) е създадено",
+	"createwiki-email-subject": "Вашето ново уики ($1) е създадено",
 	"createwiki-error-dbexists": "'''ЗАБЕЛЕЖКА''': Вече съществува уики с този поддомейн.",
 	"createwiki-label-category": "Категория",
 	"createwiki-label-dbname": "Име на базата от данни",
