@@ -407,7 +407,7 @@ class WikiRequestManager {
 		return $allowedVisibilities;
 	}
 
-	public function approve( UserIdentity $user, string $comment ): void {
+	public function approve( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' ) {
 			return;
 		}
