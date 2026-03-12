@@ -42,6 +42,7 @@
 	"notification-header-wiki-creation": "Ваш вики <strong>$1</strong> је направљен.",
 	"requestwiki": "Затражи вики",
 	"requestwiki-label-agreement": "Прихватам [[Project:Privacy Policy|политику приватности]] и [[Project:Terms of Service|услове коришћења]] овог сервиса.",
+	"requestwiki-label-language": "Језик:",
 	"requestwiki-label-sitename": "Како ће се звати овај вики?",
 	"requestwikiqueue-moredetails": "Потребно више детаља",
 	"requestwikiqueue-request-label-action": "Шта желите да урадите?",
