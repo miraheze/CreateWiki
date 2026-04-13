@@ -30,6 +30,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "Обавести ме ако је мој захтев за вики одбијен.",
 	"farmer-log-header": "Ово је списак измена фарме.",
 	"farmer-log-name": "Извештај фарме",
+	"log-action-filter-farmer": "Врста радње:",
 	"log-action-filter-farmersuppression": "Врста радње:",
 	"logentry-farmer-createwiki": "$1 {{GENDER:$2|направио|направила}} је вики „$4”",
 	"logentry-farmer-requestapprove": "$1 је {{GENDER:$2|одобрио|одобрила}} вики захтев $4",
