@@ -273,6 +273,19 @@ class WikiRequestViewer {
 				'disabled' => $this->wikiRequestManager->isLocked(),
 				'section' => 'editing',
 			];
+
+			$isRequester = $user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
+			if ( $isRequester && !$this->wikiRequestManager->isLocked() ) {
+				$abandonableStatuses = [ 'inreview', 'moredetails' ];
+				$canAbandon = in_array( $this->wikiRequestManager->getStatus(), $abandonableStatuses, true );
+				$formDescriptor['submit-abandon'] = [
+					'type' => 'submit',
+					'buttonlabel-message' => 'requestwiki-label-abandon-request',
+					'flags' => $canAbandon ? [ 'destructive' ] : [],
+					'disabled' => !$canAbandon,
+					'section' => 'editing',
+				];
+			}
 		}
 
 		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
@@ -597,6 +610,22 @@ class WikiRequestViewer {
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( $this->getResponseMessageBox() );
+			return;
+		}
+
+		if ( isset( $formData['submit-abandon'] ) ) {
+			$abandonableStatuses = [ 'inreview', 'moredetails' ];
+			if ( $user->getActorId() !== $this->wikiRequestManager->getRequester()->getActorId() ||
+				!in_array( $this->wikiRequestManager->getStatus(), $abandonableStatuses, true )
+			) {
+				$out->addHTML( Html::errorBox( $this->context->msg( 'createwiki-error-cannot-abandon' )->escaped() ) );
+				return;
+			}
+
+			$this->wikiRequestManager->startQueryBuilder();
+			$this->wikiRequestManager->abandon( $user );
+			$this->wikiRequestManager->tryExecuteQueryBuilder();
+			$out->addHTML( Html::successBox( $this->context->msg( 'requestwiki-abandon-success' )->escaped() ) );
 			return;
 		}
 

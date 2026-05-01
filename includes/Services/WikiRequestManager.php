@@ -573,6 +573,25 @@ class WikiRequestManager {
 		$this->log( $user, 'requestmoredetails' );
 	}
 
+	public function abandon( UserIdentity $user ): void {
+		if ( $this->getStatus() === 'abandoned' ) {
+			return;
+		}
+
+		$this->setStatus( 'abandoned' );
+
+		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
+		if ( $notifyUsers ) {
+			$this->sendNotification(
+				comment: '',
+				type: 'comment',
+				notifyUsers: $notifyUsers
+			);
+		}
+
+		$this->log( $user, 'requestabandon' );
+	}
+
 	public function log( UserIdentity $user, string $action ): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->id );
 		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->id}" );
