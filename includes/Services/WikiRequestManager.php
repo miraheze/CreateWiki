@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace Miraheze\CreateWiki\Services;
 
 use InvalidArgumentException;
@@ -243,7 +245,7 @@ class WikiRequestManager {
 				continue;
 			}
 
-			$user = $this->userFactory->newFromId( $row->cw_comment_user );
+			$user = $this->userFactory->newFromId( (int)$row->cw_comment_user );
 
 			$comments[] = [
 				'comment' => $row->cw_comment,
@@ -324,7 +326,7 @@ class WikiRequestManager {
 				continue;
 			}
 
-			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
+			$user = $this->userFactory->newFromActorId( (int)$row->cw_history_actor );
 
 			$history[] = [
 				'action' => $row->cw_history_action,
@@ -693,11 +695,11 @@ class WikiRequestManager {
 	}
 
 	public function getVisibility(): int {
-		return $this->getRowObject()->cw_visibility;
+		return (int)$this->getRowObject()->cw_visibility;
 	}
 
 	public function getRequester(): User {
-		return $this->userFactory->newFromId( $this->getRowObject()->cw_user );
+		return $this->userFactory->newFromId( (int)$this->getRowObject()->cw_user );
 	}
 
 	public function getStatus(): string {

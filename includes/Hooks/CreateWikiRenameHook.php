@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace Miraheze\CreateWiki\Hooks;
 
 use Wikimedia\Rdbms\DBConnRef;
