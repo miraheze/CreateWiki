@@ -22,7 +22,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
 			parent::__construct( 'CreateWiki' );
 		} else {
-			parent::__construct( 'CreateWiki', 'createwiki');
+			parent::__construct( 'CreateWiki', 'createwiki' );
 		}
 	}
 
