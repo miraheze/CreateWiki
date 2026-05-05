@@ -29,8 +29,8 @@ class DeclineStaleWikiRequests extends Maintenance {
 	}
 
 	public function execute(): void {
-	  $this->initServices();
-    $days = (int)$this->getOption( 'days' );
+		$this->initServices();
+		$days = (int)$this->getOption( 'days' );
 		if ( $days <= 0 ) {
 			$this->fatalError( '--days must be a positive integer.' );
 		}
