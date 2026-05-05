@@ -16,6 +16,8 @@ use Wikimedia\Stats\StatsFactory;
 use function array_diff_key;
 use function array_filter;
 use function strlen;
+use function version_compare;
+use const MW_VERSION;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -28,7 +30,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager,
 	) {
-		parent::__construct( 'RequestWiki', 'requestwiki' );
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'RequestWiki' );
+		} else {
+			parent::__construct( 'RequestWiki', 'requestwiki' );
+		}
 	}
 
 	/**
@@ -236,6 +242,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'requestwiki';
 	}
 
 	/** @inheritDoc */
