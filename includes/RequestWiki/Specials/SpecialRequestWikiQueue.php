@@ -24,7 +24,7 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly WikiRequestViewer $wikiRequestViewer,
 	) {
-		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+		parent::__construct( 'RequestWikiQueue' );
 	}
 
 	/**
@@ -135,6 +135,11 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'requestwiki';
 	}
 
 	/** @inheritDoc */
