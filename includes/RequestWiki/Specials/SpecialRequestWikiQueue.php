@@ -13,6 +13,8 @@ use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use function version_compare;
+use const MW_VERSION;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
@@ -24,7 +26,11 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		private readonly WikiRequestManager $wikiRequestManager,
 		private readonly WikiRequestViewer $wikiRequestViewer,
 	) {
-		parent::__construct( 'RequestWikiQueue' );
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'RequestWikiQueue' );
+		} else {
+			parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+		}
 	}
 
 	/**
