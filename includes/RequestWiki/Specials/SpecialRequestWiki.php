@@ -28,7 +28,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager,
 	) {
-		parent::__construct( 'RequestWiki', 'requestwiki' );
+		parent::__construct( 'RequestWiki' );
 	}
 
 	/**
@@ -236,6 +236,11 @@ class SpecialRequestWiki extends FormSpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'requestwiki';
 	}
 
 	/** @inheritDoc */
