@@ -17,7 +17,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		private readonly CreateWikiValidator $validator,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
-		parent::__construct( 'CreateWiki', 'createwiki' );
+		parent::__construct( 'CreateWiki' );
 	}
 
 	/**
@@ -121,5 +121,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'createwiki';
 	}
 }
