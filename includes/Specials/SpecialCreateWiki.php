@@ -9,6 +9,8 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use function version_compare;
+use const MW_VERSION;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
@@ -17,7 +19,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 		private readonly CreateWikiValidator $validator,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
-		parent::__construct( 'CreateWiki' );
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'CreateWiki' );
+		} else {
+			parent::__construct( 'CreateWiki', 'createwiki');
+		}
 	}
 
 	/**
