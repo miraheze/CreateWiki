@@ -6,6 +6,7 @@ use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 use stdClass;
 use function strtotime;
 
