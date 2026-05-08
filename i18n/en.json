@@ -134,7 +134,6 @@
 	"requestwiki-label-edit-request": "Edit Request",
 	"requestwiki-label-abandon-request": "Abandon request",
 	"requestwiki-abandon-success": "Your wiki request has been abandoned.",
-	"createwiki-error-cannot-abandon": "This request cannot be abandoned.",
 	"requestwiki-label-language": "Language:",
 	"requestwiki-label-private": "Mark this wiki as private?",
 	"requestwiki-label-purpose": "The purpose of this wiki is...",
