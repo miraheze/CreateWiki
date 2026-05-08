@@ -91,7 +91,7 @@ class DeclineStaleWikiRequests extends Maintenance {
 
 			$systemUser = User::newSystemUser( 'CreateWiki Extension', [ 'steal' => true ] );
 			$this->wikiRequestManager->startQueryBuilder();
-			$this->wikiRequestManager->decline( 'We haven\'t heard back from you so this request will be closed. If you\'re still interested in this wiki, please respond to the questions in comments above. You can reopen the request on the "Edit request" tab to put your request back in the review queue. Thank you.', $systemUser );
+			$this->wikiRequestManager->decline(wfMessage( 'createwiki-decline-stale-reason' )->inContentLanguage()->text(), $systemUser );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 
 			$this->output( "Declined request #$id\n" );
