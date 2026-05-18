@@ -14,10 +14,10 @@
 		]
 	},
 	"action-createwiki": "위키 만들기",
-	"action-createwiki-deleterequest": "위키 요청을 삭제할",
-	"action-createwiki-suppressionlog": "위키 요청 숨김 기록을 볼",
-	"action-createwiki-suppressrequest": "위키 요청을 숨길",
-	"action-requestwiki": "위키를 요청할",
+	"action-createwiki-deleterequest": "위키 요청 삭제",
+	"action-createwiki-suppressionlog": "위키 요청 숨김 기록 보기",
+	"action-createwiki-suppressrequest": "위키 요청을 숨기기",
+	"action-requestwiki": "위키 요청",
 	"createwiki": "위키 만들기",
 	"createwiki-close-email-body": "안녕하세요,\n\n이 이메일은 귀하의 위키가 폐쇄되었음을 알려드리기 위해 발송되었습니다.",
 	"createwiki-close-email-subject": "당신의 위키($1)가 닫혔습니다",
@@ -132,5 +132,6 @@
 	"right-createwiki": "위키 만들기",
 	"right-createwiki-deleterequest": "위키 요청 삭제",
 	"right-createwiki-suppressionlog": "위키 요청 숨김 기록 보기",
+	"right-createwiki-suppressrequest": "위키 요청을 모두에게서 숨기기",
 	"right-requestwiki": "위키 요청"
 }
