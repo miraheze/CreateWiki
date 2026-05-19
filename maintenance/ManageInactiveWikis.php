@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use function date;
 use function strtotime;
@@ -220,7 +221,10 @@ class ManageInactiveWikis extends Maintenance {
 	}
 
 	private function notifyBureaucrats( string $dbname, RemoteWiki $remoteWiki ): void {
+		/** @var CreateWikiValidator $validator */
 		$validator = $this->getServiceContainer()->get( 'CreateWikiValidator' );
+		'@phan-var CreateWikiValidator $validator';
+
 		$url = $remoteWiki->getServerName() ?: $validator->getValidUrl( $dbname );
 
 		$body = wfMessage( 'createwiki-close-email-body', $dbname, $url, $remoteWiki->getSitename() )
