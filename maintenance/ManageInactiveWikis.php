@@ -219,7 +219,7 @@ class ManageInactiveWikis extends Maintenance {
 		}
 	}
 
-	private function notifyBureaucrats( string $dbname, RemoteWikiFactory $remoteWiki ): void {
+	private function notifyBureaucrats( string $dbname, RemoteWiki $remoteWiki ): void {
 		$validator = $this->getServiceContainer()->get( 'CreateWikiValidator' );
 		$url = $remoteWiki->getServerName() ?: $validator->getValidUrl( $dbname );
 
