@@ -9,6 +9,7 @@ use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 use stdClass;
 use function strtotime;
+use function wfMessage;
 
 class DeclineStaleWikiRequests extends Maintenance {
 
