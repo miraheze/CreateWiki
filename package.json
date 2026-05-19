@@ -10,11 +10,11 @@
 		"minify:svg": "svgo --config=.svgo.config.js --quiet --recursive --folder modules/icons/"
 	},
 	"devDependencies": {
-		"eslint-config-wikimedia": "0.32.3",
+		"eslint-config-wikimedia": "0.32.4",
 		"grunt-banana-checker": "0.13.0",
 		"stylelint-config-idiomatic-order": "10.0.0",
-		"stylelint-config-wikimedia": "0.18.0",
-		"svgo": "4.0.0"
+		"stylelint-config-wikimedia": "0.19.2",
+		"svgo": "4.0.1"
 	},
 	"peerDependencies": {
 		"postcss-less": "6.0.0"

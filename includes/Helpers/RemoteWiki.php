@@ -72,7 +72,7 @@ class RemoteWiki {
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 		protected readonly ServiceOptions $options,
-		protected readonly string $dbname
+		protected readonly string $dbname,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 

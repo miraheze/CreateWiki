@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use MediaWiki\Context\IContextSource;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Pager\IndexPager;
@@ -30,7 +30,7 @@ class RequestWikiQueuePager extends TablePager {
 		private readonly string $dbname,
 		private readonly string $language,
 		private readonly string $requester,
-		private readonly string $status
+		private readonly string $status,
 	) {
 		$this->mDb = $databaseUtils->getCentralWikiReplicaDB();
 		parent::__construct( $context, $linkRenderer );

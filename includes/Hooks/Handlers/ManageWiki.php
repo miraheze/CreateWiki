@@ -24,7 +24,7 @@ class ManageWiki implements ManageWikiCoreProviderHook {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
-		private readonly JobQueueGroupFactory $jobQueueGroupFactory
+		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
 	) {
 	}
 

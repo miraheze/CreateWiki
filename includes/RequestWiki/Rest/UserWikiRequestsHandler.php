@@ -19,13 +19,12 @@ class UserWikiRequestsHandler extends SimpleHandler {
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
 		private readonly UserFactory $userFactory,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 	}
 
 	public function run( string $username ): Response {
 		$this->restUtils->checkEnv();
-
 		$requester = $this->userFactory->newFromName( $username );
 
 		if ( !$requester ) {

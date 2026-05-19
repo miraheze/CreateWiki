@@ -130,6 +130,7 @@ return [
 			RequestContext::getMain(),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiValidator' ),
+			/** @phan-suppress-next-line PhanTypeMismatchArgument */
 			$services->getLanguageNameUtils(),
 			$services->getPermissionManager(),
 			$services->getUserLinkRenderer(),
