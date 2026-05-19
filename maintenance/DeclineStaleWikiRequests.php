@@ -103,5 +103,5 @@ class DeclineStaleWikiRequests extends Maintenance {
 }
 
 // @codeCoverageIgnoreStart
-return DeclineStaleRequests::class;
+return DeclineStaleWikiRequests::class;
 // @codeCoverageIgnoreEnd
