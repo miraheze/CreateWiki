@@ -58,7 +58,6 @@ class CheckLastWikiActivityTest extends MaintenanceBaseTestCase {
 		$newRevision = $editStatus->getNewRevision();
 		if ( $newRevision === null ) {
 			$this->fail( 'Could not get new revision' );
-			return;
 		}
 
 		ConvertibleTimestamp::setFakeTime( (string)20250505060710 );

@@ -7,6 +7,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use stdClass;
+use Wikimedia\Rdbms\Platform\ISQLPlatform;
 use function implode;
 
 class DeleteWikis extends Maintenance {
@@ -43,7 +44,7 @@ class DeleteWikis extends Maintenance {
 		$dbr = $this->databaseUtils->getGlobalReplicaDB();
 
 		$res = $dbr->newSelectQueryBuilder()
-			->select( '*' )
+			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_wikis' )
 			->where( [ 'wiki_deleted' => 1 ] )
 			->caller( __METHOD__ )
@@ -82,8 +83,8 @@ class DeleteWikis extends Maintenance {
 		$deletedWikis = implode( ', ', $deletedWikis );
 
 		$message = "Hello!\nThis is an automatic notification from CreateWiki notifying you that " .
-			"just now {$user} has deleted the following wikis from the CreateWiki and " .
-			"associated extensions:\n{$deletedWikis}";
+			"just now $user has deleted the following wikis from the CreateWiki and " .
+			"associated extensions:\n$deletedWikis";
 
 		$notificationData = [
 			'type' => 'deletion',

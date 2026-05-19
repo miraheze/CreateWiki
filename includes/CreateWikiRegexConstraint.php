@@ -3,7 +3,7 @@
 namespace Miraheze\CreateWiki;
 
 use MediaWiki\Logger\LoggerFactory;
-use StringUtils;
+use Wikimedia\StringUtils\StringUtils;
 use function array_filter;
 use function array_map;
 use function explode;
@@ -137,7 +137,7 @@ class CreateWikiRegexConstraint {
 		$message = wfMessage( $key )->inContentLanguage();
 
 		if ( !$message->isDisabled() ) {
-			return self::regexesFromText( $message->plain(), $start, $end, "MediaWiki:{$key}" );
+			return self::regexesFromText( $message->plain(), $start, $end, "MediaWiki:$key" );
 		}
 
 		return [];

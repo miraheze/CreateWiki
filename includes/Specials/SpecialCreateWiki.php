@@ -2,26 +2,33 @@
 
 namespace Miraheze\CreateWiki\Specials;
 
-use ErrorPageError;
+use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
+use function version_compare;
+use const MW_VERSION;
 
 class SpecialCreateWiki extends FormSpecialPage {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiValidator $validator,
-		private readonly WikiManagerFactory $wikiManagerFactory
+		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
-		parent::__construct( 'CreateWiki', 'createwiki' );
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'CreateWiki' );
+		} else {
+			parent::__construct( 'CreateWiki', 'createwiki' );
+		}
 	}
 
 	/**
 	 * @param ?string $par
+	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
 		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
@@ -73,8 +80,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
+				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Categories ),
-				'default' => 'uncategorised',
 			];
 		}
 
@@ -96,7 +103,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			sitename: $formData['sitename'],
 			language: $formData['language'],
 			private: $formData['private'] ?? 0,
-			category: $formData['category'] ?? 'uncategorised',
+			category: $formData['category'] ?? '',
 			requester: $formData['requester'],
 			actor: $this->getContext()->getUser()->getName(),
 			reason: $formData['reason'],
@@ -120,5 +127,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'createwiki';
 	}
 }

@@ -2,15 +2,19 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
-use ErrorPageError;
+use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
+use MediaWiki\Linker\UserLinkRenderer;
+use MediaWiki\Parser\ParserOptions;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiQueuePager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use function version_compare;
+use const MW_VERSION;
 
 class SpecialRequestWikiQueue extends SpecialPage {
 
@@ -18,14 +22,20 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly UserFactory $userFactory,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
-		private readonly WikiRequestViewer $wikiRequestViewer
+		private readonly WikiRequestViewer $wikiRequestViewer,
 	) {
-		parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'RequestWikiQueue' );
+		} else {
+			parent::__construct( 'RequestWikiQueue', 'requestwiki' );
+		}
 	}
 
 	/**
 	 * @param ?string $par
+	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
 		if ( !$this->databaseUtils->isCurrentWikiCentral() ) {
@@ -104,10 +114,11 @@ class SpecialRequestWikiQueue extends SpecialPage {
 
 		$pager = new RequestWikiQueuePager(
 			$this->getContext(),
+			$this->getLinkRenderer(),
 			$this->databaseUtils,
 			$this->languageNameUtils,
-			$this->getLinkRenderer(),
 			$this->userFactory,
+			$this->userLinkRenderer,
 			$this->wikiRequestManager,
 			$dbname,
 			$language,
@@ -116,7 +127,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 		);
 
 		$table = $pager->getFullOutput();
-		$this->getOutput()->addParserOutputContent( $table );
+		$parserOptions = ParserOptions::newFromContext( $this->getContext() );
+		$this->getOutput()->addParserOutputContent( $table, $parserOptions );
 	}
 
 	private function lookupRequest( string $par ): void {
@@ -129,5 +141,15 @@ class SpecialRequestWikiQueue extends SpecialPage {
 	/** @inheritDoc */
 	protected function getGroupName(): string {
 		return 'wiki';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'requestwiki';
+	}
+
+	/** @inheritDoc */
+	public function doesWrites(): bool {
+		return true;
 	}
 }

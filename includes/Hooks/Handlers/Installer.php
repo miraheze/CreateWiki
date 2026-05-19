@@ -133,7 +133,5 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql",
 			true,
 		] );
-
-		// $updater->addPostDatabaseUpdateMaintenance( PopulateCentralWiki::class );
 	}
 }

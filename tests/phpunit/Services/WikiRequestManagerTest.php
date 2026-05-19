@@ -43,7 +43,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'cw_timestamp' => '20250303234810',
 				'cw_url' => 'test.example.org',
 				'cw_user' => self::$user->getId(),
-				'cw_category' => 'uncategorised',
+				'cw_category' => 'test',
 				'cw_visibility' => WikiRequestManager::VISIBILITY_PUBLIC,
 				'cw_bio' => 0,
 				'cw_extra' => '[]',
@@ -55,7 +55,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	private function getWikiRequestManager( int $id ): WikiRequestManager {
 		$manager = $this->getServiceContainer()->getService( 'WikiRequestManager' );
 		'@phan-var WikiRequestManager $manager';
-		$manager->loadFromID( $id );
+		$manager->loadFromId( $id );
 		return $manager;
 	}
 
@@ -68,9 +68,9 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::loadFromID
+	 * @covers ::loadFromId
 	 */
-	public function testLoadFromID(): void {
+	public function testloadFromId(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
 		$this->assertInstanceOf( WikiRequestManager::class, $manager );
 	}
@@ -99,7 +99,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 				'sitename' => 'Test Wiki 2',
 				'language' => 'en',
 				'private' => 0,
-				'category' => 'uncategorised',
+				'category' => 'test',
 				'bio' => 0,
 				'purpose' => 'Test purpose',
 				'reason' => 'Test reason',
@@ -162,11 +162,11 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::getID
+	 * @covers ::getId
 	 */
-	public function testGetID(): void {
+	public function testGetId(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
-		$this->assertSame( 1, $manager->getID() );
+		$this->assertSame( 1, $manager->getId() );
 	}
 
 	/**
@@ -241,7 +241,7 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetCategory(): void {
 		$manager = $this->getWikiRequestManager( id: 1 );
-		$this->assertSame( 'uncategorised', $manager->getCategory() );
+		$this->assertSame( 'test', $manager->getCategory() );
 	}
 
 	/**

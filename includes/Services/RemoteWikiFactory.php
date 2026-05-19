@@ -11,17 +11,17 @@ class RemoteWikiFactory {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
-		private readonly CreateWikiDataFactory $dataFactory,
+		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 	}
 
 	public function newInstance( string $dbname ): RemoteWiki {
 		return new RemoteWiki(
 			$this->databaseUtils,
-			$this->dataFactory,
+			$this->dataStore,
 			$this->hookRunner,
 			$this->jobQueueGroupFactory,
 			$this->options,

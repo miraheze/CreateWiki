@@ -30,7 +30,7 @@ class CreateWikiValidator {
 
 	public function __construct(
 		private readonly MessageLocalizer $messageLocalizer,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}

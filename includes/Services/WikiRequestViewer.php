@@ -4,19 +4,21 @@ namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Context\IContextSource;
+use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\HTMLForm\HTMLFormField;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\Language\RawMessage;
-use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Linker\Linker;
+use MediaWiki\Linker\UserLinkRenderer;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\User\User;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiOOUIForm;
 use Miraheze\CreateWiki\Exceptions\UnknownRequestError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\FormFields\DetailsWithIconField;
-use UserNotLoggedIn;
 use function array_diff_key;
 use function array_flip;
 use function count;
@@ -45,12 +47,14 @@ class WikiRequestViewer {
 		private readonly CreateWikiValidator $validator,
 		private readonly LanguageNameUtils $languageNameUtils,
 		private readonly PermissionManager $permissionManager,
+		private readonly UserLinkRenderer $userLinkRenderer,
 		private readonly WikiRequestManager $wikiRequestManager,
-		private readonly ServiceOptions $options
+		private readonly ServiceOptions $options,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
+	/** @throws UnknownRequestError */
 	public function getFormDescriptor(): array {
 		$user = $this->context->getUser();
 
@@ -93,9 +97,9 @@ class WikiRequestViewer {
 				'label-message' => 'requestwikiqueue-request-label-requester',
 				'type' => 'info',
 				'section' => 'details',
-				'default' => Linker::userLink(
-					$this->wikiRequestManager->getRequester()->getId(),
-					$this->wikiRequestManager->getRequester()->getName()
+				'default' => $this->userLinkRenderer->userLink(
+					$this->wikiRequestManager->getRequester(),
+					$this->context
 				) . Linker::userToolLinks(
 					$this->wikiRequestManager->getRequester()->getId(),
 					$this->wikiRequestManager->getRequester()->getName()
@@ -221,6 +225,7 @@ class WikiRequestViewer {
 				$formDescriptor['edit-category'] = [
 					'type' => 'select',
 					'label-message' => 'createwiki-label-category',
+					'required' => true,
 					'options' => $this->options->get( ConfigNames::Categories ),
 					'default' => $this->wikiRequestManager->getCategory(),
 					'disabled' => $this->wikiRequestManager->isLocked(),
@@ -440,11 +445,12 @@ class WikiRequestViewer {
 		return $formDescriptor;
 	}
 
-	public function getForm( int $requestID ): CreateWikiOOUIForm {
-		$this->wikiRequestManager->loadFromID( $requestID );
+	/** @throws UnknownRequestError */
+	public function getForm( int $requestId ): CreateWikiOOUIForm {
+		$this->wikiRequestManager->loadFromId( $requestId );
 		$out = $this->context->getOutput();
 
-		if ( $requestID === 0 || !$this->wikiRequestManager->exists() ) {
+		if ( $requestId === 0 || !$this->wikiRequestManager->exists() ) {
 			throw new UnknownRequestError();
 		}
 
@@ -467,6 +473,7 @@ class WikiRequestViewer {
 		return $htmlForm;
 	}
 
+	/** @throws UserNotLoggedIn */
 	protected function submitForm(
 		array $formData,
 		HTMLForm $form
@@ -482,8 +489,8 @@ class WikiRequestViewer {
 		if ( isset( $formData['submit-comment'] ) ) {
 			// Don't want to mess with some generic comments across requests.
 			// If it is a different request it is not a duplicate comment.
-			$ID = (string)$this->wikiRequestManager->getID();
-			$commentData = $ID . ':' . $formData['comment'];
+			$id = (string)$this->wikiRequestManager->getId();
+			$commentData = $id . ':' . $formData['comment'];
 			if ( $session->get( 'previous_posted_comment' ) !== $commentData ) {
 				$session->set( 'previous_posted_comment', $commentData );
 				$this->wikiRequestManager->addComment(
@@ -609,6 +616,7 @@ class WikiRequestViewer {
 			// Handle locking wiki request
 			if ( $this->wikiRequestManager->isLocked() !== (bool)$formData['handle-lock'] ) {
 				$this->wikiRequestManager->setLocked( (bool)$formData['handle-lock'] );
+				$this->handleStatusUpdate( $formData, $user );
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				if ( $formData['handle-lock'] ) {
 					$out->addHTML( Html::successBox(
@@ -623,37 +631,7 @@ class WikiRequestViewer {
 				return;
 			}
 
-			/**
-			 * HANDLE STATUS UPDATES
-			 */
-
-			// Handle approve action
-			if ( $formData['handle-action'] === 'approve' ) {
-				// This will create the wiki
-				$this->wikiRequestManager->approve( $user, $formData['handle-comment'] );
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$out->addHTML( $this->getResponseMessageBox() );
-				return;
-			}
-
-			// Handle onhold action
-			if ( $formData['handle-action'] === 'onhold' ) {
-				$this->wikiRequestManager->onhold( $formData['handle-comment'], $user );
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$out->addHTML( $this->getResponseMessageBox() );
-				return;
-			}
-
-			// Handle moredetails action
-			if ( $formData['handle-action'] === 'moredetails' ) {
-				$this->wikiRequestManager->moredetails( $formData['handle-comment'], $user );
-				$this->wikiRequestManager->tryExecuteQueryBuilder();
-				$out->addHTML( $this->getResponseMessageBox() );
-				return;
-			}
-
-			// Handle decline action (the action we use if handle-action is none of the others)
-			$this->wikiRequestManager->decline( $formData['handle-comment'], $user );
+			$this->handleStatusUpdate( $formData, $user );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( $this->getResponseMessageBox() );
 		}
@@ -671,5 +649,16 @@ class WikiRequestViewer {
 		return Html::errorBox(
 			$this->context->msg( 'createwiki-no-changes' )->escaped()
 		);
+	}
+
+	/** 'approve' creates the wiki. Any unknown action defaults to declining the request. */
+	private function handleStatusUpdate( array $formData, User $user ): void {
+		$comment = $formData['handle-comment'];
+		match ( $formData['handle-action'] ) {
+			'approve' => $this->wikiRequestManager->approve( $comment, $user ),
+			'moredetails' => $this->wikiRequestManager->moredetails( $comment, $user ),
+			'onhold' => $this->wikiRequestManager->onhold( $comment, $user ),
+			default => $this->wikiRequestManager->decline( $comment, $user ),
+		};
 	}
 }
