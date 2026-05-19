@@ -21,7 +21,7 @@ class EchoRequestDeclinedPresentationModel extends EchoEventPresentationModel {
 
 	/** @inheritDoc */
 	public function getBodyMessage(): RawMessage {
-		$comment = $this->event->getExtraParam( 'comment' );
+		$comment = $this->event->getExtraParam( 'comment' ) ?? $this->event->getExtraParam( 'reason' );
 		$text = DiscussionParser::getTextSnippet( $comment, $this->language );
 
 		return new RawMessage( '$1', [ $text ] );

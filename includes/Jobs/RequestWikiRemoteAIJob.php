@@ -18,10 +18,10 @@ use Psr\Log\LoggerInterface;
 use Wikimedia\Stats\StatsFactory;
 use function count;
 use function htmlspecialchars;
-use function is_array;
 use function json_decode;
 use function json_encode;
 use function preg_match;
+use function sleep;
 use function sprintf;
 use function str_replace;
 use function strtolower;
@@ -33,10 +33,8 @@ class RequestWikiRemoteAIJob extends Job {
 
 	public const JOB_NAME = 'RequestWikiRemoteAIJob';
 
-	private readonly MessageLocalizer $messageLocalizer;
-
-	private readonly string $baseApiUrl;
 	private readonly int $id;
+	private readonly MessageLocalizer $messageLocalizer;
 
 	public function __construct(
 		array $params,
@@ -44,46 +42,47 @@ class RequestWikiRemoteAIJob extends Job {
 		private readonly LoggerInterface $logger,
 		private readonly HttpRequestFactory $httpRequestFactory,
 		private readonly StatsFactory $statsFactory,
-		private readonly WikiRequestManager $wikiRequestManager
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 		parent::__construct( self::JOB_NAME, $params );
-		$this->messageLocalizer = RequestContext::getMain();
 
-		$this->baseApiUrl = $this->config->get( ConfigNames::AIConfig )['baseurl'] ?? '';
 		$this->id = $params['id'];
+		$this->messageLocalizer = RequestContext::getMain();
 	}
 
 	/** @inheritDoc */
-	public function run(): bool {
-		$this->wikiRequestManager->loadFromID( $this->id );
+	public function run(): true {
+		if ( !( $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '' ) ) {
+			$this->logger->debug( 'OpenAI API key is missing! AI job cannot start.' );
+			$this->setLastError( 'OpenAI API key is missing! Cannot query API without it!' );
+		} elseif ( !( $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? '' ) ) {
+			$this->logger->debug( 'OpenAI Assistant ID is missing! AI job cannot start.' );
+			$this->setLastError( 'OpenAI Assistant ID is missing! Cannot run AI model without an assistant!' );
+		}
+
+		$this->wikiRequestManager->loadFromId( $this->id );
 
 		$this->logger->debug(
 			'Loaded request {id} for AI approval.',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( !$this->canAutoApprove() ) {
 			$this->logger->debug(
 				'Wiki request {id} was not auto-evaluated! Request matched the denylist.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return true;
 		}
 
-		// Query Ollama for decision
+		// Initiate OpenAI query for decision
 		$this->logger->debug(
-			'Querying Ollama for decision on wiki request {id}...',
-			[
-				'id' => $this->id,
-			]
+			'Querying OpenAI for decision on wiki request {id}...',
+			[ 'id' => $this->id ]
 		);
 
-		$apiResponse = $this->queryOllama(
+		$apiResponse = $this->queryOpenAI(
 			$this->wikiRequestManager->isBio(),
 			$this->wikiRequestManager->getCategory(),
 			$this->wikiRequestManager->getAllExtraData(),
@@ -144,9 +143,9 @@ class RequestWikiRemoteAIJob extends Job {
 		}
 
 		// Extract response details with default fallbacks
-		$confidence = (int)( $apiResponse['confidence'] ?? 0 );
-		$outcome = $apiResponse['outcome'] ?? 'unknown';
-		$comment = $apiResponse['public_comment'] ?? 'No comment provided. Please check logs.';
+		$confidence = (int)( $apiResponse['recommendation']['confidence'] ?? 0 );
+		$outcome = $apiResponse['recommendation']['outcome'] ?? 'unknown';
+		$comment = $apiResponse['recommendation']['public_comment'] ?? 'No comment provided. Please check logs.';
 
 		$this->logger->debug(
 			'AI decision for wiki request {id} was {outcome} (with {confidence}% confidence) with reasoning: {comment}',
@@ -158,18 +157,20 @@ class RequestWikiRemoteAIJob extends Job {
 			]
 		);
 
-		if ( $this->config->get( ConfigNames::AIConfig )['dryrun'] ?? false ) {
-			return $this->handleDryRun( $outcome, $comment, $confidence );
+		if ( $this->config->get( ConfigNames::OpenAIConfig )['dryrun'] ) {
+			$this->handleDryRun( $outcome, $comment, $confidence );
+			return true;
 		}
 
-		return $this->handleLiveRun( $outcome, $comment, $confidence );
+		$this->handleLiveRun( $outcome, $comment, $confidence );
+		return true;
 	}
 
 	private function handleDryRun(
 		string $outcome,
 		string $comment,
 		int $confidence
-	): bool {
+	): void {
 		$outcomeMessage = $this->messageLocalizer->msg( 'requestwikiqueue-' . $outcome )->text();
 		$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
 			->params( $outcomeMessage, $comment, $confidence )
@@ -199,15 +200,13 @@ class RequestWikiRemoteAIJob extends Job {
 				'reasoning' => $comment,
 			]
 		);
-
-		return true;
 	}
 
 	private function handleLiveRun(
 		string $outcome,
 		string $comment,
 		int $confidence
-	): bool {
+	): void {
 		$systemUser = User::newSystemUser( 'CreateWiki AI' );
 		$unknownCommentText = $this->messageLocalizer->msg( 'requestwiki-ai-error' )
 			->inContentLanguage()
@@ -217,8 +216,8 @@ class RequestWikiRemoteAIJob extends Job {
 			case 'approve':
 				$this->wikiRequestManager->startQueryBuilder();
 				$this->wikiRequestManager->approve(
-					user: $systemUser,
-					comment: $comment
+					comment: $comment,
+					user: $systemUser
 				);
 				$this->wikiRequestManager->tryExecuteQueryBuilder();
 				$this->logger->debug(
@@ -290,7 +289,7 @@ class RequestWikiRemoteAIJob extends Job {
 					notifyUsers: []
 				);
 				$this->logger->debug(
-					'Wiki request {id} received an unknown outcome with comment: {comment}',
+					'Wiki request {id} recieved an unknown outcome with comment: {comment}',
 					[
 						'comment' => $comment,
 						'id' => $this->id,
@@ -298,16 +297,14 @@ class RequestWikiRemoteAIJob extends Job {
 				);
 		}
 
+		// Outcome will probably be 'unknown' if error
 		/** @phan-suppress-next-line PhanPossiblyUndeclaredMethod */
 		$this->statsFactory->getCounter( 'createwiki_ai_outcome_total' )
 			->setLabel( 'outcome', $outcome )
 			->increment();
-
-		return true;
 	}
 
-	// Query Ollama's /api/generate endpoint with a single prompt.
-	private function queryOllama(
+	private function queryOpenAI(
 		bool $bio,
 		string $category,
 		array $extraData,
@@ -352,75 +349,126 @@ class RequestWikiRemoteAIJob extends Job {
 				htmlspecialchars( trim( str_replace( [ "\r\n", "\r" ], "\n", $reason ) ), ENT_QUOTES )
 			);
 
-			// POST to Ollama /api/generate with stream=false so we get a single JSON response
-			$payload = [
-				'format' => [
-					'type' => 'object',
-					'properties' => [
-						'confidence' => [
-							'type' => 'integer',
-							'minimum' => 0,
-							'maximum' => 100
-						],
-						'outcome' => [
-							'type' => 'string',
-							'enum' => [
-								'approve',
-								'decline',
-								'moredetails',
-								'onhold'
-							],
-						],
-						'public_comment' => [
-							'type' => 'string'
-						],
-					],
-					'required' => [
-						'confidence',
-						'outcome',
-						'public_comment'
-					],
-				],
-				'model' => $this->config->get( ConfigNames::AIConfig )['model'] ?? 'default',
-				'prompt' => $sanitizedReason,
-				'stream' => false,
-			];
+			// Step 1: Create a new thread
+			$threadData = $this->createRequest( '/threads', 'POST', [
+				'messages' => [ [
+					'role' => 'user',
+					'content' => $sanitizedReason,
+				] ]
+			] );
 
-			$response = $this->createRequest( '/api/generate', 'POST', $payload );
+			$threadId = $threadData['id'] ?? null;
+
+			$this->logger->debug( 'Stage 1 for AI decision: Created thread.' );
 
 			$this->logger->debug(
-				'Ollama returned for {id}: {response}',
+				'OpenAI returned for stage 1 of {id}: {threadData}',
 				[
 					'id' => $this->id,
-					'response' => json_encode( $response ),
+					'comment' => json_encode( $threadData ),
 				]
 			);
 
-			if ( !$response ) {
-				$this->setLastError( 'Ollama query failed: empty or non-200 response.' );
-				return null;
+			if ( !$threadId ) {
+				$this->logger->error( 'OpenAI did not return a threadId!' );
+				$this->setLastError( 'Run ' . $this->id . ' failed. No threadId returned.' );
+				return $threadData;
 			}
 
-			// Ollama /api/generate returns: { "response": "<assistant text>", ... }
-			$finalText = $response['response'] ?? '';
+			// Step 2: Run the message
+			$runData = $this->createRequest( '/threads/' . $threadId . '/runs', 'POST', [
+				'assistant_id' => $this->config->get( ConfigNames::OpenAIConfig )['assistantid'] ?? '',
+			] );
 
-			// Your model is expected to return a JSON object as text; parse it
-			$decoded = json_decode( $finalText, true );
-			if ( is_array( $decoded ) ) {
-				return $decoded;
+			$runId = $runData['id'] ?? null;
+
+			$this->logger->debug(
+				'Stage 2 for AI decision of {id}: Message ran.',
+				[ 'id' => $this->id ]
+			);
+
+			$this->logger->debug(
+				'OpenAI returned the following data for stage 2 of {id}: {runData}',
+				[
+					'id' => $this->id,
+					'runData' => json_encode( $runData ),
+				]
+			);
+
+			if ( !$runId ) {
+				$this->logger->error( 'OpenAI did not return a runId!' );
+				$this->setLastError( 'Run ' . $this->id . ' failed. No runId returned.' );
+				return $runData;
 			}
 
-			// If the model did not return valid JSON, surface an error wrapper so your existing handling logs it
-			return [
-				'error' => 'Model did not return valid JSON',
-				'raw' => $finalText,
-				'outcome' => 'unknown',
-				'public_comment' => 'AI response was not valid JSON. A human review is required.',
-				'confidence' => 0,
-			];
+			// Step 3: Poll the status of the run
+			$status = 'running';
+			$this->logger->debug( 'Stage 3 for AI decision: Polling status...' );
+
+			while ( $status === 'running' ) {
+				sleep( 5 );
+				$this->logger->debug( 'Sleeping for 5 seconds...' );
+
+				$statusData = $this->createRequest( '/threads/' . $threadId . '/runs/' . $runId, 'GET', [] );
+				$status = $statusData['status'] ?? 'failed';
+
+				$this->logger->debug(
+					'Stage 2 for AI decision of {id}: Retrieved run status for {runId}',
+					[
+						'id' => $this->id,
+						'runId' => $runId,
+					]
+				);
+
+				$this->logger->debug(
+					'OpenAI returned the following data for stage 3 of {id}: {statusData}',
+					[
+						'id' => $this->id,
+						'statusData' => json_encode( $statusData ),
+					]
+				);
+
+				if ( $status === 'in_progress' ) {
+					$status = 'running';
+				} elseif ( $status === 'failed' ) {
+					$this->logger->error(
+						'Run {runId} failed for {id}! OpenAI returned {statusData}',
+						[
+							'id' => $this->id,
+							'runId' => $runId,
+							'statusData' => json_encode( $statusData ),
+						]
+					);
+
+					$this->setLastError( 'Run ' . $runId . ' failed.' );
+					return $statusData;
+				}
+			}
+
+			// Step 4: Query for messages in the thread
+			$messagesData = $this->createRequest( '/threads/' . $threadId . '/messages', 'GET', [] );
+
+			$this->logger->debug(
+				'Stage 4 for AI decision of {id}: Queried for messages in thread {threadId}.',
+				[
+					'id' => $this->id,
+					'threadId' => $threadId,
+				]
+			);
+
+			$this->logger->debug(
+				'OpenAI returned the following data for stage 4 of {id}: {messagesData}',
+				[
+					'id' => $this->id,
+					'messagesData' => json_encode( $messagesData ),
+				]
+			);
+
+			$finalResponseContent = $messagesData['data'][0]['content'][0]['text']['value'] ?? '';
+			return (array)json_decode( $finalResponseContent, true );
 		} catch ( Exception $e ) {
 			$this->logger->error( 'HTTP request failed: ' . $e->getMessage() );
-			$this->setLastError( 'An exception occurred! The following issue was reported: ' . $e->getMessage() );
+			$this->setLastError( 'An exception occured! The following issue was reported: ' . $e->getMessage() );
 			return null;
 		}
 	}
@@ -430,16 +478,18 @@ class RequestWikiRemoteAIJob extends Job {
 		string $method,
 		array $data
 	): ?array {
-		$url = $this->baseApiUrl . $endpoint;
+		$url = 'https://api.openai.com/v1' . $endpoint;
+		$apiKey = $this->config->get( ConfigNames::OpenAIConfig )['apikey'] ?? '';
+		$this->logger->debug( 'Creating HTTP request to OpenAI...' );
 
-		$this->logger->debug( 'Creating HTTP request to Ollama...' );
-
-		// Build request options (no auth headers needed for Ollama by default)
+		// Create a multi-client
 		$requestOptions = [
 			'url' => $url,
 			'method' => $method,
 			'headers' => [
-				'Content-Type' => 'application/json',
+				'Authorization'	=> 'Bearer ' . $apiKey,
+				'Content-Type'	=> 'application/json',
+				'OpenAI-Beta'	=> 'assistants=v2',
 			],
 		];
 
@@ -450,10 +500,10 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$request = $this->httpRequestFactory->createMultiClient(
 			[ 'proxy' => $this->config->get( MainConfigNames::HTTPProxy ) ]
-		)->run( $requestOptions, [ 'reqTimeout' => 30 ] );
+		)->run( $requestOptions, [ 'reqTimeout' => 15 ] );
 
 		$this->logger->debug(
-			'HTTP request for {id} to Ollama executed. Response was: {request}',
+			'HTTP request for {id} to OpenAI executed. Response was: {request}',
 			[
 				'id' => $this->id,
 				'request' => json_encode( $request ),
@@ -476,7 +526,7 @@ class RequestWikiRemoteAIJob extends Job {
 	}
 
 	private function canAutoApprove(): bool {
-		$this->wikiRequestManager->loadFromID( $this->id );
+		$this->wikiRequestManager->loadFromId( $this->id );
 
 		$filter = CreateWikiRegexConstraint::regexFromArray(
 			$this->config->get( ConfigNames::AutoApprovalFilter ), '/(', ')+/',
@@ -485,17 +535,13 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Checking wiki request {id} against the auto approval denylist filter...',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		if ( preg_match( $filter, strtolower( $this->wikiRequestManager->getReason() ) ) ) {
 			$this->logger->debug(
 				'Wiki request {id} matched against the auto approval denylist filter! A manual review is required.',
-				[
-					'id' => $this->id,
-				]
+				[ 'id' => $this->id ]
 			);
 
 			return false;
@@ -503,9 +549,7 @@ class RequestWikiRemoteAIJob extends Job {
 
 		$this->logger->debug(
 			'Wiki request {id} passed the auto approval filter review!',
-			[
-				'id' => $this->id,
-			]
+			[ 'id' => $this->id ]
 		);
 
 		return true;
