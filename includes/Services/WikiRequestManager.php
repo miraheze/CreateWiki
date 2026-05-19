@@ -410,7 +410,7 @@ class WikiRequestManager {
 		return $allowedVisibilities;
 	}
 
-	public function canAbandonRequest( UserIdentity $user ): bool {
+	public function canAbandonRequest( User $user ): bool {
 		if ( $this->isLocked() ) {
 			return false;
 		}
