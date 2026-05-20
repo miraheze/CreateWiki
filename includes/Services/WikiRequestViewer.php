@@ -612,8 +612,6 @@ class WikiRequestViewer {
 		}
 
 		if ( isset( $formData['submit-abandon'] ) ) {
-			// This path should not normally be reachable since the button is only shown
-			// when canAbandonRequest() returns true. Silently bail if it somehow fails.
 			if ( !$this->wikiRequestManager->canAbandonRequest( $user ) ) {
 				return;
 			}
