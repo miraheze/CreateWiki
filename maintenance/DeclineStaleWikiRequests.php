@@ -18,9 +18,9 @@ class DeclineStaleWikiRequests extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
-		$this->addDescription( 'Declines wiki requests stuck in "needs more details" with no response past the given number of days.' );
-		$this->addOption( 'days', 'Number of days without a response before a request is declined.', true, true );
-		$this->addOption( 'dry-run', 'Show which requests would be declined without making changes.', false, false );
+		$this->addDescription( 'Marks wiki requests stuck in "needs more details" with no response past the given number of days as abandoned.' );
+		$this->addOption( 'days', 'Number of days without a response before a request is marked as abandoned.', true, true );
+		$this->addOption( 'dry-run', 'Show which requests would be marked as abandoned without making changes.', false, false );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
@@ -86,20 +86,20 @@ class DeclineStaleWikiRequests extends Maintenance {
 			}
 
 			if ( $this->hasOption( 'dry-run' ) ) {
-				$this->output( "Would decline request #$id (last reviewer comment: $lastReviewerTs)\n" );
+				$this->output( "Would mark request #$id as abandoned (last reviewer comment: $lastReviewerTs)\n" );
 				continue;
 			}
 
 			$systemUser = User::newSystemUser( 'CreateWiki Extension', [ 'steal' => true ] );
 			$this->wikiRequestManager->startQueryBuilder();
-			$this->wikiRequestManager->decline( wfMessage( 'createwiki-decline-stale-reason' )->inContentLanguage()->text(), $systemUser );
+			$this->wikiRequestManager->abandon( wfMessage( 'createwiki-decline-stale-reason' )->inContentLanguage()->text(), $systemUser );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 
-			$this->output( "Declined request #$id\n" );
+			$this->output( "Marked request #$id\n as abandoned" );
 			$declined++;
 		}
 
-		$this->output( "Done. Declined $declined request(s).\n" );
+		$this->output( "Done. Marked $declined request(s) as abandoned.\n" );
 	}
 }
 
