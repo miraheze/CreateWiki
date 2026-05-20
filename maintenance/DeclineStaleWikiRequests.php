@@ -6,8 +6,8 @@ use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\User\User;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
-use Wikimedia\Rdbms\SelectQueryBuilder;
 use stdClass;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 use function strtotime;
 use function wfMessage;
 
@@ -92,7 +92,7 @@ class DeclineStaleWikiRequests extends Maintenance {
 
 			$systemUser = User::newSystemUser( 'CreateWiki Extension', [ 'steal' => true ] );
 			$this->wikiRequestManager->startQueryBuilder();
-			$this->wikiRequestManager->decline(wfMessage( 'createwiki-decline-stale-reason' )->inContentLanguage()->text(), $systemUser );
+			$this->wikiRequestManager->decline( wfMessage( 'createwiki-decline-stale-reason' )->inContentLanguage()->text(), $systemUser );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 
 			$this->output( "Declined request #$id\n" );
