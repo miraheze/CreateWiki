@@ -229,6 +229,13 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	}
 
 	/**
+	 * @covers ::getRestriction
+	 */
+	public function testGetRestriction(): void {
+		$this->assertSame( 'requestwiki', $this->specialRequestWiki->getRestriction() );
+	}
+
+	/**
 	 * @covers ::doesWrites
 	 */
 	public function testDoesWrites(): void {
