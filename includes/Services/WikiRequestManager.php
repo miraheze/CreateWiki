@@ -595,6 +595,14 @@ class WikiRequestManager {
 
 		$this->setStatus( 'abandoned' );
 
+		$this->addComment(
+			comment: $comment,
+			user: $user,
+			log: false,
+			type: 'abandoned',
+			notifyUsers: [ $this->getRequester() ]
+		);
+
 		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
 		if ( $notifyUsers ) {
 			$this->sendNotification(
