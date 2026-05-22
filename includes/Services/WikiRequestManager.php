@@ -962,6 +962,7 @@ class WikiRequestManager {
 			->setLabel( 'status', $status )
 			->increment();
 
+		$this->startQueryBuilder();
 		$this->trackChange( 'status', $this->getStatus(), $status );
 		$this->getQueryBuilder()->set( [ 'cw_status' => $status ] );
 	}
