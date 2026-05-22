@@ -19,8 +19,10 @@ class DeclineStaleWikiRequests extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->addDescription( 'Marks stale wiki requests as abandoned.' );
-		$this->addOption( 'days', 'Number of days without a response before a request is marked as abandoned.', true, true );
-		$this->addOption( 'dry-run', 'Show which requests would be marked as abandoned without making changes.', false, false );
+		$this->addOption( 'days', 'Number of days without a response before a request is marked as abandoned.',
+						 true, true );
+		$this->addOption( 'dry-run', 'Show which requests would be marked as abandoned without making changes.',
+						 false, false );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
