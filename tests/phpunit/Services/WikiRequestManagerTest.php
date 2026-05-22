@@ -162,6 +162,20 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::abandon
+	 */
+	public function testAbandon(): void {
+		$manager = $this->getWikiRequestManager( id: 1 );
+		$this->assertSame( 'inreview', $manager->getStatus() );
+
+		$manager->abandon(
+			user: $this->getTestUser()->getUser()
+		);
+
+		$this->assertSame( 'abandoned', $manager->getStatus() );
+	}
+
+	/**
 	 * @covers ::getId
 	 */
 	public function testGetId(): void {
