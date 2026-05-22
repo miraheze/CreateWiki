@@ -588,7 +588,7 @@ class WikiRequestManager {
 		$this->log( $user, 'requestmoredetails' );
 	}
 
-	public function abandon( UserIdentity $user ): void {
+	public function abandon( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'abandoned' ) {
 			return;
 		}
