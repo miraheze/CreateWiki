@@ -273,6 +273,17 @@ class WikiRequestViewer {
 				'disabled' => $this->wikiRequestManager->isLocked(),
 				'section' => 'editing',
 			];
+
+			// Only show the abandon button when the request can actually be abandoned.
+			// Showing a disabled button is confusing; omit it entirely when unavailable.
+			if ( $this->wikiRequestManager->canAbandonRequest( $user ) ) {
+				$formDescriptor['submit-abandon'] = [
+					'type' => 'submit',
+					'buttonlabel-message' => 'requestwiki-label-abandon-request',
+					'flags' => [ 'destructive' ],
+					'section' => 'editing',
+				];
+			}
 		}
 
 		$canHandleRequest = $this->permissionManager->userHasRight( $user, 'createwiki' ) && !$user->getBlock();
@@ -597,6 +608,18 @@ class WikiRequestViewer {
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( $this->getResponseMessageBox() );
+			return;
+		}
+
+		if ( isset( $formData['submit-abandon'] ) ) {
+			if ( !$this->wikiRequestManager->canAbandonRequest( $user ) ) {
+				return;
+			}
+
+			$this->wikiRequestManager->startQueryBuilder();
+			$this->wikiRequestManager->abandon( $user );
+			$this->wikiRequestManager->tryExecuteQueryBuilder();
+			$out->addHTML( Html::successBox( $this->context->msg( 'requestwiki-abandon-success' )->escaped() ) );
 			return;
 		}
 
