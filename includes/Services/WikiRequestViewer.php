@@ -617,7 +617,7 @@ class WikiRequestViewer {
 			}
 
 			$this->wikiRequestManager->startQueryBuilder();
-			$this->wikiRequestManager->abandon( $user );
+			$this->wikiRequestManager->abandon( $comment, $user );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
 			$out->addHTML( Html::successBox( $this->context->msg( 'requestwiki-abandon-success' )->escaped() ) );
 			return;
