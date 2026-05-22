@@ -91,8 +91,8 @@ class DeclineStaleWikiRequests extends Maintenance {
 			}
 
 			$systemUser = User::newSystemUser( 'CreateWiki Extension', [ 'steal' => true ] );
-			$message = wfMessage('createwiki-decline-stale-reason')->inContentLanguage()->text();
-			
+			$message = wfMessage( 'createwiki-decline-stale-reason' )->inContentLanguage()->text();
+
 			$this->wikiRequestManager->startQueryBuilder();
 			$this->wikiRequestManager->abandon( $message, $systemUser );
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
