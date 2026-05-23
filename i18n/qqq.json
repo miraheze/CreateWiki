@@ -25,6 +25,7 @@
 	"createwiki-comment-success": "Success message displayed when a comment is added to a wiki request.",
 	"createwiki-defaultmainpage": "Default Main Page for all wikis created.",
 	"createwiki-defaultmainpage-summary": "Edit summary used when creating the default Main Page for a new wiki.",
+	"createwiki-decline-stale-reason": "Decline reason used by the maintenance script when automatically declining stale wiki requests that have received no response.",
 	"createwiki-desc": "{{desc|name=CreateWiki|url=https://github.com/miraheze/CreateWiki}}",
 	"createwiki-duplicate-comment": "Message displayed when the user attempts to resubmit the same comment as the their previous request.",
 	"createwiki-email-body": "Email body (if wiki requester has a registered email).",

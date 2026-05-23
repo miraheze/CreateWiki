@@ -588,12 +588,20 @@ class WikiRequestManager {
 		$this->log( $user, 'requestmoredetails' );
 	}
 
-	public function abandon( UserIdentity $user ): void {
+	public function abandon( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'abandoned' ) {
 			return;
 		}
 
 		$this->setStatus( 'abandoned' );
+
+		$this->addComment(
+			comment: $comment,
+			user: $user,
+			log: false,
+			type: 'abandoned',
+			notifyUsers: [ $this->getRequester() ]
+		);
 
 		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
 		if ( $notifyUsers ) {
