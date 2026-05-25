@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Saederup92",
+			"Steenth",
 			"Zakawer2"
 		]
 	},
@@ -72,7 +73,7 @@
 	"farmersuppression-log-header": "Dette er en privat log som sporer brugen af wiki-anmodningstilbageholdelsesfunktionen.",
 	"farmersuppression-log-name": "Log som viser tilbageholdte wiki-anmodninger",
 	"ipb-action-requestwiki": "Anmodning om wikier",
-	"log-action-filter-farmer": "Handlingtype:",
+	"log-action-filter-farmer": "Handlingstype:",
 	"log-action-filter-farmer-comment": "Ny kommentar på wiki-anmodning",
 	"log-action-filter-farmer-create-failure": "Der opstod et problem under oprettelse af wikien",
 	"log-action-filter-farmer-createwiki": "Wiki oprettet",
