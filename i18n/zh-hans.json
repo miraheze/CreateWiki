@@ -96,7 +96,7 @@
 	"echo-pref-tooltip-wiki-request-declined": "当我的wiki申请被拒绝时通知我。",
 	"echo-pref-tooltip-wiki-request-moredetails": "当我的wiki申请需要更详细的说明时通知我。",
 	"farmer-log-header": "这是对wiki农场的改变的日志。",
-	"farmer-log-name": "Wiki农场日志",
+	"farmer-log-name": "wiki农场日志",
 	"farmersuppression-log-header": "这是一个私人日志，用于跟踪wiki申请监督功能的使用情况。",
 	"farmersuppression-log-name": "不公开wiki申请日志",
 	"ipb-action-requestwiki": "申请wiki",
