@@ -165,7 +165,7 @@
 	"requestwikiqueue-request-label-requester": "Aanvrager",
 	"requestwikiqueue-request-label-sitename": "Sitenaam",
 	"requestwikiqueue-request-label-status": "Status",
-	"requestwikiqueue-request-label-url": "URL",
+	"requestwikiqueue-request-label-url": "Url",
 	"requestwikiqueue-request-label-visibility-all": "Openbaar zichtbaar",
 	"requestwikiqueue-request-label-visibility-delete": "Gebruikers met het recht ‘createwiki-deleterequest’ kunnen dit bekijken",
 	"requestwikiqueue-request-label-visibility-suppress": "Gebruikers met het recht ‘createwiki-suppressrequest’ kunnen dit bekijken",
