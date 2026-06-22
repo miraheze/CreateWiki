@@ -29,7 +29,7 @@ class ManageWikiCoreModule extends RemoteWiki implements ICoreModule {
 	public function getDatabaseClustersInactive(): array {
 		return $this->options->get( ConfigNames::DatabaseClustersInactive );
 	}
-	
+
 	public function getInactiveExemptExpiryOptions(): array {
 		return $this->options->get( ConfigNames::InactiveExemptExpiryOptions );
 	}

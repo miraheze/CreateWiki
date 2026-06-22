@@ -38,11 +38,11 @@ class ConfigNames {
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
-	
+
 	public const InactiveExemptExpiryOptions = 'CreateWikiInactiveExemptExpiryOptions';
 
 	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
-	
+
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
 	public const OpenAIConfig = 'CreateWikiOpenAIConfig';
