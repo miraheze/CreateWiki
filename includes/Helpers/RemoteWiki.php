@@ -223,7 +223,8 @@ class RemoteWiki {
 		return $this->inactiveExemptReason;
 	}
 
-	if ( $expiry === '' ) {
+	public function setInactiveExemptExpiry( string $expiry ): void {
+		if ( $expiry === '' ) {
 			return;
 		}
 		if ( $expiry === 'indefinite' ) {
