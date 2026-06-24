@@ -226,12 +226,13 @@ class RemoteWikiTest extends MediaWikiIntegrationTestCase {
 		$remoteWiki->setInactiveExemptExpiry( '1 year' );
 		$remoteWiki->commit();
 
-		$this->assertSame( '1 year', $remoteWiki->getInactiveExemptExpiry() );
+		$this->assertNotNull( $remoteWiki->getInactiveExemptExpiry() );
+		$this->assertNotSame( '1 year', $remoteWiki->getInactiveExemptExpiry() );
 
 		$remoteWiki->setInactiveExemptExpiry( 'indefinite' );
 		$remoteWiki->commit();
 
-		$this->assertNull( $remoteWiki->getInactiveExemptExpiry() );
+		$this->assertSame( 'infinity', $remoteWiki->getInactiveExemptExpiry() );
 	}
 
 	/**
