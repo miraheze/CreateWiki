@@ -19,6 +19,7 @@ use function array_merge;
 use function implode;
 use function json_decode;
 use function json_encode;
+use function strtotime;
 
 class RemoteWiki {
 
@@ -222,8 +223,19 @@ class RemoteWiki {
 		return $this->inactiveExemptReason;
 	}
 
-	public function setInactiveExemptExpiry( string $expiry ): void {
-		$expiry = ( $expiry === '' || $expiry === 'indefinite' ) ? null : $expiry;
+	if ( $expiry === '' ) {
+			return;
+		}
+		if ( $expiry === 'indefinite' ) {
+			$expiry = 'infinity';
+		} else {
+			$unix = strtotime( $expiry );
+			if ( $unix === false ) {
+				return;
+			}
+			$expiry = $this->dbr->timestamp( $unix );
+		}
+
 		if ( $expiry === $this->inactiveExemptExpiry ) {
 			return;
 		}
