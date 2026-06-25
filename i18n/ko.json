@@ -41,7 +41,7 @@
 	"createwiki-error-subdomaintaken": "요청한 하위 도메인은 이미 사용 중입니다. 다른 하위 도메인을 선택하여 다시 시도해 주세요.",
 	"createwiki-help-agreement": "이러한 정책을 준수하지 않을 경우 위키가 닫힐 수 있습니다.",
 	"createwiki-help-bio": "팜의 인원 보호 정책을 반드시 준수하세요.",
-	"createwiki-help-category": "이 위키의 분류는 글로벌 위키 디렉토리와 같은 곳에 반영될 것입니다.",
+	"createwiki-help-category": "이 위키의 분류는 전역 위키 디렉토리와 같은 곳에 반영될 것입니다.",
 	"createwiki-help-private": "관리자와 사용자가 허용한 사람만 해당 내용을 볼 수 있습니다.",
 	"createwiki-help-reason": "요청하는 위키의 주제, 범위 및 목적을 설명하는 충분한 요약을 입력하십시오.",
 	"createwiki-help-sitename": "이것은 위키의 이름이자 위키의 'Project' 이름공간의 이름이 될 것입니다.",
