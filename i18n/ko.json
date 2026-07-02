@@ -95,7 +95,7 @@
 	"log-action-filter-farmer-requestwiki": "위키 요청이 열림",
 	"log-action-filter-farmersuppression": "작업 유형:",
 	"log-action-filter-farmersuppression-delete": "삭제된 위키 요청",
-	"log-action-filter-farmersuppression-public": "보이기 제한을 설정",
+	"log-action-filter-farmersuppression-public": "보이기 제한을 제거",
 	"log-action-filter-farmersuppression-suppress": "숨겨진 위키 요청",
 	"logentry-farmer-comment": "$1님이 $4 위키 요청에 {{GENDER:$2|댓글을 남김}}",
 	"logentry-farmer-create-failure": "$1님이 $4 위키 요청을 생성하는 도중 오류가 {{GENDER:$2|발생함}}",
