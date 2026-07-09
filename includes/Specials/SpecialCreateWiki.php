@@ -6,6 +6,7 @@ use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
@@ -16,6 +17,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
+		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiValidator $validator,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
@@ -92,6 +94,8 @@ class SpecialCreateWiki extends FormSpecialPage {
 			'required' => true,
 			'useeditfont' => true,
 		];
+
+		$this->hookRunner->onCreateWikiFormDescriptorModify( $formDescriptor );
 
 		return $formDescriptor;
 	}

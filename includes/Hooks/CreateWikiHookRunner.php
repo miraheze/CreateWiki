@@ -12,6 +12,7 @@ class CreateWikiHookRunner implements
 	CreateWikiCreationExtraFieldsHook,
 	CreateWikiCreationHook,
 	CreateWikiDeletionHook,
+	CreateWikiFormDescriptorModifyHook,
 	CreateWikiGenerateDatabaseListsHook,
 	CreateWikiReadPersistentModelHook,
 	CreateWikiRemoteWikiCommitHook,
@@ -45,6 +46,15 @@ class CreateWikiHookRunner implements
 		$this->hookContainer->run(
 			'CreateWikiCreationExtraFields',
 			[ &$extraFields ],
+			[ 'abortable' => false ]
+		);
+	}
+
+	/** @inheritDoc */
+	public function onCreateWikiFormDescriptorModify( array &$formDescriptor ): void {
+		$this->hookContainer->run(
+			'CreateWikiFormDescriptorModify',
+			[ &$formDescriptor ],
 			[ 'abortable' => false ]
 		);
 	}
