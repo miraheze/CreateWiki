@@ -321,6 +321,10 @@
 			"description": "Array. An array of categories used for wiki categorization. If this is an empty array, categories will not be used at all.",
 			"value": []
 		},
+		"CreateWikiClosedReasons": {
+			"description": "Array. Possible options for the reason a wiki was closed.",
+			"value": []
+		},
 		"CreateWikiCollation": {
 			"description": "String. Sets the collation to use when creating the wiki database. Example is 'DEFAULT SET utf8mb4 COLLATE utf8mb4_unicode_ci'",
 			"value": ""
