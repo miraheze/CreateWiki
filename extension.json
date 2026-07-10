@@ -321,7 +321,7 @@
 			"description": "Array. An array of categories used for wiki categorization. If this is an empty array, categories will not be used at all.",
 			"value": []
 		},
-		"CreateWikiClosedReason": {
+		"CreateWikiClosedReasons": {
 			"description": "Array. Possible options for the reason a wiki was closed.",
 			"value": []
 		},
