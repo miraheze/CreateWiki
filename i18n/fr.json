@@ -167,6 +167,7 @@
 	"requestwikiqueue": "Liste d’attente des demandes de wikis",
 	"requestwikiqueue-approve": "Approuver",
 	"requestwikiqueue-approved": "Approuvé",
+	"requestwikiqueue-abandoned": "Abandonné",
 	"requestwikiqueue-decline": "Refuser",
 	"requestwikiqueue-declined": "Refusé",
 	"requestwikiqueue-info": "Vous pouvez utiliser ce formulaire pour rechercher des requêtes wiki et les trier par statut.",

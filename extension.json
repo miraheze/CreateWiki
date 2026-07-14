@@ -89,6 +89,7 @@
 		"farmer/comment": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/create-failure": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestapprove": "MediaWiki\\Logging\\LogFormatter",
+		"farmer/requestabandon": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestdecline": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestmoredetails": "MediaWiki\\Logging\\LogFormatter",
 		"farmer/requestonhold": "MediaWiki\\Logging\\LogFormatter",
@@ -124,6 +125,9 @@
 			],
 			"requestapprove": [
 				"requestapprove"
+			],
+			"requestabandon": [
+				"requestabandon"
 			],
 			"requestdecline": [
 				"requestdecline"

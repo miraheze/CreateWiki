@@ -72,6 +72,9 @@ class WikiRequestManager {
 		self::VISIBILITY_SUPPRESS_REQUEST => 'createwiki-suppressrequest',
 	];
 
+	// Statuses from which a requester is allowed to abandon their request.
+	private const CAN_ABANDON_STATUSES = [ 'inreview', 'moredetails', 'onhold' ];
+
 	private IDatabase $dbw;
 	private stdClass|false $row;
 
@@ -407,6 +410,18 @@ class WikiRequestManager {
 		return $allowedVisibilities;
 	}
 
+	public function canAbandonRequest( User $user ): bool {
+		if ( $this->isLocked() ) {
+			return false;
+		}
+
+		if ( $user->getActorId() !== $this->getRequester()->getActorId() ) {
+			return false;
+		}
+
+		return in_array( $this->getStatus(), self::CAN_ABANDON_STATUSES, true );
+	}
+
 	public function approve( string $comment, UserIdentity $user ): void {
 		if ( $this->getStatus() === 'approved' ) {
 			return;
@@ -571,6 +586,33 @@ class WikiRequestManager {
 		}
 
 		$this->log( $user, 'requestmoredetails' );
+	}
+
+	public function abandon( string $comment, UserIdentity $user ): void {
+		if ( $this->getStatus() === 'abandoned' ) {
+			return;
+		}
+
+		$this->setStatus( 'abandoned' );
+
+		$this->addComment(
+			comment: $comment,
+			user: $user,
+			log: false,
+			type: 'abandoned',
+			notifyUsers: [ $this->getRequester() ]
+		);
+
+		$notifyUsers = $this->getFilteredInvolvedUsers( actor: $user );
+		if ( $notifyUsers ) {
+			$this->sendNotification(
+				comment: '',
+				type: 'comment',
+				notifyUsers: $notifyUsers
+			);
+		}
+
+		$this->log( $user, 'requestabandon' );
 	}
 
 	public function log( UserIdentity $user, string $action ): void {
