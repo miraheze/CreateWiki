@@ -19,7 +19,7 @@
 	"action-createwiki-suppressrequest": "{{doc-action|createwiki-suppressrequest}}",
 	"action-requestwiki": "{{doc-action|requestwiki}}",
 	"createwiki": "{{doc-special}}",
-	"createwiki-close-email-body": "Email body sent to the user when their wiki is closed.",
+	"createwiki-close-email-body": "Email body sent to the user when their wiki is closed.\n\nParameters:\n* $1: The database name of the wiki (e.g. metawiki)\n* $2: The URL to the wiki (e.g. meta.example.com)\n* $3: The sitename of the wiki",
 	"createwiki-close-email-sender": "{{optional}}",
 	"createwiki-close-email-subject": "Subject of the email sent when a wiki is closed.",
 	"createwiki-comment-success": "Success message displayed when a comment is added to a wiki request.",
