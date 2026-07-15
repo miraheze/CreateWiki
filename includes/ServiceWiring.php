@@ -34,6 +34,7 @@ return [
 	'CreateWikiDataStore' => static function ( MediaWikiServices $services ): CreateWikiDataStore {
 		return new CreateWikiDataStore(
 			$services->getObjectCacheFactory(),
+			$services->getStatsFactory(),
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
