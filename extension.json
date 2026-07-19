@@ -282,7 +282,11 @@
 			"scripts": "ext.createwiki.oouiform.ooui.js",
 			"dependencies": [
 				"mediawiki.storage",
-				"oojs-ui-widgets"
+				"oojs-ui-widgets",
+				"oojs-ui-windows"
+			],
+			"messages": [
+				"requestwiki-abandon-confirm"
 			]
 		},
 		"ext.createwiki.oouiform.styles": {

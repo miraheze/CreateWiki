@@ -282,6 +282,7 @@ class WikiRequestViewer {
 					'buttonlabel-message' => 'requestwiki-label-abandon-request',
 					'flags' => [ 'destructive' ],
 					'section' => 'editing',
+					'id' => 'createwiki-abandon-submit',
 				];
 			}
 		}
@@ -516,6 +517,11 @@ class WikiRequestViewer {
 				$canCommentReopen = $this->wikiRequestManager->canCommentReopen() &&
 					$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
 
+				// Was this request awaiting more details from the requester?
+				// If so, once it moves back to 'inreview' we let them know
+				// a human reviewer will take another look.
+				$wasAwaitingMoreDetails = $this->wikiRequestManager->getStatus() === 'moredetails';
+
 				// Handle reopening the request if we should
 				if ( $canCommentReopen ) {
 					$this->wikiRequestManager->startQueryBuilder();
@@ -523,6 +529,18 @@ class WikiRequestViewer {
 					$this->wikiRequestManager->tryExecuteQueryBuilder();
 
 					$this->wikiRequestManager->log( $user, 'requestreopen' );
+
+					if ( $wasAwaitingMoreDetails ) {
+						$this->wikiRequestManager->addComment(
+							comment: $this->context->msg( 'requestwiki-moredetails-reopened' )
+								->inContentLanguage()->escaped(),
+							user: User::newSystemUser( 'CreateWiki Extension' ),
+							log: false,
+							type: 'comment',
+							// Use all involved users
+							notifyUsers: []
+						);
+					}
 				}
 
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
@@ -593,6 +611,11 @@ class WikiRequestViewer {
 
 			$canEditReopen = $this->wikiRequestManager->canEditReopen();
 
+			// Was this request awaiting more details from the requester?
+			// If so, once it moves back to 'inreview' we let them know
+			// a human reviewer will take another look.
+			$wasAwaitingMoreDetails = $this->wikiRequestManager->getStatus() === 'moredetails';
+
 			// Log the edit or reopen to request history
 			$this->wikiRequestManager->addRequestHistory(
 				action: $canEditReopen ? 'reopened' : 'edited',
@@ -604,6 +627,18 @@ class WikiRequestViewer {
 			if ( $canEditReopen ) {
 				$this->wikiRequestManager->setStatus( 'inreview' );
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
+
+				if ( $wasAwaitingMoreDetails ) {
+					$this->wikiRequestManager->addComment(
+						comment: $this->context->msg( 'requestwiki-moredetails-reopened' )
+							->inContentLanguage()->escaped(),
+						user: User::newSystemUser( 'CreateWiki Extension' ),
+						log: false,
+						type: 'comment',
+						// Use all involved users
+						notifyUsers: []
+					);
+				}
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
