@@ -497,6 +497,7 @@ class WikiRequestViewer {
 
 		$out = $form->getContext()->getOutput();
 		$session = $form->getRequest()->getSession();
+		$systemUser = User::newSystemUser( 'CreateWiki Extension' );
 
 		if ( isset( $formData['submit-comment'] ) ) {
 			// Don't want to mess with some generic comments across requests.
@@ -532,7 +533,7 @@ class WikiRequestViewer {
 						$this->wikiRequestManager->addComment(
 							comment: $this->context->msg( 'requestwiki-moredetails-reopened' )
 								->inContentLanguage()->escaped(),
-							user: User::newSystemUser( 'CreateWiki Extension' ),
+							user: $systemUser,
 							log: false,
 							type: 'comment',
 							// Use all involved users
@@ -628,7 +629,7 @@ class WikiRequestViewer {
 					$this->wikiRequestManager->addComment(
 						comment: $this->context->msg( 'requestwiki-moredetails-reopened' )
 							->inContentLanguage()->escaped(),
-						user: User::newSystemUser( 'CreateWiki Extension' ),
+						user: $systemUser,
 						log: false,
 						type: 'comment',
 						// Use all involved users
