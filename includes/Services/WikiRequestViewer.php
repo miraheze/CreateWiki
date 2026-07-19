@@ -517,9 +517,7 @@ class WikiRequestViewer {
 				$canCommentReopen = $this->wikiRequestManager->canCommentReopen() &&
 					$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
 
-				// Was this request awaiting more details from the requester?
-				// If so, once it moves back to 'inreview' we let them know
-				// a human reviewer will take another look.
+				// If request is waiting for more details, let the requestor know that it's being reviewed again after they edit
 				$wasAwaitingMoreDetails = $this->wikiRequestManager->getStatus() === 'moredetails';
 
 				// Handle reopening the request if we should
@@ -611,9 +609,7 @@ class WikiRequestViewer {
 
 			$canEditReopen = $this->wikiRequestManager->canEditReopen();
 
-			// Was this request awaiting more details from the requester?
-			// If so, once it moves back to 'inreview' we let them know
-			// a human reviewer will take another look.
+			// If request is waiting for more details, let the requestor know that it's being reviewed again after they edit
 			$wasAwaitingMoreDetails = $this->wikiRequestManager->getStatus() === 'moredetails';
 
 			// Log the edit or reopen to request history
