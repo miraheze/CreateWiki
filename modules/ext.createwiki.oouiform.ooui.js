@@ -116,7 +116,7 @@
 				$widget.get( 0 ) :
 				$widget.find( 'button, input[type="submit"]' ).get( 0 );
 
-			OO.ui.confirm( mw.msg( 'requestwiki-abandon-confirm' ) ).done( ( confirmed ) => {
+			OO.ui.confirm( mw.msg( 'requestwiki-abandon-confirm' ) ).then( ( confirmed ) => {
 				if ( confirmed && nativeButton ) {
 					abandonConfirmed = true;
 					nativeButton.click();
