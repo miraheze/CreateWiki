@@ -100,5 +100,28 @@
 			const value = tabs.getCurrentTabPanelName();
 			mw.storage.session.set( 'createwiki-prevTab', value );
 		} );
+
+		// Popup to ask for confirmation before permanently abandoning a wiki request.
+		let abandonConfirmed = false;
+		$( '#createwiki-abandon-submit' ).on( 'click', function ( e ) {
+			if ( abandonConfirmed ) {
+				// The user already confirmed; let this click through.
+				abandonConfirmed = false;
+				return true;
+			}
+
+			e.preventDefault();
+			const $widget = $( this );
+			const nativeButton = $widget.is( 'button, input[type="submit"]' ) ?
+				$widget.get( 0 ) :
+				$widget.find( 'button, input[type="submit"]' ).get( 0 );
+
+			OO.ui.confirm( mw.msg( 'requestwiki-abandon-confirm' ) ).then( ( confirmed ) => {
+				if ( confirmed && nativeButton ) {
+					abandonConfirmed = true;
+					nativeButton.click();
+				}
+			} );
+		} );
 	} );
 }() );

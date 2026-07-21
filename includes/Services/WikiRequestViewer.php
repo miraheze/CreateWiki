@@ -282,6 +282,7 @@ class WikiRequestViewer {
 					'buttonlabel-message' => 'requestwiki-label-abandon-request',
 					'flags' => [ 'destructive' ],
 					'section' => 'editing',
+					'id' => 'createwiki-abandon-submit',
 				];
 			}
 		}
@@ -496,6 +497,7 @@ class WikiRequestViewer {
 
 		$out = $form->getContext()->getOutput();
 		$session = $form->getRequest()->getSession();
+		$systemUser = User::newSystemUser( 'CreateWiki Extension' );
 
 		if ( isset( $formData['submit-comment'] ) ) {
 			// Don't want to mess with some generic comments across requests.
@@ -516,6 +518,9 @@ class WikiRequestViewer {
 				$canCommentReopen = $this->wikiRequestManager->canCommentReopen() &&
 					$user->getActorId() === $this->wikiRequestManager->getRequester()->getActorId();
 
+				// If status is back 'in review', message to confirm it will be re-reviewed
+				$wasAwaitingMoreDetails = $this->wikiRequestManager->getStatus() === 'moredetails';
+
 				// Handle reopening the request if we should
 				if ( $canCommentReopen ) {
 					$this->wikiRequestManager->startQueryBuilder();
@@ -523,6 +528,18 @@ class WikiRequestViewer {
 					$this->wikiRequestManager->tryExecuteQueryBuilder();
 
 					$this->wikiRequestManager->log( $user, 'requestreopen' );
+
+					if ( $wasAwaitingMoreDetails ) {
+						$this->wikiRequestManager->addComment(
+							comment: $this->context->msg( 'requestwiki-moredetails-reopened' )
+								->inContentLanguage()->escaped(),
+							user: $systemUser,
+							log: false,
+							type: 'comment',
+							// Use all involved users
+							notifyUsers: []
+						);
+					}
 				}
 
 				$out->addHTML( Html::successBox( $this->context->msg( 'createwiki-comment-success' )->escaped() ) );
@@ -593,6 +610,9 @@ class WikiRequestViewer {
 
 			$canEditReopen = $this->wikiRequestManager->canEditReopen();
 
+			// If status is back 'in review', message to confirm it will be re-reviewed
+			$wasAwaitingMoreDetails = $this->wikiRequestManager->getStatus() === 'moredetails';
+
 			// Log the edit or reopen to request history
 			$this->wikiRequestManager->addRequestHistory(
 				action: $canEditReopen ? 'reopened' : 'edited',
@@ -604,6 +624,18 @@ class WikiRequestViewer {
 			if ( $canEditReopen ) {
 				$this->wikiRequestManager->setStatus( 'inreview' );
 				$this->wikiRequestManager->log( $user, 'requestreopen' );
+
+				if ( $wasAwaitingMoreDetails ) {
+					$this->wikiRequestManager->addComment(
+						comment: $this->context->msg( 'requestwiki-moredetails-reopened' )
+							->inContentLanguage()->escaped(),
+						user: $systemUser,
+						log: false,
+						type: 'comment',
+						// Use all involved users
+						notifyUsers: []
+					);
+				}
 			}
 
 			$this->wikiRequestManager->tryExecuteQueryBuilder();
