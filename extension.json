@@ -367,6 +367,10 @@
 			"description": "Boolean. Whether the CreateWiki REST API should be enabled.",
 			"value": true
 		},
+		"CreateWikiInactiveExemptExpiryOptions": {
+			"description": "Array. Possible options for setting an expiry date for a wiki exempt from inactivity.",
+			"value": []
+		},
 		"CreateWikiInactiveExemptReasonOptions": {
 			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
 			"value": []

@@ -19,6 +19,7 @@ use function array_merge;
 use function implode;
 use function json_decode;
 use function json_encode;
+use function strtotime;
 
 class RemoteWiki {
 
@@ -26,6 +27,7 @@ class RemoteWiki {
 		ConfigNames::Categories,
 		ConfigNames::DatabaseClusters,
 		ConfigNames::DatabaseClustersInactive,
+		ConfigNames::InactiveExemptExpiryOptions,
 		ConfigNames::InactiveExemptReasonOptions,
 		ConfigNames::UseClosedWikis,
 		ConfigNames::UseExperimental,
@@ -58,6 +60,7 @@ class RemoteWiki {
 	private bool $experimental = false;
 	private bool $resetDatabaseLists = true;
 	private ?string $inactiveExemptReason = null;
+	private ?string $inactiveExemptExpiry = null;
 
 	private ?string $deletedTimestamp;
 	private ?string $closedTimestamp = null;
@@ -116,6 +119,7 @@ class RemoteWiki {
 			$this->inactiveTimestamp = $row->wiki_inactive_timestamp;
 			$this->inactiveExempt = (bool)$row->wiki_inactive_exempt;
 			$this->inactiveExemptReason = $row->wiki_inactive_exempt_reason ?? null;
+			$this->inactiveExemptExpiry = $row->wiki_inactive_exempt_expiry ?? null;
 		}
 
 		if ( $this->options->get( ConfigNames::UseExperimental ) ) {
@@ -201,6 +205,9 @@ class RemoteWiki {
 
 		$this->inactiveExemptReason = null;
 		$this->newRows['wiki_inactive_exempt_reason'] = null;
+
+		$this->inactiveExemptExpiry = null;
+		$this->newRows['wiki_inactive_exempt_expiry'] = null;
 	}
 
 	public function setInactiveExemptReason( string $reason ): void {
@@ -214,6 +221,34 @@ class RemoteWiki {
 
 	public function getInactiveExemptReason(): ?string {
 		return $this->inactiveExemptReason;
+	}
+
+	public function setInactiveExemptExpiry( string $expiry ): void {
+		if ( $expiry === '' ) {
+			return;
+		}
+		if ( $expiry === 'indefinite' ) {
+			$expiry = 'infinity';
+		} else {
+			$unix = strtotime( $expiry );
+			if ( $unix === false ) {
+				return;
+			}
+			$expiry = $this->dbr->timestamp( $unix );
+		}
+
+		if ( $expiry === $this->inactiveExemptExpiry ) {
+			return;
+		}
+
+		$this->trackChange( 'inactive-exempt-expiry', $this->inactiveExemptExpiry, $expiry );
+
+		$this->inactiveExemptExpiry = $expiry;
+		$this->newRows['wiki_inactive_exempt_expiry'] = $expiry;
+	}
+
+	public function getInactiveExemptExpiry(): ?string {
+		return $this->inactiveExemptExpiry;
 	}
 
 	public function isPrivate(): bool {
