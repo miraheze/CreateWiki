@@ -8,6 +8,7 @@ use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use function date;
 use function strtotime;
@@ -115,7 +116,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $lastActivityTimestamp < date( 'YmdHis', strtotime( "-$closeTime days" ) ) ) {
 				if ( $canWrite ) {
 					$remoteWiki->markClosed();
-					$this->notifyBureaucrats( $dbname );
+					$this->notifyBureaucrats( $dbname, $remoteWiki );
 					$this->output( "$dbname has been closed. Last activity: $lastActivityTimestamp\n" );
 				} else {
 					$this->output( "$dbname should be closed. Last activity: $lastActivityTimestamp\n" );
@@ -170,7 +171,7 @@ class ManageInactiveWikis extends Maintenance {
 		if ( $isInactive && $inactiveTimestamp < date( 'YmdHis', strtotime( "-$closeDays days" ) ) ) {
 			if ( $canWrite ) {
 				$remoteWiki->markClosed();
-				$this->notifyBureaucrats( $dbname );
+				$this->notifyBureaucrats( $dbname, $remoteWiki );
 				$this->output(
 					"$dbname was marked as inactive on $inactiveTimestamp and is now closed. " .
 					"Last activity: $lastActivityTimestamp.\n"
@@ -219,13 +220,25 @@ class ManageInactiveWikis extends Maintenance {
 		}
 	}
 
-	private function notifyBureaucrats( string $dbname ): void {
+	private function notifyBureaucrats( string $dbname, RemoteWiki $remoteWiki ): void {
+		/** @var CreateWikiValidator $validator */
+		$validator = $this->getServiceContainer()->get( 'CreateWikiValidator' );
+		'@phan-var CreateWikiValidator $validator';
+
+		$url = $remoteWiki->getServerName() ?: $validator->getValidUrl( $dbname );
+
+		$body = wfMessage( 'createwiki-close-email-body', $dbname, $url, $remoteWiki->getSitename() )
+			->inContentLanguage();
+
 		$notificationData = [
 			'type' => 'closure',
 			'subject' => wfMessage( 'createwiki-close-email-subject', $dbname )->inContentLanguage()->text(),
 			'body' => [
-				'html' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->parse(),
-				'text' => wfMessage( 'createwiki-close-email-body' )->inContentLanguage()->text(),
+				'html' => $body->parse(),
+				// Yes, this sends out the wikitext if the user is reading plaintext emails by default.
+				// However, I anticipate that those who are would be able to read (or at least glean the
+				// URLs from) the wikitext, especially if they are the bureaucrat of a wiki.
+				'text' => $body->text(),
 			],
 		];
 
