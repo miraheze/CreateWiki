@@ -33,8 +33,4 @@ class ManageWikiCoreModule extends RemoteWiki implements ICoreModule {
 	public function getInactiveExemptReasonOptions(): array {
 		return $this->options->get( ConfigNames::InactiveExemptReasonOptions );
 	}
-
-	public function getClosedReasonOptions(): array {
-		return $this->options->get( ConfigNames::ClosedReasonOptions );
-	}
 }
