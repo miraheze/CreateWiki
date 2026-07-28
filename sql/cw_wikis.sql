@@ -7,6 +7,7 @@ CREATE TABLE /*_*/cw_wikis (
   wiki_url TEXT NULL,
   wiki_closed TINYINT NOT NULL DEFAULT '0',
   wiki_closed_timestamp BINARY(14) NULL,
+  wiki_closed_reason TEXT NULL,
   wiki_inactive TINYINT NOT NULL DEFAULT '0',
   wiki_inactive_timestamp BINARY(14) NULL,
   wiki_inactive_exempt TINYINT NOT NULL DEFAULT '0',
