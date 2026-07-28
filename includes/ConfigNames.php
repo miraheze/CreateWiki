@@ -21,8 +21,6 @@ class ConfigNames {
 
 	public const Categories = 'CreateWikiCategories';
 
-	public const ClosedReasonOptions = 'CreateWikiClosedReasons';
-
 	public const Collation = 'CreateWikiCollation';
 
 	public const Containers = 'CreateWikiContainers';
