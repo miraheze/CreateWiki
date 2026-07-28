@@ -81,6 +81,15 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		] );
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
+			'virtual-createwiki',
+			'addField',
+			'cw_wikis',
+			'wiki_closed_reason',
+			"$dir/patches/patch-cw_wikis-add-wiki_closed_reason.sql",
+			true,
+		] );
+
+		$updater->addExtensionUpdateOnVirtualDomain( [
 			'virtual-createwiki-central',
 			'modifyField',
 			'cw_requests',
