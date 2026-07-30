@@ -115,7 +115,7 @@ class ManageInactiveWikis extends Maintenance {
 			if ( $lastActivityTimestamp < date( 'YmdHis', strtotime( "-$closeTime days" ) ) ) {
 				if ( $canWrite ) {
 					$remoteWiki->markClosed();
-					$remoteWiki->setClosedReason( 'inactivity' ); 
+					$remoteWiki->setClosedReason( 'inactivity' );
 					$this->notifyBureaucrats( $dbname );
 					$this->output( "$dbname has been closed. Last activity: $lastActivityTimestamp\n" );
 				} else {
