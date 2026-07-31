@@ -57,6 +57,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 
 			if ( $this->hasOption( 'write' ) ) {
 				$remoteWiki->unExempt();
+				$remoteWiki->setInactiveExemptReason( '' );
 				$remoteWiki->commit();
 
 				$this->output( "$wiki had its inactive exemption removed (expired: $expiry).\n" );
