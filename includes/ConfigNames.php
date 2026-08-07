@@ -41,6 +41,8 @@ class ConfigNames {
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
 
+	public const InactiveExemptExpiryOptions = 'CreateWikiInactiveExemptExpiryOptions';
+
 	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
 
 	public const NotificationEmail = 'CreateWikiNotificationEmail';

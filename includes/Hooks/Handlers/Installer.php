@@ -74,6 +74,15 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 
 		$updater->addExtensionUpdateOnVirtualDomain( [
 			'virtual-createwiki',
+			'addField',
+			'cw_wikis',
+			'wiki_inactive_exempt_expiry',
+			"$dir/patches/patch-cw_wikis-add-wiki_inactive_exempt_expiry.sql",
+			true,
+		] );
+
+		$updater->addExtensionUpdateOnVirtualDomain( [
+			'virtual-createwiki',
 			'modifyTable',
 			'cw_wikis',
 			"$dir/patches/patch-cw_wikis-update-smallint-to-tinyint.sql",
