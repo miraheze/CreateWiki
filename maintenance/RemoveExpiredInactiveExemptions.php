@@ -25,7 +25,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 			false, false
 		);
 
-		$this->addDescription( 'Script to remove expired inactive exemptions from wikis.' );
+		$this->addDescription( 'Script to remove expired inactivity exemptions from wikis.' );
 		$this->requireExtension( 'CreateWiki' );
 	}
 
