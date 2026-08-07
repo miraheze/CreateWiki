@@ -21,6 +21,8 @@ class ConfigNames {
 
 	public const Categories = 'CreateWikiCategories';
 
+	public const ClosedReasonOptions = 'CreateWikiClosedReasons';
+
 	public const Collation = 'CreateWikiCollation';
 
 	public const Containers = 'CreateWikiContainers';
@@ -38,6 +40,8 @@ class ConfigNames {
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
+
+	public const InactiveExemptExpiryOptions = 'CreateWikiInactiveExemptExpiryOptions';
 
 	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
 
