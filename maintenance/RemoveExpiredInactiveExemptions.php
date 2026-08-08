@@ -8,7 +8,7 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use function date;
 
 /**
- * Maintenance script for removing expired inactive exemptions from wikis.
+ * Maintenance script for removing expired inactivity exemptions from wikis.
  *
  * @author Reception123
  */
