@@ -38,12 +38,12 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 	public function execute(): void {
 		$this->initServices();
 		$dbr = $this->databaseUtils->getGlobalReplicaDB();
-
+ 
 		$wikis = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
 			->from( 'cw_wikis' )
 			->where( [
-				'wiki_inactive_exempt' => 1,
+				$dbr->expr( 'wiki_inactive_exempt', '=', 1 ),
 				$dbr->expr( 'wiki_inactive_exempt_expiry', '!=', 'infinity' ),
 				$dbr->expr( 'wiki_inactive_exempt_expiry', '!=', null ),
 				$dbr->expr( 'wiki_inactive_exempt_expiry', '<', $dbr->timestamp( date( 'YmdHis' ) ) ),
