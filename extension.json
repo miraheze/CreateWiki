@@ -63,6 +63,14 @@
 			],
 			"needsPage": false
 		},
+		"InactiveExemptExpiryJob": {
+			"class": "Miraheze\\CreateWiki\\Jobs\\InactiveExemptExpiryJob",
+			"services": [
+				"CreateWikiDatabaseUtils",
+				"CreateWikiNotificationsManager"
+			],
+			"needsPage": false
+		},
 		"SetContainersAccessJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\SetContainersAccessJob",
 			"services": [

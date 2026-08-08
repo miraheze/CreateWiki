@@ -22,6 +22,8 @@
 	"createwiki-close-email-body": "Email body sent to the user when their wiki is closed.",
 	"createwiki-close-email-sender": "{{optional}}",
 	"createwiki-close-email-subject": "Subject of the email sent when a wiki is closed.",
+	"createwiki-inactive-exempt-expiry-email-body": "Email body sent to bureaucrats when their wiki's inactive exemption expires.",
+	"createwiki-inactive-exempt-expiry-email-subject": "Subject of the email sent when a wiki's inactive exemption expires. $1 is the wiki database name.",
 	"createwiki-comment-success": "Success message displayed when a comment is added to a wiki request.",
 	"createwiki-defaultmainpage": "Default Main Page for all wikis created.",
 	"createwiki-defaultmainpage-summary": "Edit summary used when creating the default Main Page for a new wiki.",
