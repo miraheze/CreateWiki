@@ -38,7 +38,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 	public function execute(): void {
 		$this->initServices();
 		$dbr = $this->databaseUtils->getGlobalReplicaDB();
- 
+
 		$wikis = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
 			->from( 'cw_wikis' )
