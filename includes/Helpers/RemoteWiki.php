@@ -312,12 +312,12 @@ class RemoteWiki {
 	public function setClosedReason( string $reason ): void {
 		$reason = $reason === '' ? null : $reason;
 		$closedReasonOptions = $this->options->get( ConfigNames::ClosedReasonOptions );
-		
+
 		$this->trackChange( 'closed-reason', $this->closedReason, $reason );
 
 		$this->closedReason = $reason;
 		$this->newRows['wiki_closed_reason'] = $reason;
-		
+
 		$this->logParams['5::reason'] = $reason !== null
 			? ( $closedReasonOptions[$reason] ?? $reason )
 			: '';
