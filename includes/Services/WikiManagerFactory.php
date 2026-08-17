@@ -263,8 +263,11 @@ class WikiManagerFactory {
 
 		$this->hookRunner->onCreateWikiCreation( $this->dbname, $private );
 
+		$creationOptions = [];
+		$this->hookRunner->onCreateWikiCreationOptions( $this->dbname, $extra, $creationOptions );
+
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $requester, $extra ) {
+			function () use ( $requester, $extra, $creationOptions ) {
 				$this->dataStore->resetDatabaseLists( isNewChanges: true );
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
@@ -273,7 +276,10 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+				if (
+					( $creationOptions['createMainPage'] ?? true ) &&
+					!defined( 'MW_PHPUNIT_TEST' )
+				) {
 					Shell::makeScriptCommand(
 						PopulateMainPage::class,
 						[ '--wiki', $this->dbname ]
