@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace Miraheze\CreateWiki\RequestWiki;
 
 use function array_keys;
