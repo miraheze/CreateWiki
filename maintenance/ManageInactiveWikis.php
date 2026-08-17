@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
+use MediaWiki\Config\ConfigException;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
@@ -52,8 +53,16 @@ class ManageInactiveWikis extends Maintenance {
 			$this->fatalError( 'Enable $wgCreateWikiEnableManageInactiveWikis to run this script.' );
 		}
 
+
+		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['no-edits']['inactive'];
+
+		$databaseUtils = $this->getServiceContainer()->get( 'CreateWikiDatabaseUtils' );
+		$remoteWikiFactory = $this->getServiceContainer()->get( 'RemoteWikiFactory' );
+
+
 		$this->initServices();
 		$dbr = $this->databaseUtils->getGlobalReplicaDB();
+
 
 		$wikis = $dbr->newSelectQueryBuilder()
 			->select( 'wiki_dbname' )
@@ -66,6 +75,7 @@ class ManageInactiveWikis extends Maintenance {
 			->fetchFieldValues();
 
 		foreach ( $wikis as $wiki ) {
+
 			$remoteWiki = $this->remoteWikiFactory->newInstance( $wiki );
 			$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
 
@@ -84,17 +94,32 @@ class ManageInactiveWikis extends Maintenance {
 		string $dbname,
 		RemoteWiki $remoteWiki
 	): bool {
-		$inactiveDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['inactive'];
-		$closeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['closed'];
-		$removeDays = (int)$this->getConfig()->get( ConfigNames::StateDays )['removed'];
-		$canWrite = $this->hasOption( 'write' );
-
 		/** @var CheckLastWikiActivity $activity */
 		$activity = $this->createChild( CheckLastWikiActivity::class );
 		'@phan-var CheckLastWikiActivity $activity';
 
 		$activity->setDB( $this->getDB( DB_PRIMARY, [], $dbname ) );
 		$lastActivityTimestamp = $activity->getTimestamp();
+
+		$stateConfig = $this->getConfig()->get( ConfigNames::StateDays );
+
+		if ( !isset( $stateConfig['default'] ) ) {
+			throw new ConfigException(
+				'Default state config not found. Please check your configuration.'
+			);
+		}
+		if ( !isset( $stateConfig['no-edits'] ) ) {
+			$stateConfig['no-edits'] = $stateConfig['default'];
+			$this->output(
+				"No edits state config not found, using default instead.\n"
+			);
+		}
+		$track = $lastActivityTimestamp !== 0 ? 'default' : 'no-edits';
+
+		$inactiveDays = (int)$stateConfig[$track]['inactive'];
+		$closeDays = (int)$stateConfig[$track]['closed'];
+		$removeDays = (int)$stateConfig[$track]['removed'];
+		$canWrite = $this->hasOption( 'write' );
 
 		// If the wiki is still active, mark it as active
 		if ( $lastActivityTimestamp > date( 'YmdHis', strtotime( "-$inactiveDays days" ) ) ) {
