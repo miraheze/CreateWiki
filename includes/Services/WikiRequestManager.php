@@ -162,7 +162,7 @@ class WikiRequestManager {
 			$this->tryAutoCreate( $data['reason'] );
 		} elseif (
 			$this->options->get( ConfigNames::OpenAIConfig )['apikey'] &&
-			$this->options->get( ConfigNames::OpenAIConfig )['assistantid']
+			$this->options->get( ConfigNames::OpenAIConfig )['model']
 		) {
 			$this->evaluateWithOpenAI();
 		}
