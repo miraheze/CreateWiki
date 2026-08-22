@@ -384,10 +384,11 @@
 			"value": "root@localhost"
 		},
 		"CreateWikiOpenAIConfig": {
-			"description": "Array. OpenAI configuration array, including dry run status, Assistant ID and API Key.",
+			"description": "Array. OpenAI configuration array, including dry run status, model, instructions and API Key.",
 			"value": {
 				"dryrun": true,
-				"assistantid": null,
+				"model": null,
+				"instructions": null,
 				"apikey": null
 			}
 		},
