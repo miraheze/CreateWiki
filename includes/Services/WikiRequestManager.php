@@ -6,7 +6,9 @@ use InvalidArgumentException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
 use MediaWiki\JobQueue\JobSpecification;
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Logging\ManualLogEntry;
+use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
@@ -86,6 +88,7 @@ class WikiRequestManager {
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
 		private readonly JobQueueGroupFactory $jobQueueGroupFactory,
+		private readonly LinkRenderer $linkRenderer,
 		private readonly PermissionManager $permissionManager,
 		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
@@ -614,6 +617,8 @@ class WikiRequestManager {
 
 	public function log( UserIdentity $user, string $action ): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->id );
+		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->id}" );
+
 		$logEntry = new ManualLogEntry( 'farmer', $action );
 
 		$logEntry->setPerformer( $user );
@@ -621,7 +626,7 @@ class WikiRequestManager {
 
 		$logEntry->setParameters(
 			[
-				'4::id' => "#{$this->id}",
+				'4::id' => Message::rawParam( $requestLink ),
 			]
 		);
 
@@ -658,6 +663,8 @@ class WikiRequestManager {
 		string $action
 	): void {
 		$requestQueueLink = SpecialPage::getTitleValueFor( 'RequestWikiQueue', (string)$this->id );
+		$requestLink = $this->linkRenderer->makeLink( $requestQueueLink, "#{$this->id}" );
+
 		$logEntry = new ManualLogEntry( 'farmersuppression', $action );
 
 		$logEntry->setPerformer( $user );
@@ -665,7 +672,7 @@ class WikiRequestManager {
 
 		$logEntry->setParameters(
 			[
-				'4::id' => "#{$this->id}",
+				'4::id' => Message::rawParam( $requestLink ),
 			]
 		);
 
