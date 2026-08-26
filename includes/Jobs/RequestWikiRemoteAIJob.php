@@ -174,7 +174,7 @@ class RequestWikiRemoteAIJob extends Job {
 		$commentText = $this->messageLocalizer->msg( 'requestwiki-ai-decision-dryrun' )
 			->params( $outcomeMessage, $comment, $confidence )
 			->inContentLanguage()
-			->parse();
+			->text();
 
 		$this->wikiRequestManager->addComment(
 			comment: $commentText,
