@@ -74,16 +74,16 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 
 	private function notifyBureaucrats( string $dbname ): void {
 		$notificationData = [
-		'type' => 'inactive-exempt-expiry',
-		'subject' => wfMessage( 'createwiki-inactive-exempt-expiry-email-subject', $dbname )
-			->inContentLanguage()->text(),
-		'body' => [
-			'html' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
-				->inContentLanguage()->parse(),
-			'text' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
-				->inContentLanguage()->text(),
-		],
-	];
+			'type' => 'inactive-exempt-expiry',
+				'subject' => wfMessage( 'createwiki-inactive-exempt-expiry-email-subject', $dbname )
+					->inContentLanguage()->text(),
+			'body' => [
+				'html' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
+					->inContentLanguage()->parse(),
+				'text' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
+					->inContentLanguage()->text(),
+			],
+		];
 		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
