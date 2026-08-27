@@ -35,6 +35,7 @@ class CreateWikiNotificationsManager {
 	private const EMAIL_TYPES = [
 		'closure',
 		'deletion',
+		'inactive-exempt-expiry',
 		'wiki-creation',
 		'wiki-rename',
 	];
