@@ -63,7 +63,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 				$remoteWiki->unExempt();
 				$remoteWiki->setInactiveExemptReason( '' );
 				$remoteWiki->commit();
-				
+
 				$this->notifyBureaucrats( $wiki );
 				$this->output( "$wiki had its inactive exemption removed (expired: $expiry).\n" );
 			} else {
@@ -71,17 +71,18 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 			}
 		}
 	}
-		private function notifyBureaucrats( string $dbname ): void {
+
+	private function notifyBureaucrats( string $dbname ): void {
 		$notificationData = [
-			'type' => 'inactive-exempt-expiry',
-			'subject' => wfMessage( 'createwiki-inactive-exempt-expiry-email-subject', $dbname )
+		'type' => 'inactive-exempt-expiry',
+		'subject' => wfMessage( 'createwiki-inactive-exempt-expiry-email-subject', $dbname )
+			->inContentLanguage()->text(),
+		'body' => [
+			'html' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
+				->inContentLanguage()->parse(),
+			'text' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
 				->inContentLanguage()->text(),
-			'body' => [
-				'html' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
-					->inContentLanguage()->parse(),
-				'text' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
-					->inContentLanguage()->text(),
-			],
+		],
 		];
 
 		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
