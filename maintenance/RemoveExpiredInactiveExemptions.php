@@ -83,8 +83,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 			'text' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
 				->inContentLanguage()->text(),
 		],
-		];
-
+	];
 		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
