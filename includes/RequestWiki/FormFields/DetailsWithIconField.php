@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace Miraheze\CreateWiki\RequestWiki\FormFields;
 
 use MediaWiki\HTMLForm\Field\HTMLInfoField;
