@@ -4,8 +4,10 @@ namespace Miraheze\CreateWiki\Maintenance;
 
 use MediaWiki\Maintenance\Maintenance;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use function date;
+use function wfMessage;
 
 /**
  * Maintenance script for removing expired inactivity exemptions from wikis.
@@ -15,6 +17,7 @@ use function date;
 class RemoveExpiredInactiveExemptions extends Maintenance {
 
 	private CreateWikiDatabaseUtils $databaseUtils;
+	private CreateWikiNotificationsManager $notificationsManager;
 	private RemoteWikiFactory $remoteWikiFactory;
 
 	public function __construct() {
@@ -32,6 +35,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 	private function initServices(): void {
 		$services = $this->getServiceContainer();
 		$this->databaseUtils = $services->get( 'CreateWikiDatabaseUtils' );
+		$this->notificationsManager = $services->get( 'CreateWikiNotificationsManager' );
 		$this->remoteWikiFactory = $services->get( 'RemoteWikiFactory' );
 	}
 
@@ -59,12 +63,28 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 				$remoteWiki->unExempt();
 				$remoteWiki->setInactiveExemptReason( '' );
 				$remoteWiki->commit();
-
+				
+				$this->notifyBureaucrats( $wiki );
 				$this->output( "$wiki had its inactive exemption removed (expired: $expiry).\n" );
 			} else {
 				$this->output( "$wiki has an expired inactive exemption (expired: $expiry).\n" );
 			}
 		}
+	}
+		private function notifyBureaucrats( string $dbname ): void {
+		$notificationData = [
+			'type' => 'inactive-exempt-expiry',
+			'subject' => wfMessage( 'createwiki-inactive-exempt-expiry-email-subject', $dbname )
+				->inContentLanguage()->text(),
+			'body' => [
+				'html' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
+					->inContentLanguage()->parse(),
+				'text' => wfMessage( 'createwiki-inactive-exempt-expiry-email-body' )
+					->inContentLanguage()->text(),
+			],
+		];
+
+		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
 
