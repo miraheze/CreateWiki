@@ -84,6 +84,7 @@ class RemoveExpiredInactiveExemptions extends Maintenance {
 					->inContentLanguage()->text(),
 			],
 		];
+
 		$this->notificationsManager->notifyBureaucrats( $notificationData, $dbname );
 	}
 }
