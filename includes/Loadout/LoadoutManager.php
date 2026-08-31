@@ -44,7 +44,9 @@ class LoadoutManager {
 	 * @return string[] The names of all configured loadouts.
 	 */
 	public function getLoadoutNames(): array {
-		return array_keys( $this->options->get( ConfigNames::LoadoutConfigs ) );
+		$loadouts = $this->options->get( ConfigNames::LoadoutConfigs );
+		'@phan-var array<string, array> $loadouts';
+		return array_keys( $loadouts );
 	}
 
 	/**

@@ -54,7 +54,10 @@ class Loadout implements
 		);
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 * @param User $user @phan-unused-param
+	 */
 	public function onRequestWikiQueueFormDescriptorModify(
 		array &$formDescriptor,
 		User $user,

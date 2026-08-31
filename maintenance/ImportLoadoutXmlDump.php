@@ -30,7 +30,9 @@ class ImportLoadoutXmlDump extends Maintenance {
 	}
 
 	public function execute(): void {
-		$this->logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
+		$logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
+		'@phan-var LoggerInterface $logger';
+		$this->logger = $logger;
 		$this->logger->info( 'Loadout import started.' );
 
 		$xmlPath = $this->getOption( 'xml' );
