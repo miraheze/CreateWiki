@@ -6,6 +6,8 @@ use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Loadout\LoadoutFormBuilder;
+use Miraheze\CreateWiki\Loadout\LoadoutManager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
@@ -17,6 +19,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiValidator $validator,
+		private readonly LoadoutFormBuilder $loadoutFormBuilder,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
 		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
@@ -85,6 +88,10 @@ class SpecialCreateWiki extends FormSpecialPage {
 			];
 		}
 
+		if ( $this->loadoutFormBuilder->isEnabled() ) {
+			$formDescriptor[LoadoutManager::FIELD_NAME] = $this->loadoutFormBuilder->getFormDescriptor();
+		}
+
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 10,
@@ -98,6 +105,11 @@ class SpecialCreateWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	public function onSubmit( array $formData ): bool {
+		$extra = [];
+		if ( $formData[LoadoutManager::FIELD_NAME] ?? '' ) {
+			$extra[LoadoutManager::FIELD_NAME] = $formData[LoadoutManager::FIELD_NAME];
+		}
+
 		$wikiManager = $this->wikiManagerFactory->newInstance( $formData['dbname'] );
 		$wikiManager->create(
 			sitename: $formData['sitename'],
@@ -107,7 +119,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			requester: $formData['requester'],
 			actor: $this->getContext()->getUser()->getName(),
 			reason: $formData['reason'],
-			extra: []
+			extra: $extra
 		);
 
 		$this->getOutput()->addHTML(

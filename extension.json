@@ -163,6 +163,7 @@
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"CreateWikiValidator",
+				"CreateWikiLoadoutFormBuilder",
 				"WikiManagerFactory"
 			]
 		},
