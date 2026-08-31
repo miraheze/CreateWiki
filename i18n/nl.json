@@ -17,6 +17,8 @@
 	"createwiki": "Een wiki aanmaken",
 	"createwiki-close-email-body": "Hallo,\n\nMet deze e-mail willen wij u informeren dat uw wiki is gesloten.",
 	"createwiki-close-email-subject": "Uw wiki ($1) is gesloten",
+	"createwiki-inactive-exempt-expiry-email-body": "Hallo,\n\nMet deze e-mail willen we u laten weten dat de vrijstelling van uw wiki van het inactiviteitsbeleid is verlopen. Uw wiki valt nu weer onder het inactiviteitsbeleid.\n\nAls u van mening bent dat uw wiki nog altijd aan de criteria voor een vrijstelling voldoet, kunt u bij de Stewards een verlenging aanvragen.",
+	"createwiki-inactive-exempt-expiry-email-subject": "Uw wiki ($1) is niet langer vrijgesteld van het inactiviteitsbeleid",
 	"createwiki-comment-success": "De opmerking is toegevoegd aan deze aanvraag.",
 	"createwiki-defaultmainpage": "__NOTOC__ Welkom op uw nieuwe wiki! De volgende koppeling kan handig zijn: [https://www.mediawiki.org/wiki/Help:Contents Hulp:Inhoud] op mediawiki.org",
 	"createwiki-defaultmainpage-summary": "Hoofdpagina aanmaken",

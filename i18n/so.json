@@ -12,6 +12,8 @@
 	"createwiki": "Abuur wiki",
 	"createwiki-close-email-body": "Salaan,\n\nIimaylkan wuxuu ku wargelinayaa in wiki-gaaga la xiray.",
 	"createwiki-close-email-subject": "Wiki-gaaga ($1) waa la xiray",
+	"createwiki-inactive-exempt-expiry-email-body": "Salaan,\n\nIimaylkan wuxuu ku ogeysiinayaa in ka dhaafitaanka wikigaaga ee Siyaasadda Hurdada uu dhacay. Wikigaaga hadda wuxuu mar kale hoos imanayaa Siyaasadda Hurdada.\n\nHaddii aad aaminsan tahay in wikigaaga uu weli buuxiyo shuruudaha ka dhaafitaanka, waxaad Wakiilada ka codsan kartaa in ka dhaafitaanka la cusboonaysiiyo.",
+	"createwiki-inactive-exempt-expiry-email-subject": "Wikigaaga ($1) mar dambe kama ka dhaafna Siyaasadda Hurdada",
 	"createwiki-comment-success": "Faallada si guul leh ayaa loogu daray codsigan.",
 	"createwiki-defaultmainpage": "__NOTOC__ Ku soo dhawoow wiki-gaaga cusub! Waxaa laga yaabaa inaad ka hesho xiriirka soo socda mid waxtar leh: [https://www.mediawiki.org/wiki/Help:Contents Help:Contents] ee mediawiki.org",
 	"createwiki-defaultmainpage-summary": "Abuur bogga hore",

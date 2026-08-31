@@ -16,6 +16,8 @@
 	"createwiki": "Crear un wiki",
 	"createwiki-close-email-body": "Ola:\n\nEste correo electrónico é para informar de que o teu wiki foi pechado.",
 	"createwiki-close-email-subject": "Pechouse o teu wiki ($1)",
+	"createwiki-inactive-exempt-expiry-email-body": "Ola:\n\nEste correo electrónico é para informar de que caducou a exención da política de inactividade do teu wiki. O teu wiki volve estar suxeito á política de inactividade.\n\nSe cres que o teu wiki aínda cumpre os criterios para estar exento, podes solicitar unha renovación aos stewards.",
+	"createwiki-inactive-exempt-expiry-email-subject": "O teu wiki ($1) xa non está exento da política de inactividade",
 	"createwiki-comment-success": "O comentario engadiuse correctamente á solicitude.",
 	"createwiki-defaultmainpage": "__NOTOC__ Recibe a benvida ao teu novo wiki. Se cadra pode resultarche útil a seguinte ligazón: [https://www.mediawiki.org/wiki/Help:Contents Axuda:Contidos] en mediawiki.org",
 	"createwiki-defaultmainpage-summary": "Creación da páxina principal",
