@@ -192,6 +192,12 @@
 		"BeforeCreateEchoEvent": {
 			"handler": "Notifications"
 		},
+		"CreateWikiAfterCreationWithExtraData": {
+			"handler": "Loadout"
+		},
+		"CreateWikiCreationExtraFields": {
+			"handler": "Loadout"
+		},
 		"GetAllBlockActions": {
 			"handler": "Main"
 		},
@@ -213,6 +219,12 @@
 		"ParserGetVariableValueSwitch": {
 			"handler": "Main"
 		},
+		"RequestWikiFormDescriptorModify": {
+			"handler": "Loadout"
+		},
+		"RequestWikiQueueFormDescriptorModify": {
+			"handler": "Loadout"
+		},
 		"SetupAfterCache": {
 			"handler": "Main"
 		},
@@ -223,6 +235,13 @@
 	"HookHandlers": {
 		"Installer": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Installer"
+		},
+		"Loadout": {
+			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Loadout",
+			"services": [
+				"CreateWikiLoadoutFormBuilder",
+				"CreateWikiLoadoutManager"
+			]
 		},
 		"Main": {
 			"class": "Miraheze\\CreateWiki\\Hooks\\Handlers\\Main",
@@ -377,6 +396,14 @@
 		},
 		"CreateWikiInactiveExemptReasonOptions": {
 			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
+			"value": []
+		},
+		"CreateWikiLoadoutEnabled": {
+			"description": "Boolean. Whether to offer the loadout selector in the wiki request and creation forms.",
+			"value": false
+		},
+		"CreateWikiLoadoutConfigs": {
+			"description": "Array. Map of loadout name to loadout configuration. Each loadout may set 'extensions' (ManageWiki extensions to enable), 'settings' (ManageWiki settings to set), and 'xml' (path to an XML dump to import).",
 			"value": []
 		},
 		"CreateWikiNotificationEmail": {

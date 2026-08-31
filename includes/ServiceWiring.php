@@ -9,6 +9,8 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Loadout\LoadoutFormBuilder;
+use Miraheze\CreateWiki\Loadout\LoadoutManager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
@@ -18,6 +20,7 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
+use Miraheze\ManageWiki\Helpers\Factories\ModuleFactory;
 use Psr\Log\LoggerInterface;
 
 // PHPUnit does not understand coverage for this file.
@@ -44,6 +47,24 @@ return [
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
+	},
+	'CreateWikiLoadoutFormBuilder' => static function ( MediaWikiServices $services ): LoadoutFormBuilder {
+		return new LoadoutFormBuilder(
+			$services->get( 'CreateWikiLoadoutManager' ),
+			RequestContext::getMain()
+		);
+	},
+	'CreateWikiLoadoutManager' => static function ( MediaWikiServices $services ): LoadoutManager {
+		return new LoadoutManager(
+			$services->getExtensionRegistry(),
+			$services->get( 'CreateWikiLogger' ),
+			// Use a closure so that ManageWiki stays an optional dependency
+			static fn (): ModuleFactory => $services->get( 'ManageWikiModuleFactory' ),
+			new ServiceOptions(
+				LoadoutManager::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
 	},
 	'CreateWikiLogger' => static function (): LoggerInterface {
 		return LoggerFactory::getInstance( 'CreateWiki' );
@@ -99,6 +120,7 @@ return [
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
+			$services->get( 'CreateWikiLoadoutManager' ),
 			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
