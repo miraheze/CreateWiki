@@ -2,10 +2,8 @@
 
 namespace Miraheze\CreateWiki\Loadout;
 
-use Closure;
 use Exception;
 use MediaWiki\Config\ServiceOptions;
-use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Maintenance\ImportLoadoutXmlDump;
@@ -27,10 +25,10 @@ class LoadoutManager {
 	];
 
 	public function __construct(
-		private readonly ExtensionRegistry $extensionRegistry,
 		private readonly LoggerInterface $logger,
-		private readonly Closure $moduleFactoryClosure,
 		private readonly ServiceOptions $options,
+		// ModuleFactory if ManageWiki is installed. null otherwise.
+		private readonly ?ModuleFactory $moduleFactory,
 	) {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
@@ -176,7 +174,7 @@ class LoadoutManager {
 	}
 
 	private function getModuleFactory( string $dbname ): ?ModuleFactory {
-		if ( !$this->extensionRegistry->isLoaded( 'ManageWiki' ) ) {
+		if ( $this->moduleFactory === null ) {
 			$this->logger->error(
 				'Loadout for wiki {dbname} requires ManageWiki, which is not installed.',
 				[ 'dbname' => $dbname ]
@@ -184,8 +182,6 @@ class LoadoutManager {
 			return null;
 		}
 
-		$moduleFactory = ( $this->moduleFactoryClosure )();
-		'@phan-var ModuleFactory $moduleFactory';
-		return $moduleFactory;
+		return $this->moduleFactory;
 	}
 }

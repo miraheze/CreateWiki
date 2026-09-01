@@ -20,7 +20,6 @@ use Miraheze\CreateWiki\Services\RemoteWikiFactory;
 use Miraheze\CreateWiki\Services\WikiManagerFactory;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Miraheze\CreateWiki\Services\WikiRequestViewer;
-use Miraheze\ManageWiki\Helpers\Factories\ModuleFactory;
 use Psr\Log\LoggerInterface;
 
 // PHPUnit does not understand coverage for this file.
@@ -56,14 +55,13 @@ return [
 	},
 	'CreateWikiLoadoutManager' => static function ( MediaWikiServices $services ): LoadoutManager {
 		return new LoadoutManager(
-			$services->getExtensionRegistry(),
 			$services->get( 'CreateWikiLogger' ),
-			// Use a closure so that ManageWiki stays an optional dependency
-			static fn (): ModuleFactory => $services->get( 'ManageWikiModuleFactory' ),
 			new ServiceOptions(
 				LoadoutManager::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
-			)
+			),
+			$services->has( 'ManageWikiModuleFactory' ) ?
+				$services->get( 'ManageWikiModuleFactory' ) : null,
 		);
 	},
 	'CreateWikiLogger' => static function (): LoggerInterface {
