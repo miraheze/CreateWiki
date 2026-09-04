@@ -164,6 +164,7 @@
 				"CreateWikiDatabaseUtils",
 				"CreateWikiValidator",
 				"CreateWikiLoadoutFormBuilder",
+				"CreateWikiLoadoutManager",
 				"WikiManagerFactory"
 			]
 		},

@@ -2,13 +2,11 @@
 
 namespace Miraheze\CreateWiki\Maintenance;
 
-use MediaWiki\Deferred\SiteStatsUpdate;
+use BackupReader;
+use InitSiteStats;
 use MediaWiki\Exception\MWExceptionHandler;
 use MediaWiki\MainConfigNames;
-use MediaWiki\Maintenance\FakeMaintenance;
 use MediaWiki\Maintenance\Maintenance;
-use MediaWiki\Shell\Shell;
-use MediaWiki\SiteStats\SiteStatsInit;
 use Psr\Log\LoggerInterface;
 use RebuildTextIndex;
 use RefreshLinks;
@@ -29,62 +27,89 @@ class ImportLoadoutXmlDump extends Maintenance {
 		$this->requireExtension( 'CreateWiki' );
 	}
 
-	public function execute(): void {
-		$logger = $this->getServiceContainer()->get( 'CreateWikiLogger' );
-		'@phan-var LoggerInterface $logger';
-		$this->logger = $logger;
-		$this->logger->info( 'Loadout import started.' );
+	private function initServices(): void {
+		$services = $this->getServiceContainer();
+		$this->logger = $services->get( 'CreateWikiLogger' );
+	}
 
+	public function execute(): void {
+		$this->initServices();
+
+		$dbname = $this->getConfig()->get( MainConfigNames::DBname );
 		$xmlPath = $this->getOption( 'xml' );
 
 		if ( !file_exists( $xmlPath ) || !is_readable( $xmlPath ) ) {
+			$this->logger->error(
+				'Loadout import for {dbname}: XML dump file {path} not found or not readable.',
+				[
+					'dbname' => $dbname,
+					'path' => $xmlPath,
+				]
+			);
+
 			$this->fatalError( "XML dump file $xmlPath not found or not readable." );
 		}
 
-		$dbw = $this->getPrimaryDB();
+		$this->logger->info(
+			'Loadout import for {dbname} started.',
+			[ 'dbname' => $dbname ]
+		);
 
 		try {
-			$result = Shell::makeScriptCommand(
-				'importDump.php',
-				[
-					'--no-updates',
-					'--no-local-users',
-					'--wiki', $this->getConfig()->get( MainConfigNames::DBname ),
-					$xmlPath,
-				]
-			)->limits( [
-				'memory' => 0,
-				'filesize' => 0,
-				'time' => 0,
-				'walltime' => 0,
-			] )->execute();
+			$importDump = $this->createChild( BackupReader::class );
+			$importDump->setOption( 'no-updates', true );
+			// Author is always maintenance script. This should have no effect.
+			$importDump->setOption( 'username-prefix', 'imported>' );
+			$importDump->setArg( 0, $xmlPath );
+			$importDump->execute();
 
-			if ( $result->getExitCode() !== 0 ) {
-				$this->fatalError( 'Loadout import failed to import the dump file: ' . $result->getStderr() );
+			$this->logger->info(
+				'Loadout import for {dbname} finished importing the XML dump.',
+				[ 'dbname' => $dbname ]
+			);
+
+			if ( !$this->getConfig()->get( MainConfigNames::DisableSearchUpdate ) ) {
+				$rebuildText = $this->createChild( RebuildTextIndex::class );
+				$rebuildText->execute();
+				$this->logger->info(
+					'Loadout import for {dbname} finished rebuildTextIndex.',
+					[ 'dbname' => $dbname ]
+				);
 			}
 
-			$this->logger->info( 'Loadout import finished importing the XML dump.' );
-
-			$siteStatsInit = new SiteStatsInit();
-			$siteStatsInit->refresh();
-
-			SiteStatsUpdate::cacheUpdate( $dbw );
-			$this->logger->info( 'Loadout import finished updateSiteStats.' );
-
-			$maintenance = new FakeMaintenance;
-			$rebuildText = $maintenance->createChild( RebuildTextIndex::class );
-			$rebuildText->execute();
-			$this->logger->info( 'Loadout import finished rebuildTextIndex.' );
-
-			$rebuildLinks = $maintenance->createChild( RefreshLinks::class );
+			$rebuildLinks = $this->createChild( RefreshLinks::class );
 			$rebuildLinks->execute();
-			$this->logger->info( 'Loadout import finished refreshLinks.' );
+			$this->logger->info(
+				'Loadout import for {dbname} finished refreshLinks.',
+				[ 'dbname' => $dbname ]
+			);
+
+			$siteStats = $this->createChild( InitSiteStats::class );
+			$siteStats->setOption( 'update', true );
+			$siteStats->setOption( 'active', true );
+			$siteStats->execute();
+			$this->logger->info(
+				'Loadout import for {dbname} finished initSiteStats.',
+				[ 'dbname' => $dbname ]
+			);
 		} catch ( Throwable $t ) {
 			MWExceptionHandler::rollbackPrimaryChangesAndLog( $t );
+
+			$this->logger->error(
+				'Loadout import for {dbname} failed: {exception}',
+				[
+					'dbname' => $dbname,
+					'exception' => $t->getMessage(),
+				]
+			);
+
 			$this->fatalError( $t->getMessage() );
 		}
 
-		$this->logger->info( 'Loadout import finished.' );
+		$this->logger->info(
+			'Loadout import for {dbname} finished.',
+			[ 'dbname' => $dbname ]
+		);
 	}
 }
 

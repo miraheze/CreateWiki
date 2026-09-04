@@ -20,6 +20,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiValidator $validator,
 		private readonly LoadoutFormBuilder $loadoutFormBuilder,
+		private readonly LoadoutManager $loadoutManager,
 		private readonly WikiManagerFactory $wikiManagerFactory,
 	) {
 		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
@@ -88,7 +89,7 @@ class SpecialCreateWiki extends FormSpecialPage {
 			];
 		}
 
-		if ( $this->loadoutFormBuilder->isEnabled() ) {
+		if ( $this->loadoutManager->isEnabled() ) {
 			$formDescriptor[LoadoutManager::FIELD_NAME] = $this->loadoutFormBuilder->getFormDescriptor();
 		}
 

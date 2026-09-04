@@ -42,7 +42,7 @@ class Loadout implements
 
 	/** @inheritDoc */
 	public function onRequestWikiFormDescriptorModify( array &$formDescriptor ): void {
-		if ( !$this->formBuilder->isEnabled() ) {
+		if ( !$this->loadoutManager->isEnabled() ) {
 			return;
 		}
 
@@ -63,7 +63,7 @@ class Loadout implements
 		User $user,
 		WikiRequestManager $wikiRequestManager
 	): void {
-		if ( !$this->formBuilder->isEnabled() ) {
+		if ( !$this->loadoutManager->isEnabled() ) {
 			return;
 		}
 

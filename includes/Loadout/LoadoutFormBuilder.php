@@ -16,10 +16,6 @@ class LoadoutFormBuilder {
 	) {
 	}
 
-	public function isEnabled(): bool {
-		return $this->loadoutManager->isEnabled();
-	}
-
 	public function getFormDescriptor(): array {
 		$options = $this->buildOptions();
 		return [
