@@ -21,7 +21,6 @@ class LoadoutManager {
 
 	public const array CONSTRUCTOR_OPTIONS = [
 		ConfigNames::LoadoutConfigs,
-		ConfigNames::LoadoutEnabled,
 	];
 
 	public function __construct(
@@ -34,8 +33,7 @@ class LoadoutManager {
 	}
 
 	public function isEnabled(): bool {
-		return $this->options->get( ConfigNames::LoadoutEnabled ) &&
-			count( $this->options->get( ConfigNames::LoadoutConfigs ) ) > 0;
+		return count( $this->options->get( ConfigNames::LoadoutConfigs ) ) > 0;
 	}
 
 	/**
@@ -92,13 +90,12 @@ class LoadoutManager {
 	}
 
 	private function addExtensions( string $dbname, array $extensions ): void {
-		$moduleFactory = $this->getModuleFactory( $dbname );
-		if ( $moduleFactory === null ) {
+		if ( $this->moduleFactory === null ) {
 			return;
 		}
 
 		try {
-			$mwExtensions = $moduleFactory->extensions( $dbname );
+			$mwExtensions = $this->moduleFactory->extensions( $dbname );
 			$mwExtensions->add( $extensions );
 			$mwExtensions->commit();
 		} catch ( Exception $e ) {
@@ -114,13 +111,12 @@ class LoadoutManager {
 	}
 
 	private function modifySettings( string $dbname, array $settings ): void {
-		$moduleFactory = $this->getModuleFactory( $dbname );
-		if ( $moduleFactory === null ) {
+		if ( $this->moduleFactory === null ) {
 			return;
 		}
 
 		try {
-			$mwSettings = $moduleFactory->settings( $dbname );
+			$mwSettings = $this->moduleFactory->settings( $dbname );
 			$mwSettings->modify( $settings, default: null );
 			$mwSettings->commit();
 		} catch ( Exception $e ) {
@@ -171,17 +167,5 @@ class LoadoutManager {
 				]
 			);
 		}
-	}
-
-	private function getModuleFactory( string $dbname ): ?ModuleFactory {
-		if ( $this->moduleFactory === null ) {
-			$this->logger->error(
-				'Loadout for wiki {dbname} requires ManageWiki, which is not installed.',
-				[ 'dbname' => $dbname ]
-			);
-			return null;
-		}
-
-		return $this->moduleFactory;
 	}
 }

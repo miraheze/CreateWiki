@@ -400,12 +400,8 @@
 			"description": "Array. Possible options for marking a wiki as exempt from inactivity.",
 			"value": []
 		},
-		"CreateWikiLoadoutEnabled": {
-			"description": "Boolean. Whether to offer the loadout selector in the wiki request and creation forms.",
-			"value": false
-		},
 		"CreateWikiLoadoutConfigs": {
-			"description": "Array. Map of loadout name to loadout configuration. Each loadout may set 'extensions' (ManageWiki extensions to enable), 'settings' (ManageWiki settings to set), and 'xml' (path to an XML dump to import).",
+			"description": "Array. Map of loadout name to loadout configuration. Each loadout may set 'extensions' (ManageWiki extensions to enable), 'settings' (ManageWiki settings to set), and 'xml' (path to an XML dump to import). An empty array disables the loadout selector in the wiki request and creation forms.",
 			"value": []
 		},
 		"CreateWikiNotificationEmail": {

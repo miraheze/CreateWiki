@@ -2,10 +2,8 @@
 
 namespace Miraheze\CreateWiki\Loadout;
 
-use MediaWiki\Html\Html;
 use MediaWiki\Message\Message;
 use MessageLocalizer;
-use function implode;
 use function in_array;
 
 class LoadoutFormBuilder {
@@ -17,12 +15,12 @@ class LoadoutFormBuilder {
 	}
 
 	public function getFormDescriptor(): array {
-		$options = $this->buildOptions();
 		return [
 			'type' => 'select',
+			'cssclass' => 'ext-createwiki-infuse',
 			'label-message' => 'createwiki-label-loadout',
-			'help-raw' => $this->buildHelpText( $options ),
-			'options' => $options,
+			'help-messages' => $this->buildHelpMessages(),
+			'options-messages' => $this->buildOptionsMessages(),
 			'validation-callback' => [ $this, 'validateLoadout' ],
 			'default' => '',
 		];
@@ -38,36 +36,34 @@ class LoadoutFormBuilder {
 	}
 
 	/**
-	 * @return array<string,string> Label => loadout name, as HTMLForm expects.
+	 * @return array<string,string> Label message key => loadout name, as HTMLForm expects.
 	 */
-	private function buildOptions(): array {
-		$noneLabel = $this->messageLocalizer->msg( 'createwiki-label-loadout-none' )->text();
-		$options = [ $noneLabel => '' ];
-
+	private function buildOptionsMessages(): array {
+		$options = [ 'createwiki-label-loadout-none' => '' ];
 		foreach ( $this->loadoutManager->getLoadoutNames() as $loadout ) {
-			$label = $this->messageLocalizer->msg( "createwiki-label-loadout-$loadout" )->text();
-			$options[$label] = $loadout;
+			$options["createwiki-label-loadout-$loadout"] = $loadout;
 		}
 
 		return $options;
 	}
 
 	/**
-	 * @param array<string,string> $options
+	 * The intro message is followed by one list item per loadout. Each item is built
+	 * from a shared wrapper message taking the loadout's label as $1 and its
+	 * description as $2, so that neither of those needs to carry any formatting.
+	 *
+	 * @return array<int,string|array> Help message specifiers, as HTMLForm expects.
 	 */
-	private function buildHelpText( array $options ): string {
-		$items = '';
-		foreach ( $options as $label => $loadout ) {
-			$messageKey = 'createwiki-help-loadout-' . ( $loadout ?: 'none' );
-			// Format: "label: description"
-			$items .= Html::rawElement( 'li', [], implode( '', [
-				Html::element( 'strong', [], $label ),
-				$this->messageLocalizer->msg( 'colon-separator' )->escaped(),
-				$this->messageLocalizer->msg( $messageKey )->parse(),
-			] ) );
+	private function buildHelpMessages(): array {
+		$messages = [ 'createwiki-help-loadout' ];
+		foreach ( [ 'none', ...$this->loadoutManager->getLoadoutNames() ] as $loadout ) {
+			$messages[] = [
+				'createwiki-help-loadout-item',
+				$this->messageLocalizer->msg( "createwiki-label-loadout-$loadout" ),
+				$this->messageLocalizer->msg( "createwiki-help-loadout-$loadout" ),
+			];
 		}
 
-		return $this->messageLocalizer->msg( 'createwiki-help-loadout' )->parse() .
-			Html::rawElement( 'ul', [ 'class' => 'createwiki-help-loadout-list' ], $items );
+		return $messages;
 	}
 }

@@ -41,6 +41,7 @@
 	"createwiki-help-bio": "Make sure to follow this farm's policy on covering people.",
 	"createwiki-help-category": "The categorization of this wiki will reflect in places such as the global wiki directory.",
 	"createwiki-help-loadout": "Select your preferred loadout. A loadout determines the content, templates, extensions and settings your wiki starts with.",
+	"createwiki-help-loadout-item": "* '''$1''': $2",
 	"createwiki-help-loadout-none": "The wiki is created with only a main page. Ideal if you want to start from scratch.",
 	"createwiki-help-private": "Only administrators and those you allow will be able to view its contents.",
 	"createwiki-help-reason": "Please enter a sufficient summary describing the topic, scope, and purpose of the wiki you're requesting.",
