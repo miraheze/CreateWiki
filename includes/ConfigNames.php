@@ -45,6 +45,8 @@ class ConfigNames {
 
 	public const InactiveExemptReasonOptions = 'CreateWikiInactiveExemptReasonOptions';
 
+	public const LoadoutConfigs = 'CreateWikiLoadoutConfigs';
+
 	public const NotificationEmail = 'CreateWikiNotificationEmail';
 
 	public const OpenAIConfig = 'CreateWikiOpenAIConfig';
