@@ -28,7 +28,7 @@ class LoadoutFormBuilder {
 		];
 	}
 
-	public function validateLoadout( ?string $loadout ): bool|Message {
+	public function validateLoadout( ?string $loadout ): Message|true {
 		// Empty loadout is also fine
 		if ( $loadout && !in_array( $loadout, $this->loadoutManager->getLoadoutNames(), true ) ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-invalid-loadout' );
