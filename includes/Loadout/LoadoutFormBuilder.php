@@ -58,7 +58,7 @@ class LoadoutFormBuilder {
 	private function buildHelpText( array $options ): string {
 		$items = '';
 		foreach ( $options as $label => $loadout ) {
-			$messageKey = 'createwiki-help-loadout-' . ( $loadout === '' ? 'none' : $loadout );
+			$messageKey = 'createwiki-help-loadout-' . ( $loadout ?: 'none' );
 			// Format: "label: description"
 			$items .= Html::rawElement( 'li', [], implode( '', [
 				Html::element( 'strong', [], $label ),
