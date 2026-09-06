@@ -37,7 +37,7 @@ class CacheUpdate {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	public function queueJob( string $name, ?string $data = null ): void {
+	public function queueJob( string $name, ?string $data ): void {
 		if ( !$this->isExecutionAllowed() ) {
 			return;
 		}
@@ -52,7 +52,7 @@ class CacheUpdate {
 		);
 	}
 
-	public function executeNow( string $name, ?string $data = null ): bool {
+	public function executeNow( string $name, ?string $data ): bool {
 		if ( !$this->isExecutionAllowed() ) {
 			return true;
 		}
