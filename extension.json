@@ -401,7 +401,7 @@
 			"value": []
 		},
 		"CreateWikiLoadoutConfigs": {
-			"description": "Array. Map of loadout name to loadout configuration. Each loadout may set 'extensions' (ManageWiki extensions to enable), 'settings' (ManageWiki settings to set), and 'xml' (path to an XML dump to import). An empty array disables the loadout selector in the wiki request and creation forms.",
+			"description": "Array. Map of loadout name to loadout configuration. Each loadout may set 'extensions' (ManageWiki extensions to enable), 'settings' (ManageWiki settings to set), and 'xml' (an XML dump to import, either a local path or an mwstore:// storage path, see the StoreLoadoutXmlDump maintenance script). An empty array disables the loadout selector in the wiki request and creation forms.",
 			"value": []
 		},
 		"CreateWikiNotificationEmail": {

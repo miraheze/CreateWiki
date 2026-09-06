@@ -11,6 +11,8 @@ use Psr\Log\LoggerInterface;
 use RebuildTextIndex;
 use RefreshLinks;
 use Throwable;
+use Wikimedia\FileBackend\FileBackend;
+use Wikimedia\FileBackend\FSFile\FSFile;
 use function file_exists;
 use function is_readable;
 
@@ -22,7 +24,10 @@ class ImportLoadoutXmlDump extends Maintenance {
 		parent::__construct();
 
 		$this->addDescription( 'Imports a CreateWiki loadout XML dump into this wiki.' );
-		$this->addOption( 'xml', 'Path to the XML dump to import.', true, true );
+		$this->addOption( 'xml',
+			'The XML dump to import, either a local path or an mwstore:// storage path.',
+			true, true
+		);
 
 		$this->requireExtension( 'CreateWiki' );
 	}
@@ -38,17 +43,7 @@ class ImportLoadoutXmlDump extends Maintenance {
 		$dbname = $this->getConfig()->get( MainConfigNames::DBname );
 		$xmlPath = $this->getOption( 'xml' );
 
-		if ( !file_exists( $xmlPath ) || !is_readable( $xmlPath ) ) {
-			$this->logger->error(
-				'Loadout import for {dbname}: XML dump file {path} not found or not readable.',
-				[
-					'dbname' => $dbname,
-					'path' => $xmlPath,
-				]
-			);
-
-			$this->fatalError( "XML dump file $xmlPath not found or not readable." );
-		}
+		$localFile = $this->getLocalFile( $dbname, $xmlPath );
 
 		$this->logger->info(
 			'Loadout import for {dbname} started.',
@@ -60,7 +55,7 @@ class ImportLoadoutXmlDump extends Maintenance {
 			$importDump->setOption( 'no-updates', true );
 			// Author is always maintenance script. This should have no effect.
 			$importDump->setOption( 'username-prefix', 'imported>' );
-			$importDump->setArg( 0, $xmlPath );
+			$importDump->setArg( 0, $localFile?->getPath() ?? $xmlPath );
 			$importDump->execute();
 
 			$this->logger->info(
@@ -110,6 +105,49 @@ class ImportLoadoutXmlDump extends Maintenance {
 			'Loadout import for {dbname} finished.',
 			[ 'dbname' => $dbname ]
 		);
+	}
+
+	/**
+	 * Resolve the configured dump location to something the importer can read.
+	 *
+	 * Storage paths (mwstore://) are fetched from their file backend into a
+	 * temporary local file. Anything else is used as a local path as-is.
+	 *
+	 * @return FSFile|null The temporary file for a storage path, null for a local path.
+	 */
+	private function getLocalFile( string $dbname, string $xmlPath ): ?FSFile {
+		if ( !FileBackend::isStoragePath( $xmlPath ) ) {
+			if ( !file_exists( $xmlPath ) || !is_readable( $xmlPath ) ) {
+				$this->fatalErrorWithLog( $dbname, $xmlPath, 'not found or not readable' );
+			}
+
+			return null;
+		}
+
+		$backend = $this->getServiceContainer()->getFileBackendGroup()->backendFromPath( $xmlPath );
+		if ( $backend === null ) {
+			$this->fatalErrorWithLog( $dbname, $xmlPath, 'has no known file backend' );
+		}
+
+		$localFile = $backend->getLocalReference( [ 'src' => $xmlPath ] );
+		if ( !$localFile instanceof FSFile ) {
+			$this->fatalErrorWithLog( $dbname, $xmlPath, 'could not be fetched from its file backend' );
+		}
+
+		return $localFile;
+	}
+
+	private function fatalErrorWithLog( string $dbname, string $xmlPath, string $problem ): never {
+		$this->logger->error(
+			'Loadout import for {dbname}: XML dump file {path} {problem}.',
+			[
+				'dbname' => $dbname,
+				'path' => $xmlPath,
+				'problem' => $problem,
+			]
+		);
+
+		$this->fatalError( "XML dump file $xmlPath $problem." );
 	}
 }
 

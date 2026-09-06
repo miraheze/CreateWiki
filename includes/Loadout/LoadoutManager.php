@@ -11,8 +11,6 @@ use Miraheze\ManageWiki\Helpers\Factories\ModuleFactory;
 use Psr\Log\LoggerInterface;
 use function array_keys;
 use function count;
-use function file_exists;
-use function is_readable;
 
 class LoadoutManager {
 
@@ -132,17 +130,6 @@ class LoadoutManager {
 	}
 
 	private function importXmlDump( string $dbname, string $xmlPath ): void {
-		if ( !file_exists( $xmlPath ) || !is_readable( $xmlPath ) ) {
-			$this->logger->error(
-				'XML dump file {path} not found or not readable for wiki {dbname}',
-				[
-					'dbname' => $dbname,
-					'path' => $xmlPath,
-				]
-			);
-			return;
-		}
-
 		// The import needs to be done in a separate process because the
 		// database lists in the current process do not contain the new wiki.
 		$result = Shell::makeScriptCommand(
