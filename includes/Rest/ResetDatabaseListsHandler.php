@@ -41,9 +41,11 @@ class ResetDatabaseListsHandler extends SimpleHandler {
 		$validatedBody = $this->getValidatedBody();
 
 		$key = '';
+		$name = 'databases';
 		$data = null;
 		if ( $validatedBody ) {
 			$key = $validatedBody['key'];
+			$name = $validatedBody['name'];
 			$data = $validatedBody['data'] ?? null;
 		}
 
@@ -57,7 +59,7 @@ class ResetDatabaseListsHandler extends SimpleHandler {
 		if ( $data !== null ) {
 			$list = json_decode( $data, true );
 			if ( is_array( $list ) ) {
-				$this->dataStore->applyDatabaseList( $list );
+				$this->dataStore->applyDatabaseList( $name, $list );
 				return $this->getResponseFactory()->createNoContent();
 			}
 		}
@@ -76,6 +78,11 @@ class ResetDatabaseListsHandler extends SimpleHandler {
 	public function getBodyParamSettings(): array {
 		return [
 			'key' => [
+				self::PARAM_SOURCE => 'body',
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_REQUIRED => true,
+			],
+			'name' => [
 				self::PARAM_SOURCE => 'body',
 				ParamValidator::PARAM_TYPE => 'string',
 				ParamValidator::PARAM_REQUIRED => true,
