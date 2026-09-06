@@ -20,6 +20,7 @@ class CacheUpdateJobTest extends MediaWikiUnitTestCase {
 		$cacheUpdate = $this->createMock( CacheUpdate::class );
 		$cacheUpdate->expects( $this->once() )
 			->method( 'executeNow' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 			->with( 'databases', '{"mtime":1}' )
 			->willReturn( true );
 
@@ -39,6 +40,7 @@ class CacheUpdateJobTest extends MediaWikiUnitTestCase {
 		$cacheUpdate = $this->createMock( CacheUpdate::class );
 		$cacheUpdate->expects( $this->once() )
 			->method( 'executeNow' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 			->with( 'databases', null )
 			->willReturn( false );
 
