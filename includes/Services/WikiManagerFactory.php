@@ -390,7 +390,7 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->dataStore->resetDatabaseLists( isNewChanges: true );
+		$this->dataStore->resetDatabaseLists( isNewChanges: true, sync: false );
 		$this->hookRunner->onCreateWikiDeletion( $this->cwdb, $this->dbname );
 		return null;
 	}
@@ -423,7 +423,7 @@ class WikiManagerFactory {
 				->execute();
 		}
 
-		$this->dataStore->resetDatabaseLists( isNewChanges: true );
+		$this->dataStore->resetDatabaseLists( isNewChanges: true, sync: false );
 		$this->hookRunner->onCreateWikiRename( $this->cwdb, $this->dbname, $newDatabaseName );
 		return null;
 	}
