@@ -99,6 +99,7 @@ class ResetDatabaseListsHandlerTest extends MediaWikiIntegrationTestCase {
 		$dataStore = $this->createMock( CreateWikiDataStore::class );
 		$dataStore->expects( $this->once() )
 			->method( 'applyDatabaseList' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 			->with( 'databases', $list );
 		$dataStore->expects( $this->never() )->method( 'resetDatabaseLists' );
 
@@ -129,6 +130,7 @@ class ResetDatabaseListsHandlerTest extends MediaWikiIntegrationTestCase {
 		$dataStore->expects( $this->never() )->method( 'applyDatabaseList' );
 		$dataStore->expects( $this->once() )
 			->method( 'resetDatabaseLists' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 			->with( false, false )
 			->willReturn( true );
 
