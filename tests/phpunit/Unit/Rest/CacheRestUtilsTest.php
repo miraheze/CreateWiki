@@ -117,6 +117,7 @@ class CacheRestUtilsTest extends MediaWikiUnitTestCase {
 		$cache->method( 'incrWithInit' )->willReturn( false );
 		$cache->expects( $this->once() )
 			->method( 'set' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 			->with( 'cache-key', 1, $this->anything() );
 
 		$utils = $this->newUtils( 'secret', true, $cache );
