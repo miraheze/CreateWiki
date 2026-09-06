@@ -9,8 +9,8 @@ class CacheUpdateJob extends Job {
 
 	public const string JOB_NAME = 'CreateWikiCacheUpdateJob';
 
-	private readonly string $name;
 	private readonly ?string $data;
+	private readonly string $name;
 
 	public function __construct(
 		array $params,
