@@ -121,7 +121,14 @@ class CacheUpdate {
 			return false;
 		}
 
-		$this->logger->info( '{class} successful on all servers for {name}.', [ 'class' => self::class, 'name' => $name ] );
+		$this->logger->info(
+			'{class} successful on all servers for {name}.',
+			[
+				'class' => self::class,
+				'name' => $name,
+			]
+		);
+
 		return true;
 	}
 
