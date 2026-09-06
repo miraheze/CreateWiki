@@ -95,7 +95,6 @@ return [
 	},
 	'CreateWikiValidator' => static function ( MediaWikiServices $services ): CreateWikiValidator {
 		return new CreateWikiValidator(
-			$services->get( 'CreateWikiDatabaseUtils' ),
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiValidator::CONSTRUCTOR_OPTIONS,
