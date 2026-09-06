@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\Tests\Rest;
 
-use MediaWiki\Rest\LocalizedHttpException;
 use MediaWiki\Rest\RequestData;
 use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWikiIntegrationTestCase;
@@ -37,12 +36,12 @@ class ResetDatabaseListsHandlerTest extends MediaWikiIntegrationTestCase {
 		$dataStore = $this->createMock( CreateWikiDataStore::class );
 		$handler = new ResetDatabaseListsHandler( $restUtils, $dataStore );
 
-		$this->expectException( LocalizedHttpException::class );
-		$this->expectExceptionCode( 404 );
-		$this->executeHandler(
+		$response = $this->executeHandler(
 			$handler,
 			$this->newRequest( [ 'key' => 'x', 'name' => 'databases' ] )
 		);
+
+		$this->assertSame( 404, $response->getStatusCode() );
 	}
 
 	/**
@@ -56,12 +55,12 @@ class ResetDatabaseListsHandlerTest extends MediaWikiIntegrationTestCase {
 		$dataStore = $this->createMock( CreateWikiDataStore::class );
 		$handler = new ResetDatabaseListsHandler( $restUtils, $dataStore );
 
-		$this->expectException( LocalizedHttpException::class );
-		$this->expectExceptionCode( 429 );
-		$this->executeHandler(
+		$response = $this->executeHandler(
 			$handler,
 			$this->newRequest( [ 'key' => 'x', 'name' => 'databases' ] )
 		);
+
+		$this->assertSame( 429, $response->getStatusCode() );
 	}
 
 	/**
@@ -77,12 +76,12 @@ class ResetDatabaseListsHandlerTest extends MediaWikiIntegrationTestCase {
 		$dataStore = $this->createMock( CreateWikiDataStore::class );
 		$handler = new ResetDatabaseListsHandler( $restUtils, $dataStore );
 
-		$this->expectException( LocalizedHttpException::class );
-		$this->expectExceptionCode( 403 );
-		$this->executeHandler(
+		$response = $this->executeHandler(
 			$handler,
 			$this->newRequest( [ 'key' => 'wrong', 'name' => 'databases' ] )
 		);
+
+		$this->assertSame( 403, $response->getStatusCode() );
 	}
 
 	/**
