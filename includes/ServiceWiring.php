@@ -9,6 +9,8 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Rest\CacheRestUtils;
+use Miraheze\CreateWiki\Services\CacheUpdate;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
@@ -25,6 +27,26 @@ use Psr\Log\LoggerInterface;
 // @codeCoverageIgnoreStart
 
 return [
+	'CreateWikiCacheRestUtils' => static function ( MediaWikiServices $services ): CacheRestUtils {
+		return new CacheRestUtils(
+			$services->get( 'MainObjectStash' ),
+			new ServiceOptions(
+				CacheRestUtils::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
+	},
+	'CreateWikiCacheUpdate' => static function ( MediaWikiServices $services ): CacheUpdate {
+		return new CacheUpdate(
+			$services->getHttpRequestFactory(),
+			$services->getJobQueueGroupFactory(),
+			$services->get( 'CreateWikiLogger' ),
+			new ServiceOptions(
+				CacheUpdate::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
+	},
 	'CreateWikiConfig' => static function ( MediaWikiServices $services ): Config {
 		return $services->getConfigFactory()->makeConfig( 'CreateWiki' );
 	},
@@ -34,6 +56,7 @@ return [
 	'CreateWikiDataStore' => static function ( MediaWikiServices $services ): CreateWikiDataStore {
 		return new CreateWikiDataStore(
 			$services->getObjectCacheFactory(),
+			$services->get( 'CreateWikiCacheUpdate' ),
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			new ServiceOptions(
@@ -72,6 +95,7 @@ return [
 	},
 	'CreateWikiValidator' => static function ( MediaWikiServices $services ): CreateWikiValidator {
 		return new CreateWikiValidator(
+			$services->get( 'CreateWikiDatabaseUtils' ),
 			RequestContext::getMain(),
 			new ServiceOptions(
 				CreateWikiValidator::CONSTRUCTOR_OPTIONS,
@@ -96,6 +120,7 @@ return [
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiDataStore' ),
 			$services->get( 'CreateWikiHookRunner' ),
+			$services->get( 'CreateWikiLogger' ),
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
