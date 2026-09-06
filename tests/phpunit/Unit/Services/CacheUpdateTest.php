@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Tests\Unit\Services;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Http\MultiHttpClient;
 use MediaWiki\JobQueue\JobQueueGroup;
 use MediaWiki\JobQueue\JobQueueGroupFactory;
 use MediaWiki\MainConfigNames;
@@ -13,6 +12,8 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CacheUpdate;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Wikimedia\Http\MultiHttpClient;
+use function array_keys;
 use function json_decode;
 use function reset;
 
@@ -34,7 +35,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 		MainConfigNames::RestPath => '/w/rest.php',
 	];
 
-	private function newOptions( array $overrides = [] ): ServiceOptions {
+	private function newOptions( array $overrides ): ServiceOptions {
 		$config = $overrides + self::BASE_CONFIG;
 		$options = $this->createMock( ServiceOptions::class );
 		$options->method( 'assertRequiredOptions' )->willReturn( null );
@@ -46,10 +47,10 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	}
 
 	private function newCacheUpdate(
-		array $configOverrides = [],
-		?MultiHttpClient $multiClient = null,
-		?JobQueueGroupFactory $jobQueueGroupFactory = null,
-		?LoggerInterface $logger = null
+		array $configOverrides,
+		?MultiHttpClient $multiClient,
+		?JobQueueGroupFactory $jobQueueGroupFactory,
+		?LoggerInterface $logger
 	): CacheUpdate {
 		$httpRequestFactory = $this->createMock( HttpRequestFactory::class );
 		$httpRequestFactory->method( 'createMultiClient' )
@@ -69,7 +70,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::isExecutionAllowed
 	 */
 	public function testExecuteNowReturnsTrueWithNoServersConfigured(): void {
-		$cacheUpdate = $this->newCacheUpdate( [ ConfigNames::CacheUpdateServers => [] ] );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [ ConfigNames::CacheUpdateServers => [] ],
+			multiClient: null,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -78,7 +84,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::isExecutionAllowed
 	 */
 	public function testExecuteNowReturnsTrueWhenRestDisabled(): void {
-		$cacheUpdate = $this->newCacheUpdate( [ ConfigNames::CacheUpdateRestEnabled => false ] );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [ ConfigNames::CacheUpdateRestEnabled => false ],
+			multiClient: null,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -87,7 +98,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::isExecutionAllowed
 	 */
 	public function testExecuteNowReturnsTrueWhenKeyMissing(): void {
-		$cacheUpdate = $this->newCacheUpdate( [ ConfigNames::CacheUpdateKey => '' ] );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [ ConfigNames::CacheUpdateKey => '' ],
+			multiClient: null,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -96,7 +112,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::isExecutionAllowed
 	 */
 	public function testExecuteNowReturnsTrueWhenDomainMissing(): void {
-		$cacheUpdate = $this->newCacheUpdate( [ ConfigNames::CacheUpdateDomain => '' ] );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [ ConfigNames::CacheUpdateDomain => '' ],
+			multiClient: null,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -105,7 +126,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::isExecutionAllowed
 	 */
 	public function testExecuteNowReturnsTrueWhenDebugHeaderMissing(): void {
-		$cacheUpdate = $this->newCacheUpdate( [ ConfigNames::CacheUpdateDebugHeader => '' ] );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [ ConfigNames::CacheUpdateDebugHeader => '' ],
+			multiClient: null,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -117,7 +143,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 		$multiClient->method( 'runMulti' )->willReturnCallback(
 			static function ( array $requests ): array {
 				$responses = [];
-				foreach ( $requests as $key => $request ) {
+				foreach ( array_keys( $requests ) as $key ) {
 					$responses[$key] = [ 'response' => [ 'code' => 204 ] ];
 				}
 
@@ -125,7 +151,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			}
 		);
 
-		$cacheUpdate = $this->newCacheUpdate( [], $multiClient );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [],
+			multiClient: $multiClient,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', '{"mtime":1}' ) );
 	}
 
@@ -138,7 +169,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			static function ( array $requests ): array {
 				$responses = [];
 				$first = true;
-				foreach ( $requests as $key => $request ) {
+				foreach ( array_keys( $requests ) as $key ) {
 					$responses[$key] = [
 						'response' => [ 'code' => $first ? 500 : 204 ],
 					];
@@ -149,7 +180,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			}
 		);
 
-		$cacheUpdate = $this->newCacheUpdate( [], $multiClient );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [],
+			multiClient: $multiClient,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$this->assertFalse( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -163,7 +199,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			static function ( array $requests ) use ( &$capturedRequests ): array {
 				$capturedRequests = $requests;
 				$responses = [];
-				foreach ( $requests as $key => $request ) {
+				foreach ( array_keys( $requests ) as $key ) {
 					$responses[$key] = [ 'response' => [ 'code' => 204 ] ];
 				}
 
@@ -171,14 +207,19 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			}
 		);
 
-		$cacheUpdate = $this->newCacheUpdate( [
-			ConfigNames::CacheUpdateDebugAccessKeyHeader => 'X-Access-Key',
-			ConfigNames::CacheUpdateDebugAccessKey => 'debug-secret',
-		], $multiClient );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [
+				ConfigNames::CacheUpdateDebugAccessKeyHeader => 'X-Access-Key',
+				ConfigNames::CacheUpdateDebugAccessKey => 'debug-secret',
+			],
+			multiClient: $multiClient,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 
 		$cacheUpdate->executeNow( 'databases', null );
 
-		$this->assertNotNull( $capturedRequests );
+		$this->assertIsArray( $capturedRequests );
 		foreach ( $capturedRequests as $request ) {
 			$this->assertSame( 'debug-secret', $request['headers']['X-Access-Key'] );
 		}
@@ -188,13 +229,13 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::executeNow
 	 */
 	public function testExecuteNowOmitsDataFromPayloadWhenNull(): void {
-		$capturedBody = null;
+		$capturedBody = '';
 		$multiClient = $this->createMock( MultiHttpClient::class );
 		$multiClient->method( 'runMulti' )->willReturnCallback(
 			static function ( array $requests ) use ( &$capturedBody ): array {
-				$capturedBody = reset( $requests )['body'];
+				$capturedBody = (string)reset( $requests )['body'];
 				$responses = [];
-				foreach ( $requests as $key => $request ) {
+				foreach ( array_keys( $requests ) as $key ) {
 					$responses[$key] = [ 'response' => [ 'code' => 204 ] ];
 				}
 
@@ -202,10 +243,16 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			}
 		);
 
-		$cacheUpdate = $this->newCacheUpdate( [], $multiClient );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [],
+			multiClient: $multiClient,
+			jobQueueGroupFactory: null,
+			logger: null
+		);
 		$cacheUpdate->executeNow( 'databases', null );
 
 		$decoded = json_decode( $capturedBody, true );
+		$this->assertIsArray( $decoded );
 		$this->assertArrayNotHasKey( 'data', $decoded );
 		$this->assertSame( 'databases', $decoded['name'] );
 	}
@@ -220,7 +267,12 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 		$jobQueueGroupFactory = $this->createMock( JobQueueGroupFactory::class );
 		$jobQueueGroupFactory->method( 'makeJobQueueGroup' )->willReturn( $jobQueueGroup );
 
-		$cacheUpdate = $this->newCacheUpdate( [], null, $jobQueueGroupFactory );
+		$cacheUpdate = $this->newCacheUpdate(
+			configOverrides: [],
+			multiClient: null,
+			jobQueueGroupFactory: $jobQueueGroupFactory,
+			logger: null
+		);
 		$cacheUpdate->queueJob( 'databases', '{"mtime":1}' );
 	}
 
@@ -233,9 +285,10 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 		$jobQueueGroupFactory->expects( $this->never() )->method( 'makeJobQueueGroup' );
 
 		$cacheUpdate = $this->newCacheUpdate(
-			[ ConfigNames::CacheUpdateServers => [] ],
-			null,
-			$jobQueueGroupFactory
+			configOverrides: [ ConfigNames::CacheUpdateServers => [] ],
+			multiClient: null,
+			jobQueueGroupFactory: $jobQueueGroupFactory,
+			logger: null
 		);
 		$cacheUpdate->queueJob( 'databases', null );
 	}
