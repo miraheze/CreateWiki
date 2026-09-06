@@ -20,6 +20,7 @@ use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
+use Psr\Log\LoggerInterface;
 use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
@@ -64,6 +65,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiDataStore $dataStore,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly LoggerInterface $logger,
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
 		private readonly ExtensionRegistry $extensionRegistry,
@@ -265,7 +267,15 @@ class WikiManagerFactory {
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $requester, $extra ) {
-				$this->dataStore->resetDatabaseLists( isNewChanges: true );
+				$synced = $this->dataStore->resetDatabaseLists( isNewChanges: true, sync: true );
+				if ( !$synced ) {
+					$this->logger->error(
+						'Database list update did not reach every server for {dbname}, ' .
+						'maintenance scripts may fail if they land on one that missed it.',
+						[ 'dbname' => $this->dbname ]
+					);
+				}
+
 				$limits = [ 'memory' => 0, 'filesize' => 0, 'time' => 0, 'walltime' => 0 ];
 
 				Shell::makeScriptCommand(
