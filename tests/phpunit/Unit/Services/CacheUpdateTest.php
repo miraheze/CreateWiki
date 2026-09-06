@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Wikimedia\Http\MultiHttpClient;
 use function array_keys;
+use function is_array;
 use function json_decode;
 use function reset;
 
@@ -193,7 +194,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 	 * @covers ::executeNow
 	 */
 	public function testExecuteNowIncludesDebugAccessKeyHeaderWhenConfigured(): void {
-		$capturedRequests = null;
+		$capturedRequests = [];
 		$multiClient = $this->createMock( MultiHttpClient::class );
 		$multiClient->method( 'runMulti' )->willReturnCallback(
 			static function ( array $requests ) use ( &$capturedRequests ): array {
@@ -219,7 +220,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 
 		$cacheUpdate->executeNow( 'databases', null );
 
-		$this->assertIsArray( $capturedRequests );
+		$this->assertNotSame( [], $capturedRequests );
 		foreach ( $capturedRequests as $request ) {
 			$this->assertSame( 'debug-secret', $request['headers']['X-Access-Key'] );
 		}
@@ -252,7 +253,10 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 		$cacheUpdate->executeNow( 'databases', null );
 
 		$decoded = json_decode( $capturedBody, true );
-		$this->assertIsArray( $decoded );
+		if ( !is_array( $decoded ) ) {
+			$this->fail( 'Expected the request body to decode to an array.' );
+		}
+
 		$this->assertArrayNotHasKey( 'data', $decoded );
 		$this->assertSame( 'databases', $decoded['name'] );
 	}
