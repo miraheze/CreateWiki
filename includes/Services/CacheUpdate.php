@@ -37,12 +37,12 @@ class CacheUpdate {
 		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
-	public function queueJob( ?string $data = null ): void {
+	public function queueJob( string $name, ?string $data = null ): void {
 		if ( !$this->isExecutionAllowed() ) {
 			return;
 		}
 
-		$params = [];
+		$params = [ 'name' => $name ];
 		if ( $data !== null ) {
 			$params['data'] = $data;
 		}
@@ -52,7 +52,7 @@ class CacheUpdate {
 		);
 	}
 
-	public function executeNow( ?string $data = null ): bool {
+	public function executeNow( string $name, ?string $data = null ): bool {
 		if ( !$this->isExecutionAllowed() ) {
 			return true;
 		}
@@ -65,7 +65,7 @@ class CacheUpdate {
 		$restPath = $this->options->get( MainConfigNames::RestPath );
 		$url = "https://$domain$restPath/createwiki/v0/cache/reset-database-lists";
 
-		$payload = [ 'key' => $key ];
+		$payload = [ 'key' => $key, 'name' => $name ];
 		if ( $data !== null ) {
 			$payload['data'] = $data;
 		}
@@ -109,10 +109,11 @@ class CacheUpdate {
 
 		if ( $failed !== [] ) {
 			$this->logger->error(
-				'{class} failed on {count} server(s): {servers}',
+				'{class} failed on {count} server(s) for {name}: {servers}',
 				[
 					'class' => self::class,
 					'count' => count( $failed ),
+					'name' => $name,
 					'servers' => implode( ', ', $failed ),
 				]
 			);
@@ -120,7 +121,7 @@ class CacheUpdate {
 			return false;
 		}
 
-		$this->logger->info( '{class} successful on all servers.', [ 'class' => self::class ] );
+		$this->logger->info( '{class} successful on all servers for {name}.', [ 'class' => self::class, 'name' => $name ] );
 		return true;
 	}
 
