@@ -9,6 +9,7 @@ class CacheUpdateJob extends Job {
 
 	public const string JOB_NAME = 'CreateWikiCacheUpdateJob';
 
+	private readonly string $name;
 	private readonly ?string $data;
 
 	public function __construct(
@@ -17,9 +18,10 @@ class CacheUpdateJob extends Job {
 	) {
 		parent::__construct( self::JOB_NAME, $params );
 		$this->data = $params['data'] ?? null;
+		$this->name = $params['name'];
 	}
 
 	public function run(): bool {
-		return $this->cacheUpdate->executeNow( $this->data );
+		return $this->cacheUpdate->executeNow( $this->name, $this->data );
 	}
 }
