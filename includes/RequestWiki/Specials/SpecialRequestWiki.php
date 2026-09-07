@@ -9,6 +9,7 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
@@ -58,7 +59,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$this->checkPermissions();
 
 		$this->getOutput()->addModuleStyles( [
-			'ext.createwiki.requestwiki.oouiform.styles',
+			'ext.createwiki.requestwiki.styles',
+			'ext.createwiki.requestwiki.wizard.styles',
+		] );
+
+		$this->getOutput()->addModules( [
+			'ext.createwiki.requestwiki.wizard',
 		] );
 
 		$form = $this->getForm();
@@ -70,10 +76,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 	/** @inheritDoc */
 	protected function getFormFields(): array {
 		$formDescriptor = [
+			'wizard-intro' => [
+				'type' => 'info',
+				'raw' => true,
+				'default' => $this->msg( 'requestwiki-wizard-intro' )->parseAsBlock(),
+				'section' => 'intro',
+			],
 			'subdomain' => [
 				'type' => 'textwithbutton',
 				'buttontype' => 'button',
 				'buttonflags' => [],
+				'buttonclass' => 'cdx-button',
 				'buttonid' => 'inline-subdomain',
 				'buttondefault' => '.' . $this->getConfig()->get( ConfigNames::Subdomain ),
 				'label-message' => 'requestwiki-label-subdomain',
@@ -83,6 +96,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L4
 				'maxlength' => 64 - strlen( $this->getConfig()->get( ConfigNames::DatabaseSuffix ) ),
+				'section' => 'basics',
 			],
 			'sitename' => [
 				'type' => 'text',
@@ -91,11 +105,13 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'required' => true,
 				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L7
 				'maxlength' => 128,
+				'section' => 'basics',
 			],
 			'language' => [
 				'type' => 'language',
 				'label-message' => 'requestwiki-label-language',
 				'default' => 'en',
+				'section' => 'basics',
 			],
 		];
 
@@ -106,6 +122,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'help-message' => 'createwiki-help-category',
 				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Categories ),
+				'section' => 'basics',
 			];
 		}
 
@@ -114,6 +131,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
 				'help-message' => 'createwiki-help-private',
+				'section' => 'options',
 			];
 		}
 
@@ -122,6 +140,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
 				'help-message' => 'createwiki-help-bio',
+				'section' => 'options',
 			];
 		}
 
@@ -131,13 +150,9 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'label-message' => 'requestwiki-label-purpose',
 				'required' => true,
 				'options' => $this->getConfig()->get( ConfigNames::Purposes ),
+				'section' => 'options',
 			];
 		}
-
-		$formDescriptor['guidance'] = [
-			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-info-guidance' )->text(),
-		];
 
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
@@ -149,11 +164,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'required' => true,
 			'useeditfont' => true,
 			'validation-callback' => [ $this->validator, 'validateReason' ],
-		];
-
-		$formDescriptor['post-reason-guidance'] = [
-			'type' => 'info',
-			'default' => $this->msg( 'requestwiki-info-guidance-post' )->text(),
+			'section' => 'details',
 		];
 
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
@@ -161,6 +172,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
 				'validation-callback' => [ $this->validator, 'validateAgreement' ],
+				'required' => true,
+				'section' => 'agreement',
 			];
 		}
 
@@ -181,7 +194,42 @@ class SpecialRequestWiki extends FormSpecialPage {
 			}
 		);
 
+		foreach ( $formDescriptor as &$fieldProperties ) {
+			$fieldProperties['section'] ??= 'additional';
+		}
+		unset( $fieldProperties );
+
 		return $formDescriptor;
+	}
+
+	/** @inheritDoc */
+	protected function getForm(): RequestWikiWizardForm {
+		$form = new RequestWikiWizardForm(
+			$this->getFormFields(),
+			$this->getContext(),
+			$this->getMessagePrefix()
+		);
+
+		$form->setSubmitCallback( [ $this, 'onSubmit' ] );
+
+		$headerMsg = $this->msg( $this->getMessagePrefix() . '-summary' );
+		if ( !$headerMsg->isDisabled() ) {
+			$form->addHeaderHtml( $headerMsg->parseAsBlock() );
+		}
+
+		$form->addPreHtml( $this->preHtml() );
+		$form->addPostHtml( $this->postHtml() );
+		$form->setTitle( $this->getPageTitle() );
+
+		$this->alterForm( $form );
+
+		if ( $form->getMethod() === 'get' ) {
+			$form->addHiddenFields( array_diff_key(
+				$this->getRequest()->getQueryValues(), [ 'title' => null ]
+			) );
+		}
+
+		return $form;
 	}
 
 	/** @inheritDoc */
