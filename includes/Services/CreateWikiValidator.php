@@ -89,6 +89,14 @@ class CreateWikiValidator {
 		return true;
 	}
 
+	public function validateRequired( ?string $value ): bool|Message {
+		if ( !$value || ctype_space( $value ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		return true;
+	}
+
 	public function validateComment( ?string $comment, array $alldata ): bool|Message {
 		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
