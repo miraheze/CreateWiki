@@ -41,7 +41,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 		$options = $this->createMock( ServiceOptions::class );
 		$options->method( 'assertRequiredOptions' )->willReturn( null );
 		$options->method( 'get' )->willReturnCallback(
-			static fn ( string $name ) => $config[$name]
+			static fn ( string $name ): mixed => $config[$name]
 		);
 
 		return $options;
@@ -77,6 +77,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -91,6 +92,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -105,6 +107,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -119,6 +122,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -133,6 +137,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -158,6 +163,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertTrue( $cacheUpdate->executeNow( 'databases', '{"mtime":1}' ) );
 	}
 
@@ -187,6 +193,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$this->assertFalse( $cacheUpdate->executeNow( 'databases', null ) );
 	}
 
@@ -250,6 +257,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: null,
 			logger: null
 		);
+
 		$cacheUpdate->executeNow( 'databases', null );
 
 		$decoded = json_decode( $capturedBody, true );
@@ -277,6 +285,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: $jobQueueGroupFactory,
 			logger: null
 		);
+
 		$cacheUpdate->queueJob( 'databases', '{"mtime":1}' );
 	}
 
@@ -294,6 +303,7 @@ class CacheUpdateTest extends MediaWikiUnitTestCase {
 			jobQueueGroupFactory: $jobQueueGroupFactory,
 			logger: null
 		);
+
 		$cacheUpdate->queueJob( 'databases', null );
 	}
 }
