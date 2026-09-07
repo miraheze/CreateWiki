@@ -24,7 +24,7 @@ use function reset;
  */
 class CacheUpdateTest extends MediaWikiUnitTestCase {
 
-	private const BASE_CONFIG = [
+	private const array BASE_CONFIG = [
 		ConfigNames::CacheUpdateDebugAccessKey => '',
 		ConfigNames::CacheUpdateDebugAccessKeyHeader => '',
 		ConfigNames::CacheUpdateDebugHeader => 'X-Debug-Server',
