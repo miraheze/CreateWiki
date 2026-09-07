@@ -53,7 +53,7 @@
 	"createwiki-label-dbname": "Database name",
 	"createwiki-label-language": "Language:",
 	"createwiki-label-loadout": "Wiki loadout",
-	"createwiki-label-loadout-none": "Minimal wiki",
+	"createwiki-label-loadout-none": "Empty wiki",
 	"createwiki-label-lock": "Lock this request from being edited or from having comments added to it?",
 	"createwiki-label-private": "Mark this wiki as private",
 	"createwiki-label-reason": "Describe the focus or purpose of this wiki:",
