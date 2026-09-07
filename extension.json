@@ -275,6 +275,15 @@
 				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
+		},
+		{
+			"path": "/createwiki/v0/request_wiki/validate",
+			"method": "POST",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\RequestWikiValidateFieldHandler",
+			"services": [
+				"CreateWikiRestUtils",
+				"CreateWikiValidator"
+			]
 		}
 	],
 	"ResourceModules": {
@@ -292,8 +301,17 @@
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
 		},
-		"ext.createwiki.requestwiki.oouiform.styles": {
-			"styles": "ext.createwiki.requestwiki.oouiform.ooui.less"
+		"ext.createwiki.requestwiki.styles": {
+			"styles": "ext.createwiki.requestwiki.styles.less"
+		},
+		"ext.createwiki.requestwiki.wizard": {
+			"scripts": "ext.createwiki.requestwiki.wizard.js",
+			"dependencies": [
+				"mediawiki.api"
+			]
+		},
+		"ext.createwiki.requestwiki.wizard.styles": {
+			"styles": "ext.createwiki.requestwiki.wizard.less"
 		}
 	},
 	"ResourceFileModulePaths": {
