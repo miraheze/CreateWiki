@@ -1,0 +1,119 @@
+.ext-createwiki-wizard {
+	margin-top: 1em;
+}
+
+.ext-createwiki-wizard-dots {
+	display: flex;
+	gap: 0.5em;
+	margin-bottom: 1em;
+}
+
+.ext-createwiki-wizard-dot {
+	box-sizing: border-box;
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: var( --background-color-disabled, #c8ccd1 );
+}
+
+.ext-createwiki-wizard-dot.is-current {
+	width: 20px;
+	border-radius: 4px;
+	background-color: var( --background-color-progressive, #36c );
+}
+
+.ext-createwiki-wizard-dot.is-complete {
+	background-color: var( --background-color-progressive, #36c );
+}
+
+.ext-createwiki-wizard-card {
+	box-sizing: border-box;
+	padding: 1.5em;
+	border: 1px solid var( --border-color-subtle, #c8ccd1 );
+	border-radius: 8px;
+	background-color: var( --background-color-base, #fff );
+}
+
+.ext-createwiki-wizard-step-count {
+	margin: 0 0 0.3em;
+	color: var( --color-subtle, #54595d );
+	font-size: 0.85em;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.ext-createwiki-wizard-card-title,
+.ext-createwiki-wizard-card > .ext-createwiki-wizard-card-title {
+	margin: 0 0 0.5em !important;
+	border: 0 !important;
+	padding: 0 !important;
+	font-size: 1.4em;
+	line-height: 1.3;
+}
+
+.ext-createwiki-wizard-card-subtitle {
+	margin: -0.3em 0 1.3em;
+	color: var( --color-base, #202122 );
+	font-size: 1.05em;
+	font-weight: normal;
+	line-height: 1.5;
+}
+
+.ext-createwiki-wizard-card-subtitle > :last-child {
+	margin-bottom: 0;
+}
+
+.ext-createwiki-wizard-field-error {
+	box-sizing: border-box;
+	margin: 0.3em 0 1em;
+	padding: 0.5em 0.75em;
+	border: 1px solid var( --border-color-error, #d73333 );
+	border-radius: 4px;
+	background-color: var( --background-color-error-subtle, #ffe9e5 );
+	color: var( --color-error, #d73333 );
+	font-size: 0.9em;
+}
+
+.ext-createwiki-wizard-step:not( :first-child ) {
+	display: none;
+}
+
+.ext-createwiki-wizard-back,
+.ext-createwiki-wizard-submit {
+	display: none;
+}
+
+.ext-createwiki-wizard-nav {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.5em;
+	margin-top: 1em;
+}
+
+.ext-createwiki-wizard-back {
+	margin-right: auto;
+}
+
+.client-nojs {
+	.ext-createwiki-wizard-dots,
+	.ext-createwiki-wizard-back,
+	.ext-createwiki-wizard-next {
+		display: none;
+	}
+
+	.ext-createwiki-wizard-nav {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.ext-createwiki-wizard-submit {
+		display: inline-block;
+	}
+
+	.ext-createwiki-wizard-step:not( :first-child ) {
+		display: block;
+		margin-top: 1.5em;
+	}
+}
