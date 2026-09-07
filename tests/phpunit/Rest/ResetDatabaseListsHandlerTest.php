@@ -15,6 +15,7 @@ use function json_encode;
  * @coversDefaultClass \Miraheze\CreateWiki\Rest\ResetDatabaseListsHandler
  */
 class ResetDatabaseListsHandlerTest extends MediaWikiIntegrationTestCase {
+
 	use HandlerTestTrait;
 
 	private function newRequest( array $body ): RequestData {
