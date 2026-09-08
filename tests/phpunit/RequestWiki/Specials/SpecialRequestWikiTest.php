@@ -112,14 +112,13 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->assertArrayHasKey( 'agreement', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'bio', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'category', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'guidance', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'language', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'post-reason-guidance', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'private', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'purpose', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'reason', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'wizard-intro', $specialRequestWiki->getFormFields() );
 	}
 
 	/**
