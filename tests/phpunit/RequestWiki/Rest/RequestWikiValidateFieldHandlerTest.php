@@ -94,7 +94,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		yield 'valid subdomain' => [ 'subdomain', 'validsub', true ];
 		yield 'disallowed subdomain' => [ 'subdomain', 'badsub', false ];
 		yield 'empty subdomain' => [ 'subdomain', '', false ];
-		yield 'database exists subdomain' => [ 'subdomain', 'existwiki', false ];
+		yield 'database exists subdomain' => [ 'subdomain', 'exist', false ];
 		yield 'valid reason' => [ 'reason', 'this is a valid reason', true ];
 		yield 'short reason' => [ 'reason', 'short', false ];
 		yield 'empty reason' => [ 'reason', '', false ];
