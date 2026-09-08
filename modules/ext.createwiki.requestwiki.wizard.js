@@ -20,7 +20,8 @@
 			subdomain: 'wpsubdomain',
 			reason: 'wpreason',
 			category: 'wpcategory',
-			purpose: 'wppurpose'
+			purpose: 'wppurpose',
+			agreement: 'wpagreement'
 		};
 
 		let current = 0;
@@ -89,16 +90,11 @@
 		}
 
 		function clearFieldError( $input ) {
-			$input.get( 0 ).setCustomValidity( '' );
 			errorTarget( $input ).next( '.ext-createwiki-wizard-field-error' ).remove();
 		}
 
 		function showFieldError( $input, message ) {
 			clearFieldError( $input );
-
-			if ( $input.get( 0 ).tagName !== 'SELECT' ) {
-				$input.get( 0 ).setCustomValidity( message );
-			}
 
 			errorTarget( $input ).after(
 				$( '<div>' ).addClass( 'ext-createwiki-wizard-field-error' ).text( message )
@@ -118,9 +114,11 @@
 
 				clearFieldError( $input );
 
+				const value = $input.is( ':checkbox' ) ? ( $input.is( ':checked' ) ? '1' : '' ) : $input.val();
+
 				deferreds.push( api.getToken( 'csrf' ).then( ( token ) => rest.post( '/createwiki/v0/request_wiki/validate', {
 					field: field,
-					value: $input.val(),
+					value: value,
 					token: token
 				} ) ).then( ( data ) => {
 					if ( !data.valid ) {
