@@ -250,15 +250,16 @@ class SpecialRequestWiki extends FormSpecialPage {
 		}
 
 		$this->wikiRequestManager->createNewRequestAndLog( $data, $extraData, $this->getUser() );
+		return Status::newGood();
+	}
 
+	/** @inheritDoc */
+	public function onSuccess(): void {
 		$requestId = (string)$this->wikiRequestManager->getId();
 		$requestLink = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestId );
 
-		// On successful submission, redirect them to their request
 		$this->getOutput()->redirect( $requestLink->getFullURL() );
-
 		$this->statsFactory->getCounter( 'requestwiki_requests_total' )->increment();
-		return Status::newGood();
 	}
 
 	/** @throws UserBlockedError */
