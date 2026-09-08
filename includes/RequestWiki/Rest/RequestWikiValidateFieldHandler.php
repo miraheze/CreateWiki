@@ -54,6 +54,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			'subdomain' => $this->validator->validateSubdomain( $value, [] ),
 			'reason' => $this->validator->validateReason( $value, [] ),
 			'category', 'purpose' => $this->validator->validateRequired( $value ),
+			'agreement' => $this->validator->validateAgreement( $value === '1' ),
 			default => true,
 		};
 
@@ -75,7 +76,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		return [
 			'field' => [
 				self::PARAM_SOURCE => 'body',
-				ParamValidator::PARAM_TYPE => [ 'subdomain', 'reason', 'category', 'purpose' ],
+				ParamValidator::PARAM_TYPE => [ 'subdomain', 'reason', 'category', 'purpose', 'agreement' ],
 				ParamValidator::PARAM_REQUIRED => true,
 			],
 			'value' => [
