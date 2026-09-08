@@ -15,7 +15,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	private function newForm(
 		array $descriptor,
-		string $messagePrefix = 'requestwiki'
+		string $messagePrefix
 	): RequestWikiWizardForm {
 		return new RequestWikiWizardForm(
 			$descriptor,
@@ -30,7 +30,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	public function testConstructor(): void {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
-		] );
+		], 'requestwiki' );
 
 		$this->assertInstanceOf( RequestWikiWizardForm::class, $form );
 	}
@@ -41,7 +41,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	public function testGetButtonsReturnsEmptyString(): void {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
-		] );
+		], 'requestwiki' );
 
 		$this->assertSame( '', $form->getButtons() );
 	}
@@ -53,7 +53,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'label' => 'Field 1', 'section' => 'stepone' ],
 			'field2' => [ 'type' => 'text', 'label' => 'Field 2', 'section' => 'steptwo' ],
-		] );
+		], 'requestwiki' );
 
 		$html = $form->getBody();
 
@@ -77,7 +77,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	public function testGetBodyFallsBackToParentWhenNoFieldHasSection(): void {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'label' => 'Field 1' ],
-		] );
+		], 'requestwiki' );
 
 		$html = $form->getBody();
 		$this->assertStringNotContainsString( 'ext-createwiki-wizard', $html );
@@ -89,7 +89,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	public function testGetBodyIncludesInlineStyleToPreventFlash(): void {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
-		] );
+		], 'requestwiki' );
 
 		$html = $form->getBody();
 
@@ -104,7 +104,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	public function testGetBodyIncludesFormHeaderHtml(): void {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
-		] );
+		], 'requestwiki' );
 
 		$form->addHeaderHtml( '<p>Custom header content</p>' );
 
