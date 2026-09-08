@@ -1,4 +1,6 @@
 ( function () {
+	'use strict';
+
 	$( () => {
 		const $wizard = $( '.ext-createwiki-wizard' );
 		if ( !$wizard.length ) {
@@ -18,6 +20,11 @@
 
 		let current = 0;
 
+		/**
+		 * Find the index of the first step containing a server-rendered error.
+		 *
+		 * @return {number} Zero-based step index, or -1 if no step has an error.
+		 */
 		function findStepWithError() {
 			let found = -1;
 			$steps.each( function ( index ) {
@@ -29,6 +36,12 @@
 			return found;
 		}
 
+		/**
+		 * Show the current step and update the dots and nav buttons to match.
+		 *
+		 * @param {boolean} scroll Whether to smooth-scroll the new step into view.
+		 * @return {void}
+		 */
 		function updateView( scroll ) {
 			$steps.each( function ( index ) {
 				$( this ).toggle( index === current );
@@ -48,6 +61,14 @@
 			}
 		}
 
+		/**
+		 * Determine whether a form control has no meaningful value.
+		 *
+		 * @param {HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement} field
+		 *   Raw DOM form control.
+		 * @param {jQuery} $field The same control wrapped in jQuery.
+		 * @return {boolean}
+		 */
 		function fieldIsEmpty( field, $field ) {
 			if ( field.type === 'checkbox' || field.type === 'radio' ) {
 				return !field.checked;
@@ -56,6 +77,12 @@
 			return ( $field.val() || '' ).trim() === '';
 		}
 
+		/**
+		 * Find the first form control within a step that fails native or required validation.
+		 *
+		 * @param {jQuery} $step The step to search within.
+		 * @return {jQuery} The first invalid control, or an empty jQuery set if none.
+		 */
 		function firstInvalidField( $step ) {
 			let $found = $( [] );
 
@@ -78,15 +105,34 @@
 			return $found;
 		}
 
+		/**
+		 * Find the element an inline error message for a field should be inserted after.
+		 *
+		 * @param {jQuery} $input The form control the error belongs to.
+		 * @return {jQuery} The control's OOUI field layout wrapper, or the control itself.
+		 */
 		function errorTarget( $input ) {
 			const $wrapper = $input.closest( '.oo-ui-fieldLayout' );
 			return $wrapper.length ? $wrapper : $input;
 		}
 
+		/**
+		 * Remove any inline error message previously shown for a field.
+		 *
+		 * @param {jQuery} $input The form control to clear the error for.
+		 * @return {void}
+		 */
 		function clearFieldError( $input ) {
 			errorTarget( $input ).next( '.ext-createwiki-wizard-field-error' ).remove();
 		}
 
+		/**
+		 * Show an inline error message for a field, replacing any existing one.
+		 *
+		 * @param {jQuery} $input The form control the error belongs to.
+		 * @param {string} message The error message to display.
+		 * @return {void}
+		 */
 		function showFieldError( $input, message ) {
 			clearFieldError( $input );
 
@@ -95,10 +141,25 @@
 			);
 		}
 
+		/**
+		 * Determine whether an element is actually rendered on the page.
+		 *
+		 * @param {HTMLElement} element
+		 * @return {boolean}
+		 */
 		function isVisible( element ) {
 			return element.offsetParent !== null;
 		}
 
+		/**
+		 * Resolve the actual named form control for a REST-validated field marker.
+		 *
+		 * The marker class may land on the form control itself, or on an OOUI
+		 * widget wrapper containing it alongside unrelated decorative controls.
+		 *
+		 * @param {jQuery} $marked The element carrying the REST-validate marker class.
+		 * @return {jQuery} The matching named control, or an empty jQuery set if none.
+		 */
 		function findNamedControl( $marked ) {
 			const candidates = $marked.is( 'input, select, textarea' ) ?
 				$marked :
@@ -109,6 +170,12 @@
 			} ).first();
 		}
 
+		/**
+		 * Validate every REST-validated, visible field within a step.
+		 *
+		 * @param {jQuery} $step The step to validate.
+		 * @return {jQuery.Promise} Resolves once every field's check has settled.
+		 */
 		function checkRestValidation( $step ) {
 			const rest = new mw.Rest();
 			const api = new mw.Api();
@@ -145,6 +212,14 @@
 			return $.when.apply( $, deferreds );
 		}
 
+		/**
+		 * Validate a step natively and via REST, then invoke a callback once it passes.
+		 *
+		 * @param {jQuery} $step The step to validate.
+		 * @param {jQuery} $button The button to disable while validation is in progress.
+		 * @param {Function} onValid Called with no arguments once the step is fully valid.
+		 * @return {void}
+		 */
 		function validateStepThen( $step, $button, onValid ) {
 			const $invalid = firstInvalidField( $step );
 			if ( $invalid.length ) {
