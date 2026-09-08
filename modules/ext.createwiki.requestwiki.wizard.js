@@ -17,11 +17,11 @@
 		}
 
 		const restValidatedFields = {
-			subdomain: 'wpsubdomain',
-			reason: 'wpreason',
+			agreement: 'wpagreement',
 			category: 'wpcategory',
 			purpose: 'wppurpose',
-			agreement: 'wpagreement'
+			reason: 'wpreason',
+			subdomain: 'wpsubdomain',
 		};
 
 		let current = 0;
@@ -33,6 +33,7 @@
 					found = index;
 				}
 			} );
+
 			return found;
 		}
 
@@ -59,6 +60,7 @@
 			if ( field.type === 'checkbox' || field.type === 'radio' ) {
 				return !field.checked;
 			}
+
 			return ( $field.val() || '' ).trim() === '';
 		}
 
@@ -168,6 +170,7 @@
 			if ( current <= 0 ) {
 				return;
 			}
+
 			current--;
 			updateView( true );
 		} );
@@ -176,6 +179,7 @@
 			if ( e.which !== 13 || current === total - 1 ) {
 				return;
 			}
+
 			e.preventDefault();
 			$next.trigger( 'click' );
 		} );
