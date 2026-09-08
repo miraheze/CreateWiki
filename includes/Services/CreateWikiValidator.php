@@ -89,7 +89,7 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function validateRequired( ?string $value ): bool|Message {
+	public function validateRequired( ?string $value ): Message|true {
 		if ( !$value || ctype_space( $value ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
