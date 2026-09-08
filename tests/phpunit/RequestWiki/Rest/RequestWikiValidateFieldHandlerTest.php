@@ -12,7 +12,6 @@ use MediaWiki\Session\SessionProvider;
 use MediaWiki\Session\Token;
 use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWiki\User\User;
-use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldHandler;
@@ -29,11 +28,6 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-
-		$this->overrideConfigValue( MainConfigNames::VirtualDomainsMapping, [
-			'virtual-createwiki-central' => [ 'db' => WikiMap::getCurrentWikiId() ],
-		] );
-
 		$this->overrideConfigValues( [
 			ConfigNames::EnableRESTAPI => true,
 			ConfigNames::DatabaseSuffix => 'wiki',
