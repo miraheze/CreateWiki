@@ -124,6 +124,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	/**
 	 * @covers ::onSubmit
+	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider
 	 */
 	public function testOnSubmit(
