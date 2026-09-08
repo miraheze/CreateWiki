@@ -67,8 +67,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'ext.createwiki.requestwiki.wizard',
 		] );
 
-		$form = $this->getForm();
-		if ( $form && $form->show() ) {
+		if ( $this->getForm()->show() ) {
 			$this->onSuccess();
 		}
 	}
