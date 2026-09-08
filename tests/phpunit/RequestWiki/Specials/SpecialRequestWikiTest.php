@@ -124,6 +124,75 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	}
 
 	/**
+	 * @covers ::getRestValidationInfo
+	 */
+	public function testGetRestValidationInfoForFieldWithCallback(): void {
+		$info = $this->specialRequestWiki->getRestValidationInfo( 'subdomain' );
+
+		$this->assertIsArray( $info );
+		$this->assertTrue( $info['required'] );
+		$this->assertIsCallable( $info['callback'] );
+		$this->assertSame( 'textwithbutton', $info['type'] );
+	}
+
+	/**
+	 * @covers ::getRestValidationInfo
+	 */
+	public function testGetRestValidationInfoForRequiredFieldWithoutCallback(): void {
+		$this->overrideConfigValues( [
+			ConfigNames::Categories => [ 'test' => 'test' ],
+		] );
+
+		$info = $this->specialRequestWiki->getRestValidationInfo( 'category' );
+
+		$this->assertIsArray( $info );
+		$this->assertTrue( $info['required'] );
+		$this->assertNull( $info['callback'] );
+		$this->assertSame( 'select', $info['type'] );
+	}
+
+	/**
+	 * @covers ::getRestValidationInfo
+	 */
+	public function testGetRestValidationInfoForCheckboxField(): void {
+		$this->overrideConfigValues( [
+			ConfigNames::RequestWikiConfirmAgreement => true,
+		] );
+
+		$info = $this->specialRequestWiki->getRestValidationInfo( 'agreement' );
+
+		$this->assertIsArray( $info );
+		$this->assertSame( 'check', $info['type'] );
+		$this->assertIsCallable( $info['callback'] );
+	}
+
+	/**
+	 * @covers ::getRestValidationInfo
+	 */
+	public function testGetRestValidationInfoForFieldWithoutMarkerClass(): void {
+		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'sitename' ) );
+		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'language' ) );
+	}
+
+	/**
+	 * @covers ::getRestValidationInfo
+	 */
+	public function testGetRestValidationInfoForUnknownField(): void {
+		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'not-a-real-field' ) );
+	}
+
+	/**
+	 * @covers ::getRestValidationInfo
+	 */
+	public function testGetRestValidationInfoForConditionallyAbsentField(): void {
+		$this->overrideConfigValues( [
+			ConfigNames::Categories => [],
+		] );
+
+		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'category' ) );
+	}
+
+	/**
 	 * @covers ::onSubmit
 	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider
