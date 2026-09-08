@@ -122,7 +122,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateRequired( $value );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} elseif ( $expected === 'parsed' ) {
 			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
