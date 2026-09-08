@@ -114,7 +114,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testValidateRequired(
 		?string $value,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
 		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
