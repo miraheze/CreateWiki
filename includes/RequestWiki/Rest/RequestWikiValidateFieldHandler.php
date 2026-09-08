@@ -27,14 +27,13 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 	}
 
 	/** @inheritDoc */
-	public function validate( Validator $restValidator ) {
+	public function validate( Validator $restValidator ): void {
 		parent::validate( $restValidator );
 		$this->validateToken();
 	}
 
 	public function run(): Response {
 		$this->restUtils->checkEnv();
-
 		if ( !$this->getAuthority()->isNamed() ) {
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				403, new MessageValue( 'createwiki-rest-mustlogin' )
@@ -51,10 +50,10 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		$value = $body['value'];
 
 		$result = match ( $body['field'] ) {
-			'subdomain' => $this->validator->validateSubdomain( $value, [] ),
-			'reason' => $this->validator->validateReason( $value, [] ),
-			'category', 'purpose' => $this->validator->validateRequired( $value ),
 			'agreement' => $this->validator->validateAgreement( $value === '1' ),
+			'category', 'purpose' => $this->validator->validateRequired( $value ),
+			'reason' => $this->validator->validateReason( $value, [] ),
+			'subdomain' => $this->validator->validateSubdomain( $value, [] ),
 			default => true,
 		};
 
@@ -68,7 +67,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		] );
 	}
 
-	public function needsWriteAccess(): bool {
+	public function needsWriteAccess(): false {
 		return false;
 	}
 
