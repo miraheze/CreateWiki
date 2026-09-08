@@ -221,13 +221,6 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$form->setTitle( $this->getPageTitle() );
 
 		$this->alterForm( $form );
-
-		if ( $form->getMethod() === 'get' ) {
-			$form->addHiddenFields( array_diff_key(
-				$this->getRequest()->getQueryValues(), [ 'title' => null ]
-			) );
-		}
-
 		return $form;
 	}
 
