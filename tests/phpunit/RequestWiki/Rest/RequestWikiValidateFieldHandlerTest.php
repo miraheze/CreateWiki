@@ -165,7 +165,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		$session->method( 'getProvider' )->willReturn( $sessionProvider );
 		$session->method( 'isPersistent' )->willReturn( true );
 		$session->method( 'hasToken' )->willReturn( false );
-		$session->method( 'getToken' )->willReturn( new Token( null, '' ) );
+		$session->method( 'getToken' )->willReturn( new Token( 'token', '' ) );
 
 		$user = $this->createNoOpMock( User::class, [ 'isAnon' ] );
 		$user->method( 'isAnon' )->willReturn( false );
@@ -178,7 +178,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 				[],
 				[],
 				[],
-				[ 'field' => 'subdomain', 'value' => 'validsub', 'token' => '' ],
+				[ 'field' => 'subdomain', 'value' => 'validsub' ],
 				$this->mockRegisteredUltimateAuthority(),
 				$session
 			);
