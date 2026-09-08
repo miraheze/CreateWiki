@@ -16,14 +16,6 @@
 			return;
 		}
 
-		const restValidatedFields = {
-			agreement: 'wpagreement',
-			category: 'wpcategory',
-			purpose: 'wppurpose',
-			reason: 'wpreason',
-			subdomain: 'wpsubdomain'
-		};
-
 		let current = 0;
 
 		function findStepWithError() {
@@ -103,23 +95,30 @@
 			);
 		}
 
+		function isVisible( field ) {
+			return field.offsetParent !== null;
+		}
+
 		function checkRestValidation( $step ) {
 			const rest = new mw.Rest();
 			const api = new mw.Api();
 			const deferreds = [];
 
-			Object.keys( restValidatedFields ).forEach( ( field ) => {
-				const $input = $step.find( '[name="' + restValidatedFields[ field ] + '"]' );
-				if ( !$input.length ) {
+			$step.find( '.ext-createwiki-wizard-rest-validate' ).each( function () {
+				const field = this;
+				if ( !field.name || field.name.indexOf( 'wp' ) !== 0 || !isVisible( field ) ) {
 					return;
 				}
 
+				const $input = $( field );
+				const fieldName = field.name.slice( 2 );
+
 				clearFieldError( $input );
 
-				const value = $input.get( 0 ).type === 'checkbox' ? ( $input.is( ':checked' ) ? '1' : '' ) : $input.val();
+				const value = field.type === 'checkbox' ? ( field.checked ? '1' : '' ) : $input.val();
 
 				deferreds.push( api.getToken( 'csrf' ).then( ( token ) => rest.post( '/createwiki/v0/request_wiki/validate', {
-					field: field,
+					field: fieldName,
 					value: value,
 					token: token
 				} ) ).then( ( data ) => {
