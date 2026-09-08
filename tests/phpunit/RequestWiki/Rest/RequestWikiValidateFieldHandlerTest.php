@@ -178,9 +178,10 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 				$this->mockRegisteredUltimateAuthority(),
 				$session
 			);
+
 			$this->fail( 'Expected a LocalizedHttpException to be thrown' );
-		} catch ( LocalizedHttpException $exception ) {
-			$this->assertSame( 403, $exception->getCode() );
+		} catch ( LocalizedHttpException $ex ) {
+			$this->assertSame( 403, $ex->getCode() );
 		}
 	}
 }
