@@ -11,6 +11,8 @@ use function is_array;
 
 class RequestWikiWizardForm extends OOUIHTMLForm {
 
+	public const string REST_VALIDATE_CLASS = 'ext-createwiki-wizard-rest-validate';
+
 	/** @var bool Override default value from HTMLForm */
 	protected $mSubSectionBeforeFields = false;
 
