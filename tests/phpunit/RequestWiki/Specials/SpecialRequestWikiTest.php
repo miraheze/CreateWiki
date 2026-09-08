@@ -158,8 +158,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			$this->assertStatusGood( $status );
 
 			$specialRequestWiki->onSuccess();
-			$requestId = (string)$specialRequestWiki->wikiRequestManager->getId();
-			$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestId )->getFullURL();
+			$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', 'id' )->getFullURL();
 			$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 		} else {
 			$this->assertStatusError( $expectedError, $status );
