@@ -43,8 +43,8 @@
 			} );
 
 			$dots.each( function ( index ) {
-				$( this ).toggleClass( 'is-current', index === current );
-				$( this ).toggleClass( 'is-complete', index < current );
+				$( this ).toggleClass( 'ext-createwiki-wizard-dot--current', index === current );
+				$( this ).toggleClass( 'ext-createwiki-wizard-dot--complete', index < current );
 			} );
 
 			$back.toggle( current > 0 );
