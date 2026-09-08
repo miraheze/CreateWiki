@@ -131,8 +131,10 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testRunRejectsBlockedUser(): void {
 		$user = $this->getTestUser()->getUserIdentity();
+		$blockTargetFactory = $this->getServiceContainer()->getBlockTargetFactory();
+		$blockTarget = $blockTargetFactory->newFromUser( $user );
 		$block = new SystemBlock( [
-			'address' => $user,
+			'target' => $blockTarget,
 			'by' => $this->getTestSysop()->getUser(),
 			'reason' => 'test block',
 			'systemBlock' => 'test',
