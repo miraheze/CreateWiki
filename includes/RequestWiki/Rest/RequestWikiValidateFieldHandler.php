@@ -60,7 +60,6 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		}
 
 		$result = $this->validateField( $field, $value );
-
 		if ( $result === true ) {
 			return $this->getResponseFactory()->createJson( [ 'valid' => true ] );
 		}
@@ -78,7 +77,6 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		}
 
 		$specialPage->setContext( RequestContext::getMain() );
-
 		$info = $specialPage->getRestValidationInfo( $field );
 		if ( $info === null ) {
 			return true;
