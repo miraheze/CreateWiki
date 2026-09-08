@@ -99,18 +99,28 @@
 			return field.offsetParent !== null;
 		}
 
+		function findNamedControl( $marked ) {
+			const candidates = $marked.is( 'input, select, textarea' ) ?
+				$marked :
+				$marked.find( 'input, select, textarea' );
+
+			return candidates.filter( function () {
+				return this.name && this.name.indexOf( 'wp' ) === 0;
+			} ).first();
+		}
+
 		function checkRestValidation( $step ) {
 			const rest = new mw.Rest();
 			const api = new mw.Api();
 			const deferreds = [];
 
 			$step.find( '.ext-createwiki-wizard-rest-validate' ).each( function () {
-				const field = this;
-				if ( !field.name || field.name.indexOf( 'wp' ) !== 0 || !isVisible( field ) ) {
+				const $input = findNamedControl( $( this ) );
+				const field = $input.get( 0 );
+				if ( !field || !isVisible( field ) ) {
 					return;
 				}
 
-				const $input = $( field );
 				const fieldName = field.name.slice( 2 );
 
 				clearFieldError( $input );
