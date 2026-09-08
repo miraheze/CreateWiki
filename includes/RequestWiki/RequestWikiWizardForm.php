@@ -83,7 +83,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 			'.ext-createwiki-wizard-step:not(:first-child){display:none}'
 		);
 
-		return $inlineStyle . Html::rawElement(
+		return $this->formatFormHeader() . $inlineStyle . Html::rawElement(
 			'div',
 			[ 'class' => 'ext-createwiki-wizard', 'data-step-count' => (string)$total ],
 			$this->getWizardDots( $total ) .
