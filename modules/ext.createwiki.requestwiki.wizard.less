@@ -4,26 +4,30 @@
 
 .ext-createwiki-wizard-dots {
 	display: flex;
-	gap: 0.5em;
 	margin-bottom: 1em;
 }
 
 .ext-createwiki-wizard-dot {
-	box-sizing: border-box;
 	display: inline-block;
 	width: 8px;
 	height: 8px;
+	box-sizing: border-box;
 	border-radius: 50%;
+	margin-right: 0.5em;
 	background-color: var( --background-color-disabled, #c8ccd1 );
 }
 
-.ext-createwiki-wizard-dot.is-current {
+.ext-createwiki-wizard-dot:last-child {
+	margin-right: 0;
+}
+
+.ext-createwiki-wizard-dot.ext-createwiki-wizard-dot--current {
 	width: 20px;
 	border-radius: 4px;
 	background-color: var( --background-color-progressive, #36c );
 }
 
-.ext-createwiki-wizard-dot.is-complete {
+.ext-createwiki-wizard-dot.ext-createwiki-wizard-dot--complete {
 	background-color: var( --background-color-progressive, #36c );
 }
 
@@ -39,15 +43,14 @@
 	margin: 0 0 0.3em;
 	color: var( --color-subtle, #54595d );
 	font-size: 0.85em;
-	text-transform: uppercase;
 	letter-spacing: 0.03em;
+	text-transform: uppercase;
 }
 
-.ext-createwiki-wizard-card-title,
-.ext-createwiki-wizard-card > .ext-createwiki-wizard-card-title {
-	margin: 0 0 0.5em !important;
-	border: 0 !important;
-	padding: 0 !important;
+.ext-createwiki-wizard-step .ext-createwiki-wizard-card-title {
+	padding: 0;
+	border: 0;
+	margin: 0 0 0.5em;
 	font-size: 1.4em;
 	line-height: 1.3;
 }
@@ -66,10 +69,10 @@
 
 .ext-createwiki-wizard-field-error {
 	box-sizing: border-box;
-	margin: 0.3em 0 1em;
 	padding: 0.5em 0.75em;
 	border: 1px solid var( --border-color-error, #d73333 );
 	border-radius: 4px;
+	margin: 0.3em 0 1em;
 	background-color: var( --background-color-error-subtle, #ffe9e5 );
 	color: var( --color-error, #d73333 );
 	font-size: 0.9em;
@@ -88,7 +91,6 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	gap: 0.5em;
 	margin-top: 1em;
 }
 
