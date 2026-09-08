@@ -17,11 +17,14 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 		array $descriptor,
 		string $messagePrefix
 	): RequestWikiWizardForm {
-		return new RequestWikiWizardForm(
+		$form = new RequestWikiWizardForm(
 			$descriptor,
 			RequestContext::getMain(),
 			$messagePrefix
 		);
+
+		$form->prepareForm();
+		return $form;
 	}
 
 	/**
