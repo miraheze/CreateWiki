@@ -282,7 +282,8 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\RequestWikiValidateFieldHandler",
 			"services": [
 				"CreateWikiRestUtils",
-				"CreateWikiValidator"
+				"CreateWikiValidator",
+				"SpecialPageFactory"
 			]
 		}
 	],
