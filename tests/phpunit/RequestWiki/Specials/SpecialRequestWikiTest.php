@@ -156,8 +156,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->assertInstanceOf( Status::class, $status );
 		if ( !$expectedError ) {
 			$this->assertStatusGood( $status );
+			$this->assertStatusGood( $specialRequestWiki->onSuccess() );
 
-			$specialRequestWiki->onSuccess();
 			$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', '1' )->getFullURL();
 			$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 		} else {
