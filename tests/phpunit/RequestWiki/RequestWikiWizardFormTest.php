@@ -83,6 +83,26 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
 	 */
+	public function testGetBodyIncludesSubmitNameAndId(): void {
+		$form = $this->newForm( [
+			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+		], 'requestwiki' );
+
+		$form->setSubmitName( 'mysubmitname' );
+		$form->setSubmitID( 'mysubmitid' );
+
+		$html = $form->getBody();
+
+		$this->assertStringContainsString( 'mysubmitname', $html );
+		$this->assertStringContainsString( 'mysubmitid', $html );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
+	 */
 	public function testGetBodyFallsBackToParentWhenNoFieldHasSection(): void {
 		$form = $this->newForm( [
 			'field1' => [ 'type' => 'text', 'label' => 'Field 1' ],
