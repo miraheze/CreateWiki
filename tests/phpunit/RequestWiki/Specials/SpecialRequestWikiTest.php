@@ -72,6 +72,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	/**
 	 * @covers ::execute
+	 * @covers ::getForm
 	 */
 	public function testExecuteLoggedInEmailConfirmed(): void {
 		$performer = $this->getTestUserAuthorityWithConfirmedEmail();
