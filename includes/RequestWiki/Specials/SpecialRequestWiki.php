@@ -16,7 +16,10 @@ use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Stats\StatsFactory;
 use function array_diff_key;
 use function array_filter;
+use function explode;
+use function in_array;
 use function strlen;
+use function trim;
 use function version_compare;
 use const MW_VERSION;
 
@@ -92,6 +95,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
 				'required' => true,
+				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L4
 				'maxlength' => 64 - strlen( $this->getConfig()->get( ConfigNames::DatabaseSuffix ) ),
@@ -120,6 +124,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'label-message' => 'createwiki-label-category',
 				'help-message' => 'createwiki-help-category',
 				'required' => true,
+				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 				'options' => $this->getConfig()->get( ConfigNames::Categories ),
 				'section' => 'basics',
 			];
@@ -148,6 +153,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
 				'required' => true,
+				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 				'options' => $this->getConfig()->get( ConfigNames::Purposes ),
 				'section' => 'options',
 			];
@@ -162,6 +168,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'help-message' => 'createwiki-help-reason',
 			'required' => true,
 			'useeditfont' => true,
+			'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 			'validation-callback' => [ $this->validator, 'validateReason' ],
 			'section' => 'details',
 		];
@@ -170,6 +177,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
+				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 				'validation-callback' => [ $this->validator, 'validateAgreement' ],
 				'required' => true,
 				'section' => 'agreement',
@@ -199,6 +207,26 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		unset( $fieldProperties );
 		return $formDescriptor;
+	}
+
+	/** @return ?array{required: bool, callback: ?callable, type: string} */
+	public function getRestValidationInfo( string $field ): ?array {
+		$formDescriptor = $this->getFormFields();
+		if ( !isset( $formDescriptor[$field] ) ) {
+			return null;
+		}
+
+		$fieldDescriptor = $formDescriptor[$field];
+		$cssClasses = explode( ' ', trim( $fieldDescriptor['cssclass'] ?? '' ) );
+		if ( !in_array( RequestWikiWizardForm::REST_VALIDATE_CLASS, $cssClasses, true ) ) {
+			return null;
+		}
+
+		return [
+			'required' => (bool)( $fieldDescriptor['required'] ?? false ),
+			'callback' => $fieldDescriptor['validation-callback'] ?? null,
+			'type' => $fieldDescriptor['type'] ?? '',
+		];
 	}
 
 	/** @inheritDoc */
