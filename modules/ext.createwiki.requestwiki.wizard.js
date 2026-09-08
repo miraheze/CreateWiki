@@ -132,22 +132,17 @@
 			return $.when.apply( $, deferreds );
 		}
 
-		$next.on( 'click', () => {
-			if ( current >= total - 1 ) {
-				return;
-			}
-
-			const $step = $steps.eq( current );
+		function validateStepThen( $step, $button, onValid ) {
 			const $invalid = firstInvalidField( $step );
 			if ( $invalid.length ) {
 				$invalid.get( 0 ).reportValidity();
 				return;
 			}
 
-			$next.prop( 'disabled', true );
+			$button.prop( 'disabled', true );
 
 			checkRestValidation( $step ).then( () => {
-				$next.prop( 'disabled', false );
+				$button.prop( 'disabled', false );
 
 				const $errors = $step.find( '.ext-createwiki-wizard-field-error' );
 				if ( $errors.length ) {
@@ -161,8 +156,32 @@
 					return;
 				}
 
+				onValid();
+			} );
+		}
+
+		$next.on( 'click', () => {
+			if ( current >= total - 1 ) {
+				return;
+			}
+
+			validateStepThen( $steps.eq( current ), $next, () => {
 				current++;
 				updateView( true );
+			} );
+		} );
+
+		const $form = $wizard.closest( 'form' );
+
+		$form.on( 'submit', ( e ) => {
+			if ( current !== total - 1 ) {
+				return;
+			}
+
+			e.preventDefault();
+
+			validateStepThen( $steps.eq( current ), $submit, () => {
+				$form.get( 0 ).submit();
 			} );
 		} );
 
