@@ -59,7 +59,7 @@
 			if ( field.type === 'checkbox' || field.type === 'radio' ) {
 				return !field.checked;
 			}
-			return $.trim( $field.val() || '' ) === '';
+			return ( $field.val() || '' ).trim() === '';
 		}
 
 		function firstInvalidField( $step ) {
@@ -114,7 +114,7 @@
 
 				clearFieldError( $input );
 
-				const value = $input.is( ':checkbox' ) ? ( $input.is( ':checked' ) ? '1' : '' ) : $input.val();
+				const value = $input.get( 0 ).type === 'checkbox' ? ( $input.is( ':checked' ) ? '1' : '' ) : $input.val();
 
 				deferreds.push( api.getToken( 'csrf' ).then( ( token ) => rest.post( '/createwiki/v0/request_wiki/validate', {
 					field: field,
@@ -144,9 +144,9 @@
 
 			$next.prop( 'disabled', true );
 
-			checkRestValidation( $step ).always( () => {
+			checkRestValidation( $step ).then( () => {
 				$next.prop( 'disabled', false );
-			} ).done( () => {
+
 				const $errors = $step.find( '.ext-createwiki-wizard-field-error' );
 				if ( $errors.length ) {
 					$errors.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'center' } );
