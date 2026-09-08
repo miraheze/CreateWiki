@@ -46,10 +46,16 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			);
 		}
 
-		$body = $this->getValidatedBody();
-		$value = $body['value'];
+		$validatedBody = $this->getValidatedBody();
 
-		$result = match ( $body['field'] ) {
+		$field = '';
+		$value = '';
+		if ( $validatedBody ) {
+			$field = $validatedBody['field'];
+			$value = $validatedBody['value'];
+		}
+
+		$result = match ( $field ) {
 			'agreement' => $this->validator->validateAgreement( $value === '1' ),
 			'category', 'purpose' => $this->validator->validateRequired( $value ),
 			'reason' => $this->validator->validateReason( $value, [] ),
