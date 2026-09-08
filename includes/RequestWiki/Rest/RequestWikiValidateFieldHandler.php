@@ -2,11 +2,14 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Message\Message;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
 use MediaWiki\Rest\Validator\Validator;
+use MediaWiki\SpecialPage\SpecialPageFactory;
+use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Wikimedia\Message\MessageValue;
@@ -23,6 +26,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
 		private readonly CreateWikiValidator $validator,
+		private readonly SpecialPageFactory $specialPageFactory,
 	) {
 	}
 
@@ -55,13 +59,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			$value = $validatedBody['value'];
 		}
 
-		$result = match ( $field ) {
-			'agreement' => $this->validator->validateAgreement( $value === '1' ),
-			'category', 'purpose' => $this->validator->validateRequired( $value ),
-			'reason' => $this->validator->validateReason( $value, [] ),
-			'subdomain' => $this->validator->validateSubdomain( $value, [] ),
-			default => true,
-		};
+		$result = $this->validateField( $field, $value );
 
 		if ( $result === true ) {
 			return $this->getResponseFactory()->createJson( [ 'valid' => true ] );
@@ -73,6 +71,31 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		] );
 	}
 
+	private function validateField( string $field, string $value ): bool|Message {
+		$specialPage = $this->specialPageFactory->getPage( 'RequestWiki' );
+		if ( !$specialPage instanceof SpecialRequestWiki ) {
+			return true;
+		}
+
+		$specialPage->setContext( RequestContext::getMain() );
+
+		$info = $specialPage->getRestValidationInfo( $field );
+		if ( $info === null ) {
+			return true;
+		}
+
+		if ( $info['required'] && $value === '' ) {
+			return $this->validator->validateRequired( $value );
+		}
+
+		if ( $info['callback'] !== null ) {
+			$callbackValue = $info['type'] === 'check' ? $value === '1' : $value;
+			return ( $info['callback'] )( $callbackValue, [] );
+		}
+
+		return true;
+	}
+
 	public function needsWriteAccess(): false {
 		return false;
 	}
@@ -81,13 +104,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		return [
 			'field' => [
 				self::PARAM_SOURCE => 'body',
-				ParamValidator::PARAM_TYPE => [
-					'agreement',
-					'category',
-					'purpose',
-					'reason',
-					'subdomain',
-				],
+				ParamValidator::PARAM_TYPE => 'string',
 				ParamValidator::PARAM_REQUIRED => true,
 			],
 			'value' => [
