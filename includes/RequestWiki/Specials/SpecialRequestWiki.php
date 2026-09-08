@@ -211,7 +211,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$form->setSubmitCallback( [ $this, 'onSubmit' ] );
 
-		$headerMsg = $this->msg( $this->getMessagePrefix() . '-summary' );
+		$headerMsg = $this->msg( $this->getMessagePrefix() . '-text' );
 		if ( !$headerMsg->isDisabled() ) {
 			$form->addHeaderHtml( $headerMsg->parseAsBlock() );
 		}
