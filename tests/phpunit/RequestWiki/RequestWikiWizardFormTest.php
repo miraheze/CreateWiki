@@ -51,6 +51,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyRendersWizardMarkupForSectionedFields(): void {
 		$form = $this->newForm( [
@@ -76,6 +79,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyFallsBackToParentWhenNoFieldHasSection(): void {
 		$form = $this->newForm( [
@@ -88,6 +94,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyIncludesInlineStyleToPreventFlash(): void {
 		$form = $this->newForm( [
@@ -103,6 +112,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyIncludesFormHeaderHtml(): void {
 		$form = $this->newForm( [
@@ -117,6 +129,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyIncludesSubtitleWhenMessageExists(): void {
 		$form = $this->newForm( [
@@ -129,6 +144,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyOmitsSubtitleWhenMessageDoesNotExist(): void {
 		$form = $this->newForm( [
@@ -141,6 +159,9 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getStepSubtitle
+	 * @covers ::getWizardDots
+	 * @covers ::getWizardNav
 	 */
 	public function testGetBodyOmitsSubtitleWhenMessagePrefixIsEmpty(): void {
 		$form = $this->newForm( [
