@@ -125,6 +125,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	/**
 	 * @covers ::onSubmit
+	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider
 	 */
 	public function testOnSubmit(
@@ -155,6 +156,11 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->assertInstanceOf( Status::class, $status );
 		if ( !$expectedError ) {
 			$this->assertStatusGood( $status );
+
+			$specialRequestWiki->onSuccess();
+			$requestId = (string)$specialRequestWiki->wikiRequestManager->getId();
+			$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestId )->getFullURL();
+			$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 		} else {
 			$this->assertStatusError( $expectedError, $status );
 		}
@@ -211,43 +217,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			'sessionfailure',
 		];
-	}
-
-	/**
-	 * @covers ::onSuccess
-	 */
-	public function testOnSuccess(): void {
-		$context = new DerivativeContext( $this->specialRequestWiki->getContext() );
-		$user = $this->getMutableTestUser()->getUser();
-		$context->setUser( $user );
-
-		$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
-		$request = new FauxRequest( $data, true );
-		$context->setRequest( $request );
-
-		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
-		$specialRequestWiki->setContext( $context );
-
-		$this->overrideConfigValue(
-			ConfigNames::Subdomain, 'example.org'
-		);
-
-		$status = $specialRequestWiki->onSubmit( [
-			'reason' => 'Test onSuccess()',
-			'subdomain' => 'examplesuccess',
-			'sitename' => 'Example Success Wiki',
-			'language' => 'en',
-			'category' => 'test',
-		] );
-
-		$this->assertStatusGood( $status );
-		$specialRequestWiki->onSuccess();
-
-		$wikiRequestManager = $this->getServiceContainer()->get( 'WikiRequestManager' );
-		$requestId = (string)$wikiRequestManager->getId();
-		$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', $requestId )->getFullURL();
-
-		$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 	}
 
 	/**
