@@ -109,6 +109,36 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::validateRequired
+	 * @dataProvider provideValidateRequired
+	 */
+	public function validateRequired(
+		?string $value,
+		bool|string $expected
+	): void {
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
+
+		$result = $this->validator->validateRequired( $value );
+		if ( $expected === true ) {
+			$this->assertTrue( $result );
+		} elseif ( $expected === 'parsed' ) {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
+			$this->assertIsString( $result->parse() );
+		} else {
+			$this->assertIsString( $result );
+		}
+	}
+
+	public static function provideValidateRequired(): Generator {
+		yield 'null value' => [ null, 'parsed' ];
+		yield 'empty value' => [ '', 'parsed' ];
+		yield 'whitespace value' => [ '   ', 'parsed' ];
+		yield 'valid value' => [ 'valid', true ];
+	}
+
+	/**
 	 * @covers ::validateComment
 	 * @dataProvider provideValidateCommentData
 	 */
