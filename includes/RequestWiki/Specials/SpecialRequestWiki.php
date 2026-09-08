@@ -197,8 +197,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 		foreach ( $formDescriptor as &$fieldProperties ) {
 			$fieldProperties['section'] ??= 'additional';
 		}
-		unset( $fieldProperties );
 
+		unset( $fieldProperties );
 		return $formDescriptor;
 	}
 
