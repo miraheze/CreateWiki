@@ -22,7 +22,6 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 	/** @return string */
 	public function getBody() {
 		$stepKeys = [];
-
 		foreach ( $this->mFieldTree as $key => $val ) {
 			if ( !is_array( $val ) ) {
 				LoggerFactory::getInstance( 'CreateWiki' )->debug(
@@ -93,7 +92,6 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		);
 	}
 
-	/** @return string */
 	private function getStepSubtitle( string $key ): string {
 		if ( !$this->mMessagePrefix ) {
 			return '';
@@ -111,7 +109,6 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		);
 	}
 
-	/** @return string */
 	private function getWizardDots( int $total ): string {
 		$dots = '';
 		for ( $i = 0; $i < $total; $i++ ) {
@@ -125,7 +122,6 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		);
 	}
 
-	/** @return string */
 	private function getWizardNav(): string {
 		$back = new ButtonInputWidget( [
 			'classes' => [ 'ext-createwiki-wizard-back' ],
@@ -157,7 +153,6 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		}
 
 		$submit = new ButtonInputWidget( $submitAttribs );
-
 		return Html::rawElement(
 			'div',
 			[ 'class' => 'ext-createwiki-wizard-nav' ],
