@@ -112,7 +112,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::validateRequired
 	 * @dataProvider provideValidateRequired
 	 */
-	public function validateRequired(
+	public function testValidateRequired(
 		?string $value,
 		bool|string $expected
 	): void {
