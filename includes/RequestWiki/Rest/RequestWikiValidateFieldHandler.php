@@ -71,7 +71,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		] );
 	}
 
-	private function validateField( string $field, string $value ): bool|Message {
+	private function validateField( string $field, string $value ): Message|true {
 		$specialPage = $this->specialPageFactory->getPage( 'RequestWiki' );
 		if ( !$specialPage instanceof SpecialRequestWiki ) {
 			return true;
