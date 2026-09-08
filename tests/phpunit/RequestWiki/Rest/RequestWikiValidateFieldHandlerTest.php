@@ -178,7 +178,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 				[],
 				[],
 				[],
-				[ 'field' => 'subdomain', 'value' => 'validsub' ],
+				[ 'field' => 'subdomain', 'value' => 'validsub', 'token' => '' ],
 				$this->mockRegisteredUltimateAuthority(),
 				$session
 			);
