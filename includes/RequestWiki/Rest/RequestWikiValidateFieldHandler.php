@@ -75,7 +75,13 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		return [
 			'field' => [
 				self::PARAM_SOURCE => 'body',
-				ParamValidator::PARAM_TYPE => [ 'subdomain', 'reason', 'category', 'purpose', 'agreement' ],
+				ParamValidator::PARAM_TYPE => [
+					'agreement',
+					'category',
+					'purpose',
+					'reason',
+					'subdomain',
+				],
 				ParamValidator::PARAM_REQUIRED => true,
 			],
 			'value' => [
