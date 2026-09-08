@@ -29,11 +29,14 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->overrideConfigValues( [
-			ConfigNames::EnableRESTAPI => true,
+			ConfigNames::Categories => [ 'test' => 'test' ],
 			ConfigNames::DatabaseSuffix => 'wiki',
-			ConfigNames::Subdomain => 'example.org',
 			ConfigNames::DisallowedSubdomains => [ 'badsub' ],
+			ConfigNames::EnableRESTAPI => true,
+			ConfigNames::Purposes => [ 'test' => 'test' ],
+			ConfigNames::RequestWikiConfirmAgreement => true,
 			ConfigNames::RequestWikiMinimumLength => 10,
+			ConfigNames::Subdomain => 'example.org',
 			MainConfigNames::LocalDatabases => [ 'existwiki' ],
 		] );
 	}
@@ -42,7 +45,8 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		$services = $this->getServiceContainer();
 		return new RequestWikiValidateFieldHandler(
 			$services->get( 'CreateWikiRestUtils' ),
-			$services->get( 'CreateWikiValidator' )
+			$services->get( 'CreateWikiValidator' ),
+			$services->getSpecialPageFactory()
 		);
 	}
 
@@ -62,6 +66,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::run
+	 * @covers ::validateField
 	 * @covers ::getBodyParamSettings
 	 * @dataProvider provideRunData
 	 */
@@ -99,6 +104,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		yield 'filled purpose' => [ 'purpose', 'somepurpose', true ];
 		yield 'agreement unchecked' => [ 'agreement', '', false ];
 		yield 'agreement checked' => [ 'agreement', '1', true ];
+		yield 'sitename is not rest-validated' => [ 'sitename', '', true ];
 		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true ];
 	}
 
@@ -178,10 +184,9 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 				$this->mockRegisteredUltimateAuthority(),
 				$session
 			);
-
 			$this->fail( 'Expected a LocalizedHttpException to be thrown' );
-		} catch ( LocalizedHttpException $ex ) {
-			$this->assertSame( 403, $ex->getCode() );
+		} catch ( LocalizedHttpException $exception ) {
+			$this->assertSame( 403, $exception->getCode() );
 		}
 	}
 }
