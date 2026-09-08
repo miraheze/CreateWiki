@@ -21,7 +21,7 @@
 			category: 'wpcategory',
 			purpose: 'wppurpose',
 			reason: 'wpreason',
-			subdomain: 'wpsubdomain',
+			subdomain: 'wpsubdomain'
 		};
 
 		let current = 0;
