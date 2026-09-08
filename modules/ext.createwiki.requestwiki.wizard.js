@@ -95,8 +95,8 @@
 			);
 		}
 
-		function isVisible( field ) {
-			return field.offsetParent !== null;
+		function isVisible( element ) {
+			return element.offsetParent !== null;
 		}
 
 		function findNamedControl( $marked ) {
@@ -115,9 +115,13 @@
 			const deferreds = [];
 
 			$step.find( '.ext-createwiki-wizard-rest-validate' ).each( function () {
+				if ( !isVisible( this ) ) {
+					return;
+				}
+
 				const $input = findNamedControl( $( this ) );
 				const field = $input.get( 0 );
-				if ( !field || !isVisible( field ) ) {
+				if ( !field ) {
 					return;
 				}
 
