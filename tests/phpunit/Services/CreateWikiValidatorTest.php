@@ -114,7 +114,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testValidateRequired(
 		?string $value,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
 		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
@@ -122,7 +122,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateRequired( $value );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} elseif ( $expected === 'parsed' ) {
 			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );

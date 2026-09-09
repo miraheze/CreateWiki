@@ -10,11 +10,13 @@ use MediaWiki\Rest\RequestData;
 use MediaWiki\Session\Session;
 use MediaWiki\Session\SessionProvider;
 use MediaWiki\Session\Token;
+use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldHandler;
+use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 
 /**
  * @group CreateWiki
@@ -29,11 +31,14 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->overrideConfigValues( [
-			ConfigNames::EnableRESTAPI => true,
+			ConfigNames::Categories => [ 'test' => 'test' ],
 			ConfigNames::DatabaseSuffix => 'wiki',
-			ConfigNames::Subdomain => 'example.org',
 			ConfigNames::DisallowedSubdomains => [ 'badsub' ],
+			ConfigNames::EnableRESTAPI => true,
+			ConfigNames::Purposes => [ 'test' => 'test' ],
+			ConfigNames::RequestWikiConfirmAgreement => true,
 			ConfigNames::RequestWikiMinimumLength => 10,
+			ConfigNames::Subdomain => 'example.org',
 			MainConfigNames::LocalDatabases => [ 'existwiki' ],
 		] );
 	}
@@ -42,7 +47,19 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		$services = $this->getServiceContainer();
 		return new RequestWikiValidateFieldHandler(
 			$services->get( 'CreateWikiRestUtils' ),
-			$services->get( 'CreateWikiValidator' )
+			$services->get( 'CreateWikiValidator' ),
+			$services->getSpecialPageFactory()
+		);
+	}
+
+	private function newHandlerWithSpecialPageFactory(
+		SpecialPageFactory $specialPageFactory
+	): RequestWikiValidateFieldHandler {
+		$services = $this->getServiceContainer();
+		return new RequestWikiValidateFieldHandler(
+			$services->get( 'CreateWikiRestUtils' ),
+			$services->get( 'CreateWikiValidator' ),
+			$specialPageFactory
 		);
 	}
 
@@ -62,6 +79,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::run
+	 * @covers ::validateField
 	 * @covers ::getBodyParamSettings
 	 * @dataProvider provideRunData
 	 */
@@ -99,7 +117,57 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		yield 'filled purpose' => [ 'purpose', 'somepurpose', true ];
 		yield 'agreement unchecked' => [ 'agreement', '', false ];
 		yield 'agreement checked' => [ 'agreement', '1', true ];
+		yield 'sitename is not rest-validated' => [ 'sitename', '', true ];
 		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true ];
+	}
+
+	/**
+	 * @covers ::validateField
+	 */
+	public function testValidateFieldWhenSpecialPageIsMissing(): void {
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( null );
+
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			[ 'field' => 'subdomain', 'value' => '', 'token' => '' ],
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertTrue( $data['valid'] );
+	}
+
+	/**
+	 * @covers ::validateField
+	 */
+	public function testValidateFieldWhenNotRequiredAndHasNoCallback(): void {
+		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		$specialPage->method( 'getRestValidationInfo' )->willReturn( [
+			'required' => false,
+			'callback' => null,
+			'type' => 'text',
+		] );
+
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
+
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			[ 'field' => 'optionalfield', 'value' => '', 'token' => '' ],
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertTrue( $data['valid'] );
 	}
 
 	/**
@@ -180,8 +248,8 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			);
 
 			$this->fail( 'Expected a LocalizedHttpException to be thrown' );
-		} catch ( LocalizedHttpException $ex ) {
-			$this->assertSame( 403, $ex->getCode() );
+		} catch ( LocalizedHttpException $exception ) {
+			$this->assertSame( 403, $exception->getCode() );
 		}
 	}
 }
