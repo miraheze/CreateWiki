@@ -189,7 +189,9 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$this->assertTrue( $data['results']['subdomain']['valid'] );
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNull,PhanTypeInvalidDimOffset
 		$this->assertFalse( $data['results']['category']['valid'] );
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNull,PhanTypeInvalidDimOffset
 		$this->assertTrue( $data['results']['reason']['valid'] );
 	}
 
@@ -224,6 +226,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testRunRejectsRateLimitedUser(): void {
 		$user = $this->createMock( User::class );
+		// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( true );
 
 		$specialPage = $this->createMock( SpecialRequestWiki::class );
@@ -251,6 +254,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testRunRejectsDuplicateRequest(): void {
 		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 		$specialPage->method( 'isDuplicateRequest' )
 			->with( 'An Existing Sitename' )
 			->willReturn( true );
