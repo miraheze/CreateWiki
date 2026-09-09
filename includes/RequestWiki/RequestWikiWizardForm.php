@@ -2,11 +2,9 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Context\IContextSource;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\OOUIHTMLForm;
 use MediaWiki\Logger\LoggerFactory;
-use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;
 use OOUI\ButtonInputWidget;
 use function count;
 use function is_array;
@@ -17,15 +15,6 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 
 	/** @var bool Override default value from HTMLForm */
 	protected $mSubSectionBeforeFields = false;
-
-	public function __construct(
-		array $descriptor,
-		IContextSource $context,
-		string $messagePrefix,
-		private readonly CreateWikiParsedMessageCache $parsedMessageCache,
-	) {
-		parent::__construct( $descriptor, $context, $messagePrefix );
-	}
 
 	/** @inheritDoc */
 	public function getButtons() {
@@ -118,7 +107,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		return Html::rawElement(
 			'div',
 			[ 'class' => 'ext-createwiki-wizard-card-subtitle' ],
-			$this->parsedMessageCache->parseAsBlock( $subtitleMsg )
+			$subtitleMsg->parseAsBlock()
 		);
 	}
 
