@@ -272,7 +272,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return Status::newFatal( 'actionthrottledtext' );
 		}
 
-		if ( $this->wikiRequestManager->isDuplicateRequest( $data['sitename'] ) ) {
+		if ( $this->isDuplicateRequest( $data['sitename'] ) ) {
 			return Status::newFatal( 'requestwiki-error-patient' );
 		}
 
