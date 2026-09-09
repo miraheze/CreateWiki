@@ -49,7 +49,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	 * @throws ErrorPageError
 	 */
 	public function execute( $par ): void {
-		$this->requireNamedUser( 'requestwiki-notloggedin' );
+		// $this->requireNamedUser( 'requestwiki-notloggedin' );
 		$this->setParameter( $par );
 		$this->setHeaders();
 
@@ -57,12 +57,12 @@ class SpecialRequestWiki extends FormSpecialPage {
 			throw new ErrorPageError( 'errorpagetitle', 'createwiki-wikinotcentralwiki' );
 		}
 
-		$requiresConfirmedEmail = $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail );
+		/* $requiresConfirmedEmail = $this->getConfig()->get( ConfigNames::RequestWikiConfirmEmail );
 		if ( $requiresConfirmedEmail && !$this->getUser()->isEmailConfirmed() ) {
 			throw new ErrorPageError( 'requestwiki', 'requestwiki-error-emailnotconfirmed' );
 		}
 
-		$this->checkPermissions();
+		$this->checkPermissions(); */
 
 		$this->getOutput()->addModuleStyles( [
 			'ext.createwiki.requestwiki.styles',
@@ -262,6 +262,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	public function onSubmit( array $data ): Status {
+		return Status::newFatal( 'Submission is disabled, this is just meant to demo new wizard design.' );
+
 		$token = $this->getRequest()->getVal( 'wpEditToken' );
 		$userToken = $this->getContext()->getCsrfTokenSet();
 
