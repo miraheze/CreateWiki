@@ -128,8 +128,42 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		yield 'agreement checked' => [ 'agreement', '1', true ];
 		yield 'sitename is not rest-validated' => [ 'sitename', '', true ];
 		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true ];
-		yield 'pinglimiter not limited' => [ 'pinglimiter', '', true ];
-		yield 'duplicate sitename not duplicate' => [ 'duplicate', 'A Brand New Sitename', true ];
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunWhenNotRateLimited(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'ratelimited', $data['results'] );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunWhenNotDuplicate(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'duplicate', 'A Brand New Sitename' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'duplicate', $data['results'] );
 	}
 
 	/**
@@ -186,9 +220,9 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenPingLimiterIsTriggered(): void {
+	public function testRunRejectsRateLimitedUser(): void {
 		$user = $this->createMock( User::class );
 		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( true );
 
@@ -198,24 +232,24 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
 		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
 
-		$data = $this->executeHandlerAndGetBodyData(
+		$response = $this->executeHandler(
 			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
 			[],
-			$this->singleCheckBody( 'pinglimiter', '' ),
+			$this->singleCheckBody( 'ratelimited', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertFalse( $data['results']['pinglimiter']['valid'] );
+		$this->assertSame( 429, $response->getStatusCode() );
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenDuplicateRequestExists(): void {
+	public function testRunRejectsDuplicateRequest(): void {
 		$specialPage = $this->createMock( SpecialRequestWiki::class );
 		$specialPage->method( 'isDuplicateRequest' )
 			->with( 'An Existing Sitename' )
@@ -224,7 +258,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
 		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
 
-		$data = $this->executeHandlerAndGetBodyData(
+		$response = $this->executeHandler(
 			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
@@ -235,13 +269,13 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			$this->getSession( true )
 		);
 
-		$this->assertFalse( $data['results']['duplicate']['valid'] );
+		$this->assertSame( 403, $response->getStatusCode() );
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenSpecialPageIsMissing(): void {
+	public function testRunWhenSpecialPageIsMissing(): void {
 		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
 		$specialPageFactory->method( 'getPage' )->willReturn( null );
 
