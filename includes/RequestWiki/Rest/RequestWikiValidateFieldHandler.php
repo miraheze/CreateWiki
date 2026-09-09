@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Message\Message;
+use MediaWiki\ParamValidator\TypeDef\ArrayDef;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
@@ -74,6 +75,29 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			$field = (string)$check['field'];
 			$value = (string)$check['value'];
 
+			if ( $specialPage === null ) {
+				$results[$field] = [ 'valid' => true ];
+				continue;
+			}
+
+			if ( $field === 'ratelimited' ) {
+				if ( $specialPage->getUser()->pingLimiter( 'requestwiki', 0 ) ) {
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						429, new MessageValue( 'rest-rate-limit-exceeded', [ 'requestwiki' ] )
+					);
+				}
+				continue;
+			}
+
+			if ( $field === 'duplicate' ) {
+				if ( $specialPage->isDuplicateRequest( $value ) ) {
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						403, new MessageValue( 'requestwiki-error-patient' )
+					);
+				}
+				continue;
+			}
+
 			$result = $this->validateField( $specialPage, $field, $value );
 			$results[$field] = $result === true
 				? [ 'valid' => true ]
@@ -87,24 +111,10 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 	}
 
 	private function validateField(
-		?SpecialRequestWiki $specialPage,
+		SpecialRequestWiki $specialPage,
 		string $field,
 		string $value
 	): Message|true {
-		if ( $specialPage === null ) {
-			return true;
-		}
-
-		if ( $field === 'pinglimiter' ) {
-			return $this->validator->validatePingLimiter( $specialPage->getUser() );
-		}
-
-		if ( $field === 'duplicate' ) {
-			return $this->validator->validateDuplicateRequest(
-				$specialPage->isDuplicateRequest( $value )
-			);
-		}
-
 		$info = $specialPage->getRestValidationInfo( $field );
 		if ( $info === null ) {
 			return true;
@@ -132,6 +142,13 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 				self::PARAM_SOURCE => 'body',
 				ParamValidator::PARAM_TYPE => 'array',
 				ParamValidator::PARAM_REQUIRED => true,
+				self::PARAM_DESCRIPTION => new MessageValue( 'createwiki-rest-checks-description' ),
+				ArrayDef::PARAM_SCHEMA => ArrayDef::makeListSchema(
+					ArrayDef::makeObjectSchema( [
+						'field' => [ 'type' => 'string', 'example' => 'subdomain' ],
+						'value' => [ 'type' => 'string', 'example' => 'mywiki' ],
+					] )
+				),
 			],
 		] + $this->getTokenParamDefinition();
 	}
