@@ -201,15 +201,55 @@
 		}
 
 		/**
-		 * Validate every REST-validated, visible field within a step.
+		 * Post a single field's value to the REST validation endpoint.
 		 *
-		 * @param {jQuery} $step The step to validate.
-		 * @return {jQuery.Promise} Resolves once every field's check has settled.
+		 * @param {string} field The field key the server should validate.
+		 * @param {string} value The current value to validate.
+		 * @param {jQuery} $errorAnchor Element to show or clear the resulting error against.
+		 * @return {jQuery.Promise} Resolves once the check has settled.
 		 */
-		function checkRestValidation( $step ) {
+		function validateFieldViaRest( field, value, $errorAnchor ) {
 			const rest = new mw.Rest();
 			const api = new mw.Api();
+
+			clearFieldError( $errorAnchor );
+
+			return api.getToken( 'csrf' ).then( ( token ) => rest.post( '/createwiki/v0/request_wiki/validate', {
+				field: field,
+				value: value,
+				token: token
+			} ) ).then( ( data ) => {
+				if ( !data.valid ) {
+					showFieldError( $errorAnchor, data.message );
+				}
+			}, () => true );
+		}
+
+		/**
+		 * Validate every REST-validated, visible field within a step, plus any
+		 * step-level checks (rate limiting, duplicate requests) that apply to it.
+		 *
+		 * @param {jQuery} $step The step to validate.
+		 * @return {jQuery.Promise} Resolves once every check has settled.
+		 */
+		function checkRestValidation( $step ) {
 			const deferreds = [];
+			const stepKey = $step.data( 'step' );
+
+			if ( stepKey === 'intro' ) {
+				deferreds.push( validateFieldViaRest(
+					'pinglimiter', '', $step.find( '.ext-createwiki-wizard-card-title' )
+				) );
+			}
+
+			if ( stepKey === 'basics' ) {
+				const $sitename = $step.find( '[name="wpsitename"]' );
+				if ( $sitename.length && isVisible( $sitename.get( 0 ) ) ) {
+					deferreds.push( validateFieldViaRest(
+						'duplicate', $sitename.val(), $step.find( '.ext-createwiki-wizard-card-title' )
+					) );
+				}
+			}
 
 			$step.find( '.ext-createwiki-wizard-rest-validate' ).each( function () {
 				if ( !isVisible( this ) ) {
@@ -223,20 +263,9 @@
 				}
 
 				const fieldName = field.name.slice( 2 );
-
-				clearFieldError( $input );
-
 				const value = field.type === 'checkbox' ? ( field.checked ? '1' : '' ) : $input.val();
 
-				deferreds.push( api.getToken( 'csrf' ).then( ( token ) => rest.post( '/createwiki/v0/request_wiki/validate', {
-					field: fieldName,
-					value: value,
-					token: token
-				} ) ).then( ( data ) => {
-					if ( !data.valid ) {
-						showFieldError( $input, data.message );
-					}
-				}, () => true ) );
+				deferreds.push( validateFieldViaRest( fieldName, value, $input ) );
 			} );
 
 			return $.when.apply( $, deferreds );
@@ -324,6 +353,41 @@
 
 			e.preventDefault();
 			$next.trigger( 'click' );
+		} );
+
+		/**
+		 * Attach a live "value changed" listener that clears a field's error optimistically.
+		 *
+		 * @param {jQuery} $marked The element carrying the REST-validate marker class.
+		 * @param {jQuery} $input The resolved named control for that field.
+		 * @return {void}
+		 */
+		function watchForChange( $marked, $input ) {
+			let widget = null;
+			try {
+				widget = OO.ui.infuse( $marked );
+			} catch ( e ) {
+				widget = null;
+			}
+
+			if ( widget && typeof widget.on === 'function' ) {
+				widget.on( 'change', () => {
+					clearFieldError( $input );
+				} );
+				return;
+			}
+
+			$input.on( 'input change', () => {
+				clearFieldError( $input );
+			} );
+		}
+
+		$wizard.find( '.ext-createwiki-wizard-rest-validate' ).each( function () {
+			const $marked = $( this );
+			const $input = findNamedControl( $marked );
+			if ( $input.length ) {
+				watchForChange( $marked, $input );
+			}
 		} );
 
 		const errorStep = findStepWithError();
