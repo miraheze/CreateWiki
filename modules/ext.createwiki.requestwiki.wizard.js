@@ -340,7 +340,6 @@
 			}
 
 			$button.prop( 'disabled', true );
-
 			checkRestValidation( $step ).then( () => {
 				$button.prop( 'disabled', false );
 				const $errors = $step.find( '.ext-createwiki-wizard-field-error' );
