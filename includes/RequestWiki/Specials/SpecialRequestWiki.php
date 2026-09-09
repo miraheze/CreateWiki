@@ -11,6 +11,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Stats\StatsFactory;
@@ -31,6 +32,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiParsedMessageCache $parsedMessageCache,
 		private readonly CreateWikiValidator $validator,
 		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager,
@@ -82,7 +84,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'wizard-intro' => [
 				'type' => 'info',
 				'raw' => true,
-				'default' => $this->msg( 'requestwiki-wizard-intro' )->parseAsBlock(),
+				'default' => $this->parsedMessageCache->parseAsBlock( $this->msg( 'requestwiki-wizard-intro' ) ),
 				'section' => 'intro',
 			],
 			'subdomain' => [
@@ -247,7 +249,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$headerMsg = $this->msg( $this->getMessagePrefix() . '-text' );
 		if ( !$headerMsg->isDisabled() ) {
-			$form->addHeaderHtml( $headerMsg->parseAsBlock() );
+			$form->addHeaderHtml( $this->parsedMessageCache->parseAsBlock( $headerMsg ) );
 		}
 
 		$form->addPreHtml( $this->preHtml() );

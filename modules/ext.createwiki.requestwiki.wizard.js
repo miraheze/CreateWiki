@@ -276,23 +276,33 @@
 			const stepKey = $step.data( 'step' );
 			const $stepErrorAnchor = $step.find( '.ext-createwiki-wizard-card-title' );
 			const checks = [];
+			const seenFields = new Set();
+
+			/**
+			 * Add a check for a field, skipping it if already queued this attempt.
+			 *
+			 * @param {string} field
+			 * @param {string} value
+			 * @param {jQuery} $anchor
+			 * @return {void}
+			 */
+			function addCheck( field, value, $anchor ) {
+				if ( seenFields.has( field ) ) {
+					return;
+				}
+
+				seenFields.add( field );
+				checks.push( { field: field, value: value, $anchor: $anchor } );
+			}
 
 			if ( stepKey === 'intro' ) {
-				checks.push( {
-					field: 'ratelimited',
-					value: '',
-					$anchor: $stepErrorAnchor
-				} );
+				addCheck( 'ratelimited', '', $stepErrorAnchor );
 			}
 
 			if ( stepKey === 'basics' ) {
 				const $sitename = $step.find( '[name="wpsitename"]' );
 				if ( $sitename.length && isVisible( $sitename.get( 0 ) ) ) {
-					checks.push( {
-						field: 'duplicate',
-						value: $sitename.val(),
-						$anchor: $stepErrorAnchor
-					} );
+					addCheck( 'duplicate', $sitename.val(), $stepErrorAnchor );
 				}
 			}
 
@@ -308,11 +318,7 @@
 				}
 
 				const value = field.type === 'checkbox' ? ( field.checked ? '1' : '' ) : $input.val();
-				checks.push( {
-					field: field.name.slice( 2 ),
-					value: value,
-					$anchor: $input
-				} );
+				addCheck( field.name.slice( 2 ), value, $input );
 			} );
 
 			return validateFieldsViaRest( checks, $stepErrorAnchor );
