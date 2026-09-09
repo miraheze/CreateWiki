@@ -21,6 +21,36 @@
 		let current = 0;
 
 		/**
+		 * Read the step index this page's current history entry represents.
+		 *
+		 * @param {Object|null} state A History API state object.
+		 * @return {number} Zero-based step index, defaulting to 0 if unset.
+		 */
+		function stepFromState( state ) {
+			return state && typeof state.createwikiWizardStep === 'number' ? state.createwikiWizardStep : 0;
+		}
+
+		/**
+		 * Push a new history entry recording the wizard's current step.
+		 *
+		 * @param {number} step Zero-based step index.
+		 * @return {void}
+		 */
+		function pushStepState( step ) {
+			history.pushState( { createwikiWizardStep: step }, '', location.href );
+		}
+
+		/**
+		 * Replace the current history entry with the wizard's current step.
+		 *
+		 * @param {number} step Zero-based step index.
+		 * @return {void}
+		 */
+		function replaceStepState( step ) {
+			history.replaceState( { createwikiWizardStep: step }, '', location.href );
+		}
+
+		/**
 		 * Find the index of the first step containing a server-rendered error.
 		 *
 		 * @return {number} Zero-based step index, or -1 if no step has an error.
@@ -256,6 +286,7 @@
 			validateStepThen( $steps.eq( current ), $next, () => {
 				current++;
 				updateView( true );
+				pushStepState( current );
 			} );
 		} );
 
@@ -278,7 +309,11 @@
 				return;
 			}
 
-			current--;
+			history.back();
+		} );
+
+		$( window ).on( 'popstate', ( e ) => {
+			current = stepFromState( e.originalEvent.state );
 			updateView( true );
 		} );
 
@@ -296,6 +331,7 @@
 			current = errorStep;
 		}
 
+		replaceStepState( current );
 		updateView( errorStep > -1 );
 	} );
 }() );
