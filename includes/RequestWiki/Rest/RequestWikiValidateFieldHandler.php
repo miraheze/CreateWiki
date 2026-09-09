@@ -35,12 +35,12 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 	/** @inheritDoc */
 	public function validate( Validator $restValidator ): void {
 		parent::validate( $restValidator );
-		$this->validateToken();
+		// $this->validateToken();
 	}
 
 	public function run(): Response {
 		$this->restUtils->checkEnv();
-		if ( !$this->getAuthority()->isNamed() ) {
+		/* if ( !$this->getAuthority()->isNamed() ) {
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				403, new MessageValue( 'createwiki-rest-mustlogin' )
 			);
@@ -50,7 +50,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				403, new MessageValue( 'createwiki-rest-notallowed' )
 			);
-		}
+		} */
 
 		$validatedBody = $this->getValidatedBody();
 
