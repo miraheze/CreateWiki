@@ -9,11 +9,9 @@ use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
 use MediaWiki\Rest\Validator\Validator;
 use MediaWiki\SpecialPage\SpecialPageFactory;
-use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use function is_array;
@@ -30,8 +28,6 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		private readonly CreateWikiRestUtils $restUtils,
 		private readonly CreateWikiValidator $validator,
 		private readonly SpecialPageFactory $specialPageFactory,
-		private readonly UserFactory $userFactory,
-		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 	}
 
@@ -95,18 +91,18 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		string $field,
 		string $value
 	): Message|true {
+		if ( $specialPage === null ) {
+			return true;
+		}
+
 		if ( $field === 'pinglimiter' ) {
-			$user = $this->userFactory->newFromAuthority( $this->getAuthority() );
-			return $this->validator->validatePingLimiter( $user );
+			return $this->validator->validatePingLimiter( $specialPage->getUser() );
 		}
 
 		if ( $field === 'duplicate' ) {
-			$isDuplicate = $this->wikiRequestManager->isDuplicateRequest( $value );
-			return $this->validator->validateDuplicateRequest( $isDuplicate );
-		}
-
-		if ( $specialPage === null ) {
-			return true;
+			return $this->validator->validateDuplicateRequest(
+				$specialPage->isDuplicateRequest( $value )
+			);
 		}
 
 		$info = $specialPage->getRestValidationInfo( $field );
