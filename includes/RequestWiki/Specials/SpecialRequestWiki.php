@@ -242,8 +242,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		$form = new RequestWikiWizardForm(
 			$this->getFormFields(),
 			$this->getContext(),
-			$this->getMessagePrefix(),
-			$this->parsedMessageCache
+			$this->getMessagePrefix()
 		);
 
 		$form->setSubmitCallback( [ $this, 'onSubmit' ] );
