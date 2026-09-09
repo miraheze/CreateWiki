@@ -68,7 +68,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 
 		$results = [];
 		foreach ( $checks as $check ) {
-			if ( !is_array( $check ) || !isset( $check['field'], $check['value'] ) ) {
+			if ( !is_array( $check ) || !isset( $check['field'] ) || !isset( $check['value'] ) ) {
 				continue;
 			}
 
