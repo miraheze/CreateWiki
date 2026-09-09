@@ -10,11 +10,13 @@ use MediaWiki\Rest\RequestData;
 use MediaWiki\Session\Session;
 use MediaWiki\Session\SessionProvider;
 use MediaWiki\Session\Token;
+use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldHandler;
+use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 
 /**
  * @group CreateWiki
@@ -47,6 +49,17 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			$services->get( 'CreateWikiRestUtils' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getSpecialPageFactory()
+		);
+	}
+
+	private function newHandlerWithSpecialPageFactory(
+		SpecialPageFactory $specialPageFactory
+	): RequestWikiValidateFieldHandler {
+		$services = $this->getServiceContainer();
+		return new RequestWikiValidateFieldHandler(
+			$services->get( 'CreateWikiRestUtils' ),
+			$services->get( 'CreateWikiValidator' ),
+			$specialPageFactory
 		);
 	}
 
@@ -106,6 +119,55 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		yield 'agreement checked' => [ 'agreement', '1', true ];
 		yield 'sitename is not rest-validated' => [ 'sitename', '', true ];
 		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true ];
+	}
+
+	/**
+	 * @covers ::validateField
+	 */
+	public function testValidateFieldWhenSpecialPageIsMissing(): void {
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( null );
+
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			[ 'field' => 'subdomain', 'value' => '', 'token' => '' ],
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertTrue( $data['valid'] );
+	}
+
+	/**
+	 * @covers ::validateField
+	 */
+	public function testValidateFieldWhenNotRequiredAndHasNoCallback(): void {
+		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		$specialPage->method( 'getRestValidationInfo' )->willReturn( [
+			'required' => false,
+			'callback' => null,
+			'type' => 'text',
+		] );
+
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
+
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			[ 'field' => 'optionalfield', 'value' => '', 'token' => '' ],
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertTrue( $data['valid'] );
 	}
 
 	/**
