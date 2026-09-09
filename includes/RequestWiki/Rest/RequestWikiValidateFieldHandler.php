@@ -82,13 +82,13 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			return true;
 		}
 
-		if ( $info['required'] && $value === '' ) {
-			return $this->validator->validateRequired( $value );
-		}
-
 		if ( $info['callback'] !== null ) {
 			$callbackValue = $info['type'] === 'check' ? $value === '1' : $value;
 			return ( $info['callback'] )( $callbackValue, [] );
+		}
+
+		if ( $info['required'] ) {
+			return $this->validator->validateRequired( $value );
 		}
 
 		return true;
