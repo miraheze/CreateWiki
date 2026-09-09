@@ -57,6 +57,7 @@
 	"createwiki-no-changes": "No changes made.",
 	"createwiki-request-locked": "This request has been locked. It cannot be edited, and no comments can be added to it.",
 	"createwiki-request-updated": "Updated request.",
+	"createwiki-rest-checks-description": "The fields to validate, each as an object with field and value.",
 	"createwiki-rest-disabled": "Access to the REST API for CreateWiki has been disabled in the settings for this wiki.",
 	"createwiki-rest-mustlogin": "You must log in to perform this action.",
 	"createwiki-rest-notallowed": "You're not allowed to perform this action.",

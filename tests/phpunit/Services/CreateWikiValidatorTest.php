@@ -6,14 +6,11 @@ use Generator;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
-use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use PHPUnit\Framework\MockObject\MockObject;
-use function is_bool;
-use function is_string;
 
 /**
  * @group CreateWiki
@@ -88,7 +85,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testValidateAgreement(
 		bool $agreement,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageLocalizerMock->method( 'msg' )
@@ -98,7 +95,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateAgreement( $agreement );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );
 		}
@@ -140,72 +137,13 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::validatePingLimiter
-	 * @dataProvider provideValidatePingLimiterData
-	 */
-	public function testValidatePingLimiter(
-		bool $isLimited,
-		string|true $expected
-	): void {
-		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
-		$this->messageLocalizerMock->method( 'msg' )
-			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
-			->with( 'actionthrottledtext' )
-			->willReturn( $this->messageMock );
-
-		$user = $this->createMock( User::class );
-		$user->method( 'pingLimiter' )->with( 'requestwiki' )->willReturn( $isLimited );
-
-		$result = $this->validator->validatePingLimiter( $user );
-		if ( $expected === true ) {
-			$this->assertSame( true, $result );
-		} else {
-			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
-			$this->assertSame( $expected, $result->parse() );
-		}
-	}
-
-	public static function provideValidatePingLimiterData(): Generator {
-		yield 'limited' => [ true, 'parsed' ];
-		yield 'not limited' => [ false, true ];
-	}
-
-	/**
-	 * @covers ::validateDuplicateRequest
-	 * @dataProvider provideValidateDuplicateRequestData
-	 */
-	public function testValidateDuplicateRequest(
-		bool $isDuplicate,
-		string|true $expected
-	): void {
-		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
-		$this->messageLocalizerMock->method( 'msg' )
-			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
-			->with( 'requestwiki-error-patient' )
-			->willReturn( $this->messageMock );
-
-		$result = $this->validator->validateDuplicateRequest( $isDuplicate );
-		if ( $expected === true ) {
-			$this->assertSame( true, $result );
-		} else {
-			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
-			$this->assertSame( $expected, $result->parse() );
-		}
-	}
-
-	public static function provideValidateDuplicateRequestData(): Generator {
-		yield 'duplicate' => [ true, 'parsed' ];
-		yield 'not duplicate' => [ false, true ];
-	}
-
-	/**
 	 * @covers ::validateComment
 	 * @dataProvider provideValidateCommentData
 	 */
 	public function testValidateComment(
 		string $comment,
 		array $data,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageLocalizerMock->method( 'msg' )
@@ -215,7 +153,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateComment( $comment, $data );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );
 		}
@@ -236,7 +174,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testValidateDatabaseEntry(
 		string $dbname,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
 		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
@@ -244,7 +182,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateDatabaseEntry( $dbname );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} elseif ( $expected === 'parsed' ) {
 			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
@@ -300,17 +238,15 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	public function testValidateReason(
 		string $reason,
 		array $data,
-		bool|string $expected
+		string|true $expected
 	): void {
-		// For cases where an error message is expected, simulate Message behavior.
-		if ( is_string( $expected ) ) {
-			$this->messageMock->method( 'parse' )->willReturn( $expected );
-			$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
-			$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
-		}
+		$this->messageMock->method( 'parse' )->willReturn( $expected );
+		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
+		$this->messageLocalizerMock->method( 'msg' )->willReturn( $this->messageMock );
+
 		$result = $this->validator->validateReason( $reason, $data );
-		if ( is_bool( $expected ) ) {
-			$this->assertSame( $expected, $result );
+		if ( $expected === true ) {
+			$this->assertSame( true, $result );
 		} elseif ( $expected === 'parsed' ) {
 			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
 			$this->assertIsString( $result->parse() );
@@ -336,7 +272,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	public function testValidateStatusComment(
 		string $comment,
 		array $data,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageLocalizerMock->method( 'msg' )
@@ -346,7 +282,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateStatusComment( $comment, $data );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );
 		}
@@ -369,7 +305,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 	public function testValidateSubdomain(
 		string $subdomain,
 		array $data,
-		bool|string $expected
+		string|true $expected
 	): void {
 		$this->messageMock->method( 'parse' )->willReturn( 'error' );
 		$this->messageMock->method( 'numParams' )->willReturn( $this->messageMock );
@@ -377,7 +313,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 
 		$result = $this->validator->validateSubdomain( $subdomain, $data );
 		if ( $expected === true ) {
-			$this->assertTrue( $result );
+			$this->assertSame( true, $result );
 		} else {
 			$this->assertInstanceOf( Message::class, $result );
 		}

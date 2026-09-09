@@ -13,12 +13,10 @@ use MediaWiki\Session\Token;
 use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWiki\User\User;
-use MediaWiki\User\UserFactory;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldHandler;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 
 /**
  * @group CreateWiki
@@ -50,9 +48,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		return new RequestWikiValidateFieldHandler(
 			$services->get( 'CreateWikiRestUtils' ),
 			$services->get( 'CreateWikiValidator' ),
-			$services->getSpecialPageFactory(),
-			$services->getUserFactory(),
-			$services->get( 'WikiRequestManager' )
+			$services->getSpecialPageFactory()
 		);
 	}
 
@@ -63,35 +59,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		return new RequestWikiValidateFieldHandler(
 			$services->get( 'CreateWikiRestUtils' ),
 			$services->get( 'CreateWikiValidator' ),
-			$specialPageFactory,
-			$services->getUserFactory(),
-			$services->get( 'WikiRequestManager' )
-		);
-	}
-
-	private function newHandlerWithUserFactory(
-		UserFactory $userFactory
-	): RequestWikiValidateFieldHandler {
-		$services = $this->getServiceContainer();
-		return new RequestWikiValidateFieldHandler(
-			$services->get( 'CreateWikiRestUtils' ),
-			$services->get( 'CreateWikiValidator' ),
-			$services->getSpecialPageFactory(),
-			$userFactory,
-			$services->get( 'WikiRequestManager' )
-		);
-	}
-
-	private function newHandlerWithWikiRequestManager(
-		WikiRequestManager $wikiRequestManager
-	): RequestWikiValidateFieldHandler {
-		$services = $this->getServiceContainer();
-		return new RequestWikiValidateFieldHandler(
-			$services->get( 'CreateWikiRestUtils' ),
-			$services->get( 'CreateWikiValidator' ),
-			$services->getSpecialPageFactory(),
-			$services->getUserFactory(),
-			$wikiRequestManager
+			$specialPageFactory
 		);
 	}
 
@@ -160,8 +128,42 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		yield 'agreement checked' => [ 'agreement', '1', true ];
 		yield 'sitename is not rest-validated' => [ 'sitename', '', true ];
 		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true ];
-		yield 'pinglimiter not limited' => [ 'pinglimiter', '', true ];
-		yield 'duplicate sitename not duplicate' => [ 'duplicate', 'A Brand New Sitename', true ];
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunWhenNotRateLimited(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'ratelimited', $data['results'] );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunWhenNotDuplicate(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'duplicate', 'A Brand New Sitename' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'duplicate', $data['results'] );
 	}
 
 	/**
@@ -218,40 +220,46 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenPingLimiterIsTriggered(): void {
+	public function testRunRejectsRateLimitedUser(): void {
 		$user = $this->createMock( User::class );
-		$user->method( 'pingLimiter' )->with( 'requestwiki' )->willReturn( true );
+		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( true );
 
-		$userFactory = $this->createMock( UserFactory::class );
-		$userFactory->method( 'newFromAuthority' )->willReturn( $user );
+		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		$specialPage->method( 'getUser' )->willReturn( $user );
 
-		$data = $this->executeHandlerAndGetBodyData(
-			$this->newHandlerWithUserFactory( $userFactory ),
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
+
+		$response = $this->executeHandler(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
 			[],
-			$this->singleCheckBody( 'pinglimiter', '' ),
+			$this->singleCheckBody( 'ratelimited', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertFalse( $data['results']['pinglimiter']['valid'] );
+		$this->assertSame( 429, $response->getStatusCode() );
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenDuplicateRequestExists(): void {
-		$wikiRequestManager = $this->createMock( WikiRequestManager::class );
-		$wikiRequestManager->method( 'isDuplicateRequest' )
+	public function testRunRejectsDuplicateRequest(): void {
+		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		$specialPage->method( 'isDuplicateRequest' )
 			->with( 'An Existing Sitename' )
 			->willReturn( true );
 
-		$data = $this->executeHandlerAndGetBodyData(
-			$this->newHandlerWithWikiRequestManager( $wikiRequestManager ),
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
+
+		$response = $this->executeHandler(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
@@ -261,13 +269,13 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			$this->getSession( true )
 		);
 
-		$this->assertFalse( $data['results']['duplicate']['valid'] );
+		$this->assertSame( 403, $response->getStatusCode() );
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenSpecialPageIsMissing(): void {
+	public function testRunWhenSpecialPageIsMissing(): void {
 		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
 		$specialPageFactory->method( 'getPage' )->willReturn( null );
 

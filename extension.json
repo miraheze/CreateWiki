@@ -171,6 +171,7 @@
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
+				"CreateWikiParsedMessageCache",
 				"CreateWikiValidator",
 				"StatsFactory",
 				"WikiRequestManager"
@@ -283,9 +284,7 @@
 			"services": [
 				"CreateWikiRestUtils",
 				"CreateWikiValidator",
-				"SpecialPageFactory",
-				"UserFactory",
-				"WikiRequestManager"
+				"SpecialPageFactory"
 			]
 		}
 	],

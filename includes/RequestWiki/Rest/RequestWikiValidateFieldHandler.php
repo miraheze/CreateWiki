@@ -4,16 +4,15 @@ namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Message\Message;
+use MediaWiki\ParamValidator\TypeDef\ArrayDef;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
 use MediaWiki\Rest\Validator\Validator;
 use MediaWiki\SpecialPage\SpecialPageFactory;
-use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
-use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use function is_array;
@@ -30,8 +29,6 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		private readonly CreateWikiRestUtils $restUtils,
 		private readonly CreateWikiValidator $validator,
 		private readonly SpecialPageFactory $specialPageFactory,
-		private readonly UserFactory $userFactory,
-		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 	}
 
@@ -78,6 +75,31 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 			$field = (string)$check['field'];
 			$value = (string)$check['value'];
 
+			if ( $specialPage === null ) {
+				$results[$field] = [ 'valid' => true ];
+				continue;
+			}
+
+			if ( $field === 'ratelimited' ) {
+				if ( $specialPage->getUser()->pingLimiter( 'requestwiki', 0 ) ) {
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						429, new MessageValue( 'rest-rate-limit-exceeded', [ 'requestwiki' ] )
+					);
+				}
+
+				continue;
+			}
+
+			if ( $field === 'duplicate' ) {
+				if ( $specialPage->isDuplicateRequest( $value ) ) {
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						403, new MessageValue( 'requestwiki-error-patient' )
+					);
+				}
+
+				continue;
+			}
+
 			$result = $this->validateField( $specialPage, $field, $value );
 			$results[$field] = $result === true
 				? [ 'valid' => true ]
@@ -91,24 +113,10 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 	}
 
 	private function validateField(
-		?SpecialRequestWiki $specialPage,
+		SpecialRequestWiki $specialPage,
 		string $field,
 		string $value
 	): Message|true {
-		if ( $field === 'pinglimiter' ) {
-			$user = $this->userFactory->newFromAuthority( $this->getAuthority() );
-			return $this->validator->validatePingLimiter( $user );
-		}
-
-		if ( $field === 'duplicate' ) {
-			$isDuplicate = $this->wikiRequestManager->isDuplicateRequest( $value );
-			return $this->validator->validateDuplicateRequest( $isDuplicate );
-		}
-
-		if ( $specialPage === null ) {
-			return true;
-		}
-
 		$info = $specialPage->getRestValidationInfo( $field );
 		if ( $info === null ) {
 			return true;
@@ -136,6 +144,13 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 				self::PARAM_SOURCE => 'body',
 				ParamValidator::PARAM_TYPE => 'array',
 				ParamValidator::PARAM_REQUIRED => true,
+				self::PARAM_DESCRIPTION => new MessageValue( 'createwiki-rest-checks-description' ),
+				ArrayDef::PARAM_SCHEMA => ArrayDef::makeListSchema(
+					ArrayDef::makeObjectSchema( [
+						'field' => [ 'type' => 'string', 'example' => 'subdomain' ],
+						'value' => [ 'type' => 'string', 'example' => 'mywiki' ],
+					] )
+				),
 			],
 		] + $this->getTokenParamDefinition();
 	}

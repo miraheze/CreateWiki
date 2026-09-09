@@ -37,6 +37,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		return new SpecialRequestWiki(
 			$services->get( 'CreateWikiDatabaseUtils' ),
 			$services->get( 'CreateWikiHookRunner' ),
+			$services->get( 'CreateWikiParsedMessageCache' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getStatsFactory(),
 			$services->get( 'WikiRequestManager' )
@@ -193,6 +194,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	}
 
 	/**
+	 * @covers ::isDuplicateRequest
 	 * @covers ::onSubmit
 	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider

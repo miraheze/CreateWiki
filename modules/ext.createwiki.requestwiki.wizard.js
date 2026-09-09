@@ -118,10 +118,8 @@
 		 */
 		function firstInvalidField( $step ) {
 			let $found = $( [] );
-
 			$step.find( 'input, select, textarea' ).each( function () {
 				const $field = $( this );
-
 				if ( this.required && fieldIsEmpty( this, $field ) ) {
 					$found = $field;
 					return false;
@@ -168,7 +166,6 @@
 		 */
 		function showFieldError( $input, message ) {
 			clearFieldError( $input );
-
 			errorTarget( $input ).after(
 				$( '<div>' ).addClass( 'ext-createwiki-wizard-field-error' ).text( message )
 			);
@@ -204,17 +201,41 @@
 		}
 
 		/**
+		 * Pull a human-readable message out of a failed REST response, if present.
+		 *
+		 * @param {Object} xhr The jqXHR object from a failed request.
+		 * @return {string|null} The first available localized message, or null if none.
+		 */
+		function extractHttpErrorMessage( xhr ) {
+			const body = xhr && xhr.responseJSON;
+			if ( !body || !body.messageTranslations ) {
+				return null;
+			}
+
+			const translations = Object.values( body.messageTranslations );
+			return translations.length ? translations[ 0 ] : null;
+		}
+
+		/**
 		 * Validate a batch of fields against the REST endpoint in a single request.
+		 *
+		 * Rate limit, duplicate request, and token failures are request-level
+		 * rejections from the server rather than per-field results, and are shown
+		 * against $stepErrorAnchor. Any other request failure, such as the REST
+		 * API being unavailable, is treated as inconclusive and never blocks the
+		 * wizard; only the real submission is authoritative for those cases.
 		 *
 		 * @param {Array.<{field: string, value: string, $anchor: jQuery}>} checks
 		 *   The fields to validate, each with the element to show or clear its error against.
-		 * @return {jQuery.Promise} Resolves once the batch has settled.
+		 * @param {jQuery} $stepErrorAnchor Element to show a request-level failure against.
+		 * @return {jQuery.Promise} Resolves if the step may proceed, rejects if it may not.
 		 */
-		function validateFieldsViaRest( checks ) {
+		function validateFieldsViaRest( checks, $stepErrorAnchor ) {
 			checks.forEach( ( check ) => {
 				clearFieldError( check.$anchor );
 			} );
 
+			clearFieldError( $stepErrorAnchor );
 			if ( !checks.length ) {
 				return $.Deferred().resolve().promise();
 			}
@@ -229,7 +250,19 @@
 						showFieldError( check.$anchor, result.message );
 					}
 				} );
-			}, () => true );
+			}, ( errorCode, errorDetails ) => {
+				const status = errorDetails && errorDetails.xhr && errorDetails.xhr.status;
+				if ( status !== 403 && status !== 429 ) {
+					return $.Deferred().resolve().promise();
+				}
+
+				const message = extractHttpErrorMessage( errorDetails.xhr );
+				if ( message ) {
+					showFieldError( $stepErrorAnchor, message );
+				}
+
+				return $.Deferred().reject().promise();
+			} );
 		}
 
 		/**
@@ -237,28 +270,39 @@
 		 * step-level checks (rate limiting, duplicate requests) that apply to it.
 		 *
 		 * @param {jQuery} $step The step to validate.
-		 * @return {jQuery.Promise} Resolves once every check has settled.
+		 * @return {jQuery.Promise} Resolves if the step may proceed, rejects if it may not.
 		 */
 		function checkRestValidation( $step ) {
 			const stepKey = $step.data( 'step' );
+			const $stepErrorAnchor = $step.find( '.ext-createwiki-wizard-card-title' );
 			const checks = [];
+			const seenFields = new Set();
+
+			/**
+			 * Add a check for a field, skipping it if already queued this attempt.
+			 *
+			 * @param {string} field
+			 * @param {string} value
+			 * @param {jQuery} $anchor
+			 * @return {void}
+			 */
+			function addCheck( field, value, $anchor ) {
+				if ( seenFields.has( field ) ) {
+					return;
+				}
+
+				seenFields.add( field );
+				checks.push( { field: field, value: value, $anchor: $anchor } );
+			}
 
 			if ( stepKey === 'intro' ) {
-				checks.push( {
-					field: 'pinglimiter',
-					value: '',
-					$anchor: $step.find( '.ext-createwiki-wizard-card-title' )
-				} );
+				addCheck( 'ratelimited', '', $stepErrorAnchor );
 			}
 
 			if ( stepKey === 'basics' ) {
 				const $sitename = $step.find( '[name="wpsitename"]' );
 				if ( $sitename.length && isVisible( $sitename.get( 0 ) ) ) {
-					checks.push( {
-						field: 'duplicate',
-						value: $sitename.val(),
-						$anchor: $step.find( '.ext-createwiki-wizard-card-title' )
-					} );
+					addCheck( 'duplicate', $sitename.val(), $stepErrorAnchor );
 				}
 			}
 
@@ -274,11 +318,10 @@
 				}
 
 				const value = field.type === 'checkbox' ? ( field.checked ? '1' : '' ) : $input.val();
-
-				checks.push( { field: field.name.slice( 2 ), value: value, $anchor: $input } );
+				addCheck( field.name.slice( 2 ), value, $input );
 			} );
 
-			return validateFieldsViaRest( checks );
+			return validateFieldsViaRest( checks, $stepErrorAnchor );
 		}
 
 		/**
@@ -300,7 +343,6 @@
 
 			checkRestValidation( $step ).then( () => {
 				$button.prop( 'disabled', false );
-
 				const $errors = $step.find( '.ext-createwiki-wizard-field-error' );
 				if ( $errors.length ) {
 					$errors.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'center' } );
@@ -314,6 +356,12 @@
 				}
 
 				onValid();
+			}, () => {
+				$button.prop( 'disabled', false );
+				const $errors = $step.find( '.ext-createwiki-wizard-field-error' );
+				if ( $errors.length ) {
+					$errors.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'center' } );
+				}
 			} );
 		}
 
@@ -330,14 +378,12 @@
 		} );
 
 		const $form = $wizard.closest( 'form' );
-
 		$form.on( 'submit', ( e ) => {
 			if ( current !== total - 1 ) {
 				return;
 			}
 
 			e.preventDefault();
-
 			validateStepThen( $steps.eq( current ), $submit, () => {
 				$form.get( 0 ).submit();
 			} );
@@ -384,6 +430,7 @@
 				widget.on( 'change', () => {
 					clearFieldError( $input );
 				} );
+
 				return;
 			}
 
