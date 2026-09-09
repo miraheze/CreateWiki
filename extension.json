@@ -283,9 +283,7 @@
 			"services": [
 				"CreateWikiRestUtils",
 				"CreateWikiValidator",
-				"SpecialPageFactory",
-				"UserFactory",
-				"WikiRequestManager"
+				"SpecialPageFactory"
 			]
 		}
 	],
