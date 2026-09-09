@@ -141,6 +141,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 			'type' => 'button',
 			'label' => $this->msg( 'requestwiki-wizard-start' )->text(),
 			'flags' => [ 'primary', 'progressive' ],
+			'infusable' => true,
 		] );
 
 		$submitAttribs = [
