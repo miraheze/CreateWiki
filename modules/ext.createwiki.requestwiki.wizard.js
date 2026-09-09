@@ -18,6 +18,9 @@
 			return;
 		}
 
+		const rest = new mw.Rest();
+		const api = new mw.Api();
+
 		let current = 0;
 
 		/**
@@ -201,27 +204,31 @@
 		}
 
 		/**
-		 * Post a single field's value to the REST validation endpoint.
+		 * Validate a batch of fields against the REST endpoint in a single request.
 		 *
-		 * @param {string} field The field key the server should validate.
-		 * @param {string} value The current value to validate.
-		 * @param {jQuery} $errorAnchor Element to show or clear the resulting error against.
-		 * @return {jQuery.Promise} Resolves once the check has settled.
+		 * @param {Array.<{field: string, value: string, $anchor: jQuery}>} checks
+		 *   The fields to validate, each with the element to show or clear its error against.
+		 * @return {jQuery.Promise} Resolves once the batch has settled.
 		 */
-		function validateFieldViaRest( field, value, $errorAnchor ) {
-			const rest = new mw.Rest();
-			const api = new mw.Api();
+		function validateFieldsViaRest( checks ) {
+			checks.forEach( ( check ) => {
+				clearFieldError( check.$anchor );
+			} );
 
-			clearFieldError( $errorAnchor );
+			if ( !checks.length ) {
+				return $.Deferred().resolve().promise();
+			}
 
 			return api.getToken( 'csrf' ).then( ( token ) => rest.post( '/createwiki/v0/request_wiki/validate', {
-				field: field,
-				value: value,
+				checks: checks.map( ( check ) => ( { field: check.field, value: check.value } ) ),
 				token: token
 			} ) ).then( ( data ) => {
-				if ( !data.valid ) {
-					showFieldError( $errorAnchor, data.message );
-				}
+				checks.forEach( ( check ) => {
+					const result = data.results && data.results[ check.field ];
+					if ( result && !result.valid ) {
+						showFieldError( check.$anchor, result.message );
+					}
+				} );
 			}, () => true );
 		}
 
@@ -233,21 +240,25 @@
 		 * @return {jQuery.Promise} Resolves once every check has settled.
 		 */
 		function checkRestValidation( $step ) {
-			const deferreds = [];
 			const stepKey = $step.data( 'step' );
+			const checks = [];
 
 			if ( stepKey === 'intro' ) {
-				deferreds.push( validateFieldViaRest(
-					'pinglimiter', '', $step.find( '.ext-createwiki-wizard-card-title' )
-				) );
+				checks.push( {
+					field: 'pinglimiter',
+					value: '',
+					$anchor: $step.find( '.ext-createwiki-wizard-card-title' )
+				} );
 			}
 
 			if ( stepKey === 'basics' ) {
 				const $sitename = $step.find( '[name="wpsitename"]' );
 				if ( $sitename.length && isVisible( $sitename.get( 0 ) ) ) {
-					deferreds.push( validateFieldViaRest(
-						'duplicate', $sitename.val(), $step.find( '.ext-createwiki-wizard-card-title' )
-					) );
+					checks.push( {
+						field: 'duplicate',
+						value: $sitename.val(),
+						$anchor: $step.find( '.ext-createwiki-wizard-card-title' )
+					} );
 				}
 			}
 
@@ -262,13 +273,12 @@
 					return;
 				}
 
-				const fieldName = field.name.slice( 2 );
 				const value = field.type === 'checkbox' ? ( field.checked ? '1' : '' ) : $input.val();
 
-				deferreds.push( validateFieldViaRest( fieldName, value, $input ) );
+				checks.push( { field: field.name.slice( 2 ), value: value, $anchor: $input } );
 			} );
 
-			return $.when.apply( $, deferreds );
+			return validateFieldsViaRest( checks );
 		}
 
 		/**
