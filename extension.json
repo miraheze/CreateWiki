@@ -308,6 +308,10 @@
 		},
 		"ext.createwiki.requestwiki.wizard": {
 			"scripts": "ext.createwiki.requestwiki.wizard.js",
+			"messages": [
+				"requestwiki-wizard-next",
+				"requestwiki-wizard-start"
+			],
 			"dependencies": [
 				"mediawiki.api",
 				"oojs-ui-core"
