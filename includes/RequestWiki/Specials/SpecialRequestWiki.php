@@ -26,6 +26,7 @@ use const MW_VERSION;
 class SpecialRequestWiki extends FormSpecialPage {
 
 	private array $extraFields = [];
+	private ?array $restValidationFormFields = null;
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
@@ -211,7 +212,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/** @return ?array{required: bool, callback: ?callable, type: string} */
 	public function getRestValidationInfo( string $field ): ?array {
-		$formDescriptor = $this->getFormFields();
+		$this->restValidationFormFields ??= $this->getFormFields();
+		$formDescriptor = $this->restValidationFormFields;
 		if ( !isset( $formDescriptor[$field] ) ) {
 			return null;
 		}
