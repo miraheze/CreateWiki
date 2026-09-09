@@ -154,7 +154,7 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 			->willReturn( $this->messageMock );
 
 		$user = $this->createMock( User::class );
-		$user->method( 'pingLimiter' )->with( 'requestwiki' )->willReturn( $isLimited );
+		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( $isLimited );
 
 		$result = $this->validator->validatePingLimiter( $user );
 		if ( $expected === true ) {
