@@ -86,6 +86,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 						429, new MessageValue( 'rest-rate-limit-exceeded', [ 'requestwiki' ] )
 					);
 				}
+
 				continue;
 			}
 
@@ -95,6 +96,7 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 						403, new MessageValue( 'requestwiki-error-patient' )
 					);
 				}
+
 				continue;
 			}
 
