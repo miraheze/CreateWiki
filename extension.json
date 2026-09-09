@@ -283,7 +283,9 @@
 			"services": [
 				"CreateWikiRestUtils",
 				"CreateWikiValidator",
-				"SpecialPageFactory"
+				"SpecialPageFactory",
+				"UserFactory",
+				"WikiRequestManager"
 			]
 		}
 	],
@@ -308,7 +310,8 @@
 		"ext.createwiki.requestwiki.wizard": {
 			"scripts": "ext.createwiki.requestwiki.wizard.js",
 			"dependencies": [
-				"mediawiki.api"
+				"mediawiki.api",
+				"oojs-ui-core"
 			]
 		},
 		"ext.createwiki.requestwiki.wizard.styles": {
