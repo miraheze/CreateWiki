@@ -9,9 +9,11 @@ use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
 use MediaWiki\Rest\Validator\Validator;
 use MediaWiki\SpecialPage\SpecialPageFactory;
+use MediaWiki\User\UserFactory;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 
@@ -27,6 +29,8 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 		private readonly CreateWikiRestUtils $restUtils,
 		private readonly CreateWikiValidator $validator,
 		private readonly SpecialPageFactory $specialPageFactory,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 	}
 
@@ -71,6 +75,16 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 	}
 
 	private function validateField( string $field, string $value ): Message|true {
+		if ( $field === 'pinglimiter' ) {
+			$user = $this->userFactory->newFromAuthority( $this->getAuthority() );
+			return $this->validator->validatePingLimiter( $user );
+		}
+
+		if ( $field === 'duplicate' ) {
+			$isDuplicate = $this->wikiRequestManager->isDuplicateRequest( $value );
+			return $this->validator->validateDuplicateRequest( $isDuplicate );
+		}
+
 		$specialPage = $this->specialPageFactory->getPage( 'RequestWiki' );
 		if ( !$specialPage instanceof SpecialRequestWiki ) {
 			return true;
