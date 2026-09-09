@@ -159,6 +159,7 @@
 	"requestwiki-wizard-back": "Back",
 	"requestwiki-wizard-intro": "Thank you for wanting to create a wiki with us! This short wizard will walk you through the details we need, a few steps at a time. You can go back and change anything before you submit, and nothing is saved until you reach the final step and press submit.",
 	"requestwiki-wizard-next": "Next",
+	"requestwiki-wizard-start": "Get Started",
 	"requestwiki-wizard-step-number": "Step $1 of $2",
 	"requestwikiqueue": "Wiki requests queue",
 	"requestwikiqueue-abandoned": "Abandoned",

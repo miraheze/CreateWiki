@@ -114,7 +114,12 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 	private function getWizardDots( int $total ): string {
 		$dots = '';
 		for ( $i = 0; $i < $total; $i++ ) {
-			$dots .= Html::element( 'span', [ 'class' => 'ext-createwiki-wizard-dot' ] );
+			$classes = [ 'ext-createwiki-wizard-dot' ];
+			if ( $i === 0 ) {
+				$classes[] = 'ext-createwiki-wizard-dot--current';
+			}
+
+			$dots .= Html::element( 'span', [ 'class' => $classes ] );
 		}
 
 		return Html::rawElement(
@@ -134,7 +139,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		$next = new ButtonInputWidget( [
 			'classes' => [ 'ext-createwiki-wizard-next' ],
 			'type' => 'button',
-			'label' => $this->msg( 'requestwiki-wizard-next' )->text(),
+			'label' => $this->msg( 'requestwiki-wizard-start' )->text(),
 			'flags' => [ 'primary', 'progressive' ],
 		] );
 
