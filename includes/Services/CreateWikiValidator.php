@@ -99,7 +99,8 @@ class CreateWikiValidator {
 	}
 
 	public function validatePingLimiter( User $user ): Message|true {
-		if ( $user->pingLimiter( 'requestwiki' ) ) {
+		// We don't want to increment here, only check.
+		if ( $user->pingLimiter( 'requestwiki', 0 ) ) {
 			return $this->messageLocalizer->msg( 'actionthrottledtext' );
 		}
 
