@@ -93,7 +93,6 @@
 			$next.toggle( current < total - 1 );
 			$submit.toggle( current === total - 1 );
 			$nextLabel.text( current === 0 ? startLabelText : nextLabelText );
-			$wizard.toggleClass( 'ext-createwiki-wizard--intro', current === 0 );
 
 			if ( scroll ) {
 				$steps.eq( current ).get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
