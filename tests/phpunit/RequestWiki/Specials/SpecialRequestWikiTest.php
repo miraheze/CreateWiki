@@ -193,6 +193,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	}
 
 	/**
+	 * @covers ::isDuplicateRequest
 	 * @covers ::onSubmit
 	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider
