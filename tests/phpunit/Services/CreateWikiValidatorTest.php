@@ -6,6 +6,7 @@ use Generator;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
+use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
@@ -136,6 +137,65 @@ class CreateWikiValidatorTest extends MediaWikiIntegrationTestCase {
 		yield 'empty value' => [ '', 'parsed' ];
 		yield 'whitespace value' => [ '   ', 'parsed' ];
 		yield 'valid value' => [ 'valid', true ];
+	}
+
+	/**
+	 * @covers ::validatePingLimiter
+	 * @dataProvider provideValidatePingLimiterData
+	 */
+	public function testValidatePingLimiter(
+		bool $isLimited,
+		string|true $expected
+	): void {
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'actionthrottledtext' )
+			->willReturn( $this->messageMock );
+
+		$user = $this->createMock( User::class );
+		$user->method( 'pingLimiter' )->with( 'requestwiki' )->willReturn( $isLimited );
+
+		$result = $this->validator->validatePingLimiter( $user );
+		if ( $expected === true ) {
+			$this->assertSame( true, $result );
+		} else {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
+			$this->assertSame( $expected, $result->parse() );
+		}
+	}
+
+	public static function provideValidatePingLimiterData(): Generator {
+		yield 'limited' => [ true, 'parsed' ];
+		yield 'not limited' => [ false, true ];
+	}
+
+	/**
+	 * @covers ::validateDuplicateRequest
+	 * @dataProvider provideValidateDuplicateRequestData
+	 */
+	public function testValidateDuplicateRequest(
+		bool $isDuplicate,
+		string|true $expected
+	): void {
+		$this->messageMock->method( 'parse' )->willReturn( 'parsed' );
+		$this->messageLocalizerMock->method( 'msg' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'requestwiki-error-patient' )
+			->willReturn( $this->messageMock );
+
+		$result = $this->validator->validateDuplicateRequest( $isDuplicate );
+		if ( $expected === true ) {
+			$this->assertSame( true, $result );
+		} else {
+			// @phan-suppress-next-line PhanPossiblyNonClassMethodCall
+			$this->assertSame( $expected, $result->parse() );
+		}
+	}
+
+	public static function provideValidateDuplicateRequestData(): Generator {
+		yield 'duplicate' => [ true, 'parsed' ];
+		yield 'not duplicate' => [ false, true ];
 	}
 
 	/**
