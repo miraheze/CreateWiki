@@ -44,6 +44,7 @@ class CreateWikiParsedMessageCacheTest extends MediaWikiIntegrationTestCase {
 		$cache = $this->newCache();
 
 		$this->assertSame( '<p>Some wikitext</p>', $cache->parseAsBlock( $message ) );
+		// @phan-suppress-next-line PhanPluginDuplicateAdjacentStatement
 		$this->assertSame( '<p>Some wikitext</p>', $cache->parseAsBlock( $message ) );
 	}
 
