@@ -20,6 +20,13 @@ class CreateWikiParsedMessageCacheTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * @covers ::__construct
+	 */
+	public function testConstructor(): void {
+		$this->assertInstanceOf( CreateWikiParsedMessageCache::class, $this->newCache() );
+	}
+
+	/**
 	 * @covers ::parseAsBlock
 	 */
 	public function testParseAsBlockSkipsCacheForNonExistentMessage(): void {
