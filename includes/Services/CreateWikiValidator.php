@@ -5,7 +5,6 @@ namespace Miraheze\CreateWiki\Services;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
-use MediaWiki\User\User;
 use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
@@ -93,23 +92,6 @@ class CreateWikiValidator {
 	public function validateRequired( ?string $value ): Message|true {
 		if ( !$value || ctype_space( $value ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
-		}
-
-		return true;
-	}
-
-	public function validatePingLimiter( User $user ): Message|true {
-		// We don't want to increment here, only check.
-		if ( $user->pingLimiter( 'requestwiki', 0 ) ) {
-			return $this->messageLocalizer->msg( 'actionthrottledtext' );
-		}
-
-		return true;
-	}
-
-	public function validateDuplicateRequest( bool $isDuplicate ): Message|true {
-		if ( $isDuplicate ) {
-			return $this->messageLocalizer->msg( 'requestwiki-error-patient' );
 		}
 
 		return true;
