@@ -231,6 +231,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		];
 	}
 
+	public function isDuplicateRequest( string $sitename ): bool {
+		return $this->wikiRequestManager->isDuplicateRequest( $sitename );
+	}
+
 	/** @inheritDoc */
 	protected function getForm(): RequestWikiWizardForm {
 		$form = new RequestWikiWizardForm(
