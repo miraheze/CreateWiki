@@ -21,9 +21,9 @@
 		const rest = new mw.Rest();
 		const api = new mw.Api();
 
-		const nextWidget = OO.ui.infuse( $next );
-		const nextLabel = mw.msg( 'requestwiki-wizard-next' );
-		const startLabel = mw.msg( 'requestwiki-wizard-start' );
+		const $nextLabel = $next.find( '.oo-ui-labelElement-label' );
+		const nextLabelText = mw.msg( 'requestwiki-wizard-next' );
+		const startLabelText = mw.msg( 'requestwiki-wizard-start' );
 
 		let current = 0;
 
@@ -92,7 +92,7 @@
 			$back.toggle( current > 0 );
 			$next.toggle( current < total - 1 );
 			$submit.toggle( current === total - 1 );
-			nextWidget.setLabel( current === 0 ? startLabel : nextLabel );
+			$nextLabel.text( current === 0 ? startLabelText : nextLabelText );
 
 			if ( scroll ) {
 				$steps.eq( current ).get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
