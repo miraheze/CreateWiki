@@ -51,6 +51,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -79,6 +80,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -99,6 +101,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -114,6 +117,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -132,6 +136,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -149,6 +154,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -164,6 +170,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
@@ -179,6 +186,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
 	 * @covers ::getStepSubtitle
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
