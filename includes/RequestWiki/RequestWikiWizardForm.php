@@ -84,7 +84,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		$inlineStyle = Html::rawElement(
 			'style',
 			[],
-			'.ext-createwiki-wizard-back,.ext-createwiki-wizard-submit{display:none}' .
+			'.ext-createwiki-wizard-back,.ext-createwiki-wizard-submit,.ext-createwiki-wizard-return-review{display:none}' .
 			'.ext-createwiki-wizard-step:not(:first-child){display:none}'
 		);
 
@@ -163,6 +163,14 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 			'label' => $this->msg( 'requestwiki-wizard-back' )->text(),
 		] );
 
+		$returnToReview = new ButtonInputWidget( [
+			'classes' => [ 'ext-createwiki-wizard-return-review' ],
+			'type' => 'button',
+			'label' => $this->msg( 'requestwiki-wizard-review-return' )->text(),
+			'framed' => false,
+			'flags' => [ 'progressive' ],
+		] );
+
 		$next = new ButtonInputWidget( [
 			'classes' => [ 'ext-createwiki-wizard-next' ],
 			'type' => 'button',
@@ -190,7 +198,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		return Html::rawElement(
 			'div',
 			[ 'class' => 'ext-createwiki-wizard-nav' ],
-			(string)$back . (string)$next . (string)$submit
+			(string)$back . (string)$returnToReview . (string)$next . (string)$submit
 		);
 	}
 }
