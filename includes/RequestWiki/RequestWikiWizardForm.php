@@ -8,6 +8,9 @@ use MediaWiki\Logger\LoggerFactory;
 use OOUI\ButtonInputWidget;
 use function count;
 use function is_array;
+use function json_encode;
+use function strip_tags;
+use function trim;
 
 class RequestWikiWizardForm extends OOUIHTMLForm {
 
@@ -87,11 +90,35 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 
 		return $this->formatFormHeader() . $inlineStyle . Html::rawElement(
 			'div',
-			[ 'class' => 'ext-createwiki-wizard', 'data-step-count' => (string)$total ],
+			[
+				'class' => 'ext-createwiki-wizard',
+				'data-step-count' => (string)$total,
+				'data-field-labels' => json_encode( $this->getReviewFieldLabels() ),
+			],
 			$this->getWizardDots( $total ) .
 			Html::rawElement( 'div', [ 'class' => 'ext-createwiki-wizard-pages' ], $pagesHtml ) .
 			$this->getWizardNav()
 		);
+	}
+
+	/** @return array<string, string> Map of form field name to its review summary label. */
+	private function getReviewFieldLabels(): array {
+		$labels = [];
+		foreach ( $this->mFlatFields as $fieldName => $field ) {
+			if ( $fieldName === 'wizard-intro' || $fieldName === 'wizard-review' ) {
+				continue;
+			}
+
+			$reviewLabelMsg = $this->msg( "requestwiki-wizard-review-label-$fieldName" );
+			if ( !$reviewLabelMsg->isDisabled() ) {
+				$labels["wp$fieldName"] = $reviewLabelMsg->text();
+				continue;
+			}
+
+			$labels["wp$fieldName"] = trim( strip_tags( $field->getLabel() ) );
+		}
+
+		return $labels;
 	}
 
 	private function getStepSubtitle( string $key ): string {

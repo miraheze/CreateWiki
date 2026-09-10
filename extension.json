@@ -310,6 +310,10 @@
 			"scripts": "ext.createwiki.requestwiki.wizard.js",
 			"messages": [
 				"requestwiki-wizard-next",
+				"requestwiki-wizard-review-edit",
+				"requestwiki-wizard-review-empty",
+				"requestwiki-wizard-review-no",
+				"requestwiki-wizard-review-yes",
 				"requestwiki-wizard-start"
 			],
 			"dependencies": [

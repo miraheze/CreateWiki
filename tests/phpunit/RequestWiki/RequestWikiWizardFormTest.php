@@ -5,6 +5,9 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki;
 use MediaWiki\Context\RequestContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
+use function html_entity_decode;
+use function json_decode;
+use function preg_match;
 
 /**
  * @group CreateWiki
@@ -25,6 +28,13 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 		$form->prepareForm();
 		return $form;
+	}
+
+	/** @return array<string, string> Decoded contents of the rendered data-field-labels attribute. */
+	private function extractFieldLabels( string $html ): array {
+		$this->assertMatchesRegularExpression( '/data-field-labels="([^"]*)"/', $html );
+		preg_match( '/data-field-labels="([^"]*)"/', $html, $matches );
+		return json_decode( html_entity_decode( $matches[1] ), true );
 	}
 
 	/**
@@ -190,5 +200,66 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 		$html = $form->getBody();
 		$this->assertStringNotContainsString( 'ext-createwiki-wizard-card-subtitle', $html );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsFallsBackToFieldLabelWhenNoReviewLabelExists(): void {
+		$form = $this->newForm( [
+			'customhookfield' => [ 'type' => 'text', 'label' => 'Custom Hook Field', 'section' => 'stepone' ],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+		$this->assertSame( 'Custom Hook Field', $labels['wpcustomhookfield'] );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsPrefersDedicatedReviewLabelOverFieldLabel(): void {
+		$form = $this->newForm( [
+			'subdomain' => [
+				'type' => 'text',
+				'label' => 'Please enter your desired subdomain here',
+				'section' => 'stepone',
+			],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+		$this->assertSame( 'Subdomain', $labels['wpsubdomain'] );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsExcludePseudoFields(): void {
+		$form = $this->newForm( [
+			'wizard-intro' => [ 'type' => 'info', 'raw' => true, 'default' => 'Intro text', 'section' => 'intro' ],
+			'field1' => [ 'type' => 'text', 'label' => 'Field 1', 'section' => 'stepone' ],
+			'wizard-review' => [ 'type' => 'info', 'raw' => true, 'default' => 'Review text', 'section' => 'agreement' ],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+		$this->assertArrayNotHasKey( 'wpwizard-intro', $labels );
+		$this->assertArrayNotHasKey( 'wpwizard-review', $labels );
+		$this->assertArrayHasKey( 'wpfield1', $labels );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsAreNotTruncated(): void {
+		$longLabel = 'This is a very long field label that exceeds fifty characters in length';
+		$form = $this->newForm( [
+			'customhookfield' => [ 'type' => 'text', 'label' => $longLabel, 'section' => 'stepone' ],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+		$this->assertSame( $longLabel, $labels['wpcustomhookfield'] );
 	}
 }
