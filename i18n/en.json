@@ -171,6 +171,7 @@
 	"requestwiki-wizard-review-label-sitename": "Wiki name",
 	"requestwiki-wizard-review-label-subdomain": "Subdomain",
 	"requestwiki-wizard-review-no": "No",
+	"requestwiki-wizard-review-return": "Return to review",
 	"requestwiki-wizard-review-yes": "Yes",
 	"requestwiki-wizard-start": "Get Started",
 	"requestwiki-wizard-step-number": "Step $1 of $2",
