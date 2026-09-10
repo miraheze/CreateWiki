@@ -95,6 +95,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 		$this->assertStringContainsString( 'ext-createwiki-wizard-card-title', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-step-count', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-next', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-submit', $html );
 		$this->assertStringContainsString( 'mw-section-stepone', $html );
@@ -160,6 +161,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertStringContainsString( '<style>', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $html );
 		$this->assertStringContainsString( 'display:none', $html );
 	}
 
