@@ -24,6 +24,11 @@
 		const $nextLabel = $next.find( '.oo-ui-labelElement-label' );
 		const nextLabelText = mw.msg( 'requestwiki-wizard-next' );
 		const startLabelText = mw.msg( 'requestwiki-wizard-start' );
+		const reviewYesText = mw.msg( 'requestwiki-wizard-review-yes' );
+		const reviewNoText = mw.msg( 'requestwiki-wizard-review-no' );
+		const reviewEmptyText = mw.msg( 'requestwiki-wizard-review-empty' );
+		const reviewEditText = mw.msg( 'requestwiki-wizard-review-edit' );
+		const fieldLabels = JSON.parse( $wizard.attr( 'data-field-labels' ) || '{}' );
 
 		let current = 0;
 
@@ -58,6 +63,18 @@
 		}
 
 		/**
+		 * Jump directly to a given step, recording it as a new history entry.
+		 *
+		 * @param {number} step Zero-based step index.
+		 * @return {void}
+		 */
+		function goToStep( step ) {
+			current = step;
+			updateView( true );
+			pushStepState( current );
+		}
+
+		/**
 		 * Find the index of the first step containing a server-rendered error.
 		 *
 		 * @return {number} Zero-based step index, or -1 if no step has an error.
@@ -71,6 +88,105 @@
 			} );
 
 			return found;
+		}
+
+		/**
+		 * Determine whether a field is currently hidden by a hide-if condition.
+		 *
+		 * @param {jQuery} $fieldLayout The field's OOUI field layout wrapper.
+		 * @return {boolean}
+		 */
+		function isHiddenByHideIf( $fieldLayout ) {
+			const el = $fieldLayout.get( 0 );
+			return el.classList.contains( 'mw-htmlform-hide-if-hidden' ) ||
+				el.classList.contains( 'oo-ui-element-hidden' ) ||
+				el.style.display === 'none';
+		}
+
+		/**
+		 * Build a review summary row for a single field and append it to the
+		 * list, skipping fields with no name, no known label, or that are
+		 * currently hidden by a hide-if condition.
+		 *
+		 * @param {jQuery} $list The summary list to append the row to.
+		 * @param {jQuery} $fieldLayout The field's OOUI field layout wrapper.
+		 * @param {number} stepIndex The zero-based step this field belongs to.
+		 * @return {void}
+		 */
+		function appendReviewRow( $list, $fieldLayout, stepIndex ) {
+			if ( isHiddenByHideIf( $fieldLayout ) ) {
+				return;
+			}
+
+			const $control = $fieldLayout.find( 'input, select, textarea' ).filter( function () {
+				return this.name && this.name.indexOf( 'wp' ) === 0;
+			} ).first();
+
+			const field = $control.get( 0 );
+			if ( !field || !fieldLabels[ field.name ] ) {
+				return;
+			}
+
+			let valueText;
+			if ( field.type === 'checkbox' ) {
+				valueText = field.checked ? reviewYesText : reviewNoText;
+			} else if ( field.tagName === 'SELECT' ) {
+				const selected = field.options[ field.selectedIndex ];
+				valueText = selected ? selected.text : '';
+			} else {
+				valueText = $control.val() || '';
+			}
+
+			const $editButton = $( '<button>' )
+				.attr( 'type', 'button' )
+				.addClass( 'ext-createwiki-wizard-review-edit' )
+				.text( reviewEditText )
+				.on( 'click', () => {
+					goToStep( stepIndex );
+				} );
+
+			const $labelRow = $( '<div>' ).addClass( 'ext-createwiki-wizard-review-label-row' );
+			$labelRow.append(
+				$( '<div>' ).addClass( 'ext-createwiki-wizard-review-label' ).text( fieldLabels[ field.name ] )
+			);
+
+			$labelRow.append( $editButton );
+
+			const $row = $( '<div>' ).addClass( 'ext-createwiki-wizard-review-row' );
+			$row.append( $labelRow );
+			$row.append(
+				$( '<div>' ).addClass( 'ext-createwiki-wizard-review-value' ).text( valueText || reviewEmptyText )
+			);
+
+			$list.append( $row );
+		}
+
+		/**
+		 * Rebuild the final step's summary of every field entered elsewhere
+		 * in the wizard, reflecting the current, live values.
+		 *
+		 * @return {void}
+		 */
+		function buildReviewSummary() {
+			const $review = $wizard.find( '.ext-createwiki-wizard-review' );
+			if ( !$review.length ) {
+				return;
+			}
+
+			const $list = $( '<div>' ).addClass( 'ext-createwiki-wizard-review-list' );
+
+			$steps.each( function ( stepIndex ) {
+				const stepKey = $( this ).data( 'step' );
+				if ( stepKey === 'intro' || stepKey === 'agreement' ) {
+					return;
+				}
+
+				$( this ).find( '.oo-ui-fieldLayout' ).each( function () {
+					appendReviewRow( $list, $( this ), stepIndex );
+				} );
+			} );
+
+			$review.empty().append( $list );
 		}
 
 		/**
@@ -93,7 +209,7 @@
 			$next.toggle( current < total - 1 );
 			$submit.toggle( current === total - 1 );
 			$nextLabel.text( current === 0 ? startLabelText : nextLabelText );
-
+			buildReviewSummary();
 			if ( scroll ) {
 				$steps.eq( current ).get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
 			}
@@ -375,9 +491,7 @@
 			}
 
 			validateStepThen( $steps.eq( current ), $next, () => {
-				current++;
-				updateView( true );
-				pushStepState( current );
+				goToStep( current + 1 );
 			} );
 		} );
 

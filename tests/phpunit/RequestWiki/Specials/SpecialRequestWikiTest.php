@@ -122,6 +122,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
 		$this->assertArrayHasKey( 'wizard-intro', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'wizard-review', $specialRequestWiki->getFormFields() );
 	}
 
 	/**
