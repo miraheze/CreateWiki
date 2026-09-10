@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Exception\UserBlockedError;
+use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
@@ -174,6 +175,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 			'validation-callback' => [ $this->validator, 'validateReason' ],
 			'section' => 'details',
+		];
+
+		$formDescriptor['wizard-review'] = [
+			'type' => 'info',
+			'raw' => true,
+			'default' => Html::element(
+				'h3',
+				[ 'class' => 'ext-createwiki-wizard-review-heading' ],
+				$this->msg( 'requestwiki-wizard-review-heading' )->text()
+			) . Html::element( 'div', [ 'class' => 'ext-createwiki-wizard-review' ] ),
+			'section' => 'agreement',
 		];
 
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
