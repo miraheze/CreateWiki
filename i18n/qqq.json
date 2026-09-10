@@ -178,6 +178,7 @@
 	"requestwiki-wizard-review-label-sitename": "Short label used for the \"sitename\" field in the {{msg-mw|Requestwiki}} wizard's final-step summary.",
 	"requestwiki-wizard-review-label-subdomain": "Short label used for the \"subdomain\" field in the {{msg-mw|Requestwiki}} wizard's final-step summary.",
 	"requestwiki-wizard-review-no": "Shown in the {{msg-mw|Requestwiki}} wizard's final-step summary as the value of an unchecked checkbox field.\n{{Identical|No}}",
+	"requestwiki-wizard-review-return": "{{doc-action|button}}\nButton shown on every step of the {{msg-mw|Requestwiki}} wizard except the introduction and the final review step, taking the user directly back to the final review step.",
 	"requestwiki-wizard-review-yes": "Shown in the {{msg-mw|Requestwiki}} wizard's final-step summary as the value of a checked checkbox field.\n{{Identical|Yes}}",
 	"requestwiki-wizard-start": "{{doc-action|button}}\nButton label shown in place of {{msg-mw|Requestwiki-wizard-next}} on the introduction step of the {{msg-mw|Requestwiki}} wizard.",
 	"requestwiki-wizard-step-number": "Caption shown at the top of each step of the {{msg-mw|Requestwiki}} wizard, giving the step's position.\n\nParameters:\n* $1 - the step's number\n* $2 - the total number of steps",

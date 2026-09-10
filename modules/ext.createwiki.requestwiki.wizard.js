@@ -12,6 +12,7 @@
 		const $back = $wizard.find( '.ext-createwiki-wizard-back' );
 		const $next = $wizard.find( '.ext-createwiki-wizard-next' );
 		const $submit = $wizard.find( '.ext-createwiki-wizard-submit' );
+		const $returnToReview = $wizard.find( '.ext-createwiki-wizard-return-review' );
 
 		const total = $steps.length;
 		if ( !total ) {
@@ -31,15 +32,39 @@
 		const fieldLabels = JSON.parse( $wizard.attr( 'data-field-labels' ) || '{}' );
 
 		let current = 0;
+		let cameFromReview = false;
+		const loadToken = String( Date.now() ) + Math.random().toString( 36 ).slice( 2 );
+
+		// HTMLInfoField renders its raw content wrapped in a <label> element with
+		// no "for" target, so the browser implicitly associates it with the first
+		// nested form control and forwards any click within it there, focusing
+		// that control in the process. Block both the initial focus (which
+		// happens at mousedown) and the forwarded click, unless the interaction
+		// genuinely landed on one of the edit buttons.
+		$wizard.find( '.ext-createwiki-wizard-review' ).closest( 'label' )
+			.on( 'mousedown click', ( e ) => {
+				if ( !$( e.target ).closest( '.ext-createwiki-wizard-review-edit' ).length ) {
+					e.preventDefault();
+				}
+			} );
 
 		/**
 		 * Read the step index this page's current history entry represents.
 		 *
+		 * Every step shares the same URL, so a reload leaves a stale, pre-reload
+		 * entry indistinguishable from a fresh one by step number alone. The load
+		 * token lets a stale entry be recognized and rejected instead of trusted.
+		 *
 		 * @param {Object|null} state A History API state object.
-		 * @return {number} Zero-based step index, defaulting to 0 if unset.
+		 * @return {number|null} Zero-based step index, or null if the entry
+		 *   predates this page load and should not be trusted.
 		 */
 		function stepFromState( state ) {
-			return state && typeof state.createwikiWizardStep === 'number' ? state.createwikiWizardStep : 0;
+			if ( !state || state.createwikiWizardLoadToken !== loadToken ) {
+				return null;
+			}
+
+			return typeof state.createwikiWizardStep === 'number' ? state.createwikiWizardStep : 0;
 		}
 
 		/**
@@ -49,7 +74,9 @@
 		 * @return {void}
 		 */
 		function pushStepState( step ) {
-			history.pushState( { createwikiWizardStep: step }, '', location.href );
+			history.pushState(
+				{ createwikiWizardStep: step, createwikiWizardLoadToken: loadToken }, '', location.href
+			);
 		}
 
 		/**
@@ -59,7 +86,9 @@
 		 * @return {void}
 		 */
 		function replaceStepState( step ) {
-			history.replaceState( { createwikiWizardStep: step }, '', location.href );
+			history.replaceState(
+				{ createwikiWizardStep: step, createwikiWizardLoadToken: loadToken }, '', location.href
+			);
 		}
 
 		/**
@@ -72,6 +101,19 @@
 			current = step;
 			updateView( true );
 			pushStepState( current );
+		}
+
+		/**
+		 * Validate the current step, then jump to a given step if it passes.
+		 *
+		 * @param {jQuery} $button The button to disable while validation is in progress.
+		 * @param {number} targetStep Zero-based step index to jump to once valid.
+		 * @return {void}
+		 */
+		function validateThenGoToStep( $button, targetStep ) {
+			validateStepThen( $steps.eq( current ), $button, () => {
+				goToStep( targetStep );
+			} );
 		}
 
 		/**
@@ -142,6 +184,7 @@
 				.addClass( 'ext-createwiki-wizard-review-edit' )
 				.text( reviewEditText )
 				.on( 'click', () => {
+					cameFromReview = true;
 					goToStep( stepIndex );
 				} );
 
@@ -205,9 +248,15 @@
 				$( this ).toggleClass( 'ext-createwiki-wizard-dot--complete', index < current );
 			} );
 
-			$back.toggle( current > 0 );
-			$next.toggle( current < total - 1 );
-			$submit.toggle( current === total - 1 );
+			if ( current === total - 1 ) {
+				cameFromReview = false;
+			}
+
+			const editingFromReview = cameFromReview && current !== total - 1;
+			$back.toggle( !editingFromReview && current > 0 );
+			$next.toggle( !editingFromReview && current < total - 1 );
+			$submit.toggle( !editingFromReview && current === total - 1 );
+			$returnToReview.toggle( editingFromReview );
 			$nextLabel.text( current === 0 ? startLabelText : nextLabelText );
 			buildReviewSummary();
 			if ( scroll ) {
@@ -490,9 +539,7 @@
 				return;
 			}
 
-			validateStepThen( $steps.eq( current ), $next, () => {
-				goToStep( current + 1 );
-			} );
+			validateThenGoToStep( $next, current + 1 );
 		} );
 
 		const $form = $wizard.closest( 'form' );
@@ -515,8 +562,20 @@
 			history.back();
 		} );
 
+		$returnToReview.on( 'click', () => {
+			validateThenGoToStep( $returnToReview, total - 1 );
+		} );
+
 		$( window ).on( 'popstate', ( e ) => {
-			current = stepFromState( e.originalEvent.state );
+			const step = stepFromState( e.originalEvent.state );
+			if ( step === null ) {
+				current = 0;
+				updateView( true );
+				replaceStepState( current );
+				return;
+			}
+
+			current = step;
 			updateView( true );
 		} );
 
