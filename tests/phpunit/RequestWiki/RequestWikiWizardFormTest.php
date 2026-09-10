@@ -34,7 +34,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	private function extractFieldLabels( string $html ): array {
 		$this->assertMatchesRegularExpression( '/data-field-labels="([^"]*)"/', $html );
 		preg_match( '/data-field-labels="([^"]*)"/', $html, $matches );
-		return json_decode( html_entity_decode( $matches[1] ), true );
+		return (array)json_decode( html_entity_decode( $matches[1] ), true );
 	}
 
 	/**
