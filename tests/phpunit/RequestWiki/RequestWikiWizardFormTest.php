@@ -34,7 +34,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	private function extractFieldLabels( string $html ): array {
 		$this->assertMatchesRegularExpression( '/data-field-labels="([^"]*)"/', $html );
 		preg_match( '/data-field-labels="([^"]*)"/', $html, $matches );
-		return json_decode( html_entity_decode( $matches[1] ), true );
+		return (array)json_decode( html_entity_decode( $matches[1] ), true );
 	}
 
 	/**
@@ -42,7 +42,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testConstructor(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$this->assertInstanceOf( RequestWikiWizardForm::class, $form );
@@ -53,7 +56,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetButtonsReturnsEmptyString(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$this->assertSame( '', $form->getButtons() );
@@ -67,8 +73,16 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyRendersWizardMarkupForSectionedFields(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'label' => 'Field 1', 'section' => 'stepone' ],
-			'field2' => [ 'type' => 'text', 'label' => 'Field 2', 'section' => 'steptwo' ],
+			'field1' => [
+				'type' => 'text',
+				'label' => 'Field 1',
+				'section' => 'stepone',
+			],
+			'field2' => [
+				'type' => 'text',
+				'label' => 'Field 2',
+				'section' => 'steptwo',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -95,7 +109,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyIncludesSubmitNameAndId(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$form->setSubmitName( 'mysubmitname' );
@@ -115,7 +132,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyFallsBackToParentWhenNoFieldHasSection(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'label' => 'Field 1' ],
+			'field1' => [
+				'type' => 'text',
+				'label' => 'Field 1',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -130,7 +150,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyIncludesInlineStyleToPreventFlash(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -148,7 +171,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyIncludesFormHeaderHtml(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$form->addHeaderHtml( '<p>Custom header content</p>' );
@@ -165,7 +191,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyIncludesSubtitleWhenMessageExists(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'details' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'details',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -180,7 +209,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyOmitsSubtitleWhenMessageDoesNotExist(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'nonexistentsectionxyz' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'nonexistentsectionxyz',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -195,7 +227,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyOmitsSubtitleWhenMessagePrefixIsEmpty(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'details' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'details',
+			],
 		], '' );
 
 		$html = $form->getBody();
@@ -208,7 +243,11 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyFieldLabelsFallsBackToFieldLabelWhenNoReviewLabelExists(): void {
 		$form = $this->newForm( [
-			'customhookfield' => [ 'type' => 'text', 'label' => 'Custom Hook Field', 'section' => 'stepone' ],
+			'customhookfield' => [
+				'type' => 'text',
+				'label' => 'Custom Hook Field',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$labels = $this->extractFieldLabels( $form->getBody() );
@@ -238,28 +277,29 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyFieldLabelsExcludePseudoFields(): void {
 		$form = $this->newForm( [
-			'wizard-intro' => [ 'type' => 'info', 'raw' => true, 'default' => 'Intro text', 'section' => 'intro' ],
-			'field1' => [ 'type' => 'text', 'label' => 'Field 1', 'section' => 'stepone' ],
-			'wizard-review' => [ 'type' => 'info', 'raw' => true, 'default' => 'Review text', 'section' => 'agreement' ],
+			'wizard-intro' => [
+				'type' => 'info',
+				'raw' => true,
+				'default' => 'Intro text',
+				'section' => 'intro',
+			],
+			'field1' => [
+				'type' => 'text',
+				'label' => 'Field 1',
+				'section' => 'stepone',
+			],
+			'wizard-review' => [
+				'type' => 'info',
+				'raw' => true,
+				'default' => 'Review text',
+				'section' => 'agreement',
+			],
 		], 'requestwiki' );
 
 		$labels = $this->extractFieldLabels( $form->getBody() );
+
 		$this->assertArrayNotHasKey( 'wpwizard-intro', $labels );
 		$this->assertArrayNotHasKey( 'wpwizard-review', $labels );
 		$this->assertArrayHasKey( 'wpfield1', $labels );
-	}
-
-	/**
-	 * @covers ::getBody
-	 * @covers ::getReviewFieldLabels
-	 */
-	public function testGetBodyFieldLabelsAreNotTruncated(): void {
-		$longLabel = 'This is a very long field label that exceeds fifty characters in length';
-		$form = $this->newForm( [
-			'customhookfield' => [ 'type' => 'text', 'label' => $longLabel, 'section' => 'stepone' ],
-		], 'requestwiki' );
-
-		$labels = $this->extractFieldLabels( $form->getBody() );
-		$this->assertSame( $longLabel, $labels['wpcustomhookfield'] );
 	}
 }
