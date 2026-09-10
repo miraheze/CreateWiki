@@ -98,10 +98,76 @@
 	margin-right: auto;
 }
 
+.ext-createwiki-wizard-review-heading {
+	padding: 0;
+	border: 0;
+	margin: 0 0 0.5em;
+	font-size: 1.1em;
+}
+
+.ext-createwiki-wizard-review-list {
+	max-width: 100%;
+	box-sizing: border-box;
+	border: 1px solid var( --border-color-subtle, #c8ccd1 );
+	border-radius: 4px;
+	margin: 0 0 1.5em;
+}
+
+.ext-createwiki-wizard-review-row {
+	max-width: 100%;
+	box-sizing: border-box;
+	padding: 0.6em 0.8em;
+	border-bottom: 1px solid var( --border-color-subtle, #c8ccd1 );
+}
+
+.ext-createwiki-wizard-review-row:last-child {
+	border-bottom: 0;
+}
+
+.ext-createwiki-wizard-review-row:nth-child( odd ) {
+	background-color: var( --background-color-neutral-subtle, #f8f9fa );
+}
+
+.ext-createwiki-wizard-review-label-row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.ext-createwiki-wizard-review-label {
+	margin: 0 0 0.15em;
+	color: var( --color-subtle, #54595d );
+	font-size: 0.8em;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+}
+
+.ext-createwiki-wizard-review-edit {
+	flex-shrink: 0;
+	padding: 0;
+	border: 0;
+	margin-left: 0.5em;
+	background: none;
+	color: var( --color-progressive, #36c );
+	cursor: pointer;
+	font-size: 0.8em;
+}
+
+.ext-createwiki-wizard-review-edit:hover {
+	text-decoration: underline;
+}
+
+.ext-createwiki-wizard-review-value {
+	overflow-wrap: break-word;
+	white-space: pre-wrap;
+}
+
 .client-nojs {
 	.ext-createwiki-wizard-dots,
 	.ext-createwiki-wizard-back,
-	.ext-createwiki-wizard-next {
+	.ext-createwiki-wizard-next,
+	.ext-createwiki-wizard-review-heading,
+	.ext-createwiki-wizard-review {
 		display: none;
 	}
 
