@@ -5,7 +5,6 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki;
 use MediaWiki\Context\RequestContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
-use Wikimedia\TestingAccessWrapper;
 use function html_entity_decode;
 use function json_decode;
 use function preg_match;
@@ -222,7 +221,6 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getBody
 	 */
 	public function testGetBodyAddsInlineStyleToPreventFlash(): void {
-		$context = RequestContext::getMain();
 		$form = $this->newForm( [
 			'field1' => [
 				'type' => 'text',
@@ -230,12 +228,12 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 			],
 		], 'requestwiki' );
 
-		$form->getBody();
+		$html = $form->getBody();
 
-		$output = TestingAccessWrapper::newFromObject( $context->getOutput() );
-		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $output->mInlineStyles );
-		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $output->mInlineStyles );
-		$this->assertStringContainsString( 'display:none', $output->mInlineStyles );
+		$this->assertStringContainsString( '<style', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $html );
+		$this->assertStringContainsString( 'display:none', $html );
 	}
 
 	/**
