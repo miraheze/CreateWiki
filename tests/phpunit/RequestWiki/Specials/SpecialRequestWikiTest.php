@@ -116,7 +116,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			'wpreason' => 'Test onSuccess() via execute()',
 		] ) );
 
-		$context->setUser( $this->getTestUserAuthorityWithConfirmedEmail() );
+		$context->setUser( $this->getTestUserAuthorityWithConfirmedEmail()->getUser() );
 		$this->executeSpecialPage( '', null, null, null, false, $context );
 
 		$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', '1' )->getFullURL();
