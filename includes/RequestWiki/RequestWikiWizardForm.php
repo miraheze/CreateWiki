@@ -81,14 +81,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 			);
 		}
 
-		$inlineStyle = Html::rawElement(
-			'style',
-			[],
-			'.ext-createwiki-wizard-back,.ext-createwiki-wizard-submit,.ext-createwiki-wizard-return-review{display:none}' .
-			'.ext-createwiki-wizard-step:not(:first-child){display:none}'
-		);
-
-		return $this->formatFormHeader() . $inlineStyle . Html::rawElement(
+		return $this->formatFormHeader() . Html::rawElement(
 			'div',
 			[
 				'class' => 'ext-createwiki-wizard',

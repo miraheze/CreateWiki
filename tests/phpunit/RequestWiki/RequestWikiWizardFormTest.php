@@ -149,28 +149,6 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
 	 */
-	public function testGetBodyIncludesInlineStyleToPreventFlash(): void {
-		$form = $this->newForm( [
-			'field1' => [
-				'type' => 'text',
-				'section' => 'stepone',
-			],
-		], 'requestwiki' );
-
-		$html = $form->getBody();
-
-		$this->assertStringContainsString( '<style>', $html );
-		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
-		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $html );
-		$this->assertStringContainsString( 'display:none', $html );
-	}
-
-	/**
-	 * @covers ::getBody
-	 * @covers ::getStepSubtitle
-	 * @covers ::getWizardDots
-	 * @covers ::getWizardNav
-	 */
 	public function testGetBodyIncludesFormHeaderHtml(): void {
 		$form = $this->newForm( [
 			'field1' => [
