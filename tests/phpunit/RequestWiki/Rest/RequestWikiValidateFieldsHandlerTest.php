@@ -133,19 +133,19 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 	/**
 	 * @covers ::run
 	 */
-	public function testRunWhenNotRateLimited(): void {
+	public function testRunWhenNotThrottled(): void {
 		$data = $this->executeHandlerAndGetBodyData(
 			$this->newHandler(),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
 			[],
-			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->singleCheckBody( 'throttled', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertArrayNotHasKey( 'ratelimited', $data['results'] );
+		$this->assertArrayNotHasKey( 'throttled', $data['results'] );
 	}
 
 	/**
@@ -224,7 +224,7 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 	/**
 	 * @covers ::run
 	 */
-	public function testRunRejectsRateLimitedUser(): void {
+	public function testRunRejectsThrottledUser(): void {
 		$user = $this->createMock( User::class );
 		// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( true );
@@ -241,7 +241,7 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 			[],
 			[],
 			[],
-			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->singleCheckBody( 'throttled', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
