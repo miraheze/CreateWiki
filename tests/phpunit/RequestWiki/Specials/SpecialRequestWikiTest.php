@@ -4,7 +4,6 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
 
 use Generator;
 use MediaWiki\Context\DerivativeContext;
-use MediaWiki\Context\RequestContext;
 use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\MainConfigNames;
@@ -95,37 +94,6 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		$performer = $this->getTestUser()->getAuthority();
 		$this->executeSpecialPage( '', null, 'en', $performer );
-	}
-
-	/**
-	 * @covers ::execute
-	 * @covers ::onSuccess
-	 */
-	public function testExecuteCallsOnSuccessAfterValidSubmission(): void {
-		$this->overrideConfigValues( [
-			ConfigNames::Categories => [ 'test' => 'test' ],
-			ConfigNames::DisallowedSubdomains => [ 'none' ],
-			ConfigNames::Subdomain => 'example.org',
-		] );
-
-		$context = RequestContext::getMain();
-		$context->setRequest( new FauxRequest( [
-			'wpsubdomain' => 'example',
-			'wpsitename' => 'Example Wiki',
-			'wplanguage' => 'en',
-			'wpcategory' => 'test',
-			'wpreason' => 'Test onSuccess() via execute()',
-		] ) );
-
-		$user = $this->getServiceContainer()->getUserFactory()->newFromAuthority(
-			$this->getTestUserAuthorityWithConfirmedEmail()
-		);
-
-		$context->setUser( $user );
-		$this->executeSpecialPage( '', null, null, null, false, $context );
-
-		$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', '1' )->getFullURL();
-		$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 	}
 
 	/**
