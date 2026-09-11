@@ -75,7 +75,11 @@
 		 */
 		function pushStepState( step ) {
 			history.pushState(
-				{ createwikiWizardStep: step, createwikiWizardLoadToken: loadToken }, '', location.href
+				{
+					createwikiWizardStep: step,
+					createwikiWizardLoadToken: loadToken,
+					createwikiWizardCameFromReview: cameFromReview
+				}, '', location.href
 			);
 		}
 
@@ -87,7 +91,11 @@
 		 */
 		function replaceStepState( step ) {
 			history.replaceState(
-				{ createwikiWizardStep: step, createwikiWizardLoadToken: loadToken }, '', location.href
+				{
+					createwikiWizardStep: step,
+					createwikiWizardLoadToken: loadToken,
+					createwikiWizardCameFromReview: cameFromReview
+				}, '', location.href
 			);
 		}
 
@@ -559,7 +567,7 @@
 				return;
 			}
 
-			history.back();
+			goToStep( current - 1 );
 		} );
 
 		$returnToReview.on( 'click', () => {
@@ -570,12 +578,14 @@
 			const step = stepFromState( e.originalEvent.state );
 			if ( step === null ) {
 				current = 0;
+				cameFromReview = false;
 				updateView( true );
 				replaceStepState( current );
 				return;
 			}
 
 			current = step;
+			cameFromReview = Boolean( e.originalEvent.state.createwikiWizardCameFromReview );
 			updateView( true );
 		} );
 
