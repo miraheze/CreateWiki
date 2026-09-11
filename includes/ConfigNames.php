@@ -17,6 +17,20 @@ class ConfigNames {
 
 	public const CacheType = 'CreateWikiCacheType';
 
+	public const CacheUpdateDebugAccessKey = 'CreateWikiCacheUpdateDebugAccessKey';
+
+	public const CacheUpdateDebugAccessKeyHeader = 'CreateWikiCacheUpdateDebugAccessKeyHeader';
+
+	public const CacheUpdateDebugHeader = 'CreateWikiCacheUpdateDebugHeader';
+
+	public const CacheUpdateDomain = 'CreateWikiCacheUpdateDomain';
+
+	public const CacheUpdateKey = 'CreateWikiCacheUpdateKey';
+
+	public const CacheUpdateRestEnabled = 'CreateWikiCacheUpdateRestEnabled';
+
+	public const CacheUpdateServers = 'CreateWikiCacheUpdateServers';
+
 	public const CannedResponses = 'CreateWikiCannedResponses';
 
 	public const Categories = 'CreateWikiCategories';
