@@ -104,6 +104,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	public function testExecuteCallsOnSuccessAfterValidSubmission(): void {
 		$this->overrideConfigValues( [
 			ConfigNames::Categories => [ 'test' => 'test' ],
+			ConfigNames::DisallowedSubdomains => [ 'none' ],
 			ConfigNames::Subdomain => 'example.org',
 		] );
 
