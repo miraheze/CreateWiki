@@ -276,7 +276,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
 			$this->statsFactory->getCounter( 'requestwiki_throttled_total' )->increment();
-			return Status::newFatal( 'actionthrottledtext' );
+			return Status::newFatal( 'requestwiki-throttled' );
 		}
 
 		if ( $this->isDuplicateRequest( $data['sitename'] ) ) {
