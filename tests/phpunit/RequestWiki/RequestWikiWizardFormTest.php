@@ -5,6 +5,7 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki;
 use MediaWiki\Context\RequestContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
+use Wikimedia\TestingAccessWrapper;
 use function html_entity_decode;
 use function json_decode;
 use function preg_match;
@@ -215,6 +216,26 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 
 		$html = $form->getBody();
 		$this->assertStringNotContainsString( 'ext-createwiki-wizard-card-subtitle', $html );
+	}
+
+	/**
+	 * @covers ::getBody
+	 */
+	public function testGetBodyAddsInlineStyleToPreventFlash(): void {
+		$context = RequestContext::getMain();
+		$form = $this->newForm( [
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
+		], 'requestwiki' );
+
+		$form->getBody();
+
+		$output = TestingAccessWrapper::newFromObject( $context->getOutput() );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $output->mInlineStyles );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $output->mInlineStyles );
+		$this->assertStringContainsString( 'display:none', $output->mInlineStyles );
 	}
 
 	/**
