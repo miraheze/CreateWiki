@@ -116,8 +116,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			'wpreason' => 'Test onSuccess() via execute()',
 		] ) );
 
-		$user = $this->getServiceContainer()->getUserFactory()->newFromUserIdentity(
-			$this->getTestUserAuthorityWithConfirmedEmail()->getUser()
+		$user = $this->getServiceContainer()->getUserFactory()->newFromAuthority(
+			$this->getTestUserAuthorityWithConfirmedEmail()
 		);
 
 		$context->setUser( $user );
