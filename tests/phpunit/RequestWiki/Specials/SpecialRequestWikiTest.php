@@ -214,6 +214,16 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
 		}
 
+		if ( $extraData['throttled'] ) {
+			$this->overrideConfigValue( MainConfigNames::RateLimits, [
+				'requestwiki' => [
+					'user' => [ 0, 60 ],
+					'newbie' => [ 0, 60 ],
+					'ip' => [ 0, 60 ],
+				],
+			] );
+		}
+
 		$request = new FauxRequest( $data, true );
 		$context->setRequest( $request );
 
@@ -254,6 +264,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
+				'throttled' => false,
 				'token' => true,
 			],
 			null,
@@ -269,9 +280,26 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => true,
+				'throttled' => false,
 				'token' => true,
 			],
 			null,
+		];
+
+		yield 'throttled data' => [
+			[
+				'reason' => 'Test onSubmit()',
+				'subdomain' => 'example',
+				'sitename' => 'Example Wiki',
+				'language' => 'en',
+				'category' => 'test',
+			],
+			[
+				'duplicate' => false,
+				'throttled' => true,
+				'token' => true,
+			],
+			'requestwiki-throttled',
 		];
 
 		yield 'session failure' => [
@@ -284,6 +312,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
+				'throttled' => false,
 				'token' => false,
 			],
 			'sessionfailure',

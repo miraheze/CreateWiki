@@ -65,14 +65,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$this->checkPermissions();
 
-		$this->getOutput()->addModuleStyles( [
-			'ext.createwiki.requestwiki.styles',
-			'ext.createwiki.requestwiki.wizard.styles',
-		] );
-
-		$this->getOutput()->addModules( [
-			'ext.createwiki.requestwiki.wizard',
-		] );
+		$this->getOutput()->addModules( [ 'ext.createwiki.requestwiki.wizard' ] );
+		$this->getOutput()->addModuleStyles( [ 'ext.createwiki.requestwiki.wizard.styles' ] );
 
 		if ( $this->getForm()->show() ) {
 			$this->onSuccess();
@@ -92,8 +86,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'type' => 'textwithbutton',
 				'buttontype' => 'button',
 				'buttonflags' => [],
-				'buttonclass' => 'cdx-button',
-				'buttonid' => 'inline-subdomain',
+				'buttonid' => 'ext-createwiki-inline-subdomain',
 				'buttondefault' => '.' . $this->getConfig()->get( ConfigNames::Subdomain ),
 				'label-message' => 'requestwiki-label-subdomain',
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
@@ -185,7 +178,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				[ 'class' => 'ext-createwiki-wizard-review-heading' ],
 				$this->msg( 'requestwiki-wizard-review-heading' )->text()
 			) . Html::element( 'div', [ 'class' => 'ext-createwiki-wizard-review' ] ),
-			'section' => 'agreement',
+			'section' => 'review',
 		];
 
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
@@ -195,7 +188,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 				'validation-callback' => [ $this->validator, 'validateAgreement' ],
 				'required' => true,
-				'section' => 'agreement',
+				'section' => 'review',
 			];
 		}
 
@@ -283,7 +276,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		if ( $this->getUser()->pingLimiter( 'requestwiki' ) ) {
 			$this->statsFactory->getCounter( 'requestwiki_throttled_total' )->increment();
-			return Status::newFatal( 'actionthrottledtext' );
+			return Status::newFatal( 'requestwiki-throttled' );
 		}
 
 		if ( $this->isDuplicateRequest( $data['sitename'] ) ) {

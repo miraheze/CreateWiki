@@ -21,7 +21,7 @@ use function is_array;
  * Validates a batch of RequestWiki fields ahead of full submission
  * POST /createwiki/v0/request_wiki/validate
  */
-class RequestWikiValidateFieldHandler extends SimpleHandler {
+class RequestWikiValidateFieldsHandler extends SimpleHandler {
 
 	use TokenAwareHandlerTrait;
 
@@ -80,10 +80,10 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 				continue;
 			}
 
-			if ( $field === 'ratelimited' ) {
+			if ( $field === 'throttled' ) {
 				if ( $specialPage->getUser()->pingLimiter( 'requestwiki', 0 ) ) {
 					return $this->getResponseFactory()->createLocalizedHttpError(
-						429, new MessageValue( 'actionthrottledtext' )
+						429, new MessageValue( 'requestwiki-throttled' )
 					);
 				}
 
