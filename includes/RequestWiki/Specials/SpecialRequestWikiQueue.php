@@ -74,7 +74,8 @@ class SpecialRequestWikiQueue extends SpecialPage {
 				'type' => 'user',
 				'name' => 'requester',
 				'label-message' => 'requestwikiqueue-request-label-requester',
-				'exist' => true,
+				'exists' => true,
+				'excludetemp' => true,
 				'default' => $requester,
 			],
 			'language' => [
