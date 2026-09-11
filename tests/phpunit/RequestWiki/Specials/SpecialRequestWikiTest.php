@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki\Specials;
 
 use Generator;
 use MediaWiki\Context\DerivativeContext;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\MainConfigNames;
@@ -94,6 +95,32 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 		$performer = $this->getTestUser()->getAuthority();
 		$this->executeSpecialPage( '', null, 'en', $performer );
+	}
+
+	/**
+	 * @covers ::execute
+	 * @covers ::onSuccess
+	 */
+	public function testExecuteCallsOnSuccessAfterValidSubmission(): void {
+		$this->overrideConfigValues( [
+			ConfigNames::Categories => [ 'test' => 'test' ],
+			ConfigNames::Subdomain => 'example.org',
+		] );
+
+		$context = RequestContext::getMain();
+		$context->setRequest( new FauxRequest( [
+			'wpsubdomain' => 'example',
+			'wpsitename' => 'Example Wiki',
+			'wplanguage' => 'en',
+			'wpcategory' => 'test',
+			'wpreason' => 'Test onSuccess() via execute()',
+		] ) );
+
+		$context->setUser( $this->getTestUserAuthorityWithConfirmedEmail() );
+		$this->executeSpecialPage( '', null, null, null, false, $context );
+
+		$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', '1' )->getFullURL();
+		$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 	}
 
 	/**
@@ -214,6 +241,16 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
 		}
 
+		if ( $extraData['throttled'] ) {
+			$this->overrideConfigValue( MainConfigNames::RateLimits, [
+				'requestwiki' => [
+					'user' => [ 0, 60 ],
+					'newbie' => [ 0, 60 ],
+					'ip' => [ 0, 60 ],
+				],
+			] );
+		}
+
 		$request = new FauxRequest( $data, true );
 		$context->setRequest( $request );
 
@@ -269,9 +306,26 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => true,
+				'throttled' => false,
 				'token' => true,
 			],
 			null,
+		];
+
+		yield 'throttled data' => [
+			[
+				'reason' => 'Test onSubmit()',
+				'subdomain' => 'example',
+				'sitename' => 'Example Wiki',
+				'language' => 'en',
+				'category' => 'test',
+			],
+			[
+				'duplicate' => false,
+				'throttled' => true,
+				'token' => true,
+			],
+			'requestwiki-throttled',
 		];
 
 		yield 'session failure' => [
@@ -284,6 +338,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
+				'throttled' => false,
 				'token' => false,
 			],
 			'sessionfailure',
