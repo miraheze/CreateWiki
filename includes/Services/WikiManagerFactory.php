@@ -18,6 +18,7 @@ use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Loadout\LoadoutManager;
 use Miraheze\CreateWiki\Maintenance\PopulateMainPage;
 use Miraheze\CreateWiki\Maintenance\SetContainersAccess;
 use Wikimedia\Rdbms\DBConnRef;
@@ -67,6 +68,7 @@ class WikiManagerFactory {
 		private readonly CreateWikiNotificationsManager $notificationsManager,
 		private readonly CreateWikiValidator $validator,
 		private readonly ExtensionRegistry $extensionRegistry,
+		private readonly LoadoutManager $loadoutManager,
 		private readonly StatsFactory $statsFactory,
 		private readonly UserFactory $userFactory,
 		private readonly MessageLocalizer $messageLocalizer,
@@ -273,7 +275,10 @@ class WikiManagerFactory {
 					[ '--wiki', $this->dbname ]
 				)->limits( $limits )->execute();
 
-				if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+				if (
+					!defined( 'MW_PHPUNIT_TEST' ) &&
+					!$this->loadoutManager->willImportXml( $extra )
+				) {
 					Shell::makeScriptCommand(
 						PopulateMainPage::class,
 						[ '--wiki', $this->dbname ]
