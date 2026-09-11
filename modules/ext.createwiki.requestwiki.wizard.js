@@ -45,7 +45,7 @@
 			.on( 'mousedown click', ( e ) => {
 				if ( !$( e.target ).closest( '.ext-createwiki-wizard-review-edit' ).length ) {
 					e.preventDefault();
-					$( e.currentTarget ).css( 'text-decoration', 'none' );
+					$( e.currentTarget ).find( '.ext-createwiki-wizard-review-edit' ).css( 'text-decoration', 'none' );
 				}
 			} );
 
