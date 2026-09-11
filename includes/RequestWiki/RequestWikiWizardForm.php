@@ -8,6 +8,9 @@ use MediaWiki\Logger\LoggerFactory;
 use OOUI\ButtonInputWidget;
 use function count;
 use function is_array;
+use function json_encode;
+use function strip_tags;
+use function trim;
 
 class RequestWikiWizardForm extends OOUIHTMLForm {
 
@@ -78,20 +81,45 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 			);
 		}
 
-		$inlineStyle = Html::rawElement(
-			'style',
-			[],
-			'.ext-createwiki-wizard-back,.ext-createwiki-wizard-submit{display:none}' .
+		// Inline to prevent flash when loaded.
+		$inlineStyle = Html::inlineStyle(
+			'.ext-createwiki-wizard-back,' .
+			'.ext-createwiki-wizard-submit,' .
+			'.ext-createwiki-wizard-return-review{display:none}' .
 			'.ext-createwiki-wizard-step:not(:first-child){display:none}'
 		);
 
 		return $this->formatFormHeader() . $inlineStyle . Html::rawElement(
 			'div',
-			[ 'class' => 'ext-createwiki-wizard', 'data-step-count' => (string)$total ],
+			[
+				'class' => 'ext-createwiki-wizard',
+				'data-step-count' => (string)$total,
+				'data-field-labels' => json_encode( $this->getReviewFieldLabels() ),
+			],
 			$this->getWizardDots( $total ) .
 			Html::rawElement( 'div', [ 'class' => 'ext-createwiki-wizard-pages' ], $pagesHtml ) .
 			$this->getWizardNav()
 		);
+	}
+
+	/** @return array<string, string> Map of form field name to its review summary label. */
+	private function getReviewFieldLabels(): array {
+		$labels = [];
+		foreach ( $this->mFlatFields as $fieldName => $field ) {
+			if ( $fieldName === 'wizard-intro' || $fieldName === 'wizard-review' ) {
+				continue;
+			}
+
+			$reviewLabelMsg = $this->msg( "requestwiki-wizard-review-label-$fieldName" );
+			if ( !$reviewLabelMsg->isDisabled() ) {
+				$labels["wp$fieldName"] = $reviewLabelMsg->text();
+				continue;
+			}
+
+			$labels["wp$fieldName"] = trim( strip_tags( $field->getLabel() ) );
+		}
+
+		return $labels;
 	}
 
 	private function getStepSubtitle( string $key ): string {
@@ -114,7 +142,12 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 	private function getWizardDots( int $total ): string {
 		$dots = '';
 		for ( $i = 0; $i < $total; $i++ ) {
-			$dots .= Html::element( 'span', [ 'class' => 'ext-createwiki-wizard-dot' ] );
+			$classes = [ 'ext-createwiki-wizard-dot' ];
+			if ( $i === 0 ) {
+				$classes[] = 'ext-createwiki-wizard-dot--current';
+			}
+
+			$dots .= Html::element( 'span', [ 'class' => $classes ] );
 		}
 
 		return Html::rawElement(
@@ -131,10 +164,18 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 			'label' => $this->msg( 'requestwiki-wizard-back' )->text(),
 		] );
 
+		$returnToReview = new ButtonInputWidget( [
+			'classes' => [ 'ext-createwiki-wizard-return-review' ],
+			'type' => 'button',
+			'label' => $this->msg( 'requestwiki-wizard-review-return' )->text(),
+			'framed' => false,
+			'flags' => [ 'progressive' ],
+		] );
+
 		$next = new ButtonInputWidget( [
 			'classes' => [ 'ext-createwiki-wizard-next' ],
 			'type' => 'button',
-			'label' => $this->msg( 'requestwiki-wizard-next' )->text(),
+			'label' => $this->msg( 'requestwiki-wizard-start' )->text(),
 			'flags' => [ 'primary', 'progressive' ],
 		] );
 
@@ -158,7 +199,7 @@ class RequestWikiWizardForm extends OOUIHTMLForm {
 		return Html::rawElement(
 			'div',
 			[ 'class' => 'ext-createwiki-wizard-nav' ],
-			(string)$back . (string)$next . (string)$submit
+			(string)$back . (string)$returnToReview . (string)$next . (string)$submit
 		);
 	}
 }

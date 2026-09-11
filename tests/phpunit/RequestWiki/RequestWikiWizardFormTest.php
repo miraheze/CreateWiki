@@ -5,6 +5,9 @@ namespace Miraheze\CreateWiki\Tests\RequestWiki;
 use MediaWiki\Context\RequestContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
+use function html_entity_decode;
+use function json_decode;
+use function preg_match;
 
 /**
  * @group CreateWiki
@@ -27,12 +30,22 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 		return $form;
 	}
 
+	/** @return array<string, string> Decoded contents of the rendered data-field-labels attribute. */
+	private function extractFieldLabels( string $html ): array {
+		$this->assertMatchesRegularExpression( '/data-field-labels="([^"]*)"/', $html );
+		preg_match( '/data-field-labels="([^"]*)"/', $html, $matches );
+		return (array)json_decode( html_entity_decode( $matches[1] ), true );
+	}
+
 	/**
 	 * @covers ::__construct
 	 */
 	public function testConstructor(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$this->assertInstanceOf( RequestWikiWizardForm::class, $form );
@@ -43,7 +56,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetButtonsReturnsEmptyString(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$this->assertSame( '', $form->getButtons() );
@@ -57,8 +73,16 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyRendersWizardMarkupForSectionedFields(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'label' => 'Field 1', 'section' => 'stepone' ],
-			'field2' => [ 'type' => 'text', 'label' => 'Field 2', 'section' => 'steptwo' ],
+			'field1' => [
+				'type' => 'text',
+				'label' => 'Field 1',
+				'section' => 'stepone',
+			],
+			'field2' => [
+				'type' => 'text',
+				'label' => 'Field 2',
+				'section' => 'steptwo',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -71,6 +95,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 		$this->assertStringContainsString( 'ext-createwiki-wizard-card-title', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-step-count', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-next', $html );
 		$this->assertStringContainsString( 'ext-createwiki-wizard-submit', $html );
 		$this->assertStringContainsString( 'mw-section-stepone', $html );
@@ -85,7 +110,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyIncludesSubmitNameAndId(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$form->setSubmitName( 'mysubmitname' );
@@ -105,7 +133,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyFallsBackToParentWhenNoFieldHasSection(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'label' => 'Field 1' ],
+			'field1' => [
+				'type' => 'text',
+				'label' => 'Field 1',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -118,27 +149,12 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::getWizardDots
 	 * @covers ::getWizardNav
 	 */
-	public function testGetBodyIncludesInlineStyleToPreventFlash(): void {
-		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
-		], 'requestwiki' );
-
-		$html = $form->getBody();
-
-		$this->assertStringContainsString( '<style>', $html );
-		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
-		$this->assertStringContainsString( 'display:none', $html );
-	}
-
-	/**
-	 * @covers ::getBody
-	 * @covers ::getStepSubtitle
-	 * @covers ::getWizardDots
-	 * @covers ::getWizardNav
-	 */
 	public function testGetBodyIncludesFormHeaderHtml(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'stepone' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
 		], 'requestwiki' );
 
 		$form->addHeaderHtml( '<p>Custom header content</p>' );
@@ -155,7 +171,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyIncludesSubtitleWhenMessageExists(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'details' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'details',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -170,7 +189,10 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyOmitsSubtitleWhenMessageDoesNotExist(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'nonexistentsectionxyz' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'nonexistentsectionxyz',
+			],
 		], 'requestwiki' );
 
 		$html = $form->getBody();
@@ -185,10 +207,98 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testGetBodyOmitsSubtitleWhenMessagePrefixIsEmpty(): void {
 		$form = $this->newForm( [
-			'field1' => [ 'type' => 'text', 'section' => 'details' ],
+			'field1' => [
+				'type' => 'text',
+				'section' => 'details',
+			],
 		], '' );
 
 		$html = $form->getBody();
 		$this->assertStringNotContainsString( 'ext-createwiki-wizard-card-subtitle', $html );
+	}
+
+	/**
+	 * @covers ::getBody
+	 */
+	public function testGetBodyAddsInlineStyleToPreventFlash(): void {
+		$form = $this->newForm( [
+			'field1' => [
+				'type' => 'text',
+				'section' => 'stepone',
+			],
+		], 'requestwiki' );
+
+		$html = $form->getBody();
+
+		$this->assertStringContainsString( '<style', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-back', $html );
+		$this->assertStringContainsString( 'ext-createwiki-wizard-return-review', $html );
+		$this->assertStringContainsString( 'display:none', $html );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsFallsBackToFieldLabelWhenNoReviewLabelExists(): void {
+		$form = $this->newForm( [
+			'customhookfield' => [
+				'type' => 'text',
+				'label' => 'Custom Hook Field',
+				'section' => 'stepone',
+			],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+		$this->assertSame( 'Custom Hook Field', $labels['wpcustomhookfield'] );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsPrefersDedicatedReviewLabelOverFieldLabel(): void {
+		$form = $this->newForm( [
+			'subdomain' => [
+				'type' => 'text',
+				'label' => 'Please enter your desired subdomain here',
+				'section' => 'stepone',
+			],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+		$this->assertSame( 'Subdomain', $labels['wpsubdomain'] );
+	}
+
+	/**
+	 * @covers ::getBody
+	 * @covers ::getReviewFieldLabels
+	 */
+	public function testGetBodyFieldLabelsExcludePseudoFields(): void {
+		$form = $this->newForm( [
+			'wizard-intro' => [
+				'type' => 'info',
+				'raw' => true,
+				'default' => 'Intro text',
+				'section' => 'intro',
+			],
+			'field1' => [
+				'type' => 'text',
+				'label' => 'Field 1',
+				'section' => 'stepone',
+			],
+			'wizard-review' => [
+				'type' => 'info',
+				'raw' => true,
+				'default' => 'Review text',
+				'section' => 'agreement',
+			],
+		], 'requestwiki' );
+
+		$labels = $this->extractFieldLabels( $form->getBody() );
+
+		$this->assertArrayNotHasKey( 'wpwizard-intro', $labels );
+		$this->assertArrayNotHasKey( 'wpwizard-review', $labels );
+		$this->assertArrayHasKey( 'wpfield1', $labels );
 	}
 }

@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Specials;
 
 use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\Exception\UserBlockedError;
+use MediaWiki\Html\Html;
 use MediaWiki\SpecialPage\FormSpecialPage;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
@@ -11,6 +12,7 @@ use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiWizardForm;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Stats\StatsFactory;
@@ -26,10 +28,12 @@ use const MW_VERSION;
 class SpecialRequestWiki extends FormSpecialPage {
 
 	private array $extraFields = [];
+	private ?array $restValidationFormFields = null;
 
 	public function __construct(
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
+		private readonly CreateWikiParsedMessageCache $parsedMessageCache,
 		private readonly CreateWikiValidator $validator,
 		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager,
@@ -81,7 +85,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'wizard-intro' => [
 				'type' => 'info',
 				'raw' => true,
-				'default' => $this->msg( 'requestwiki-wizard-intro' )->parseAsBlock(),
+				'default' => $this->parsedMessageCache->parseAsBlock( $this->msg( 'requestwiki-wizard-intro' ) ),
 				'section' => 'intro',
 			],
 			'subdomain' => [
@@ -173,6 +177,17 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'section' => 'details',
 		];
 
+		$formDescriptor['wizard-review'] = [
+			'type' => 'info',
+			'raw' => true,
+			'default' => Html::element(
+				'h3',
+				[ 'class' => 'ext-createwiki-wizard-review-heading' ],
+				$this->msg( 'requestwiki-wizard-review-heading' )->text()
+			) . Html::element( 'div', [ 'class' => 'ext-createwiki-wizard-review' ] ),
+			'section' => 'agreement',
+		];
+
 		if ( $this->getConfig()->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
@@ -211,7 +226,8 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/** @return ?array{required: bool, callback: ?callable, type: string} */
 	public function getRestValidationInfo( string $field ): ?array {
-		$formDescriptor = $this->getFormFields();
+		$this->restValidationFormFields ??= $this->getFormFields();
+		$formDescriptor = $this->restValidationFormFields;
 		if ( !isset( $formDescriptor[$field] ) ) {
 			return null;
 		}
@@ -229,6 +245,10 @@ class SpecialRequestWiki extends FormSpecialPage {
 		];
 	}
 
+	public function isDuplicateRequest( string $sitename ): bool {
+		return $this->wikiRequestManager->isDuplicateRequest( $sitename );
+	}
+
 	/** @inheritDoc */
 	protected function getForm(): RequestWikiWizardForm {
 		$form = new RequestWikiWizardForm(
@@ -241,7 +261,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 		$headerMsg = $this->msg( $this->getMessagePrefix() . '-text' );
 		if ( !$headerMsg->isDisabled() ) {
-			$form->addHeaderHtml( $headerMsg->parseAsBlock() );
+			$form->addHeaderHtml( $this->parsedMessageCache->parseAsBlock( $headerMsg ) );
 		}
 
 		$form->addPreHtml( $this->preHtml() );
@@ -266,7 +286,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			return Status::newFatal( 'actionthrottledtext' );
 		}
 
-		if ( $this->wikiRequestManager->isDuplicateRequest( $data['sitename'] ) ) {
+		if ( $this->isDuplicateRequest( $data['sitename'] ) ) {
 			return Status::newFatal( 'requestwiki-error-patient' );
 		}
 

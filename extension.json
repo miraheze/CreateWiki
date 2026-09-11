@@ -171,6 +171,7 @@
 			"services": [
 				"CreateWikiDatabaseUtils",
 				"CreateWikiHookRunner",
+				"CreateWikiParsedMessageCache",
 				"CreateWikiValidator",
 				"StatsFactory",
 				"WikiRequestManager"
@@ -307,8 +308,17 @@
 		},
 		"ext.createwiki.requestwiki.wizard": {
 			"scripts": "ext.createwiki.requestwiki.wizard.js",
+			"messages": [
+				"requestwiki-wizard-next",
+				"requestwiki-wizard-review-edit",
+				"requestwiki-wizard-review-empty",
+				"requestwiki-wizard-review-no",
+				"requestwiki-wizard-review-yes",
+				"requestwiki-wizard-start"
+			],
 			"dependencies": [
-				"mediawiki.api"
+				"mediawiki.api",
+				"oojs-ui-core"
 			]
 		},
 		"ext.createwiki.requestwiki.wizard.styles": {

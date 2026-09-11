@@ -4,6 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Message\Message;
+use MediaWiki\ParamValidator\TypeDef\ArrayDef;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
@@ -14,9 +15,10 @@ use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use function is_array;
 
 /**
- * Validates a single RequestWiki field ahead of full submission
+ * Validates a batch of RequestWiki fields ahead of full submission
  * POST /createwiki/v0/request_wiki/validate
  */
 class RequestWikiValidateFieldHandler extends SimpleHandler {
@@ -52,31 +54,69 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 
 		$validatedBody = $this->getValidatedBody();
 
-		$field = '';
-		$value = '';
-		if ( $validatedBody ) {
-			$field = $validatedBody['field'];
-			$value = $validatedBody['value'];
+		$checks = [];
+		if ( $validatedBody && is_array( $validatedBody['checks'] ) ) {
+			$checks = $validatedBody['checks'];
 		}
 
-		$result = $this->validateField( $field, $value );
-		if ( $result === true ) {
-			return $this->getResponseFactory()->createJson( [ 'valid' => true ] );
+		$specialPage = $this->specialPageFactory->getPage( 'RequestWiki' );
+		if ( $specialPage instanceof SpecialRequestWiki ) {
+			$specialPage->setContext( RequestContext::getMain() );
+		} else {
+			$specialPage = null;
 		}
 
-		return $this->getResponseFactory()->createJson( [
-			'valid' => false,
-			'message' => $result instanceof Message ? $result->parse() : (string)$result,
-		] );
+		$results = [];
+		foreach ( $checks as $check ) {
+			if ( !is_array( $check ) || !isset( $check['field'] ) || !isset( $check['value'] ) ) {
+				continue;
+			}
+
+			$field = (string)$check['field'];
+			$value = (string)$check['value'];
+
+			if ( $specialPage === null ) {
+				$results[$field] = [ 'valid' => true ];
+				continue;
+			}
+
+			if ( $field === 'ratelimited' ) {
+				if ( $specialPage->getUser()->pingLimiter( 'requestwiki', 0 ) ) {
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						429, new MessageValue( 'actionthrottledtext' )
+					);
+				}
+
+				continue;
+			}
+
+			if ( $field === 'duplicate' ) {
+				if ( $specialPage->isDuplicateRequest( $value ) ) {
+					return $this->getResponseFactory()->createLocalizedHttpError(
+						403, new MessageValue( 'requestwiki-error-patient' )
+					);
+				}
+
+				continue;
+			}
+
+			$result = $this->validateField( $specialPage, $field, $value );
+			$results[$field] = $result === true
+				? [ 'valid' => true ]
+				: [
+					'valid' => false,
+					'message' => $result instanceof Message ? $result->parse() : (string)$result,
+				];
+		}
+
+		return $this->getResponseFactory()->createJson( [ 'results' => $results ] );
 	}
 
-	private function validateField( string $field, string $value ): Message|true {
-		$specialPage = $this->specialPageFactory->getPage( 'RequestWiki' );
-		if ( !$specialPage instanceof SpecialRequestWiki ) {
-			return true;
-		}
-
-		$specialPage->setContext( RequestContext::getMain() );
+	private function validateField(
+		SpecialRequestWiki $specialPage,
+		string $field,
+		string $value
+	): Message|true {
 		$info = $specialPage->getRestValidationInfo( $field );
 		if ( $info === null ) {
 			return true;
@@ -100,15 +140,17 @@ class RequestWikiValidateFieldHandler extends SimpleHandler {
 
 	public function getBodyParamSettings(): array {
 		return [
-			'field' => [
+			'checks' => [
 				self::PARAM_SOURCE => 'body',
-				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_TYPE => 'array',
 				ParamValidator::PARAM_REQUIRED => true,
-			],
-			'value' => [
-				self::PARAM_SOURCE => 'body',
-				ParamValidator::PARAM_TYPE => 'string',
-				ParamValidator::PARAM_REQUIRED => true,
+				self::PARAM_DESCRIPTION => new MessageValue( 'createwiki-rest-checks-description' ),
+				ArrayDef::PARAM_SCHEMA => ArrayDef::makeListSchema(
+					ArrayDef::makeObjectSchema( [
+						'field' => [ 'type' => 'string', 'example' => 'subdomain' ],
+						'value' => [ 'type' => 'string', 'example' => 'mywiki' ],
+					] )
+				),
 			],
 		] + $this->getTokenParamDefinition();
 	}

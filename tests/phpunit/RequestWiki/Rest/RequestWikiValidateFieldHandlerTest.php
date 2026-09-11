@@ -63,6 +63,14 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
+	/** @return array{checks: array, token: string} */
+	private function singleCheckBody( string $field, string $value ): array {
+		return [
+			'checks' => [ [ 'field' => $field, 'value' => $value ] ],
+			'token' => '',
+		];
+	}
+
 	/**
 	 * @covers ::__construct
 	 */
@@ -90,15 +98,16 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			[],
 			[],
 			[],
-			[ 'field' => $field, 'value' => $value, 'token' => '' ],
+			$this->singleCheckBody( $field, $value ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertSame( $expectedValid, $data['valid'] );
+		$this->assertArrayHasKey( $field, $data['results'] );
+		$this->assertSame( $expectedValid, $data['results'][$field]['valid'] );
 		if ( !$expectedValid ) {
-			$this->assertArrayHasKey( 'message', $data );
-			$this->assertIsString( $data['message'] );
+			$this->assertArrayHasKey( 'message', $data['results'][$field] );
+			$this->assertIsString( $data['results'][$field]['message'] );
 		}
 	}
 
@@ -122,9 +131,155 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 * @covers ::validateField
+	 * @covers ::run
 	 */
-	public function testValidateFieldWhenSpecialPageIsMissing(): void {
+	public function testRunWhenNotRateLimited(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'ratelimited', $data['results'] );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunWhenNotDuplicate(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'duplicate', 'A Brand New Sitename' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'duplicate', $data['results'] );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunBatchesMultipleChecksInOneRequest(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			[
+				'checks' => [
+					[ 'field' => 'subdomain', 'value' => 'validsub' ],
+					[ 'field' => 'category', 'value' => '' ],
+					[ 'field' => 'reason', 'value' => 'this is a valid reason' ],
+				],
+				'token' => '',
+			],
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertTrue( $data['results']['subdomain']['valid'] );
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNull,PhanTypeInvalidDimOffset
+		$this->assertFalse( $data['results']['category']['valid'] );
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNull,PhanTypeInvalidDimOffset
+		$this->assertTrue( $data['results']['reason']['valid'] );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunIgnoresMalformedChecks(): void {
+		$data = $this->executeHandlerAndGetBodyData(
+			$this->newHandler(),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			[
+				'checks' => [
+					[ 'field' => 'subdomain' ],
+					'not-an-array',
+					[ 'field' => 'reason', 'value' => 'this is a valid reason' ],
+				],
+				'token' => '',
+			],
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertArrayNotHasKey( 'subdomain', $data['results'] );
+		$this->assertTrue( $data['results']['reason']['valid'] );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunRejectsRateLimitedUser(): void {
+		$user = $this->createMock( User::class );
+		// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( true );
+
+		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		$specialPage->method( 'getUser' )->willReturn( $user );
+
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
+
+		$response = $this->executeHandler(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertSame( 429, $response->getStatusCode() );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunRejectsDuplicateRequest(): void {
+		$specialPage = $this->createMock( SpecialRequestWiki::class );
+		$specialPage->method( 'isDuplicateRequest' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
+			->with( 'An Existing Sitename' )
+			->willReturn( true );
+
+		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
+		$specialPageFactory->method( 'getPage' )->willReturn( $specialPage );
+
+		$response = $this->executeHandler(
+			$this->newHandlerWithSpecialPageFactory( $specialPageFactory ),
+			new RequestData( [ 'method' => 'POST' ] ),
+			[],
+			[],
+			[],
+			$this->singleCheckBody( 'duplicate', 'An Existing Sitename' ),
+			$this->mockRegisteredUltimateAuthority(),
+			$this->getSession( true )
+		);
+
+		$this->assertSame( 403, $response->getStatusCode() );
+	}
+
+	/**
+	 * @covers ::run
+	 */
+	public function testRunWhenSpecialPageIsMissing(): void {
 		$specialPageFactory = $this->createMock( SpecialPageFactory::class );
 		$specialPageFactory->method( 'getPage' )->willReturn( null );
 
@@ -134,12 +289,12 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			[],
 			[],
 			[],
-			[ 'field' => 'subdomain', 'value' => '', 'token' => '' ],
+			$this->singleCheckBody( 'subdomain', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertTrue( $data['valid'] );
+		$this->assertTrue( $data['results']['subdomain']['valid'] );
 	}
 
 	/**
@@ -162,12 +317,12 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			[],
 			[],
 			[],
-			[ 'field' => 'optionalfield', 'value' => '', 'token' => '' ],
+			$this->singleCheckBody( 'optionalfield', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertTrue( $data['valid'] );
+		$this->assertTrue( $data['results']['optionalfield']['valid'] );
 	}
 
 	/**
@@ -180,7 +335,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			[],
 			[],
 			[],
-			[ 'field' => 'subdomain', 'value' => 'validsub', 'token' => '' ],
+			$this->singleCheckBody( 'subdomain', 'validsub' ),
 			$this->mockAnonUltimateAuthority(),
 			$this->getSession( true )
 		);
@@ -210,7 +365,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			[],
 			[],
 			[],
-			[ 'field' => 'subdomain', 'value' => 'validsub', 'token' => '' ],
+			$this->singleCheckBody( 'subdomain', 'validsub' ),
 			$authority,
 			$this->getSession( true )
 		);
@@ -242,7 +397,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 				[],
 				[],
 				[],
-				[ 'field' => 'subdomain', 'value' => 'validsub', 'token' => '' ],
+				$this->singleCheckBody( 'subdomain', 'validsub' ),
 				$this->mockRegisteredUltimateAuthority(),
 				$session
 			);
