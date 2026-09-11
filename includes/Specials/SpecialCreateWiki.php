@@ -51,8 +51,9 @@ class SpecialCreateWiki extends FormSpecialPage {
 			],
 			'requester' => [
 				'type' => 'user',
-				'exists' => true,
 				'label-message' => 'createwiki-label-requester',
+				'exists' => true,
+				'excludetemp' => true,
 				'required' => true,
 			],
 			'sitename' => [
