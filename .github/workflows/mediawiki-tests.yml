@@ -58,7 +58,7 @@ jobs:
     steps:
       - name: succeeded
         uses: technote-space/workflow-conclusion-action@v3
-      - uses: Gottox/irc-message-action@v2
+      - uses: rectalogic/notify-irc@v2
         if: env.WORKFLOW_CONCLUSION == 'success'
         with:
           channel: "#miraheze-tech-ops"
@@ -69,7 +69,7 @@ jobs:
 
       - name: failed
         uses: technote-space/workflow-conclusion-action@v3
-      - uses: Gottox/irc-message-action@v2
+      - uses: rectalogic/notify-irc@v2
         if: env.WORKFLOW_CONCLUSION == 'failure'
         with:
           channel: "#miraheze-tech-ops"
