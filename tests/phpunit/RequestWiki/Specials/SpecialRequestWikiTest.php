@@ -291,6 +291,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
+				'throttled' => false,
 				'token' => true,
 			],
 			null,
