@@ -228,7 +228,7 @@
 
 			$steps.each( function ( stepIndex ) {
 				const stepKey = $( this ).data( 'step' );
-				if ( stepKey === 'intro' || stepKey === 'agreement' ) {
+				if ( stepKey === 'intro' || stepKey === 'review' ) {
 					return;
 				}
 
@@ -474,7 +474,7 @@
 			}
 
 			if ( stepKey === 'intro' ) {
-				addCheck( 'ratelimited', '', $stepErrorAnchor );
+				addCheck( 'throttled', '', $stepErrorAnchor );
 			}
 
 			if ( stepKey === 'basics' ) {

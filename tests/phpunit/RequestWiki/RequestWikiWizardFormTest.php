@@ -291,7 +291,7 @@ class RequestWikiWizardFormTest extends MediaWikiIntegrationTestCase {
 				'type' => 'info',
 				'raw' => true,
 				'default' => 'Review text',
-				'section' => 'agreement',
+				'section' => 'review',
 			],
 		], 'requestwiki' );
 

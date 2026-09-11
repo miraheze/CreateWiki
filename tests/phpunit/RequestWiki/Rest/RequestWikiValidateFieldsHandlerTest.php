@@ -15,16 +15,16 @@ use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
-use Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldHandler;
+use Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldsHandler;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
 
 /**
  * @group CreateWiki
  * @group Database
  * @group medium
- * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldHandler
+ * @coversDefaultClass \Miraheze\CreateWiki\RequestWiki\Rest\RequestWikiValidateFieldsHandler
  */
-class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
+class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase {
 
 	use HandlerTestTrait;
 
@@ -43,9 +43,9 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 		] );
 	}
 
-	private function newHandler(): RequestWikiValidateFieldHandler {
+	private function newHandler(): RequestWikiValidateFieldsHandler {
 		$services = $this->getServiceContainer();
-		return new RequestWikiValidateFieldHandler(
+		return new RequestWikiValidateFieldsHandler(
 			$services->get( 'CreateWikiRestUtils' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getSpecialPageFactory()
@@ -54,9 +54,9 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 
 	private function newHandlerWithSpecialPageFactory(
 		SpecialPageFactory $specialPageFactory
-	): RequestWikiValidateFieldHandler {
+	): RequestWikiValidateFieldsHandler {
 		$services = $this->getServiceContainer();
-		return new RequestWikiValidateFieldHandler(
+		return new RequestWikiValidateFieldsHandler(
 			$services->get( 'CreateWikiRestUtils' ),
 			$services->get( 'CreateWikiValidator' ),
 			$specialPageFactory
@@ -75,7 +75,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::__construct
 	 */
 	public function testConstructor(): void {
-		$this->assertInstanceOf( RequestWikiValidateFieldHandler::class, $this->newHandler() );
+		$this->assertInstanceOf( RequestWikiValidateFieldsHandler::class, $this->newHandler() );
 	}
 
 	/**
@@ -133,19 +133,19 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::run
 	 */
-	public function testRunWhenNotRateLimited(): void {
+	public function testRunWhenNotThrottled(): void {
 		$data = $this->executeHandlerAndGetBodyData(
 			$this->newHandler(),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
 			[],
-			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->singleCheckBody( 'throttled', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);
 
-		$this->assertArrayNotHasKey( 'ratelimited', $data['results'] );
+		$this->assertArrayNotHasKey( 'throttled', $data['results'] );
 	}
 
 	/**
@@ -224,7 +224,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::run
 	 */
-	public function testRunRejectsRateLimitedUser(): void {
+	public function testRunRejectsThrottledUser(): void {
 		$user = $this->createMock( User::class );
 		// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 		$user->method( 'pingLimiter' )->with( 'requestwiki', 0 )->willReturn( true );
@@ -241,7 +241,7 @@ class RequestWikiValidateFieldHandlerTest extends MediaWikiIntegrationTestCase {
 			[],
 			[],
 			[],
-			$this->singleCheckBody( 'ratelimited', '' ),
+			$this->singleCheckBody( 'throttled', '' ),
 			$this->mockRegisteredUltimateAuthority(),
 			$this->getSession( true )
 		);

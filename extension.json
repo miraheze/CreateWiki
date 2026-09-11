@@ -280,7 +280,7 @@
 		{
 			"path": "/createwiki/v0/request_wiki/validate",
 			"method": "POST",
-			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\RequestWikiValidateFieldHandler",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\RequestWikiValidateFieldsHandler",
 			"services": [
 				"CreateWikiRestUtils",
 				"CreateWikiValidator",
@@ -302,9 +302,6 @@
 		},
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
-		},
-		"ext.createwiki.requestwiki.styles": {
-			"styles": "ext.createwiki.requestwiki.styles.less"
 		},
 		"ext.createwiki.requestwiki.wizard": {
 			"scripts": "ext.createwiki.requestwiki.wizard.js",
