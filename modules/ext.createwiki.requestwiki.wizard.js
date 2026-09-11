@@ -474,7 +474,7 @@
 			}
 
 			if ( stepKey === 'intro' ) {
-				addCheck( 'ratelimited', '', $stepErrorAnchor );
+				addCheck( 'throttled', '', $stepErrorAnchor );
 			}
 
 			if ( stepKey === 'basics' ) {
