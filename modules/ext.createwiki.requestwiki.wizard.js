@@ -601,26 +601,10 @@
 		/**
 		 * Attach a live "value changed" listener that clears a field's error optimistically.
 		 *
-		 * @param {jQuery} $marked The element carrying the REST-validate marker class.
 		 * @param {jQuery} $input The resolved named control for that field.
 		 * @return {void}
 		 */
-		function watchForChange( $marked, $input ) {
-			let widget = null;
-			try {
-				widget = OO.ui.infuse( $marked );
-			} catch ( e ) {
-				widget = null;
-			}
-
-			if ( widget && typeof widget.on === 'function' ) {
-				widget.on( 'change', () => {
-					clearFieldError( $input );
-				} );
-
-				return;
-			}
-
+		function watchForChange( $input ) {
 			$input.on( 'input change', () => {
 				clearFieldError( $input );
 			} );
@@ -630,8 +614,40 @@
 			const $marked = $( this );
 			const $input = findNamedControl( $marked );
 			if ( $input.length ) {
-				watchForChange( $marked, $input );
+				watchForChange( $input );
 			}
+		} );
+
+		/**
+		 * Keep a multiline field's "required" indicator pinned to the corner of the
+		 * actual textarea. OOUI positions the indicator relative to its wrapper, which
+		 * does not track a manually resized textarea's new height, so the indicator is
+		 * instead measured against the textarea directly and kept in sync as it resizes.
+		 *
+		 * @param {jQuery} $wrapper The .oo-ui-textInputWidget wrapper element.
+		 * @return {void}
+		 */
+		function pinRequiredIndicatorToTextarea( $wrapper ) {
+			const textarea = $wrapper.find( 'textarea' ).get( 0 );
+			const indicator = $wrapper.find( '.oo-ui-indicator-required' ).get( 0 );
+			if ( !textarea || !indicator || typeof ResizeObserver !== 'function' ) {
+				return;
+			}
+
+			const reposition = () => {
+				const wrapperRect = $wrapper.get( 0 ).getBoundingClientRect();
+				const textareaRect = textarea.getBoundingClientRect();
+				indicator.style.top = ( textareaRect.top - wrapperRect.top ) + 'px';
+				indicator.style.right = ( wrapperRect.right - textareaRect.right ) + 'px';
+			};
+
+			reposition();
+			// eslint-disable-next-line compat/compat
+			new ResizeObserver( reposition ).observe( textarea );
+		}
+
+		$wizard.find( '.oo-ui-textInputWidget' ).each( function () {
+			pinRequiredIndicatorToTextarea( $( this ) );
 		} );
 
 		const errorStep = findStepWithError();
