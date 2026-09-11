@@ -83,7 +83,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			if ( $field === 'ratelimited' ) {
 				if ( $specialPage->getUser()->pingLimiter( 'requestwiki', 0 ) ) {
 					return $this->getResponseFactory()->createLocalizedHttpError(
-						429, new MessageValue( 'requestwiki-ratelimited' )
+						429, new MessageValue( 'requestwiki-throttled' )
 					);
 				}
 
