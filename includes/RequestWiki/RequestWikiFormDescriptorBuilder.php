@@ -2,8 +2,9 @@
 
 namespace Miraheze\CreateWiki\RequestWiki;
 
-use MediaWiki\Context\IContextSource;
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Html\Html;
+use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;
@@ -17,23 +18,35 @@ use function trim;
 
 class RequestWikiFormDescriptorBuilder {
 
+	public const array CONSTRUCTOR_OPTIONS = [
+		ConfigNames::Categories,
+		ConfigNames::DatabaseSuffix,
+		ConfigNames::Purposes,
+		ConfigNames::RequestWikiConfirmAgreement,
+		ConfigNames::RequestWikiMinimumLength,
+		ConfigNames::ShowBiographicalOption,
+		ConfigNames::Subdomain,
+		ConfigNames::UsePrivateWikis,
+	];
+
 	public function __construct(
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly CreateWikiParsedMessageCache $parsedMessageCache,
 		private readonly CreateWikiValidator $validator,
+		private readonly MessageLocalizer $messageLocalizer,
+		private readonly ServiceOptions $options,
 	) {
+		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
 	}
 
 	/** @return array{descriptor: array, extraFields: array} */
-	public function build( IContextSource $context ): array {
-		$config = $context->getConfig();
-
+	public function build(): array {
 		$formDescriptor = [
 			'wizard-intro' => [
 				'type' => 'info',
 				'raw' => true,
 				'default' => $this->parsedMessageCache->parseAsBlock(
-					$context->msg( 'requestwiki-wizard-intro' )
+					$this->messageLocalizer->msg( 'requestwiki-wizard-intro' )
 				),
 				'section' => 'intro',
 			],
@@ -42,7 +55,7 @@ class RequestWikiFormDescriptorBuilder {
 				'buttontype' => 'button',
 				'buttonflags' => [],
 				'buttonid' => 'ext-createwiki-inline-subdomain',
-				'buttondefault' => '.' . $config->get( ConfigNames::Subdomain ),
+				'buttondefault' => '.' . $this->options->get( ConfigNames::Subdomain ),
 				'label-message' => 'requestwiki-label-subdomain',
 				'placeholder-message' => 'requestwiki-placeholder-subdomain',
 				'help-message' => 'createwiki-help-subdomain',
@@ -50,7 +63,7 @@ class RequestWikiFormDescriptorBuilder {
 				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
 				'validation-callback' => [ $this->validator, 'validateSubdomain' ],
 				// https://github.com/miraheze/CreateWiki/blob/20c2f47/sql/cw_requests.sql#L4
-				'maxlength' => 64 - strlen( $config->get( ConfigNames::DatabaseSuffix ) ),
+				'maxlength' => 64 - strlen( $this->options->get( ConfigNames::DatabaseSuffix ) ),
 				'section' => 'basics',
 			],
 			'sitename' => [
@@ -70,19 +83,19 @@ class RequestWikiFormDescriptorBuilder {
 			],
 		];
 
-		if ( $config->get( ConfigNames::Categories ) ) {
+		if ( $this->options->get( ConfigNames::Categories ) ) {
 			$formDescriptor['category'] = [
 				'type' => 'select',
 				'label-message' => 'createwiki-label-category',
 				'help-message' => 'createwiki-help-category',
 				'required' => true,
 				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
-				'options' => $config->get( ConfigNames::Categories ),
+				'options' => $this->options->get( ConfigNames::Categories ),
 				'section' => 'basics',
 			];
 		}
 
-		if ( $config->get( ConfigNames::UsePrivateWikis ) ) {
+		if ( $this->options->get( ConfigNames::UsePrivateWikis ) ) {
 			$formDescriptor['private'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-private',
@@ -91,7 +104,7 @@ class RequestWikiFormDescriptorBuilder {
 			];
 		}
 
-		if ( $config->get( ConfigNames::ShowBiographicalOption ) ) {
+		if ( $this->options->get( ConfigNames::ShowBiographicalOption ) ) {
 			$formDescriptor['bio'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-bio',
@@ -100,13 +113,13 @@ class RequestWikiFormDescriptorBuilder {
 			];
 		}
 
-		if ( $config->get( ConfigNames::Purposes ) ) {
+		if ( $this->options->get( ConfigNames::Purposes ) ) {
 			$formDescriptor['purpose'] = [
 				'type' => 'select',
 				'label-message' => 'requestwiki-label-purpose',
 				'required' => true,
 				'cssclass' => RequestWikiWizardForm::REST_VALIDATE_CLASS,
-				'options' => $config->get( ConfigNames::Purposes ),
+				'options' => $this->options->get( ConfigNames::Purposes ),
 				'section' => 'options',
 			];
 		}
@@ -114,7 +127,7 @@ class RequestWikiFormDescriptorBuilder {
 		$formDescriptor['reason'] = [
 			'type' => 'textarea',
 			'rows' => 10,
-			'minlength' => $config->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
+			'minlength' => $this->options->get( ConfigNames::RequestWikiMinimumLength ) ?: false,
 			'maxlength' => 4096,
 			'label-message' => 'createwiki-label-reason',
 			'help-message' => 'createwiki-help-reason',
@@ -131,12 +144,12 @@ class RequestWikiFormDescriptorBuilder {
 			'default' => Html::element(
 				'h3',
 				[ 'class' => 'ext-createwiki-wizard-review-heading' ],
-				$context->msg( 'requestwiki-wizard-review-heading' )->text()
+				$this->messageLocalizer->msg( 'requestwiki-wizard-review-heading' )->text()
 			) . Html::element( 'div', [ 'class' => 'ext-createwiki-wizard-review' ] ),
 			'section' => 'review',
 		];
 
-		if ( $config->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
+		if ( $this->options->get( ConfigNames::RequestWikiConfirmAgreement ) ) {
 			$formDescriptor['agreement'] = [
 				'type' => 'check',
 				'label-message' => 'requestwiki-label-agreement',
