@@ -15,6 +15,7 @@ use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
+use function ctype_space;
 use function is_array;
 
 /**
@@ -105,6 +106,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 				? [ 'valid' => true ]
 				: [
 					'valid' => false,
+					'required' => $value === '' || ctype_space( $value ),
 					'message' => $result instanceof Message ? $result->parse() : (string)$result,
 				];
 		}
