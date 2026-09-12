@@ -91,7 +91,12 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 	 * @covers ::getBodyParamSettings
 	 * @dataProvider provideRunData
 	 */
-	public function testRun( string $field, string $value, bool $expectedValid ): void {
+	public function testRun(
+		string $field,
+		string $value,
+		bool $expectedValid,
+		bool $expectedRequired
+	): void {
 		$data = $this->executeHandlerAndGetBodyData(
 			$this->newHandler(),
 			new RequestData( [ 'method' => 'POST' ] ),
@@ -108,26 +113,27 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 		if ( !$expectedValid ) {
 			$this->assertArrayHasKey( 'message', $data['results'][$field] );
 			$this->assertIsString( $data['results'][$field]['message'] );
+			$this->assertSame( $expectedRequired, $data['results'][$field]['required'] );
 		}
 	}
 
 	public static function provideRunData(): Generator {
-		yield 'valid subdomain' => [ 'subdomain', 'validsub', true ];
-		yield 'disallowed subdomain' => [ 'subdomain', 'badsub', false ];
-		yield 'empty subdomain' => [ 'subdomain', '', false ];
-		yield 'database exists subdomain' => [ 'subdomain', 'exist', false ];
-		yield 'valid reason' => [ 'reason', 'this is a valid reason', true ];
-		yield 'short reason' => [ 'reason', 'short', false ];
-		yield 'empty reason' => [ 'reason', '', false ];
-		yield 'empty category' => [ 'category', '', false ];
-		yield 'whitespace category' => [ 'category', '   ', false ];
-		yield 'filled category' => [ 'category', 'somecategory', true ];
-		yield 'empty purpose' => [ 'purpose', '', false ];
-		yield 'filled purpose' => [ 'purpose', 'somepurpose', true ];
-		yield 'agreement unchecked' => [ 'agreement', '', false ];
-		yield 'agreement checked' => [ 'agreement', '1', true ];
-		yield 'sitename is not rest-validated' => [ 'sitename', '', true ];
-		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true ];
+		yield 'valid subdomain' => [ 'subdomain', 'validsub', true, false ];
+		yield 'disallowed subdomain' => [ 'subdomain', 'badsub', false, false ];
+		yield 'empty subdomain' => [ 'subdomain', '', false, true ];
+		yield 'database exists subdomain' => [ 'subdomain', 'exist', false, false ];
+		yield 'valid reason' => [ 'reason', 'this is a valid reason', true, false ];
+		yield 'short reason' => [ 'reason', 'short', false, false ];
+		yield 'empty reason' => [ 'reason', '', false, true ];
+		yield 'empty category' => [ 'category', '', false, true ];
+		yield 'whitespace category' => [ 'category', '   ', false, true ];
+		yield 'filled category' => [ 'category', 'somecategory', true, false ];
+		yield 'empty purpose' => [ 'purpose', '', false, true ];
+		yield 'filled purpose' => [ 'purpose', 'somepurpose', true, false ];
+		yield 'agreement unchecked' => [ 'agreement', '', false, true ];
+		yield 'agreement checked' => [ 'agreement', '1', true, false ];
+		yield 'sitename is not rest-validated' => [ 'sitename', '', true, false ];
+		yield 'unrecognised field defaults to valid' => [ 'somethingelse', 'anything', true, false ];
 	}
 
 	/**
