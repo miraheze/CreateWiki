@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\Tests\RequestWiki;
 
-use MediaWiki\Context\RequestContext;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\RequestWikiFormDescriptorBuilder;
@@ -21,11 +20,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 		parent::setUp();
 
 		$services = $this->getServiceContainer();
-		$this->builder = new RequestWikiFormDescriptorBuilder(
-			$services->get( 'CreateWikiHookRunner' ),
-			$services->get( 'CreateWikiParsedMessageCache' ),
-			$services->get( 'CreateWikiValidator' )
-		);
+		$this->builder = $services->get( 'RequestWikiFormDescriptorBuilder' );
 	}
 
 	/**
@@ -47,7 +42,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 			ConfigNames::UsePrivateWikis => true,
 		] );
 
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$this->assertArrayHasKey( 'descriptor', $built );
 		$this->assertArrayHasKey( 'extraFields', $built );
 
@@ -77,7 +72,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 			ConfigNames::UsePrivateWikis => false,
 		] );
 
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$descriptor = $built['descriptor'];
 
 		$this->assertArrayNotHasKey( 'agreement', $descriptor );
@@ -103,7 +98,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 			];
 		} );
 
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$descriptor = $built['descriptor'];
 
 		$this->assertArrayHasKey( 'extra-field', $descriptor );
@@ -117,7 +112,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 	 * @covers ::getRestValidationInfo
 	 */
 	public function testGetRestValidationInfoForFieldWithCallback(): void {
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$info = $this->builder->getRestValidationInfo( $built['descriptor'], 'subdomain' );
 
 		$this->assertIsArray( $info );
@@ -134,7 +129,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 			ConfigNames::Categories => [ 'test' => 'test' ],
 		] );
 
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$info = $this->builder->getRestValidationInfo( $built['descriptor'], 'category' );
 
 		$this->assertIsArray( $info );
@@ -151,7 +146,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 			ConfigNames::RequestWikiConfirmAgreement => true,
 		] );
 
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$info = $this->builder->getRestValidationInfo( $built['descriptor'], 'agreement' );
 
 		$this->assertIsArray( $info );
@@ -163,7 +158,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 	 * @covers ::getRestValidationInfo
 	 */
 	public function testGetRestValidationInfoForFieldWithoutMarkerClass(): void {
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$this->assertNull( $this->builder->getRestValidationInfo( $built['descriptor'], 'sitename' ) );
 		$this->assertNull( $this->builder->getRestValidationInfo( $built['descriptor'], 'language' ) );
 	}
@@ -172,7 +167,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 	 * @covers ::getRestValidationInfo
 	 */
 	public function testGetRestValidationInfoForUnknownField(): void {
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$this->assertNull( $this->builder->getRestValidationInfo( $built['descriptor'], 'not-a-real-field' ) );
 	}
 
@@ -184,7 +179,7 @@ class RequestWikiFormDescriptorBuilderTest extends MediaWikiIntegrationTestCase 
 			ConfigNames::Categories => [],
 		] );
 
-		$built = $this->builder->build( RequestContext::getMain() );
+		$built = $this->builder->build();
 		$this->assertNull( $this->builder->getRestValidationInfo( $built['descriptor'], 'category' ) );
 	}
 }
