@@ -65,7 +65,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 
 	/** @inheritDoc */
 	protected function getFormFields(): array {
-		$built = $this->formDescriptorBuilder->build( $this->getContext() );
+		$built = $this->formDescriptorBuilder->build();
 		$this->extraFields = $built['extraFields'];
 		return $built['descriptor'];
 	}
