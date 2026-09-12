@@ -36,9 +36,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
 			$services->get( 'CreateWikiDatabaseUtils' ),
-			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiParsedMessageCache' ),
-			$services->get( 'CreateWikiValidator' ),
+			$services->get( 'RequestWikiFormDescriptorBuilder' ),
 			$services->getStatsFactory(),
 			$services->get( 'WikiRequestManager' )
 		);
@@ -100,102 +99,22 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::getFormFields
 	 */
 	public function testGetFormFields(): void {
-		$this->overrideConfigValues( [
-			ConfigNames::Categories => [ 'test' => 'test' ],
-			ConfigNames::Purposes => [ 'test' => 'test' ],
-			ConfigNames::RequestWikiConfirmAgreement => true,
-			ConfigNames::ShowBiographicalOption => true,
-			ConfigNames::UsePrivateWikis => true,
-		] );
+		$this->setTemporaryHook( 'RequestWikiFormDescriptorModify', static function ( array &$formDescriptor ): void {
+			$formDescriptor['extra-field'] = [
+				'type' => 'text',
+				'label' => 'Extra field',
+			];
+		} );
 
-		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			$this->specialRequestWiki
-		);
+		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
+		$descriptor = $specialRequestWiki->getFormFields();
 
-		$this->assertArrayHasKey( 'agreement', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'bio', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'category', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'language', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'private', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'purpose', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'reason', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'wizard-intro', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'wizard-review', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'subdomain', $descriptor );
+		$this->assertArrayHasKey( 'extra-field', $descriptor );
+		$this->assertArrayHasKey( 'extra-field', $specialRequestWiki->extraFields );
 	}
 
 	/**
-	 * @covers ::getRestValidationInfo
-	 */
-	public function testGetRestValidationInfoForFieldWithCallback(): void {
-		$info = $this->specialRequestWiki->getRestValidationInfo( 'subdomain' );
-
-		$this->assertIsArray( $info );
-		$this->assertTrue( $info['required'] );
-		$this->assertIsCallable( $info['callback'] );
-		$this->assertSame( 'textwithbutton', $info['type'] );
-	}
-
-	/**
-	 * @covers ::getRestValidationInfo
-	 */
-	public function testGetRestValidationInfoForRequiredFieldWithoutCallback(): void {
-		$this->overrideConfigValues( [
-			ConfigNames::Categories => [ 'test' => 'test' ],
-		] );
-
-		$info = $this->specialRequestWiki->getRestValidationInfo( 'category' );
-
-		$this->assertIsArray( $info );
-		$this->assertTrue( $info['required'] );
-		$this->assertNull( $info['callback'] );
-		$this->assertSame( 'select', $info['type'] );
-	}
-
-	/**
-	 * @covers ::getRestValidationInfo
-	 */
-	public function testGetRestValidationInfoForCheckboxField(): void {
-		$this->overrideConfigValues( [
-			ConfigNames::RequestWikiConfirmAgreement => true,
-		] );
-
-		$info = $this->specialRequestWiki->getRestValidationInfo( 'agreement' );
-
-		$this->assertIsArray( $info );
-		$this->assertSame( 'check', $info['type'] );
-		$this->assertIsCallable( $info['callback'] );
-	}
-
-	/**
-	 * @covers ::getRestValidationInfo
-	 */
-	public function testGetRestValidationInfoForFieldWithoutMarkerClass(): void {
-		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'sitename' ) );
-		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'language' ) );
-	}
-
-	/**
-	 * @covers ::getRestValidationInfo
-	 */
-	public function testGetRestValidationInfoForUnknownField(): void {
-		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'not-a-real-field' ) );
-	}
-
-	/**
-	 * @covers ::getRestValidationInfo
-	 */
-	public function testGetRestValidationInfoForConditionallyAbsentField(): void {
-		$this->overrideConfigValues( [
-			ConfigNames::Categories => [],
-		] );
-
-		$this->assertNull( $this->specialRequestWiki->getRestValidationInfo( 'category' ) );
-	}
-
-	/**
-	 * @covers ::isDuplicateRequest
 	 * @covers ::onSubmit
 	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider
