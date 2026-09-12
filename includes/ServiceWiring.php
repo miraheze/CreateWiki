@@ -106,7 +106,12 @@ return [
 		return new RequestWikiFormDescriptorBuilder(
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiParsedMessageCache' ),
-			$services->get( 'CreateWikiValidator' )
+			$services->get( 'CreateWikiValidator' ),
+			RequestContext::getMain(),
+			new ServiceOptions(
+				RequestWikiFormDescriptorBuilder::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
 		);
 	},
 	'WikiManagerFactory' => static function ( MediaWikiServices $services ): WikiManagerFactory {
