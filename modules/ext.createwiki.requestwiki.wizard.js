@@ -340,12 +340,16 @@
 		 *
 		 * @param {jQuery} $input The form control the error belongs to.
 		 * @param {string} message The error message to display.
+		 * @param {boolean} [isRequired] Whether this error is for a missing required value.
 		 * @return {void}
 		 */
-		function showFieldError( $input, message ) {
+		function showFieldError( $input, message, isRequired ) {
 			clearFieldError( $input );
 			errorTarget( $input ).after(
-				$( '<div>' ).addClass( 'ext-createwiki-wizard-field-error' ).text( message )
+				$( '<div>' )
+					.addClass( 'ext-createwiki-wizard-field-error' )
+					.data( 'required', Boolean( isRequired ) )
+					.text( message )
 			);
 		}
 
@@ -425,7 +429,7 @@
 				checks.forEach( ( check ) => {
 					const result = data.results && data.results[ check.field ];
 					if ( result && !result.valid ) {
-						showFieldError( check.$anchor, result.message );
+						showFieldError( check.$anchor, result.message, result.required );
 					}
 				} );
 			}, ( errorCode, errorDetails ) => {
@@ -599,40 +603,28 @@
 		} );
 
 		/**
-		 * Attach a live "value changed" listener that clears a field's error optimistically.
-		 *
-		 * @param {jQuery} $marked The element carrying the REST-validate marker class.
-		 * @param {jQuery} $input The resolved named control for that field.
-		 * @return {void}
+		 * Optimistically clear a field's error the moment its value changes, but only
+		 * when that error was for a missing required value. Errors from other kinds of
+		 * validation failures (for example a REST check rejecting the new value for a
+		 * different reason) are left in place until the field is actually re-validated.
 		 */
-		function watchForChange( $marked, $input ) {
-			let widget = null;
-			try {
-				widget = OO.ui.infuse( $marked );
-			} catch ( e ) {
-				widget = null;
-			}
+		$wizard.on(
+			'input change',
+			'.ext-createwiki-wizard-rest-validate input, ' +
+				'.ext-createwiki-wizard-rest-validate select, ' +
+				'.ext-createwiki-wizard-rest-validate textarea',
+			function () {
+				const $input = $( this );
+				if ( !this.name || this.name.indexOf( 'wp' ) !== 0 ) {
+					return;
+				}
 
-			if ( widget && typeof widget.on === 'function' ) {
-				widget.on( 'change', () => {
+				const $error = errorTarget( $input ).next( '.ext-createwiki-wizard-field-error' );
+				if ( $error.length && $error.data( 'required' ) ) {
 					clearFieldError( $input );
-				} );
-
-				return;
+				}
 			}
-
-			$input.on( 'input change', () => {
-				clearFieldError( $input );
-			} );
-		}
-
-		$wizard.find( '.ext-createwiki-wizard-rest-validate' ).each( function () {
-			const $marked = $( this );
-			const $input = findNamedControl( $marked );
-			if ( $input.length ) {
-				watchForChange( $marked, $input );
-			}
-		} );
+		);
 
 		const errorStep = findStepWithError();
 		if ( errorStep > -1 ) {
