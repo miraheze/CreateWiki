@@ -283,6 +283,7 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 	public function testRunRejectsDuplicateRequest(): void {
 		$wikiRequestManager = $this->createMock( WikiRequestManager::class );
 		$wikiRequestManager->method( 'isDuplicateRequest' )
+			// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 			->with( 'An Existing Sitename' )
 			->willReturn( true );
 
