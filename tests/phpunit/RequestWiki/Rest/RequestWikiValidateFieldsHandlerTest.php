@@ -44,18 +44,53 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 		] );
 	}
 
-	private function newHandler(
-		?RequestWikiFormDescriptorBuilder $formDescriptorBuilder = null,
-		?UserFactory $userFactory = null,
-		?WikiRequestManager $wikiRequestManager = null
+	private function newHandler(): RequestWikiValidateFieldsHandler {
+		$services = $this->getServiceContainer();
+		return new RequestWikiValidateFieldsHandler(
+			$services->get( 'CreateWikiRestUtils' ),
+			$services->get( 'CreateWikiValidator' ),
+			$services->get( 'RequestWikiFormDescriptorBuilder' ),
+			$services->getUserFactory(),
+			$services->get( 'WikiRequestManager' )
+		);
+	}
+
+	private function newHandlerWithFormDescriptorBuilder(
+		RequestWikiFormDescriptorBuilder $formDescriptorBuilder
 	): RequestWikiValidateFieldsHandler {
 		$services = $this->getServiceContainer();
 		return new RequestWikiValidateFieldsHandler(
 			$services->get( 'CreateWikiRestUtils' ),
 			$services->get( 'CreateWikiValidator' ),
-			$formDescriptorBuilder ?? $services->get( 'RequestWikiFormDescriptorBuilder' ),
-			$userFactory ?? $services->getUserFactory(),
-			$wikiRequestManager ?? $services->get( 'WikiRequestManager' )
+			$formDescriptorBuilder,
+			$services->getUserFactory(),
+			$services->get( 'WikiRequestManager' )
+		);
+	}
+
+	private function newHandlerWithUserFactory(
+		UserFactory $userFactory
+	): RequestWikiValidateFieldsHandler {
+		$services = $this->getServiceContainer();
+		return new RequestWikiValidateFieldsHandler(
+			$services->get( 'CreateWikiRestUtils' ),
+			$services->get( 'CreateWikiValidator' ),
+			$services->get( 'RequestWikiFormDescriptorBuilder' ),
+			$userFactory,
+			$services->get( 'WikiRequestManager' )
+		);
+	}
+
+	private function newHandlerWithWikiRequestManager(
+		WikiRequestManager $wikiRequestManager
+	): RequestWikiValidateFieldsHandler {
+		$services = $this->getServiceContainer();
+		return new RequestWikiValidateFieldsHandler(
+			$services->get( 'CreateWikiRestUtils' ),
+			$services->get( 'CreateWikiValidator' ),
+			$services->get( 'RequestWikiFormDescriptorBuilder' ),
+			$services->getUserFactory(),
+			$wikiRequestManager
 		);
 	}
 
@@ -229,7 +264,7 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 		$userFactory->method( 'newFromAuthority' )->willReturn( $user );
 
 		$response = $this->executeHandler(
-			$this->newHandler( userFactory: $userFactory ),
+			$this->newHandlerWithUserFactory( $userFactory ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
@@ -252,7 +287,7 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 			->willReturn( true );
 
 		$response = $this->executeHandler(
-			$this->newHandler( wikiRequestManager: $wikiRequestManager ),
+			$this->newHandlerWithWikiRequestManager( $wikiRequestManager ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
@@ -278,7 +313,7 @@ class RequestWikiValidateFieldsHandlerTest extends MediaWikiIntegrationTestCase 
 		] );
 
 		$data = $this->executeHandlerAndGetBodyData(
-			$this->newHandler( formDescriptorBuilder: $formDescriptorBuilder ),
+			$this->newHandlerWithFormDescriptorBuilder( $formDescriptorBuilder ),
 			new RequestData( [ 'method' => 'POST' ] ),
 			[],
 			[],
