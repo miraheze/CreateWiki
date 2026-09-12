@@ -170,9 +170,8 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
 				"CreateWikiDatabaseUtils",
-				"CreateWikiHookRunner",
 				"CreateWikiParsedMessageCache",
-				"CreateWikiValidator",
+				"RequestWikiFormDescriptorBuilder",
 				"StatsFactory",
 				"WikiRequestManager"
 			]
@@ -284,7 +283,9 @@
 			"services": [
 				"CreateWikiRestUtils",
 				"CreateWikiValidator",
-				"SpecialPageFactory"
+				"RequestWikiFormDescriptorBuilder",
+				"UserFactory",
+				"WikiRequestManager"
 			]
 		}
 	],

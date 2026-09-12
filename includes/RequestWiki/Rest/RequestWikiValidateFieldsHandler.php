@@ -2,17 +2,17 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
-use MediaWiki\Context\RequestContext;
 use MediaWiki\Message\Message;
 use MediaWiki\ParamValidator\TypeDef\ArrayDef;
 use MediaWiki\Rest\Response;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Rest\TokenAwareHandlerTrait;
 use MediaWiki\Rest\Validator\Validator;
-use MediaWiki\SpecialPage\SpecialPageFactory;
-use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
+use MediaWiki\User\UserFactory;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiFormDescriptorBuilder;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
+use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Message\MessageValue;
 use Wikimedia\ParamValidator\ParamValidator;
 use function is_array;
@@ -28,7 +28,9 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 	public function __construct(
 		private readonly CreateWikiRestUtils $restUtils,
 		private readonly CreateWikiValidator $validator,
-		private readonly SpecialPageFactory $specialPageFactory,
+		private readonly RequestWikiFormDescriptorBuilder $formDescriptorBuilder,
+		private readonly UserFactory $userFactory,
+		private readonly WikiRequestManager $wikiRequestManager,
 	) {
 	}
 
@@ -59,12 +61,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			$checks = $validatedBody['checks'];
 		}
 
-		$specialPage = $this->specialPageFactory->getPage( 'RequestWiki' );
-		if ( $specialPage instanceof SpecialRequestWiki ) {
-			$specialPage->setContext( RequestContext::getMain() );
-		} else {
-			$specialPage = null;
-		}
+		$formDescriptor = $this->formDescriptorBuilder->build()['descriptor'];
 
 		$results = [];
 		foreach ( $checks as $check ) {
@@ -75,13 +72,9 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			$field = (string)$check['field'];
 			$value = (string)$check['value'];
 
-			if ( $specialPage === null ) {
-				$results[$field] = [ 'valid' => true ];
-				continue;
-			}
-
 			/* if ( $field === 'throttled' ) {
-				if ( $specialPage->getUser()->pingLimiter( 'requestwiki', 0 ) ) {
+				$user = $this->userFactory->newFromAuthority( $this->getAuthority() );
+				if ( $user->pingLimiter( 'requestwiki', 0 ) ) {
 					return $this->getResponseFactory()->createLocalizedHttpError(
 						429, new MessageValue( 'requestwiki-throttled' )
 					);
@@ -91,7 +84,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			}
 
 			if ( $field === 'duplicate' ) {
-				if ( $specialPage->isDuplicateRequest( $value ) ) {
+				if ( $this->wikiRequestManager->isDuplicateRequest( $value ) ) {
 					return $this->getResponseFactory()->createLocalizedHttpError(
 						403, new MessageValue( 'requestwiki-error-patient' )
 					);
@@ -100,7 +93,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 				continue;
 			} */
 
-			$result = $this->validateField( $specialPage, $field, $value );
+			$result = $this->validateField( $formDescriptor, $field, $value );
 			$results[$field] = $result === true
 				? [ 'valid' => true ]
 				: [
@@ -113,11 +106,11 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 	}
 
 	private function validateField(
-		SpecialRequestWiki $specialPage,
+		array $formDescriptor,
 		string $field,
 		string $value
 	): Message|true {
-		$info = $specialPage->getRestValidationInfo( $field );
+		$info = $this->formDescriptorBuilder->getRestValidationInfo( $formDescriptor, $field );
 		if ( $info === null ) {
 			return true;
 		}
