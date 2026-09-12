@@ -2,7 +2,6 @@
 
 namespace Miraheze\CreateWiki\RequestWiki\Rest;
 
-use MediaWiki\Context\RequestContext;
 use MediaWiki\Message\Message;
 use MediaWiki\ParamValidator\TypeDef\ArrayDef;
 use MediaWiki\Rest\Response;
@@ -62,7 +61,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			$checks = $validatedBody['checks'];
 		}
 
-		$formDescriptor = $this->formDescriptorBuilder->build( RequestContext::getMain() )['descriptor'];
+		$formDescriptor = $this->formDescriptorBuilder->build()['descriptor'];
 
 		$results = [];
 		foreach ( $checks as $check ) {
