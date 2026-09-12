@@ -102,38 +102,52 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			}
 
 			$result = $this->validateField( $specialPage, $field, $value );
-			$results[$field] = $result === true
+			$results[$field] = $result['result'] === true
 				? [ 'valid' => true ]
 				: [
 					'valid' => false,
-					'required' => $value === '' || ctype_space( $value ),
-					'message' => $result instanceof Message ? $result->parse() : (string)$result,
+					'required' => $result['required'],
+					'message' => $result['result'] instanceof Message
+						? $result['result']->parse()
+						: (string)$result['result'],
 				];
 		}
 
 		return $this->getResponseFactory()->createJson( [ 'results' => $results ] );
 	}
 
+	/** @return array{result: Message|true, required: bool} */
 	private function validateField(
 		SpecialRequestWiki $specialPage,
 		string $field,
 		string $value
-	): Message|true {
+	): array {
 		$info = $specialPage->getRestValidationInfo( $field );
 		if ( $info === null ) {
-			return true;
+			return [ 'result' => true, 'required' => false ];
 		}
+
+		$isEmpty = $info['type'] === 'check'
+			? $value !== '1'
+			: ( $value === '' || ctype_space( $value ) );
 
 		if ( $info['callback'] !== null ) {
 			$callbackValue = $info['type'] === 'check' ? $value === '1' : $value;
-			return ( $info['callback'] )( $callbackValue, [] );
+			$result = ( $info['callback'] )( $callbackValue, [] );
+			return [
+				'result' => $result,
+				'required' => $result !== true && $info['required'] && $isEmpty,
+			];
 		}
 
 		if ( $info['required'] ) {
-			return $this->validator->validateRequired( $value );
+			return [
+				'result' => $this->validator->validateRequired( $value ),
+				'required' => $isEmpty,
+			];
 		}
 
-		return true;
+		return [ 'result' => true, 'required' => false ];
 	}
 
 	public function needsWriteAccess(): false {
