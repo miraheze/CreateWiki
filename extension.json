@@ -35,6 +35,13 @@
 		"Miraheze\\CreateWiki\\Tests\\": "tests/phpunit/"
 	},
 	"JobClasses": {
+		"CreateWikiCacheUpdateJob": {
+			"class": "Miraheze\\CreateWiki\\Jobs\\CacheUpdateJob",
+			"services": [
+				"CreateWikiCacheUpdate"
+			],
+			"needsPage": false
+		},
 		"CreateWikiJob": {
 			"class": "Miraheze\\CreateWiki\\Jobs\\CreateWikiJob",
 			"services": [
@@ -249,6 +256,15 @@
 	},
 	"RestRoutes": [
 		{
+			"path": "/createwiki/v0/cache/reset-database-lists",
+			"method": "POST",
+			"class": "Miraheze\\CreateWiki\\Rest\\ResetDatabaseListsHandler",
+			"services": [
+				"CreateWikiCacheRestUtils",
+				"CreateWikiDataStore"
+			]
+		},
+		{
 			"path": "/createwiki/v0/wiki_requests/user/{username}",
 			"method": "GET",
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\UserWikiRequestsHandler",
@@ -316,6 +332,34 @@
 		"CreateWikiCacheType": {
 			"description": "Index from $wgObjectCaches. If set, this will be used instead of $wgMainCacheType for CreateWiki cache.",
 			"value": null
+		},
+		"CreateWikiCacheUpdateDebugAccessKey": {
+			"description": "String. Optional. The value sent in the header named by CreateWikiCacheUpdateDebugAccessKeyHeader. Only used if that header name is also set.",
+			"value": ""
+		},
+		"CreateWikiCacheUpdateDebugAccessKeyHeader": {
+			"description": "String. Optional. The name of an HTTP header CacheUpdateJob sends alongside CreateWikiCacheUpdateDebugHeader, only needed if whatever routes requests to a specific server based on that debug header also requires its own access key to honor it. This is unrelated to CreateWikiCacheUpdateKey, which authenticates the request to the CreateWiki REST endpoint itself, this one authenticates the debug routing at the infrastructure level, in front of the app servers. Leave unset if your setup doesn't require it.",
+			"value": ""
+		},
+		"CreateWikiCacheUpdateDebugHeader": {
+			"description": "String. The name of the HTTP header CacheUpdateJob sets to the value of each entry in CreateWikiCacheUpdateServers when it calls the database list cache reset REST endpoint. Whatever sits in front of the app servers is expected to use this header to route the request to that specific server.",
+			"value": ""
+		},
+		"CreateWikiCacheUpdateDomain": {
+			"description": "String. The hostname used in the URL when CacheUpdateJob contacts the database list cache reset REST endpoint. Should be a wiki that will always exist, such as the central wiki, since the request needs MediaWiki to boot successfully regardless of which wiki triggered the update.",
+			"value": ""
+		},
+		"CreateWikiCacheUpdateKey": {
+			"description": "String. A secret shared between servers, required as the 'key' POST field for the database list cache reset REST endpoint to accept a request. Generate with something like random_bytes(32) and keep it out of public config.",
+			"value": ""
+		},
+		"CreateWikiCacheUpdateRestEnabled": {
+			"description": "Boolean. Whether the database list cache reset REST endpoint is enabled. Disabled by default, only enable once CreateWikiCacheUpdateKey, CreateWikiCacheUpdateDomain, and CreateWikiCacheUpdateDebugHeader are all configured.",
+			"value": false
+		},
+		"CreateWikiCacheUpdateServers": {
+			"description": "Array. An array of servers that serve MediaWiki that will have the CreateWiki database list cache regenerated on update.",
+			"value": []
 		},
 		"CreateWikiCannedResponses": {
 			"description": "Array. An array of default responses to give. If this is enabled (not an empty array), free-text options are removed.",
