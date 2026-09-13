@@ -9,6 +9,7 @@ use MediaWiki\Exception\UserNotLoggedIn;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
+use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\WikiMap\WikiMap;
@@ -35,8 +36,8 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$services = $this->getServiceContainer();
 		return new SpecialRequestWiki(
 			$services->get( 'CreateWikiDatabaseUtils' ),
-			$services->get( 'CreateWikiHookRunner' ),
-			$services->get( 'CreateWikiValidator' ),
+			$services->get( 'CreateWikiParsedMessageCache' ),
+			$services->get( 'RequestWikiFormDescriptorBuilder' ),
 			$services->getStatsFactory(),
 			$services->get( 'WikiRequestManager' )
 		);
@@ -72,6 +73,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 
 	/**
 	 * @covers ::execute
+	 * @covers ::getForm
 	 */
 	public function testExecuteLoggedInEmailConfirmed(): void {
 		$performer = $this->getTestUserAuthorityWithConfirmedEmail();
@@ -97,33 +99,24 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 	 * @covers ::getFormFields
 	 */
 	public function testGetFormFields(): void {
-		$this->overrideConfigValues( [
-			ConfigNames::Categories => [ 'test' => 'test' ],
-			ConfigNames::Purposes => [ 'test' => 'test' ],
-			ConfigNames::RequestWikiConfirmAgreement => true,
-			ConfigNames::ShowBiographicalOption => true,
-			ConfigNames::UsePrivateWikis => true,
-		] );
+		$this->setTemporaryHook( 'RequestWikiFormDescriptorModify', static function ( array &$formDescriptor ): void {
+			$formDescriptor['extra-field'] = [
+				'type' => 'text',
+				'label' => 'Extra field',
+			];
+		} );
 
-		$specialRequestWiki = TestingAccessWrapper::newFromObject(
-			$this->specialRequestWiki
-		);
+		$specialRequestWiki = TestingAccessWrapper::newFromObject( $this->specialRequestWiki );
+		$descriptor = $specialRequestWiki->getFormFields();
 
-		$this->assertArrayHasKey( 'agreement', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'bio', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'category', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'guidance', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'language', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'post-reason-guidance', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'private', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'purpose', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'reason', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'sitename', $specialRequestWiki->getFormFields() );
-		$this->assertArrayHasKey( 'subdomain', $specialRequestWiki->getFormFields() );
+		$this->assertArrayHasKey( 'subdomain', $descriptor );
+		$this->assertArrayHasKey( 'extra-field', $descriptor );
+		$this->assertArrayHasKey( 'extra-field', $specialRequestWiki->extraFields );
 	}
 
 	/**
 	 * @covers ::onSubmit
+	 * @covers ::onSuccess
 	 * @dataProvider onSubmitDataProvider
 	 */
 	public function testOnSubmit(
@@ -140,6 +133,16 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			$data = [ 'wpEditToken' => $context->getCsrfTokenSet()->getToken()->toString() ];
 		}
 
+		if ( $extraData['throttled'] ) {
+			$this->overrideConfigValue( MainConfigNames::RateLimits, [
+				'requestwiki' => [
+					'user' => [ 0, 60 ],
+					'newbie' => [ 0, 60 ],
+					'ip' => [ 0, 60 ],
+				],
+			] );
+		}
+
 		$request = new FauxRequest( $data, true );
 		$context->setRequest( $request );
 
@@ -154,6 +157,10 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 		$this->assertInstanceOf( Status::class, $status );
 		if ( !$expectedError ) {
 			$this->assertStatusGood( $status );
+			$specialRequestWiki->onSuccess();
+
+			$expectedUrl = SpecialPage::getTitleFor( 'RequestWikiQueue', '1' )->getFullURL();
+			$this->assertSame( $expectedUrl, $context->getOutput()->getRedirect() );
 		} else {
 			$this->assertStatusError( $expectedError, $status );
 		}
@@ -176,6 +183,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
+				'throttled' => false,
 				'token' => true,
 			],
 			null,
@@ -191,9 +199,26 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => true,
+				'throttled' => false,
 				'token' => true,
 			],
 			null,
+		];
+
+		yield 'throttled data' => [
+			[
+				'reason' => 'Test onSubmit()',
+				'subdomain' => 'example',
+				'sitename' => 'Example Wiki',
+				'language' => 'en',
+				'category' => 'test',
+			],
+			[
+				'duplicate' => false,
+				'throttled' => true,
+				'token' => true,
+			],
+			'requestwiki-throttled',
 		];
 
 		yield 'session failure' => [
@@ -206,6 +231,7 @@ class SpecialRequestWikiTest extends SpecialPageTestBase {
 			],
 			[
 				'duplicate' => false,
+				'throttled' => false,
 				'token' => false,
 			],
 			'sessionfailure',

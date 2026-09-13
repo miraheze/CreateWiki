@@ -170,8 +170,8 @@
 			"class": "Miraheze\\CreateWiki\\RequestWiki\\Specials\\SpecialRequestWiki",
 			"services": [
 				"CreateWikiDatabaseUtils",
-				"CreateWikiHookRunner",
-				"CreateWikiValidator",
+				"CreateWikiParsedMessageCache",
+				"RequestWikiFormDescriptorBuilder",
 				"StatsFactory",
 				"WikiRequestManager"
 			]
@@ -275,6 +275,18 @@
 				"CreateWikiRestUtils",
 				"WikiRequestManager"
 			]
+		},
+		{
+			"path": "/createwiki/v0/request_wiki/validate",
+			"method": "POST",
+			"class": "Miraheze\\CreateWiki\\RequestWiki\\Rest\\RequestWikiValidateFieldsHandler",
+			"services": [
+				"CreateWikiRestUtils",
+				"CreateWikiValidator",
+				"RequestWikiFormDescriptorBuilder",
+				"UserFactory",
+				"WikiRequestManager"
+			]
 		}
 	],
 	"ResourceModules": {
@@ -292,8 +304,23 @@
 		"ext.createwiki.oouiform.styles": {
 			"styles": "ext.createwiki.oouiform.ooui.less"
 		},
-		"ext.createwiki.requestwiki.oouiform.styles": {
-			"styles": "ext.createwiki.requestwiki.oouiform.ooui.less"
+		"ext.createwiki.requestwiki.wizard": {
+			"scripts": "ext.createwiki.requestwiki.wizard.js",
+			"messages": [
+				"requestwiki-wizard-next",
+				"requestwiki-wizard-review-edit",
+				"requestwiki-wizard-review-empty",
+				"requestwiki-wizard-review-no",
+				"requestwiki-wizard-review-yes",
+				"requestwiki-wizard-start"
+			],
+			"dependencies": [
+				"mediawiki.api",
+				"oojs-ui-core"
+			]
+		},
+		"ext.createwiki.requestwiki.wizard.styles": {
+			"styles": "ext.createwiki.requestwiki.wizard.less"
 		}
 	},
 	"ResourceFileModulePaths": {
