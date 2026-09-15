@@ -37,6 +37,8 @@ class ConfigNames {
 
 	public const EmailNotifications = 'CreateWikiEmailNotifications';
 
+	public const TrackDatabaseListMetrics = 'CreateWikiTrackDatabaseListMetrics';
+
 	public const EnableManageInactiveWikis = 'CreateWikiEnableManageInactiveWikis';
 
 	public const EnableRESTAPI = 'CreateWikiEnableRESTAPI';
