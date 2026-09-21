@@ -5,6 +5,7 @@
 			"NikosLikomitros",
 			"Nikosgranturismogt",
 			"Omnipaedista",
+			"PrinceAzuka134",
 			"Warudo"
 		]
 	},
@@ -21,6 +22,7 @@
 	"createwiki-label-reason": "Αιτία:",
 	"createwiki-label-requester": "Αιτών:",
 	"createwiki-label-sitename": "Όνομα ιστοχώρου:",
+	"createwiki-request-locked": "Αυτό το αίτημα έχει κλειδωθεί. Δεν είναι δυνατή η επεξεργασία του και δεν είναι δυνατή η προσθήκη σχολίων σε αυτό.",
 	"createwiki-success": "Το βίκι δημιουργήθηκε επιτυχώς",
 	"farmer-log-name": "Αρχείο της βικι-φάρμας",
 	"logentry-farmer-createwiki": "{{GENDER:$2|Ο|Η}} $1 δημιούργησε το βίκι «$4»",
