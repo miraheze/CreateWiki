@@ -22,7 +22,7 @@
 	"createwiki-email-subject": "Twoja nowa wiki ($1) została uwtorzona",
 	"createwiki-error-dbexists": "'''UWAGA''': Wiki o tej nazwie domeny już istnieje.",
 	"createwiki-error-disallowed": "Subdomena o którą prosisz nie może zostać utworzona. Zmień subdomenę na nową lub skontaktuj się z administratorem systemu.",
-	"createwiki-error-notalnum": "Nazwa subdomeny, którą wybrałeś zawiera znaki niealfanumerycznych. Proszę spróbować inną.",
+	"createwiki-error-notalnum": "Wybrana nazwa subdomeny zawiera znaki niealfanumerycznych. Spróbuj ponownie.",
 	"createwiki-error-notlowercase": "Nazwa subdomeny może nie zawierać wielkich liter. Proszę spróbować inną.",
 	"createwiki-error-notsuffixed": "Nazwa bazy danych nie kończy się poprawnym sufiksem ('$1').",
 	"createwiki-help-reason": "Proszę wpisać informacje dotyczące tematu, zakresu oraz celu wiki, o którą prosisz.",
