@@ -24,7 +24,7 @@ use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 use Wikimedia\Rdbms\Platform\ISQLPlatform;
-use Wikimedia\Stats\Metrics\TimingMetric;
+use Wikimedia\Stats\Metrics\RunningTimer;
 use Wikimedia\Stats\StatsFactory;
 use function array_flip;
 use function array_intersect_key;
@@ -210,7 +210,7 @@ class WikiManagerFactory {
 		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
 			->setLabel( 'private', $private ? 'Yes' : 'No' )
 			->start();
-		'@phan-var TimingMetric $timer';
+		'@phan-var RunningTimer $timer';
 
 		$this->doCreateDatabase();
 
