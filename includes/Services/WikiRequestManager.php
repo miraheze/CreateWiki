@@ -809,6 +809,7 @@ class WikiRequestManager {
 
 	public function startQueryBuilder(): void {
 		$this->clearChanges();
+		/** @var UpdateQueryBuilder $this->queryBuilder */
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
 			->where( [ 'cw_id' => $this->id ] )
