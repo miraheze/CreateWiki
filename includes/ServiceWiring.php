@@ -9,9 +9,11 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\RequestWiki\RequestWikiFormDescriptorBuilder;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
+use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;
 use Miraheze\CreateWiki\Services\CreateWikiRestUtils;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use Miraheze\CreateWiki\Services\RemoteWikiFactory;
@@ -61,6 +63,13 @@ return [
 			$services->getUserFactory()
 		);
 	},
+	'CreateWikiParsedMessageCache' => static function (
+		MediaWikiServices $services
+	): CreateWikiParsedMessageCache {
+		return new CreateWikiParsedMessageCache(
+			$services->getMainWANObjectCache()
+		);
+	},
 	'CreateWikiRestUtils' => static function ( MediaWikiServices $services ): CreateWikiRestUtils {
 		return new CreateWikiRestUtils(
 			$services->get( 'CreateWikiDatabaseUtils' ),
@@ -87,6 +96,20 @@ return [
 			$services->getJobQueueGroupFactory(),
 			new ServiceOptions(
 				RemoteWiki::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			)
+		);
+	},
+	'RequestWikiFormDescriptorBuilder' => static function (
+		MediaWikiServices $services
+	): RequestWikiFormDescriptorBuilder {
+		return new RequestWikiFormDescriptorBuilder(
+			$services->get( 'CreateWikiHookRunner' ),
+			$services->get( 'CreateWikiParsedMessageCache' ),
+			$services->get( 'CreateWikiValidator' ),
+			RequestContext::getMain(),
+			new ServiceOptions(
+				RequestWikiFormDescriptorBuilder::CONSTRUCTOR_OPTIONS,
 				$services->get( 'CreateWikiConfig' )
 			)
 		);
