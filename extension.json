@@ -182,7 +182,6 @@
 				"CreateWikiDatabaseUtils",
 				"LanguageNameUtils",
 				"UserFactory",
-				"UserLinkRenderer",
 				"WikiRequestManager",
 				"WikiRequestViewer"
 			]
