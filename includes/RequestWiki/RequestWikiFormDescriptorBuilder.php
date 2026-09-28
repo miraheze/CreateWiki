@@ -4,7 +4,7 @@ namespace Miraheze\CreateWiki\RequestWiki;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Html\Html;
-use MessageLocalizer;
+use MediaWiki\Language\MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
 use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;

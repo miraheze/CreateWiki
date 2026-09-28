@@ -11,11 +11,11 @@ use MediaWiki\Permissions\Authority;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Status\Status;
+use MediaWiki\Tests\Specials\SpecialPageTestBase;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\RequestWiki\Specials\SpecialRequestWiki;
-use SpecialPageTestBase;
 use Wikimedia\TestingAccessWrapper;
 use function wfTimestamp;
 

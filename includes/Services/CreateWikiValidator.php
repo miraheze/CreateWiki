@@ -3,9 +3,9 @@
 namespace Miraheze\CreateWiki\Services;
 
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Language\MessageLocalizer;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
-use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\CreateWikiRegexConstraint;
 use function ctype_alnum;
