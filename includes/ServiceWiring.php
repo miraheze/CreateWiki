@@ -130,10 +130,9 @@ return [
 			RequestContext::getMain(),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiValidator' ),
-			/** @phan-suppress-next-line PhanTypeMismatchArgument */
 			$services->getLanguageNameUtils(),
+			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
-			$services->getUserLinkRenderer(),
 			$services->get( 'WikiRequestManager' ),
 			new ServiceOptions(
 				WikiRequestViewer::CONSTRUCTOR_OPTIONS,
