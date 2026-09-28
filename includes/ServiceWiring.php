@@ -131,8 +131,8 @@ return [
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getLanguageNameUtils(),
+			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
-			$services->getUserLinkRenderer(),
 			$services->get( 'WikiRequestManager' ),
 			new ServiceOptions(
 				WikiRequestViewer::CONSTRUCTOR_OPTIONS,
