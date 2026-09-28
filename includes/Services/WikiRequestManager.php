@@ -809,11 +809,12 @@ class WikiRequestManager {
 
 	public function startQueryBuilder(): void {
 		$this->clearChanges();
+		/** @var ?UpdateQueryBuilder $this->queryBuilder */
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
 			->where( [ 'cw_id' => $this->id ] )
 			->caller( __METHOD__ );
-		'@phan-var UpdateQueryBuilder $this->queryBuilder';
+		'@phan-var ?UpdateQueryBuilder $this->queryBuilder';
 	}
 
 	private function getQueryBuilder(): UpdateQueryBuilder {
