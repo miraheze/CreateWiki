@@ -809,6 +809,7 @@ class WikiRequestManager {
 
 	public function startQueryBuilder(): void {
 		$this->clearChanges();
+		/** @phan-suppress-next-line PhanPartialTypeMismatchProperty */
 		$this->queryBuilder ??= $this->dbw->newUpdateQueryBuilder()
 			->update( 'cw_requests' )
 			->where( [ 'cw_id' => $this->id ] )

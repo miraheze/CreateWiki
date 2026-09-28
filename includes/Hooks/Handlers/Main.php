@@ -4,14 +4,14 @@ namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Block\Hook\GetAllBlockActionsHook;
 use MediaWiki\Config\Config;
-use MediaWiki\Hook\GetMagicVariableIDsHook;
-use MediaWiki\Hook\LoginFormValidErrorMessagesHook;
-use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Hook\SetupAfterCacheHook;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
+use MediaWiki\Parser\Hook\GetMagicVariableIDsHook;
+use MediaWiki\Parser\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Specials\Hook\LoginFormValidErrorMessagesHook;
 use MediaWiki\User\Hook\UserGetReservedNamesHook;
 use MediaWiki\WikiMap\WikiMap;
 use Miraheze\CreateWiki\ConfigNames;

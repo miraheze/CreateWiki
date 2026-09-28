@@ -4,10 +4,10 @@ namespace Miraheze\CreateWiki\Tests\Services;
 
 use Generator;
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Language\MessageLocalizer;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
 use MediaWikiIntegrationTestCase;
-use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Services\CreateWikiValidator;
 use PHPUnit\Framework\MockObject\MockObject;

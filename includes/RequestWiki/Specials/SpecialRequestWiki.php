@@ -14,8 +14,6 @@ use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiParsedMessageCache;
 use Miraheze\CreateWiki\Services\WikiRequestManager;
 use Wikimedia\Stats\StatsFactory;
-use function version_compare;
-use const MW_VERSION;
 
 class SpecialRequestWiki extends FormSpecialPage {
 
@@ -28,11 +26,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 		private readonly StatsFactory $statsFactory,
 		private readonly WikiRequestManager $wikiRequestManager,
 	) {
-		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
-			parent::__construct( 'RequestWiki' );
-		} else {
-			parent::__construct( 'RequestWiki', 'requestwiki' );
-		}
+		parent::__construct( 'RequestWiki' );
 	}
 
 	/**

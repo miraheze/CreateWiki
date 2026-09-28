@@ -8,13 +8,13 @@ use MediaWiki\Config\ConfigException;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Exception\FatalError;
+use MediaWiki\Language\MessageLocalizer;
 use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Shell\Shell;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\UserFactory;
-use MessageLocalizer;
 use Miraheze\CreateWiki\ConfigNames;
 use Miraheze\CreateWiki\Exceptions\MissingWikiError;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
@@ -24,7 +24,7 @@ use Wikimedia\Rdbms\DBConnRef;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactoryMulti;
 use Wikimedia\Rdbms\Platform\ISQLPlatform;
-use Wikimedia\Stats\Metrics\TimingMetric;
+use Wikimedia\Stats\Metrics\RunningTimer;
 use Wikimedia\Stats\StatsFactory;
 use function array_flip;
 use function array_intersect_key;
@@ -210,7 +210,7 @@ class WikiManagerFactory {
 		$timer = $this->statsFactory->getTiming( 'createwiki_creation_seconds' )
 			->setLabel( 'private', $private ? 'Yes' : 'No' )
 			->start();
-		'@phan-var TimingMetric $timer';
+		'@phan-var RunningTimer $timer';
 
 		$this->doCreateDatabase();
 
