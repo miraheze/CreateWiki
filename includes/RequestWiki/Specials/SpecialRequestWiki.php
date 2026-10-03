@@ -55,7 +55,7 @@ class SpecialRequestWiki extends FormSpecialPage {
 			'ext.createwiki.requestwiki.oouiform.styles',
 		] );
 
-		$form = $this->getForm();
+		$form = $this->getForm()->setWrapperLegendMsg( 'requestwiki-header' );
 		if ( $form && $form->show() ) {
 			$this->onSuccess();
 		}
