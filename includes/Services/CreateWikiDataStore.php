@@ -15,6 +15,7 @@ use function array_keys;
 use function file_put_contents;
 use function function_exists;
 use function is_array;
+use function json_encode;
 use function opcache_invalidate;
 use function rename;
 use function tempnam;
@@ -43,6 +44,7 @@ class CreateWikiDataStore {
 
 	public function __construct(
 		ObjectCacheFactory $objectCacheFactory,
+		private readonly CacheUpdate $cacheUpdate,
 		private readonly CreateWikiDatabaseUtils $databaseUtils,
 		private readonly CreateWikiHookRunner $hookRunner,
 		private readonly ServiceOptions $options,
@@ -72,7 +74,7 @@ class CreateWikiDataStore {
 	 */
 	public function syncCache(): void {
 		if ( !$this->timestamp ) {
-			$this->resetDatabaseLists( isNewChanges: true );
+			$this->resetDatabaseLists( isNewChanges: true, sync: false );
 			return;
 		}
 
@@ -85,7 +87,7 @@ class CreateWikiDataStore {
 		// Only regenerate if localServerTimestamp is smaller than timestamp so multiple processes on the
 		// same server don't try regenerating the dblists at the same time.
 		if ( ( $mtime === 0 || $mtime < $this->timestamp ) && $this->localServerTimestamp < $this->timestamp ) {
-			$this->resetDatabaseLists( isNewChanges: false );
+			$this->resetDatabaseLists( isNewChanges: false, sync: false );
 		}
 	}
 
@@ -104,7 +106,7 @@ class CreateWikiDataStore {
 	 * the updated list to a PHP file within the cache directory. It also updates the
 	 * modification time (mtime) and stores it in the cache for future reference.
 	 */
-	public function resetDatabaseLists( bool $isNewChanges ): void {
+	public function resetDatabaseLists( bool $isNewChanges, bool $sync ): bool {
 		$mtime = time();
 		$this->localServerCache->set(
 			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' ),
@@ -123,6 +125,7 @@ class CreateWikiDataStore {
 		$this->hookRunner->onCreateWikiGenerateDatabaseLists( $databaseLists );
 
 		if ( $databaseLists ) {
+			$allSynced = true;
 			foreach ( $databaseLists as $name => $content ) {
 				$list = [
 					'mtime' => $mtime,
@@ -130,11 +133,60 @@ class CreateWikiDataStore {
 				];
 
 				$this->writeToFile( $name, $list );
+
+				if ( $isNewChanges ) {
+					$data = json_encode( $list );
+					$synced = $sync
+						? $this->cacheUpdate->executeNow( $name, $data )
+						: $this->queueAndSucceed( $name, $data );
+
+					$allSynced = $allSynced && $synced;
+				}
 			}
 
-			return;
+			return $allSynced;
 		}
 
+		$list = [
+			'mtime' => $mtime,
+			'databases' => $this->fetchDatabasesFromDatabase(),
+		];
+
+		$this->writeToFile( 'databases', $list );
+
+		if ( $isNewChanges ) {
+			// The query already ran and the list is already built right
+			// above, every other server can just take this content as is
+			// instead of running the same query again on its own.
+			$data = json_encode( $list );
+			return $sync
+				? $this->cacheUpdate->executeNow( 'databases', $data )
+				: $this->queueAndSucceed( 'databases', $data );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Writes an already-built database list straight to disk, no database
+	 * access at all. Used when another server already did the query and
+	 * this server just needs to catch up with the same content.
+	 */
+	public function applyDatabaseList( string $name, array $list ): void {
+		$this->localServerCache->set(
+			$this->localServerCache->makeGlobalKey( self::CACHE_KEY, 'databases-local' ),
+			$list['mtime'] ?? time()
+		);
+
+		$this->writeToFile( $name, $list );
+	}
+
+	private function queueAndSucceed( string $name, ?string $data ): true {
+		$this->cacheUpdate->queueJob( $name, $data );
+		return true;
+	}
+
+	private function fetchDatabasesFromDatabase(): array {
 		$this->dbr ??= $this->databaseUtils->getGlobalReplicaDB();
 		$databaseList = $this->dbr->newSelectQueryBuilder()
 			->table( 'cw_wikis' )
@@ -165,12 +217,7 @@ class CreateWikiDataStore {
 			}
 		}
 
-		$list = [
-			'mtime' => $mtime,
-			'databases' => $databases,
-		];
-
-		$this->writeToFile( 'databases', $list );
+		return $databases;
 	}
 
 	/**
