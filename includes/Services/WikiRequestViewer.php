@@ -144,7 +144,7 @@ class WikiRequestViewer {
 		];
 
 		foreach ( $this->wikiRequestManager->getComments() as $comment ) {
-			$formDescriptor['comment' . $comment['timestamp'] ] = [
+			$formDescriptor['comment' . $comment['id']] = [
 				'type' => 'info',
 				'section' => 'comments',
 				'label-message' => [
