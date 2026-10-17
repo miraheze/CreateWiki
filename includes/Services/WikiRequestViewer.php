@@ -291,7 +291,7 @@ class WikiRequestViewer {
 		if ( $canHandleRequest ) {
 			foreach ( $this->wikiRequestManager->getRequestHistory() as $entry ) {
 				$timestamp = $this->context->getLanguage()->userTimeAndDate( $entry['timestamp'], $user );
-				$formDescriptor[ 'history-' . $entry['timestamp'] ] = [
+				$formDescriptor['history-' . $entry['id']] = [
 					'type' => 'info',
 					'section' => 'history',
 					'label' => $entry['user']->getName() . ' | ' . ucfirst( $entry['action'] ) . ' | ' . $timestamp,
