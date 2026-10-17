@@ -224,14 +224,14 @@ class WikiRequestManager {
 	}
 
 	/**
-	 * @return array<int, array{comment: string, timestamp: string, user: User}>
+	 * @return array<int, array{id: int, comment: string, timestamp: string, user: User}>
 	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_comments' )
 			->where( [ 'cw_id' => $this->id ] )
-			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
+			->orderBy( 'cw_comment_id', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
@@ -249,6 +249,7 @@ class WikiRequestManager {
 			$user = $this->userFactory->newFromId( $row->cw_comment_user );
 
 			$comments[] = [
+				'id' => (int)$row->cw_comment_id,
 				'comment' => $row->cw_comment,
 				'timestamp' => $row->cw_comment_timestamp,
 				'user' => $user,
