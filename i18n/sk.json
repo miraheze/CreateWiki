@@ -17,6 +17,8 @@
 	"createwiki-close-email-body": "Dobrý deň,\n\nTáto správa vás informuje, že vaša wiki bola zatvorená.",
 	"createwiki-close-email-sender": "noreply",
 	"createwiki-close-email-subject": "Vaša wiki $1 bola zatvorená",
+	"createwiki-inactive-exempt-expiry-email-body": "Dobrý deň,\\n\\ntento e-mail vás informuje, že výnimka vašej wiki z pravidiel o nečinnosti vypršala. Vaša wiki teraz opäť podlieha pravidlám o nečinnosti.\\n\\nAk si myslíte, že vaša wiki stále spĺňa podmienky na výnimku, môžete požiadať stewardov o jej obnovenie.",
+	"createwiki-inactive-exempt-expiry-email-subject": "Vaša wiki ($1) už nemá výnimku z pravidiel o nečinnosti",
 	"createwiki-comment-success": "Komentár bol úspešne pridaný k tejto žiadosti.",
 	"createwiki-defaultmainpage": "__NOTOC__ Vitajte na vašej novej wiki! Užitočný môže byť tento odkaz: [https://www.mediawiki.org/wiki/Help:Contents Help:Contents] na mediawiki.org",
 	"createwiki-defaultmainpage-summary": "Vytvorenie hlavnej stránky",
