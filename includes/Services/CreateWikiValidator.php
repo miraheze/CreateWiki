@@ -81,7 +81,7 @@ class CreateWikiValidator {
 		return "https://$subdomain.$domain";
 	}
 
-	public function validateAgreement( bool $agreement ): bool|Message {
+	public function validateAgreement( bool $agreement ): Message|true {
 		if ( !$agreement ) {
 			return $this->messageLocalizer->msg( 'createwiki-error-agreement' );
 		}
@@ -89,7 +89,15 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function validateComment( ?string $comment, array $alldata ): bool|Message {
+	public function validateRequired( ?string $value ): Message|true {
+		if ( !$value || ctype_space( $value ) ) {
+			return $this->messageLocalizer->msg( 'htmlform-required' );
+		}
+
+		return true;
+	}
+
+	public function validateComment( ?string $comment, array $alldata ): Message|true {
 		if ( isset( $alldata['submit-comment'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
@@ -97,7 +105,7 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function validateDatabaseEntry( ?string $dbname ): bool|string|Message {
+	public function validateDatabaseEntry( ?string $dbname ): Message|string|true {
 		if ( !$dbname || ctype_space( $dbname ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
@@ -105,7 +113,7 @@ class CreateWikiValidator {
 		$check = $this->validateDatabaseName( $dbname, $this->databaseExists( $dbname ) );
 
 		if ( $check ) {
-			// Will return a string — the error it received
+			// Will return the error it received as a string.
 			return $check;
 		}
 
@@ -139,7 +147,7 @@ class CreateWikiValidator {
 		return null;
 	}
 
-	public function validateReason( ?string $reason, array $alldata ): bool|Message {
+	public function validateReason( ?string $reason, array $alldata ): Message|true {
 		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-reason'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			return true;
@@ -164,7 +172,7 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function validateStatusComment( ?string $comment, array $alldata ): bool|Message {
+	public function validateStatusComment( ?string $comment, array $alldata ): Message|true {
 		if ( isset( $alldata['submit-handle'] ) && ( !$comment || ctype_space( $comment ) ) ) {
 			return $this->messageLocalizer->msg( 'htmlform-required' );
 		}
@@ -172,7 +180,7 @@ class CreateWikiValidator {
 		return true;
 	}
 
-	public function validateSubdomain( ?string $subdomain, array $alldata ): bool|Message {
+	public function validateSubdomain( ?string $subdomain, array $alldata ): Message|true {
 		if ( !isset( $alldata['submit-edit'] ) && isset( $alldata['edit-url'] ) ) {
 			// If we aren't submitting an edit we don't want this to fail.
 			// For example, we don't want an invalid subdomain to block
