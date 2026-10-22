@@ -21,6 +21,8 @@
 	"createwiki": "위키 만들기",
 	"createwiki-close-email-body": "안녕하세요,\n\n이 이메일은 귀하의 위키가 폐쇄되었음을 알려드리기 위해 발송되었습니다.",
 	"createwiki-close-email-subject": "당신의 위키($1)가 닫혔습니다",
+	"createwiki-inactive-exempt-expiry-email-body": "안녕하세요!\n\n이 이메일은 당신의 위키에 대한 휴면 정책 면제 기간이 만료되었음을 알려드리기 위한 것입니다. 이제 당신의 위키는 다시 휴면 정책의 적용을 받습니다.\n\n위키가 여전히 면제 기준을 충족한다고 생각하시면 사무장에게 갱신을 요청하실 수 있습니다.",
+	"createwiki-inactive-exempt-expiry-email-subject": "당신의 위키($1)는 더 이상 휴면 정책의 적용을 받지 않습니다",
 	"createwiki-comment-success": "이 요청에 의견이 성공적으로 추가되었습니다.",
 	"createwiki-defaultmainpage": "__NOTOC__ 새 위키에 오신 것을 환영합니다. 다음 링크가 도움이 될지도 모릅니다: mediawiki.org의 [https://www.mediawiki.org/wiki/Help:Contents 도움말:목차]",
 	"createwiki-defaultmainpage-summary": "주 문서 만들기",

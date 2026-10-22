@@ -38,6 +38,8 @@
 	"createwiki": "ウィキを作成",
 	"createwiki-close-email-body": "こんにちは。\n\nこのメールは、あなたのウィキが閉鎖されたことをお知らせするためのものです。",
 	"createwiki-close-email-subject": "あなたのウィキ ($1) は閉鎖されました",
+	"createwiki-inactive-exempt-expiry-email-body": "こんにちは、\n\nこのメールは、あなたのウィキの休眠の方針の免除が期限切れになったことをお知らせするものです。あなたのウィキは再び休眠の方針の対象となりました。\n\nあなたのウィキがまだ免除の基準を満たしていると思われる場合は、スチュワードに更新を申請できます。",
+	"createwiki-inactive-exempt-expiry-email-subject": "あなたのウィキ ($1) は休眠の方針の適用除外ではなくなりました",
 	"createwiki-comment-success": "この申請にコメントが正常に追加されました。",
 	"createwiki-defaultmainpage": "__NOTOC__ 新しいウィキへようこそ。次のリンクが役に立つかもしれません: mediawiki.org の [https://www.mediawiki.org/wiki/Help:Contents ヘルプ:コンテンツ]",
 	"createwiki-defaultmainpage-summary": "メインページを作成",

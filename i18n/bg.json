@@ -30,6 +30,7 @@
 	"requestwikiqueue-request-label-action": "Какво искате да направите?",
 	"requestwikiqueue-request-label-comment": "Коментар:",
 	"requestwikiqueue-request-label-language": "Език",
+	"requestwikiqueue-request-label-reason": "Причина за заявката",
 	"requestwikiqueue-request-label-requested-date": "Заявено в",
 	"requestwikiqueue-request-label-requester": "Заявител",
 	"requestwikiqueue-request-label-sitename": "Име на сайта",

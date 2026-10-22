@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Bjankuloski06"
+			"Bjankuloski06",
+			"Vlad5250"
 		]
 	},
 	"action-createwiki": "создавање на викија",
@@ -16,12 +17,13 @@
 	"createwiki-email-subject": "Вашето ново вики на Miraheze ($1) е создадено",
 	"createwiki-error-dbexists": "'''НАПОМЕНА''': Веќе постои вики со овој поддомен.",
 	"createwiki-error-disallowed": "Не можам да го создадат поддоменот што го побаравте. Или побарајте нов поддомен, или побарајте помош од системските администратори.",
+	"createwiki-error-missingwiki": "Викито „$1“ не постои.",
 	"createwiki-error-notalnum": "Називот на базата не може да содржи само азбучнобројчени знаци.",
 	"createwiki-error-notlowercase": "Називот на базата може да содржи само мали букви.",
 	"createwiki-error-notsuffixed": "Називот на базата не завршува со важечка нставка (на пр. „wiki“).",
 	"createwiki-help-reason": "Внесете доволен опис на темата, делокругот и целта на викито што го барате.",
-	"createwiki-label-category": "Категорија:",
-	"createwiki-label-dbname": "Назив на базата:",
+	"createwiki-label-category": "Категорија",
+	"createwiki-label-dbname": "Назив на базата",
 	"createwiki-label-language": "Јазик:",
 	"createwiki-label-private": "Означи како скриено",
 	"createwiki-label-reason": "Причина:",
@@ -40,7 +42,8 @@
 	"log-action-filter-farmer-createwiki": "Создадено вики",
 	"log-action-filter-farmer-requestapprove": "Брањето за вики е одобрено",
 	"log-action-filter-farmer-requestdecline": "Брањето за вики е одбиено",
-	"log-action-filter-farmer-requestwiki": "Отворено/преотворено барање за вики",
+	"log-action-filter-farmer-requestwiki": "Отворено барање за вики",
+	"log-action-filter-farmersuppression": "Вид дејство:",
 	"logentry-farmer-createwiki": "$1 го {{GENDER:$2|создаде}} викито „$4“",
 	"logentry-farmer-requestapprove": "$1 {{GENDER:$2|одобри}} викибарање $4",
 	"logentry-farmer-requestdecline": "$1 го {{GENDER:$2|одби}} викибарање $4",
