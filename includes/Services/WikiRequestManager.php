@@ -224,14 +224,14 @@ class WikiRequestManager {
 	}
 
 	/**
-	 * @return array<int, array{comment: string, timestamp: string, user: User}>
+	 * @return array<int, array{id: int, comment: string, timestamp: string, user: User}>
 	 */
 	public function getComments(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_comments' )
 			->where( [ 'cw_id' => $this->id ] )
-			->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_ASC )
+			->orderBy( 'cw_comment_id', SelectQueryBuilder::SORT_ASC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
@@ -249,6 +249,7 @@ class WikiRequestManager {
 			$user = $this->userFactory->newFromId( $row->cw_comment_user );
 
 			$comments[] = [
+				'id' => (int)$row->cw_comment_id,
 				'comment' => $row->cw_comment,
 				'timestamp' => $row->cw_comment_timestamp,
 				'user' => $user,
@@ -309,14 +310,14 @@ class WikiRequestManager {
 	}
 
 	/**
-	 * @return array<int, array{action: string, details: string, timestamp: string, user: User}>
+	 * @return array<int, array{id: int, action: string, details: string, timestamp: string, user: User}>
 	 */
 	public function getRequestHistory(): array {
 		$res = $this->dbw->newSelectQueryBuilder()
 			->select( ISQLPlatform::ALL_ROWS )
 			->from( 'cw_history' )
 			->where( [ 'cw_id' => $this->id ] )
-			->orderBy( 'cw_history_timestamp', SelectQueryBuilder::SORT_DESC )
+			->orderBy( 'cw_history_id', SelectQueryBuilder::SORT_DESC )
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
@@ -330,6 +331,7 @@ class WikiRequestManager {
 			$user = $this->userFactory->newFromActorId( $row->cw_history_actor );
 
 			$history[] = [
+				'id' => (int)$row->cw_history_id,
 				'action' => $row->cw_history_action,
 				'details' => $row->cw_history_details,
 				'timestamp' => $row->cw_history_timestamp,
