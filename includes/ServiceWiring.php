@@ -67,6 +67,7 @@ return [
 		MediaWikiServices $services
 	): CreateWikiParsedMessageCache {
 		return new CreateWikiParsedMessageCache(
+			/** @phan-suppress-next-line PhanDeprecatedFunction Deprecated in 1.47 */
 			$services->getMainWANObjectCache()
 		);
 	},
