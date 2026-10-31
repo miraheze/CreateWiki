@@ -48,6 +48,15 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 		$updater->addExtensionUpdateOnVirtualDomain( [
 			'virtual-createwiki-central',
 			'addField',
+			'cw_comments',
+			'cw_comment_id',
+			"$dir/patches/patch-cw_comments-add-cw_comment_id.sql",
+			true,
+		] );
+
+		$updater->addExtensionUpdateOnVirtualDomain( [
+			'virtual-createwiki-central',
+			'addField',
 			'cw_requests',
 			'cw_locked',
 			"$dir/patches/patch-cw_requests-add-cw_locked.sql",

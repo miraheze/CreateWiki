@@ -59,7 +59,7 @@ class DeclineStaleWikiRequests extends Maintenance {
 				->select( [ 'cw_comment_user', 'cw_comment_timestamp' ] )
 				->from( 'cw_comments' )
 				->where( [ 'cw_id' => $id ] )
-				->orderBy( 'cw_comment_timestamp', SelectQueryBuilder::SORT_DESC )
+				->orderBy( 'cw_comment_id', SelectQueryBuilder::SORT_DESC )
 				->caller( __METHOD__ )
 				->fetchResultSet();
 
