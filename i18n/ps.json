@@ -92,7 +92,7 @@
 	"log-action-filter-farmersuppression-public": "د ښکارېدنې محدوديتونه لرې شول",
 	"log-action-filter-farmersuppression-suppress": "ويکي غوښتنې وځپل شوې",
 	"logentry-farmer-comment": "$1 په $4 ويکي غوښتنه {{GENDER:$2|څرگندونه وکړه}}",
-	"logentry-farmer-create-failure": "$1 د $4 ويکي غوښتنې جوړولو پرمهال له يوې تېروتنې سره مخ شو",
+	"logentry-farmer-create-failure": "$1 د $4 ويکي غوښتنې جوړولو پرمهال له يوې تېروتنې سره {{GENDER:$2|مخ شو}}",
 	"logentry-farmer-createwiki": "$1 \"$4\" ويکي {{GENDER:$2|جوړه کړه}}",
 	"logentry-farmer-requestapprove": "$1 \"$4\" ويکي {{GENDER:$2|ومنله}}",
 	"logentry-farmer-requestabandon": "$1 \"$4\" ويکي {{GENDER:$2|پرېښوده}}",
