@@ -9,6 +9,8 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Miraheze\CreateWiki\Helpers\RemoteWiki;
 use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Loadout\LoadoutFormBuilder;
+use Miraheze\CreateWiki\Loadout\LoadoutManager;
 use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
 use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\CreateWiki\Services\CreateWikiNotificationsManager;
@@ -44,6 +46,23 @@ return [
 	},
 	'CreateWikiHookRunner' => static function ( MediaWikiServices $services ): CreateWikiHookRunner {
 		return new CreateWikiHookRunner( $services->getHookContainer() );
+	},
+	'CreateWikiLoadoutFormBuilder' => static function ( MediaWikiServices $services ): LoadoutFormBuilder {
+		return new LoadoutFormBuilder(
+			$services->get( 'CreateWikiLoadoutManager' ),
+			RequestContext::getMain()
+		);
+	},
+	'CreateWikiLoadoutManager' => static function ( MediaWikiServices $services ): LoadoutManager {
+		return new LoadoutManager(
+			$services->get( 'CreateWikiLogger' ),
+			new ServiceOptions(
+				LoadoutManager::CONSTRUCTOR_OPTIONS,
+				$services->get( 'CreateWikiConfig' )
+			),
+			$services->has( 'ManageWikiModuleFactory' ) ?
+				$services->get( 'ManageWikiModuleFactory' ) : null,
+		);
 	},
 	'CreateWikiLogger' => static function (): LoggerInterface {
 		return LoggerFactory::getInstance( 'CreateWiki' );
@@ -99,6 +118,7 @@ return [
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getExtensionRegistry(),
+			$services->get( 'CreateWikiLoadoutManager' ),
 			$services->getStatsFactory(),
 			$services->getUserFactory(),
 			RequestContext::getMain(),
