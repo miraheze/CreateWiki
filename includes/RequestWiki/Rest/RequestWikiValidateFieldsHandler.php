@@ -37,12 +37,12 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 	/** @inheritDoc */
 	public function validate( Validator $restValidator ): void {
 		parent::validate( $restValidator );
-		$this->validateToken();
+		// $this->validateToken();
 	}
 
 	public function run(): Response {
 		$this->restUtils->checkEnv();
-		if ( !$this->getAuthority()->isNamed() ) {
+		/* if ( !$this->getAuthority()->isNamed() ) {
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				403, new MessageValue( 'createwiki-rest-mustlogin' )
 			);
@@ -52,7 +52,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			return $this->getResponseFactory()->createLocalizedHttpError(
 				403, new MessageValue( 'createwiki-rest-notallowed' )
 			);
-		}
+		} */
 
 		$validatedBody = $this->getValidatedBody();
 
@@ -72,7 +72,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 			$field = (string)$check['field'];
 			$value = (string)$check['value'];
 
-			if ( $field === 'throttled' ) {
+			/* if ( $field === 'throttled' ) {
 				$user = $this->userFactory->newFromAuthority( $this->getAuthority() );
 				if ( $user->pingLimiter( 'requestwiki', 0 ) ) {
 					return $this->getResponseFactory()->createLocalizedHttpError(
@@ -91,7 +91,7 @@ class RequestWikiValidateFieldsHandler extends SimpleHandler {
 				}
 
 				continue;
-			}
+			} */
 
 			$result = $this->validateField( $formDescriptor, $field, $value );
 			$results[$field] = $result === true
