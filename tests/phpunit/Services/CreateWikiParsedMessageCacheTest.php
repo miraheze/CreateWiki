@@ -15,6 +15,7 @@ class CreateWikiParsedMessageCacheTest extends MediaWikiIntegrationTestCase {
 
 	private function newCache(): CreateWikiParsedMessageCache {
 		return new CreateWikiParsedMessageCache(
+			/** @phan-suppress-next-line PhanDeprecatedFunction Deprecated in 1.47 */
 			$this->getServiceContainer()->getMainWANObjectCache()
 		);
 	}

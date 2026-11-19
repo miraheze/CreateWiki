@@ -2,6 +2,7 @@
 
 namespace Miraheze\CreateWiki\Tests\Services;
 
+use MediaWiki\Logging\LogEntryBase;
 use MediaWiki\MainConfigNames;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
@@ -110,6 +111,23 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 
 		$manager = $this->getWikiRequestManager( id: 2 );
 		$this->assertTrue( $manager->exists() );
+
+		$blob = $this->getDb()->newSelectQueryBuilder()
+			->select( 'log_params' )
+			->from( 'logging' )
+			->where( [ 'log_type' => 'farmer', 'log_action' => 'requestwiki' ] )
+			->caller( __METHOD__ )
+			->fetchField();
+
+		// @phan-suppress-next-line SecurityCheck-PHPSerializeInjection Classes are not allowed
+		$params = LogEntryBase::extractParams( (string)$blob );
+
+		$this->assertSame( [
+			'4::sitename' => 'Test Wiki 2',
+			'5::language' => 'en',
+			'6::private' => 0,
+			'7:request-link:id' => 2,
+		], $params );
 	}
 
 	/**

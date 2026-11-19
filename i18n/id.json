@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Bennylin",
+			"Exploraz",
 			"Farras",
 			"HoloCraft",
 			"HyperAnd",
@@ -113,11 +114,11 @@
 	"notification-header-request-moredetails": "Permintaan Anda membutuhkan lebih banyak rincian sebelum keputusan dibuat:",
 	"notification-header-wiki-creation": "Wiki Anda <strong>$1</strong> telah dibuat!",
 	"requestwiki": "Minta wiki",
-	"requestwiki-ai-decision-approve": "Secara otomatis, dengan alasan: $1",
+	"requestwiki-ai-decision-approve": "Secara otomatis dengan tingkat kepercayaan $2% dengan alasan: $1",
 	"requestwiki-ai-decision-decline": "Permintaan ini tidak dapat disetujui saat ini karena alasan berikut: \"$1\"",
-	"requestwiki-ai-decision-dryrun": "Ini adalah analisis kecerdasan buatan percobaan. Untuk pemohon wiki, ini aman untuk diabaikan.\n\n'''Anjuran''': $1 .\n\n'''Alasan''': $2",
+	"requestwiki-ai-decision-dryrun": "Ini adalah analisis kecerdasan buatan eksperimental. Untuk pemohon wiki, ini aman untuk diabaikan.\n\n'''Anjuran''': $1 .\n\n'''Alasan''': $2\n\n'''Tingkat kepercayaan''': $3%",
 	"requestwiki-ai-decision-moredetails": "Permintaan ini memerlukan rincian lebih lanjut sebelum dapat dinilai lebih lanjut, karena alasan berikut: $1",
-	"requestwiki-ai-decision-onhold": "Permintaan ini tidak dapat disetujui secara otomatis dan memerlukan peninjauan manual.",
+	"requestwiki-ai-decision-onhold": "Permintaan ini tidak dapat disetujui secara otomatis dan memerlukan peninjauan manual dengan alasan: \"$1\"",
 	"requestwiki-edit-success": "Perubahan Anda pada permintaan wiki ini berhasil disimpan.",
 	"requestwiki-error-invalidcomment": "Permintaan wiki Anda mengandung karakter yang tidak valid. Harap perbaiki dan coba lagi.",
 	"requestwiki-error-minlength": "Harap panjangkan teks ini menjadi $1 {{PLURAL:$1| karakter|karakter}} atau lebih (saat ini Anda menggunakan $2 {{PLURAL:$2| karakter|karakter}}).",
