@@ -1,0 +1,199 @@
+.ext-createwiki-wizard {
+	margin-top: 1em;
+}
+
+.ext-createwiki-wizard-dots {
+	display: flex;
+	margin-bottom: 1em;
+
+	.ext-createwiki-wizard-dot {
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		box-sizing: border-box;
+		border-radius: 50%;
+		margin-right: 0.5em;
+		background-color: var( --background-color-disabled, #c8ccd1 );
+
+		&:last-child {
+			margin-right: 0;
+		}
+
+		&--current {
+			width: 20px;
+			border-radius: 4px;
+			background-color: var( --background-color-progressive, #36c );
+		}
+
+		&--complete {
+			background-color: var( --background-color-progressive, #36c );
+		}
+	}
+}
+
+.ext-createwiki-wizard-card {
+	box-sizing: border-box;
+	padding: 1.5em;
+	border: 1px solid var( --border-color-subtle, #c8ccd1 );
+	border-radius: 8px;
+	background-color: var( --background-color-base, #fff );
+}
+
+.ext-createwiki-wizard-step-count {
+	margin: 0 0 0.3em;
+	color: var( --color-subtle, #54595d );
+	font-size: 0.85em;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+}
+
+.ext-createwiki-wizard-step {
+	&:not( :first-child ) {
+		display: none;
+	}
+
+	.ext-createwiki-wizard-card-title {
+		padding: 0;
+		border: 0;
+		margin: 0 0 0.5em;
+		font-size: 1.4em;
+		line-height: 1.3;
+	}
+}
+
+.ext-createwiki-wizard-card-subtitle {
+	margin: -0.3em 0 1.3em;
+	color: var( --color-base, #202122 );
+	font-size: 1.05em;
+	font-weight: normal;
+	line-height: 1.5;
+
+	> :last-child {
+		margin-bottom: 0;
+	}
+}
+
+.ext-createwiki-wizard-field-error {
+	box-sizing: border-box;
+	padding: 0.5em 0.75em;
+	border: 1px solid var( --border-color-error, #d73333 );
+	border-radius: 4px;
+	margin: 0.3em 0 1em;
+	background-color: var( --background-color-error-subtle, #ffe9e5 );
+	color: var( --color-error, #d73333 );
+	font-size: 0.9em;
+}
+
+.ext-createwiki-wizard-back,
+.ext-createwiki-wizard-return-review,
+.ext-createwiki-wizard-submit {
+	display: none;
+}
+
+.ext-createwiki-wizard-nav {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 1em;
+
+	.ext-createwiki-wizard-return-review {
+		margin-right: 0.5em;
+	}
+}
+
+.ext-createwiki-wizard-review-heading {
+	padding: 0;
+	border: 0;
+	margin: 0 0 0.5em;
+	font-size: 1.1em;
+}
+
+.ext-createwiki-wizard-review-list {
+	max-width: 100%;
+	box-sizing: border-box;
+	border: 1px solid var( --border-color-subtle, #c8ccd1 );
+	border-radius: 4px;
+	margin: 0 0 1.5em;
+
+	.ext-createwiki-wizard-review-row {
+		max-width: 100%;
+		box-sizing: border-box;
+		padding: 0.6em 0.8em;
+		border-bottom: 1px solid var( --border-color-subtle, #c8ccd1 );
+
+		&:last-child {
+			border-bottom: 0;
+		}
+
+		&:nth-child( odd ) {
+			background-color: var( --background-color-neutral-subtle, #f8f9fa );
+		}
+
+		.ext-createwiki-wizard-review-label-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.ext-createwiki-wizard-review-label {
+				margin: 0 0 0.15em;
+				color: var( --color-subtle, #54595d );
+				font-size: 0.8em;
+				letter-spacing: 0.03em;
+				text-transform: uppercase;
+			}
+
+			.ext-createwiki-wizard-review-edit {
+				min-height: 0;
+				flex-shrink: 0;
+				padding: 0;
+				border: 0;
+				margin-left: 0.5em;
+				background: none;
+				color: var( --color-progressive, #36c );
+				cursor: pointer;
+				font-size: 0.8em;
+				line-height: normal;
+			}
+		}
+
+		.ext-createwiki-wizard-review-value {
+			overflow-wrap: anywhere;
+			white-space: pre-wrap;
+		}
+	}
+}
+
+#ext-createwiki-inline-subdomain button {
+	cursor: auto;
+	pointer-events: none;
+}
+
+.mw-htmlform-ooui-header {
+	.oo-ui-labelElement.oo-ui-labelElement-label {
+		display: unset;
+	}
+}
+
+.client-nojs {
+	.ext-createwiki-wizard-back,
+	.ext-createwiki-wizard-dots,
+	.ext-createwiki-wizard-next,
+	.ext-createwiki-wizard-review,
+	.ext-createwiki-wizard-review-heading {
+		display: none;
+	}
+
+	.ext-createwiki-wizard-nav {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.ext-createwiki-wizard-submit {
+		display: inline-block;
+	}
+
+	.ext-createwiki-wizard-step:not( :first-child ) {
+		display: block;
+		margin-top: 1.5em;
+	}
+}
