@@ -37,7 +37,7 @@ class MigrateLogParams extends LoggedUpdateMaintenance {
 	}
 
 	/** @inheritDoc */
-	protected function doDBUpdates(): bool {
+	protected function doDBUpdates(): true {
 		$dbw = $this->getPrimaryDB( 'virtual-createwiki-central' );
 		if ( !WikiMap::isCurrentWikiDbDomain( $dbw->getDomainID() ) ) {
 			$this->output( "Wiki request logs are not stored on this wiki. Skipping.\n" );
@@ -149,15 +149,32 @@ class MigrateLogParams extends LoggedUpdateMaintenance {
 	}
 
 	/**
+	 * Old entries hold a ScalarParam, which unserializes to an incomplete class.
+	 * Its value is a protected property, so the array key has a prefix.
+	 */
+	private function getText( mixed $value ): string {
+		if ( is_array( $value ) ) {
+			return (string)( $value['raw'] ?? '' );
+		}
+
+		if ( !is_object( $value ) ) {
+			return (string)$value;
+		}
+
+		foreach ( (array)$value as $key => $property ) {
+			if ( is_string( $property ) && str_ends_with( (string)$key, 'value' ) ) {
+				return $property;
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Requests are stored either as '#123' or as a rendered link to the request.
 	 */
 	private function getRequestId( mixed $value, string $title ): ?int {
-		// Old entries hold a ScalarParam, which unserializes to an incomplete class.
-		$text = match ( true ) {
-			is_array( $value ) => (string)( $value['raw'] ?? '' ),
-			is_object( $value ) => (string)( ( (array)$value )['value'] ?? '' ),
-			default => (string)$value,
-		};
+		$text = $this->getText( $value );
 
 		if ( preg_match( '/^#?(\d+)$/', $text, $matches ) ) {
 			return (int)$matches[1];
