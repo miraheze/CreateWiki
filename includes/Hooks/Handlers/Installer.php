@@ -3,6 +3,7 @@
 namespace Miraheze\CreateWiki\Hooks\Handlers;
 
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
+use Miraheze\CreateWiki\Maintenance\MigrateLogParams;
 
 class Installer implements LoadExtensionSchemaUpdatesHook {
 
@@ -160,5 +161,7 @@ class Installer implements LoadExtensionSchemaUpdatesHook {
 			"$dir/patches/patch-cw_wikis-drop-wiki_settings.sql",
 			true,
 		] );
+
+		$updater->addPostDatabaseUpdateMaintenance( MigrateLogParams::class );
 	}
 }
