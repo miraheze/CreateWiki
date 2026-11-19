@@ -85,17 +85,8 @@
 		"requestwiki"
 	],
 	"LogActionsHandlers": {
-		"farmer/createwiki": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/comment": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/create-failure": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestapprove": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestabandon": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestdecline": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestmoredetails": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestonhold": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestreopen": "MediaWiki\\Logging\\LogFormatter",
-		"farmer/requestwiki": "Miraheze\\CreateWiki\\LogFormatter\\FarmerLogFormatter",
-		"farmersuppression/*": "MediaWiki\\Logging\\LogFormatter"
+		"farmer/*": "Miraheze\\CreateWiki\\Logging\\FarmerLogFormatter",
+		"farmersuppression/*": "Miraheze\\CreateWiki\\Logging\\FarmerLogFormatter"
 	},
 	"LogHeaders": {
 		"farmer": "farmer-log-header",

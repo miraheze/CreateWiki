@@ -138,7 +138,6 @@ return [
 			$services->get( 'CreateWikiNotificationsManager' ),
 			$services->get( 'CreateWikiValidator' ),
 			$services->getJobQueueGroupFactory(),
-			$services->getLinkRenderer(),
 			$services->getPermissionManager(),
 			$services->getStatsFactory(),
 			$services->getUserFactory(),
