@@ -4,11 +4,13 @@ namespace Miraheze\CreateWiki\Tests\Logging;
 
 use MediaWiki\Logging\DatabaseLogEntry;
 use MediaWiki\Logging\ManualLogEntry;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Title\TitleValue;
 use MediaWikiIntegrationTestCase;
 use Miraheze\CreateWiki\Logging\FarmerLogFormatter;
 use function html_entity_decode;
 use const ENT_QUOTES;
+use const NS_SPECIAL;
 
 /**
  * @group CreateWiki
@@ -22,7 +24,7 @@ class FarmerLogFormatterTest extends MediaWikiIntegrationTestCase {
 		parent::setUp();
 
 		$this->setUserLang( 'en' );
-		$this->setContentLang( 'en' );
+		$this->overrideConfigValue( MainConfigNames::LanguageCode, 'en' );
 	}
 
 	private function newFormatter( string $type, string $action, array $params ): FarmerLogFormatter {
@@ -32,14 +34,11 @@ class FarmerLogFormatterTest extends MediaWikiIntegrationTestCase {
 		$entry->setParameters( $params );
 
 		$logId = $entry->insert( $this->getDb() );
-		$row = $this->getDb()->newSelectQueryBuilder()
-			->queryInfo( DatabaseLogEntry::getSelectQueryData() )
-			->where( [ 'log_id' => $logId ] )
-			->caller( __METHOD__ )
-			->fetchRow();
+		$logEntry = DatabaseLogEntry::newFromId( $logId, $this->getDb() );
+		$this->assertNotNull( $logEntry );
 
 		$formatter = $this->getServiceContainer()->getLogFormatterFactory()
-			->newFromEntry( DatabaseLogEntry::newFromRow( $row ) );
+			->newFromEntry( $logEntry );
 
 		$this->assertInstanceOf( FarmerLogFormatter::class, $formatter );
 		return $formatter;

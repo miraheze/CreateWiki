@@ -6,6 +6,7 @@ use MediaWiki\Logging\LogEntryBase;
 use MediaWiki\Maintenance\LoggedUpdateMaintenance;
 use MediaWiki\RecentChanges\RecentChange;
 use MediaWiki\WikiMap\WikiMap;
+use stdClass;
 use Wikimedia\Rdbms\IDatabase;
 use function array_keys;
 use function is_array;
@@ -64,6 +65,7 @@ class MigrateLogParams extends LoggedUpdateMaintenance {
 			$this->beginTransactionRound( __METHOD__ );
 
 			foreach ( $res as $row ) {
+				'@phan-var stdClass $row';
 				$count++;
 				$lastId = (int)$row->log_id;
 

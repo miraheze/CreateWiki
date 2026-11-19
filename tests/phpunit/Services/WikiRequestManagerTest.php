@@ -119,12 +119,15 @@ class WikiRequestManagerTest extends MediaWikiIntegrationTestCase {
 			->caller( __METHOD__ )
 			->fetchField();
 
+		// @phan-suppress-next-line SecurityCheck-PHPSerializeInjection Classes are not allowed
+		$params = LogEntryBase::extractParams( (string)$blob );
+
 		$this->assertSame( [
 			'4::sitename' => 'Test Wiki 2',
 			'5::language' => 'en',
 			'6::private' => 0,
 			'7:request-link:id' => 2,
-		], LogEntryBase::extractParams( (string)$blob ) );
+		], $params );
 	}
 
 	/**
