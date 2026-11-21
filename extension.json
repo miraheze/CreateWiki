@@ -188,7 +188,7 @@
 						"CreateWikiDataStore",
 						"CreateWikiHookRunner",
 						"JobQueueGroupFactory",
-						"CreateWikiRemoteWikiOptions"
+						"RemoteWikiOptions"
 					]
 				}
 			}
