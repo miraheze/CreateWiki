@@ -12,6 +12,7 @@ use Miraheze\CreateWiki\Services\CreateWikiDataStore;
 use Miraheze\ManageWiki\Exceptions\MissingWikiError as ManageWikiMissingWikiError;
 use Miraheze\ManageWiki\ICoreModule;
 
+/** @codeCoverageIgnore Tested by testing RemoteWiki. */
 class ManageWikiCoreModule extends RemoteWiki implements ICoreModule {
 
 	/** @throws ManageWikiMissingWikiError */
