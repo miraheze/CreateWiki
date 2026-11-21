@@ -2,10 +2,40 @@
 
 namespace Miraheze\CreateWiki\Helpers;
 
+use MediaWiki\Config\ServiceOptions;
+use MediaWiki\JobQueue\JobQueueGroupFactory;
 use Miraheze\CreateWiki\ConfigNames;
+use Miraheze\CreateWiki\Exceptions\MissingWikiError;
+use Miraheze\CreateWiki\Hooks\CreateWikiHookRunner;
+use Miraheze\CreateWiki\Services\CreateWikiDatabaseUtils;
+use Miraheze\CreateWiki\Services\CreateWikiDataStore;
+use Miraheze\ManageWiki\Exceptions\MissingWikiError as ManageWikiMissingWikiError;
 use Miraheze\ManageWiki\ICoreModule;
 
 class ManageWikiCoreModule extends RemoteWiki implements ICoreModule {
+
+	/** @throws ManageWikiMissingWikiError */
+	public static function factory(
+		string $dbname,
+		CreateWikiDatabaseUtils $databaseUtils,
+		CreateWikiDataStore $dataStore,
+		CreateWikiHookRunner $hookRunner,
+		JobQueueGroupFactory $jobQueueGroupFactory,
+		ServiceOptions $options
+	): self {
+		try {
+			return new self(
+				$databaseUtils,
+				$dataStore,
+				$hookRunner,
+				$jobQueueGroupFactory,
+				$options,
+				$dbname
+			);
+		} catch ( MissingWikiError ) {
+			throw new ManageWikiMissingWikiError( $dbname );
+		}
+	}
 
 	public function isEnabled( string $feature ): bool {
 		$enabled = [
