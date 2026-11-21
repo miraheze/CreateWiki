@@ -61,6 +61,12 @@ return [
 			$services->getUserFactory()
 		);
 	},
+	'CreateWikiRemoteWikiOptions' => static function ( MediaWikiServices $services ): ServiceOptions {
+		return new ServiceOptions(
+			RemoteWiki::CONSTRUCTOR_OPTIONS,
+			$services->get( 'CreateWikiConfig' )
+		);
+	},
 	'CreateWikiRestUtils' => static function ( MediaWikiServices $services ): CreateWikiRestUtils {
 		return new CreateWikiRestUtils(
 			$services->get( 'CreateWikiDatabaseUtils' ),
@@ -85,10 +91,7 @@ return [
 			$services->get( 'CreateWikiDataStore' ),
 			$services->get( 'CreateWikiHookRunner' ),
 			$services->getJobQueueGroupFactory(),
-			new ServiceOptions(
-				RemoteWiki::CONSTRUCTOR_OPTIONS,
-				$services->get( 'CreateWikiConfig' )
-			)
+			$services->get( 'CreateWikiRemoteWikiOptions' )
 		);
 	},
 	'WikiManagerFactory' => static function ( MediaWikiServices $services ): WikiManagerFactory {
