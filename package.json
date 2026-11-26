@@ -20,6 +20,6 @@
 		"svgo": "4.1.0"
 	},
 	"peerDependencies": {
-		"postcss-less": "7.1.1"
+		"postcss-less": "8.1.0"
 	}
 }
